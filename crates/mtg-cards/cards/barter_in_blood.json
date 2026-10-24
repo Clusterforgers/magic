@@ -1,0 +1,22 @@
+{
+  "oracle_id": "9167998d-5cac-47d7-99f2-f38122f7b8e7",
+  "name": "Barter in Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barter in Blood",
+      "oracle_fingerprint": "79f49d0baf6a58eec25714333cff1f4f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }], "count": 2 }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

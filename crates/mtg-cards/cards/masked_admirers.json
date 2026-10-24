@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ea97fc76-3a32-414c-aa12-87be1a0eb9f3",
+  "name": "Masked Admirers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Masked Admirers",
+      "oracle_fingerprint": "6860c956d0a74dc1200d11fa301165eb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": { "cost": "{G}{G}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

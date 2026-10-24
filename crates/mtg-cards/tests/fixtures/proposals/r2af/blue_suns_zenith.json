@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Draw":{"who":{"Target":0},"count":"X"}},{"Move":{"what":"This","to":{"Library":{"place":"Shuffled"}}}}]}}]}]}

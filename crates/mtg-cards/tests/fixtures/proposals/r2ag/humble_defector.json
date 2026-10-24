@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"condition":"YourTurn","targets":[{"what":"Opponent"}],"effects":[{"Draw":{"count":2}},{"Continuous":{"affected":"This","mods":[{"SetController":{"Target":0}}],"duration":"Forever"}}]}}]}]}

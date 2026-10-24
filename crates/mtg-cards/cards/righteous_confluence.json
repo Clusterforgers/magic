@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ee28937b-7ead-45ad-8448-35c51a09fb32",
+  "name": "Righteous Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Righteous Confluence",
+      "oracle_fingerprint": "7571be4d18a365f95900062591f9e632",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Knight",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Knight"],
+                                "power": 2,
+                                "toughness": 2,
+                                "abilities": [{ "Keyword": "Vigilance" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 5 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

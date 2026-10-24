@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{3}"},"Tap","SacrificeSelf"],"effects":[{"Move":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"},{"Type":"Enchantment"}]},"to":"Hand"}}]}}]}]}

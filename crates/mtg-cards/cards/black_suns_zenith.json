@@ -1,0 +1,27 @@
+{
+  "oracle_id": "038c0165-32b6-4e81-8180-604b49905207",
+  "name": "Black Sun's Zenith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Sun's Zenith",
+      "oracle_fingerprint": "03fd62f469908ee3be65bb9bb7d45162",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }] },
+                  "counter": "-1/-1",
+                  "count": "X"
+                }
+              },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

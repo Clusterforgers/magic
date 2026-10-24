@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":{"Color":"Black"}}],"to":"Battlefield"}},"effects":[{"Sacrifice":{"filter":["This"]}},{"If":{"condition":"Performed","then":[{"Destroy":{"what":"Triggering"}}]}}]}}]}]}

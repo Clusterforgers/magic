@@ -2062,9 +2062,17 @@ impl<'a> Walker<'a> {
                 repeat,
                 at_random,
                 once_each_turn,
+                all_if,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
                 w.modal_flags(choose, *repeat, *at_random, *once_each_turn);
+                if let Some(condition) = all_if {
+                    w.uses("Effect", "Modal.AllIf");
+                    w.at("all_if", |w| w.condition(condition));
+                    if *at_random || *repeat {
+                        w.problem("every mode under a condition cannot be a pick at random or repeat");
+                    }
+                }
             }
         });
     }

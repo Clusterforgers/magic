@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"Subtype":"Equipment"},{"ControlledBy":"You"}]}},{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":{"Target":0},"to":{"Target":1}}}]}}]}]}

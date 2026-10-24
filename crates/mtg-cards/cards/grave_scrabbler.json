@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b1afaf1c-2311-4fdc-b78c-98bf1892d1de",
+  "name": "Grave Scrabbler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Scrabbler",
+      "oracle_fingerprint": "a7dae8acf6d10360ede3c96f20c809d4",
+      "abilities": [
+        { "Keyword": { "Madness": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Madness" },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

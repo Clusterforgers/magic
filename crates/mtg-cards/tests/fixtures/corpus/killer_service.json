@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "b86b0177-0533-4b5a-9da7-1e11d398d828",
+  "oracle_id": "0f30f32f-3c4c-4f73-8b2a-82045a40bda9",
+  "multiverse_ids": [
+    650268
+  ],
+  "mtgo_id": 122488,
+  "tcgplayer_id": 535722,
+  "cardmarket_id": 753478,
+  "name": "Killer Service",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/b86b0177-0533-4b5a-9da7-1e11d398d828",
+  "scryfall_uri": "https://scryfall.com/card/mkc/174/killer-service?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:23:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.jpg?1783912990",
+    "normal": "https://cards.scryfall.io/normal/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.jpg?1783912990",
+    "large": "https://cards.scryfall.io/large/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.jpg?1783912990",
+    "png": "https://cards.scryfall.io/png/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.png?1783912990",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.jpg?1783912990",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.jpg?1783912990",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.webp?1783912990",
+    "grid": "https://cards.scryfall.io/grid/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.webp?1783912990",
+    "display": "https://cards.scryfall.io/display/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.webp?1783912990",
+    "art": "https://cards.scryfall.io/art/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.webp?1783912990",
+    "crop": "https://cards.scryfall.io/crop/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.webp?1783912990",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/8/b86b0177-0533-4b5a-9da7-1e11d398d828.jpg?1783912990"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, create a number of Food tokens equal to the number of opponents you have. (They're artifacts with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\nAt the beginning of your end step, you may pay {2} and sacrifice a token. If you do, create a 4/4 green Rhino Warrior creature token.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b86b0177-0533-4b5a-9da7-1e11d398d828",
+      "component": "combo_piece",
+      "name": "Killer Service",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/b86b0177-0533-4b5a-9da7-1e11d398d828"
+    },
+    {
+      "object": "related_card",
+      "id": "3210a896-a7b2-47c9-affa-217455542c71",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/3210a896-a7b2-47c9-affa-217455542c71"
+    },
+    {
+      "object": "related_card",
+      "id": "eec70281-7bdf-46b8-903e-a8a46b7d47bf",
+      "component": "token",
+      "name": "Rhino Warrior",
+      "type_line": "Token Creature — Rhino Warrior",
+      "uri": "https://api.scryfall.com/cards/eec70281-7bdf-46b8-903e-a8a46b7d47bf"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b86b0177-0533-4b5a-9da7-1e11d398d828/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0f30f32f-3c4c-4f73-8b2a-82045a40bda9&unique=prints",
+  "collector_number": "174",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Simon Dominic",
+  "artist_ids": [
+    "b0e80135-db5a-4b88-a0bc-815a0e94faa1"
+  ],
+  "illustration_id": "f8c70e04-78ee-4cb8-b2e2-894f0ced5c4b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6875,
+  "prices": {
+    "usd": "0.40",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": null,
+    "tix": "0.29"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650268&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKiller%2BService",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKiller%2BService",
+    "edhrec": "https://edhrec.com/route/?cc=Killer+Service"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535722%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753478&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122488?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

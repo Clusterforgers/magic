@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Deathtouch"},{"Keyword":"Haste"},{"Activated":{"cost":["Tap",{"Discard":{}}],"effects":[{"Draw":{}},{"If":{"condition":{"Matches":{"subject":"Paid","selector":[{"Type":"Creature"}]}},"then":[{"Amass":{"subtype":"Orc","count":1}}]}}]}}]}]}

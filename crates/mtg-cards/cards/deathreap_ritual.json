@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b26e3596-5b28-4eb6-b3e2-03f63d8c6d49",
+  "name": "Deathreap Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathreap Ritual",
+      "oracle_fingerprint": "31c933b62eae61fe20571ad94a1f8302",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

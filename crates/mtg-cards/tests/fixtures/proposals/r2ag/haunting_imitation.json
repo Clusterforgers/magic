@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"p","effects":[{"LookAtTop":{"as":"top"}},{"Reveal":{"what":{"Bound":"top"}}}]}}]}}]}]}

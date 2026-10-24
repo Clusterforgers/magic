@@ -1,0 +1,45 @@
+{
+  "oracle_id": "be4f47e9-1bd2-4aa9-bc85-3f203ad21639",
+  "name": "Rionya, Fire Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rionya, Fire Dancer",
+      "oracle_fingerprint": "50b4f6a35191fc9647c711c9f24a9d4c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Target": 0 } } },
+                  "count": {
+                    "Sum": [1, { "Tallied": { "who": "You", "what": "InstantsAndSorceriesCast" } }]
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

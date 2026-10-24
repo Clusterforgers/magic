@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "ea926187-ac8e-4197-8fd4-ac6b8d818d83",
+  "oracle_id": "a598e824-ad8e-4947-896b-70c5275b615a",
+  "multiverse_ids": [
+    620749
+  ],
+  "mtgo_id": 113158,
+  "tcgplayer_id": 499603,
+  "cardmarket_id": 717172,
+  "name": "Moria Scavenger",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/ea926187-ac8e-4197-8fd4-ac6b8d818d83",
+  "scryfall_uri": "https://scryfall.com/card/ltc/63/moria-scavenger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.jpg?1783916017",
+    "normal": "https://cards.scryfall.io/normal/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.jpg?1783916017",
+    "large": "https://cards.scryfall.io/large/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.jpg?1783916017",
+    "png": "https://cards.scryfall.io/png/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.png?1783916017",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.jpg?1783916017",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.jpg?1783916017",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.webp?1783916017",
+    "grid": "https://cards.scryfall.io/grid/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.webp?1783916017",
+    "display": "https://cards.scryfall.io/display/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.webp?1783916017",
+    "art": "https://cards.scryfall.io/art/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.webp?1783916017",
+    "crop": "https://cards.scryfall.io/crop/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.webp?1783916017",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/a/ea926187-ac8e-4197-8fd4-ac6b8d818d83.jpg?1783916017"
+  },
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Orc Rogue",
+  "oracle_text": "Deathtouch, haste\n{T}, Discard a card: Draw a card. If the discarded card was a creature card, amass Orcs 1. (Put a +1/+1 counter on an Army you control. It's also an Orc. If you don't control an Army, create a 0/0 black Orc Army creature token first.)",
+  "power": "1",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Amass",
+    "Haste",
+    "Deathtouch"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6943f966-fd21-427c-a13f-44727edcaa4b",
+      "component": "token",
+      "name": "Orc Army",
+      "type_line": "Token Creature — Orc Army",
+      "uri": "https://api.scryfall.com/cards/6943f966-fd21-427c-a13f-44727edcaa4b"
+    },
+    {
+      "object": "related_card",
+      "id": "a292be65-3324-4ec2-89cb-27852a777535",
+      "component": "combo_piece",
+      "name": "Moria Scavenger",
+      "type_line": "Creature — Orc Rogue",
+      "uri": "https://api.scryfall.com/cards/a292be65-3324-4ec2-89cb-27852a777535"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ea926187-ac8e-4197-8fd4-ac6b8d818d83/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa598e824-ad8e-4947-896b-70c5275b615a&unique=prints",
+  "collector_number": "63",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Krstic",
+  "artist_ids": [
+    "44cdd332-50f6-4cab-b606-c4565fc5efeb"
+  ],
+  "illustration_id": "bf8f6574-115b-4166-bd41-1f4d66543662",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5282,
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.12",
+    "eur_foil": null,
+    "tix": "0.48"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620749&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMoria%2BScavenger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMoria%2BScavenger",
+    "edhrec": "https://edhrec.com/route/?cc=Moria+Scavenger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499603%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=717172&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113158?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

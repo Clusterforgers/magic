@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9ec43ec6-b625-4be8-8f79-3679e6657dbc",
+  "name": "Mycosynth Wellspring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mycosynth Wellspring",
+      "oracle_fingerprint": "de4d970b876ac100e48552b6a3526ebe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "reveal": true,
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

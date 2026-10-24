@@ -314,6 +314,11 @@ pub fn points_text(amount: &Amount) -> Option<String> {
         Amount::Fixed(number) if *number > 0 => Some(number.to_string()),
         Amount::X => Some("X".to_owned()),
         Amount::Triggering => Some("that much".to_owned()),
+        // "X plus 2 damage": the announced X and a fixed number more.
+        Amount::Sum(parts) => match parts.as_slice() {
+            [Amount::X, Amount::Fixed(more)] if *more > 0 => Some(format!("X plus {more}")),
+            _ => None,
+        },
         _ => None,
     }
 }

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f922f90a-b1a2-4630-9266-40726ca89f74",
+  "name": "Jungle Basin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jungle Basin",
+      "oracle_fingerprint": "db3b931c387f3bf4afd700e885cb955b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Forest" }, "Untapped"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

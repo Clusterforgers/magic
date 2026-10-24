@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ad0070db-6454-41cb-861f-8f5b8fc2a3b8",
+  "name": "Ghostly Flicker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostly Flicker",
+      "oracle_fingerprint": "b23ad66af529f2ad0e98cb4f3a5ddafa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

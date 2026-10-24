@@ -1,0 +1,30 @@
+{
+  "oracle_id": "836d074a-8888-42a0-8dce-11ffce00d2f5",
+  "name": "Cruel Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Revival",
+      "oracle_fingerprint": "5f82b280fde698c42dea38ea038ec575",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Zombie" } }] } },
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Zombie" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

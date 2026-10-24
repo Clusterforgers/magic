@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Devoid"},{"Activated":{"cost":[{"Mana":"{2}{C}"}],"targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]}}],"effects":[{"Exile":{"what":{"Target":0},"as":"exiled"}},{"Move":{"what":{"Bound":"exiled"},"to":{"Battlefield":{"tapped":true}}}}]}}]}]}

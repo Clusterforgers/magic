@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"CreateToken":{"token":{"Named":"clue"}}}]}}]}]}

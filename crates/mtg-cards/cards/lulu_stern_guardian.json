@@ -1,0 +1,25 @@
+{
+  "oracle_id": "969fa9b9-161f-461e-8878-9ebcff5a2669",
+  "name": "Lulu, Stern Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lulu, Stern Guardian",
+      "oracle_fingerprint": "8ac7826f481679bcd1f5c5ee29f32aa0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "Opponents", "at": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}{U}", "effects": [{ "Proliferate": {} }] } }
+      ]
+    }
+  ]
+}

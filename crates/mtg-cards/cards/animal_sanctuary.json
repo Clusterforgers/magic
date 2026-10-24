@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f3c40943-1d7c-4ea2-b34f-8df8b6775701",
+  "name": "Animal Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animal Sanctuary",
+      "oracle_fingerprint": "32ca093d7cfec5f90eabf1fd9f578483",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Bird" },
+                        { "Subtype": "Cat" },
+                        { "Subtype": "Dog" },
+                        { "Subtype": "Goat" },
+                        { "Subtype": "Ox" },
+                        { "Subtype": "Snake" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

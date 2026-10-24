@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}}]},"effects":[{"May":{"effects":[{"Search":{"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"reveal":true,"as":"land"}},{"Move":{"what":{"Bound":"land"},"to":"Hand"}},{"Shuffle":{}}]}}]}}]}]}

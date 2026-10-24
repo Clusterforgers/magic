@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"Continuous":{"affected":"Triggering","mods":[{"ModifyPT":{"power":2,"toughness":0}},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]}}]}]}
