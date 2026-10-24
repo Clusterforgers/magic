@@ -399,7 +399,7 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
 }
 
 /// "you control no other creatures".
-fn none_texts(condition: &Condition) -> Vec<String> {
+pub(super) fn none_texts(condition: &Condition) -> Vec<String> {
     let Condition::Compare {
         left: Amount::Count(Selector(preds)),
         op: Cmp::Eq,

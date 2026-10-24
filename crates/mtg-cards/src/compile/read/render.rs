@@ -3,8 +3,10 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod all_graveyards;
 mod and_lists;
 mod bound;
+mod compared_to_chosen;
 mod created;
 mod damage_by;
 mod delayed;
@@ -22,6 +24,7 @@ mod library_steps;
 mod loyalty;
 mod may_have;
 mod multi;
+mod opponent_picks;
 mod oracle_only;
 mod otherwise;
 mod player_events;
@@ -2026,6 +2029,7 @@ impl Writer<'_> {
             .or_else(|| self.exiled(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
+            .or_else(|| all_graveyards::text(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))
@@ -2238,6 +2242,8 @@ impl Writer<'_> {
             .or_else(|| self.move_instead(effects))
             .or_else(|| self.either_way(effects))
             .or_else(|| self.counter_or_not(effects))
+            .or_else(|| self.chosen_then_group(effects))
+            .or_else(|| opponent_picks::text(effects))
             .or_else(|| self.library_steps(effects))
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
@@ -2469,7 +2475,15 @@ impl Writer<'_> {
     /// The objects a verb acts on: the target in full, or "all creatures".
     fn object(&mut self, what: &Ref) -> Option<String> {
         match what {
-            Ref::Target(0) if self.target_is(|what| matches!(what, Targetable::Object(_))) => {
+            Ref::Target(0)
+                if self.target_is(|what| match what {
+                    Targetable::Object(_) => true,
+                    Targetable::Either(kinds) => kinds
+                        .iter()
+                        .all(|kind| matches!(kind, Targetable::Object(_))),
+                    _ => false,
+                }) =>
+            {
                 self.name_target()
             }
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),

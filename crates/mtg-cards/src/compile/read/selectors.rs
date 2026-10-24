@@ -1647,6 +1647,18 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 {
                     "target opponent or planeswalker".to_owned()
                 }
+                // Objects of different kinds: "target artifact, enchantment, or creature with power 4 or greater".
+                [_, _, ..] => {
+                    let phrases: Vec<String> = kinds
+                        .iter()
+                        .map(|kind| match kind {
+                            Targetable::Object(selector) => phrase_text(selector, Form::Target),
+                            _ => None,
+                        })
+                        .collect::<Option<_>>()?;
+                    let phrases: Vec<&str> = phrases.iter().map(String::as_str).collect();
+                    format!("target {}", join_or(&phrases))
+                }
                 _ => return None,
             },
             Targetable::Object(selector) => {

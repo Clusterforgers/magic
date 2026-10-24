@@ -947,6 +947,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     if let Some(control) = super::statics::control_texts(condition).into_iter().next() {
         return Some(control);
     }
+    if let Some(none) = super::as_long_as::none_texts(condition).into_iter().next() {
+        return Some(none);
+    }
     if let Condition::Compare {
         left: Amount::Counters {
             on: Ref::This,
