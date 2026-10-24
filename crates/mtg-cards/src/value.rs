@@ -212,6 +212,11 @@ pub enum TurnTally {
     /// The spells the player cast this turn: while a spell is being cast the one being cast is not counted, so "the
     /// second spell you cast each turn" is a count of one.
     SpellsCast,
+    /// The instant and sorcery spells the player cast this turn ("the number of instant and sorcery spells you've cast
+    /// this turn").
+    InstantsAndSorceriesCast,
+    /// The cards the player discarded this turn, once for each discard ("for each card you've discarded this turn").
+    Discarded,
     /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):
     /// a loss, a payment or damage that takes life; infect damage does not.
     LifeLost,

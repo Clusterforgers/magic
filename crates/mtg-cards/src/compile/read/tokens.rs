@@ -619,12 +619,14 @@ impl<'a> Reader<'a> {
 
     /// Reads with `read`; when it fails the reader is where it was, with the same targets.
     pub fn attempt<T>(&mut self, read: impl FnOnce(&mut Self) -> Option<T>) -> Option<T> {
-        let (at, targets, it) = (self.at, self.targets.len(), self.it.clone());
+        let (at, targets, it, where_x) =
+            (self.at, self.targets.len(), self.it.clone(), self.where_x);
         let found = read(self);
         if found.is_none() {
             self.at = at;
             self.targets.truncate(targets);
             self.it = it;
+            self.where_x = where_x;
         }
         found
     }

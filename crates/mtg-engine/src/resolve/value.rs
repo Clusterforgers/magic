@@ -267,6 +267,8 @@ impl<'a> Scope<'a> {
             TurnTally::DamageTaken => Tally::Hurt,
             TurnTally::LifeGained => Tally::Gained,
             TurnTally::SpellsCast => Tally::Cast,
+            TurnTally::InstantsAndSorceriesCast => Tally::CastInstantOrSorcery,
+            TurnTally::Discarded => Tally::Discarded,
             TurnTally::Drawn => Tally::Drawn,
             TurnTally::LandsPlayed => Tally::LandsPlayed,
             TurnTally::LifeGainedTotal
