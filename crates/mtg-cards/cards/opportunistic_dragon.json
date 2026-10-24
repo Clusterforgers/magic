@@ -1,0 +1,38 @@
+{
+  "oracle_id": "46f46bdd-52b8-436f-9a39-f5360a84b2cd",
+  "name": "Opportunistic Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opportunistic Dragon",
+      "oracle_fingerprint": "c9ad9a3d936fe671cb8d3ee039b9b180",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Human" }, { "Type": "Artifact" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }, "LoseAbilities", "CantAttack", "CantBlock"],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

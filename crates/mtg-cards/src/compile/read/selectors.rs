@@ -313,6 +313,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::Supertype(Supertype::Basic) => "nonbasic".to_owned(),
             Pred::Subtype(subtype) => format!("non-{}", subtype.0),
             Pred::Token => "nontoken".to_owned(),
+            Pred::Commander => "noncommander".to_owned(),
             _ => return None,
         },
         _ => return None,

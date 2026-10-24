@@ -34,17 +34,23 @@ impl Writer<'_> {
         let [Modification::AddKeyword(keyword)] = gain.as_slice() else {
             return None;
         };
-        let creature = self.target_is(|what| {
+        // "creature", or "permanent" for a target that names no kind.
+        let noun = if self.target_is(|what| {
             matches!(what, Targetable::Object(selector)
                 if selector.0.contains(&Pred::Type(CardType::Creature)))
-        });
-        if !creature {
+        }) {
+            "creature"
+        } else if self
+            .target_is(|what| matches!(what, Targetable::Object(selector) if selector.0.is_empty()))
+        {
+            "permanent"
+        } else {
             return None;
-        }
+        };
         let taken = self.control(&Ref::Target(0), take, Duration::UntilEndOfTurn)?;
         Some((
             format!(
-                "{taken}. Untap that creature. It gains {} until end of turn",
+                "{taken}. Untap that {noun}. It gains {} until end of turn",
                 keyword_text(keyword)?
             ),
             3,

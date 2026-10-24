@@ -1,0 +1,32 @@
+{
+  "oracle_id": "eb56141a-eb43-40e9-8ff1-e0ef5424f6a4",
+  "name": "Subjugate the Hobbits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subjugate the Hobbits",
+      "oracle_fingerprint": "a617cb787684e6930bb6d9cbefbbdc04",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": "Commander" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

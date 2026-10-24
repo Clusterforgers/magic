@@ -33,6 +33,7 @@ mod block_limits_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
 mod c4_control;
+mod c4_control_cards;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;

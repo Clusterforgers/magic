@@ -31,7 +31,7 @@ fn table(seats: usize, name: &str) -> Scenario {
 }
 
 /// Answers until nothing is on the stack and, when `target` is named, its trigger has chosen that target.
-fn settle(driver: &mut Driver, target: Option<&str>) -> Result<(), ScriptError> {
+pub(crate) fn settle(driver: &mut Driver, target: Option<&str>) -> Result<(), ScriptError> {
     let mut wanted = target.is_some();
     for _ in 0..40 {
         if !wanted && driver.state().stack().is_empty() && driver.state().resolving().is_none() {
@@ -48,12 +48,12 @@ fn settle(driver: &mut Driver, target: Option<&str>) -> Result<(), ScriptError> 
     Err(ScriptError::Stuck("the stack".into()))
 }
 
-fn controller(driver: &Driver, name: &str) -> usize {
+pub(crate) fn controller(driver: &Driver, name: &str) -> usize {
     let id = driver.id_of(name).unwrap();
     controller_of(driver.state(), id).unwrap().index()
 }
 
-fn replays(driver: &Driver) {
+pub(crate) fn replays(driver: &Driver) {
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
 }
