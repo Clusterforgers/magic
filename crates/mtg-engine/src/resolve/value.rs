@@ -271,11 +271,15 @@ impl<'a> Scope<'a> {
             TurnTally::LifeGainedTotal
             | TurnTally::CreaturesAttacked
             | TurnTally::CreaturesDied
-            | TurnTally::NontokenCreaturesDied => {
+            | TurnTally::NontokenCreaturesDied
+            | TurnTally::CreaturesDiedUnder
+            | TurnTally::NontokenCreaturesDiedUnder => {
                 let kind = match what {
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,
+                    TurnTally::CreaturesDiedUnder => Tally::DiedUnder,
+                    TurnTally::NontokenCreaturesDiedUnder => Tally::DiedNontokenUnder,
                     _ => Tally::DiedNontoken,
                 };
                 let total: u32 = self

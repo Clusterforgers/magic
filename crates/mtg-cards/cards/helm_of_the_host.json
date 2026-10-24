@@ -1,0 +1,36 @@
+{
+  "oracle_id": "83b43aba-bf9c-4da2-967d-9daa632e97d2",
+  "name": "Helm of the Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helm of the Host",
+      "oracle_fingerprint": "67e5f0a194cc906c08fa43112982a2e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Attached", "except": [{ "RemoveSupertype": "Legendary" }] }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

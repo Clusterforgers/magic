@@ -1,0 +1,28 @@
+{
+  "oracle_id": "524e5098-9c6d-43ad-80cb-52fd6d14ef53",
+  "name": "Priest of the Crossing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Priest of the Crossing",
+      "oracle_fingerprint": "011b1f2a97c1f759f1f61301b07f6a50",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": { "Tallied": { "who": "You", "what": "CreaturesDiedUnder" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

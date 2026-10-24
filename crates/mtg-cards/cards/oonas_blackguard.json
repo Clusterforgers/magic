@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b72cedc2-73b3-4e7f-8b58-8db532a69f6e",
+  "name": "Oona's Blackguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oona's Blackguard",
+      "oracle_fingerprint": "583a09822bf2277fd5e6ccc5781606f0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Subtype": "Rogue" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Discard": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

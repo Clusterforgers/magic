@@ -36,15 +36,16 @@ use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
-use crate::value::{Amount, CastWay, Cmp, Condition};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 25] = [
+const TEMPLATES: [Template; 26] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
+    group_enters_with,
     life_gain::replacement,
     no_life_loss,
     copies::enters_as_copy,
@@ -206,6 +207,68 @@ fn group_enters_tapped(r: &mut Reader<'_>) -> Option<Ability> {
         condition: None,
         from: ZoneKind::Battlefield,
     })
+}
+
+/// "Nontoken creatures you control enter with an additional +1/+1 counter on them for each creature that died under your
+/// control this turn.", "Each other creature you control enters with an additional +1/+1 counter on it.": a replacement
+/// of the entering of every permanent the group names that puts counters on it, as many as the number says or one for
+/// each of what follows "for each".
+fn group_enters_with(r: &mut Reader<'_>) -> Option<Ability> {
+    let each = r.word("each");
+    let what = phrase(r, if each { Form::Each } else { Form::All })?;
+    entering_group(&what).then_some(())?;
+    r.word(if each { "enters" } else { "enter" })
+        .then_some(())?;
+    r.need("with")?;
+    let (counter, number) = counters::additional(r)?;
+    r.need(if each { "on it" } else { "on them" })?;
+    let count = match r.attempt(for_each) {
+        Some(per) if number == 1 => per,
+        Some(_) => return None,
+        None => Amount::Fixed(number),
+    };
+    Some(Ability::Replacement {
+        when: ReplaceWhen::Enters { what },
+        by: ReplaceBy::WithCounters {
+            counter,
+            count,
+            tapped: false,
+        },
+        condition: None,
+        from: ZoneKind::Battlefield,
+    })
+}
+
+/// Whether the group names permanents that are not the card itself and not in a zone: the objects a replacement of
+/// entering may be about.
+fn entering_group(what: &Selector) -> bool {
+    !what.0.is_empty()
+        && !what
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Spell | Pred::This | Pred::In(_)))
+}
+
+/// What `group_enters_with` reads, written back.
+fn group_enters_with_texts(what: &Selector, counter: &CounterKind, count: &Amount) -> Vec<String> {
+    let (number, tail) = match count {
+        Amount::Fixed(number) => (*number, String::new()),
+        other => match for_each_text(other) {
+            Some(per) => (1, format!(" for each {per}")),
+            None => return Vec::new(),
+        },
+    };
+    let Some(counters) = counters::additional_text(counter, number) else {
+        return Vec::new();
+    };
+    let mut texts = Vec::new();
+    if let Some(group) = phrase_text(what, Form::All) {
+        texts.push(format!("{group} enter with {counters} on them{tail}"));
+    }
+    if let Some(group) = phrase_text(what, Form::Each) {
+        texts.push(format!("each {group} enters with {counters} on it{tail}"));
+    }
+    texts
 }
 
 /// "As ~ enters, choose a color.", "As it enters, choose a color other than red.", "As ~ enters, you may pay 2 life.
@@ -1040,6 +1103,17 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             .map(|group| format!("{group} enter tapped"))
             .into_iter()
             .collect(),
+        Ability::Replacement {
+            when: ReplaceWhen::Enters { what },
+            by:
+                ReplaceBy::WithCounters {
+                    counter,
+                    count,
+                    tapped: false,
+                },
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } => group_enters_with_texts(what, counter, count),
         Ability::Rule {
             rule: GameRule::NoLifeLossFromDamage(Ref::You),
             condition,

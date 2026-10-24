@@ -1,0 +1,25 @@
+{
+  "id": "024bf289-2802-4f11-aebf-9373ffbd9c46",
+  "oracle_id": "9041338d-b660-4fc2-922f-cdf9d1a25993",
+  "name": "Body Count",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "34",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Spectacle {B} (You may cast this spell for its spectacle cost rather than its mana cost if an opponent lost life this turn.)\nDraw a card for each creature that died under your control this turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Spectacle"
+  ]
+}

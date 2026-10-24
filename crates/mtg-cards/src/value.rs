@@ -225,6 +225,11 @@ pub enum TurnTally {
     Drawn,
     /// The lands the player played this turn: a land put onto the battlefield by an effect is not played (CR 305.1).
     LandsPlayed,
+    /// The creatures that died under the control of the players read, tokens included: put into a graveyard from the
+    /// battlefield while they controlled them ("a creature died under your control this turn"). Added up over the players.
+    CreaturesDiedUnder,
+    /// The same without the tokens ("for each nontoken creature that died under your control this turn").
+    NontokenCreaturesDiedUnder,
 }
 
 /// A number, fixed or worked out when the effect runs.

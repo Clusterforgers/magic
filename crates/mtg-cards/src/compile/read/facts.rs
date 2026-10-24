@@ -36,6 +36,53 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(empty_hands))
         .or_else(|| r.attempt(exiled_with_it))
         .or_else(|| r.attempt(counter_this_turn))
+        .or_else(|| r.attempt(died_under_you))
+}
+
+/// What `died_under_you` reads, written back.
+fn died_under_texts(what: TurnTally, number: u32) -> Vec<String> {
+    let kind = if what == TurnTally::CreaturesDiedUnder {
+        ""
+    } else {
+        "nontoken "
+    };
+    if number == 1 {
+        return vec![format!(
+            "a {kind}creature died under your control this turn"
+        )];
+    }
+    quantity_texts(number)
+        .iter()
+        .map(|n| format!("{n} or more {kind}creatures died under your control this turn"))
+        .collect()
+}
+
+/// "a creature died under your control this turn", "two or more creatures died under your control this turn".
+fn died_under_you(r: &mut Reader<'_>) -> Option<Condition> {
+    let (number, noun) = if r.words("a nontoken creature") {
+        (1, TurnTally::NontokenCreaturesDiedUnder)
+    } else if r.words("a creature") {
+        (1, TurnTally::CreaturesDiedUnder)
+    } else {
+        let number = quantity(r).filter(|number| *number > 1)?;
+        r.need("or more")?;
+        let nontoken = r.word("nontoken");
+        r.need("creatures")?;
+        let noun = if nontoken {
+            TurnTally::NontokenCreaturesDiedUnder
+        } else {
+            TurnTally::CreaturesDiedUnder
+        };
+        (number, noun)
+    };
+    r.need("died under your control this turn")?;
+    at_least(
+        Amount::Tallied {
+            who: Ref::You,
+            what: noun,
+        },
+        number,
+    )
 }
 
 /// The cards exiled with the card, as hideaway links them.
@@ -214,18 +261,14 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         ) if number > 1 => counted(&|n| format!("you gained {n} or more life this turn")),
         (
             Amount::Tallied {
-                who: Ref::EachPlayer,
-                what: TurnTally::CreaturesDied,
+                what:
+                    TurnTally::CreaturesDied
+                    | TurnTally::CreaturesDiedUnder
+                    | TurnTally::NontokenCreaturesDiedUnder,
+                ..
             },
             Cmp::Ge,
-        ) if number == 1 => vec!["a creature died this turn".to_owned()],
-        (
-            Amount::Tallied {
-                who: Ref::EachPlayer,
-                what: TurnTally::CreaturesDied,
-            },
-            Cmp::Ge,
-        ) if number > 1 => counted(&|n| format!("{n} or more creatures died this turn")),
+        ) => died_texts(left, number),
         (
             Amount::Tallied {
                 who: Ref::Opponents,
@@ -259,6 +302,28 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
             "there are cards exiled with it".to_owned(),
             "there are cards exiled with ~".to_owned(),
         ],
+        _ => Vec::new(),
+    }
+}
+
+/// "a creature died this turn", "N or more creatures died this turn" and the same under the player's control.
+fn died_texts(left: &Amount, number: u32) -> Vec<String> {
+    match left {
+        Amount::Tallied {
+            who: Ref::EachPlayer,
+            what: TurnTally::CreaturesDied,
+        } if number == 1 => vec!["a creature died this turn".to_owned()],
+        Amount::Tallied {
+            who: Ref::EachPlayer,
+            what: TurnTally::CreaturesDied,
+        } if number > 1 => quantity_texts(number)
+            .iter()
+            .map(|n| format!("{n} or more creatures died this turn"))
+            .collect(),
+        Amount::Tallied {
+            who: Ref::You,
+            what: what @ (TurnTally::CreaturesDiedUnder | TurnTally::NontokenCreaturesDiedUnder),
+        } => died_under_texts(*what, number),
         _ => Vec::new(),
     }
 }

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fa4afcf7-9cf7-4f67-95b9-1f7fe66bf332",
+  "name": "Grumgully, the Generous",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grumgully, the Generous",
+      "oracle_fingerprint": "17affe9768b9265bfb188200f8d23a7d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": { "Subtype": "Human" } },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

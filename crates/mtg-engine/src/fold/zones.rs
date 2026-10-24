@@ -39,6 +39,8 @@ pub(super) fn move_object(
         .objects
         .get_mut(&id)
         .ok_or_else(|| invalid(format!("unknown object {id:?}")))?;
+    // Who controlled it as it left, before a move out of play gives it back to its owner.
+    let controlled_by = object.controller;
     let from = object.zone;
     if !state.zones.remove(from, id) {
         return Err(invalid(format!("{id:?} is not in {from:?}")));
@@ -118,10 +120,7 @@ pub(super) fn move_object(
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
         if was_creature {
-            state.tally(owner, Tally::Died);
-            if !token {
-                state.tally(owner, Tally::DiedNontoken);
-            }
+            tally_death(state, (owner, controlled_by), token);
         }
     }
     // A token is a token only on the battlefield (CR 111.7): anywhere else it ceases to exist.
@@ -131,6 +130,16 @@ pub(super) fn move_object(
     // Each card of a merged permanent that left is an object of its own in the new zone (CR 729.3).
     crate::merged::scatter(state, merged, owner, to, placement);
     Ok(())
+}
+
+/// Counts a creature put into a graveyard from the battlefield for its owner, and for the player who controlled it.
+fn tally_death(state: &mut GameState, (owner, controller): (PlayerId, PlayerId), token: bool) {
+    state.tally(owner, Tally::Died);
+    state.tally(controller, Tally::DiedUnder);
+    if !token {
+        state.tally(owner, Tally::DiedNontoken);
+        state.tally(controller, Tally::DiedNontokenUnder);
+    }
 }
 
 fn expect_in(state: &GameState, id: ObjectId, zone: Zone) -> Result<(), EngineError> {

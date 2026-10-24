@@ -14,12 +14,12 @@ use crate::corpus::{self, CorpusError};
 
 /// A deck of lands in three colours, Clone, Phantasmal Image, Mirror Image, Cackling Counterpart, Rootborn Defenses,
 /// Growing Ranks, Followed Footsteps, Second Harvest, Rhys the Redeemed, Auton Soldier, Malleable Impostor, Imposter
-/// Mech and Machine God's Effigy from the corpus, Hero of Bladehold and Questing Beast to copy and populate from,
-/// Lightning Bolts to aim at them, and creatures, derived entirely from `rng`.
+/// Mech, Machine God's Effigy, Hate Mirage, Twinflame, Gorma and Body Count from the corpus, Hero of Bladehold and
+/// Questing Beast to copy and populate from, Lightning Bolts to aim at them, and creatures, derived entirely from `rng`.
 pub fn copy_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     copies_deck(
         rng,
-        22,
+        20,
         &[
             ("Clone", 2),
             ("Phantasmal Image", 2),
@@ -36,6 +36,10 @@ pub fn copy_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusEr
             ("Machine God's Effigy", 2),
             ("Hero of Bladehold", 3),
             ("Lightning Bolt", 3),
+            ("Hate Mirage", 2),
+            ("Twinflame", 1),
+            ("Gorma, the Gullet", 2),
+            ("Body Count", 1),
         ],
     )
 }

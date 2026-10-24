@@ -13,10 +13,13 @@ impl Writer<'_> {
         if let Some(found) = self.bound_tokens(effects) {
             return Some(found);
         }
-        if let [created @ Effect::CreateToken { .. }, delayed, ..] = effects
-            && let Some(delay) = super::copies::delay_text(created, delayed)
+        if let [created @ Effect::CreateToken { .. }, rest @ ..] = effects
+            && let Some((after, used)) =
+                super::copies::after_texts(created, rest, self.several_copies(created))
         {
-            return Some((vec![self.copy_token(created, true)?, delay], 2));
+            let mut sentences = self.copy_sentences(created, true)?;
+            sentences.extend(after);
+            return Some((sentences, 1 + used));
         }
         self.exile_and_return_later(effects)
     }
