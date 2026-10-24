@@ -178,6 +178,13 @@ pub(crate) fn payments(card: &CardDefinition, paid: &[usize], kind: OptionalKind
         .count()
 }
 
+/// Whether the Kicker of `card` with this cost is among the optional costs `paid` names ("kicked with its {W} kicker").
+pub(crate) fn kicked_with(card: &CardDefinition, paid: &[usize], cost: &Cost) -> bool {
+    printed(card).enumerate().any(|(index, printed)| {
+        printed.kind == OptionalKind::Kicker && printed.cost == *cost && paid.contains(&index)
+    })
+}
+
 /// The optional costs of a spell, in the order the card prints them.
 pub(super) fn read(state: &GameState, what: &What) -> Vec<Optional> {
     let What::Spell(spell) = what else {

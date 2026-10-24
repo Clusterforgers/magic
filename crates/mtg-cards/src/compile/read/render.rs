@@ -75,6 +75,21 @@ fn where_x_draws(texts: &[String]) -> Vec<String> {
         .collect()
 }
 
+/// "It can't be regenerated." after the destruction of one object is also "That creature can't be regenerated.".
+fn regeneration_wordings(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains(". It can't be regenerated"))
+        .map(|text| {
+            text.replacen(
+                ". It can't be regenerated",
+                ". That creature can't be regenerated",
+                1,
+            )
+        })
+        .collect()
+}
+
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
 pub fn ability(ability: &Ability) -> Option<String> {
@@ -96,6 +111,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(searches);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
+    let regenerating = regeneration_wordings(&texts);
+    texts.extend(regenerating);
     // A card may count the casts of "a commander" for those of "your commander" (Jirina Kudro).
     let commanders: Vec<String> = texts
         .iter()
