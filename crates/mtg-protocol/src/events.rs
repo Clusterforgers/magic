@@ -921,6 +921,7 @@ mod tests {
                 subjects: vec![Target::Object(reference)],
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,
+                source: None,
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,

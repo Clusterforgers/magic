@@ -872,6 +872,7 @@ Raffine's Informant
 Rafter Demon
 Raging Goblinoids
 Rakdos Headliner
+Rakish Heir
 Rally the Ranks
 Rambling Possum
 Ramos, Dragon Engine
@@ -980,6 +981,7 @@ Servant of the Conduit
 Shacklegeist
 Shadowmage Infiltrator
 Shadowspear
+Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
 Sheer Drop
@@ -1064,6 +1066,7 @@ Steam Vents
 Steampath Charger
 Steelburr Champion
 Steelclaw Lance
+Stensia Masquerade
 Sticky Fingers
 Stitched Drake
 Stoke the Flames

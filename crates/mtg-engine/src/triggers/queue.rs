@@ -393,6 +393,7 @@ mod tests {
                 subjects: vec![crate::choose::Target::Player(subject)],
                 snapshots: Vec::new(),
                 amount: 0,
+                source: None,
             },
             snapshot: snapshot(state, object.id()).unwrap(),
             delayed: None,

@@ -473,6 +473,67 @@ fn predator_ooze_grows_when_it_attacks_and_when_a_creature_it_hurt_dies(
     Ok(())
 }
 
+/// A Vampire creature with a size.
+fn vampire(name: &str, power: i32, toughness: i32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_subtype("Vampire")
+            .with_power_toughness(power, toughness),
+    )
+}
+
+#[rstest]
+fn the_vampire_that_deals_combat_damage_to_a_player_gets_the_counter(
+    #[values("Rakish Heir", "Stensia Masquerade")] watcher: &str,
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] blocked: bool,
+) -> Result<(), ScriptError> {
+    let foe = seats - 1;
+    let table = vec![
+        ready(vampire("Fang", 3, 3)),
+        ready(free_creature("Bruiser", 2, 2)),
+        ready(card(watcher).unwrap()),
+    ];
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::DeclareAttackers)
+        .battlefield(0, table)
+        .battlefield(foe, [ready(free_creature("Wall", 0, 9))]);
+    for seat in 1..foe {
+        scenario = scenario.battlefield(seat, [ready(swamp())]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    let mut attackers = vec![("Fang", foe), ("Bruiser", foe)];
+    if watcher == "Rakish Heir" {
+        attackers.push(("Rakish Heir", foe));
+    }
+    driver.attack(&attackers)?;
+    for _ in 0..80 {
+        if driver.state().turn().step() == Step::Main2
+            && matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+        {
+            break;
+        }
+        match &driver.decision()?.kind {
+            DecisionKind::DeclareBlockers(_) => {
+                let blocks: &[(&str, &str)] = if blocked { &[("Wall", "Fang")] } else { &[] };
+                driver.block(blocks)?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    // Only a Vampire that got through to the player earns the counter, and the counter is its own.
+    assert_eq!(counters(&driver, "Fang"), u32::from(!blocked));
+    assert_eq!(counters(&driver, "Bruiser"), 0);
+    if watcher == "Rakish Heir" {
+        assert_eq!(counters(&driver, "Rakish Heir"), 1);
+    }
+    assert_replays(&driver);
+    Ok(())
+}
+
 #[rstest]
 fn silver_shroud_costume_attaches_and_gives_shroud_for_the_turn(
     #[values(2, 3, 4)] seats: usize,

@@ -1539,7 +1539,7 @@ impl Writer<'_> {
             Ref::This => Some("~".to_owned()),
             Ref::Attached => Some("enchanted creature".to_owned()),
             // The creature that attacks enchanted player.
-            Ref::Triggering => Some("it".to_owned()),
+            Ref::Triggering | Ref::Dealer => Some("it".to_owned()),
             Ref::Bound(name) if name == TOKENS && self.made.is_some() => Some(
                 if self.made == Some(true) {
                     "it"

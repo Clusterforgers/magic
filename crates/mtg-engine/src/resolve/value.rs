@@ -605,6 +605,12 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| cause.subjects.clone())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::Dealer => self
+                .cause
+                .and_then(|cause| cause.source)
+                .map(Target::Object)
+                .into_iter()
+                .collect(),
             Ref::Attached => state
                 .host_of(self.source.id)
                 .and_then(|host| state.object(host))
@@ -1941,6 +1947,7 @@ mod tests {
             subjects: vec![Target::Player(PlayerId(1))],
             snapshots: Vec::new(),
             amount: 0,
+            source: None,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();

@@ -60,6 +60,9 @@ pub enum Ref {
     Target(u8),
     /// The player or object the trigger event is about ("that creature", "that player").
     Triggering,
+    /// The object that did what the trigger event is about: the source of the damage ("Whenever a Vampire you control deals
+    /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
+    Dealer,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
     /// The player the source is attached to ("enchanted player").

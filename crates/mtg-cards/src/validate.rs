@@ -344,6 +344,12 @@ impl<'a> Walker<'a> {
                     self.problem("`Triggering` is only valid in a triggered ability");
                 }
             }
+            Ref::Dealer => {
+                if !self.scope.in_trigger {
+                    self.problem("`Dealer` is only valid in a triggered ability");
+                }
+                self.expect(Kind::Object, want);
+            }
             Ref::Bound(name) => match self.scope.lookup(name) {
                 None => self.problem(format!("`{name}` is not bound by an earlier step")),
                 Some(kind) => self.expect(kind, want),
@@ -1434,7 +1440,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending
             | Ref::ControllerOf(_)
             | Ref::OwnerOf(_) => Kind::Player,
-            Ref::This | Ref::Attached | Ref::Paid | Ref::Each(_) => Kind::Object,
+            Ref::This | Ref::Dealer | Ref::Attached | Ref::Paid | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
                 .targets

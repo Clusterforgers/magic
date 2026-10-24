@@ -399,6 +399,53 @@ fn damage_by_something_else_stays_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");
 }
 
+#[rstest]
+#[case::vampire(
+    "Whenever a Vampire you control deals combat damage to a player, put a +1/+1 counter on it."
+)]
+#[case::creature(
+    "Whenever a creature you control deals combat damage to a player, put a +1/+1 counter on it."
+)]
+#[case::any_damage(
+    "Whenever a Vampire you control deals damage to a player, put a +1/+1 counter on it."
+)]
+fn the_creature_that_deals_the_damage_is_it(#[case] text: &str) {
+    let Ability::Triggered {
+        when: TriggerPattern::DealsDamage { source, .. },
+        effects,
+        ..
+    } = golden(text, ClauseKind::Triggered, false)
+    else {
+        panic!("not a damage trigger: {text}");
+    };
+    assert!(source.0.contains(&Pred::ControlledBy(Ref::You)), "{text}");
+    assert!(
+        matches!(
+            effects.as_slice(),
+            [Effect::PutCounters {
+                on: Ref::Dealer,
+                ..
+            }]
+        ),
+        "{effects:?}"
+    );
+}
+
+#[rstest]
+#[case::equipped(
+    "Whenever equipped creature deals combat damage to a player, put a +1/+1 counter on it."
+)]
+#[case::one_or_more(
+    "Whenever one or more Vampires you control deal combat damage to a player, put a +1/+1 counter on it."
+)]
+#[case::a_spell("Put a +1/+1 counter on it.")]
+#[case::that_creature(
+    "Whenever a Vampire you control deals combat damage to a player, that creature gets +1/+1 until end of turn."
+)]
+fn it_is_the_dealer_only_for_a_group_that_deals_damage_one_at_a_time(#[case] text: &str) {
+    assert_eq!(trigger(text), None, "{text}");
+}
+
 fn stat(text: &str) -> Option<Ability> {
     clause(text, ClauseKind::Static, false)
 }

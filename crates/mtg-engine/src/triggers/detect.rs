@@ -834,6 +834,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         subjects,
         snapshots,
         amount,
+        source: None,
     }
 }
 
@@ -1042,8 +1043,12 @@ fn matching_event(
             let named = to
                 .as_ref()
                 .is_none_or(|to| scope.refs(to).is_ok_and(|named| named.contains(&recipient)));
-            (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?)
-                .then(|| counted(state, vec![recipient], *amount))
+            (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?).then(
+                || Cause {
+                    source: Some(dealer),
+                    ..counted(state, vec![recipient], *amount)
+                },
+            )
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
