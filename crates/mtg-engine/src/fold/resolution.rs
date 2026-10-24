@@ -119,6 +119,14 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
     for target in put.choices.targeted_objects() {
         state.tally_object(target, Some(put.controller), Tally::Targeted);
     }
+    // The modes this ability chose are kept for the turn ("choose one that hasn't been chosen this turn").
+    for mode in &put.choices.modes {
+        state
+            .tallies
+            .modes
+            .insert((put.source, put.origin, put.ability, *mode));
+    }
+    state.rng_index += u64::from(put.choices.random_modes);
     let source = put.source;
     // A triggered ability leaves the queue as it goes on the stack and takes what waited with it: the rules of a
     // delayed trigger and the names it captured.

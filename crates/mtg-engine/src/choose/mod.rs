@@ -40,8 +40,8 @@ pub(crate) use ask::{Questions, Stop};
 pub(crate) use cards::check as check_cards;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{
-    announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of, mode_options,
-    targets_before,
+    Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
+    mode_options, targets_before,
 };
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
 pub(crate) use targets::{asks, legal_for, legal_from, options_for, reads_x, targets_met};
@@ -96,6 +96,11 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<usize>>", optional))]
     pub modes: Vec<usize>,
+    /// The game picked the modes with the next substream of its random source ("choose one at random"): the event
+    /// that carries these choices spends the substream.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub random_modes: bool,
     /// The value of X, which outlives the spell (CR 107.3).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]

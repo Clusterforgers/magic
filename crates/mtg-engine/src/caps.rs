@@ -235,6 +235,8 @@ const RUNS: &[&str] = &[
     "Effect.Choose",
     "Effect.ChooseAtRandom",
     "Effect.Modal",
+    "Effect.Modal.AtRandom",
+    "Effect.Modal.OnceEachTurn",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",

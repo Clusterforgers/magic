@@ -274,6 +274,7 @@ mod pump_animate;
 mod pump_animate_fuzz;
 mod pump_fuzz;
 mod pump_spells;
+mod mode_picks;
 mod random_pick;
 mod rebound;
 mod reconfigure;

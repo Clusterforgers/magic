@@ -1887,8 +1887,31 @@ impl<'a> Walker<'a> {
                 choose,
                 modes,
                 repeat,
-            } => w.modal(choose, modes, *repeat, only_effect),
+                at_random,
+                once_each_turn,
+            } => {
+                w.modal(choose, modes, *repeat, only_effect);
+                w.modal_flags(choose, *repeat, *at_random, *once_each_turn);
+            }
         });
+    }
+
+    /// A pick at random chooses a fixed number of modes, none twice; each flag is a primitive of its own.
+    fn modal_flags(&mut self, choose: &Bounds, repeat: bool, at_random: bool, once_each_turn: bool) {
+        if at_random {
+            self.uses("Effect", "Modal.AtRandom");
+            let fixed = choose.max.as_ref() == Some(&choose.min)
+                && matches!(choose.min, Amount::Fixed(count) if count >= 1);
+            if !fixed || repeat {
+                self.problem("a pick at random chooses a fixed number of modes, none twice");
+            }
+        }
+        if once_each_turn {
+            self.uses("Effect", "Modal.OnceEachTurn");
+            if repeat {
+                self.problem("a mode chosen once each turn cannot repeat");
+            }
+        }
     }
 
     fn modal(&mut self, choose: &Bounds, modes: &[Mode], repeat: bool, only_effect: bool) {

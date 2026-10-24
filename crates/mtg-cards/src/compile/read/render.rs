@@ -600,13 +600,15 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             choose,
             repeat: false,
             modes,
+            at_random,
+            once_each_turn,
         },
     ] = effects
     {
         if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return choices::texts(choose, modes)
+        return choices::texts(choose, modes, *at_random, *once_each_turn)
             .into_iter()
             .map(|text| vec![text])
             .collect();

@@ -1029,6 +1029,8 @@ fn effect() -> impl Strategy<Value = Effect> {
                 .prop_map(|(choose, repeat, modes)| Effect::Modal {
                     choose,
                     repeat,
+                    at_random: false,
+                    once_each_turn: false,
                     modes: modes
                         .into_iter()
                         .map(|(label, targets, effects)| Mode {
