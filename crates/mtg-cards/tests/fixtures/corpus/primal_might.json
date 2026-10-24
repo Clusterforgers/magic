@@ -1,0 +1,25 @@
+{
+  "id": "69b3f7b9-9499-4883-b5c5-c5474e470b21",
+  "oracle_id": "58d7b8b3-ac47-4805-8259-4ba8e70d7dc3",
+  "name": "Primal Might",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fdn",
+  "collector_number": "766",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{X}{G}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target creature you control gets +X/+X until end of turn. Then it fights up to one target creature you don't control. (Each deals damage equal to its power to the other.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fight"
+  ]
+}

@@ -252,6 +252,10 @@ pub(super) fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     {
         *stats = counted_stats(r, stats.clone())?;
     }
+    // The one target that changed is what the next sentence's "it" means ("It fights target creature").
+    if affected == Ref::Target(0) && r.targets.first().is_some_and(|spec| spec.bounds.is_one()) {
+        r.it = Some(affected.clone());
+    }
     Some(vec![Effect::Continuous {
         affected,
         mods,

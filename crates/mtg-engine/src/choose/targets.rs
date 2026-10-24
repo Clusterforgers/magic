@@ -1,7 +1,7 @@
 //! `ChooseTargets`: who and what a target specification may name, the decision that picks them, and the
 //! recheck on resolution that uses the same rule (CR 115, 608.2b).
 
-use mtg_cards::refs::{Bounds, Pred, Selector, TargetSpec, Targetable};
+use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -328,6 +328,23 @@ pub(crate) fn options_for(
         wording: wording::spec(spec),
         triggered: false,
     })
+}
+
+/// Leaves out of `legal` the objects an earlier specification took, when `spec` says "another target": a `Not` of an
+/// `Is` of an earlier `Target` among its predicates (CR 115.3). The selector alone cannot tell, as the targets are
+/// chosen one specification after the other.
+pub(crate) fn without_earlier(spec: &TargetSpec, chosen: &[Vec<Target>], legal: &mut Vec<Target>) {
+    let Targetable::Object(selector) = &spec.what else {
+        return;
+    };
+    for pred in &selector.0 {
+        if let Pred::Not(inner) = pred
+            && let Pred::Is(Ref::Target(earlier)) = &**inner
+            && let Some(taken) = chosen.get(usize::from(*earlier))
+        {
+            legal.retain(|target| !taken.contains(target));
+        }
+    }
 }
 
 /// Whether the specification asks for any choice at all: a specification that allows no targets, or has none

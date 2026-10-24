@@ -1754,6 +1754,10 @@ impl Writer<'_> {
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
             Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Fight {
+                what: Ref::Triggering,
+                with,
+            } => format!("that creature fights {}", self.object(with)?),
             Effect::Fight { what, with } => {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
@@ -2402,6 +2406,14 @@ impl Writer<'_> {
                 } else {
                     ("those tokens".to_owned(), true)
                 }
+            }
+            // The target a sentence before named is "it" ("Put two +1/+1 counters on target creature. It gains vigilance").
+            Ref::Target(0)
+                if self.named
+                    && self.single(affected)
+                    && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
+            {
+                ("it".to_owned(), false)
             }
             Ref::Target(0)
                 if self.at_most_one(affected)

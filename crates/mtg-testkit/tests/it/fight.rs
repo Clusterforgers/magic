@@ -22,16 +22,16 @@ use crate::common::pid;
 
 /// What became of a creature: still on the battlefield with this much damage, or gone from it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Fate {
+pub(crate) enum Fate {
     Marked(u32),
     Dead,
 }
 
-const MINE: &str = "Mine";
-const THEIRS: &str = "Theirs";
+pub(crate) const MINE: &str = "Mine";
+pub(crate) const THEIRS: &str = "Theirs";
 
 /// Answers passively until the stack is empty and nothing resolves.
-fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
+pub(crate) fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..200 {
         if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
             return Ok(());
@@ -41,7 +41,7 @@ fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     Err(ScriptError::Stuck("the stack".into()))
 }
 
-fn fate(driver: &Driver, id: ObjectId) -> Fate {
+pub(crate) fn fate(driver: &Driver, id: ObjectId) -> Fate {
     let object = driver.state().object(id).unwrap();
     match object.permanent() {
         Some(permanent) if object.zone() == Zone::Battlefield => Fate::Marked(permanent.damage()),
@@ -49,18 +49,18 @@ fn fate(driver: &Driver, id: ObjectId) -> Fate {
     }
 }
 
-fn life(driver: &Driver, seat: usize) -> i32 {
+pub(crate) fn life(driver: &Driver, seat: usize) -> i32 {
     driver.state().player(pid(seat)).unwrap().life()
 }
 
-fn replays(driver: &Driver, setup: &GameSetup) {
+pub(crate) fn replays(driver: &Driver, setup: &GameSetup) {
     let replayed = replay(setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
 }
 
 /// Every seat gets a library; seat 0 holds `hand`, has `mine` and four Mountains and the Forests and Plains it needs;
 /// the seat `foe` has `theirs`; the other seats have a Bear each.
-fn table(
+pub(crate) fn table(
     seats: usize,
     foe: usize,
     hand: Vec<Arc<CardDefinition>>,
@@ -83,7 +83,12 @@ fn table(
     scenario
 }
 
-fn creature(name: &str, power: i32, toughness: i32, keywords: &[Keyword]) -> Arc<CardDefinition> {
+pub(crate) fn creature(
+    name: &str,
+    power: i32,
+    toughness: i32,
+    keywords: &[Keyword],
+) -> Arc<CardDefinition> {
     keyworded(name, power, toughness, keywords)
 }
 

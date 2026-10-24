@@ -1,0 +1,25 @@
+{
+  "id": "35ba6c05-a4c2-422b-a4cb-852b3aef77a5",
+  "oracle_id": "31123cb5-2dd5-4f2b-a2fd-8f87095972c6",
+  "name": "Epic Confrontation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bro",
+  "collector_number": "176",
+  "rarity": "common",
+  "released_at": "2022-11-18",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target creature you control gets +1/+2 until end of turn. It fights target creature you don't control. (Each deals damage equal to its power to the other.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fight"
+  ]
+}

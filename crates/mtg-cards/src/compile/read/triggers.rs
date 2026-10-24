@@ -48,7 +48,10 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
             to: Some(ZoneKind::Battlefield),
             ..
         } => what.0 == [Pred::This],
-        TriggerPattern::DealsDamage { source, .. } => source.0 == [Pred::This],
+        // "Whenever ~ is dealt damage, it fights up to one target creature" (enrage).
+        TriggerPattern::DealsDamage { source, to, .. } => {
+            source.0 == [Pred::This] || *to == Some(Ref::This)
+        }
         TriggerPattern::AnyOf(patterns) => patterns.iter().all(itself_acts),
         _ => false,
     }
@@ -74,6 +77,20 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
             to: Some(ZoneKind::Graveyard),
             ..
         } if what.0 == [Pred::This] => return Some(Ref::This),
+        // "Whenever ~ or another creature you control enters": the permanent that entered, the card included.
+        TriggerPattern::AnyOf(patterns)
+            if patterns.iter().all(|pattern| {
+                matches!(
+                    pattern,
+                    TriggerPattern::ZoneChange {
+                        to: Some(ZoneKind::Battlefield),
+                        ..
+                    }
+                )
+            }) =>
+        {
+            return Some(Ref::Triggering);
+        }
         _ => return None,
     };
     if what.0 == [Pred::This] {

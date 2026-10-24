@@ -3,9 +3,11 @@
 //! `Effect::Goad`, `Effect::Fight`). The writer's side is an arm of the renderer.
 
 use super::effects::{attached, is_on_the_battlefield, object, target_object, up_to_one_object};
+use super::selectors::second_target;
 use super::tokens::Reader;
 use crate::effect::Effect;
-use crate::refs::{Pred, Ref, Targetable};
+use crate::refs::{Bounds, Pred, Ref, Targetable};
+use crate::value::Amount;
 
 /// The creature that does the action: the card ("~", and "it" when the trigger is about the card itself or the sentence
 /// before spoke of it), or one target creature, which "it" names after.
@@ -70,12 +72,52 @@ fn again(r: &mut Reader<'_>) -> Option<()> {
     r.need("then it explores again")
 }
 
-/// "Enchanted creature fights up to one target creature you don't control." and "~ fights target creature": one creature
+/// Who fights: "enchanted creature", the card, "it" and "that creature" (the creature the sentence before or the event
+/// named), or the first target of the clause: "target creature you control", "up to one target creature you control".
+fn fighter(r: &mut Reader<'_>) -> Option<Ref> {
+    if let Some(host) = attached(r) {
+        return Some(host);
+    }
+    if r.source() {
+        return Some(Ref::This);
+    }
+    if let Some(it) = r.it.clone()
+        && (r.word("it") || r.words("that creature"))
+    {
+        return Some(it);
+    }
+    if r.acts_itself && r.word("it") {
+        return Some(Ref::This);
+    }
+    r.targets.is_empty().then_some(())?;
+    up_to_one_object(r).or_else(|| target_object(r))
+}
+
+/// Who is fought: one target creature, or up to one, which is the first target of the clause or the second after a
+/// fighter that is a target.
+fn fought(r: &mut Reader<'_>) -> Option<Ref> {
+    if r.targets.is_empty() {
+        return up_to_one_object(r).or_else(|| target_object(r));
+    }
+    r.attempt(|r| {
+        let what = second_target(r)?;
+        let spec = r.targets.get(1)?;
+        let optional = spec.bounds == Bounds::up_to(Some(Amount::Fixed(1)));
+        (matches!(spec.what, Targetable::Object(_)) && (spec.bounds.is_one() || optional))
+            .then_some(what)
+    })
+}
+
+/// "Enchanted creature fights up to one target creature you don't control.", "~ fights target creature", "Target
+/// creature you control fights another target creature.", "It fights up to one target creature you don't control." and
+/// "Then that creature fights target creature you don't control." (after a sentence about the target): one creature
 /// fights another (`Effect::Fight`).
 pub fn fight(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    let what = attached(r).or_else(|| r.source().then_some(Ref::This))?;
+    r.word("then");
+    let what = fighter(r)?;
+    is_on_the_battlefield(r, &what).then_some(())?;
     r.need("fights")?;
-    let with = up_to_one_object(r).or_else(|| target_object(r))?;
+    let with = fought(r)?;
     is_on_the_battlefield(r, &with).then_some(vec![Effect::Fight { what, with }])
 }
 

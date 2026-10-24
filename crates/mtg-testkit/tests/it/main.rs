@@ -152,6 +152,7 @@ mod faces;
 mod faces_fuzz;
 mod fight;
 mod fight_fuzz;
+mod fight_targets;
 mod filter_lands;
 mod flip;
 mod flip_fuzz;

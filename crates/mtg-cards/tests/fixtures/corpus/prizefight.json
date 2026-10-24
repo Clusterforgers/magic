@@ -1,0 +1,33 @@
+{
+  "id": "544c810b-5f90-4535-aa76-14f8c6b9428a",
+  "oracle_id": "c0c4ecf6-84e6-443e-8a81-e395b31c631d",
+  "name": "Prizefight",
+  "lang": "en",
+  "layout": "normal",
+  "set": "snc",
+  "collector_number": "154",
+  "rarity": "common",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature you control fights target creature you don't control. (Each deals damage equal to its power to the other.)\nCreate a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Treasure",
+    "Fight"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}
