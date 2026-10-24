@@ -181,6 +181,7 @@ mod improvise;
 mod improvise_fuzz;
 mod impulse;
 mod impulse_fuzz;
+mod keyword_counters;
 mod keyword_lines_fuzz;
 mod keywords_attack;
 mod keywords_damage;

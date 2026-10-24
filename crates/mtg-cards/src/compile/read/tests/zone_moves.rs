@@ -58,6 +58,12 @@ fn activated(text: &str) -> Option<Ability> {
 #[case::tapped_with_a_counter(
     "Return target creature card from your graveyard to the battlefield tapped with a -1/-1 counter on it."
 )]
+#[case::with_a_keyword_counter(
+    "Return target creature card from your graveyard to the battlefield with a lifelink counter on it."
+)]
+#[case::tapped_with_a_two_word_keyword_counter(
+    "Return target creature card from your graveyard to the battlefield tapped with a first strike counter on it."
+)]
 #[case::six_targets("Return six target nonland permanents to their owners' hands.")]
 #[case::two_targets("Return two target creatures to their owners' hands.")]
 #[case::up_to_two_creatures("Return up to two target creatures to their owners' hands.")]
@@ -189,8 +195,8 @@ fn a_card_chosen_from_the_hand_is_bound_and_put_onto_the_battlefield() {
 #[case::to_its_owners_hand("Return target creature card from a graveyard to its owner's hand.")]
 #[case::a_single_graveyard("Exile up to two target cards from a single graveyard.")]
 #[case::a_hand("Exile target player's hand.")]
-#[case::a_keyword_counter(
-    "Return target creature card from your graveyard to the battlefield with a lifelink counter on it."
+#[case::a_counter_the_rules_give_an_effect_to(
+    "Return target creature card from your graveyard to the battlefield with a shield counter on it."
 )]
 #[case::two_counters_without_a_kind(
     "Return target creature card from your graveyard to the battlefield with two counters on it."

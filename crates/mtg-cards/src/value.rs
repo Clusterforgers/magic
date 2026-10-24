@@ -9,6 +9,7 @@ use mtg_core::color::Color;
 use mtg_core::mana::ManaType;
 
 use crate::cost::Cost;
+use crate::keyword::Keyword;
 use crate::refs::{Ref, Selector};
 
 /// A characteristic of an object that has a number.
@@ -142,6 +143,31 @@ impl CounterKind {
     /// The lore counter of a Saga (CR 714).
     pub fn lore() -> Self {
         CounterKind::Other("lore".to_owned())
+    }
+
+    /// The keyword a counter of this kind gives its permanent (CR 122.1b): a counter named for a keyword that adds no
+    /// ability of its own. `exalted` and `decayed` counters are not among them.
+    pub fn keyword(&self) -> Option<Keyword> {
+        let CounterKind::Other(name) = self else {
+            return None;
+        };
+        Some(match name.as_str() {
+            "flying" => Keyword::Flying,
+            "first strike" => Keyword::FirstStrike,
+            "double strike" => Keyword::DoubleStrike,
+            "deathtouch" => Keyword::Deathtouch,
+            "haste" => Keyword::Haste,
+            "hexproof" => Keyword::Hexproof,
+            "indestructible" => Keyword::Indestructible,
+            "lifelink" => Keyword::Lifelink,
+            "menace" => Keyword::Menace,
+            "reach" => Keyword::Reach,
+            "shadow" => Keyword::Shadow,
+            "skulk" => Keyword::Skulk,
+            "trample" => Keyword::Trample,
+            "vigilance" => Keyword::Vigilance,
+            _ => return None,
+        })
     }
 
     /// The kind as a card names it: `+1/+1`, `poison`, `charge`.

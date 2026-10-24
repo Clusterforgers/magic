@@ -158,7 +158,7 @@ fn each_creature_with_a_counter_on_it_is_given_a_bonus_or_a_keyword(
 #[case::the_plural_form("Creatures you control with a +1/+1 counter on it have flying.")]
 #[case::no_article("Each creature you control with +1/+1 counter on it has flying.")]
 #[case::on_another_object("Each creature you control with a +1/+1 counter on ~ has flying.")]
-#[case::a_rules_counter("Each creature you control with a flying counter on it has haste.")]
+#[case::a_rules_counter("Each creature you control with a shield counter on it has haste.")]
 #[case::a_verb_for_many("Each creature you control with a +1/+1 counter on it have flying.")]
 fn near_misses_of_a_group_with_a_counter_stay_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");

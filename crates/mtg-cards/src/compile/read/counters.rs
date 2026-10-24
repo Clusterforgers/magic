@@ -13,29 +13,12 @@ use crate::effect::Effect;
 use crate::refs::Ref;
 use crate::value::{Amount, Cmp, Condition, CounterKind};
 
-/// The counters whose effect the rules of the game give and not the card (CR 122.1: keyword
-/// counters, stun, shield, finality; the lore counters of Sagas and the defense counters of Battles); the data holds a counter as a name only, so a clause that puts,
-/// removes or moves one stays with the table.
-const RULES_COUNTERS: [&str; 19] = [
-    "decayed",
-    "deathtouch",
-    "exalted",
-    "finality",
-    "flying",
-    "haste",
-    "hexproof",
-    "indestructible",
-    "lifelink",
-    "menace",
-    "reach",
-    "shadow",
-    "shield",
-    "skulk",
-    "stun",
-    "trample",
-    "vigilance",
-    "defense",
-    "lore",
+/// The counters whose effect the rules of the game give and the engine does not play (CR 122.1: exalted and decayed
+/// counters, stun, shield, finality; the lore counters of Sagas and the defense counters of Battles); the data holds a
+/// counter as a name only, so a clause that puts, removes or moves one stays with the table. The other keyword counters
+/// are read: the layers give their keyword (`CounterKind::keyword`).
+const RULES_COUNTERS: [&str; 7] = [
+    "decayed", "exalted", "finality", "shield", "stun", "defense", "lore",
 ];
 
 /// "+1/+1" or "-1/-1", the counters that change a creature's size, or a word that names another
@@ -58,6 +41,16 @@ pub(super) fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
     });
     if size.is_some() {
         return size;
+    }
+    // The two keyword counters of two words.
+    for name in ["first strike", "double strike"] {
+        let found = r.attempt(|r| {
+            r.words(name).then_some(())?;
+            matches!(r.peek_word(), Some("counter" | "counters")).then_some(())
+        });
+        if found.is_some() {
+            return Some(CounterKind::Other(name.to_owned()));
+        }
     }
     let word = r.peek_word()?;
     let named = matches!(r.word_at(1), Some("counter" | "counters"))
@@ -269,7 +262,9 @@ pub fn multiply(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The words for a kind of counter.
 pub(super) fn kind_text(counter: &CounterKind) -> Option<&str> {
     match counter {
-        CounterKind::Other(name) if !name.chars().all(|c| c.is_ascii_lowercase()) => None,
+        CounterKind::Other(name) if !name.chars().all(|c| c.is_ascii_lowercase() || c == ' ') => {
+            None
+        }
         CounterKind::Other(name) if name.is_empty() => None,
         other => Some(other.name()),
     }
