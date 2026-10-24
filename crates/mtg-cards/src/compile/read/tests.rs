@@ -248,6 +248,7 @@ mod named_tokens;
 mod number_of;
 mod oracle_only_writers;
 mod paid_reads;
+mod party;
 mod pay;
 mod payments;
 mod per_opponent_writers;

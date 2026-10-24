@@ -66,6 +66,8 @@ pub enum Ref {
     AttachedPlayer,
     /// The monarch ("the monarch"); nobody while no player is the monarch.
     Monarch,
+    /// The player the source chose as it entered ("the chosen player"); nobody before the choice, for a source that chose no player or once that player has left the game.
+    Chosen,
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it

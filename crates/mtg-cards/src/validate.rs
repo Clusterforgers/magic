@@ -17,7 +17,7 @@ use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, TriggerPattern};
+use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::CastWay;
 use crate::value::{Amount, Condition, TurnTally};
 
@@ -311,6 +311,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
@@ -553,6 +554,7 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.selector(of));
             }
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
+            Amount::Party(who) => self.player_amount("Party", who),
             Amount::Triggering => {
                 self.uses("Amount", "Triggering");
                 if !self.scope.in_trigger {
@@ -1426,6 +1428,7 @@ impl<'a> Walker<'a> {
             | Ref::EachPlayer
             | Ref::AttachedPlayer
             | Ref::Monarch
+            | Ref::Chosen
             | Ref::Promised
             | Ref::Attacked
             | Ref::MostLife
@@ -2541,12 +2544,6 @@ impl<'a> Walker<'a> {
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         let enters = matches!(when, ReplaceWhen::Enters { .. });
-        // Choosing a player waits for the engine that runs it, as an Aura on a card elsewhere does.
-        match by {
-            ReplaceBy::Choose(EntersChoice::Player) => self.uses("ReplaceBy", "Choose.Player"),
-            ReplaceBy::Choose(EntersChoice::Opponent) => self.uses("ReplaceBy", "Choose.Opponent"),
-            _ => {}
-        }
         match by {
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),

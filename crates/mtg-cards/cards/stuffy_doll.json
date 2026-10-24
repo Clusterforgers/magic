@@ -1,0 +1,32 @@
+{
+  "oracle_id": "499dceab-1890-49c8-b35d-b059a1dc950f",
+  "name": "Stuffy Doll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stuffy Doll",
+      "oracle_fingerprint": "a383c330a16051fd1c8749a00132e073",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Player" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [{ "DealDamage": { "to": "Chosen", "amount": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "DealDamage": { "to": "This", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

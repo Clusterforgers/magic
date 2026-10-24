@@ -1,0 +1,25 @@
+{
+  "id": "2da0b45b-0ca9-40c4-bc7f-791039bc1876",
+  "oracle_id": "112322ad-8f66-4cd4-98a1-f425d61a69ce",
+  "name": "True-Name Nemesis",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bbd",
+  "collector_number": "136",
+  "rarity": "mythic",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Merfolk Rogue",
+  "oracle_text": "As this creature enters, choose a player.\nThis creature has protection from the chosen player.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}
