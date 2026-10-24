@@ -1,0 +1,66 @@
+{
+  "oracle_id": "473da1b6-232b-4428-a66d-30262246b47a",
+  "name": "Emeria Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emeria Shepherd",
+      "oracle_fingerprint": "26829664009898af73e748744529f2e4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Plains" }] }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

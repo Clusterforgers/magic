@@ -555,7 +555,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         }
         let stat = stat_word(r)?;
         // "mana value X or less": the X of the card's own cost.
-        let to = if r.x_free && r.word("x") {
+        let to = if r.x_free && !r.x_unpaid && r.word("x") {
             Amount::X
         } else {
             Amount::Fixed(i32::try_from(r.number()?).ok()?)

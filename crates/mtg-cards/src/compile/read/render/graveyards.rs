@@ -9,7 +9,7 @@ impl Writer<'_> {
     pub(super) fn graveyard_exile(&mut self, effect: &Effect) -> Option<String> {
         let Effect::Exile {
             what: Ref::Each(selector),
-            bind: None,
+            bind: _,
             duration: None,
         } = effect
         else {

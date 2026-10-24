@@ -77,6 +77,7 @@ mod stations;
 pub(super) mod subtypes;
 #[cfg(test)]
 mod tests;
+mod token_binds;
 mod tokens;
 mod transform;
 mod triggers;

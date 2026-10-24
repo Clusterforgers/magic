@@ -77,6 +77,7 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
 /// one of which must be read.
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
+    r.triggered = true;
     let saddled = r.words("while saddled");
     if saddled && !matches!(when, TriggerPattern::Attacks { .. }) {
         return None;
@@ -90,30 +91,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     if triggers::targeted_itself(&when) {
         r.it = Some(Ref::This);
     }
-    r.at_monarch = matches!(
-        when,
-        TriggerPattern::AttacksPlayer {
-            at: Ref::Monarch,
-            ..
-        }
-    );
-    r.attacked_player = matches!(
-        when,
-        TriggerPattern::AttacksPlayer {
-            at: Ref::Opponents,
-            ..
-        }
-    );
-    r.cast_spell = casts_a_spell(&when);
-    r.cast_itself = triggers::cast_itself(&when);
-    r.subject = triggers::event_subject(&when);
-    r.attacker = matches!(&when, TriggerPattern::Attacks { what } if *what == Selector::this());
-    r.attacked = matches!(
-        when,
-        TriggerPattern::PlayerAttacked {
-            who: Ref::AttachedPlayer
-        }
-    );
+    note_attacks_and_casts(r, &when);
     // The creature that attacks is "it" and "its controller" is the player attacking.
     if matches!(when, TriggerPattern::AttacksPlayer { .. }) {
         r.it = Some(Ref::Triggering);
@@ -182,6 +160,34 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         targets: std::mem::take(&mut r.targets),
         effects,
     })
+}
+
+/// What the event says about who attacks whom and which spell is cast, which the pronouns of the effects name.
+fn note_attacks_and_casts(r: &mut Reader<'_>, when: &TriggerPattern) {
+    r.at_monarch = matches!(
+        when,
+        TriggerPattern::AttacksPlayer {
+            at: Ref::Monarch,
+            ..
+        }
+    );
+    r.attacked_player = matches!(
+        when,
+        TriggerPattern::AttacksPlayer {
+            at: Ref::Opponents,
+            ..
+        }
+    );
+    r.cast_spell = casts_a_spell(when);
+    r.cast_itself = triggers::cast_itself(when);
+    r.subject = triggers::event_subject(when);
+    r.attacker = matches!(when, TriggerPattern::Attacks { what } if *what == Selector::this());
+    r.attacked = matches!(
+        when,
+        TriggerPattern::PlayerAttacked {
+            who: Ref::AttachedPlayer
+        }
+    );
 }
 
 /// Whether the event is a spell being cast, in every one of the events joined by "or", also the nth in a turn.

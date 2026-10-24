@@ -78,7 +78,9 @@ fn the_count_of_counters_condition_reads_in_the_shape_of_the_hand_written_files(
 #[case::an_otherwise(
     "Whenever ~ attacks, if there are five or more charge counters on ~, draw a card. Otherwise, gain 1 life."
 )]
-#[case::an_unread_condition("Whenever ~ attacks, if you control a Wolf, draw a card.")]
+#[case::an_unread_condition(
+    "Whenever ~ attacks, if an opponent controls more lands than you, draw a card."
+)]
 #[case::then_first(
     "Whenever ~ attacks, then if there are five or more charge counters on ~, draw a card."
 )]
