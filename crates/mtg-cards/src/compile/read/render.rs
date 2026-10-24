@@ -148,6 +148,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(controller);
     let named = copies::pronoun_wordings(&texts);
     texts.extend(named);
+    let attacking = copies::attacking_wordings(&texts);
+    texts.extend(attacking);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
     let replaced = instead_pairs::other_wordings(&texts);

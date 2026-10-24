@@ -178,10 +178,10 @@ mod commander_statics;
 mod compound;
 mod conditions;
 mod copies;
+mod copy_attacks;
 mod copy_groups;
 mod copy_leftovers;
 mod copy_supertypes;
-mod copy_wordings;
 mod cost_conditions;
 mod cost_counts;
 mod cost_wordings;
@@ -765,7 +765,7 @@ mod removal {
     )]
     #[case::and_gain("Destroy target creature and gain 3 life.")]
     #[case::mixed_connector("Destroy all artifacts or enchantments.")]
-    #[case::two_types_adjective("Destroy target artifact creature.")]
+    #[case::two_types_adjective("Destroy target artifact land.")]
     fn near_misses_stay_unread(#[case] text: &str) {
         assert_eq!(spell(text), None, "{text}");
     }

@@ -44,13 +44,17 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }
     r.need("create")?;
     let mut tapped = false;
+    let mut attacking = false;
     let (count, plural) = if r.words("a token that's a copy of") {
         (Amount::one(), false)
     } else if r.words("a tapped token that's a copy of") {
         tapped = true;
         (Amount::one(), false)
+    } else if r.words("a tapped and attacking token that's a copy of") {
+        (tapped, attacking) = (true, true);
+        (Amount::one(), false)
     } else {
-        let count = if r.x_free && r.word("x") {
+        let count = if r.x() {
             Amount::X
         } else {
             let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
@@ -63,6 +67,15 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     (!chosen || !(plural || tapped)).then_some(())?;
     let of = copied(r);
     let of = of?;
+    // "... and that's tapped and attacking": the token enters attacking a player or planeswalker its controller picks.
+    let late = if plural {
+        "and that are tapped and attacking"
+    } else {
+        "and that's tapped and attacking"
+    };
+    if !tapped && !chosen && r.words(late) {
+        (tapped, attacking) = (true, true);
+    }
     let except = r
         .attempt(|r| {
             r.punct(',').then_some(())?;
@@ -88,7 +101,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         },
         count,
         tapped,
-        attacking: false,
+        attacking,
         bind: (gains.is_some() || delay.is_some()).then(|| COPY.to_owned()),
     };
     let copy = Ref::Bound(COPY.to_owned());
@@ -295,7 +308,11 @@ fn copied(r: &mut Reader<'_>) -> Option<Ref> {
         return Some(Ref::This);
     }
     if r.word("it") || r.words("that creature") || r.words("that permanent") {
-        return r.it.clone();
+        // In a trigger of the card's own event, "it" is the card.
+        return r
+            .it
+            .clone()
+            .or_else(|| (r.acts_itself || r.attacker).then_some(Ref::This));
     }
     if r.attempt(|r| {
         ((r.word("enchanted") || r.word("equipped")) && r.word("creature")).then_some(())
@@ -855,7 +872,7 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
             },
         count,
         tapped,
-        attacking: false,
+        attacking,
         bind,
     } = effect
     else {
@@ -864,10 +881,18 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
     if bind.is_some() != delayed || bind.as_deref().is_some_and(|name| name != COPY) {
         return None;
     }
+    // A token enters attacking tapped.
+    if *attacking && !*tapped {
+        return None;
+    }
     let (head, plural) = match count {
+        Amount::Fixed(1) if *attacking => (
+            "a tapped and attacking token that's a copy of".to_owned(),
+            false,
+        ),
         Amount::Fixed(1) if *tapped => ("a tapped token that's a copy of".to_owned(), false),
         Amount::Fixed(1) => ("a token that's a copy of".to_owned(), false),
-        _ if *tapped => return None,
+        _ if *tapped && !*attacking => return None,
         Amount::Fixed(number) if *number > 1 => (
             format!(
                 "{} tokens that are copies of",
@@ -886,7 +911,12 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
             exceptions_text(except, if plural { Subject::They } else { Subject::It })?
         )
     };
-    Some(format!("create {head} {of}{tail}"))
+    let attack = if *attacking && plural {
+        " and that are tapped and attacking"
+    } else {
+        ""
+    };
+    Some(format!("create {head} {of}{attack}{tail}"))
 }
 
 /// The sentences after the creation of a copy that the effects after it write: what the copy gains ("it gains haste until
@@ -973,6 +1003,33 @@ pub(super) fn pronoun_wordings(texts: &[String]) -> Vec<String> {
         }
     }
     found
+}
+
+/// "create a tapped and attacking token that's a copy of X" is also "create a token that's a copy of X and that's
+/// tapped and attacking" when no exception follows X.
+pub(super) fn attacking_wordings(texts: &[String]) -> Vec<String> {
+    const HEAD: &str = "reate a tapped and attacking token that's a copy of ";
+    let single = texts.iter().filter_map(|text| {
+        let from = text.find(HEAD)? + HEAD.len();
+        let end = from + text[from..].find(['.', ','])?;
+        (text[end..].starts_with('.')).then(|| {
+            format!(
+                "{}reate a token that's a copy of {} and that's tapped and attacking{}",
+                &text[..from - HEAD.len()],
+                &text[from..end],
+                &text[end..]
+            )
+        })
+    });
+    // The card that acts is also "it" in the copies of itself.
+    let itself = texts
+        .iter()
+        .filter(|text| text.contains("copy of ~") || text.contains("copies of ~"))
+        .map(|text| {
+            text.replace("copy of ~", "copy of it")
+                .replace("copies of ~", "copies of it")
+        });
+    single.chain(itself).collect()
 }
 
 /// The words that name the copy as what a sentence acts on: one token or several.
