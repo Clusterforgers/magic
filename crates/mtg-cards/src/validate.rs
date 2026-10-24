@@ -1992,8 +1992,37 @@ impl<'a> Walker<'a> {
                 choose,
                 modes,
                 repeat,
-            } => w.modal(choose, modes, *repeat, only_effect),
+                at_random,
+                once_each_turn,
+            } => {
+                w.modal(choose, modes, *repeat, only_effect);
+                w.modal_flags(choose, *repeat, *at_random, *once_each_turn);
+            }
         });
+    }
+
+    /// A pick at random chooses a fixed number of modes, none twice; each flag is a primitive of its own.
+    fn modal_flags(
+        &mut self,
+        choose: &Bounds,
+        repeat: bool,
+        at_random: bool,
+        once_each_turn: bool,
+    ) {
+        if at_random {
+            self.uses("Effect", "Modal.AtRandom");
+            let fixed = choose.max.as_ref() == Some(&choose.min)
+                && matches!(choose.min, Amount::Fixed(count) if count >= 1);
+            if !fixed || repeat {
+                self.problem("a pick at random chooses a fixed number of modes, none twice");
+            }
+        }
+        if once_each_turn {
+            self.uses("Effect", "Modal.OnceEachTurn");
+            if repeat {
+                self.problem("a mode chosen once each turn cannot repeat");
+            }
+        }
     }
 
     fn modal(&mut self, choose: &Bounds, modes: &[Mode], repeat: bool, only_effect: bool) {
@@ -3083,6 +3112,8 @@ mod tests {
     #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
     #[case::an_x_in_the_cost_of_a_spell_is_read_by_its_effects(r#"{"Spell":{"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Spell", "Effect.Draw"])]
     #[case::an_x_in_the_mana_of_an_ability_is_read_by_its_effects(r#"{"Activated":{"cost":"{X}{G}","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Effect.Draw"])]
+    #[case::a_mode_picked_at_random(r#"{"Spell":{"effects":[{"Modal":{"at_random":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.AtRandom"])]
+    #[case::a_mode_not_chosen_twice_in_a_turn(r#"{"Spell":{"effects":[{"Modal":{"once_each_turn":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.OnceEachTurn"])]
     #[case::an_x_beside_a_tap(r#"{"Activated":{"cost":[{"Mana":"{X}{R}{G}"},"Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Cost.Tap", "Effect.Draw"])]
     #[case::an_exile_until_the_source_leaves(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"WhileSourceOnBattlefield"}}]}}"#, &["Ability.Spell", "Effect.Exile"])]
     #[case::an_exile_with_another_duration(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Effect.Exile", "Exile.Duration.UntilYourNextTurn"])]
@@ -3741,6 +3772,18 @@ mod tests {
     #[case::modal_not_alone(
         r#"{"Spell":{"effects":[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
         "`Modal` must be the only effect"
+    )]
+    #[case::a_pick_at_random_of_up_to_one(
+        r#"{"Spell":{"effects":[{"Modal":{"at_random":true,"choose":{"min":0,"max":1},"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
+        "chooses a fixed number of modes, none twice"
+    )]
+    #[case::a_pick_at_random_that_repeats(
+        r#"{"Spell":{"effects":[{"Modal":{"at_random":true,"repeat":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
+        "chooses a fixed number of modes, none twice"
+    )]
+    #[case::a_fresh_mode_that_repeats(
+        r#"{"Spell":{"effects":[{"Modal":{"once_each_turn":true,"repeat":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
+        "cannot repeat"
     )]
     #[case::empty_spell(r#"{"Spell":{"effects":[]}}"#, "needs at least one effect")]
     #[case::empty_clause_reason(

@@ -152,6 +152,7 @@ Brimstone Vandal
 Brion Stoutarm
 Bronzeplate Boar
 Broodbirth Viper
+Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
 Cached Defenses
@@ -625,6 +626,7 @@ Light Up the Stage
 Lightning Bolt
 Lignify
 Liquimetal Torque
+Lita, Little Orphan Amphibian
 Lithoform Engine
 Living Twister
 Lizard Blades
@@ -802,6 +804,7 @@ Powder Ganger
 Prava of the Steel Legion
 Predator Dragon
 Pridemalkin
+Primaris Eliminator
 Primeval Protector
 Primordial Hydra
 Prismatic Lens
@@ -1071,6 +1074,7 @@ Termagant Swarm
 Terminus
 Terrus Wurm
 Teshar, Ancestor's Apostle
+Teval's Judgment
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
@@ -1136,6 +1140,7 @@ Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard
 Ultron, Unlimited
+Umaro, Raging Yeti
 Umbral Collar Zealot
 Unbreakable Bond
 Unclaimed Territory

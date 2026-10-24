@@ -1,0 +1,58 @@
+{
+  "oracle_id": "4e5e0b22-ee5a-4c19-be95-2f9bd50641bc",
+  "name": "Olivia, Opulent Outlaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olivia, Opulent Outlaw",
+      "oracle_fingerprint": "488ce4bc10841907307cbcf3e11f3d37",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Assassin" },
+                        { "Subtype": "Mercenary" },
+                        { "Subtype": "Pirate" },
+                        { "Subtype": "Rogue" },
+                        { "Subtype": "Warlock" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Treasure" }], "count": 2 } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

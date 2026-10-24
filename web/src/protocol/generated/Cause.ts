@@ -18,6 +18,7 @@ subjects: Array<Target>,
 snapshots: Array<Snapshot>, 
 /**
  * How much the event was (`Amount::Triggering`): the damage dealt, the life gained or lost, the counters put or
- * removed, how many events a batch held; zero for an event with no amount.
+ * removed, how many events a batch held and the damage a batch of damage dealt in all; zero for an event with no
+ * amount.
  */
 amount?: number, };

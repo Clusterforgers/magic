@@ -1,0 +1,27 @@
+{
+  "cmc": 7.0,
+  "collector_number": "44",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "6fc0a74b-0b8a-4c70-87f2-f9f2625d5ff2",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{5}{G}{G}",
+  "name": "Broodcaller Scourge",
+  "oracle_id": "16aa790a-8f7c-401c-9d43-dc9440a6f585",
+  "oracle_text": "Flying\nWhenever one or more Dragons you control deal combat damage to a player, you may put a permanent card with mana value less than or equal to that damage from your hand onto the battlefield.",
+  "power": "5",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "set": "tdc",
+  "toughness": "7",
+  "type_line": "Creature — Dragon"
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "0f4350ad-dc44-4942-b097-e4033e29d659",
+  "name": "Umaro, Raging Yeti",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umaro, Raging Yeti",
+      "oracle_fingerprint": "8bcf344f066b2b7d61b81982116d4b8b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "at_random": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                            },
+                            "mods": [
+                              { "ModifyPT": { "power": 3, "toughness": 0 } },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Discard": {
+                            "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                          }
+                        },
+                        { "Draw": { "count": 4 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

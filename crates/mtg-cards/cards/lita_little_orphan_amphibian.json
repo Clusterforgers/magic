@@ -1,0 +1,35 @@
+{
+  "oracle_id": "212fdb7c-1c7e-4eed-b1ed-bcc14a425da8",
+  "name": "Lita, Little Orphan Amphibian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lita, Little Orphan Amphibian",
+      "oracle_fingerprint": "5aebf5da95e72a034d55ed394cdb0d77",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "once_each_turn": true,
+                  "modes": [
+                    { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "food" } } }] },
+                    { "effects": [{ "Scry": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

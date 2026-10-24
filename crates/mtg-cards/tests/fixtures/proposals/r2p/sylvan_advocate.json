@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Static":{"affected":{"Each":[{"AnyOf":["This",{"Type":"Land"}]},{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":2,"toughness":2}}],"condition":{"Compare":{"left":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"op":"Ge","right":6}}}}]}]}

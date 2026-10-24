@@ -1,0 +1,29 @@
+{
+  "id": "5ad67a79-cb13-44b8-adac-36cfd211f2d3",
+  "oracle_id": "52aa5a79-db0e-4eaa-b2df-e41674c47794",
+  "name": "Triarch Praetorian",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "66",
+  "rarity": "uncommon",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Artifact Creature — Necron",
+  "oracle_text": "Flying\nDynastic Codes — When this creature enters from a graveyard, you draw two cards and you lose 2 life.\nUnearth {4}{B} ({4}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Dynastic Codes",
+    "Unearth"
+  ]
+}

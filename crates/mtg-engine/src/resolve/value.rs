@@ -54,6 +54,7 @@ impl From<ResolveError> for crate::error::EngineError {
 
 static NO_CHOICES: Choices = Choices {
     modes: Vec::new(),
+    random_modes: false,
     x: None,
     targets: Vec::new(),
     division: Vec::new(),

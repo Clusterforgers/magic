@@ -1278,6 +1278,7 @@ fn full_control_starts_off() {
 
 /// The events of ability objects and of a resolution, with the fields they carry.
 fn pipeline_events() -> Vec<Event> {
+    use mtg_core::mana::ManaType;
     let (a, b) = (ObjectId(3), ObjectId(4));
     let player = PlayerId(1);
     let setup = fuzz_setup(2, 3);
@@ -1287,16 +1288,14 @@ fn pipeline_events() -> Vec<Event> {
     let target = Target::Object(ObjectRef { id: b, counter: 1 });
     let choices = Choices {
         modes: vec![1],
+        random_modes: true,
         x: Some(3),
         targets: vec![vec![target, Target::Player(player)]],
         division: vec![(target, 2)],
         optional_costs: vec![0],
         way: Some(mtg_cards::value::CastWay::Evoke),
         face: Some(1),
-        spent: Some(Box::new(vec![
-            mtg_core::mana::ManaType::Red,
-            mtg_core::mana::ManaType::Green,
-        ])),
+        spent: Some(Box::new(vec![ManaType::Red, ManaType::Green])),
         cost_taken: Some(Box::new(mtg_engine::choose::CostTaken {
             picks: vec![vec![a], vec![b, a]],
             shots: vec![shot.clone()],
