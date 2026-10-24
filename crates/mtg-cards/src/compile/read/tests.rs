@@ -921,7 +921,7 @@ mod sentences {
 
     #[rstest]
     #[case::a_second_target("Exile target creature. Target player draws a card.")]
-    #[case::unread_second("Destroy target creature. Flip a coin.")]
+    #[case::unread_second("Destroy target creature. Flip two coins.")]
     #[case::unread_first("Flip a coin. Draw a card.")]
     #[case::garbled("Destroy target creature. Draw")]
     #[case::empty("")]

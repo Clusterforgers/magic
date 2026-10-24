@@ -815,7 +815,7 @@ mod tests {
             abilities[2],
             Ability::Manual {
                 reason: "an activated ability the compiler does not read yet".into(),
-                span: Span { start: 43, end: 63 }
+                span: Span { start: 40, end: 57 }
             }
         );
         let kinds: Vec<_> = compiled.clauses.iter().map(|clause| clause.kind).collect();
@@ -926,7 +926,7 @@ mod tests {
 
     #[test]
     fn a_manual_card_has_no_abilities_and_lists_its_clauses() {
-        let compiled = one("Test Card", "Instant", "Flip a coin.\nFlip a coin.");
+        let compiled = one("Test Card", "Instant", "Flip a coin.\nFlip two coins.");
         let card = compiled.card.unwrap();
         assert_eq!(card.impl_status, ImplStatus::Manual);
         assert!(card.faces[0].abilities.is_empty(), "{card:?}");
