@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e7e1b166-9267-426d-897d-24903327b48d",
+  "name": "Defense of the Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defense of the Heart",
+      "oracle_fingerprint": "5f0509ad226f571c653240d02bb46043",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

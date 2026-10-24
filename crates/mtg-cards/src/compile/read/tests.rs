@@ -254,6 +254,7 @@ mod party;
 mod pay;
 mod payments;
 mod per_opponent_writers;
+mod performed_writers;
 mod persistent_mana;
 mod player_event_writers;
 mod player_keywords;

@@ -34,6 +34,7 @@ mod deal_damage;
 mod delayed_trigger;
 mod destroy;
 mod discard;
+mod done;
 mod draw;
 mod encode;
 mod exile;
@@ -99,8 +100,13 @@ fn wrong_effect(name: &str) -> ResolveError {
     ResolveError::Invalid(format!("the {name} primitive was given another effect"))
 }
 
-/// Runs one effect.
+/// Runs one effect; a sacrifice or a removal of counters also reports whether it did anything (`done::report`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    Ok(done::report(cx, effect, dispatch(cx, effect)?))
+}
+
+/// Hands the effect to the primitive of its variant.
+fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     match effect {
         Effect::Draw { .. } => draw::run(cx, effect),
         Effect::Discard { .. } => discard::run(cx, effect),

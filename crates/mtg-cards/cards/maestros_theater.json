@@ -1,0 +1,51 @@
+{
+  "oracle_id": "9464ddf2-4bcb-44f6-b945-89a132544de6",
+  "name": "Maestros Theater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maestros Theater",
+      "oracle_fingerprint": "f0608c8921fbf317113fc7a952be5b9c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Supertype": "Basic" },
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Island" },
+                              { "Subtype": "Swamp" },
+                              { "Subtype": "Mountain" }
+                            ]
+                          }
+                        ],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

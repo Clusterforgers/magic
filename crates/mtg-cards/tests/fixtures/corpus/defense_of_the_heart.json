@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "9e93381f-627f-41b6-b1b6-45d712a44d8e",
+  "oracle_id": "e7e1b166-9267-426d-897d-24903327b48d",
+  "multiverse_ids": [
+    12442
+  ],
+  "mtgo_id": 12579,
+  "mtgo_foil_id": 12580,
+  "tcgplayer_id": 6301,
+  "cardmarket_id": 10657,
+  "name": "Defense of the Heart",
+  "lang": "en",
+  "released_at": "1999-02-15",
+  "uri": "https://api.scryfall.com/cards/9e93381f-627f-41b6-b1b6-45d712a44d8e",
+  "scryfall_uri": "https://scryfall.com/card/ulg/100/defense-of-the-heart?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:37:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.jpg?1783946231",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.jpg?1783946231",
+    "large": "https://cards.scryfall.io/large/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.jpg?1783946231",
+    "png": "https://cards.scryfall.io/png/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.png?1783946231",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.jpg?1783946231",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.jpg?1783946231",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.webp?1783946231",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.webp?1783946231",
+    "display": "https://cards.scryfall.io/display/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.webp?1783946231",
+    "art": "https://cards.scryfall.io/art/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.webp?1783946231",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.webp?1783946231",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9e93381f-627f-41b6-b1b6-45d712a44d8e.jpg?1783946231"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, if an opponent controls three or more creatures, sacrifice this enchantment, search your library for up to two creature cards, put those cards onto the battlefield, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78ced61b-4b8a-4b33-b6b2-f5bd66f1a75a",
+  "set": "ulg",
+  "set_name": "Urza's Legacy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/78ced61b-4b8a-4b33-b6b2-f5bd66f1a75a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aulg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ulg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9e93381f-627f-41b6-b1b6-45d712a44d8e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae7e1b166-9267-426d-897d-24903327b48d&unique=prints",
+  "collector_number": "100",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Rebecca Guay",
+  "artist_ids": [
+    "f8f662fa-d597-46a3-afb2-91d6e13243e2"
+  ],
+  "illustration_id": "5ae64cb8-15a7-423e-be97-1aa50754c93e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 1307,
+  "prices": {
+    "usd": "21.64",
+    "usd_foil": "180.35",
+    "usd_etched": null,
+    "eur": "12.15",
+    "eur_foil": "102.60",
+    "tix": "0.62"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=12442&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDefense%2Bof%2Bthe%2BHeart",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDefense%2Bof%2Bthe%2BHeart",
+    "edhrec": "https://edhrec.com/route/?cc=Defense+of+the+Heart"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6301%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=10657&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/12579?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
