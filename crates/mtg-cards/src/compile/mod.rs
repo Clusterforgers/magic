@@ -110,6 +110,7 @@ fn read_face(
     let partners = Partners::of(shown, known);
     let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
     let (spell, aura) = (is_spell(shown), is_aura(shown));
+    let walker = is_planeswalker(shown);
     let x_free = shown.mana_cost.contains("{X}") || shown.oracle_text.lines().any(counts_x);
     let own = own_face(shown);
     let mut pending = Vec::new();
@@ -126,13 +127,18 @@ fn read_face(
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
-        let (ability, more) = read_clause(
-            &clause_text,
-            kind,
-            (aura, reminds_counter),
-            x_free,
-            (&own, partners),
-        );
+        // A loyalty cost on a face that is no planeswalker is a line of the card's own, not an ability.
+        let (ability, more) = if kind == ClauseKind::Loyalty && !walker {
+            (None, Vec::new())
+        } else {
+            read_clause(
+                &clause_text,
+                kind,
+                (aura, reminds_counter),
+                x_free,
+                (&own, partners),
+            )
+        };
         pending.push(Pending {
             span,
             text: clause_text,
@@ -284,7 +290,9 @@ fn read_clause(
                 .into_iter();
             (block.next(), block.collect())
         }
-        ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static if !reminds_counter => {
+        ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Loyalty | ClauseKind::Static
+            if !reminds_counter =>
+        {
             match read::clause_with(text, kind, x_free, own) {
                 // Two statics in one sentence after one condition read into two abilities.
                 None if kind == ClauseKind::Static => {
@@ -446,6 +454,12 @@ fn is_aura(face: &PrintedFace) -> bool {
     face.type_line
         .split_once('\u{2014}')
         .is_some_and(|(_, subtypes)| subtypes.split_whitespace().any(|word| word == "Aura"))
+}
+
+/// Whether the face is a planeswalker.
+fn is_planeswalker(face: &PrintedFace) -> bool {
+    let types = face.type_line.split('\u{2014}').next().unwrap_or_default();
+    types.split_whitespace().any(|word| word == "Planeswalker")
 }
 
 /// Whether the face is an instant or a sorcery.
@@ -958,5 +972,44 @@ mod tests {
         );
         assert_eq!(compiled.clauses[2].kind, ClauseKind::Loyalty);
         assert_eq!(compiled.clauses[2].text, "\u{2212}X: ~ deals X damage.");
+    }
+
+    #[rstest]
+    #[case::a_planeswalker(
+        "Planeswalker \u{2014} Jace",
+        "+1: Draw a card.\n\u{2212}2: Draw a card.",
+        Some(ImplStatus::Full),
+        2
+    )]
+    #[case::one_line_unread(
+        "Planeswalker \u{2014} Jace",
+        "+1: Draw a card.\n\u{2212}2: Wibble the wobble.",
+        Some(ImplStatus::Partial),
+        1
+    )]
+    #[case::no_line_read(
+        "Planeswalker \u{2014} Jace",
+        "+1: Wibble the wobble.",
+        Some(ImplStatus::Manual),
+        0
+    )]
+    #[case::a_creature_with_a_line_like_a_loyalty_cost(
+        "Creature \u{2014} Elf",
+        "+1: Draw a card.",
+        Some(ImplStatus::Manual),
+        0
+    )]
+    fn loyalty_lines_are_abilities_on_a_planeswalker_only(
+        #[case] type_line: &str,
+        #[case] text: &str,
+        #[case] expected: Option<ImplStatus>,
+        #[case] loyalty: usize,
+    ) {
+        let compiled = one("Jace", type_line, text);
+        assert_eq!(status(&compiled), expected, "{text}");
+        let found = compiled.card.iter().flat_map(Card::abilities).filter(
+            |(_, ability)| matches!(ability, Ability::Loyalty { .. }),
+        );
+        assert_eq!(found.count(), loyalty, "{text}");
     }
 }

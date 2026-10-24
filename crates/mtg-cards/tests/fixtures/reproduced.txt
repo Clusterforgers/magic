@@ -416,6 +416,7 @@ Gaea's Cradle
 Galadhrim Brigade
 Galvanizing Sawship
 Game-Trail Changeling
+Garruk Wildspeaker
 Gemhide Sliver
 Gemrazer
 Generous Ent
@@ -542,6 +543,7 @@ Iron League Steed
 Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
+Jace Beleren
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens

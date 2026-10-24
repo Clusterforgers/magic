@@ -127,8 +127,7 @@ fn a_reading_that_does_not_write_back_as_the_text_stays_unread(#[case] text: &st
 #[case::spell_kind_only(ClauseKind::Static)]
 #[case::keyword(ClauseKind::Keyword)]
 #[case::modal(ClauseKind::Modal)]
-#[case::loyalty(ClauseKind::Loyalty)]
-fn only_spell_triggered_and_activated_clauses_are_read(#[case] kind: ClauseKind) {
+fn only_spell_triggered_activated_and_loyalty_clauses_are_read(#[case] kind: ClauseKind) {
     assert_eq!(clause("Draw a card.", kind, false), None);
     assert_eq!(
         clause("When ~ enters, draw a card.", kind, false),
@@ -219,6 +218,7 @@ mod lands;
 mod levels;
 mod library;
 mod life;
+mod loyalty;
 mod life_gain;
 mod lords;
 mod mana_spent;

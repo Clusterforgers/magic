@@ -137,7 +137,7 @@ pub fn affinity_filter(text: &str) -> Option<Selector> {
     reader.end().then_some(selector)
 }
 
-/// Reads a spell, a modal, a triggered or an activated clause into an ability, or `None` when it
+/// Reads a spell, a modal, a triggered, an activated or a loyalty clause into an ability, or `None` when it
 /// is not a wording the templates know. The text of a spell may run over several lines, which are
 /// its sentences in order; a modal's lines are its bullets. An ability word before a dash
 /// ("Landfall — ") is flavor and left out.
@@ -212,7 +212,10 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    reader.ability = matches!(kind, ClauseKind::Triggered | ClauseKind::Activated);
+    reader.ability = matches!(
+        kind,
+        ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Loyalty
+    );
     reader.power = own.power;
     reader.toughness = own.toughness;
     reader.paid = own.pays;
@@ -221,6 +224,7 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         ClauseKind::Modal => abilities::modal_spell(&mut reader)?,
         ClauseKind::Triggered => abilities::triggered(&mut reader)?,
         ClauseKind::Activated => abilities::activated(&mut reader)?,
+        ClauseKind::Loyalty => abilities::loyalty(&mut reader)?,
         ClauseKind::Static => statics::ability(&mut reader)?,
         _ => return None,
     };
