@@ -257,6 +257,7 @@ mod miracle_fuzz;
 mod miracle_spells;
 mod mode_picks;
 mod mode_picks_fuzz;
+mod modes_both;
 mod monarch;
 mod monarch_followups;
 mod monarch_wordings;

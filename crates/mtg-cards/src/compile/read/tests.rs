@@ -240,6 +240,7 @@ mod mass_moves;
 mod may;
 mod model_writers;
 mod modes;
+mod modes_both;
 mod monarch;
 mod multiply_counters;
 mod mutations;

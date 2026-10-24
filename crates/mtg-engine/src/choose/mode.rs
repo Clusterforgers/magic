@@ -9,7 +9,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::compile::render_mode;
 use mtg_cards::effect::{Effect, Mode};
 use mtg_cards::refs::{Bounds, TargetSpec};
-use mtg_cards::value::Amount;
+use mtg_cards::value::{Amount, Condition};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -111,6 +111,8 @@ pub(crate) struct Modal<'a> {
     pub(crate) at_random: bool,
     /// A mode chosen earlier in the turn by this ability is not offered.
     pub(crate) once_each_turn: bool,
+    /// Every mode may be chosen when this holds as the ability is announced.
+    pub(crate) all_if: Option<&'a Condition>,
     /// The modes this ability chose earlier in the turn (read from the tally by the announcement).
     pub(crate) used: Vec<usize>,
 }
@@ -125,6 +127,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 modes,
                 at_random,
                 once_each_turn,
+                all_if,
             },
         ] => Some(Modal {
             choose,
@@ -132,6 +135,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             modes,
             at_random: *at_random,
             once_each_turn: *once_each_turn,
+            all_if: all_if.as_ref(),
             used: Vec::new(),
         }),
         _ => None,
@@ -186,6 +190,33 @@ pub(crate) fn enough_modes(modal: &Modal<'_>, available: u32) -> bool {
     }
 }
 
+/// The scope an amount or a condition is read in while the ability is announced.
+fn announcing(state: &GameState, source: ObjectId, controller: PlayerId) -> Scope<'_> {
+    let origin = state.object(source).map_or(
+        ObjectRef {
+            id: source,
+            counter: 0,
+        },
+        GameObject::reference,
+    );
+    Scope::announcing(state, controller, origin)
+}
+
+/// Whether the condition that lets every mode be chosen holds as the ability is announced ("If you control a commander
+/// as you cast this spell, you may choose both instead").
+fn all_may_be_chosen(
+    state: &GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    all_if: Option<&Condition>,
+) -> bool {
+    all_if.is_some_and(|condition| {
+        announcing(state, source, controller)
+            .holds(condition)
+            .unwrap_or(false)
+    })
+}
+
 /// The decision for the modes of `modal`, or `None` when too few can be chosen: fewer legal modes than the fewest to
 /// choose, or none at all for a mode that must be chosen.
 pub(crate) fn mode_options(
@@ -217,18 +248,10 @@ pub(crate) fn mode_options(
     }
     let wanted = match &modal.choose.max {
         None => available,
+        Some(_) if all_may_be_chosen(state, source, controller, modal.all_if) => available,
         Some(Amount::Fixed(n)) => u32::try_from(*n).unwrap_or(0),
         Some(other) => {
-            let origin = state.object(source).map_or(
-                ObjectRef {
-                    id: source,
-                    counter: 0,
-                },
-                GameObject::reference,
-            );
-            let amount = Scope::announcing(state, controller, origin)
-                .amount(other)
-                .ok()?;
+            let amount = announcing(state, source, controller).amount(other).ok()?;
             u32::try_from(amount).unwrap_or(0)
         }
     };

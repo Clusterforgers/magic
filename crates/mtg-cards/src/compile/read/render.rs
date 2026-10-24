@@ -683,17 +683,23 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             modes,
             at_random,
             once_each_turn,
+            all_if,
         },
     ] = effects
     {
         if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return choices::texts(choose, modes, *at_random, *once_each_turn)
-            .into_iter()
-            .chain(either::texts(choose, modes))
-            .map(|text| vec![text])
-            .collect();
+        return choices::texts(
+            choose,
+            modes,
+            (*at_random, *once_each_turn),
+            all_if.as_ref(),
+        )
+        .into_iter()
+        .chain(either::texts(choose, modes))
+        .map(|text| vec![text])
+        .collect();
     }
     // Bit `at` of a mask joins the effect after the one at `at` to it; a long list is tried whole
     // and apart only.

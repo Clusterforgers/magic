@@ -22,6 +22,7 @@ Ajani's Pridemate
 Akim, the Soaring Wind
 Akrasan Squire
 Akroma's Vengeance
+Akroma's Will
 Akroma, Angel of Wrath
 All That Glitters
 Alpha Deathclaw
@@ -595,6 +596,7 @@ Jagged Barrens
 Jarad, Golgari Lich Lord
 Jaspera Sentinel
 Jazal Goldmane
+Jeska's Will
 Jo Grant
 Join the Maestros
 Jolting Merfolk
