@@ -50,7 +50,7 @@ use super::counters;
 use super::create;
 use super::defining;
 use super::draws;
-use super::effects::{BACK, RETURNED, dead_card, returns_itself};
+use super::effects::{BACK, RETURNED, dead_card, other_dead_card, returns_itself};
 use super::event_wordings;
 use super::exiled_kind;
 use super::flicker;
@@ -330,6 +330,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     pronouns::you_after_the_attached(ability, &mut texts);
     pronouns::they(ability, &mut texts);
     pronouns::of_the_group(ability, &mut texts);
+    pronouns::that_creature_after_an_attach(ability, &mut texts);
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
         ability,
@@ -1663,7 +1664,9 @@ impl Writer<'_> {
 
     /// "return target card from your graveyard to your hand", "return target creature to its owner's hand".
     fn returned_to_hand(&mut self, what: &Ref) -> Option<String> {
-        if *what == Ref::This || *what == dead_card() {
+        if *what == other_dead_card() {
+            Some("return it to its owner's hand".to_owned())
+        } else if *what == Ref::This || *what == dead_card() {
             Some("return ~ to its owner's hand".to_owned())
         } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
@@ -1886,7 +1889,10 @@ impl Writer<'_> {
             [choose @ Effect::Choose { .. }, moved @ Effect::Move { .. }] => {
                 format!("you may {}", put_onto::put_onto_text(choose, moved)?)
             }
-            _ => self.may_have(effects).or_else(|| self.may_do(effects))?,
+            _ => self
+                .may_have(effects)
+                .or_else(|| self.may_have_lose(effects))
+                .or_else(|| self.may_do(effects))?,
         })
     }
 

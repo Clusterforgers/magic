@@ -1,0 +1,27 @@
+{
+  "cmc": 3.0,
+  "collector_number": "642",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "333b3cca-ebbf-4ceb-a6a5-3d49cb2e143a",
+  "keywords": [
+    "Indestructible"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{G}{G}{G}",
+  "name": "Predator Ooze",
+  "oracle_id": "a51ec70d-1356-4403-a858-b99445bac54a",
+  "oracle_text": "Indestructible (Damage and effects that say \"destroy\" don't destroy this creature.)\nWhenever this creature attacks, put a +1/+1 counter on it.\nWhenever a creature dealt damage by this creature this turn dies, put a +1/+1 counter on this creature.",
+  "power": "1",
+  "rarity": "rare",
+  "released_at": "2024-11-15",
+  "set": "fdn",
+  "toughness": "1",
+  "type_line": "Creature — Ooze"
+}

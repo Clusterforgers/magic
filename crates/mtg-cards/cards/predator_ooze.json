@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a51ec70d-1356-4403-a858-b99445bac54a",
+  "name": "Predator Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predator Ooze",
+      "oracle_fingerprint": "25772156b47654d9e5e6fd6ceeaf5d55",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

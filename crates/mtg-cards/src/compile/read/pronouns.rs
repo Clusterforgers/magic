@@ -159,3 +159,32 @@ pub(super) fn you_after_the_attached(ability: &Ability, texts: &mut Vec<String>)
         .collect();
     texts.extend(spelled);
 }
+
+/// Adds to `texts` the wording "That creature gains shroud until end of turn" for the creature a trigger attached the card
+/// to ("When this Equipment enters, attach it to target creature you control. That creature gains shroud until end of turn.").
+pub(super) fn that_creature_after_an_attach(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Triggered { effects, .. } = ability else {
+        return;
+    };
+    let attached = matches!(
+        effects.first(),
+        Some(Effect::Attach {
+            to: Ref::Target(0),
+            ..
+        })
+    );
+    if !attached {
+        return;
+    }
+    let spelled: Vec<String> = texts
+        .iter()
+        .flat_map(|text| {
+            SENTENCE.iter().filter_map(|(_, pronoun)| {
+                let named = pronoun.replace(". It ", ". That creature ");
+                text.contains(pronoun)
+                    .then(|| text.replacen(pronoun, &named, 1))
+            })
+        })
+        .collect();
+    texts.extend(spelled);
+}

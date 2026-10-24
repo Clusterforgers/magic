@@ -1,0 +1,23 @@
+{
+  "cmc": 6.0,
+  "collector_number": "254",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "efa9d2dc-b3b8-4475-bbfc-2db457ee4ffd",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{G}{G}",
+  "name": "Rishkar's Expertise",
+  "oracle_id": "97407cd0-2bd2-4074-94d3-4ec3d243fa78",
+  "oracle_text": "Draw cards equal to the greatest power among creatures you control.\nYou may cast a spell with mana value 5 or less from your hand without paying its mana cost.",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "set": "lcc",
+  "type_line": "Sorcery"
+}

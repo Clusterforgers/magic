@@ -1,0 +1,25 @@
+{
+  "cmc": 3.0,
+  "collector_number": "66",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "7665948b-23d0-4b06-a32a-bfab8009b04f",
+  "keywords": [
+    "Rebound"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}",
+  "name": "It's Clobberin' Time!",
+  "oracle_id": "4a75ef46-c5ae-4b1a-a681-d439b01f6731",
+  "oracle_text": "Choose one —\n• Target creature you control deals damage equal to its power to target creature an opponent controls.\n• Destroy target artifact or enchantment.\nRebound",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "set": "msc",
+  "type_line": "Sorcery"
+}

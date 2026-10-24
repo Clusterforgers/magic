@@ -927,6 +927,14 @@ impl<'a> Scope<'a> {
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
+            Pred::DamagedBy(named) => self
+                .objects(named)?
+                .iter()
+                .any(|source| state.damaged_by(reference, *source)),
+            Pred::SameCard(named) => self
+                .objects(named)?
+                .iter()
+                .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
             Pred::Attacking => state
                 .combat()

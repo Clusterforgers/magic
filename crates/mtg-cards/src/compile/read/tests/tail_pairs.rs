@@ -131,9 +131,6 @@ fn a_card_returns_to_its_owners_hand_at_the_next_end_step(#[case] text: &str, #[
 #[case::the_battlefield(
     "When ~ dies, return it to the battlefield at the beginning of the next end step."
 )]
-#[case::the_graveyard_of_another(
-    "Whenever another creature you control dies, return it to its owner's hand at the beginning of the next end step."
-)]
 #[case::exile("When ~ dies, exile it at the beginning of the next end step.")]
 #[case::no_step("When ~ dies, return it to its owner's hand at the beginning of the next.")]
 fn a_late_return_near_misses_stay_unread(#[case] text: &str) {

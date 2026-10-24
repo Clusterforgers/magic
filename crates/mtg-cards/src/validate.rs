@@ -375,7 +375,9 @@ impl<'a> Walker<'a> {
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
             | Pred::Crewed(r)
-            | Pred::Saddled(r) => {
+            | Pred::Saddled(r)
+            | Pred::DamagedBy(r)
+            | Pred::SameCard(r) => {
                 self.reference(r, Kind::Object);
             }
             Pred::HasKeyword(keyword) => self.keyword(keyword),

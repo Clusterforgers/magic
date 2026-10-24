@@ -548,6 +548,16 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("that saddled it this turn") {
         return Some(Pred::Saddled(Ref::This));
     }
+    // What the source hurt: "creature dealt damage by this creature this turn".
+    if r.attempt(|r| {
+        r.need("dealt damage by")?;
+        r.source().then_some(())?;
+        r.need("this turn")
+    })
+    .is_some()
+    {
+        return Some(Pred::DamagedBy(Ref::This));
+    }
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
     }
@@ -653,6 +663,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::EnteredThisTurn => "that entered this turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
+        Pred::DamagedBy(Ref::This) => "dealt damage by ~ this turn".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),

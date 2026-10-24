@@ -1,0 +1,33 @@
+{
+  "oracle_id": "67d55b4f-944e-4376-93ed-1a240bca1eae",
+  "name": "Silversmote Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silversmote Ghoul",
+      "oracle_fingerprint": "7baeac9ebd4cf923356cedc57050bf74",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

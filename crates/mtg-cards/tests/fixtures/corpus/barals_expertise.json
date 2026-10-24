@@ -1,0 +1,23 @@
+{
+  "cmc": 5.0,
+  "collector_number": "146",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "d5beecd5-4267-454d-87db-24d476e1f352",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{U}{U}",
+  "name": "Baral's Expertise",
+  "oracle_id": "a1cdcb8c-1e12-4d39-aa4a-db678a80df9c",
+  "oracle_text": "Return up to three target artifacts and/or creatures to their owners' hands.\nYou may cast a spell with mana value 4 or less from your hand without paying its mana cost.",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "set": "tdc",
+  "type_line": "Sorcery"
+}
