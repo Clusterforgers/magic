@@ -1,0 +1,27 @@
+{
+  "oracle_id": "18ca77c9-e7d2-4afc-a72b-98772578fad7",
+  "name": "Juniper Order Ranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Juniper Order Ranger",
+      "oracle_fingerprint": "7c656f08350a8ff1b19b90fe6845f640",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

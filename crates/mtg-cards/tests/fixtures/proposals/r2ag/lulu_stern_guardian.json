@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"PlayerAttacks":{"by":"Opponents","at":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"AttackingPlayer":"You"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"stun"}}}]}},{"Activated":{"cost":"{3}{U}","effects":[{"Proliferate":{}}]}}]}]}

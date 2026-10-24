@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "63eb18e0-c723-4de4-8498-c5362c75b2b4",
+  "oracle_id": "42d121a2-5266-483a-ab16-e0a8073cd6a3",
+  "multiverse_ids": [
+    676155
+  ],
+  "mtgo_id": 131189,
+  "tcgplayer_id": 579318,
+  "cardmarket_id": 789021,
+  "name": "Halimar Depths",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/63eb18e0-c723-4de4-8498-c5362c75b2b4",
+  "scryfall_uri": "https://scryfall.com/card/dsc/282/halimar-depths?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:26:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.jpg?1783909574",
+    "normal": "https://cards.scryfall.io/normal/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.jpg?1783909574",
+    "large": "https://cards.scryfall.io/large/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.jpg?1783909574",
+    "png": "https://cards.scryfall.io/png/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.png?1783909574",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.jpg?1783909574",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.jpg?1783909574",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.webp?1783909574",
+    "grid": "https://cards.scryfall.io/grid/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.webp?1783909574",
+    "display": "https://cards.scryfall.io/display/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.webp?1783909574",
+    "art": "https://cards.scryfall.io/art/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.webp?1783909574",
+    "crop": "https://cards.scryfall.io/crop/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.webp?1783909574",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/3/63eb18e0-c723-4de4-8498-c5362c75b2b4.jpg?1783909574"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\nWhen this land enters, look at the top three cards of your library, then put them back in any order.\n{T}: Add {U}.",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/63eb18e0-c723-4de4-8498-c5362c75b2b4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A42d121a2-5266-483a-ab16-e0a8073cd6a3&unique=prints",
+  "collector_number": "282",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Volkan Baǵa",
+  "artist_ids": [
+    "93bec3c0-0260-4d31-8064-5d01efb4153f"
+  ],
+  "illustration_id": "5a6f2740-2dc4-4c00-b868-d00f103fb88f",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1356,
+  "penny_rank": 4809,
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.64",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=676155&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHalimar%2BDepths",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHalimar%2BDepths",
+    "edhrec": "https://edhrec.com/route/?cc=Halimar+Depths"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F579318%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=789021&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131189?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

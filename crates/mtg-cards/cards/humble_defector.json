@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1582e16d-4825-4cc5-b12c-449c45e4e449",
+  "name": "Humble Defector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Humble Defector",
+      "oracle_fingerprint": "fcbc26267eff41eb72ba64dada419c7b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
