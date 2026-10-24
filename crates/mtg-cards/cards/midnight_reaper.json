@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e8c7566d-7cc0-48af-a986-83223ec7e06c",
+  "name": "Midnight Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Reaper",
+      "oracle_fingerprint": "f60135c990921fadecea413433b71206",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

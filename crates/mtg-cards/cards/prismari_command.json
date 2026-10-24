@@ -1,0 +1,52 @@
+{
+  "oracle_id": "fa3e28b1-131c-4223-81e0-18dfbab22c26",
+  "name": "Prismari Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismari Command",
+      "oracle_fingerprint": "84f20db24370abcc931a9f950c54b178",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+                        { "Discard": { "who": { "Target": 0 }, "count": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": { "Named": "treasure" }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

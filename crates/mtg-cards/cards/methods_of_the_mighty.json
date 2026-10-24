@@ -1,0 +1,44 @@
+{
+  "oracle_id": "45f91d6a-eaab-4179-ac1f-5dc9e647a3da",
+  "name": "Methods of the Mighty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Methods of the Mighty",
+      "oracle_fingerprint": "63e69ae20076e301da2b5e182914be5b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": null },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "counter": "+1/+1"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

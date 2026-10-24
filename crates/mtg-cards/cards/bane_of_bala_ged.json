@@ -1,0 +1,29 @@
+{
+  "oracle_id": "38839894-1706-4e11-8310-5ea8dd8866d9",
+  "name": "Bane of Bala Ged",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bane of Bala Ged",
+      "oracle_fingerprint": "453d26ae556b41ea61deacb0d7216142",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Defending",
+                  "from": { "Each": [{ "ControlledBy": "Defending" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen"
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

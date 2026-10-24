@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":null}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":"Top"}}}},{"Draw":{}}]}}]}]}

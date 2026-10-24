@@ -8,9 +8,44 @@ use crate::refs::{Pred, Selector};
 use crate::trigger::{Step, TriggerPattern};
 use crate::value::Amount;
 
+/// "populate. The token enters tapped and attacking": the token of populate enters attacking; two effects.
+fn enters_attacking(effects: &[Effect]) -> Option<(String, usize)> {
+    let [
+        choose,
+        token @ Effect::CreateToken {
+            tapped: true,
+            attacking: true,
+            ..
+        },
+        ..,
+    ] = effects
+    else {
+        return None;
+    };
+    let mut steps = vec![choose.clone(), token.clone()];
+    if let Some(Effect::CreateToken {
+        tapped, attacking, ..
+    }) = steps.get_mut(1)
+    {
+        (*tapped, *attacking) = (false, false);
+    }
+    copies::is_populate(&steps).then(|| {
+        (
+            "populate. The token enters tapped and attacking".to_owned(),
+            2,
+        )
+    })
+}
+
+/// "populate", the form with the sentence that makes the token enter attacking or the one that gives it keywords and
+/// sacrifices it, and the number of effects it takes.
+pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
+    enters_attacking(effects).or_else(|| later(effects))
+}
+
 /// "populate", the keywords the token gains for good and its sacrifice at the next end step; the number of effects it
 /// takes. The token is bound so that the steps after populate can name it.
-pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
+fn later(effects: &[Effect]) -> Option<(String, usize)> {
     let [
         choose,
         Effect::CreateToken { bind, .. },

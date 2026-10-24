@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fd15e02a-dd1e-42ee-8c69-a3e5bcb5ede6",
+  "name": "Living Laser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Laser",
+      "oracle_fingerprint": "dee22daf8099c91be81b43a83c04a720",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "This", "except": [{ "RemoveSupertype": "Legendary" }] }
+                  },
+                  "count": { "Tallied": { "who": "You", "what": "Discarded" } },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

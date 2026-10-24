@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b5f5d6e3-e72e-40a5-a5c7-410617b6f933",
+  "name": "Rampant Rejuvenator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampant Rejuvenator",
+      "oracle_fingerprint": "d553a6a69145a6dc9b9a856d05e47371",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": { "Stat": { "of": "This", "stat": "Power" } } },
+                  "as": "lands"
+                }
+              },
+              { "Move": { "what": { "Bound": "lands" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

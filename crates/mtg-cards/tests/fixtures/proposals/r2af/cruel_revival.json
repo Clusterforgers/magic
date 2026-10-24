@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"Subtype":"Zombie"}}]}},{"what":{"Object":[{"Subtype":"Zombie"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}},{"Move":{"what":{"Target":1},"to":"Hand"}}]}}]}]}

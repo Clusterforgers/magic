@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]}}},{"Destroy":{"what":{"Each":[{"Type":"Planeswalker"},{"Not":{"ControlledBy":"You"}}]}}}]}}]}]}

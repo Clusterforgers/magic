@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"AdditionalLandPlays":{"who":"You","count":1}}}},{"Static":{"affected":{"Each":[{"Type":"Land"},{"ControlledBy":"You"}]},"mods":[{"AddSubtype":"Plains"},{"AddSubtype":"Island"},{"AddSubtype":"Swamp"},{"AddSubtype":"Mountain"},{"AddSubtype":"Forest"}]}}]}]}

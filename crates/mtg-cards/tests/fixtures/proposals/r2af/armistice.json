@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{3}{W}{W}"}],"targets":[{"what":"Opponent"}],"effects":[{"Draw":{}},{"GainLife":{"who":{"Target":0},"amount":3}}]}}]}]}

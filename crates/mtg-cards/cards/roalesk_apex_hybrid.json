@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ca4936cf-48d4-4469-9243-8dbf8ec4cdca",
+  "name": "Roalesk, Apex Hybrid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roalesk, Apex Hybrid",
+      "oracle_fingerprint": "24188b0f51a865699f30db6e64fc0d22",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Proliferate": {} }, { "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

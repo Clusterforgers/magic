@@ -5,9 +5,10 @@
 use super::amounts::count_word;
 use super::modal::{BULLET, DASH};
 use super::render::{alternatives, capitalize};
+use super::statics;
 use crate::effect::Mode;
 use crate::refs::Bounds;
-use crate::value::Amount;
+use crate::value::{Amount, Condition};
 
 /// How many modes are chosen, as the line before the bullets says it; `None` for a choice no card words.
 fn header(choose: &Bounds, modes: usize) -> Option<String> {
@@ -31,6 +32,22 @@ fn header(choose: &Bounds, modes: usize) -> Option<String> {
         _ => return None,
     };
     Some(format!("choose {words} {DASH}"))
+}
+
+/// "choose one. If you control a commander as you cast this spell, you may choose both instead." for a spell and the same
+/// without "as you cast this spell" for a trigger, in each wording of the condition.
+fn both_instead(condition: &Condition) -> Vec<String> {
+    statics::control_texts(condition)
+        .iter()
+        .flat_map(|held| {
+            [
+                format!(
+                    "choose one. If {held} as you cast this spell, you may choose both instead."
+                ),
+                format!("choose one. If {held}, you may choose both instead."),
+            ]
+        })
+        .collect()
 }
 
 /// The lines of one mode: its sentences capitalized, in each wording, and with its name in front when it has one. A name
@@ -61,21 +78,30 @@ fn bullets(mode: &Mode) -> Vec<String> {
 pub(super) fn texts(
     choose: &Bounds,
     modes: &[Mode],
-    at_random: bool,
-    once_each_turn: bool,
+    flags: (bool, bool),
+    all_if: Option<&Condition>,
 ) -> Vec<String> {
+    let (at_random, once_each_turn) = flags;
     let Some(header) = header(choose, modes.len()) else {
         return Vec::new();
     };
     // "choose one at random —" and "choose one that hasn't been chosen this turn —", which a card may end with a period.
     let one = header.starts_with("choose one ") && choose.is_one();
-    let mut texts = match (at_random, once_each_turn) {
-        (false, false) => vec![header],
-        (true, false) if one => vec![format!("choose one at random {DASH}")],
-        (false, true) if one => vec![
-            format!("choose one that hasn't been chosen this turn {DASH}"),
-            "choose one that hasn't been chosen this turn.".to_owned(),
-        ],
+    // The wordings of a header that comes in several are put in front once the bullets are written, so they do not
+    // use up the room for the wordings of the modes.
+    let (mut texts, headers) = match (all_if, at_random, once_each_turn) {
+        (Some(condition), false, false) if one && modes.len() == 2 => {
+            (vec![String::new()], both_instead(condition))
+        }
+        (None, false, false) => (vec![header], Vec::new()),
+        (None, true, false) if one => (vec![format!("choose one at random {DASH}")], Vec::new()),
+        (None, false, true) if one => (
+            vec![
+                format!("choose one that hasn't been chosen this turn {DASH}"),
+                "choose one that hasn't been chosen this turn.".to_owned(),
+            ],
+            Vec::new(),
+        ),
         _ => return Vec::new(),
     };
     for (at, mode) in modes.iter().enumerate() {
@@ -91,5 +117,11 @@ pub(super) fn texts(
             .take(64)
             .collect();
     }
-    texts
+    if headers.is_empty() {
+        return texts;
+    }
+    headers
+        .iter()
+        .flat_map(|head| texts.iter().map(move |text| format!("{head}{text}")))
+        .collect()
 }

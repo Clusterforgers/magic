@@ -1,0 +1,19 @@
+{
+  "oracle_id": "2d4976d4-649c-4d42-ac5a-ada4b46a480c",
+  "name": "Angrath's Marauders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angrath's Marauders",
+      "oracle_fingerprint": "5209803992b0a6bad5c2ff7226c357dc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e103f422-85c0-43f8-8a2f-8b7863e503fa",
+  "name": "Mirage Mesa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirage Mesa",
+      "oracle_fingerprint": "eb329db35373566f96a6c61e13580950",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

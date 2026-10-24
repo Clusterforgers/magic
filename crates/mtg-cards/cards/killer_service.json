@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0f30f32f-3c4c-4f73-8b2a-82045a40bda9",
+  "name": "Killer Service",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Killer Service",
+      "oracle_fingerprint": "0653c5961539d486550816b1917e00e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": { "token": { "Named": "food" }, "count": { "Players": "Opponents" } }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": ["Token"] } }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Rhino Warrior",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Rhino", "Warrior"],
+                            "power": 4,
+                            "toughness": 4
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

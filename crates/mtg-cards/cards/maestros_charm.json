@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3b207754-9172-426a-8efc-a9c3912d94bb",
+  "name": "Maestros Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maestros Charm",
+      "oracle_fingerprint": "ce678caf133ed22e70d6bdeb2f1221c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": 5, "as": "top" } },
+                        {
+                          "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" }
+                        },
+                        { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+                        { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "LoseLife": { "who": "Opponents", "amount": 3 } },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

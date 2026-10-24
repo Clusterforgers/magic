@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a598e824-ad8e-4947-896b-70c5275b615a",
+  "name": "Moria Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moria Scavenger",
+      "oracle_fingerprint": "2ef012abd6bccf779e8de51f45498097",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Discard": {} }],
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Paid", "selector": [{ "Type": "Creature" }] }
+                  },
+                  "then": [{ "Amass": { "subtype": "Orc", "count": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

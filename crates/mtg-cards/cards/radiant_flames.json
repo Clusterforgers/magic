@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cfc8372f-13b6-4628-84c7-066881b287f5",
+  "name": "Radiant Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Flames",
+      "oracle_fingerprint": "e3b3b9ae632f80461bef4ec357f012f9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": "ColorsSpent"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

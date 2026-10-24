@@ -1,0 +1,44 @@
+{
+  "oracle_id": "891d2690-7144-4f87-b6ef-96f2469780a9",
+  "name": "Righteous Valkyrie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Righteous Valkyrie",
+      "oracle_fingerprint": "4c495aa9771e8a0523796010f8c8935a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "AnyOf": [{ "Subtype": "Angel" }, { "Subtype": "Cleric" }] }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Ge",
+                "right": { "Sum": [{ "StartingLife": "You" }, 7] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
