@@ -830,10 +830,12 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     } else {
         ("from your hand", "from your graveyard")
     };
-    if r.words(hand) {
+    // A group of cards says where they are as the count does: "nonland cards in your hand".
+    let in_zone = form == Form::All;
+    if r.words(hand) || (in_zone && r.words("in your hand")) {
         return Some(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
     }
-    if r.words(graveyard) {
+    if r.words(graveyard) || (in_zone && r.words("in your graveyard")) {
         return Some(vec![Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
     }
     if form == Form::Count {

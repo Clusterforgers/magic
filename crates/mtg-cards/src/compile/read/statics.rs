@@ -41,7 +41,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 23] = [
+const TEMPLATES: [Template; 24] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
@@ -56,6 +56,7 @@ const TEMPLATES: [Template; 23] = [
     cannot,
     cost_modifier,
     super::spell_keywords::ability,
+    super::card_grants::ability,
     modifies,
     defining::ability,
     prevention::static_rule,
@@ -1022,6 +1023,13 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             defining: false,
             from: ZoneKind::Battlefield,
         } if spells.first() == Some(&Pred::Spell) => super::spell_keywords::texts(affected, mods),
+        Ability::Static {
+            affected: affected @ Ref::Each(Selector(cards)),
+            mods,
+            condition: None,
+            defining: false,
+            from: ZoneKind::Battlefield,
+        } if super::card_grants::names_cards(cards) => super::card_grants::texts(affected, mods),
         Ability::Static {
             affected,
             mods,

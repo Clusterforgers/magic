@@ -406,6 +406,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "fading" => positive(rest).map(Keyword::Fading),
         "graft" => positive(rest).map(Keyword::Graft),
         "afflict" => positive(rest).map(Keyword::Afflict),
+        "replicate" => spell_cost(rest).map(Keyword::Replicate),
         "backup" => positive(rest).map(|count| Keyword::Backup {
             count,
             abilities: Vec::new(),
@@ -1099,6 +1100,7 @@ mod tests {
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::replicate("Replicate {2}", Keyword::Replicate(mana("{2}")))]
     #[case::offspring("Offspring {2}", Keyword::Offspring(mana("{2}")))]
     #[case::casualty("Casualty 2", Keyword::Casualty(2))]
     #[case::hideaway("Hideaway 4", Keyword::Hideaway(4))]
@@ -1598,6 +1600,7 @@ mod tests {
             "Cipher",
             "Graft 2",
             "Afflict 2",
+            "Replicate {1}{R}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
