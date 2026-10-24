@@ -311,10 +311,15 @@ fn unread_target_counts(pending: &mut [Pending], spell_unread: bool) {
 /// spell line. When the spell does not read whole, the costs that count its targets wait for it and the lines that read
 /// alone are held back by the others.
 fn read_spell_lines(pending: &mut [Pending], x_free: bool, own: &read::Own) -> bool {
+    // An ability word before a dash ("Threshold — ") is flavor: the line reads without it.
     let lines: Vec<&str> = pending
         .iter()
         .filter(|clause| clause.kind == ClauseKind::Spell)
-        .map(|clause| clause.text.as_str())
+        .map(|clause| {
+            let text = clause.text.as_str();
+            text.get(classify::ability_word_len(text).unwrap_or(0)..)
+                .unwrap_or(text)
+        })
         .collect();
     let spell_text = lines.join("\n");
     let counter_explained = pending

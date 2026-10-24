@@ -37,9 +37,11 @@ use super::defining;
 use super::draws;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::event_wordings;
+use super::exiled_kind;
 use super::flicker;
 use super::group_copies;
 use super::group_pump;
+use super::instead_pairs;
 use super::kicked_copies;
 use super::lands;
 use super::library;
@@ -120,6 +122,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(controller);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
+    let replaced = instead_pairs::other_wordings(&texts);
+    texts.extend(replaced);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
     let regenerating = regeneration_wordings(&texts);
@@ -852,6 +856,17 @@ fn written(
         // A permanent chosen and the target that becomes a copy of it, a copy made more times when the spell was
         // kicked, or a group that becomes a copy of the target: sentences that no joint splits.
         if let Some((texts, used)) = writer.copy_group(&effects[start..], wording.chosen) {
+            unsplit(mask, start, used)?;
+            sentences.extend(texts);
+            start += used;
+            continue;
+        }
+        // An exile and what follows when the object was of a kind, or an effect that another replaces when a condition
+        // holds: two sentences, which no joint splits.
+        if let Some((texts, used)) = writer
+            .exile_kind(&effects[start..])
+            .or_else(|| instead::pair(targets, &effects[start..], wording))
+        {
             unsplit(mask, start, used)?;
             sentences.extend(texts);
             start += used;

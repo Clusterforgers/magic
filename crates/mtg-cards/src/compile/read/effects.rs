@@ -132,6 +132,19 @@ fn templates() -> impl Iterator<Item = Template> {
         .chain(super::lands::TEMPLATES)
 }
 
+/// The effects of the first sentence shape that reads and after which `close` ends the sentence.
+pub(super) fn closed_shape(
+    r: &mut Reader<'_>,
+    close: impl Fn(&mut Reader<'_>) -> bool,
+) -> Option<Vec<Effect>> {
+    templates().find_map(|template| {
+        r.attempt(|r| {
+            let found = template(r)?;
+            close(r).then_some(found)
+        })
+    })
+}
+
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
 pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
@@ -458,7 +471,7 @@ pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
 /// and loses 3 life". The player the event is about may act after "and" ("you create a Wolf token and that player mills
 /// ten cards"), and so may you after another player ("target player loses 2 life and you gain 2 life") or after
 /// yourself ("you draw a card and you lose 1 life"). The effects are those of the sentence, in order.
-fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+pub(super) fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
     let mut effects = phrases(r, &who)?;
     // The sentences of two other players stay with the table.
