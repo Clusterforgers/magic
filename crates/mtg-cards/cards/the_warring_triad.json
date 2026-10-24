@@ -1,0 +1,36 @@
+{
+  "oracle_id": "df0b5995-117b-4ba8-964d-ea3c592621ef",
+  "name": "The Warring Triad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Warring Triad",
+      "oracle_fingerprint": "c76b5454f22a2fc8034dde435f413930",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Lt",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mill": 1 }],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "AddMana": { "who": { "Target": 0 }, "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

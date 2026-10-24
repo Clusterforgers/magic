@@ -1,0 +1,30 @@
+{
+  "oracle_id": "dd45c284-c34c-4085-8066-dbeee223fb6e",
+  "name": "March of Progress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "March of Progress",
+      "oracle_fingerprint": "c55b57cb11d53e8c0134b51580dfc40d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        },
+        { "Keyword": { "Overload": "{6}{U}" } }
+      ]
+    }
+  ]
+}

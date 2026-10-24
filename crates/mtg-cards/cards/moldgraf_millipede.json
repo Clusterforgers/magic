@@ -1,0 +1,30 @@
+{
+  "oracle_id": "48edac92-0dd8-4274-bf1b-122243770540",
+  "name": "Moldgraf Millipede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moldgraf Millipede",
+      "oracle_fingerprint": "28777a7259ed787a53f2c558abbdf0a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7c340a39-4ee0-4ba1-bb66-6674f8020fda",
+  "name": "Gratuitous Violence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gratuitous Violence",
+      "oracle_fingerprint": "93fb3ac6ab60f61276766d3adc09ef29",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "148145ef-a368-4caf-921d-e3809adf03de",
+  "name": "Vodalian Wave-Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vodalian Wave-Knight",
+      "oracle_fingerprint": "b189ac88477e0d3bcb559d4796944e26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Merfolk" }, { "Subtype": "Knight" }] },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

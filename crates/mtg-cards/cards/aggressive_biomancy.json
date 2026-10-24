@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9080a7bb-2b8b-42af-9f5b-a9f374ecb801",
+  "name": "Aggressive Biomancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aggressive Biomancy",
+      "oracle_fingerprint": "5d4668d836c679e39fe90b8b75d1a6ec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                              "targets": [
+                                {
+                                  "what": {
+                                    "Object": [
+                                      { "Type": "Creature" },
+                                      { "Not": { "ControlledBy": "You" } }
+                                    ]
+                                  },
+                                  "bounds": { "min": 0, "max": 1 }
+                                }
+                              ],
+                              "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

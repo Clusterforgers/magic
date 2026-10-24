@@ -1,0 +1,38 @@
+{
+  "oracle_id": "57308fc8-8915-4211-a5fd-9363caea9ab9",
+  "name": "Scourge of Fleets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scourge of Fleets",
+      "oracle_fingerprint": "f19aee276b75d47fd4e910f2f8df00b9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Opponents" },
+                      {
+                        "Compare": {
+                          "stat": "Toughness",
+                          "op": "Le",
+                          "to": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                        }
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

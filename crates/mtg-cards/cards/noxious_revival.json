@@ -1,0 +1,21 @@
+{
+  "oracle_id": "97cabeda-9fe3-490d-99b4-4c8d87c17157",
+  "name": "Noxious Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noxious Revival",
+      "oracle_fingerprint": "616b903e97ac36fd526023240a532034",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

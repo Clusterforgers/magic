@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "a98a7698-57fb-41f6-86d4-251c7d444c6a",
+  "oracle_id": "5bafd0e0-8bf8-4e06-a54a-81cc6cc4bdb7",
+  "multiverse_ids": [
+    473028
+  ],
+  "mtgo_id": 78244,
+  "arena_id": 70213,
+  "tcgplayer_id": 198981,
+  "cardmarket_id": 400244,
+  "name": "Stolen by the Fae",
+  "lang": "en",
+  "released_at": "2019-10-04",
+  "uri": "https://api.scryfall.com/cards/a98a7698-57fb-41f6-86d4-251c7d444c6a",
+  "scryfall_uri": "https://scryfall.com/card/eld/66/stolen-by-the-fae?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:50:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.jpg?1783932648",
+    "normal": "https://cards.scryfall.io/normal/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.jpg?1783932648",
+    "large": "https://cards.scryfall.io/large/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.jpg?1783932648",
+    "png": "https://cards.scryfall.io/png/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.png?1783932648",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.jpg?1783932648",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.jpg?1783932648",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.webp?1783932648",
+    "grid": "https://cards.scryfall.io/grid/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.webp?1783932648",
+    "display": "https://cards.scryfall.io/display/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.webp?1783932648",
+    "art": "https://cards.scryfall.io/art/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.webp?1783932648",
+    "crop": "https://cards.scryfall.io/crop/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.webp?1783932648",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/9/a98a7698-57fb-41f6-86d4-251c7d444c6a.jpg?1783932648"
+  },
+  "mana_cost": "{X}{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return target creature with mana value X to its owner's hand. You create X 1/1 blue Faerie creature tokens with flying.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bcd82cb0-ff4b-4f4d-b3d0-3ac53883b099",
+      "component": "token",
+      "name": "Faerie",
+      "type_line": "Token Creature — Faerie",
+      "uri": "https://api.scryfall.com/cards/bcd82cb0-ff4b-4f4d-b3d0-3ac53883b099"
+    },
+    {
+      "object": "related_card",
+      "id": "314ca59b-873b-4665-b46d-d73398f85a67",
+      "component": "combo_piece",
+      "name": "Stolen by the Fae",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/314ca59b-873b-4665-b46d-d73398f85a67"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set": "eld",
+  "set_name": "Throne of Eldraine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a98a7698-57fb-41f6-86d4-251c7d444c6a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5bafd0e0-8bf8-4e06-a54a-81cc6cc4bdb7&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Denizens of the wilds don't always seek to harm intruders. Sometimes they simply misplace them.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ryan Alexander Lee",
+  "artist_ids": [
+    "f4d194b4-958a-4830-8d87-1a84e0b9ffbc"
+  ],
+  "illustration_id": "2de7bc83-f936-4182-af81-b4f0667f680e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 5321,
+  "penny_rank": 13001,
+  "preview": {
+    "source": "Giga",
+    "source_uri": "https://www.giga.de/artikel/magic-the-gathering-exklusive-preview-karte-zu-throne-of-eldraine/",
+    "previewed_at": "2019-09-11"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.50",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.49",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=473028&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStolen%2Bby%2Bthe%2BFae",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStolen%2Bby%2Bthe%2BFae",
+    "edhrec": "https://edhrec.com/route/?cc=Stolen+by+the+Fae"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F198981%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=400244&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/78244?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

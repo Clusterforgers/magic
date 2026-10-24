@@ -1,0 +1,34 @@
+{
+  "oracle_id": "65d63518-3261-40b5-87b8-19c152b29ee3",
+  "name": "Roiling Regrowth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roiling Regrowth",
+      "oracle_fingerprint": "7cacb930fa8a25abdf049ec661498707",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Land" }] } },
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "lands"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "lands" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

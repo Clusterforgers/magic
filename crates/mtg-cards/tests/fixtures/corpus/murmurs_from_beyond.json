@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "d9a38381-5fce-4192-a3f4-7bba3b522ea4",
+  "oracle_id": "1e8be8b4-f7be-49cb-b32e-d92015dea7a2",
+  "multiverse_ids": [
+    247410
+  ],
+  "mtgo_id": 40714,
+  "mtgo_foil_id": 41034,
+  "tcgplayer_id": 47462,
+  "cardmarket_id": 247286,
+  "name": "Murmurs from Beyond",
+  "lang": "en",
+  "released_at": "2011-06-17",
+  "uri": "https://api.scryfall.com/cards/d9a38381-5fce-4192-a3f4-7bba3b522ea4",
+  "scryfall_uri": "https://scryfall.com/card/cmd/53/murmurs-from-beyond?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:13:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.jpg?1783941238",
+    "normal": "https://cards.scryfall.io/normal/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.jpg?1783941238",
+    "large": "https://cards.scryfall.io/large/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.jpg?1783941238",
+    "png": "https://cards.scryfall.io/png/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.png?1783941238",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.jpg?1783941238",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.jpg?1783941238",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.webp?1783941238",
+    "grid": "https://cards.scryfall.io/grid/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.webp?1783941238",
+    "display": "https://cards.scryfall.io/display/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.webp?1783941238",
+    "art": "https://cards.scryfall.io/art/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.webp?1783941238",
+    "crop": "https://cards.scryfall.io/crop/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.webp?1783941238",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/9/d9a38381-5fce-4192-a3f4-7bba3b522ea4.jpg?1783941238"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant — Arcane",
+  "oracle_text": "Reveal the top three cards of your library. An opponent chooses one of them. Put that card into your graveyard and the rest into your hand.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "84ff1a64-4e69-4ed2-8c08-26206e3b97a0",
+  "set": "cmd",
+  "set_name": "Commander 2011",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/84ff1a64-4e69-4ed2-8c08-26206e3b97a0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d9a38381-5fce-4192-a3f4-7bba3b522ea4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1e8be8b4-f7be-49cb-b32e-d92015dea7a2&unique=prints",
+  "collector_number": "53",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Like pools of fog that hid treacherous rocks from sailors' eyes, so too were the hands of the kami.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paolo Parente",
+  "artist_ids": [
+    "d48dd097-720d-476a-8722-6a02854ae28b"
+  ],
+  "illustration_id": "7cebcb10-dd97-4ccb-8ed5-a14cca5e7695",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 22007,
+  "penny_rank": 13312,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=247410&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMurmurs%2Bfrom%2BBeyond",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMurmurs%2Bfrom%2BBeyond",
+    "edhrec": "https://edhrec.com/route/?cc=Murmurs+from+Beyond"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F47462%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=247286&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/40714?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8dd5f5af-d2d8-4356-8617-8381081b930c",
+  "name": "Yavimaya, Cradle of Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yavimaya, Cradle of Growth",
+      "oracle_fingerprint": "5cdfb03e2bfc3aa3e3c5394934957ce0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }] },
+            "mods": [{ "AddSubtype": "Forest" }]
+          }
+        }
+      ]
+    }
+  ]
+}

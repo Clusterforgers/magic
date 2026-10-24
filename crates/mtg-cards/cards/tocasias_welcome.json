@@ -1,0 +1,31 @@
+{
+  "oracle_id": "25c983e0-a8c9-4784-91a4-8fe04c6df882",
+  "name": "Tocasia's Welcome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tocasia's Welcome",
+      "oracle_fingerprint": "887718c4606f985bcfb59b35f02191d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

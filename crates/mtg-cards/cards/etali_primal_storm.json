@@ -1,0 +1,22 @@
+{
+  "oracle_id": "078def07-ae5d-4591-8db6-d156834aab97",
+  "name": "Etali, Primal Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etali, Primal Storm",
+      "oracle_fingerprint": "eaa64f2761c5dbbb85e8f1d3e3a204ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              { "CastFromZone": { "what": { "Bound": "exiled" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

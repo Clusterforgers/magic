@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"AnyOf":[{"Compare":{"stat":"Power","op":"Le","to":1}},{"Compare":{"stat":"Toughness","op":"Le","to":1}}]}]},"mods":["CantBeBlocked"]}}]}]}

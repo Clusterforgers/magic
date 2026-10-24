@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{5}"},"Tap"],"targets":[{"what":"Player"}],"effects":[{"Mill":{"who":{"Target":0},"count":{"Count":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]}}}]}}]}]}

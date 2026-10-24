@@ -9,6 +9,7 @@ use mtg_core::color::Color;
 use super::amounts::{count_word, number_word};
 use super::counters;
 use super::facts;
+use super::library;
 use super::selectors::{Form, color, color_name, phrase, phrase_text};
 use super::statics::{holds, holds_texts};
 use super::tokens::Reader;
@@ -171,12 +172,27 @@ fn cards_counted(r: &mut Reader<'_>) -> Option<Condition> {
         let number = quantity(r)?;
         return Some(compare(Amount::Count(graveyard(r)?), Cmp::Lt, number));
     }
+    let at_least = r.words("at least");
     let number = quantity(r)?;
-    r.need("or more")?;
+    if !at_least {
+        r.need("or more")?;
+    }
     if r.words("card types among") {
         return Some(compare(Amount::CardTypes(graveyard(r)?), Cmp::Ge, number));
     }
-    Some(compare(Amount::Count(graveyard(r)?), Cmp::Ge, number))
+    Some(compare(Amount::Count(graveyard_kind(r)?), Cmp::Ge, number))
+}
+
+/// "cards in your graveyard" or the cards of a kind there: "Zombie creature cards in your graveyard".
+fn graveyard_kind(r: &mut Reader<'_>) -> Option<Selector> {
+    if let Some(all) = r.attempt(graveyard) {
+        return Some(all);
+    }
+    let kind = library::filter(r, true)?;
+    r.need("in your graveyard")?;
+    let mut preds = graveyard_cards().0;
+    preds.extend(kind.0);
+    Some(Selector(preds))
 }
 
 /// "no cards in hand", "seven or more cards in hand", "one or fewer cards in hand" after "you have".
@@ -383,6 +399,17 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
         (Amount::Count(of), Cmp::Ge) if *of == graveyard_cards() => {
             vec![format!("there are {words} or more cards in your graveyard")]
         }
+        (Amount::Count(of), Cmp::Ge) if of.0.starts_with(&graveyard_cards().0) => {
+            let kind = Selector(of.0[graveyard_cards().0.len()..].to_vec());
+            library::filter_text(&kind, true)
+                .map(|kind| {
+                    vec![
+                        format!("there are at least {words} {kind} in your graveyard"),
+                        format!("there are {words} or more {kind} in your graveyard"),
+                    ]
+                })
+                .unwrap_or_default()
+        }
         (Amount::Count(of), Cmp::Lt) if *of == graveyard_cards() => {
             vec![format!(
                 "there are fewer than {words} cards in your graveyard"
@@ -399,7 +426,7 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
 }
 
 /// "you control no other creatures".
-fn none_texts(condition: &Condition) -> Vec<String> {
+pub(super) fn none_texts(condition: &Condition) -> Vec<String> {
     let Condition::Compare {
         left: Amount::Count(Selector(preds)),
         op: Cmp::Eq,

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Ravenous"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}},{"what":"Opponent"}],"effects":[{"Rule":{"rule":{"MustAttackPlayers":{"who":{"Target":0},"players":{"Target":1}}},"duration":"UntilEndOfTurn"}}]}}]}]}

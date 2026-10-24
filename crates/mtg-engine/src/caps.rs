@@ -92,6 +92,7 @@ const RUNS: &[&str] = &[
     "Cost.DiscardSelf",
     "Cost.PayLife",
     "Cost.PayEnergy",
+    "Cost.Mill",
     "Cost.Sacrifice",
     "Cost.Discard",
     "Cost.RemoveCounters",
@@ -230,6 +231,7 @@ const RUNS: &[&str] = &[
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantBlock",
+    "Mod.DoesntUntap",
     "Mod.CantBeBlocked",
     "Mod.CantBeBlockedBy",
     "Mod.CanBlockOnly",
@@ -433,6 +435,9 @@ const RUNS: &[&str] = &[
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
     "Condition.Level",
+    "Condition.Step",
+    "Condition.BeforeAttackers",
+    "Condition.InCombat",
     "Rule.CanBeCommander",
 ];
 
@@ -729,6 +734,7 @@ mod tests {
     #[case::the_greatest_value("Amount.Greatest", true)]
     #[case::totals("Amount.Total", true)]
     #[case::card_types_among_cards("Amount.CardTypes", true)]
+    #[case::milling_as_a_cost("Cost.Mill", true)]
     #[case::paying_energy("Cost.PayEnergy", true)]
     #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
@@ -853,6 +859,9 @@ mod tests {
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::a_class_level("Condition.Level", true)]
+    #[case::a_step_of_the_turn("Condition.Step", true)]
+    #[case::before_attackers("Condition.BeforeAttackers", true)]
+    #[case::in_combat("Condition.InCombat", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

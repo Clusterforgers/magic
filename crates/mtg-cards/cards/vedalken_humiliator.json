@@ -1,0 +1,34 @@
+{
+  "oracle_id": "17c3a888-84d2-4c21-8fa3-d2d825dd7601",
+  "name": "Vedalken Humiliator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Humiliator",
+      "oracle_fingerprint": "80e66345044e773d6862822bb1419c99",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": ["LoseAbilities", { "SetPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8203c621-a1a0-4865-8c9a-0d4064c86107",
+  "name": "Buried Alive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Buried Alive",
+      "oracle_fingerprint": "fc3914d543ae25a2a57b4f6d82ca1706",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 0, "max": 3 },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Graveyard" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

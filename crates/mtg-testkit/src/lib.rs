@@ -98,6 +98,7 @@ pub mod recursion_cards;
 pub mod reduction_cards;
 pub mod replace_cards;
 pub mod required_cost_cards;
+pub mod restriction_cards;
 pub mod reveal_until_cards;
 pub mod rule_cards;
 pub mod saga_cards;
@@ -147,7 +148,8 @@ pub use commander_cards::{
 pub use companion_cards::companion_fuzz_setup;
 pub use conditional_static_cards::conditional_static_fuzz_setup;
 pub use copy_cards::{
-    copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup, spell_copy_fuzz_setup,
+    copy_attack_fuzz_setup, copy_fuzz_setup, copy_shapes_fuzz_setup, copy_wording_fuzz_setup,
+    spell_copy_fuzz_setup,
 };
 pub use copy_keyword_cards::copy_keywords_fuzz_setup;
 pub use cost_cards::cost_fuzz_setup;
@@ -225,6 +227,7 @@ pub use replace_cards::replace_fuzz_setup;
 pub use required_cost_cards::{
     REQUIRED_COST_CARDS, Takes, required_cost_fuzz_setup, required_cost_of,
 };
+pub use restriction_cards::restriction_fuzz_setup;
 pub use reveal_until_cards::{REVEAL_UNTIL_CARDS, reveal_until_fuzz_setup};
 pub use rule_cards::rules_fuzz_setup;
 pub use saga_cards::{

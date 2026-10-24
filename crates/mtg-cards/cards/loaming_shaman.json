@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cf7352bf-3971-4bb7-88b9-65ab9a219289",
+  "name": "Loaming Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loaming Shaman",
+      "oracle_fingerprint": "079acb416e0eef0241e02aa36ec2b3ac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

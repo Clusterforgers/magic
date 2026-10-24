@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Sacrifice":{"who":"Opponents","filter":[{"Type":"Creature"}]}}]}}]}]}

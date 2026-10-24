@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b1c56e23-eae6-47a1-a1cd-3a2d01621768",
+  "name": "Vona, Butcher of Magan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vona, Butcher of Magan",
+      "oracle_fingerprint": "91faf283f061a856a81715e516be4751",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 7 }],
+            "condition": "YourTurn",
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

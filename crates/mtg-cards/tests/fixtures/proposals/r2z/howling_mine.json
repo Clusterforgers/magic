@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Draw"}},"if":{"Matches":{"subject":"This","selector":["Untapped"]}},"effects":[{"Draw":{"who":"Triggering","count":1}}]}}]}]}

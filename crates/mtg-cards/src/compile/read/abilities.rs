@@ -4,14 +4,12 @@
 
 use super::tokens::Reader;
 use super::{
-    as_long_as, costs, effects, exiled_kind, instead_pairs, mana_trigger, modal, render, statics,
-    triggers,
+    costs, effects, exiled_kind, instead_pairs, mana_trigger, modal, render, restrictions, triggers,
 };
-use crate::ability::{Ability, Limit, LoyaltyCost, Timing};
+use crate::ability::{Ability, Limit, LoyaltyCost};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
-use crate::value::Condition;
 
 /// Whether the next sentence is a restriction that ends the effects: "Activate only ..." or "This ability triggers only
 /// once each turn."
@@ -261,36 +259,6 @@ fn about_a_player(when: &TriggerPattern) -> bool {
     )
 }
 
-/// "Activate only as a sorcery." and "Activate only once each turn.", alone or joined by "and only"; also "Activate only
-/// if you control a Swamp." alone.
-fn restrictions(r: &mut Reader<'_>) -> Option<(Timing, Option<Limit>, Option<Condition>)> {
-    if !r.words("activate only") {
-        return Some((Timing::Instant, None, None));
-    }
-    if r.word("if") {
-        let condition = r
-            .attempt(statics::control)
-            .or_else(|| r.attempt(|r| as_long_as::body(r, Some(&Ref::This))))?;
-        return r
-            .sentence_end()
-            .then_some((Timing::Instant, None, Some(condition)));
-    }
-    let (mut timing, mut limit) = (Timing::Instant, None);
-    loop {
-        if timing == Timing::Instant && r.words("as a sorcery") {
-            timing = Timing::Sorcery;
-        } else if limit.is_none() && r.words("once each turn") {
-            limit = Some(Limit::OncePerTurn);
-        } else {
-            return None;
-        }
-        if !r.words("and only") {
-            break;
-        }
-    }
-    r.sentence_end().then_some((timing, limit, None))
-}
-
 /// An activated ability: a cost, a colon, sentences and the restrictions on when it may be
 /// activated: `{T}: Add {G}.`, `{2}, {T}, Sacrifice ~: Draw a card.`
 pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
@@ -304,7 +272,7 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     let in_graveyard = r.from_graveyard || effects::returns_from_graveyard(r);
     r.from_graveyard = in_graveyard;
     let effects = sentences(r, true)?;
-    let (timing, limit, condition) = restrictions(r)?;
+    let (timing, limit, condition) = restrictions::read(r)?;
     let targets = std::mem::take(&mut r.targets);
     // An ability without targets that adds mana is a mana ability (CR 605.1a) whatever else it does and plays
     // without the stack; the data holds it whole, and the engine plays the shapes it reads (`mana_shape`).

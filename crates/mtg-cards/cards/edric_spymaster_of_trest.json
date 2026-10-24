@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9a1de7e4-9930-4db3-a8f3-d146d0abf38b",
+  "name": "Edric, Spymaster of Trest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Edric, Spymaster of Trest",
+      "oracle_fingerprint": "3dd5b22cadbfbaa0c8309d6d14a1cdf7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [{ "Draw": { "who": { "ControllerOf": "Triggering" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

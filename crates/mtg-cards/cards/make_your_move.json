@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8226f31d-6f51-49c3-87f7-0c68f7f4f9ce",
+  "name": "Make Your Move",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Make Your Move",
+      "oracle_fingerprint": "f3e2c578b427e9a78a009f0b8182cecc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Artifact" }] },
+                    { "Object": [{ "Type": "Enchantment" }] },
+                    {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

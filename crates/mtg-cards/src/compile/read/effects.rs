@@ -40,8 +40,12 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 63] = [
+const TEMPLATES: [Template; 68] = [
     modal::modal,
+    super::chance::flip,
+    super::chance::roll,
+    super::vote::named,
+    super::repeat::each_player,
     super::spent::sacrifice_unless,
     super::actions::fight,
     super::actions::bite,
@@ -70,6 +74,7 @@ const TEMPLATES: [Template; 63] = [
     super::random_moves::from_graveyard,
     removal,
     super::flicker::exile_and_return,
+    super::flicker::exile_with_counters,
     super::becomes::creature,
     super::becomes::animate,
     super::changes::pump,
@@ -128,7 +133,7 @@ pub(super) const IMPERATIVES: [Template; 16] = [
 
 /// Every sentence shape, in the order they are tried: the shapes of `conditional` first, which read a sentence
 /// that another shape would read in part.
-fn templates() -> impl Iterator<Item = Template> {
+pub(super) fn templates() -> impl Iterator<Item = Template> {
     conditional::TEMPLATES
         .into_iter()
         .chain(TEMPLATES)
@@ -154,7 +159,17 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     // A where clause at the end of the sentence gives the X inside it its amount.
     let named = where_x::ahead(r);
     let outer = std::mem::replace(&mut r.where_x, named);
-    let read = sentence_shapes(r, effects);
+    // A sentence may open with "Then" (", then you gain 2 life"); the writer says it for the sentences of a sequence.
+    let read = r
+        .attempt(|r| {
+            if r.lookahead(|r| r.word("then").then(|| r.word("you")))
+                .unwrap_or(false)
+            {
+                r.word("then");
+            }
+            sentence_shapes(r, effects).then_some(())
+        })
+        .is_some();
     r.where_x = outer;
     read
 }
@@ -195,7 +210,8 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
             return true;
         }
     }
-    false
+    r.attempt(|r| super::joined::and_you(r, effects)).is_some()
+        || r.attempt(|r| super::joined::then_you(r, effects)).is_some()
 }
 
 /// "Counter target spell unless its controller pays {2}.", "You may draw a card unless that player
@@ -668,15 +684,16 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
 
 /// "a creature or planeswalker" and "of their choice": the player chooses, as they always do.
 fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
-    (r.word("a") || r.word("an")).then_some(())?;
-    let filter = phrase(r, Form::Subject)?;
+    let (count, form) = if r.word("a") || r.word("an") {
+        (Amount::one(), Form::Subject)
+    } else {
+        let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
+        (Amount::Fixed(i32::try_from(number).ok()?), Form::All)
+    };
+    let filter = phrase(r, form)?;
     filter.0.iter().all(describes_a_kind).then_some(())?;
     r.words("of their choice");
-    Some(Effect::Sacrifice {
-        who,
-        filter,
-        count: Amount::one(),
-    })
+    Some(Effect::Sacrifice { who, filter, count })
 }
 
 /// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.
@@ -1351,7 +1368,16 @@ fn gain_life(r: &mut Reader<'_>) -> Option<Effect> {
 /// mana of any color in your commander's color identity." or "Add one mana of any color that a land an opponent
 /// controls could produce."
 fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.need("add")?;
+    // "Target player adds one mana of any color.": another player's pool.
+    let who = if r.word("add") {
+        Ref::You
+    } else {
+        r.attempt(|r| {
+            let who = player(r).filter(|who| *who != Ref::You)?;
+            r.need("adds")?;
+            Some(who)
+        })?
+    };
     let mut counted = None;
     let mut mana = produced(r, &mut counted)?;
     // "Add {G}. If you control four or more creatures, add {G}{G} instead."
@@ -1372,7 +1398,7 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // "Add {W}{W}{W} and you gain 3 life.": the life is gained as the mana is added.
     let gained = r.attempt(gain_life);
     let mut effects = vec![Effect::AddMana {
-        who: Ref::You,
+        who,
         mana,
         times,
         only: Vec::new(),

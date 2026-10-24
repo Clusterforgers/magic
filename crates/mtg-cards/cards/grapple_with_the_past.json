@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d14c633d-977a-4f78-85c2-88582b3c3670",
+  "name": "Grapple with the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grapple with the Past",
+      "oracle_fingerprint": "e48147d4cacd81dd427b5ebc67cbfd33",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                          ]
+                        },
+                        "as": "returned"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

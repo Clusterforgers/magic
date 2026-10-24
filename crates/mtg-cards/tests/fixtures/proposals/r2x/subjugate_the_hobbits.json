@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"Not":"Commander"},{"Compare":{"stat":"ManaValue","op":"Le","to":3}}]},"mods":[{"SetController":"You"}],"duration":"Forever"}}]}}]}]}

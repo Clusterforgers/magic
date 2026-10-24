@@ -11,6 +11,7 @@ pub(crate) mod energy;
 mod exile;
 mod exile_hand;
 mod life;
+pub(crate) mod mill;
 mod reveal;
 mod sacrifice;
 mod tap;
@@ -73,6 +74,8 @@ pub(crate) enum Part {
     },
     /// Energy counters paid (CR 107.14).
     Energy(u32),
+    /// Cards milled from the top of the payer's library (CR 701.17).
+    Mill(u32),
     /// Objects picked at the announcement.
     Pick(Pick),
     /// A part whose amount is the X announced with the ability, held here as it stands for X = 0; `Part::at` counts it.
@@ -84,6 +87,7 @@ const fn counted(item: &CostItem) -> &'static str {
     match item {
         CostItem::PayLife(_) => "Cost.PayLife.Counted",
         CostItem::PayEnergy(_) => "Cost.PayEnergy.Counted",
+        CostItem::Mill(_) => "Cost.Mill.Counted",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters.Counted",
         CostItem::Sacrifice { .. } => "Cost.Sacrifice.Counted",
         CostItem::Discard { .. } => "Cost.Discard.Counted",
@@ -138,6 +142,10 @@ impl Part {
                 let (number, x) = amount(count, item)?;
                 (Part::Energy(number), x)
             }
+            CostItem::Mill(count) => {
+                let (number, x) = amount(count, item)?;
+                (Part::Mill(number), x)
+            }
             CostItem::RemoveCounters { counter, count } => {
                 let (number, x) = amount(count, item)?;
                 let counter = counter.clone();
@@ -184,6 +192,7 @@ impl Part {
             Part::X(inner) => match &**inner {
                 Part::Life(_) => Part::Life(x),
                 Part::Energy(_) => Part::Energy(x),
+                Part::Mill(_) => Part::Mill(x),
                 Part::Counters { counter, .. } => Part::Counters {
                     counter: counter.clone(),
                     count: x,
@@ -210,6 +219,7 @@ impl Part {
         let number = match &**inner {
             Part::Life(_) => life::most(payer),
             Part::Energy(_) => energy::most(payer),
+            Part::Mill(_) => mill::most(payer),
             Part::Counters { counter, .. } => counters::most(payer, counter),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::X(_) => return None,
@@ -222,6 +232,7 @@ impl Part {
         match self {
             Part::Life(_) => "Cost.PayLife",
             Part::Energy(_) => "Cost.PayEnergy",
+            Part::Mill(_) => "Cost.Mill",
             Part::Counters { .. } => "Cost.RemoveCounters",
             Part::X(inner) => inner.name(),
             Part::Pick(pick) => match pick.kind {
@@ -247,6 +258,8 @@ impl Part {
                     "{E}".repeat(usize::try_from(*amount).unwrap_or(0))
                 )
             }
+            Part::Mill(1) => "Mill a card".to_owned(),
+            Part::Mill(amount) => format!("Mill {amount} cards"),
             Part::Counters { counter, count } => {
                 let plural = if *count == 1 { "" } else { "s" };
                 format!("Remove {count} {} counter{plural}", counter.name())
@@ -272,6 +285,7 @@ impl Part {
         match self {
             Part::Life(amount) => life::payable(payer, *amount).then(Vec::new),
             Part::Energy(amount) => energy::payable(payer, *amount).then(Vec::new),
+            Part::Mill(amount) => mill::payable(payer, *amount).then(Vec::new),
             Part::Counters { counter, count } => {
                 counters::payable(payer, counter, *count).then(Vec::new)
             }
@@ -299,6 +313,7 @@ impl Part {
         match self {
             Part::Life(amount) => life::events(player, *amount),
             Part::Energy(amount) => energy::events(player, *amount),
+            Part::Mill(amount) => mill::events(state, player, *amount),
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
             Part::Pick(pick) => picked
                 .iter()

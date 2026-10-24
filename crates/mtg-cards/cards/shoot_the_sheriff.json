@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2038138e-2e52-41e4-90fc-443fa054c5c0",
+  "name": "Shoot the Sheriff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shoot the Sheriff",
+      "oracle_fingerprint": "82afbfe441bb4ec630d1db1f2eb1a164",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Subtype": "Assassin" },
+                          { "Subtype": "Mercenary" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warlock" }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

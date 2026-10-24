@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":["Spell",{"Ability":"Activated"},{"Ability":"Triggered"}]}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}]}]}

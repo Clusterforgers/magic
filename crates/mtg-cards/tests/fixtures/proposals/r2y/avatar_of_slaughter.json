@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"}]},"mods":[{"AddKeyword":"DoubleStrike"}]}},{"Rule":{"rule":{"MustAttack":{"Each":[{"Type":"Creature"}]}}}}]}]}

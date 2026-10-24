@@ -239,7 +239,7 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         return Vec::new();
     };
     let Amount::Fixed(number) = right else {
-        return Vec::new();
+        return more_than_you(left, *op, right);
     };
     let Ok(number) = u32::try_from(*number) else {
         return Vec::new();
@@ -326,9 +326,44 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     }
 }
 
+/// "an opponent controls more lands than you": the largest count among the opponents against the count you control.
+fn more_than_you(left: &Amount, op: Cmp, right: &Amount) -> Vec<String> {
+    match (left, op, right) {
+        (
+            Amount::Largest {
+                who: Ref::Opponents,
+                of,
+            },
+            Cmp::Gt,
+            Amount::Count(yours),
+        ) if of == yours => controlled_group(of)
+            .map(|group| format!("an opponent controls more {group} than you"))
+            .into_iter()
+            .collect(),
+        _ => Vec::new(),
+    }
+}
+
 /// "each player has no cards in hand", "a counter was put on ~ this turn" and "there are cards exiled with it".
 fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
     match (left, op) {
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::Attackers,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["you attacked this turn".to_owned()],
+        (
+            Amount::Tallied {
+                who: Ref::Opponents,
+                what: TurnTally::LifeLost,
+            },
+            Cmp::Ge,
+        ) if number > 1 => quantity_texts(number)
+            .iter()
+            .map(|n| format!("an opponent lost {n} or more life this turn"))
+            .collect(),
         (Amount::Count(of), Cmp::Eq) if number == 0 && *of == every_hand() => {
             vec!["each player has no cards in hand".to_owned()]
         }

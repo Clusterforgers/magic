@@ -1,0 +1,24 @@
+{
+  "oracle_id": "38513660-260f-4663-b199-6473fa004a3b",
+  "name": "Setessan Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Setessan Champion",
+      "oracle_fingerprint": "06a853fa37e377913e720d82f6dae637",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

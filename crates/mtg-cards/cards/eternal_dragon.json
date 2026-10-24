@@ -1,0 +1,23 @@
+{
+  "oracle_id": "04d8615c-3883-4251-9790-1d8a4a40e142",
+  "name": "Eternal Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eternal Dragon",
+      "oracle_fingerprint": "aa235e96d9bd0d32840726dcf70ac5af",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{3}{W}{W}",
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Plains" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

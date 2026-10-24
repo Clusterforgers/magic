@@ -6,6 +6,7 @@
 use super::tokens::Reader;
 use crate::effect::{Destination, Effect};
 use crate::refs::Ref;
+use crate::value::Amount;
 
 /// The name the exiled card is bound to.
 pub const EXILED: &str = "exiled";
@@ -42,8 +43,49 @@ pub fn exile_and_return(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     ])
 }
 
+/// "Exile ~ with three time counters on it.": the card exiles itself and the object it becomes in exile gets the counters
+/// (a spell with suspend is then suspended).
+pub fn exile_with_counters(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("exile")?;
+    r.source().then_some(())?;
+    r.need("with")?;
+    let (counter, number) = super::counters::counters(r)?;
+    r.need("on it")?;
+    Some(vec![
+        Effect::Exile {
+            what: Ref::This,
+            bind: Some(EXILED.to_owned()),
+            duration: None,
+        },
+        Effect::PutCounters {
+            on: Ref::Bound(EXILED.to_owned()),
+            counter,
+            count: Amount::Fixed(i32::try_from(number).ok()?),
+        },
+    ])
+}
+
 /// The sentence of the two effects at the start of `effects`, and how many it covers.
 pub fn text(effects: &[Effect]) -> Option<(String, usize)> {
+    if let [
+        Effect::Exile {
+            what: Ref::This,
+            bind: Some(exiled),
+            duration: None,
+        },
+        Effect::PutCounters {
+            on: Ref::Bound(on),
+            counter,
+            count,
+        },
+        ..,
+    ] = effects
+        && exiled == EXILED
+        && on == EXILED
+    {
+        let counters = super::counters::text(counter, count)?;
+        return Some((format!("exile ~ with {counters} on it"), 2));
+    }
     let [
         Effect::Exile {
             what: Ref::This,

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "50fd4cf3-c347-4eb9-ab15-a9b0c5ea8b0f",
+  "name": "Soul's Majesty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul's Majesty",
+      "oracle_fingerprint": "bf5d87ad40cd4e161a9fb84409e02676",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Draw": { "count": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

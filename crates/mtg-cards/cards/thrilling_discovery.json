@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c5f5a234-c751-4976-a3e1-fbd52b3255c9",
+  "name": "Thrilling Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrilling Discovery",
+      "oracle_fingerprint": "f735ebf1e737a015df0d30cead964319",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "count": 2 } }],
+                  "paid": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

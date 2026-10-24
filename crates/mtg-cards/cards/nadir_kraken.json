@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5a73d439-bd78-42e1-90ae-eedd30536881",
+  "name": "Nadir Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nadir Kraken",
+      "oracle_fingerprint": "f9cf1a17d54870d20c75a407278ab65a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Tentacle",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Tentacle"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

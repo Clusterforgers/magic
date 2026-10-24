@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c6064c08-e4e0-49f4-9f0b-55cdecf443af",
+  "name": "Skirsdag High Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirsdag High Priest",
+      "oracle_fingerprint": "606d11a87895cb9df9a1a8fb50790f75",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Demon",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

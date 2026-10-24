@@ -250,7 +250,7 @@ fn word_or_number(run: &str, opens: bool) -> Token {
     // The verbs of a cost follow a comma: "{T}, Pay 1 life, Sacrifice ~".
     let cost_verb = matches!(
         run,
-        "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove"
+        "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove" | "Mill"
     );
     if capital && !opens && !cost_verb && run.chars().count() > 1 {
         return Token::Name(run.replace('\u{2019}', "'"));
@@ -595,6 +595,18 @@ impl<'a> Reader<'a> {
     /// Reads the end of a sentence: its period, or the end of the text.
     pub fn sentence_end(&mut self) -> bool {
         self.punct('.') || self.end()
+    }
+
+    /// Reads the comma of ", then you ..." (the next sentence opens with "Then you"), leaving "then" to be read.
+    pub fn then_you_follows(&mut self) -> bool {
+        let then_you = matches!(
+            self.tokens.get(self.at..self.at + 3),
+            Some([Token::Punct(','), Token::Word(then), Token::Word(you)]) if then == "then" && you == "you"
+        );
+        if then_you {
+            self.at += 1;
+        }
+        then_you
     }
 
     /// Reads what is between a pair of quotes with a reader of its own over those tokens, which `read` must read

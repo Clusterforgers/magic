@@ -1,0 +1,26 @@
+{
+  "id": "c2073453-4108-4039-a8c2-0f94dd7bf237",
+  "oracle_id": "fa4dffda-6f04-4d0b-829d-28a1a5794dee",
+  "name": "Millikin",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "351",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "{T}, Mill a card: Add {C}. (Activate only as an instant. To mill a card, put the top card of your library into your graveyard.)",
+  "power": "0",
+  "toughness": "1",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Mill"
+  ],
+  "produced_mana": [
+    "C"
+  ]
+}

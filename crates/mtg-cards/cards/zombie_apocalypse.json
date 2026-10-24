@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8241277d-654f-4985-9d49-a22c1e59eec2",
+  "name": "Zombie Apocalypse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zombie Apocalypse",
+      "oracle_fingerprint": "ce3012c93e3a8698174ab80f3b616d9e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Zombie" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Destroy": { "what": { "Each": [{ "Type": "Creature" }, { "Subtype": "Human" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

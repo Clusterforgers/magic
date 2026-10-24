@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"DealDamage":{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"amount":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}}},{"Exile":{"what":"This"}}]}}]}]}

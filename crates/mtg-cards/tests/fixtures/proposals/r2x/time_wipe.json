@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"as":"back"}},{"Move":{"what":{"Bound":"back"},"to":"Hand"}},{"Destroy":{"what":{"Each":[{"Type":"Creature"}]}}}]}}]}]}

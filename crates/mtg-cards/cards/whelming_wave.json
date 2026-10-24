@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e510eaaf-6497-480f-baa8-f4796b5f1086",
+  "name": "Whelming Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whelming Wave",
+      "oracle_fingerprint": "33e6b9c8b6488d5c3c53cbd327354e40",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Subtype": "Kraken" },
+                            { "Subtype": "Leviathan" },
+                            { "Subtype": "Octopus" },
+                            { "Subtype": "Serpent" }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "66093486-c9c3-42c5-97d1-ec0fe54f65b0",
+  "name": "Twinblade Assassins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinblade Assassins",
+      "oracle_fingerprint": "d05fdeb985fed1d473b85b637301f43a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},{"Compare":{"stat":"ManaValue","op":"Le","to":3}}],"to":"Battlefield"}}},"limit":"OncePerTurn","effects":[{"Draw":{}}]}}]}]}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a77b5be2-f361-4135-ba25-670a74d268ac",
+  "name": "Noxious Gearhulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noxious Gearhulk",
+      "oracle_fingerprint": "4e1ea57de695f8e8a4a6b5fdf437f9eb",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

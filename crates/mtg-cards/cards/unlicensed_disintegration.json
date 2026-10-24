@@ -1,0 +1,35 @@
+{
+  "oracle_id": "eaa2ff39-c3cf-428b-a2f1-a6a99a2c806b",
+  "name": "Unlicensed Disintegration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unlicensed Disintegration",
+      "oracle_fingerprint": "aa7c1e794777cf5f810317c691ec25d0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

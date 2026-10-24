@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Batch":{"Attacks":{"what":[{"Type":"Creature"}]}}},"targets":[{"what":{"Object":["Attacking",{"Type":"Creature"}]}}],"effects":[{"May":{"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"DoubleStrike"}],"duration":"UntilEndOfTurn"}}]}}]}}]}]}

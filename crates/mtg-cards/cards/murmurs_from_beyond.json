@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1e8be8b4-f7be-49cb-b32e-d92015dea7a2",
+  "name": "Murmurs from Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murmurs from Beyond",
+      "oracle_fingerprint": "8e72e62c85ef3d5a8e5ff13c1bfd02cf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Graveyard" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

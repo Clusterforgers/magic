@@ -1,0 +1,27 @@
+{
+  "oracle_id": "88b51e15-6630-4e14-a6b8-db0aa12e34ef",
+  "name": "Disallow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disallow",
+      "oracle_fingerprint": "03579db96faef68d4759f1170d77b07f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

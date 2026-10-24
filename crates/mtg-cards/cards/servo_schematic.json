@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6b8c6104-c537-4025-83e2-e89c8668f3ba",
+  "name": "Servo Schematic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Servo Schematic",
+      "oracle_fingerprint": "ccf0057be31c5dadea08265703e29296",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

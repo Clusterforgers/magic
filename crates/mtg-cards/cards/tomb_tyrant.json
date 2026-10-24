@@ -1,0 +1,63 @@
+{
+  "oracle_id": "0fb2c61a-9e74-4ee2-810a-b77a3b45f446",
+  "name": "Tomb Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomb Tyrant",
+      "oracle_fingerprint": "8f1bd607c282d27082e22581df64e65f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" },
+                        { "Subtype": "Zombie" },
+                        { "Type": "Creature" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 3
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "Subtype": "Zombie" },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

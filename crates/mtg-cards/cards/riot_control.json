@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a189e20f-1072-4608-9e50-da2a9d7a7ee3",
+  "name": "Riot Control",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riot Control",
+      "oracle_fingerprint": "07c2c4b906d62ab1f96d0c8b6a5768c2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

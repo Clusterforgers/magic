@@ -1,0 +1,58 @@
+{
+  "oracle_id": "17e45fd8-c924-4b42-87ad-189469a8dd18",
+  "name": "Loki, the Deceiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loki, the Deceiver",
+      "oracle_fingerprint": "457ae3d6b4cf341be9a067ee84936d9e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }, "Other"] }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "RemoveSupertype": "Legendary" }, { "AddSubtype": "Illusion" }]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

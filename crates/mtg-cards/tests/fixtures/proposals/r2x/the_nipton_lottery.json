@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"ChooseAtRandom":{"from":{"Each":[{"Type":"Creature"}]},"as":"pick"}},{"Continuous":{"affected":{"Bound":"pick"},"mods":[{"SetController":"You"},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}},{"Untap":{"what":{"Bound":"pick"}}},{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Is":{"Bound":"pick"}}}]}}}]}}]}]}

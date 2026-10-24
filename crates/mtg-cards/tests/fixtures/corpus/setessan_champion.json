@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "7680a8e1-cd59-43c5-8f06-426b918692c8",
+  "oracle_id": "38513660-260f-4663-b199-6473fa004a3b",
+  "multiverse_ids": [
+    625317
+  ],
+  "mtgo_id": 114165,
+  "tcgplayer_id": 505979,
+  "cardmarket_id": 723077,
+  "name": "Setessan Champion",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/7680a8e1-cd59-43c5-8f06-426b918692c8",
+  "scryfall_uri": "https://scryfall.com/card/cmm/912/setessan-champion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:03:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.jpg?1783915420",
+    "normal": "https://cards.scryfall.io/normal/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.jpg?1783915420",
+    "large": "https://cards.scryfall.io/large/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.jpg?1783915420",
+    "png": "https://cards.scryfall.io/png/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.png?1783915420",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.jpg?1783915420",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.jpg?1783915420",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.webp?1783915420",
+    "grid": "https://cards.scryfall.io/grid/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.webp?1783915420",
+    "display": "https://cards.scryfall.io/display/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.webp?1783915420",
+    "art": "https://cards.scryfall.io/art/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.webp?1783915420",
+    "crop": "https://cards.scryfall.io/crop/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.webp?1783915420",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/6/7680a8e1-cd59-43c5-8f06-426b918692c8.jpg?1783915420"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Constellation — Whenever an enchantment you control enters, put a +1/+1 counter on this creature and draw a card.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Constellation"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7680a8e1-cd59-43c5-8f06-426b918692c8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A38513660-260f-4663-b199-6473fa004a3b&unique=prints",
+  "collector_number": "912",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"A blessing is not a gift. It is a duty.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Emrah Elmasli",
+  "artist_ids": [
+    "433083c3-8a6c-43d9-8030-c9fcbd2477a2"
+  ],
+  "illustration_id": "544b71c5-d04e-413e-a610-460b457ce135",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1058,
+  "penny_rank": 2897,
+  "prices": {
+    "usd": "3.74",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.91",
+    "eur_foil": null,
+    "tix": "0.14"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=625317&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSetessan%2BChampion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSetessan%2BChampion",
+    "edhrec": "https://edhrec.com/route/?cc=Setessan+Champion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F505979%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723077&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114165?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

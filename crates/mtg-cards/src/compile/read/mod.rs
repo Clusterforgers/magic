@@ -22,6 +22,7 @@ mod activations;
 mod among;
 mod amounts;
 mod as_long_as;
+mod attack_pairs;
 mod attack_tax;
 mod attackers;
 mod aura_forms;
@@ -29,6 +30,7 @@ mod batches;
 mod becomes;
 mod card_grants;
 mod cast;
+mod chance;
 mod changes;
 mod chapters;
 mod choices;
@@ -53,6 +55,7 @@ mod flicker;
 mod group_copies;
 mod group_pump;
 mod instead_pairs;
+mod joined;
 mod kicked_copies;
 mod lands;
 mod levels;
@@ -69,7 +72,9 @@ mod prevention;
 mod pronouns;
 mod random_moves;
 mod render;
+mod repeat;
 mod replacements;
+mod restrictions;
 mod reveal;
 mod reveal_until;
 mod selectors;
@@ -88,9 +93,12 @@ mod token_binds;
 mod tokens;
 mod transform;
 mod triggers;
+mod untap_rules;
+mod vote;
 mod where_x;
 mod zone_moves;
 
+pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die_row_texts};
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
 pub use levels::block as level_block;
@@ -177,6 +185,19 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         .then_some(found)
 }
 
+/// A line of the table of a die roll ("1—9 | Each player sacrifices a permanent of their choice.") as a row: its totals and
+/// the spell that follows the bar, which names no target.
+pub fn die_row_of(text: &str, x_free: bool, own: &Own) -> Option<crate::effect::DieRow> {
+    let (from, to, body) = chance::die_row(text)?;
+    let Ability::Spell { targets, effects } = clause_with(body, ClauseKind::Spell, x_free, own)?
+    else {
+        return None;
+    };
+    targets
+        .is_empty()
+        .then_some(crate::effect::DieRow { from, to, effects })
+}
+
 /// What the readers know of the face a clause is on besides its text.
 #[derive(Debug, Clone, Default)]
 pub struct Own {
@@ -194,8 +215,15 @@ pub struct Own {
     pub pays: bool,
 }
 
-/// The ability words that may stand before an activated ability and are flavor ("Ferocious — {T}: Add {G}{G}.").
-const ACTIVATED_WORDS: [&str; 1] = ["Ferocious \u{2014} "];
+/// The words before an activated ability that are rules, not flavor: the ability works from another zone (a hand, an
+/// exile) or only after something happened ("Boast \u{2014} {1}: ...").
+const MEANINGFUL_WORDS: [&str; 5] = [
+    "Channel \u{2014} ",
+    "Bloodrush \u{2014} ",
+    "Boast \u{2014} ",
+    "Exhaust \u{2014} ",
+    "Forecast \u{2014} ",
+];
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
@@ -205,12 +233,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             let head = text.lines().next().unwrap_or_default();
             text.get(classify::ability_word_len(head).unwrap_or(0)..)?
         }
-        // Only the words of mana abilities: "Channel — " and the like name another zone the ability works from.
+        // An ability word is flavor ("Ferocious — ", "Devouring Monster — ") except the words that name a zone the
+        // ability works from or a limit on it.
         ClauseKind::Activated => {
             let head = text.lines().next().unwrap_or_default();
-            let word = ACTIVATED_WORDS
-                .iter()
-                .any(|word| head.starts_with(word))
+            let word = (!MEANINGFUL_WORDS.iter().any(|word| head.starts_with(word)))
                 .then(|| classify::ability_word_len(head))
                 .flatten();
             text.get(word.unwrap_or(0)..)?

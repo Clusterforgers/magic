@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"as":"exiled"}},{"CreateToken":{"token":{"Custom":{"name":"Spirit","types":["Creature"],"subtypes":["Spirit"],"power":1,"toughness":1}},"count":{"Count":[{"In":"Exile"},{"Is":{"Bound":"exiled"}},{"Type":"Creature"}]}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}},{"Choose":{"from":{"Each":[{"Type":"Land"},{"OwnedBy":"You"},{"AnyOf":[{"In":"Hand"},{"In":"Graveyard"}]}]},"count":{"min":0,"max":"X"},"as":"lands"}},{"Move":{"what":{"Bound":"lands"},"to":{"Battlefield":{"tapped":true}}}}]}}]}]}

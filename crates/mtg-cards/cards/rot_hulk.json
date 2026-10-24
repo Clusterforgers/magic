@@ -1,0 +1,28 @@
+{
+  "oracle_id": "36117e99-a2bc-46f9-8e17-bd2e2a9c31f4",
+  "name": "Rot Hulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rot Hulk",
+      "oracle_fingerprint": "cd799326151f8924e29b10b00da3b028",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Zombie" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": { "Players": "Opponents" } }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

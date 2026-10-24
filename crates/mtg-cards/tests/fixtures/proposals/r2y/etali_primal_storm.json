@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"ExileTop":{"who":"EachPlayer","as":"exiled"}},{"CastFromZone":{"what":{"Bound":"exiled"},"free":true}}]}}]}]}

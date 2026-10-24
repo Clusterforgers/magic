@@ -252,7 +252,7 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 #[case::the_same_restriction_twice(
     "{T}: Draw a card. Activate only once each turn and only once each turn."
 )]
-#[case::an_unknown_restriction("{T}: Draw a card. Activate only during your turn.")]
+#[case::an_unknown_restriction("{T}: Draw a card. Activate only during your end step.")]
 #[case::a_restriction_first("{T}: Activate only as a sorcery. Draw a card.")]
 #[case::a_creature_you_control("{T}, Sacrifice a creature you control: Draw a card.")]
 #[case::a_creature_card("{T}, Sacrifice a creature card: Draw a card.")]

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8c2dd8dc-8623-4518-b3fd-dcb9f647fa98",
+  "name": "Sly Instigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sly Instigator",
+      "oracle_fingerprint": "def89b949a8f9cacfd88817f73d22092",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "Goad": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

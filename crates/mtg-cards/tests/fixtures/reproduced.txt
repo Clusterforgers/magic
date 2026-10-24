@@ -93,6 +93,7 @@ Banshee of the Dread Choir
 Baral's Expertise
 Barbed Batterfist
 Bard's Bow
+Basalt Monolith
 Basilica Screecher
 Basilisk Gate
 Basking Rootwalla
@@ -142,6 +143,7 @@ Bonecaller Cleric
 Bonehoard
 Bonesplitter
 Book of Mazarbul
+Boompile
 Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
@@ -161,6 +163,7 @@ Broodbirth Viper
 Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
+Buried Alive
 Cached Defenses
 Cackling Counterpart
 Cadaverous Bloom
@@ -301,6 +304,7 @@ Demon Bolt
 Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
+Desert
 Devastation Tide
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -343,6 +347,7 @@ Dusk Mangler
 Duskshell Crawler
 Dúnedain Blade
 Eagles of the North
+Earth-Cult Elemental
 Earthen Arms
 Easterling Vanguard
 Echo Inspector
@@ -372,6 +377,7 @@ Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Etched Oracle
+Eternal Dragon
 Eternal Witness
 Ethereal Armor
 Ethereal Usher
@@ -392,6 +398,7 @@ Eyetwitch
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
+Fall from Favor
 Fallen Ideal
 Familiar Ground
 Famine
@@ -420,6 +427,7 @@ Fists of Flame
 Flame Jab
 Flamebraider
 Flamekin Village
+Flamerush Rider
 Flatline
 Flawless Maneuver
 Fleecemane Lion
@@ -480,7 +488,9 @@ Gluttonous Slime
 Gluttonous Troll
 Gnarled Professor
 Gnarlwood Dryad
+Goblin Archaeologist
 Goblin Chieftain
+Goblin Sharpshooter
 Goblin Spy
 Goblin War Buggy
 Goblin-town Flunkies
@@ -527,6 +537,7 @@ Hangarback Walker
 Harabaz Druid
 Harmonious Archon
 Harrow
+Haruspex
 Harvest Season
 Hate Mirage
 Hatut Zeraze Strike Force
@@ -553,10 +564,12 @@ History of Benalia
 Holdout Settlement
 Honor Troll
 Honor's Reward
+Hoofprints of the Stag
 Horizon Canopy
 Hound of Griselbrand
 Hour of Revelation
 Howltooth Hollow
+Hua Tuo, Honored Physician
 Hulking Raptor
 Hungry Lynx
 Hunt the Weak
@@ -667,11 +680,13 @@ Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
+Loki, the Deceiver
 Looter il-Kor
 Lord of Extinction
 Lord of the Forsaken
 Lotleth Troll
 Lotus Petal
+Loyal Retainers
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
 Ludevic's Test Subject // Ludevic's Abomination
@@ -690,6 +705,7 @@ Manaweft Sliver
 Manor Gate
 Map the Frontier
 Map the Wastes
+March of Progress
 Marchesa's Emissary
 Mardu Devotee
 Mardu Scout
@@ -721,6 +737,7 @@ Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
 Migratory Route
+Millikin
 Ministrant of Obligation
 Mirari
 Mirari's Wake
@@ -763,6 +780,7 @@ Nantuko Vigilante
 Nessian Asp
 Nettlecyst
 New Horizons
+Nick Valentine, Private Eye
 Night Clubber
 Nighthawk Scavenger
 Nightmare
@@ -926,9 +944,11 @@ River of Tears
 Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
+Rogue Refiner
 Rootborn Defenses
 Rope
 Rosheen Meanderer
+Rousing Refrain
 Rugged Prairie
 Ruinous Path
 Rumbleweed
@@ -985,6 +1005,7 @@ Shadowspear
 Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
+Sharding Sphinx
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans
@@ -1066,6 +1087,7 @@ Starscape Cleric
 Steady Progress
 Steam Vents
 Steampath Charger
+Steel Overseer
 Steelburr Champion
 Steelclaw Lance
 Stensia Masquerade
@@ -1123,6 +1145,7 @@ Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
 Tangle Tumbler
+Tanuki Transplanter
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Teacher's Pest
@@ -1152,6 +1175,7 @@ The Seriema
 The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
+The Warring Triad
 Thelonite Hermit
 Thieving Magpie
 Thieving Varmint
@@ -1181,6 +1205,7 @@ Titania, Nature's Force
 Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
+Tomb Tyrant
 Towering Titan
 Toxic Deluge
 Trace of Abundance
@@ -1252,6 +1277,7 @@ Vivid Marsh
 Vivid Meadow
 Voice of All
 Voice of the Blessed
+Vona, Butcher of Magan
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vulshok Splitter
@@ -1273,6 +1299,7 @@ Wedgelight Rammer
 Wei Scout
 Weigh Down
 Weirding Wood
+Well Rested
 Whir of Invention
 Whisperer of the Wilds
 Whispering Madness
@@ -1292,6 +1319,7 @@ Wipe Away
 Wirewood Channeler
 Withering Boon
 Wizard Class
+Wolfwillow Haven
 Wooded Bastion
 Woodripper
 Worldspine Wurm

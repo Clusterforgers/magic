@@ -32,6 +32,10 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// Every wording of two statics that read as one sentence, with a capital and a period; empty for any other two
 /// abilities.
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let attacking = super::attack_pairs::texts(first, second);
+    if !attacking.is_empty() {
+        return attacking;
+    }
     let (
         Ability::Static {
             affected: Ref::This,

@@ -9,6 +9,7 @@ use super::cast;
 use super::counters;
 use super::effects::{self, Template};
 use super::reveal;
+use super::selectors::{Form, phrase_text};
 use super::tokens::Reader;
 use super::transform;
 use super::triggers;
@@ -123,6 +124,12 @@ pub(super) fn consequence(r: &mut Reader<'_>, condition: &Condition) -> Option<V
     })
 }
 
+/// What the effects after a flip, a roll or a vote do, which no condition on the card shapes: steps joined by "and" or
+/// one sentence, up to the end of the sentence.
+pub(super) fn body(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    consequence(r, &Condition::All(Vec::new()))
+}
+
 /// Steps joined by "and" or in a list.
 fn steps(r: &mut Reader<'_>, condition: &Condition) -> Option<Vec<Effect>> {
     let mut found = step(r, condition)?;
@@ -186,7 +193,38 @@ pub fn condition_texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::Performed {
         return vec!["you do".to_owned()];
     }
+    let announced = announced_texts(condition);
+    if !announced.is_empty() {
+        return announced;
+    }
     counters_text(condition).map_or_else(|| as_long_as::texts(condition), |text| vec![text])
+}
+
+/// "X is 5 or more", "X is five or less": the announced X against a number; "it's an Elf": the one target is of a kind.
+fn announced_texts(condition: &Condition) -> Vec<String> {
+    match condition {
+        Condition::Compare {
+            left: Amount::X,
+            op: op @ (Cmp::Ge | Cmp::Le),
+            right: Amount::Fixed(number),
+        } => {
+            let more = if *op == Cmp::Ge { "more" } else { "less" };
+            u32::try_from(*number)
+                .map(super::facts::quantity_texts)
+                .unwrap_or_default()
+                .iter()
+                .map(|words| format!("X is {words} or {more}"))
+                .collect()
+        }
+        Condition::Matches {
+            subject: Ref::Target(0),
+            selector,
+        } => phrase_text(selector, Form::Subject)
+            .map(|kind| format!("it's {} {kind}", triggers::article(&kind)))
+            .into_iter()
+            .collect(),
+        _ => Vec::new(),
+    }
 }
 
 /// "there are five or more hatchling counters on ~".

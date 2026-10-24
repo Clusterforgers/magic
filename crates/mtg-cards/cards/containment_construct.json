@@ -1,0 +1,35 @@
+{
+  "oracle_id": "54d48e54-be4a-4a78-a778-b28e74ef7134",
+  "name": "Containment Construct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Containment Construct",
+      "oracle_fingerprint": "d28d2318fc06481d2b35f2632f0a87f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "Triggering", "as": "card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "card" }, "play": true }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

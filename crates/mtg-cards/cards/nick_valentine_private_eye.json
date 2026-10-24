@@ -21,9 +21,9 @@
                 {
                   "ZoneChange": {
                     "what": [
-                      "Other",
                       { "Type": "Artifact" },
                       { "Type": "Creature" },
+                      "Other",
                       { "ControlledBy": "You" }
                     ],
                     "from": "Battlefield",

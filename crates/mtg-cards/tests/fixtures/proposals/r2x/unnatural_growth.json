@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat"}},"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":{"Stat":{"of":"This","stat":"Power"}},"toughness":{"Stat":{"of":"This","stat":"Toughness"}}}}],"duration":"UntilEndOfTurn"}}]}}]}]}

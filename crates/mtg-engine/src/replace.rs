@@ -1289,11 +1289,12 @@ impl Pass<'_> {
     /// Applies the effects to the items in order until none applies.
     fn run(&mut self) -> Result<Run, EngineError> {
         let mut at = 0;
-        // Each effect applies to an event once, so the work is bounded by the effects times the events.
-        let mut budget = 10_000;
+        // Each effect applies to an event once, so the work is bounded by the effects times the events (a token for each
+        // of thousands of tokens is thousands of events).
+        let mut steps = 0_usize;
         while at < self.slots.len() {
-            budget -= 1;
-            if budget == 0 {
+            steps += 1;
+            if steps > 10_000 + 64 * self.slots.len() {
                 return Err(Self::invalid(
                     "replacement effects went on without end".into(),
                 ));

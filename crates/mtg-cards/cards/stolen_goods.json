@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9294d4d3-0df0-4070-9261-06f15b758a0d",
+  "name": "Stolen Goods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stolen Goods",
+      "oracle_fingerprint": "4f4e1b927fc1f44ccd144a068d819110",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "free": true, "only": { "Bound": "found" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

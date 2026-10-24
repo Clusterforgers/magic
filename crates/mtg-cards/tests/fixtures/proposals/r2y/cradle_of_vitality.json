@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"LifeGained":{"who":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Pay":{"cost":"{1}{W}","paid":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":"Triggering"}}]}}]}}]}]}
