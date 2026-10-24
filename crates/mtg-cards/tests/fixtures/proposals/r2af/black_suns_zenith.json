@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"PutCounters":{"on":{"Each":[{"Type":"Creature"}]},"counter":"-1/-1","count":"X"}},{"Move":{"what":"This","to":{"Library":{"place":"Shuffled"}}}}]}}]}]}

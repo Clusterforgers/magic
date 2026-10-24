@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7c779721-cd1b-4696-9ae9-68ccc284ed2a",
+  "name": "Aetherize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherize",
+      "oracle_fingerprint": "5f6e42d648b5836ccee6c5d5fb0f6b4d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] }, "to": "Hand" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

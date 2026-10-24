@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2f1019df-3e76-446c-ba33-f9dfe56b10bf",
+  "name": "Merfolk Cave-Diver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Cave-Diver",
+      "oracle_fingerprint": "bb88faa5e007962dbed6af4643422882",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Explored": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, "CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

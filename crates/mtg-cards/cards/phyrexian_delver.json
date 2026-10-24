@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a13cbac0-4c76-4970-b61e-5f4e020ee95c",
+  "name": "Phyrexian Delver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Delver",
+      "oracle_fingerprint": "d86b16fc54a7943363ffafbf24896b5f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "LoseLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

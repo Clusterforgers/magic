@@ -10,8 +10,14 @@ fn destroys_both(effects: &[Effect]) -> bool {
     matches!(
         effects,
         [
-            Effect::Destroy { what: Ref::Target(0), .. },
-            Effect::Destroy { what: Ref::Target(1), .. },
+            Effect::Destroy {
+                what: Ref::Target(0),
+                ..
+            },
+            Effect::Destroy {
+                what: Ref::Target(1),
+                ..
+            },
         ]
     )
 }

@@ -6,8 +6,8 @@ use mtg_core::card::{CardType, Subtype};
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::{Engine, EngineError, Event};
 use mtg_testkit::{
-    RandomBot, copy_attack_fuzz_setup, copy_fuzz_setup, copy_shapes_fuzz_setup,
-    copy_wording_fuzz_setup, play_game,
+    RandomBot, copy_attack_fuzz_setup, copy_count_fuzz_setup, copy_fuzz_setup,
+    copy_shapes_fuzz_setup, copy_wording_fuzz_setup, play_game,
 };
 use rstest::rstest;
 
@@ -63,6 +63,24 @@ fn seeded_games_of_the_attacking_copies_finish_and_keep_every_invariant(#[case] 
     let mut seen = Seen::default();
     for seed in 0..games() {
         let setup = copy_attack_fuzz_setup(players, seed).unwrap();
+        let outcome = play_game(setup, seed).unwrap_or_else(|failure| panic!("{failure}"));
+        seen.add(&outcome.events);
+    }
+    assert!(
+        seen.token_copies > 0,
+        "no token copy was made in {} games of {players} seats",
+        games()
+    );
+}
+
+#[rstest]
+#[case(2)]
+#[case(3)]
+#[case(4)]
+fn seeded_games_of_the_counted_copies_finish_and_keep_every_invariant(#[case] players: usize) {
+    let mut seen = Seen::default();
+    for seed in 0..games() {
+        let setup = copy_count_fuzz_setup(players, seed).unwrap();
         let outcome = play_game(setup, seed).unwrap_or_else(|failure| panic!("{failure}"));
         seen.add(&outcome.events);
     }

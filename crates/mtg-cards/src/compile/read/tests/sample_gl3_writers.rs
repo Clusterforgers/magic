@@ -76,10 +76,7 @@ const KORVOLD: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"eff
     "Tap an untapped legendary permanent you control: Untap ~."
 )]
 #[case::regenerate_each(REGENERATE, "Regenerate each creature you control.")]
-#[case::all_gain(
-    ACCURSED,
-    "{1}{B}, {T}: All Zombies gain menace until end of turn."
-)]
+#[case::all_gain(ACCURSED, "{1}{B}, {T}: All Zombies gain menace until end of turn.")]
 #[case::counter_on_that_creature(
     UNICORN,
     "Whenever another creature you control enters, put a +1/+1 counter on that creature."
@@ -167,21 +164,12 @@ fn the_sample_wordings_are_written_as_the_oracle_words_them(
     QUEST,
     "Remove three quest counters from ~ and exile it: Draw two cards."
 )]
-#[case::two_permanents_tapped(
-    SHAKU,
-    "Tap two untapped legendary permanents you control: Untap ~."
-)]
+#[case::two_permanents_tapped(SHAKU, "Tap two untapped legendary permanents you control: Untap ~.")]
 #[case::no_supertype(SHAKU, "Tap an untapped permanent you control: Untap ~.")]
 #[case::regenerate_all_of_them(REGENERATE, "Regenerate each creature.")]
 #[case::regenerate_theirs(REGENERATE, "Regenerate each creature you don't control.")]
-#[case::another_kind_gains(
-    ACCURSED,
-    "{1}{B}, {T}: All Vampires gain menace until end of turn."
-)]
-#[case::another_keyword_gained(
-    ACCURSED,
-    "{1}{B}, {T}: All Zombies gain flying until end of turn."
-)]
+#[case::another_kind_gains(ACCURSED, "{1}{B}, {T}: All Vampires gain menace until end of turn.")]
+#[case::another_keyword_gained(ACCURSED, "{1}{B}, {T}: All Zombies gain flying until end of turn.")]
 #[case::until_your_next_turn(
     ACCURSED,
     "{1}{B}, {T}: All Zombies gain menace until your next turn."
@@ -194,10 +182,7 @@ fn the_sample_wordings_are_written_as_the_oracle_words_them(
     UNICORN,
     "Whenever another creature you control enters, put two +1/+1 counters on that creature."
 )]
-#[case::each_draw_two(
-    LORAN,
-    "{T}: You and target opponent each draw two cards."
-)]
+#[case::each_draw_two(LORAN, "{T}: You and target opponent each draw two cards.")]
 #[case::each_draw_a_target_player(LORAN, "{T}: You and target player each draw a card.")]
 #[case::strictly_less_than_the_spell(
     TYRANT,
@@ -223,10 +208,7 @@ fn the_sample_wordings_are_written_as_the_oracle_words_them(
     LANDROVAL,
     "Whenever two or more creatures you control attack a player, target attacking creature without flying gains flying until your next turn."
 )]
-#[case::two_targets_of_one_kind(
-    BREACH,
-    "Destroy target artifact and target creature."
-)]
+#[case::two_targets_of_one_kind(BREACH, "Destroy target artifact and target creature.")]
 #[case::the_wrong_order(BREACH, "Destroy target enchantment and target artifact.")]
 #[case::sacrifice_a_creature_instead(KORVOLD, "Whenever ~ attacks, sacrifice another creature.")]
 #[case::sacrifice_any_permanent(KORVOLD, "Whenever ~ attacks, sacrifice a permanent.")]

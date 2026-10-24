@@ -1,0 +1,23 @@
+{
+  "oracle_id": "38a71429-e673-4de4-80a8-f59e5cf98acc",
+  "name": "Emmara Tandris",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emmara Tandris",
+      "oracle_fingerprint": "e17a3f3ea181e71056c7fa746f977e9c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] }
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

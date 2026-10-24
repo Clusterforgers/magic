@@ -24,7 +24,9 @@ fn wordings(text: &str) -> Vec<String> {
     if let Some((head, tail)) = text.split_once(", you may target ")
         && let Some((who, rest)) = tail.split_once(" loses life ")
     {
-        found.push(format!("{head}, you may have target {who} lose life {rest}"));
+        found.push(format!(
+            "{head}, you may have target {who} lose life {rest}"
+        ));
     }
     if let Some((head, tail)) = text.split_once(", you may have ~ deal damage to ")
         && let Some((target, group)) = tail.split_once(" equal to the number of ")

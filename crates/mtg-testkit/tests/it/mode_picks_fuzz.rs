@@ -1,4 +1,4 @@
-//! Goal: whole bot games at two, three and four seats with decks of the cards that pick a mode at random or not twice in a turn (Umaro, Lita, Teval's Judgment) and the Dragon that puts a card from the hand by the damage dealt (Broodcaller Scourge) finish, keep every invariant of the engine and replay to the state they were played to.
+//! Goal: whole bot games at two, three and four seats with decks of the cards that pick a mode at random or not twice in a turn (Umaro, Lita, Teval's Judgment), the pairs of modes that may both be chosen for a commander (Jeska's Will, Akroma's Will) and the Dragon that puts a card from the hand by the damage dealt (Broodcaller Scourge) finish, keep every invariant of the engine and replay to the state they were played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::seeds::fuzz_games;
@@ -21,12 +21,14 @@ const CARDS: &[(&str, usize)] = &[
     ("Lita, Little Orphan Amphibian", 3),
     ("Teval's Judgment", 3),
     ("Broodcaller Scourge", 3),
+    ("Jeska's Will", 3),
+    ("Akroma's Will", 3),
 ];
 
 /// Lands in four colours, the cards above, bears and burn.
 fn deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     let colors = [Color::Red, Color::Green, Color::White, Color::Black];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..41).map(|i| land(colors[i % 4])).collect();
+    let mut deck: Vec<Arc<CardDefinition>> = (0..35).map(|i| land(colors[i % 4])).collect();
     for &(name, copies) in CARDS {
         deck.extend(std::iter::repeat_n(card(name).unwrap(), copies));
     }
