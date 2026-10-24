@@ -1,0 +1,47 @@
+{
+  "oracle_id": "83cf1169-5853-4332-b897-7b17d72d76ab",
+  "name": "Twinflame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinflame",
+      "oracle_fingerprint": "a28f1c6ca0573300b19af3c9be8d1c00",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{2}{R}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddKeyword": "Haste" }] }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

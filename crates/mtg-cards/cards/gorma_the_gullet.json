@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ae5f30cc-a22e-4fbb-9510-e9429de3623c",
+  "name": "Gorma, the Gullet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorma, the Gullet",
+      "oracle_fingerprint": "aba8f7817cf1e83eefab6dcdfbd42cf5",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+              }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Tallied": { "who": "You", "what": "CreaturesDiedUnder" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

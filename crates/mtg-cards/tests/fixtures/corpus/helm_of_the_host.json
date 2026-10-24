@@ -1,0 +1,21 @@
+{
+  "id": "70ffc71f-328d-421d-926b-6f2e45ffb812",
+  "oracle_id": "83b43aba-bf9c-4da2-967d-9daa632e97d2",
+  "name": "Helm of the Host",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "200",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "At the beginning of combat on your turn, create a token that's a copy of equipped creature, except the token isn't legendary. That token gains haste.\nEquip {5}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

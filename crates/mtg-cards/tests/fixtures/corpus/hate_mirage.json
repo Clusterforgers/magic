@@ -1,0 +1,23 @@
+{
+  "id": "9e58b2ad-0c5e-468e-983a-45d412454a67",
+  "oracle_id": "2db23ceb-448b-45d6-a931-d72e8ccdb541",
+  "name": "Hate Mirage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "26",
+  "rarity": "uncommon",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose up to two target creatures you don't control. For each of those creatures, create a token that's a copy of that creature. Those tokens gain haste. Exile them at the beginning of the next end step.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

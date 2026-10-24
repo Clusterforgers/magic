@@ -1,0 +1,27 @@
+{
+  "id": "4677d5d1-de04-4631-8fcf-5ff754d701b1",
+  "oracle_id": "b72cedc2-73b3-4e7f-8b58-8db532a69f6e",
+  "name": "Oona's Blackguard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znc",
+  "collector_number": "51",
+  "rarity": "uncommon",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Faerie Rogue",
+  "oracle_text": "Flying\nEach other Rogue creature you control enters with an additional +1/+1 counter on it.\nWhenever a creature you control with a +1/+1 counter on it deals combat damage to a player, that player discards a card.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

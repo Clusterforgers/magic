@@ -1,0 +1,27 @@
+{
+  "id": "e60aaa4e-267c-4909-8abe-414a04d2c127",
+  "oracle_id": "7b600c0e-5ad2-48a2-a147-346ca78c8629",
+  "name": "Liliana's Standard Bearer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "255",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Zombie Knight",
+  "oracle_text": "Flash\nWhen this creature enters, draw X cards, where X is the number of creatures that died under your control this turn.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flash"
+  ]
+}

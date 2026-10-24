@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7b600c0e-5ad2-48a2-a147-346ca78c8629",
+  "name": "Liliana's Standard Bearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Standard Bearer",
+      "oracle_fingerprint": "885e0b5d88b54db37c657a8effe76166",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": { "Tallied": { "who": "You", "what": "CreaturesDiedUnder" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

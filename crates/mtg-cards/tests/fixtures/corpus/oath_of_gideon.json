@@ -1,0 +1,23 @@
+{
+  "id": "b8a3f02b-9408-46a5-8d25-f5cec553d600",
+  "oracle_id": "ea168acc-22a1-4ba5-affd-fb813b93535a",
+  "name": "Oath of Gideon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "830",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Enchantment",
+  "oracle_text": "When Oath of Gideon enters, create two 1/1 white Kor Ally creature tokens.\nEach planeswalker you control enters with an additional loyalty counter on it.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

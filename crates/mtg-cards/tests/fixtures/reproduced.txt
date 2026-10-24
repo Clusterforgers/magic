@@ -122,6 +122,7 @@ Blightwidow
 Bloodbraid Elf
 Bloodghast
 Bloom Hulk
+Body Count
 Body Double
 Bog Wraith
 Boggart Ram-Gang
@@ -302,6 +303,7 @@ Doom Whisperer
 Draconic Lore
 Dragonlord Ojutai
 Dragonspeaker Shaman
+Dragonstorm Globe
 Dragonwing Glider
 Dreadship Reef
 Dream's Grip
@@ -460,6 +462,7 @@ Goldwarden's Helm
 Goliath Truck
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
+Gorma, the Gullet
 Grapeshot
 Graveblade Marauder
 Graven Cairns
@@ -474,6 +477,7 @@ Grim Haruspex
 Grim Initiate
 Grisly Salvage
 Growing Ranks
+Grumgully, the Generous
 Gruul Cluestone
 Guardian Augmenter
 Guardian Gladewalker
@@ -491,6 +495,7 @@ Hangarback Walker
 Harabaz Druid
 Harmonious Archon
 Harrow
+Hate Mirage
 Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
@@ -498,6 +503,7 @@ Hearthhull, the Worldseed
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
+Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of Hoofbeats
@@ -606,6 +612,7 @@ Light 'Em Up
 Light Up the Stage
 Lightning Bolt
 Lignify
+Liliana's Standard Bearer
 Liquimetal Torque
 Lithoform Engine
 Living Twister
@@ -719,6 +726,7 @@ Norwood Riders
 Notion Rain
 Novijen, Heart of Progress
 Nyxborn Behemoth
+Oath of Gideon
 Oath of Jace
 Obscuring Haze
 Octomancer
@@ -727,6 +735,7 @@ Okiba Reckoner Raid // Nezumi Road Captain
 Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
+Oona's Blackguard
 Opt
 Oran-Rief, the Vastwood
 Orazca Relic
@@ -779,6 +788,7 @@ Powder Ganger
 Prava of the Steel Legion
 Predator Dragon
 Pridemalkin
+Priest of the Crossing
 Primeval Protector
 Primordial Hydra
 Prismatic Lens
@@ -1032,6 +1042,7 @@ Tavern Ruffian // Tavern Smasher
 Teacher's Pest
 Team Pennant
 Tectonic Reformation
+Tempestra, Dame of Games
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -1096,6 +1107,7 @@ Turn to Frog
 Tuskguard Captain
 Twilight Mire
 Twincast
+Twinflame
 Tyranid Prime
 Tyrant's Familiar
 Uktabi Efreet

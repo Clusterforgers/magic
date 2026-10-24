@@ -1,0 +1,27 @@
+{
+  "id": "3aa40ce2-76df-43bd-a59e-7cf6e4f46a1d",
+  "oracle_id": "fa4afcf7-9cf7-4f67-95b9-1f7fe66bf332",
+  "name": "Grumgully, the Generous",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "847",
+  "rarity": "uncommon",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Goblin Shaman",
+  "oracle_text": "Each other non-Human creature you control enters with an additional +1/+1 counter on it.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": []
+}
