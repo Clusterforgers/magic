@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"LookAtTop":{"count":5,"as":"top"}},{"Choose":{"from":{"Bound":"top"},"count":{"min":0,"max":null},"as":"perms","rest_as":"rest"}},{"Move":{"what":{"Bound":"perms"},"to":{"Battlefield":{}}}},{"Move":{"what":{"Bound":"rest"},"to":"Hand"}},{"Exile":{"what":"This"}}]}}]}]}

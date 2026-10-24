@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c7b72d38-0aa0-4e17-9dd5-9276d7cb21ec",
+  "name": "Kaervek the Merciless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaervek the Merciless",
+      "oracle_fingerprint": "68c25d093d5fba33ea16c31848e77854",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

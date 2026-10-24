@@ -1,0 +1,34 @@
+{
+  "oracle_id": "fc7b46af-6c07-455a-99c7-f1bccaa2a5f4",
+  "name": "Kederekt Parasite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kederekt Parasite",
+      "oracle_fingerprint": "d07e7d2e7c94ecf63e4c5588e944610c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "DealDamage": { "source": "This", "to": "Triggering", "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

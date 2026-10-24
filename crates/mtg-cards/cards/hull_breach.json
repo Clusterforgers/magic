@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2da232d8-580f-4116-b977-2c59cd21b5a4",
+  "name": "Hull Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hull Breach",
+      "oracle_fingerprint": "802dcdf613bae8331eaa0f9fa053ff44",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Artifact" }] } },
+                        { "what": { "Object": [{ "Type": "Enchantment" }] } }
+                      ],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        { "Destroy": { "what": { "Target": 1 } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

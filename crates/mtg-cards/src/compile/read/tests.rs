@@ -276,6 +276,7 @@ mod sample_af2_writers;
 mod sample_af_writers;
 mod sample_ba_writers;
 mod sample_gl2_writers;
+mod sample_gl3_writers;
 mod sample_gl_writers;
 mod sample_mr2_writers;
 mod sample_mr_writers;

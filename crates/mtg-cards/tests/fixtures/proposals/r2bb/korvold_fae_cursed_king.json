@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]},"effects":[{"Sacrifice":{"filter":["Other"]}}]}},{"Triggered":{"when":{"Sacrificed":{"what":[],"by":"You"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"Draw":{"count":1}}]}}]}]}

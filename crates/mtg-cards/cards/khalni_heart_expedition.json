@@ -1,0 +1,54 @@
+{
+  "oracle_id": "be6155de-c5b2-415c-ad83-142f9926462a",
+  "name": "Khalni Heart Expedition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Khalni Heart Expedition",
+      "oracle_fingerprint": "a544e07c021e740aa39c0a09a13e43d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "quest" }, "count": 3 } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

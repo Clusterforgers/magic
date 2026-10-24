@@ -1,0 +1,49 @@
+{
+  "oracle_id": "3fdf064d-a5be-4925-87b1-3547997f0840",
+  "name": "Lictor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lictor",
+      "oracle_fingerprint": "4134c341e38d8535e7a1df636ea8f009",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    "EnteredThisTurn"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tyranid Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Tyranid", "Warrior"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":3,"toughness":2}}]}},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Supertype":"Legendary"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"May":{"effects":[{"Attach":{"what":"This","to":"Triggering"}}]}}]}},{"Keyword":{"Equip":"{4}"}}]}]}

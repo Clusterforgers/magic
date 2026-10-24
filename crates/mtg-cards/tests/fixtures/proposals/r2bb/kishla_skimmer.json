@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":[{"OwnedBy":"You"}],"from":"Graveyard"}},"if":"YourTurn","limit":"OncePerTurn","effects":[{"Draw":{"count":1}}]}}]}]}

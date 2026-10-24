@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"CreatureType"}}},{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"],"to":"Battlefield"}},{"Attacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"]}}]},"effects":[{"Draw":{"count":1}}]}}]}]}

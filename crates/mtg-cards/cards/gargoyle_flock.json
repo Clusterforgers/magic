@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6d24fc3e-eaa9-4ac8-b271-7dc83b812acf",
+  "name": "Gargoyle Flock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gargoyle Flock",
+      "oracle_fingerprint": "4b5203fa1e7960a08e8993fc830afd68",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "EnteredThisTurn"]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tyranid Gargoyle",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Tyranid", "Gargoyle"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

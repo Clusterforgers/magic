@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7d0efc64-151f-45b4-8c0b-c32609f9d862",
+  "name": "Knight of the White Orchid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of the White Orchid",
+      "oracle_fingerprint": "0a5bc9c8df59b348e0491bed26158149",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Subtype": "Plains" }], "as": "found" } },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

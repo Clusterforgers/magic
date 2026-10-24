@@ -1,0 +1,39 @@
+{
+  "oracle_id": "974a46f9-aa84-4b34-bee5-c635166e5841",
+  "name": "Josu Vess, Lich Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Josu Vess, Lich Knight",
+      "oracle_fingerprint": "441bf54a1308e5b0e963398b9f0487ac",
+      "abilities": [
+        { "Keyword": { "Kicker": "{5}{B}" } },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "Kicked",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Knight",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "count": 8
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

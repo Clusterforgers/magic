@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Cycling":"{1}{R}"}},{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"May":{"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":{"Count":[{"Subtype":"Goblin"}]}}}]}}],"from":"Graveyard"}}]}]}

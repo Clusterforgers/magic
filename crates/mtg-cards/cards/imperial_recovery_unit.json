@@ -1,0 +1,32 @@
+{
+  "oracle_id": "18ad0dd1-2d0e-46b4-8ab1-ece07180267f",
+  "name": "Imperial Recovery Unit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imperial Recovery Unit",
+      "oracle_fingerprint": "91ce62b6a7fb824d5eda4b12e9db0c33",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

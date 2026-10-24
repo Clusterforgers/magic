@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},{"Not":{"HasKeyword":"Flying"}}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":"Triggering","to":{"Battlefield":{"counters":[[{"Other":"flying"},1]]}}}}]}}]}]}

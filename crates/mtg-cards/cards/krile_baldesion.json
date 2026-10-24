@@ -1,0 +1,41 @@
+{
+  "oracle_id": "546a217a-ac24-4fc0-97a8-424cfe1aafc0",
+  "name": "Krile Baldesion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krile Baldesion",
+      "oracle_fingerprint": "03cde62abdf657d96cd046451e4a4d80",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "limit": "OncePerTurn",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

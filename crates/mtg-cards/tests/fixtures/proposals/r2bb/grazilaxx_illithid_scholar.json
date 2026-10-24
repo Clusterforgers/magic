@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"BecomesBlocked":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"effects":[{"May":{"effects":[{"Move":{"what":"Triggering","to":"Hand"}}]}}]}},{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}},"effects":[{"Draw":{"count":1}}]}}]}]}

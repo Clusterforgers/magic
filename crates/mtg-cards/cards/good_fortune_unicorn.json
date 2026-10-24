@@ -1,0 +1,24 @@
+{
+  "oracle_id": "1e0cdff3-3ec5-41fc-8053-f072bae156b3",
+  "name": "Good-Fortune Unicorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Good-Fortune Unicorn",
+      "oracle_fingerprint": "bb56ba180611c35ea5c27deb6121b173",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

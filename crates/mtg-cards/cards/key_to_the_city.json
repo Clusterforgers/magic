@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a242c9bf-dab6-4996-bb3a-b4356f9ed0c9",
+  "name": "Key to the City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Key to the City",
+      "oracle_fingerprint": "9f5b4141e34503c4defadb9256ec52ab",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Discard": {} }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "effects": [{ "Pay": { "cost": "{2}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

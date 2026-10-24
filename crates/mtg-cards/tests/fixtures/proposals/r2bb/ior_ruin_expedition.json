@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"May":{"effects":[{"PutCounters":{"on":"This","counter":{"Other":"quest"}}}]}}]}},{"Activated":{"cost":[{"RemoveCounters":{"counter":{"Other":"quest"},"count":3}},"SacrificeSelf"],"effects":[{"Draw":{"count":2}}]}}]}]}

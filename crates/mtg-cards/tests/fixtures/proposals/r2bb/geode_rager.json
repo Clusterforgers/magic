@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"FirstStrike"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"targets":[{"what":"Player"}],"effects":[{"Goad":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]}}}]}}]}]}

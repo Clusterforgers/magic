@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"at_least":2}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking",{"Not":{"HasKeyword":"Flying"}}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Flying"}],"duration":"UntilEndOfTurn"}}]}}]}]}

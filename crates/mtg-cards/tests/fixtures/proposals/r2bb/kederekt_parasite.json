@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Drew":{"who":"Opponents"}},"if":{"Compare":{"left":{"Count":[{"Color":"Red"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"effects":[{"May":{"effects":[{"DealDamage":{"source":"This","to":"Triggering","amount":1}}]}}]}}]}]}

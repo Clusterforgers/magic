@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b4014b7c-aa1d-4feb-ab7a-4921ad150f9a",
+  "name": "Knights' Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knights' Charge",
+      "oracle_fingerprint": "64aea3608314378163a69c12df5a348f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}{W}{B}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "Type": "Creature" },
+                      { "Subtype": "Knight" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

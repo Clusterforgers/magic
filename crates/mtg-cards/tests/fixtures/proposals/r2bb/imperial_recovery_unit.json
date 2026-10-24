@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"You"},{"AnyOf":[{"Type":"Creature"},{"Subtype":"Vehicle"}]},{"Compare":{"stat":"ManaValue","op":"Le","to":2}}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}},{"Keyword":{"Crew":2}}]}]}

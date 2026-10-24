@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bd532f8d-789f-4ee1-a2f3-ae30e8282c76",
+  "name": "Gempalm Polluter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gempalm Polluter",
+      "oracle_fingerprint": "739bf3afcbae242d5d219bcf09d15766",
+      "abilities": [
+        { "Keyword": { "Cycling": "{B}{B}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Target": 0 },
+                        "amount": { "Count": [{ "Subtype": "Zombie" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
