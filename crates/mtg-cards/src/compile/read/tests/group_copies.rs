@@ -90,6 +90,51 @@ fn tokens_are_made_as_copies_for_each_permanent_of_a_target_player_or_more_when_
 }
 
 #[rstest]
+#[case::body_double(
+    "You may have this creature enter as a copy of any creature card in a graveyard.",
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Creature"},{"In":"Graveyard"}]}}}}"#
+)]
+#[case::vesuva(
+    "You may have this land enter tapped as a copy of any land on the battlefield.",
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Land"}],"tapped":true}}}}"#
+)]
+#[case::cursed_mirror(
+    "As this artifact enters, you may have it become a copy of any creature on the battlefield until end of turn, except it has haste.",
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Creature"}],"except":[{"AddKeyword":"Haste"}],"until_end_of_turn":true}}}}"#
+)]
+#[case::an_artifact_card(
+    "You may have this creature enter as a copy of any artifact card in a graveyard, except it's a Golem in addition to its other types.",
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Artifact"},{"In":"Graveyard"}],"except":[{"AddSubtype":"Golem"}]}}}}"#
+)]
+fn a_permanent_enters_as_a_copy_of_a_card_tapped_or_for_a_turn(
+    #[case] text: &str,
+    #[case] json: &str,
+) {
+    reads_as(text, ClauseKind::Static, false, json);
+}
+
+#[rstest]
+#[case::tapped_until_end_of_turn(
+    "As this artifact enters, you may have it become a copy of any creature on the battlefield until end of turn, except it has haste and enters tapped."
+)]
+#[case::no_end(
+    "As this artifact enters, you may have it become a copy of any creature on the battlefield."
+)]
+#[case::a_graveyard_of_your_own(
+    "You may have this creature enter as a copy of any creature card in your graveyard."
+)]
+#[case::an_opponent_graveyard(
+    "You may have this creature enter as a copy of any creature card in an opponent's graveyard."
+)]
+fn an_entering_copy_that_is_not_the_shape_stays_unread(#[case] text: &str) {
+    assert_eq!(
+        clause(text, ClauseKind::Static, false),
+        None,
+        "{text}"
+    );
+}
+
+#[rstest]
 #[case::one_more(
     "Create a token that's a copy of target creature. If this spell was kicked, create one of those tokens instead."
 )]

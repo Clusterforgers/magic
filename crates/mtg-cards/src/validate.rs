@@ -2449,7 +2449,7 @@ impl<'a> Walker<'a> {
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
-            ReplaceBy::AsCopy { of, except } => {
+            ReplaceBy::AsCopy { of, except, .. } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }

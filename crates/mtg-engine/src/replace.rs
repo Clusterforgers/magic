@@ -2059,12 +2059,22 @@ impl Pass<'_> {
                     *slot = chosen;
                 }
             }
-            ReplaceBy::AsCopy { of, except } => {
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                tapped: enters_tapped,
+                until_end_of_turn,
+            } => {
                 let copy = match self.copies(candidate.object, controller, object, of, except)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(copy) => copy,
                 };
-                if let Some(copy) = copy {
+                if let Some(mut copy) = copy {
+                    copy.until_end_of_turn = *until_end_of_turn;
+                    // "Enter tapped as a copy": only the copy is tapped.
+                    if *enters_tapped {
+                        tapped(self, at);
+                    }
                     let mut inherited = applied.clone();
                     inherited.dedup();
                     // The copy begins as the permanent enters, so the effects of the copied values apply to its entering.

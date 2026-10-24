@@ -553,15 +553,21 @@ pub enum ReplaceBy {
     PayLifeOrTapped(u32),
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
-    /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield that
-    /// matches the selector (CR 707.9, 614.1c), with these exceptions in its copiable values ("except it's an
-    /// Illusion in addition to its other types").
+    /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield or a card
+    /// in a graveyard that matches the selector (CR 707.9, 614.1c), with these exceptions in its copiable values
+    /// ("except it's an Illusion in addition to its other types").
     AsCopy {
-        /// The permanents that may be copied.
+        /// The objects that may be copied: permanents, or cards when the selector names a graveyard.
         of: Selector,
         /// Changes the copy has: part of the copy effect, so part of its copiable values (CR 707.9b).
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// It enters tapped when it is a copy ("enter tapped as a copy of any land").
+        #[serde(default, skip_serializing_if = "is_false")]
+        tapped: bool,
+        /// It is a copy until the end of the turn only ("becomes a copy ... until end of turn").
+        #[serde(default, skip_serializing_if = "is_false")]
+        until_end_of_turn: bool,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

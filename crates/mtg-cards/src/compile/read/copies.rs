@@ -14,14 +14,15 @@ use super::copy_spells;
 use super::create::colors_text;
 use super::render;
 use super::selectors::{
-    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_text, subtype, type_name,
+    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_in, phrase_text, subtype,
+    type_name,
 };
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
 use crate::effect::{Effect, TokenRef};
 use crate::modify::Modification;
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use crate::value::Amount;
 
@@ -247,12 +248,38 @@ pub(super) fn is_populate(effects: &[Effect]) -> bool {
 /// "You may have this creature enter as a copy of any creature on the battlefield, except it's an Illusion in
 /// addition to its other types."
 pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
+    // "As this artifact enters, you may have it become a copy of any creature on the battlefield until end of turn".
+    let until_end_of_turn = r
+        .attempt(|r| {
+            r.need("as")?;
+            r.source().then_some(())?;
+            r.need("enters")?;
+            r.punct(',').then_some(())
+        })
+        .is_some();
     r.need("you may have")?;
-    r.source().then_some(())?;
-    r.need("enter as a copy of")?;
+    let mut tapped = false;
+    if until_end_of_turn {
+        r.word("it").then_some(())?;
+        r.need("become a copy of")?;
+    } else {
+        r.source().then_some(())?;
+        tapped = r.words("enter tapped as a copy of");
+        if !tapped {
+            r.need("enter as a copy of")?;
+        }
+    }
     (r.word("a") || r.word("an") || r.word("any")).then_some(())?;
-    let of = phrase(r, Form::Target)?;
-    r.words("on the battlefield");
+    let mut of = phrase_in(r, Form::Target, true)?;
+    // "any creature card in a graveyard".
+    if r.words("in a graveyard") {
+        of.0.push(Pred::In(ZoneKind::Graveyard));
+    } else {
+        r.words("on the battlefield");
+    }
+    if until_end_of_turn {
+        r.need("until end of turn")?;
+    }
     let except = r
         .attempt(|r| {
             r.punct(',').then_some(())?;
@@ -263,9 +290,14 @@ pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
         when: ReplaceWhen::Enters {
             what: Selector::this(),
         },
-        by: ReplaceBy::AsCopy { of, except },
+        by: ReplaceBy::AsCopy {
+            of,
+            except,
+            tapped,
+            until_end_of_turn,
+        },
         condition: None,
-        from: crate::refs::ZoneKind::Battlefield,
+        from: ZoneKind::Battlefield,
     })
 }
 
@@ -791,6 +823,19 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect) -> Option<String> {
 
 /// "a creature you control" or "any creature on the battlefield": the permanents a permanent may enter as a copy of.
 fn choice_text(of: &Selector) -> Option<String> {
+    // "any creature card in a graveyard".
+    if of.0.contains(&Pred::In(ZoneKind::Graveyard)) {
+        let cards = Selector(
+            of.0.iter()
+                .filter(|pred| **pred != Pred::In(ZoneKind::Graveyard))
+                .cloned()
+                .collect(),
+        );
+        return Some(format!(
+            "any {} card in a graveyard",
+            phrase_text(&cards, Form::Target)?
+        ));
+    }
     let text = phrase_text(of, Form::Target)?;
     // "a creature you control", "a creature an opponent controls".
     if text.contains(" you control") || text.contains(" an opponent controls") {
@@ -802,11 +847,23 @@ fn choice_text(of: &Selector) -> Option<String> {
 
 /// How a permanent that enters as a copy is written in each wording of its exceptions, without its first capital and
 /// period.
-pub(super) fn enters_texts(of: &Selector, except: &[Modification]) -> Vec<String> {
+pub(super) fn enters_texts(
+    of: &Selector,
+    except: &[Modification],
+    tapped: bool,
+    until_end_of_turn: bool,
+) -> Vec<String> {
     let Some(choice) = choice_text(of) else {
         return Vec::new();
     };
-    let head = format!("you may have ~ enter as a copy of {choice}");
+    let head = match (tapped, until_end_of_turn) {
+        (false, false) => format!("you may have ~ enter as a copy of {choice}"),
+        (true, false) => format!("you may have ~ enter tapped as a copy of {choice}"),
+        (false, true) => format!(
+            "as ~ enters, you may have it become a copy of {choice} until end of turn"
+        ),
+        (true, true) => return Vec::new(),
+    };
     if except.is_empty() {
         return vec![head];
     }
