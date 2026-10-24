@@ -214,6 +214,9 @@ pub(super) fn found_destination(r: &mut Reader<'_>) -> Option<Destination> {
             counters: Vec::new(),
         });
     }
+    if r.words("into your graveyard") {
+        return Some(Destination::Graveyard);
+    }
     r.words("into your hand").then_some(Destination::Hand)
 }
 
@@ -524,6 +527,7 @@ pub(super) fn destination_text(to: &Destination) -> Option<String> {
             if *tapped { " tapped" } else { "" }
         )),
         Destination::Hand => Some("into your hand".to_owned()),
+        Destination::Graveyard => Some("into your graveyard".to_owned()),
         _ => None,
     }
 }
@@ -565,6 +569,14 @@ pub fn other_wordings(texts: &[String]) -> Vec<String> {
         );
         if that != *text {
             found.push(that.clone());
+        }
+        let buried = text.replacen(
+            ", put it into your graveyard",
+            ", put that card into your graveyard",
+            1,
+        );
+        if buried != *text {
+            found.push(buried);
         }
         // "put those cards", or the put in a sentence of its own, after a count that a where clause names.
         if text.contains(", where X is ") {
