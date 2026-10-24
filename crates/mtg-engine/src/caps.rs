@@ -158,6 +158,7 @@ const RUNS: &[&str] = &[
     "Effect.Surveil",
     "Effect.Proliferate",
     "Effect.Goad",
+    "Effect.Fight",
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
@@ -379,6 +380,7 @@ const RUNS: &[&str] = &[
     "Keyword.Squad",
     "Keyword.Ravenous",
     "Keyword.Riot",
+    "Keyword.Decayed",
     "ReplaceBy.Riot",
     "Keyword.Fabricate",
     "Keyword.Ascend",
@@ -658,7 +660,7 @@ mod tests {
     #[case::surveilling("Effect.Surveil", true)]
     #[case::proliferating("Effect.Proliferate", true)]
     #[case::goading("Effect.Goad", true)]
-    #[case::fighting("Effect.Fight", false)]
+    #[case::fighting("Effect.Fight", true)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
@@ -800,6 +802,7 @@ mod tests {
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]
+    #[case::decayed("Keyword.Decayed", true)]
     #[case::choosing_a_counter_or_haste_as_it_enters("ReplaceBy.Riot", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]

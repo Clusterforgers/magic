@@ -687,6 +687,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "station" => Keyword::Station,
         "ravenous" => Keyword::Ravenous,
         "riot" => Keyword::Riot,
+        "decayed" => Keyword::Decayed,
         "ascend" => Keyword::Ascend,
         "jump-start" => Keyword::JumpStart,
         "retrace" => Keyword::Retrace,
@@ -1161,6 +1162,7 @@ mod tests {
     #[case::annihilator_six("Annihilator 6", Keyword::Annihilator(6))]
     #[case::ravenous("Ravenous", Keyword::Ravenous)]
     #[case::riot("Riot", Keyword::Riot)]
+    #[case::decayed("Decayed", Keyword::Decayed)]
     #[case::ascend("Ascend", Keyword::Ascend)]
     #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
     #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
@@ -1546,6 +1548,7 @@ mod tests {
             "Offspring {2}",
             "Ravenous",
             "Riot",
+            "Decayed",
             "Foretell {1}",
             "Fabricate 1",
             "Ascend",

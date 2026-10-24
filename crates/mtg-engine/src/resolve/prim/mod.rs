@@ -286,6 +286,7 @@ mod tests {
         "Effect.Surveil",
         "Effect.Proliferate",
         "Effect.Goad",
+        "Effect.Fight",
         "Effect.BecomeMonarch",
         "Effect.Amass",
         "Effect.Monstrosity",
