@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9cbf95f4-3510-420b-9355-645450f4493d",
+  "name": "Descend upon the Sinful",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descend upon the Sinful",
+      "oracle_fingerprint": "8e9c083ab04291969948f7f42d26da89",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Angel",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Angel"],
+                            "power": 4,
+                            "toughness": 4,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

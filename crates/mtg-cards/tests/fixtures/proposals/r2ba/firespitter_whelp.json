@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"SpellCast":{"what":[{"AnyOf":[{"Not":{"Type":"Creature"}},{"Subtype":"Dragon"}]}],"by":"You"}},"effects":[{"DealDamage":{"source":"This","to":"Opponents","amount":1}}]}}]}]}

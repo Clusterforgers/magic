@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b23a3d30-6b8e-4aad-890f-db0c3af43ace",
+  "name": "Flickerwisp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flickerwisp",
+      "oracle_fingerprint": "46dd35d8bb4b819ef2f9f4a68b6e8870",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

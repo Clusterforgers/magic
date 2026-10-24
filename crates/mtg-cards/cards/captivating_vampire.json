@@ -1,0 +1,48 @@
+{
+  "oracle_id": "acd382ee-94fb-4a29-b14e-c2a3c6dde7e0",
+  "name": "Captivating Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captivating Vampire",
+      "oracle_fingerprint": "c8ef27f8b09aa7c1de20408c93fd4923",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Vampire" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Vampire" }], "count": 5 } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Vampire" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

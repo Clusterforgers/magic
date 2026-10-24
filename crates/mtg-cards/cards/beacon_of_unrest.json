@@ -1,0 +1,31 @@
+{
+  "oracle_id": "aef874fa-93c0-4f86-8b0d-dc24ec51467d",
+  "name": "Beacon of Unrest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beacon of Unrest",
+      "oracle_fingerprint": "61891e8de2a464663f9aff1cff92789c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

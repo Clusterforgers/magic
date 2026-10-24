@@ -486,19 +486,13 @@ const OPPONENT: &str = r#",{"ControlledBy":"Opponents"}"#;
 #[rstest]
 #[case::any_creature(
     "",
-    "It gains haste",
     "Gain control of target creature until end of turn. Untap that creature. It gains haste until end of turn."
 )]
 #[case::an_opponent_s_creature(
     OPPONENT,
-    "It gains haste",
     "Gain control of target creature an opponent controls until end of turn. Untap that creature. It gains haste until end of turn."
 )]
-fn a_creature_taken_for_the_turn_reads(
-    #[case] controlled: &str,
-    #[case] _gain: &str,
-    #[case] clause: &str,
-) {
+fn a_creature_taken_for_the_turn_reads(#[case] controlled: &str, #[case] clause: &str) {
     assert!(
         written(
             &stolen(controlled, UNTAP, "Haste", "UntilEndOfTurn"),
@@ -578,4 +572,189 @@ fn a_discard_of_another_card_does_not_read_for_a_card_or_another_player(
     #[case] clause: &str,
 ) {
     assert!(!written(&discarding(what, by), clause), "{clause}");
+}
+
+/// "When this creature enters, you get six {E}."
+fn getting_energy(count: u32) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"ZoneChange":{{"what":["This"],"to":"Battlefield"}}}},"effects":[{{"PutCounters":{{"on":"You","counter":{{"Other":"energy"}},"count":{count}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::six(6, "When this creature enters, you get six {E}.")]
+#[case::six_as_symbols(6, "When this creature enters, you get {E}{E}{E}{E}{E}{E}.")]
+#[case::two(2, "When this creature enters, you get two {E}.")]
+fn energy_in_words_reads(#[case] count: u32, #[case] clause: &str) {
+    assert!(written(&getting_energy(count), clause), "{clause}");
+}
+
+#[rstest]
+#[case::another_number(5, "When this creature enters, you get six {E}.")]
+#[case::one_energy_has_no_number(1, "When this creature enters, you get one {E}.")]
+#[case::a_number_of_cards(6, "When this creature enters, you get six cards.")]
+fn energy_in_words_does_not_read_for_another_number_or_thing(
+    #[case] count: u32,
+    #[case] clause: &str,
+) {
+    assert!(!written(&getting_energy(count), clause), "{clause}");
+}
+
+/// "Whenever an opponent draws their second card each turn, put a +1/+1 counter on ~ and you draw a card."
+fn widow(counter: &str, drawer: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"Nth":{{"event":{{"Drew":{{"who":"Opponents"}}}},"nth":2}}}},"effects":[{{"PutCounters":{{"on":"This","counter":"{counter}"}}}},{{"Draw":{{"who":{drawer}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::you_draw(
+    "+1/+1",
+    r#""You""#,
+    "Whenever an opponent draws their second card each turn, put a +1/+1 counter on ~ and you draw a card."
+)]
+fn a_draw_after_a_counter_on_the_card_keeps_its_subject(
+    #[case] counter: &str,
+    #[case] drawer: &str,
+    #[case] clause: &str,
+) {
+    assert!(written(&widow(counter, drawer), clause), "{clause}");
+}
+
+#[rstest]
+#[case::another_counter(
+    "-1/-1",
+    r#""You""#,
+    "Whenever an opponent draws their second card each turn, put a +1/+1 counter on ~ and you draw a card."
+)]
+#[case::an_opponent_draws(
+    "+1/+1",
+    r#""Opponents""#,
+    "Whenever an opponent draws their second card each turn, put a +1/+1 counter on ~ and you draw a card."
+)]
+fn a_draw_after_a_counter_on_the_card_does_not_read_for_another_counter_or_player(
+    #[case] counter: &str,
+    #[case] drawer: &str,
+    #[case] clause: &str,
+) {
+    assert!(!written(&widow(counter, drawer), clause), "{clause}");
+}
+
+/// "−5: Destroy all other permanents except for lands and tokens."
+fn sweeping(filter: &str) -> String {
+    format!(
+        r#"{{"Loyalty":{{"cost":{{"Minus":5}},"effects":[{{"Destroy":{{"what":{{"Each":[{filter}]}}}}}}]}}}}"#
+    )
+}
+
+const NONLAND_NONTOKEN: &str = r#"{"Not":{"Type":"Land"}},{"Not":"Token"},"Other""#;
+
+#[rstest]
+#[case::other(
+    NONLAND_NONTOKEN,
+    "−5: Destroy all other permanents except for lands and tokens."
+)]
+#[case::all(
+    r#"{"Not":{"Type":"Land"}},{"Not":"Token"}"#,
+    "−5: Destroy all permanents except for lands and tokens."
+)]
+fn the_group_but_lands_and_tokens_reads(#[case] filter: &str, #[case] clause: &str) {
+    assert!(written(&sweeping(filter), clause), "{clause}");
+}
+
+#[rstest]
+#[case::tokens_left_in_the_data(
+    r#"{"Not":{"Type":"Land"}},"Other""#,
+    "−5: Destroy all other permanents except for lands and tokens."
+)]
+#[case::other_in_the_data_only(
+    NONLAND_NONTOKEN,
+    "−5: Destroy all permanents except for lands and tokens."
+)]
+#[case::creatures_only(
+    r#"{"Type":"Creature"},{"Not":"Token"},"Other""#,
+    "−5: Destroy all other permanents except for lands and tokens."
+)]
+fn the_group_but_lands_and_tokens_does_not_read_for_another_group(
+    #[case] filter: &str,
+    #[case] clause: &str,
+) {
+    assert!(!written(&sweeping(filter), clause), "{clause}");
+}
+
+/// "When this creature dies, each opponent gets a number of rad counters equal to its power."
+fn rad(kind: &str, stat: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"ZoneChange":{{"what":["This"],"from":"Battlefield","to":"Graveyard"}}}},"effects":[{{"PutCounters":{{"on":"Opponents","counter":{{"Other":"{kind}"}},"count":{{"Stat":{{"of":"This","stat":"{stat}"}}}}}}}}]}}}}"#
+    )
+}
+
+#[test]
+fn counters_of_an_amount_read_as_a_number_equal_to_it() {
+    let clause =
+        "When this creature dies, each opponent gets a number of rad counters equal to its power.";
+    assert!(written(&rad("rad", "Power"), clause));
+}
+
+#[rstest]
+#[case::another_kind("poison")]
+#[case::another_stat("rad")]
+fn counters_of_an_amount_do_not_read_for_another_kind_or_stat(#[case] kind: &str) {
+    let stat = if kind == "rad" { "Toughness" } else { "Power" };
+    let clause =
+        "When this creature dies, each opponent gets a number of rad counters equal to its power.";
+    assert!(!written(&rad(kind, stat), clause));
+}
+
+/// "Tap target creature an opponent controls. That creature doesn't untap during its controller's untap step for as long as you control this creature."
+fn held(mods: &str, duration: &str, tapped: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"ZoneChange":{{"what":["This"],"to":"Battlefield"}}}},"targets":[{{"what":{{"Object":[{{"Type":"Creature"}},{{"ControlledBy":"Opponents"}}]}}}}],"effects":[{{"{tapped}":{{"what":{{"Target":0}}}}}},{{"Continuous":{{"affected":{{"Target":0}},"mods":[{mods}],"duration":"{duration}"}}}}]}}}}"#
+    )
+}
+
+const HELD_CLAUSE: &str = "When this creature enters, tap target creature an opponent controls. That creature doesn't untap during its controller's untap step for as long as you control this creature.";
+
+#[test]
+fn a_creature_that_stays_tapped_while_the_source_stays_reads() {
+    assert!(written(
+        &held(r#""DoesntUntap""#, "WhileSourceOnBattlefield", "Tap"),
+        HELD_CLAUSE
+    ));
+}
+
+#[rstest]
+#[case::another_rule(r#""CantAttack""#, "WhileSourceOnBattlefield", "Tap")]
+#[case::until_end_of_turn(r#""DoesntUntap""#, "UntilEndOfTurn", "Tap")]
+#[case::an_untap_for_the_tap(r#""DoesntUntap""#, "WhileSourceOnBattlefield", "Untap")]
+fn a_creature_that_stays_tapped_does_not_read_for_another_rule_duration_or_step(
+    #[case] mods: &str,
+    #[case] duration: &str,
+    #[case] tapped: &str,
+) {
+    assert!(!written(&held(mods, duration, tapped), HELD_CLAUSE));
+}
+
+/// "Tap five untapped Vampires you control: Gain control of target creature. It becomes a Vampire in addition to its other types."
+fn typed(duration: &str, subtype: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":[{{"TapPermanents":{{"filter":[{{"Subtype":"Vampire"}}],"count":5}}}}],"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"Continuous":{{"affected":{{"Target":0}},"mods":[{{"SetController":"You"}}],"duration":"{duration}"}}}},{{"Continuous":{{"affected":{{"Target":0}},"mods":[{{"AddSubtype":"{subtype}"}}],"duration":"{duration}"}}}}]}}}}"#
+    )
+}
+
+const TYPED_CLAUSE: &str = "Tap five untapped Vampires you control: Gain control of target creature. It becomes a Vampire in addition to its other types.";
+
+#[test]
+fn a_creature_taken_for_good_that_becomes_a_kind_reads() {
+    assert!(written(&typed("Forever", "Vampire"), TYPED_CLAUSE));
+}
+
+#[rstest]
+#[case::for_the_turn("UntilEndOfTurn", "Vampire")]
+#[case::another_kind("Forever", "Zombie")]
+fn a_creature_taken_for_good_that_becomes_a_kind_does_not_read_for_the_turn_or_another_kind(
+    #[case] duration: &str,
+    #[case] subtype: &str,
+) {
+    assert!(!written(&typed(duration, subtype), TYPED_CLAUSE));
 }

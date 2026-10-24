@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Pay":{"who":{"Bound":"player"},"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"},{"Not":"Token"}]}}],"unpaid":[{"LoseLife":{"who":{"Bound":"player"},"amount":4}}]}}]}}]}}]}]}

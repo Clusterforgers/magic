@@ -1,0 +1,59 @@
+{
+  "oracle_id": "5f815e69-fdd6-4186-9317-25f5c7e0b08e",
+  "name": "Elspeth Tirel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elspeth Tirel",
+      "oracle_fingerprint": "47ee0f5996dc6602ba4739a96864c869",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Not": { "Type": "Land" } }, { "Not": "Token" }, "Other"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

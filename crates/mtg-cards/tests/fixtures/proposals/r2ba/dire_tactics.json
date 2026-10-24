@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Exile":{"what":{"Target":0}}},{"If":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Human"},{"ControlledBy":"You"}]},"op":"Eq","right":0}},"then":[{"LoseLife":{"amount":{"Stat":{"of":{"Target":0},"stat":"Toughness"}}}}]}}]}}]}]}

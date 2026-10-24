@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Triggered":{"when":{"Nth":{"event":{"Drew":{"who":"Opponents"}},"nth":2}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"Draw":{}}]}}]}]}

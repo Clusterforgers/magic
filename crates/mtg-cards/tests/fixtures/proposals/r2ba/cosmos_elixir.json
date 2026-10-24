@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"effects":[{"If":{"condition":{"Compare":{"left":{"Life":"You"},"op":"Gt","right":{"StartingLife":"You"}}},"then":[{"Draw":{}}],"otherwise":[{"GainLife":{"amount":2}}]}}]}}]}]}

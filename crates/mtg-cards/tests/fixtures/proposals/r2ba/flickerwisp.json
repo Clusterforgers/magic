@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":["Other"]}}],"effects":[{"Exile":{"what":{"Target":0},"as":"exiled"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Move":{"what":{"Bound":"exiled"},"to":{"Battlefield":{}}}}]}}]}}]}]}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "353dd446-2ea6-41c9-a10f-5a03e4de19b4",
+  "name": "Access Denied",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Access Denied",
+      "oracle_fingerprint": "fcece802a2d491939c007fbee67363d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

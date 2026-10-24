@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}},"count":{"Half":{"of":{"Count":[{"Subtype":"Zombie"},{"ControlledBy":"You"}]},"up":false}}}}]}}]}]}

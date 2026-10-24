@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5825997b-10d7-4a36-972c-a80ddd90b8ed",
+  "name": "Feed the Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feed the Swarm",
+      "oracle_fingerprint": "0e9611cd2c4262c08d56bfe50d1cd736",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "LoseLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

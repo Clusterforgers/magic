@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "fbdef99d-6ce9-495d-a55b-e6ba799d3da7",
+  "oracle_id": "284db94d-e583-4355-89fd-6c0906f9d17e",
+  "multiverse_ids": [
+    652131
+  ],
+  "mtgo_id": 132337,
+  "tcgplayer_id": 522974,
+  "cardmarket_id": 755882,
+  "name": "Feral Ghoul",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/fbdef99d-6ce9-495d-a55b-e6ba799d3da7",
+  "scryfall_uri": "https://scryfall.com/card/pip/44/feral-ghoul?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.jpg?1783912408",
+    "normal": "https://cards.scryfall.io/normal/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.jpg?1783912408",
+    "large": "https://cards.scryfall.io/large/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.jpg?1783912408",
+    "png": "https://cards.scryfall.io/png/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.png?1783912408",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.jpg?1783912408",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.jpg?1783912408",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.webp?1783912408",
+    "grid": "https://cards.scryfall.io/grid/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.webp?1783912408",
+    "display": "https://cards.scryfall.io/display/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.webp?1783912408",
+    "art": "https://cards.scryfall.io/art/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.webp?1783912408",
+    "crop": "https://cards.scryfall.io/crop/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.webp?1783912408",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/b/fbdef99d-6ce9-495d-a55b-e6ba799d3da7.jpg?1783912408"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Zombie Mutant",
+  "oracle_text": "Menace\nWhenever another creature you control dies, put a +1/+1 counter on this creature.\nWhen this creature dies, each opponent gets a number of rad counters equal to its power.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "28d9eb00-5d34-4a2f-963c-017e3229dd5a",
+      "component": "combo_piece",
+      "name": "Feral Ghoul",
+      "type_line": "Creature — Zombie Mutant",
+      "uri": "https://api.scryfall.com/cards/28d9eb00-5d34-4a2f-963c-017e3229dd5a"
+    },
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fbdef99d-6ce9-495d-a55b-e6ba799d3da7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A284db94d-e583-4355-89fd-6c0906f9d17e&unique=prints",
+  "collector_number": "44",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sergio Cosmai",
+  "artist_ids": [
+    "a5f8b441-5a51-4bb4-9330-ff98bb041543"
+  ],
+  "illustration_id": "4e4602fa-354f-4a94-b54c-b02b0f60ea9c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4215,
+  "prices": {
+    "usd": "1.92",
+    "usd_foil": "2.65",
+    "usd_etched": null,
+    "eur": "1.18",
+    "eur_foil": "1.89",
+    "tix": "0.49"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652131&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFeral%2BGhoul",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFeral%2BGhoul",
+    "edhrec": "https://edhrec.com/route/?cc=Feral+Ghoul"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F522974%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=755882&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132337?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

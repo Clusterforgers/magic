@@ -1,0 +1,28 @@
+{
+  "oracle_id": "53b2c8f2-db9a-4ab0-a4e8-17385b2fa3bd",
+  "name": "Aethertide Whale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aethertide Whale",
+      "oracle_fingerprint": "b95d8a7a04f3c46ceb74822644089c27",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 6 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 4 }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

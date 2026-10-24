@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Enchantment"}]},{"ControlledBy":"Opponents"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"LoseLife":{"amount":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}}}]}}]}]}

@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "ebe9116e-7b04-4f2a-aa67-89a42c6e1801",
+  "oracle_id": "5f815e69-fdd6-4186-9317-25f5c7e0b08e",
+  "multiverse_ids": [
+    212241
+  ],
+  "mtgo_id": 38337,
+  "mtgo_foil_id": 38338,
+  "tcgplayer_id": 36229,
+  "cardmarket_id": 242518,
+  "name": "Elspeth Tirel",
+  "lang": "en",
+  "released_at": "2010-10-01",
+  "uri": "https://api.scryfall.com/cards/ebe9116e-7b04-4f2a-aa67-89a42c6e1801",
+  "scryfall_uri": "https://scryfall.com/card/som/6/elspeth-tirel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:22:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.jpg?1783941746",
+    "normal": "https://cards.scryfall.io/normal/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.jpg?1783941746",
+    "large": "https://cards.scryfall.io/large/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.jpg?1783941746",
+    "png": "https://cards.scryfall.io/png/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.png?1783941746",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.jpg?1783941746",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.jpg?1783941746",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.webp?1783941746",
+    "grid": "https://cards.scryfall.io/grid/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.webp?1783941746",
+    "display": "https://cards.scryfall.io/display/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.webp?1783941746",
+    "art": "https://cards.scryfall.io/art/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.webp?1783941746",
+    "crop": "https://cards.scryfall.io/crop/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.webp?1783941746",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/b/ebe9116e-7b04-4f2a-aa67-89a42c6e1801.jpg?1783941746"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Planeswalker — Elspeth",
+  "oracle_text": "+2: You gain 1 life for each creature you control.\n−2: Create three 1/1 white Soldier creature tokens.\n−5: Destroy all other permanents except for lands and tokens.",
+  "loyalty": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ebe9116e-7b04-4f2a-aa67-89a42c6e1801",
+      "component": "combo_piece",
+      "name": "Elspeth Tirel",
+      "type_line": "Legendary Planeswalker — Elspeth",
+      "uri": "https://api.scryfall.com/cards/ebe9116e-7b04-4f2a-aa67-89a42c6e1801"
+    },
+    {
+      "object": "related_card",
+      "id": "7a563df7-7b9d-4692-ab1b-578be1887b62",
+      "component": "token",
+      "name": "Soldier",
+      "type_line": "Token Creature — Soldier",
+      "uri": "https://api.scryfall.com/cards/7a563df7-7b9d-4692-ab1b-578be1887b62"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8f403072-9b22-4e69-8d59-22dc4c97fd8d",
+  "set": "som",
+  "set_name": "Scars of Mirrodin",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8f403072-9b22-4e69-8d59-22dc4c97fd8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/som?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ebe9116e-7b04-4f2a-aa67-89a42c6e1801/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5f815e69-fdd6-4186-9317-25f5c7e0b08e&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michael Komarck",
+  "artist_ids": [
+    "96a53b95-fe5f-4fbb-9411-ccf4ee150aca"
+  ],
+  "illustration_id": "53b15b24-8316-4595-9dbd-2b007bfc5550",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4975,
+  "penny_rank": 3203,
+  "prices": {
+    "usd": "4.44",
+    "usd_foil": "21.31",
+    "usd_etched": null,
+    "eur": "1.49",
+    "eur_foil": "7.66",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=212241&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DElspeth%2BTirel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DElspeth%2BTirel",
+    "edhrec": "https://edhrec.com/route/?cc=Elspeth+Tirel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F36229%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=242518&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/38337?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -29,9 +29,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Some((last, rest)) = named.split_last() else {
         return;
     };
-    let list = match rest {
+    let targets_said = match rest {
         [one] => format!("{one} and {last}"),
         _ => format!("{}, and {last}", rest.join(", ")),
     };
-    texts.push(format!("Destroy {list}."));
+    texts.push(format!("Destroy {targets_said}."));
 }

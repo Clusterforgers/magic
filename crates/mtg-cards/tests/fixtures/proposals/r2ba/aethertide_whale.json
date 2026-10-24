@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"energy"},"count":6}}]}},{"Activated":{"cost":[{"PayEnergy":4}],"effects":[{"Move":{"what":"This","to":"Hand"}}]}}]}]}

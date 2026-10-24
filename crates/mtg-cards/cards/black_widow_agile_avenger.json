@@ -1,0 +1,20 @@
+{
+  "oracle_id": "df7abfb0-21df-4359-be81-0f3c09e1425e",
+  "name": "Black Widow, Agile Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Widow, Agile Avenger",
+      "oracle_fingerprint": "78a6a2b2edf7ad1e6cd066e8731ba167",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "Opponents" } }, "nth": 2 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

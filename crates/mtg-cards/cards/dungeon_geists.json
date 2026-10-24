@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ab5ebae2-cd77-4a7d-a93b-8042cd486429",
+  "name": "Dungeon Geists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dungeon Geists",
+      "oracle_fingerprint": "dfa3535f34ed07632ff7b84d9bfde589",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

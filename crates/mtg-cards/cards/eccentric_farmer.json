@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b51a852c-ccde-4d23-a3f3-a002f7eacdab",
+  "name": "Eccentric Farmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eccentric Farmer",
+      "oracle_fingerprint": "cc0cd97ec8859e0661dde4e008983670",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "returned"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

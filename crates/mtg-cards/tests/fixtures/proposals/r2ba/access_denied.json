@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Counter":{"what":{"Target":0}}},{"CreateToken":{"token":{"Custom":{"name":"Thopter","types":["Artifact","Creature"],"subtypes":["Thopter"],"power":1,"toughness":1,"abilities":[{"Keyword":"Flying"}]}},"count":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}}}]}}]}]}
