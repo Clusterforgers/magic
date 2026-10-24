@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"AdditionalLandPlays":{"who":"EachPlayer","count":1}}}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"EachPlayer"}},"if":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"Triggering"}]},"op":"Eq","right":0}},"effects":[{"Draw":{"who":"Triggering","count":3}}]}}]}]}

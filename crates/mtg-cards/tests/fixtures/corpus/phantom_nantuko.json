@@ -1,0 +1,27 @@
+{
+  "cmc": 3.0,
+  "collector_number": "133",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "2fd65594-cf66-4dd4-8d7b-b565756f2f86",
+  "keywords": [
+    "Trample"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}",
+  "name": "Phantom Nantuko",
+  "oracle_id": "0951b529-646c-4dfd-88ad-84ee117ce722",
+  "oracle_text": "Trample\nThis creature enters with two +1/+1 counters on it.\nIf damage would be dealt to this creature, prevent that damage. Remove a +1/+1 counter from this creature.\n{T}: Put a +1/+1 counter on this creature.",
+  "power": "0",
+  "rarity": "rare",
+  "released_at": "2017-06-09",
+  "set": "cma",
+  "toughness": "0",
+  "type_line": "Creature — Insect Spirit"
+}

@@ -16,7 +16,8 @@ fn creature(r: &mut Reader<'_>) -> Option<Ref> {
         return Some(Ref::This);
     }
     if r.it == Some(Ref::This) || r.acts_itself {
-        if r.word("it") {
+        // A person on a card ("Whenever Kang attacks, he connives.") is "he" for the card.
+        if r.word("it") || r.word("he") {
             return Some(Ref::This);
         }
     } else if let Some(it) = r.it.clone()
@@ -47,6 +48,22 @@ pub fn connive(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let what = creature(r)?;
     r.need("connives")?;
     Some(vec![Effect::Connive { what }])
+}
+
+/// "Attach it to target creature you control." (also "attach ~ to ..."): an Equipment or an Aura that enters attaches
+/// itself to a creature, and the sentence after may speak of "that creature".
+pub fn attach(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("attach")?;
+    r.acts_itself.then_some(())?;
+    (r.source() || r.word("it")).then_some(())?;
+    r.need("to")?;
+    let to = target_object(r)?;
+    is_on_the_battlefield(r, &to).then_some(())?;
+    r.it = Some(to.clone());
+    Some(vec![Effect::Attach {
+        what: Ref::This,
+        to,
+    }])
 }
 
 /// ", then it explores again".

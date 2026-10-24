@@ -1,0 +1,23 @@
+{
+  "id": "fd24d5dc-a4c5-4821-92f6-52d1840be66a",
+  "oracle_id": "d0db5996-f749-48d2-8fb3-a69104113828",
+  "name": "Death's Presence",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mic",
+  "collector_number": "137",
+  "rarity": "rare",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{5}{G}",
+  "cmc": 6.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature you control dies, put X +1/+1 counters on target creature you control, where X is the power of the creature that died.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

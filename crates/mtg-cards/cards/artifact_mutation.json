@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e77e8768-3ea8-44f9-aba6-1e023e006946",
+  "name": "Artifact Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artifact Mutation",
+      "oracle_fingerprint": "aed5fef0aa86a471090ba334c3c13dc7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

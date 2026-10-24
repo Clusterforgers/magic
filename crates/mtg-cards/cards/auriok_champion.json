@@ -1,0 +1,23 @@
+{
+  "oracle_id": "633fd158-19d0-4d97-a076-2ad897bbed19",
+  "name": "Auriok Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auriok Champion",
+      "oracle_fingerprint": "a79b012154fc5e58eb895f59fea864c0",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

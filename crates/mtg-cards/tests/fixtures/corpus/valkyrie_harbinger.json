@@ -1,0 +1,28 @@
+{
+  "cmc": 6.0,
+  "collector_number": "374",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "edab83a9-35b5-4312-b8ee-1c042c02aa31",
+  "keywords": [
+    "Flying",
+    "Lifelink"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{W}{W}",
+  "name": "Valkyrie Harbinger",
+  "oracle_id": "18a5e71e-eb75-4ac7-bedd-2220aaa24f78",
+  "oracle_text": "Flying\nLifelink (Damage dealt by this creature also causes you to gain that much life.)\nAt the beginning of each end step, if you gained 4 or more life this turn, create a 4/4 white Angel creature token with flying and vigilance.",
+  "power": "4",
+  "rarity": "rare",
+  "released_at": "2021-02-05",
+  "set": "khm",
+  "toughness": "5",
+  "type_line": "Creature — Angel Cleric"
+}

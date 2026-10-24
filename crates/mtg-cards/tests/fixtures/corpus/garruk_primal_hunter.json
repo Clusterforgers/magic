@@ -1,0 +1,24 @@
+{
+  "id": "79cfc0d7-fccb-47fb-87b6-08dd32528be6",
+  "oracle_id": "298a7e1a-b254-442e-bc1d-2a3e5296d849",
+  "name": "Garruk, Primal Hunter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "190",
+  "rarity": "mythic",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Planeswalker — Garruk",
+  "oracle_text": "+1: Create a 3/3 green Beast creature token.\n−3: Draw cards equal to the greatest power among creatures you control.\n−6: Create a 6/6 green Wurm creature token for each land you control.",
+  "loyalty": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

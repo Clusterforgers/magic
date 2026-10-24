@@ -1,0 +1,25 @@
+{
+  "id": "96f866ec-a163-4095-b088-d93fa0b6f6f7",
+  "oracle_id": "c7aecca5-2f67-4245-ab2d-e723d8b23a67",
+  "name": "Expressive Iteration",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "183",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{U}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top three cards of your library. Put one of them into your hand, put one of them on the bottom of your library, and exile one of them. You may play the exiled card this turn.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "045a9d3d-c20d-427f-a77b-0bffc6f55526",
+  "name": "Soul's Attendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul's Attendant",
+      "oracle_fingerprint": "a14120106363d68c8ec25afec8c42910",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "6f813bc3-6d81-4555-8e4b-6ecd9a6757b7",
+  "oracle_id": "749d2994-44e7-40d3-8630-7bebed239e9e",
+  "name": "Haywire Mite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "349",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact Creature — Insect",
+  "oracle_text": "When this creature dies, you gain 2 life.\n{G}, Sacrifice this creature: Exile target noncreature artifact or noncreature enchantment.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

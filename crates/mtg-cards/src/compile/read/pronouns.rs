@@ -13,8 +13,9 @@ use crate::refs::{Pred, Ref};
 const SENTENCE: [(&str, &str); 2] = [(". ~ gets ", ". It gets "), (". ~ gains ", ". It gains ")];
 
 /// The ways a trigger about the card itself names the card: `(written with ~, written with the pronoun)`.
-const OF_THE_EVENT: [(&str, &str); 7] = [
+const OF_THE_EVENT: [(&str, &str); 8] = [
     (", ~ fights ", ", it fights "),
+    (", attach ~ to ", ", attach it to "),
     (
         ", return ~ to its owner's hand",
         ", return it to its owner's hand",

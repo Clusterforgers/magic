@@ -1,0 +1,42 @@
+{
+  "oracle_id": "aa95501f-bb59-494a-bcae-b74ca10ad57e",
+  "name": "Angelic Accord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Accord",
+      "oracle_fingerprint": "d8e5af4d3aea0245c4dc62c8b08c348d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

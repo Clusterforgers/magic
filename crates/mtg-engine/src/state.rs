@@ -58,7 +58,8 @@ pub(crate) struct Possible {
     pub(crate) elsewhere: bool,
     /// Some card has a state trigger or gives one.
     pub(crate) states: bool,
-    /// A +1/+1 or -1/-1 counter has been on a permanent, so the layers work out its power and toughness (CR 613.4c).
+    /// A +1/+1, -1/-1 or keyword counter has been on a permanent, so the layers work out its power, toughness and keywords
+    /// (CR 613.4c, 122.1b).
     pub(crate) counters: bool,
     /// Some card is an Aura, an Equipment or a Fortification, or a permanent starts attached.
     pub(crate) attachments: bool,

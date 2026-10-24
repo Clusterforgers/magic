@@ -1,0 +1,30 @@
+{
+  "id": "3d0081b1-40fd-44ad-b154-efe2f27fed6b",
+  "oracle_id": "0718ea67-ced3-46bc-9164-8841e6bd73ae",
+  "name": "Sunrise Cavalier",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mid",
+  "collector_number": "244",
+  "rarity": "uncommon",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{1}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Trample, haste\nIf it's neither day nor night, it becomes day as this creature enters.\nWhenever day becomes night or night becomes day, put a +1/+1 counter on target creature you control.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Haste",
+    "Trample"
+  ]
+}

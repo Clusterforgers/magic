@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0d49cf51-af1f-4c17-9cf4-b82bc7c2c72e",
+  "name": "Traverse the Outlands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traverse the Outlands",
+      "oracle_fingerprint": "7c5c61860beb79ca08361e51013168d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Greatest": {
+                        "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "stat": "Power"
+                      }
+                    }
+                  },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

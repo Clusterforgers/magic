@@ -1,0 +1,27 @@
+{
+  "id": "52311be7-b484-4b14-a091-904c6b0c83d1",
+  "oracle_id": "659dfdbf-5e9d-4828-a967-348cb3bcf05a",
+  "name": "Freyalise, Llanowar's Fury",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "290",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Planeswalker — Freyalise",
+  "oracle_text": "+2: Create a 1/1 green Elf Druid creature token with \"{T}: Add {G}.\"\n−2: Destroy target artifact or enchantment.\n−6: Draw a card for each green creature you control.\nFreyalise, Llanowar's Fury can be your commander.",
+  "loyalty": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G"
+  ]
+}

@@ -563,7 +563,9 @@ fn is_self(when: &ReplaceWhen) -> bool {
 /// Whether the engine can apply `by` to this kind of event.
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
-        ReplaceBy::PreventUpTo(_) => matches!(unit, Unit::Damage { .. }),
+        ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventRemovingCounter(_) => {
+            matches!(unit, Unit::Damage { .. })
+        }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
         ReplaceBy::UmbraArmor => matches!(
             unit,
@@ -589,6 +591,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::Devour { .. }
+        | ReplaceBy::DayIfNeither
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         // Not run yet: a card that uses it is not Verified.
@@ -609,7 +612,11 @@ impl Action {
     fn prevents(&self) -> bool {
         matches!(
             self,
-            Action::Replace(ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_))
+            Action::Replace(
+                ReplaceBy::Prevent
+                    | ReplaceBy::PreventUpTo(_)
+                    | ReplaceBy::PreventRemovingCounter(_)
+            )
         )
     }
 }
@@ -1316,6 +1323,7 @@ impl Pass<'_> {
                                 | ReplaceBy::WithCounters { .. }
                                 | ReplaceBy::Devour { .. }
                                 | ReplaceBy::Riot
+                                | ReplaceBy::DayIfNeither
                         )
                     )
                 });
@@ -1541,6 +1549,10 @@ impl Pass<'_> {
             (ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_), Unit::Damage { .. }) => {
                 self.prevent(at, candidate, by, applied);
             }
+            (ReplaceBy::PreventRemovingCounter(kind), Unit::Damage { .. }) => {
+                self.prevent(at, candidate, &ReplaceBy::Prevent, applied.clone());
+                self.lose_counter(at, candidate, kind, applied);
+            }
             (ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_), _) => {
                 if matches!(
                     &self.slots[at].item,
@@ -1587,6 +1599,10 @@ impl Pass<'_> {
             }
             (ReplaceBy::Riot, Unit::Enter { object, controller }) => {
                 return self.riot(at, *object, *controller, applied);
+            }
+            (ReplaceBy::DayIfNeither, Unit::Enter { .. }) => {
+                self.day_if_neither(at, applied);
+                return Ok(Applied::Done);
             }
             (_, Unit::Enter { object, controller }) => {
                 return self.enter(at, candidate, by, *object, *controller, applied);
@@ -1647,6 +1663,38 @@ impl Pass<'_> {
 
     /// Takes from the damage of the event what the effect prevents: all of it, or as much as the effect has left (the
     /// shield remembers what it used). Lifelink gains what the damage that is left is.
+    /// The permanent with the replacement loses one counter of the kind, if it holds one: the removal takes the place of
+    /// the damage event the prevention took out at `at`.
+    fn lose_counter(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        kind: &CounterKind,
+        applied: Vec<Origin>,
+    ) {
+        let holds = self.state.object(candidate.object.id).is_some_and(|card| {
+            card.counter() == candidate.object.counter
+                && card
+                    .permanent()
+                    .is_some_and(|held| held.counters_of(kind) > 0)
+        });
+        if !holds {
+            return;
+        }
+        self.slots.insert(
+            at.min(self.slots.len()),
+            Slot {
+                item: Item::One(Event::CountersChanged(CountersChanged {
+                    on: Target::Object(candidate.object),
+                    counter: kind.clone(),
+                    delta: -1,
+                })),
+                applied,
+                frozen: false,
+            },
+        );
+    }
+
     fn prevent(&mut self, at: usize, candidate: &Candidate, by: &ReplaceBy, applied: Vec<Origin>) {
         let Item::One(Event::DamageDealt {
             source,
@@ -2481,6 +2529,8 @@ fn zone_word(zone: Zone) -> &'static str {
         Zone::Command(_) => "the command zone",
     }
 }
+
+mod day;
 
 mod dredge;
 

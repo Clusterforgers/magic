@@ -38,6 +38,7 @@ Angel of Flight Alabaster
 Angel of Invention
 Angel of Sanctions
 Angel of Vitality
+Angelic Accord
 Angelic Ascension
 Angelic Field Marshal
 Ant-Man, Elusive Avenger
@@ -59,11 +60,13 @@ Artful Maneuver
 Arvad the Cursed
 Ash Barrens
 Assassin's Trophy
+Assemble the Entmoot
 Atlantean Skirmisher
 Atmospheric Greenhouse
 Atzocan Seer
 Augury Raven
 Aura Gnarlid
+Auriok Champion
 Authority of the Consuls
 Auton Soldier
 Avatar of Woe
@@ -72,6 +75,7 @@ Aven Initiate
 Aven Riftwatcher
 Aven Squire
 Aven Tactician
+Avenging Huntbonder
 Azorius Chancery
 Azorius Herald
 Azorius Signet
@@ -145,6 +149,7 @@ Breath of Life
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
+Brimstone Vandal
 Brion Stoutarm
 Bronzeplate Boar
 Broodbirth Viper
@@ -397,6 +402,7 @@ Fight Rigging
 Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
+Firmament Sage
 Flame Jab
 Flamebraider
 Flatline
@@ -416,6 +422,7 @@ Forum of Amity
 Founding of Omashu
 Foundry Inspector
 Four Knocks
+Freyalise, Llanowar's Fury
 Frogtosser Banneret
 Fruit of Tizerus
 Fungal Reaches
@@ -426,6 +433,9 @@ Gaea's Cradle
 Galadhrim Brigade
 Galvanizing Sawship
 Game-Trail Changeling
+Garruk Wildspeaker
+Garruk, Primal Hunter
+Gavony Dawnguard
 Gemhide Sliver
 Gemrazer
 Generous Ent
@@ -472,6 +482,7 @@ Greater Good
 Greater Mossdog
 Green Goblin, Back for More
 Grenzo's Cutthroat
+Griffin Aerie
 Grim Flayer
 Grim Haruspex
 Grim Initiate
@@ -479,11 +490,13 @@ Grisly Salvage
 Growing Ranks
 Gruul Cluestone
 Gruul Ragebeast
+Guard Gomazoa
 Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
 Gurmag Angler
+Gwaihir, Greatest of the Eagles
 Hackrobat
 Hada Spy Patrol
 Hagra Mauling // Hagra Broodpit
@@ -495,6 +508,7 @@ Hangarback Walker
 Harabaz Druid
 Harmonious Archon
 Harrow
+Harvest Season
 Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
@@ -539,6 +553,7 @@ Imperious Oligarch
 Imposter Mech
 Impostor of the Sixth Pride
 Impulsive Pilferer
+Indulging Patrician
 Inferno Project
 Inkwell Leviathan
 Insatiable Hemophage
@@ -554,6 +569,7 @@ Iron League Steed
 Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
+Jace Beleren
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
@@ -567,6 +583,7 @@ Jungle Lion
 Jyoti, Moag Ancient
 Kalemne's Captain
 Kalonian Hydra
+Kang, Temporal Tyrant
 Karametra's Favor
 Karametra, God of Harvests
 Karn's Bastion
@@ -587,6 +604,7 @@ Knights of the Black Rose
 Kolaghan Skirmisher
 Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
+Kor Firewalker
 Korozda Guildmage
 Korozda Monitor
 Kozilek's Translator
@@ -654,6 +672,7 @@ Master of Etherium
 Master of Pearls
 Master of the Pearl Trident
 Mastery of the Unseen
+Maul of the Skyclaves
 Maulfist Squad
 Mausoleum Harpy
 Maverick Thopterist
@@ -686,6 +705,7 @@ Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk's Fist
+Moonrager's Slash
 Morinfen
 Morsel Theft
 Mortality Spear
@@ -761,6 +781,8 @@ Pentad Prism
 Persist
 Pestilent Syphoner
 Phantasmal Image
+Phantom Nantuko
+Phantom Nishoba
 Photon, Mighty Marvel
 Phyrexian Prowler
 Phyrexian Soulgorger
@@ -836,9 +858,11 @@ Relentless Advance
 Relentless Skaabs
 Relic of Sauron
 Remorseful Cleric
+Renewed Faith
 Replication Technique
 Rescue Skiff
 Reshape
+Resplendent Angel
 Revel Ruiner
 Reverberate
 Reverse Engineer
@@ -879,6 +903,7 @@ Sanctum Weaver
 Sandcrafter Mage
 Sandsteppe Mastodon
 Sandsteppe Scavenger
+Sangromancer
 Sanguine Bond
 Sanitarium Skeleton
 Sarah Jane Smith
@@ -899,6 +924,7 @@ Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
 Seekers' Squire
+Seraph of the Sword
 Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
@@ -958,6 +984,7 @@ Songs of the Damned
 Soul Shepherd
 Soul of New Phyrexia
 Soul of Zendikar
+Soul's Attendant
 Souldrinker
 Soultether Golem
 Space Marine Devastator
@@ -1019,6 +1046,7 @@ Summon: G.F. Ifrit
 Sundering Growth
 Sunhome Stalwart
 Sunken Ruins
+Sunrise Cavalier
 Suntouched Myr
 Supreme Verdict
 Surgehacker Mech
@@ -1054,6 +1082,8 @@ Teshar, Ancestor's Apostle
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
+The Celestus
+The Gaffer
 The Modern Age // Vector Glider
 The Mycosynth Gardens
 The Seriema
@@ -1094,6 +1124,7 @@ Toxic Deluge
 Trace of Abundance
 Trash for Treasure
 Traumatic Visions
+Traverse the Outlands
 Treasure Cruise
 Treasure Hunt
 Trove Tracker
@@ -1111,7 +1142,9 @@ Tyrant's Familiar
 Uktabi Efreet
 Ulamog's Crusher
 Ultramarines Honour Guard
+Ultron, Unlimited
 Umbral Collar Zealot
+Unbreakable Bond
 Unclaimed Territory
 Underworld Dreams
 Underworld Rage-Hound
@@ -1123,6 +1156,7 @@ Uthros Research Craft
 Uthros Scanship
 Utopia Sprawl
 Valiant Rescuer
+Valkyrie Harbinger
 Valley Rannet
 Vampire Cutthroat
 Vanguard Seraph
@@ -1136,6 +1170,7 @@ Vengeful Vampire
 Vestige of Emrakul
 Vesuva
 Veteran's Powerblade
+Vibranium Strike Gauntlets
 Village Rites
 Viridian Corrupter
 Visionary Augmenter
