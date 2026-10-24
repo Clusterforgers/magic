@@ -40,8 +40,10 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 61] = [
+const TEMPLATES: [Template; 63] = [
     modal::modal,
+    super::chance::flip,
+    super::chance::roll,
     super::spent::sacrifice_unless,
     super::actions::fight,
     super::actions::attach,
@@ -658,15 +660,16 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
 
 /// "a creature or planeswalker" and "of their choice": the player chooses, as they always do.
 fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
-    (r.word("a") || r.word("an")).then_some(())?;
-    let filter = phrase(r, Form::Subject)?;
+    let (count, form) = if r.word("a") || r.word("an") {
+        (Amount::one(), Form::Subject)
+    } else {
+        let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
+        (Amount::Fixed(i32::try_from(number).ok()?), Form::All)
+    };
+    let filter = phrase(r, form)?;
     filter.0.iter().all(describes_a_kind).then_some(())?;
     r.words("of their choice");
-    Some(Effect::Sacrifice {
-        who,
-        filter,
-        count: Amount::one(),
-    })
+    Some(Effect::Sacrifice { who, filter, count })
 }
 
 /// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.

@@ -138,6 +138,7 @@ Bonecaller Cleric
 Bonehoard
 Bonesplitter
 Book of Mazarbul
+Boompile
 Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
@@ -339,6 +340,7 @@ Dusk Mangler
 Duskshell Crawler
 Dúnedain Blade
 Eagles of the North
+Earth-Cult Elemental
 Earthen Arms
 Easterling Vanguard
 Echo Inspector
@@ -473,6 +475,7 @@ Gluttonous Slime
 Gluttonous Troll
 Gnarled Professor
 Gnarlwood Dryad
+Goblin Archaeologist
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy

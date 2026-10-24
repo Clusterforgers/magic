@@ -168,6 +168,7 @@ mod cast;
 mod cast_cost_paid;
 mod cast_self;
 mod cast_spell_kinds;
+mod chance;
 mod changes;
 mod chapters;
 mod choice_writers;
