@@ -14,8 +14,8 @@ use super::copy_spells;
 use super::create::colors_text;
 use super::render;
 use super::selectors::{
-    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_in, phrase_text, subtype,
-    type_name,
+    Form, card_type, color, granted_keywords, granted_text, phrase, phrase_in, phrase_text,
+    subtype, type_name,
 };
 use super::tokens::Reader;
 use super::triggers::article;
@@ -859,9 +859,9 @@ pub(super) fn enters_texts(
     let head = match (tapped, until_end_of_turn) {
         (false, false) => format!("you may have ~ enter as a copy of {choice}"),
         (true, false) => format!("you may have ~ enter tapped as a copy of {choice}"),
-        (false, true) => format!(
-            "as ~ enters, you may have it become a copy of {choice} until end of turn"
-        ),
+        (false, true) => {
+            format!("as ~ enters, you may have it become a copy of {choice} until end of turn")
+        }
         (true, true) => return Vec::new(),
     };
     if except.is_empty() {

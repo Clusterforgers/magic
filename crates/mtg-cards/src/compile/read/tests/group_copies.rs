@@ -127,11 +127,7 @@ fn a_permanent_enters_as_a_copy_of_a_card_tapped_or_for_a_turn(
     "You may have this creature enter as a copy of any creature card in an opponent's graveyard."
 )]
 fn an_entering_copy_that_is_not_the_shape_stays_unread(#[case] text: &str) {
-    assert_eq!(
-        clause(text, ClauseKind::Static, false),
-        None,
-        "{text}"
-    );
+    assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
 }
 
 #[rstest]
@@ -144,9 +140,7 @@ fn an_entering_copy_that_is_not_the_shape_stays_unread(#[case] text: &str) {
 #[case::other_tokens(
     "Create a token that's a copy of target creature. If this spell was kicked, create five of those creatures instead."
 )]
-#[case::no_player(
-    "For each creature, create a token that's a copy of that creature."
-)]
+#[case::no_player("For each creature, create a token that's a copy of that creature.")]
 #[case::another_noun(
     "For each creature target player controls, create a token that's a copy of that permanent."
 )]

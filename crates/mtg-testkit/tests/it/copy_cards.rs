@@ -37,10 +37,7 @@ fn table(seats: usize, hand: &[&str]) -> Scenario {
                 ready(creature("Opposing Guard", 1, &[Color::Red], 1, 1)),
             ],
         )
-        .graveyard(
-            1,
-            [creature("Fallen Giant", 1, &[Color::Black], 5, 5)],
-        );
+        .graveyard(1, [creature("Fallen Giant", 1, &[Color::Black], 5, 5)]);
     for seat in 2..seats {
         let guard = creature(&format!("Guard {seat}"), 1, &[Color::Red], 2, 2);
         scenario = scenario.battlefield(seat, [ready(guard)]);
@@ -147,7 +144,10 @@ fn every_other_creature_becomes_a_copy_until_the_turn_ends(
         assert_eq!(stats(&driver, *id), (power, toughness));
         // The chosen creature keeps what it is; the copies of a legend lose it when the words say so.
         let kept = *id == chosen && target == "Own Legend";
-        assert_eq!(is_legendary(&driver, *id), kept || (!not_legendary && target == "Own Legend"));
+        assert_eq!(
+            is_legendary(&driver, *id),
+            kept || (!not_legendary && target == "Own Legend")
+        );
     }
     assert_eq!(named(&driver, target).len(), before.len());
     replays(&driver, &setup);
@@ -170,7 +170,7 @@ fn clone_legion_makes_a_token_copy_of_each_creature_the_target_player_controls(
     let foe = driver.target_player(1);
     driver.begin_cast("Clone Legion")?;
     driver.choose_targets(&[foe])?;
-    driver.pay_tapping(&vec!["Island"; 9], 0)?;
+    driver.pay_tapping(&["Island"; 9], 0)?;
     settle(&mut driver)?;
     for name in ["Opposing Legend", "Opposing Guard"] {
         let all = named(&driver, name);
@@ -223,7 +223,7 @@ fn body_double_may_enter_as_a_copy_of_a_creature_card_in_any_graveyard(
     let mut driver = Driver::from_scenario(table(seats, &["Body Double"]))?;
     let giant = in_zone(&driver, Zone::Graveyard(pid(1)), "Fallen Giant");
     let body = in_zone(&driver, Zone::Hand(pid(0)), "Body Double");
-    driver.cast_tapping("Body Double", &vec!["Island"; 5])?;
+    driver.cast_tapping("Body Double", &["Island"; 5])?;
     let offered = asked_what_to_copy(&mut driver)?;
     // Only cards in graveyards: no permanent of the battlefield is offered.
     assert_eq!(offered, vec![giant]);
@@ -239,12 +239,20 @@ fn body_double_may_enter_as_a_copy_of_a_creature_card_in_any_graveyard(
         assert_eq!(stats(&driver, permanent[0]), (Some(5), Some(5)));
     } else {
         // Body Double is a 0/0 that copies nothing: it dies.
-        assert!(named(&driver, "Fallen Giant").is_empty());
-        assert!(named(&driver, "Body Double").is_empty());
-        assert_eq!(in_zone(&driver, Zone::Graveyard(pid(0)), "Body Double"), body);
+        assert_eq!(named(&driver, "Fallen Giant").len(), 0);
+        assert_eq!(named(&driver, "Body Double").len(), 0);
+        assert_eq!(
+            in_zone(&driver, Zone::Graveyard(pid(0)), "Body Double"),
+            body
+        );
     }
     // The card stays in the graveyard either way.
-    assert!(driver.state().zone(Zone::Graveyard(pid(1))).contains(&giant));
+    assert!(
+        driver
+            .state()
+            .zone(Zone::Graveyard(pid(1)))
+            .contains(&giant)
+    );
     replays(&driver, &setup);
     Ok(())
 }
@@ -303,15 +311,30 @@ fn cursed_mirror_is_a_hasty_copy_of_a_creature_until_the_turn_ends(
             .iter()
             .any(|keyword| keyword.name() == "Haste")
     );
-    assert!(characteristics(driver.state(), copy).unwrap().types.contains(CardType::Creature));
-    assert!(!characteristics(driver.state(), copy).unwrap().types.contains(CardType::Artifact));
+    assert!(
+        characteristics(driver.state(), copy)
+            .unwrap()
+            .types
+            .contains(CardType::Creature)
+    );
+    assert!(
+        !characteristics(driver.state(), copy)
+            .unwrap()
+            .types
+            .contains(CardType::Artifact)
+    );
     replays(&driver, &setup);
     // The cleanup step ends it: the artifact is Cursed Mirror again.
     driver.idle_until(2, Step::Upkeep)?;
     let object = driver.state().object(copy).unwrap();
     assert_eq!(object.card().name, "Cursed Mirror");
     assert!(object.copy_effect().is_none());
-    assert!(characteristics(driver.state(), copy).unwrap().types.contains(CardType::Artifact));
+    assert!(
+        characteristics(driver.state(), copy)
+            .unwrap()
+            .types
+            .contains(CardType::Artifact)
+    );
     replays(&driver, &setup);
     Ok(())
 }

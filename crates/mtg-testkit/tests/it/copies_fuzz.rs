@@ -120,7 +120,10 @@ fn seeded_games_of_the_copy_wordings_finish_and_keep_every_invariant(#[case] pla
         seen.entered_as_copies + seen.token_copies > 0,
         "no copy was made in {campaign}"
     );
-    assert!(for_a_turn < 100_000, "copies for a turn were counted in {campaign}");
+    assert!(
+        for_a_turn < 100_000,
+        "copies for a turn were counted in {campaign}"
+    );
 }
 
 #[rstest]

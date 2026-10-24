@@ -2075,17 +2075,7 @@ impl Pass<'_> {
                     if *enters_tapped {
                         tapped(self, at);
                     }
-                    let mut inherited = applied.clone();
-                    inherited.dedup();
-                    // The copy begins as the permanent enters, so the effects of the copied values apply to its entering.
-                    self.slots.insert(
-                        at + 1,
-                        Slot {
-                            item: Item::One(Event::BecameCopy(copy)),
-                            applied: inherited,
-                            frozen: false,
-                        },
-                    );
+                    self.begin_copy(at, copy, &applied);
                 }
             }
             _ => {}
@@ -2229,6 +2219,20 @@ impl Pass<'_> {
             Item::One(Event::BecameCopy(copy)) if copy.object == object => Some(copy),
             _ => None,
         })
+    }
+
+    /// Puts the copy right after the entering at `at`, so the effects of the copied values apply to its entering.
+    fn begin_copy(&mut self, at: usize, copy: BecameCopy, applied: &[Origin]) {
+        let mut inherited = applied.to_vec();
+        inherited.dedup();
+        self.slots.insert(
+            at + 1,
+            Slot {
+                item: Item::One(Event::BecameCopy(copy)),
+                applied: inherited,
+                frozen: false,
+            },
+        );
     }
 
     /// What `controller` has the card `entering` copy as it enters (CR 614.1c, 707.9): any permanent `of` selects, none

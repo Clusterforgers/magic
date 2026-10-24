@@ -33,13 +33,15 @@ pub fn kicked_copies(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The one token copy a sentence made, with nothing done to it afterwards.
 fn single_copy(effects: Vec<Effect>) -> Option<Effect> {
     match <[Effect; 1]>::try_from(effects) {
-        Ok([
-            copy @ Effect::CreateToken {
-                token: TokenRef::CopyOf { .. },
-                bind: None,
-                ..
-            },
-        ]) if is_one(&copy) => Some(copy),
+        Ok(
+            [
+                copy @ Effect::CreateToken {
+                    token: TokenRef::CopyOf { .. },
+                    bind: None,
+                    ..
+                },
+            ],
+        ) if is_one(&copy) => Some(copy),
         _ => None,
     }
 }

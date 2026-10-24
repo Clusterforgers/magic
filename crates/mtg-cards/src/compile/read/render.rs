@@ -806,39 +806,12 @@ fn written(
             start += used;
             continue;
         }
-        // A permanent chosen and the target that becomes a copy of it are two sentences, which no joint splits.
-        if let [
-            choose @ Effect::Choose { .. },
-            copy @ Effect::BecomeCopy { .. },
-            ..,
-        ] = &effects[start..]
-            && let Some(texts) = writer.become_copy(choose, copy)
-        {
-            unsplit(mask, start, 2)?;
+        // A permanent chosen and the target that becomes a copy of it, a copy made more times when the spell was
+        // kicked, or a group that becomes a copy of the target: sentences that no joint splits.
+        if let Some((texts, used)) = writer.copy_group(&effects[start..], wording.chosen) {
+            unsplit(mask, start, used)?;
             sentences.extend(texts);
-            start += 2;
-            continue;
-        }
-        // A token copy and the same copy made more times when the spell was kicked are two sentences.
-        if let Some((one, _, many)) = effects[start..]
-            .first()
-            .and_then(kicked_copies::is_kicked_copy)
-            && let Some(first) = writer.copy_token(one, false)
-        {
-            unsplit(mask, start, 1)?;
-            sentences.push(first);
-            sentences.push(kicked_copies::more_text(many)?);
-            start += 1;
-            continue;
-        }
-        // A group that becomes a copy of the target, after a sentence that chooses it or not.
-        if let [copy @ Effect::BecomeCopy { .. }, ..] = &effects[start..]
-            && group_copies::is_group_copy(copy)
-            && let Some(texts) = writer.group_becomes(copy, wording.chosen)
-        {
-            unsplit(mask, start, 1)?;
-            sentences.extend(texts);
-            start += 1;
+            start += used;
             continue;
         }
         // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
@@ -1629,6 +1602,29 @@ impl Writer<'_> {
         let text = copy_spells::copy_text(effect, self.targets.first()?)?;
         self.named = true;
         Some(text)
+    }
+
+    /// The sentences of a permanent chosen and the target that becomes a copy of it, of a token copy and the same copy
+    /// made more times when the spell was kicked, or of a group that becomes a copy of the target (after a sentence that
+    /// chooses it or not), and the number of effects they cover.
+    fn copy_group(&mut self, effects: &[Effect], chosen: bool) -> Option<(Vec<String>, usize)> {
+        if let [
+            choose @ Effect::Choose { .. },
+            copy @ Effect::BecomeCopy { .. },
+            ..,
+        ] = effects
+        {
+            return Some((self.become_copy(choose, copy)?.to_vec(), 2));
+        }
+        let effect = effects.first()?;
+        if let Some((one, _, many)) = kicked_copies::is_kicked_copy(effect) {
+            let first = self.copy_token(one, false)?;
+            return Some((vec![first, kicked_copies::more_text(many)?], 1));
+        }
+        if group_copies::is_group_copy(effect) {
+            return Some((self.group_becomes(effect, chosen)?, 1));
+        }
+        None
     }
 
     /// The sentence of a group that becomes a copy of the target, or the two of a target chosen first.
