@@ -11,6 +11,7 @@ mod bindings;
 mod card_grants_games_hidden;
 mod card_grants_hidden;
 mod cast_hidden;
+mod chosen_view;
 mod cipher_view;
 mod combat_forecast;
 mod commander_draw_view;

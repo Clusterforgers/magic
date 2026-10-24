@@ -264,6 +264,8 @@ mod owner_left;
 mod paid_reads;
 mod part_fuzz;
 mod partner_with;
+mod party_fuzz;
+mod party_scenarios;
 mod pay_fuzz;
 mod pay_parts;
 mod pay_unless;
