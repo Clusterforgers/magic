@@ -135,6 +135,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
+        Event::Prepared { object } => set_prepared(state, *object, true),
+        Event::Unprepared { object } => set_prepared(state, *object, false),
         Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action only restarts the round, so the other seats see it.
         Event::ManualAction { .. } => {
@@ -530,6 +532,30 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
     perm.designations.monstrous = true;
+    Ok(())
+}
+
+/// A prepare card on the battlefield becomes prepared or stops being so: it was not (or was), and it is a permanent of
+/// the `prepare` layout.
+fn set_prepared(state: &mut GameState, id: ObjectId, prepared: bool) -> Result<(), EngineError> {
+    let object = state
+        .objects
+        .get_mut(&id)
+        .ok_or_else(|| invalid(format!("{id:?} does not exist")))?;
+    if object.def.layout != mtg_cards::definition::Layout::Prepare {
+        return Err(invalid(format!("{id:?} is not a prepare card")));
+    }
+    let perm = object
+        .permanent
+        .as_mut()
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.prepared == prepared {
+        return Err(invalid(format!(
+            "{id:?} is {}prepared already",
+            if prepared { "" } else { "un" }
+        )));
+    }
+    perm.designations.prepared = prepared;
     Ok(())
 }
 

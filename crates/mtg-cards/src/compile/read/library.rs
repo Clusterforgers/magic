@@ -575,8 +575,9 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
             }
             head.push(adjective_text(pred, Form::Each)?);
         } else if let Some((slot, text)) = names_text(pred) {
-            // Subtypes come before card types, each once.
-            if slot <= stage {
+            // Subtypes come before card types, each once; two card types are one card ("artifact creature card").
+            let again = slot == stage && matches!(pred, Pred::Type(_));
+            if slot <= stage && !again {
                 return None;
             }
             stage = slot;

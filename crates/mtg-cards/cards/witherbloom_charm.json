@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ee1db746-f5c1-4dce-82eb-24b273cc9507",
+  "name": "Witherbloom Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witherbloom Charm",
+      "oracle_fingerprint": "14a7849c3ad83f7ba6ffa7bfb44b3cb1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "May": { "effects": [{ "Sacrifice": { "filter": [] } }] } },
+                        { "If": { "condition": "Performed", "then": [{ "Draw": { "count": 2 } }] } }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 5 } }] },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Not": { "Type": "Land" } },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "45bef776-121b-4489-9c46-f7b4fd4c3c0d",
+  "name": "Skyward Eye Prophets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyward Eye Prophets",
+      "oracle_fingerprint": "313b5580218c001b80a4be6c7eb1de37",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Bound": "top" }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": { "Battlefield": {} } } }],
+                  "otherwise": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

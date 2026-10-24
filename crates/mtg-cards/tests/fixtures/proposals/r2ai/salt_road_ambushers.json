@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"TurnedFaceUp":{"what":["Other",{"ControlledBy":"You"}]}},"if":{"Matches":{"subject":"Triggering","selector":[{"Type":"Creature"}]}},"effects":[{"PutCounters":{"on":"Triggering","counter":"+1/+1","count":2}}]}},{"Keyword":{"Megamorph":"{3}{G}{G}"}}]}]}

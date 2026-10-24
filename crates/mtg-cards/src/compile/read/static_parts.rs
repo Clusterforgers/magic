@@ -4,7 +4,7 @@
 //! only, for the combinations the fixed shapes of `statics::predicate` do not say.
 
 use super::render::stats_text;
-use super::selectors::{granted_text, keyword_text, type_name};
+use super::selectors::{Form, granted_text, keyword_text, phrase_text, type_name};
 use super::subtypes::plural_subtype;
 use crate::modify::Modification;
 use crate::value::Amount;
@@ -101,6 +101,10 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
             ]
         }
         Modification::Goaded => vec![format!("{is} goaded")],
+        Modification::CantBeBlockedBy(blockers) => phrase_text(blockers, Form::All)
+            .map(|group| format!("can't be blocked by {group}"))
+            .into_iter()
+            .collect(),
         _ => Vec::new(),
     }
 }

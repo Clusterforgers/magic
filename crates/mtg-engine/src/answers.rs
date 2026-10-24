@@ -34,6 +34,8 @@ pub(crate) enum Outcome {
     BeginCompanion(ObjectId),
     /// Start turning this face-down permanent face up: the payment of its cost is decided next.
     BeginTurnUp(ObjectId),
+    /// Start casting a copy of the spell face of this prepared permanent: the copy is made and its announcement and payment are decided next.
+    BeginPrepared(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.
     Modes(Vec<usize>),
     /// This is the way, by position among those offered, the spell in progress is cast.

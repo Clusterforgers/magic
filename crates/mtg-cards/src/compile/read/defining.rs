@@ -520,7 +520,7 @@ pub(super) fn died_text(amount: &Amount, each: bool) -> Option<String> {
         Ref::You => Some(format!(
             "{kind}{noun} put into your graveyard from the battlefield this turn"
         )),
-        Ref::EachPlayer if !each => Some(format!("{kind}{noun} that died this turn")),
+        Ref::EachPlayer => Some(format!("{kind}{noun} that died this turn")),
         _ => None,
     }
 }

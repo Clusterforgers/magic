@@ -1,0 +1,20 @@
+{
+  "oracle_id": "95e66851-7aff-4559-91b4-6b8a95c6e1f8",
+  "name": "Vega, the Watcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vega, the Watcher",
+      "oracle_fingerprint": "00273227618e4c5a05aa89cc11bfdef3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

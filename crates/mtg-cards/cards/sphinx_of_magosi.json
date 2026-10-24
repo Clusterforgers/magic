@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1c9cf20c-51e4-4a87-b9f8-231b6baf5d6b",
+  "name": "Sphinx of Magosi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of Magosi",
+      "oracle_fingerprint": "ea26c55cbff266ffa221b3d5ea01cf3a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "effects": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

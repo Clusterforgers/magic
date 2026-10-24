@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9f48cb32-46be-4c47-b558-2ea359efdd9b",
+  "name": "Wrecking Ball Arm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrecking Ball Arm",
+      "oracle_fingerprint": "d673421b3bd0aea142592bdb1c7e2825",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 7, "toughness": 7 } },
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Supertype": "Legendary" }], "cost": "{3}" } } },
+        { "Keyword": { "Equip": "{7}" } }
+      ]
+    }
+  ]
+}

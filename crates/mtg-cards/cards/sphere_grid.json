@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f4770345-f15e-4e31-b6ef-4c2608df9644",
+  "name": "Sphere Grid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere Grid",
+      "oracle_fingerprint": "2d5250a4d43b65ba4fcbd6e94bbd4a24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Reach" }, { "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

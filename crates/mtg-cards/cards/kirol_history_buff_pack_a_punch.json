@@ -1,0 +1,43 @@
+{
+  "oracle_id": "df1c0d06-2109-4297-9271-8a003fc892bc",
+  "name": "Kirol, History Buff // Pack a Punch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kirol, History Buff",
+      "oracle_fingerprint": "efa6dfadcc0b7460a77ddb0dcccab2b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pack a Punch",
+      "oracle_fingerprint": "16a1cfa53053d05028457d0039ea51d3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Mill": {} },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -593,6 +593,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
+        | ReplaceBy::EntersPrepared
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         // Not run yet: a card that uses it is not Verified.
@@ -1326,6 +1327,7 @@ impl Pass<'_> {
                                 | ReplaceBy::Devour { .. }
                                 | ReplaceBy::Riot
                                 | ReplaceBy::DayIfNeither
+                                | ReplaceBy::EntersPrepared
                         )
                     )
                 });
@@ -2100,6 +2102,7 @@ impl Pass<'_> {
                     Asked::Got(false) => tapped(self, at),
                 }
             }
+            ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
             ReplaceBy::Choose(kind) => {
                 let chosen = match self.chooses(source, controller, *kind)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
@@ -2547,6 +2550,8 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod day;
+
+mod prepared;
 
 mod dredge;
 

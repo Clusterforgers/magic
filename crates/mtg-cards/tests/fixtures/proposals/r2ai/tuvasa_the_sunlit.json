@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":{"Count":[{"Type":"Enchantment"},{"ControlledBy":"You"}]},"toughness":{"Count":[{"Type":"Enchantment"},{"ControlledBy":"You"}]}}}]}},{"Triggered":{"when":{"Nth":{"event":{"SpellCast":{"what":[{"Type":"Enchantment"}],"by":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}]}]}

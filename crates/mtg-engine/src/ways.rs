@@ -215,6 +215,9 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     // The creature card of an Adventure that was exiled on an adventure (CR 715.4).
     let on_adventure =
         zone == Zone::Exile && card.on_adventure() == Some(player) && card.face().is_none();
+    // The copy of the spell face of a prepared permanent is cast for its mana cost by the permanent's controller.
+    let by_prepared =
+        crate::prepared::permanent_of(state, card).is_some() && card.owner() == player;
     let permissions: Vec<_> = cast_permissions(state)
         .iter()
         .filter(|permission| permission.covers(state, player, card))
@@ -229,7 +232,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let by_permission = permissions
         .iter()
         .any(|permission| !permission.free && permission.from == Some(zone_kind(zone)));
-    if (in_hand || from_command || by_permission || on_adventure || by_aftermath)
+    if (in_hand || from_command || by_permission || on_adventure || by_aftermath || by_prepared)
         && let Some(cost) = printed
     {
         ways.push(Way {

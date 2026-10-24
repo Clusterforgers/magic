@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"SetPT":{"power":7,"toughness":7}},{"CantBeBlockedBy":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Le","to":2}}]}]}},{"Keyword":{"EquipTo":{"to":[{"Supertype":"Legendary"}],"cost":"{3}"}}},{"Keyword":{"Equip":"{7}"}}]}]}

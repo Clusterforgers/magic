@@ -1,4 +1,4 @@
-//! A trigger on the card itself becoming tapped, blocking or becoming blocked calls the card "it" in what it does:
+//! A trigger on the card itself becoming tapped, tapped for mana, blocking or becoming blocked calls the card "it" in what it does:
 //! "Whenever this creature becomes tapped, it deals 1 damage to any target.", "..., target opponent gains control of it."
 
 use crate::ability::Ability;
@@ -38,7 +38,8 @@ fn about_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Tapped { what }
         | TriggerPattern::Blocks { what }
-        | TriggerPattern::BecomesBlocked { what } => what.0 == [Pred::This],
+        | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::TappedForMana { what, .. } => what.0 == [Pred::This],
         TriggerPattern::AnyOf(events) => events.iter().all(about_itself),
         _ => false,
     }

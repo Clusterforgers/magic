@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6",
+  "oracle_id": "8d857d79-bdb2-4ca3-abd6-7db8f6b3bcfa",
+  "multiverse_ids": [],
+  "resource_id": "F8D4B3A7F8D3BDC170E7E3F796BAEA16F6D0DF1CB70E772A69908A53426C3AB9",
+  "mtgo_id": 147385,
+  "arena_id": 100710,
+  "tcgplayer_id": 679597,
+  "cardmarket_id": 873502,
+  "name": "Tokka & Rahzar, Unsupervised",
+  "lang": "en",
+  "released_at": "2026-03-06",
+  "uri": "https://api.scryfall.com/cards/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6",
+  "scryfall_uri": "https://scryfall.com/card/tmc/28/tokka-&-rahzar-unsupervised?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:56:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.jpg?1783904165",
+    "normal": "https://cards.scryfall.io/normal/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.jpg?1783904165",
+    "large": "https://cards.scryfall.io/large/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.jpg?1783904165",
+    "png": "https://cards.scryfall.io/png/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.png?1783904165",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.jpg?1783904165",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.jpg?1783904165",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.webp?1783904165",
+    "grid": "https://cards.scryfall.io/grid/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.webp?1783904165",
+    "display": "https://cards.scryfall.io/display/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.webp?1783904165",
+    "art": "https://cards.scryfall.io/art/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.webp?1783904165",
+    "crop": "https://cards.scryfall.io/crop/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.webp?1783904165",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/b/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6.jpg?1783904165"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Turtle Wolf Mutant",
+  "oracle_text": "First strike\nWhenever another nontoken creature you control leaves the battlefield, put a +1/+1 counter on Tokka & Rahzar and create a Treasure token. This ability triggers only once each turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike",
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4837a3f1-ca7f-41e5-a5d1-729c8495b0e8",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/4837a3f1-ca7f-41e5-a5d1-729c8495b0e8"
+    },
+    {
+      "object": "related_card",
+      "id": "8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6",
+      "component": "combo_piece",
+      "name": "Tokka & Rahzar, Unsupervised",
+      "type_line": "Legendary Creature — Turtle Wolf Mutant",
+      "uri": "https://api.scryfall.com/cards/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "178a07bb-cd54-4443-8b62-675e0c52cfe3",
+  "set": "tmc",
+  "set_name": "Teenage Mutant Ninja Turtles Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/178a07bb-cd54-4443-8b62-675e0c52cfe3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8bc5a0ac-5979-43ce-8a65-98c5f09f4aa6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8d857d79-bdb2-4ca3-abd6-7db8f6b3bcfa&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"They're not stupid. They're infants.\"\n—Professor Jordan Perry",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Narendra Bintara Adi",
+  "artist_ids": [
+    "1be2b84d-99c5-4a51-b741-105cbeb53078"
+  ],
+  "illustration_id": "769adc67-4d92-45fd-ad5d-828434372290",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11715,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "2.14",
+    "tix": "1.59"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTokka%2B%2526%2BRahzar%252C%2BUnsupervised",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTokka%2B%2526%2BRahzar%252C%2BUnsupervised",
+    "edhrec": "https://edhrec.com/route/?cc=Tokka+%26+Rahzar%2C+Unsupervised"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F679597%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=873502&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/147385?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

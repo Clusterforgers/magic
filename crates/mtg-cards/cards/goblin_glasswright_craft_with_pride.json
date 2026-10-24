@@ -1,0 +1,21 @@
+{
+  "oracle_id": "23c3de07-8aa2-48e9-848c-50b5a40bd133",
+  "name": "Goblin Glasswright // Craft with Pride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Glasswright",
+      "oracle_fingerprint": "bbef1b929d4d72006818a6d2bbea155f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } }
+      ]
+    },
+    {
+      "name": "Craft with Pride",
+      "oracle_fingerprint": "cf72521f213abfa7c31b69847f23afdf",
+      "abilities": [
+        { "Spell": { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] } }
+      ]
+    }
+  ]
+}

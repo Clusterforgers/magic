@@ -15,16 +15,24 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     }
     let mut found = Vec::new();
     for verb in VERBS {
-        let (new, old) = (
-            format!("each other player {verb} "),
-            format!("each opponent {verb} "),
-        );
-        found.extend(
-            texts
-                .iter()
-                .filter(|text| text.contains(&old))
-                .map(|text| text.replacen(&old, &new, 1)),
-        );
+        // Inside a sentence and opening one.
+        for (new, old) in [
+            (
+                format!("each other player {verb} "),
+                format!("each opponent {verb} "),
+            ),
+            (
+                format!("Each other player {verb} "),
+                format!("Each opponent {verb} "),
+            ),
+        ] {
+            found.extend(
+                texts
+                    .iter()
+                    .filter(|text| text.contains(&old))
+                    .map(|text| text.replacen(&old, &new, 1)),
+            );
+        }
     }
     let chosen: Vec<String> = found
         .iter()

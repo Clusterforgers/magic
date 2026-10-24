@@ -1,0 +1,30 @@
+{
+  "oracle_id": "8ea10a5a-b698-4f7d-a9c8-520f8d835f34",
+  "name": "Sweet-Gum Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sweet-Gum Recluse",
+      "oracle_fingerprint": "f0b28c63a61cf67cf961cb7163104db9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Cascade" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "EnteredThisTurn"] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -49,6 +49,8 @@ pub const PLAIN_MANA_ABILITY: &str = "Ability.ManaAbility";
 pub const X_COST: &str = "Card.XCost";
 /// The engine plays the faces of a card that has more than one, for the layouts it knows (split, adventure, modal double-faced).
 pub const FACES: &str = "Card.Faces";
+/// The engine casts the spell face of a prepared permanent (the `prepare` layout).
+pub const PREPARE: &str = "Card.Prepare";
 /// The engine knows a power, toughness, loyalty or defense that is not a number (`*`).
 pub const VARIABLE_STATS: &str = "Card.VariableStats";
 
@@ -153,6 +155,7 @@ pub(crate) fn played_layout(printed: &PrintedCard, caps: &Caps) -> Option<Layout
     (printed.faces.len() == 2 && caps.runs(FACES))
         .then(|| Layout::from_scryfall(&printed.layout))
         .flatten()
+        .filter(|layout| *layout != Layout::Prepare || caps.runs(PREPARE))
 }
 
 /// A card with several faces as the engine plays it: the card outside the stack and the battlefield, and its faces.

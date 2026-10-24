@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Keyword":"Lifelink"},{"Activated":{"cost":["Tap",{"PayLife":7}],"condition":"YourTurn","targets":[{"what":{"Object":[{"Not":{"Type":"Land"}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

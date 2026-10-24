@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}},{"Rule":{"rule":{"CantBeCountered":{"Each":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}]}}}},{"Static":{"affected":{"Each":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Trample"}]}}]}]}

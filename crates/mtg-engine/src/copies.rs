@@ -18,7 +18,7 @@ use crate::error::EngineError;
 use crate::fold::{invalid, reset_passes};
 use crate::hash::stable_hash;
 use crate::merged::Merged;
-use crate::object::{GameObject, ObjectKind, ObjectRef};
+use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
@@ -287,11 +287,14 @@ pub(crate) fn fold_card(state: &mut GameState, copy: &CardCopy) -> Result<(), En
     }
     let copied = state.objects.get(&copy.of.id).is_some_and(|card| {
         card.counter() == copy.of.counter
-            && card.zone() == Zone::Exile
-            && card.kind() == ObjectKind::Card
+            && ((card.zone() == Zone::Exile && card.kind() == ObjectKind::Card)
+                || card.permanent().is_some_and(PermanentState::prepared))
     });
     if !copied {
-        return Err(invalid(format!("{:?} is not a card in exile", copy.of)));
+        return Err(invalid(format!(
+            "{:?} is not a card in exile or a prepared permanent",
+            copy.of
+        )));
     }
     let mut card = GameObject::new(id, copy.owner, Arc::clone(&copy.definition), Zone::Exile);
     card.kind = ObjectKind::Token;

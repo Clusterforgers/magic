@@ -576,6 +576,14 @@ face?: number, } } | { "Flipped": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "Prepared": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "Unprepared": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
 /**
  * The copy.

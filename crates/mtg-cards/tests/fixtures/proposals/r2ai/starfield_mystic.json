@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["Spell",{"Type":"Enchantment"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}"}},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Enchantment"},{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

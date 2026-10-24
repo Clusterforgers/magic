@@ -48,7 +48,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 
 /// The ways the condition is worded after "if": a count of the cards of a hand or a graveyard, whose wording a static
 /// ability shares.
-fn phrases(condition: &Condition) -> Vec<String> {
+pub(super) fn phrases(condition: &Condition) -> Vec<String> {
     if let Some(state) = own_state(condition) {
         return vec![state];
     }

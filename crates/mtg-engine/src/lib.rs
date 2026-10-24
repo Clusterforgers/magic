@@ -36,6 +36,7 @@ mod mana_repeat_tests;
 mod mana_takes;
 mod mulligan;
 mod parts;
+mod prepared;
 mod preview;
 mod price;
 mod replace_dry;

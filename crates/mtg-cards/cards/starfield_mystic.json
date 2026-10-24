@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2975590d-6a5b-41e5-8a3b-e9325e71226a",
+  "name": "Starfield Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfield Mystic",
+      "oracle_fingerprint": "4a973831419940857b6c91e8b32a4ae1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Enchantment" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

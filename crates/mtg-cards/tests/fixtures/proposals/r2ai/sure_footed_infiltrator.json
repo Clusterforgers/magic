@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Subtype":"Rogue"},"Other"]}}],"effects":[{"Continuous":{"affected":"This","mods":["CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}},{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"Draw":{}}]}}]}]}

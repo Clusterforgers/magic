@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Triggering","counter":"+1/+1"}}]}},{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasCounter":"+1/+1"}]},"mods":[{"AddKeyword":"Reach"},{"AddKeyword":"Trample"}]}}]}]}

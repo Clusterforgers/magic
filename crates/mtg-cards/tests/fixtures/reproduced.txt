@@ -11,6 +11,7 @@ Accomplished Automaton
 Adaptive Snapjaw
 Adorned Pouncer
 Adriana, Captain of the Guard
+Adventurous Eater // Have a Bite
 Aeromunculus
 Aether Gale
 Aether Hub
@@ -301,6 +302,7 @@ Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
 Deeproot Waters
+Defacing Duskmage // Vandal's Edit
 Defile
 Delver of Secrets // Insectile Aberration
 Demolition Field
@@ -360,6 +362,7 @@ Echo Mage
 Echo Storm
 Echoes of the Kin Tree
 Eel Umbra
+Eiganjo Dynastorian // Replenish
 Elder Owyn Lyons
 Eldrazi Conscription
 Eldritch Immunity
@@ -497,6 +500,7 @@ Gnarled Professor
 Gnarlwood Dryad
 Goblin Archaeologist
 Goblin Chieftain
+Goblin Glasswright // Craft with Pride
 Goblin Sharpshooter
 Goblin Spy
 Goblin War Buggy
@@ -641,6 +645,7 @@ Kessig Wolf Run
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
+Kirol, History Buff // Pack a Punch
 Kitchen Finks
 Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow
@@ -1032,6 +1037,7 @@ Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
 Silhana Ledgewalker
+Silvar, Devourer of the Free
 Silver Shroud Costume
 Silversmote Ghoul
 Silverwing Squadron
@@ -1139,6 +1145,7 @@ Sundering Growth
 Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier
+Sunscorch Regent
 Suntouched Myr
 Super Combo
 Supreme Verdict
@@ -1172,6 +1179,7 @@ Tender Wildguide
 Tendershoot Dryad
 Tendo Ice Bridge
 Tendrils of Agony
+Tergrid's Shadow
 Termagant Swarm
 Terminus
 Terrus Wurm

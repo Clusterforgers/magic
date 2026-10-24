@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8031285b-2add-42da-aa97-03c3f2fff226",
+  "name": "Vessel of Endless Rest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vessel of Endless Rest",
+      "oracle_fingerprint": "27a1a171ea99103aca3fcd43be326096",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

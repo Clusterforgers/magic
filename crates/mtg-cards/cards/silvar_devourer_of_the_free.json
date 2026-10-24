@@ -1,0 +1,30 @@
+{
+  "oracle_id": "09199ebd-2c09-455f-ac10-3dbff8e6d428",
+  "name": "Silvar, Devourer of the Free",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silvar, Devourer of the Free",
+      "oracle_fingerprint": "3862005ba27e1373df7588dd9c5d86f1",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Trynn, Champion of Freedom" } },
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Human" }] } }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

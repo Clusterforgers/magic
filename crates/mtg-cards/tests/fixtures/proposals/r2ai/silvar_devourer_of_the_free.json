@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"PartnerWith":"Trynn, Champion of Freedom"}},{"Keyword":"Menace"},{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Subtype":"Human"}]}}],"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"Continuous":{"affected":"This","mods":[{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}}]}}]}]}

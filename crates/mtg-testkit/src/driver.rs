@@ -22,6 +22,7 @@ use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
 use crate::invariants::InvariantChecker;
 use crate::scenario::Scenario;
 use crate::script_error::ScriptError;
+use crate::watchdog::Watchdog;
 
 /// Safety valve for loops that wait for a step to arrive.
 const MAX_WAIT_ANSWERS: usize = 20_000;
@@ -31,6 +32,7 @@ const MAX_WAIT_ANSWERS: usize = 20_000;
 pub struct Driver {
     pub(crate) engine: Engine,
     checker: InvariantChecker,
+    watchdog: Watchdog,
 }
 
 impl Driver {
@@ -38,7 +40,12 @@ impl Driver {
     pub fn new(engine: Engine) -> Result<Self, ScriptError> {
         let mut checker = InvariantChecker::new(engine.setup())?;
         checker.observe_engine(&engine)?;
-        Ok(Driver { engine, checker })
+        let watchdog = Watchdog::scripted(engine.setup().seed);
+        Ok(Driver {
+            engine,
+            checker,
+            watchdog,
+        })
     }
 
     /// Builds a scenario and wraps the resulting engine.
@@ -65,7 +72,13 @@ impl Driver {
 
     /// Applies a raw answer and checks invariants; returns the events it produced.
     pub fn answer(&mut self, answer: Answer) -> Result<Vec<Event>, ScriptError> {
+        let asked = self.engine.decision().map(|d| (d.player, d.kind.name()));
+        let given = answer.clone();
         let events = self.engine.apply(answer)?;
+        if let Some((player, kind)) = asked {
+            self.watchdog
+                .answered(self.engine.state(), player, kind, &given);
+        }
         self.checker.observe_engine(&self.engine)?;
         Ok(events)
     }
@@ -372,6 +385,26 @@ impl Driver {
         let id = self.find(options.castable.clone(), name, "castable spells")?;
         self.answer(Answer::Priority(PriorityAction::CastSpell(id)))?;
         Ok(())
+    }
+
+    /// Chooses to cast a copy of the spell face of the named prepared permanent; its announcement is then pending.
+    pub fn begin_prepared(&mut self, name: &str) -> Result<(), ScriptError> {
+        let (_, options) = self.priority()?;
+        let spells: Vec<ObjectId> = options
+            .faces
+            .iter()
+            .filter(|option| option.face == 1 && !option.land)
+            .map(|option| option.card)
+            .collect();
+        let id = self.find(spells, name, "prepared permanents with a spell to cast")?;
+        self.answer(Answer::Priority(PriorityAction::CastPrepared(id)))?;
+        Ok(())
+    }
+
+    /// Casts a copy of the spell face of the named prepared permanent and pays automatically.
+    pub fn cast_prepared(&mut self, name: &str) -> Result<Vec<Event>, ScriptError> {
+        self.begin_prepared(name)?;
+        self.answer(Answer::PayMana(PayChoice::Auto))
     }
 
     /// A player as a target.

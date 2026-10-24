@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6a83d976-8087-48d7-b6f5-63efb8329e99",
+  "name": "Tuvasa the Sunlit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tuvasa the Sunlit",
+      "oracle_fingerprint": "05ea143fb17b3341f4846b92cdbb34f1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "You" } },
+                "nth": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

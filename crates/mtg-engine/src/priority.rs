@@ -26,6 +26,7 @@ use crate::mana_ability;
 use crate::manual;
 use crate::object::GameObject;
 use crate::player::Player;
+use crate::prepared;
 use crate::price::{Leaves, Price};
 use crate::resolve::{Scope, zone_kind};
 use crate::spend::Spend;
@@ -389,7 +390,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     } else {
         other_abilities(state, player)
     };
-    let faces = face_options(
+    let mut faces = face_options(
         state,
         player,
         &castable,
@@ -398,6 +399,9 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         &all_mana,
         life,
     );
+    if !silenced {
+        faces.extend(prepared::options(state, player, &pool, &all_mana, life));
+    }
     // A mana ability that costs mana is used inside a payment, from the mana the payment's other sources make.
     let mana_abilities = all_mana
         .into_iter()
@@ -498,6 +502,17 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("turn face up").into());
             }
             Ok(Outcome::BeginTurnUp(object))
+        }
+        PriorityAction::CastPrepared(object) => {
+            let offered = options.faces.iter().any(|option| {
+                option.card == object && option.face == prepared::SPELL_FACE && !option.land
+            }) && state
+                .object(object)
+                .is_some_and(|held| held.zone() == Zone::Battlefield);
+            if !offered {
+                return Err(IllegalAnswer::NotOffered("prepared spell").into());
+            }
+            Ok(Outcome::BeginPrepared(object))
         }
         PriorityAction::Manual(action) => manual::events(state, player, &action)
             .map(Outcome::Events)

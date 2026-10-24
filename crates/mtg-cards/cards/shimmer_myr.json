@@ -1,0 +1,15 @@
+{
+  "oracle_id": "e110ee80-37af-4989-a5fb-95d51dc7f102",
+  "name": "Shimmer Myr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimmer Myr",
+      "oracle_fingerprint": "c7a1bf3a393aac50f67ce9f3442cfd8d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Artifact" }], "flash": true } } } }
+      ]
+    }
+  ]
+}

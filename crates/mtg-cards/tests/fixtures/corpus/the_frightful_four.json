@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "3e792132-de96-47aa-bcd5-58f1e9be5932",
+  "oracle_id": "6d3469dd-d39e-463b-9b41-2f6215a41feb",
+  "multiverse_ids": [],
+  "resource_id": "DFA54BE4117777B43480E911EACC6FBBF794305CF6377858FA5C12492509983A",
+  "mtgo_id": 150527,
+  "tcgplayer_id": 697993,
+  "cardmarket_id": 892400,
+  "name": "The Frightful Four",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/3e792132-de96-47aa-bcd5-58f1e9be5932",
+  "scryfall_uri": "https://scryfall.com/card/msc/44/the-frightful-four?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.jpg?1783903286",
+    "normal": "https://cards.scryfall.io/normal/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.jpg?1783903286",
+    "large": "https://cards.scryfall.io/large/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.jpg?1783903286",
+    "png": "https://cards.scryfall.io/png/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.png?1783903286",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.jpg?1783903286",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.jpg?1783903286",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.webp?1783903286",
+    "grid": "https://cards.scryfall.io/grid/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.webp?1783903286",
+    "display": "https://cards.scryfall.io/display/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.webp?1783903286",
+    "art": "https://cards.scryfall.io/art/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.webp?1783903286",
+    "crop": "https://cards.scryfall.io/crop/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.webp?1783903286",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/e/3e792132-de96-47aa-bcd5-58f1e9be5932.jpg?1783903286"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Villain",
+  "oracle_text": "Menace\nWhenever an opponent casts their first noncreature spell each turn, that player loses life equal to that spell's mana value.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3e792132-de96-47aa-bcd5-58f1e9be5932/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6d3469dd-d39e-463b-9b41-2f6215a41feb&unique=prints",
+  "collector_number": "44",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Turn, Reed Richards! Turn and face those who will destroy you!\"\n—Wizard",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Björn Barends",
+  "artist_ids": [
+    "83e93c11-f395-402e-b534-45a70c276de3"
+  ],
+  "illustration_id": "ec013184-f28a-4535-b1c8-51ca047ce239",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13014,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": null,
+    "tix": "2.93"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BFrightful%2BFour",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BFrightful%2BFour",
+    "edhrec": "https://edhrec.com/route/?cc=The+Frightful+Four"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697993%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892400&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150527?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

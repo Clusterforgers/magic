@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Triggered":{"when":{"Untapped":{"what":["This"]}},"limit":"OncePerTurn","effects":[{"PutCounters":{"on":"This","counter":"+1/+1","count":2}},{"GainLife":{"amount":2}},{"Draw":{}}]}}}]}}]}]}

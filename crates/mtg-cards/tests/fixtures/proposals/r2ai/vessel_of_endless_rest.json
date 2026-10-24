@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"In":"Graveyard"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Library":{"place":"Bottom"}}}}]}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Devoid"},{"Keyword":"Flying"},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]}},{"Triggered":{"when":{"Sacrificed":{"what":[{"Type":"Creature"}],"by":"You"}},"effects":[{"Draw":{}}]}}]}]}

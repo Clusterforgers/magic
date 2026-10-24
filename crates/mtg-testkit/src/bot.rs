@@ -60,6 +60,45 @@ fn smaller_attack(
     Some(smaller)
 }
 
+/// One creature the bot would attack with, the defender it picked and what that costs it (CR 508.1h).
+struct Pick<'a> {
+    object: ObjectId,
+    target: AttackTarget,
+    tax: Option<&'a ManaCost>,
+    required: bool,
+}
+
+/// `picks` as a declaration cut back to the `mana` its player surely has: the creatures that attack for nothing stay
+/// and the taxed ones that are not required are dropped last to first until the tax fits, so a crowd of creatures
+/// that a tax holds back still attacks where it is free. The flag tells whether the declaration still costs mana. One
+/// pass over the picks: a board of thousands of tokens must not make the bot's turn quadratic.
+fn within_budget(picks: &[Pick<'_>], mana: u32) -> (Attack, bool) {
+    let mut owed: u32 = picks
+        .iter()
+        .filter_map(|pick| pick.tax)
+        .map(ManaCost::mana_value)
+        .fold(0, u32::saturating_add);
+    let mut keep = vec![true; picks.len()];
+    for (at, pick) in picks.iter().enumerate().rev() {
+        if owed <= mana {
+            break;
+        }
+        if let Some(tax) = pick
+            .tax
+            .filter(|tax| !pick.required && tax.mana_value() > 0)
+        {
+            keep[at] = false;
+            owed = owed.saturating_sub(tax.mana_value());
+        }
+    }
+    let kept = picks.iter().zip(&keep).filter(|(_, keep)| **keep);
+    let taxed = kept
+        .clone()
+        .any(|(pick, _)| pick.tax.is_some_and(|tax| !tax.symbols().is_empty()));
+    let attack = kept.map(|(pick, _)| (pick.object, pick.target)).collect();
+    (attack, taxed)
+}
+
 /// Applies a bot's `answer` to the `decision` it answers.
 ///
 /// An attack the engine refuses because its player cannot pay for it (CR 508.1h) is taken back one creature at a
@@ -348,6 +387,14 @@ impl RandomBot {
                 .iter()
                 .map(|o| PriorityAction::TurnFaceUp(*o)),
         );
+        // The spell face of a prepared permanent is listed with no card in `castable`.
+        actions.extend(
+            options
+                .faces
+                .iter()
+                .filter(|option| !option.land && !options.castable.contains(&option.card))
+                .map(|option| PriorityAction::CastPrepared(option.card)),
+        );
         if options.companion {
             actions.push(PriorityAction::BringCompanion);
         }
@@ -395,15 +442,15 @@ impl RandomBot {
     }
 
     /// A random attack: each creature joins at random, one that must attack always does, and an attack that costs
-    /// more than the player surely has (CR 508.1h) is cut back to what it can pay, the creatures that are not
-    /// required first. After backing out of the payment of an attack the declaration comes back and the bot does only
-    /// what the rules require, so backing out ends the step.
+    /// more than the player surely has (CR 508.1h) is cut back to what it can pay ([`within_budget`]). After backing
+    /// out of the payment of an attack the declaration comes back and the bot does only what the rules require, so
+    /// backing out ends the step.
     fn attack(&mut self, options: &AttackOptions) -> Attack {
         if self.taxed == Taxed::BackedOut {
             self.taxed = Taxed::Idle;
             return options.required_attack();
         }
-        let mut attackers = Vec::new();
+        let mut picks = Vec::new();
         for option in &options.attackers {
             let required = options.required.contains(&option.object);
             if (self.rng.below(2) == 0 || required) && !option.defenders.is_empty() {
@@ -413,16 +460,17 @@ impl RandomBot {
                     Some(free) if required && option.tax.iter().any(|(t, _)| *t == target) => free,
                     _ => target,
                 };
-                attackers.push((option.object, target));
+                let tax = option.tax.iter().find(|(t, _)| *t == target);
+                picks.push(Pick {
+                    object: option.object,
+                    target,
+                    tax: tax.map(|(_, cost)| cost),
+                    required,
+                });
             }
         }
-        while options.cost_of(&attackers).mana_value() > options.mana {
-            let Some(smaller) = smaller_attack(options, &attackers) else {
-                break;
-            };
-            attackers = smaller;
-        }
-        if !options.cost_of(&attackers).symbols().is_empty() {
+        let (attackers, taxed) = within_budget(&picks, options.mana);
+        if taxed {
             self.taxed = Taxed::Paying;
         }
         attackers

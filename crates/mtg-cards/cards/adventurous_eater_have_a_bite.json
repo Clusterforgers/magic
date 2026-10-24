@@ -1,0 +1,29 @@
+{
+  "oracle_id": "02125db4-4507-467a-ac0c-406de2c7d533",
+  "name": "Adventurous Eater // Have a Bite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adventurous Eater",
+      "oracle_fingerprint": "bbef1b929d4d72006818a6d2bbea155f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } }
+      ]
+    },
+    {
+      "name": "Have a Bite",
+      "oracle_fingerprint": "6e45a139a58f4561a4026e12cf04c70e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

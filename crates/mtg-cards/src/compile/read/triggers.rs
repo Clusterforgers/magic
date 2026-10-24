@@ -1364,13 +1364,15 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         TriggerPattern::Drew { who, what } if what.is_empty() => (who, "draw", "card"),
         TriggerPattern::SpellCast { what, by } if what.is_empty() => (by, "cast", "spell"),
         // "Whenever you cast your fourth noncreature spell each turn".
-        TriggerPattern::SpellCast { what, by: Ref::You } => {
+        TriggerPattern::SpellCast { what, by } => {
             let mut preds = vec![Pred::Spell];
             preds.extend(what.0.iter().cloned());
             let spell = subject_text(&Selector(preds))?;
             let spell = spell.strip_prefix("a ").or(spell.strip_prefix("an "))?;
+            let whose = if *by == Ref::You { "your" } else { "their" };
             return Some(format!(
-                "Whenever you cast your {ordinal} {spell} each turn"
+                "Whenever {} {whose} {ordinal} {spell} each turn",
+                player_verb(by, "cast")?
             ));
         }
         TriggerPattern::Attacks { .. }

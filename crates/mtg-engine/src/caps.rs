@@ -14,7 +14,7 @@
 //! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry, echo, cumulative upkeep, undying, persist, exalted, melee, mentor, dethrone, annihilator, extort, evolve), and nothing else.
 
 use mtg_cards::Caps;
-use mtg_cards::assemble::{FACES, PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
+use mtg_cards::assemble::{FACES, PLAIN_MANA_ABILITY, PREPARE, VARIABLE_STATS, X_COST};
 
 /// The primitives the engine runs, and the only list of them. A task that teaches the engine one adds its
 /// name here in the same change as the code: the test of the interpreter fails when a name is listed for an
@@ -87,6 +87,7 @@ const RUNS: &[&str] = &[
     "Cost.Loyalty.X",
     X_COST,
     FACES,
+    PREPARE,
     "Cost.SacrificeSelf",
     "Cost.ExileSelf",
     "Cost.DiscardSelf",
@@ -156,6 +157,7 @@ const RUNS: &[&str] = &[
     "Effect.JoinAttack",
     "Effect.Transform",
     "Effect.Flip",
+    "Effect.Prepare",
     "Effect.WinGame",
     "Effect.ExtraTurn",
     "Effect.AddPhase",
@@ -182,6 +184,7 @@ const RUNS: &[&str] = &[
     "Condition.NeitherDayNorNight",
     "Trigger.DayNightChanges",
     "ReplaceBy.DayIfNeither",
+    "ReplaceBy.EntersPrepared",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -525,6 +528,8 @@ mod tests {
     #[case::unattaching("Effect.Unattach", true)]
     #[case::transforming("Effect.Transform", true)]
     #[case::flipping("Effect.Flip", true)]
+    #[case::preparing("Effect.Prepare", true)]
+    #[case::entering_prepared("ReplaceBy.EntersPrepared", true)]
     #[case::day_and_night("Keyword.Daybound", true)]
     #[case::the_night_face("Keyword.Nightbound", true)]
     #[case::fusing("Keyword.Fuse", true)]
@@ -898,6 +903,7 @@ mod tests {
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", false)]
     #[case::faces(FACES, true)]
+    #[case::the_prepared_cast(PREPARE, true)]
     #[case::variable_stats(VARIABLE_STATS, true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {
         assert_eq!(caps().runs(name), runs);

@@ -436,7 +436,7 @@ fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &read
 }
 
 /// The face name, and for a legendary face the part of the name before the comma.
-fn own_names(face: &PrintedFace) -> Vec<String> {
+pub(crate) fn own_names(face: &PrintedFace) -> Vec<String> {
     let mut names = vec![face.name.clone()];
     let legendary = face
         .type_line

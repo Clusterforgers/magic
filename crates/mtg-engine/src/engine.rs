@@ -15,6 +15,7 @@ use crate::fold::apply_event;
 use crate::forecast::CombatForecast;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::LossReason;
+use crate::prepared;
 use crate::preview::preview_forecast;
 use crate::replace::{self, Processed};
 use crate::rules::{Rule, RuleEffect};
@@ -360,6 +361,14 @@ impl Engine {
             }
             Outcome::BeginTurnUp(card) => {
                 self.pending = Some(Pending::special(player, card, Special::TurnFaceUp));
+                Ok(())
+            }
+            Outcome::BeginPrepared(permanent) => {
+                let (event, copy) = prepared::copy_of(&self.state, player, permanent)
+                    .ok_or_else(|| EngineError::InvalidEvent("no prepared spell to cast".into()))?;
+                self.pending = None;
+                self.commit(vec![event])?;
+                self.pending = Some(Pending::new(player, What::Spell(copy)));
                 Ok(())
             }
             Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),

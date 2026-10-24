@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["Spell",{"Not":{"Type":"Creature"}},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}"}},{"Triggered":{"when":{"Nth":{"event":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"You"}},"nth":1}},"effects":[{"Draw":{}}]}}]}]}

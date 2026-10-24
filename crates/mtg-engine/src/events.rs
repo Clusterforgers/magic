@@ -598,6 +598,16 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A prepare card on the battlefield became prepared: while it is, its controller may cast a copy of its spell face.
+    Prepared {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A permanent stopped being prepared as its controller cast a copy of its spell face.
+    Unprepared {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
     /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
@@ -966,6 +976,8 @@ impl Event {
             | Event::AttachedToPlayer { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }
+            | Event::Prepared { object }
+            | Event::Unprepared { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }

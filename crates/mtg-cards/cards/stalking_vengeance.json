@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5f4ff27f-ebc1-4a86-8b0b-eeea470a25fb",
+  "name": "Stalking Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalking Vengeance",
+      "oracle_fingerprint": "f018020652f99ed459043393d9efd8f6",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

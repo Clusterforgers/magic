@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4b508087-99da-4eb1-8b12-29162f2ec85d",
+  "name": "Swarmyard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swarmyard",
+      "oracle_fingerprint": "71262b0ad7270792946130755b3a258e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Insect" },
+                        { "Subtype": "Rat" },
+                        { "Subtype": "Spider" },
+                        { "Subtype": "Squirrel" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "a4e52634-8502-4b72-950d-eb4c2f6b3bc4",
+  "oracle_id": "f92673fe-cd73-48ae-bfbd-aa750582b80b",
+  "multiverse_ids": [
+    519191
+  ],
+  "mtgo_id": 89413,
+  "tcgplayer_id": 236568,
+  "cardmarket_id": 559688,
+  "name": "Taste of Death",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/a4e52634-8502-4b72-950d-eb4c2f6b3bc4",
+  "scryfall_uri": "https://scryfall.com/card/c21/156/taste-of-death?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:25:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.jpg?1783927548",
+    "normal": "https://cards.scryfall.io/normal/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.jpg?1783927548",
+    "large": "https://cards.scryfall.io/large/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.jpg?1783927548",
+    "png": "https://cards.scryfall.io/png/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.png?1783927548",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.jpg?1783927548",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.jpg?1783927548",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.webp?1783927548",
+    "grid": "https://cards.scryfall.io/grid/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.webp?1783927548",
+    "display": "https://cards.scryfall.io/display/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.webp?1783927548",
+    "art": "https://cards.scryfall.io/art/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.webp?1783927548",
+    "crop": "https://cards.scryfall.io/crop/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.webp?1783927548",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/4/a4e52634-8502-4b72-950d-eb4c2f6b3bc4.jpg?1783927548"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player sacrifices three creatures of their choice. You create three Food tokens. (They're artifacts with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "965bef73-eb93-4512-91b4-bf2ce7d27d42",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/965bef73-eb93-4512-91b4-bf2ce7d27d42"
+    },
+    {
+      "object": "related_card",
+      "id": "a4e52634-8502-4b72-950d-eb4c2f6b3bc4",
+      "component": "combo_piece",
+      "name": "Taste of Death",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/a4e52634-8502-4b72-950d-eb4c2f6b3bc4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set": "c21",
+  "set_name": "Commander 2021",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a4e52634-8502-4b72-950d-eb4c2f6b3bc4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af92673fe-cd73-48ae-bfbd-aa750582b80b&unique=prints",
+  "collector_number": "156",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Hone the knife and mourn the least. Three chimes to sound the sweet, grim feast.\"\n—Barrow witch incantation",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "291c1f15-fcbc-49b8-93e8-e3771842265e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12585,
+  "prices": {
+    "usd": "0.44",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=519191&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTaste%2Bof%2BDeath",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTaste%2Bof%2BDeath",
+    "edhrec": "https://edhrec.com/route/?cc=Taste+of+Death"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F236568%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=559688&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/89413?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

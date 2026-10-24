@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b23cba46-6ed2-442d-bc39-7c4933f6b083",
+  "name": "Unholy Heat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unholy Heat",
+      "oracle_fingerprint": "16a712c318355c9013011007b682c1e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
