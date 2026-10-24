@@ -27,9 +27,14 @@ pub(super) fn move_object(
     if !state.zones.exists(to) {
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
-    // Whether it is a creature as it leaves the battlefield, before the move changes what it is.
-    let was_creature = crate::characteristics::characteristics(state, id)
-        .is_some_and(|chars| chars.types.contains(CardType::Creature));
+    // Whether it is a creature as it leaves the battlefield for a graveyard, before the move changes what it is; no other move
+    // asks, so no other move works the layers out.
+    let was_creature = matches!(to, Zone::Graveyard(_))
+        && state
+            .object(id)
+            .is_some_and(|object| object.zone() == Zone::Battlefield)
+        && crate::characteristics::characteristics(state, id)
+            .is_some_and(|chars| chars.types.contains(CardType::Creature));
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
     if to == Zone::Battlefield {

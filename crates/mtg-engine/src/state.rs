@@ -315,18 +315,26 @@ impl GameState {
         self.is_alive(player).then_some(player)
     }
 
+    /// The objects that may be attached, in id order: none while no card of the game attaches (`Possible::attachments`),
+    /// so a snapshot of each permanent of a crowded table does not scan the table.
+    fn attachable(&self) -> impl Iterator<Item = ObjectId> + '_ {
+        self.possible
+            .attachments
+            .then(|| self.objects().map(GameObject::id))
+            .into_iter()
+            .flatten()
+    }
+
     /// The permanents attached to the player `player`, in id order.
     pub fn attachments_of_player(&self, player: PlayerId) -> Vec<ObjectId> {
-        self.objects()
-            .map(GameObject::id)
+        self.attachable()
             .filter(|attached| self.player_host_of(*attached) == Some(player))
             .collect()
     }
 
     /// The permanents attached to `id`, in id order.
     pub fn attachments_of(&self, id: ObjectId) -> Vec<ObjectId> {
-        self.objects()
-            .map(GameObject::id)
+        self.attachable()
             .filter(|attached| self.host_of(*attached) == Some(id))
             .collect()
     }
@@ -334,7 +342,7 @@ impl GameState {
     /// Every host with the permanents attached to it, each list in id order: `attachments_of` for all hosts in one pass.
     pub fn attachment_index(&self) -> BTreeMap<ObjectId, Vec<ObjectId>> {
         let mut index: BTreeMap<ObjectId, Vec<ObjectId>> = BTreeMap::new();
-        for attached in self.objects().map(GameObject::id) {
+        for attached in self.attachable() {
             if let Some(host) = self.host_of(attached) {
                 index.entry(host).or_default().push(attached);
             }

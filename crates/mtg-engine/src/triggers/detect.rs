@@ -4,6 +4,7 @@
 //! A look-back event (an object leaves the battlefield, CR 603.10a) is judged against the state before the batch:
 //! the abilities that worked, and the objects as they were. Every other event is judged against the state after.
 
+use std::cell::OnceCell;
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
@@ -1454,17 +1455,43 @@ fn object_triggers(
     }
 }
 
+/// The permanents of a state that have a triggered ability, with the abilities they have, in battlefield order: found once
+/// for all the events of a batch instead of once for each event, since only these can trigger on any of them.
+struct Watchers(Vec<(ObjectId, Vec<(AbilityRef, Arc<Ability>)>)>);
+
+impl Watchers {
+    fn of(state: &GameState) -> Watchers {
+        let mut watchers = Vec::new();
+        for &id in state.zone(Zone::Battlefield) {
+            let abilities = abilities_of(state, id);
+            if abilities
+                .iter()
+                .any(|(_, rules)| matches!(**rules, Ability::Triggered { .. }))
+            {
+                watchers.push((id, abilities));
+            }
+        }
+        Watchers(watchers)
+    }
+}
+
 /// The triggered abilities of the permanents of `state` that trigger on `happened`.
-fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, used: &mut Used) {
-    for &id in state.zone(Zone::Battlefield) {
-        let Some(object) = state.object(id) else {
+fn permanents(
+    state: &GameState,
+    watchers: &Watchers,
+    happened: &Happened,
+    found: &mut Vec<Triggered>,
+    used: &mut Used,
+) {
+    for (id, abilities) in &watchers.0 {
+        let Some(object) = state.object(*id) else {
             continue;
         };
         object_triggers(
             state,
             object,
             ZoneKind::Battlefield,
-            abilities_of(state, id),
+            abilities.iter().cloned(),
             happened,
             found,
             used,
@@ -1581,19 +1608,28 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     let mut found = Vec::new();
     let mut used = Used::default();
     let all = happenings(pre, events, post);
+    let (before, after) = (OnceCell::new(), OnceCell::new());
     for happened in &all {
-        let state = if happened.looks_back() { pre } else { post };
-        permanents(state, happened, &mut found, &mut used);
+        let (state, watching) = if happened.looks_back() {
+            (pre, before.get_or_init(|| Watchers::of(pre)))
+        } else {
+            (post, after.get_or_init(|| Watchers::of(post)))
+        };
+        permanents(state, watching, happened, &mut found, &mut used);
         elsewhere(state, happened, &mut found, &mut used);
         delayed(state, post, happened, &mut found, &mut used);
     }
     // The events of the batch together, after each of them: what looks back is judged against `pre`, the rest `post`.
     let (back, forward): (Vec<Happened>, Vec<Happened>) =
         all.into_iter().partition(Happened::looks_back);
-    for (state, members) in [(pre, back), (post, forward)] {
+    for (state, watching, members) in [
+        (pre, &before, back),
+        (post, &after, forward),
+    ] {
         if !members.is_empty() {
             let together = Happened::Batch(members);
-            permanents(state, &together, &mut found, &mut used);
+            let watching = watching.get_or_init(|| Watchers::of(state));
+            permanents(state, watching, &together, &mut found, &mut used);
             elsewhere(state, &together, &mut found, &mut used);
         }
     }
