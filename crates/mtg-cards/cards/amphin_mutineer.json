@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8910f79a-66c9-41b3-b55a-e3e651ae6f26",
+  "name": "Amphin Mutineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amphin Mutineer",
+      "oracle_fingerprint": "bdd3e1e651dd254a29df4414b685160a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Salamander" } }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Salamander Warrior",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Salamander", "Warrior"],
+                      "power": 4,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{4}{U}{U}" } }
+      ]
+    }
+  ]
+}

@@ -275,6 +275,7 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             let kinds: &[ClauseKind] = match ability {
                 Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
                 Ability::Triggered { .. } => &[ClauseKind::Triggered],
+                Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
                 Ability::Replacement { .. }
                 | Ability::Rule { .. }
                 | Ability::Static { .. }

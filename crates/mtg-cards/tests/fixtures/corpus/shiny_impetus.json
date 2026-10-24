@@ -23,5 +23,12 @@
     "Goad",
     "Treasure",
     "Enchant"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
   ]
 }

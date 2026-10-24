@@ -147,7 +147,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|player| state.is_alive(*player))
         .collect();
     if number == 0 || players.is_empty() {
-        return Ok(Run::events(Vec::new()));
+        // The name a later effect reads is bound to no object, so what it does to "it" or "each of them" does nothing.
+        let bound = bind.iter().map(|name| (name.clone(), Vec::new())).collect();
+        return Ok(Run::Done {
+            events: Vec::new(),
+            bound,
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        });
     }
     // Where each player's tokens attack: chosen by their controller, once for all of them.
     let mut aims: Vec<(PlayerId, Option<AttackTarget>)> =

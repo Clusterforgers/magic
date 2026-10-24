@@ -1,11 +1,11 @@
 //! Goal: every record of `fixtures/corpus/*.json` equals the Oracle Cards record with the same oracle id, so no id, printing or text is invented.
 //!
-//! The comparison runs on an `mtg-cli` cache or on `MTG_REAL_DATA_DIR`: `cargo test -p mtg-cards fixture_real:: -- --ignored`.
+//! The comparison runs on an `mtg-cli` cache or on `MTG_REAL_DATA_DIR` and is skipped, with a note, without one: `cargo test -p mtg-cards fixture_real::`.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
 use std::io::{BufRead, BufReader};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -95,13 +95,6 @@ fn face_list(record: &Value) -> Vec<Value> {
     record["card_faces"].as_array().cloned().unwrap_or_default()
 }
 
-/// The newest `oracle-cards-*.jsonl.gz` of `MTG_REAL_DATA_DIR`, else of the `mtg-cli` cache.
-fn oracle_cards_file() -> PathBuf {
-    common::find_oracle_cards().expect(
-        "no oracle-cards-*.jsonl.gz: set MTG_REAL_DATA_DIR, or fetch the cache with `mtg-cli fetch scryfall`",
-    )
-}
-
 /// The records of `file` whose oracle id is in `wanted`, by oracle id.
 fn real_records(file: &Path, wanted: &[&str]) -> BTreeMap<String, Value> {
     let reader = BufReader::new(flate2::read::GzDecoder::new(BufReader::new(
@@ -121,16 +114,20 @@ fn real_records(file: &Path, wanted: &[&str]) -> BTreeMap<String, Value> {
         .collect()
 }
 
-/// Ignored by default (needs the `mtg-cli` cache or `MTG_REAL_DATA_DIR`).
+/// Runs on the newest `oracle-cards-*.jsonl.gz` of `MTG_REAL_DATA_DIR` or the `mtg-cli` cache and says so when there is none.
 #[test]
-#[ignore = "needs the mtg-cli cache or MTG_REAL_DATA_DIR"]
 fn every_fixture_record_equals_the_cached_oracle_card() {
+    let Some(file) = common::find_oracle_cards() else {
+        eprintln!(
+            "skipped: no oracle-cards-*.jsonl.gz; set MTG_REAL_DATA_DIR or run `mtg-cli fetch scryfall`"
+        );
+        return;
+    };
     let fixture: Vec<Value> = Corpus::repo().fixture_values();
     let wanted: Vec<&str> = fixture
         .iter()
         .map(|record| record["oracle_id"].as_str().unwrap())
         .collect();
-    let file = oracle_cards_file();
     let real = real_records(&file, &wanted);
     let mut problems = Vec::new();
     for record in &fixture {

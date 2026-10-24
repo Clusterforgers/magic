@@ -354,6 +354,10 @@ pub struct Reader<'a> {
     pub targets: Vec<TargetSpec>,
     /// Whether the card's mana cost has an `{X}`, so `X` can stand for an amount.
     pub x_free: bool,
+    /// Whether a cost is being read in which nothing announced an `X` (no `{X}` of the card or paid before): the `X` of
+    /// a stat in the filter of a part ("sacrifice a creature with mana value X") is then no number the player announces,
+    /// the permanent taken gives it its value.
+    pub x_unpaid: bool,
     /// What "it" and "its" mean: the object the last sentence acted on.
     pub it: Option<Ref>,
     /// Whether the event of the trigger is about a player: "that player" is who cast the spell, drew the card,
@@ -401,6 +405,9 @@ pub struct Reader<'a> {
     pub subject: Option<Ref>,
     /// The clause is a triggered or an activated ability, not the text of a spell.
     pub ability: bool,
+    /// The clause is a triggered ability, whose event gives "that much" and "that many" an amount to name; a spell or an
+    /// activated ability has no such event.
+    pub triggered: bool,
     /// Whether the cost of the clause takes objects out of their zones (a sacrifice, a discard, an exile), so "the
     /// sacrificed creature's power" names what it took (`Ref::Paid`).
     pub paid: bool,
@@ -414,6 +421,7 @@ impl<'a> Reader<'a> {
             at: 0,
             targets: Vec::new(),
             x_free,
+            x_unpaid: false,
             it: None,
             that_player: false,
             that_permanent: false,
@@ -433,6 +441,7 @@ impl<'a> Reader<'a> {
             died: false,
             subject: None,
             ability: false,
+            triggered: false,
             paid: false,
         }
     }

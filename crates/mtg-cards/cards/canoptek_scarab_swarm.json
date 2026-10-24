@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5b7f6cc3-8d4e-42e5-a908-7ebe3bccaf1e",
+  "name": "Canoptek Scarab Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canoptek Scarab Swarm",
+      "oracle_fingerprint": "089db117da864588c06e1bd180ee6a78",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "In": "Exile" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -25,5 +25,8 @@
     "Flying",
     "Trample",
     "Mill"
+  ],
+  "produced_mana": [
+    "C"
   ]
 }

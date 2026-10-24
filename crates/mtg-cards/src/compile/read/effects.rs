@@ -153,6 +153,11 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     {
         return true;
     }
+    if r.attempt(|r| super::token_binds::after_tokens(r, effects))
+        .is_some()
+    {
+        return true;
+    }
     for template in templates().chain([unless_pays as Template]) {
         let read = r.attempt(|r| {
             let mut found = template(r)?;
@@ -939,6 +944,15 @@ pub(super) fn is_on_the_battlefield(r: &Reader<'_>, what: &Ref) -> bool {
 pub(super) fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     if r.source() {
         return Some((Ref::This, false));
+    }
+    // "That token gains haste until end of turn.", "Those tokens gain haste until end of turn."
+    if let Some(tokens @ Ref::Bound(_)) = r.it.clone() {
+        if r.words("that token") {
+            return Some((tokens, false));
+        }
+        if r.words("those tokens") {
+            return Some((tokens, true));
+        }
     }
     // "Whenever ~ attacks, it gets +1/+1 until end of turn."
     if let Some(it) = r.it.clone()
