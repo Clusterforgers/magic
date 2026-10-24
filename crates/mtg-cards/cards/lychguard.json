@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e82daa7b-d9fd-48c4-b5b2-f3b1f6ef1a24",
+  "name": "Lychguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lychguard",
+      "oracle_fingerprint": "00a2c9f3f6cf6c0ef632b6dcdd291bd8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "Supertype": "Legendary" },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

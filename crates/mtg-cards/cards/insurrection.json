@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7f7c204f-be1a-47e4-91c6-ba6f906d9012",
+  "name": "Insurrection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insurrection",
+      "oracle_fingerprint": "3f0c28bd480aad75c4ed293c0c876bc6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "SetController": "You" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

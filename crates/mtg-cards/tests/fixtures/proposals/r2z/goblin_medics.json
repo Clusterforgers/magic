@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Tapped":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}]}]}

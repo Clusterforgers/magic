@@ -1,0 +1,29 @@
+{
+  "oracle_id": "92cc43e5-782f-4540-bc60-3d18f357caf3",
+  "name": "Iridian Maelstrom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iridian Maelstrom",
+      "oracle_fingerprint": "fd460b6cf622845c6cb0959b0d6ff0ed",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Colors", "op": "Lt", "to": 5 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

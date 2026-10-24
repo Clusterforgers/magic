@@ -361,6 +361,7 @@ fn counted_text(selector: &Selector) -> Option<String> {
     let words = match (zone, &preds[at + 1..]) {
         (ZoneKind::Hand, [Pred::OwnedBy(Ref::You)]) => " in your hand",
         (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::You)]) => " in your graveyard",
+        (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::Target(0))]) => " in that player's graveyard",
         (ZoneKind::Graveyard, []) => " in all graveyards",
         (ZoneKind::Hand, []) => " in all players' hands",
         (ZoneKind::Graveyard, [Pred::OwnedBy(Ref::Opponents)]) => " in your opponents' graveyards",

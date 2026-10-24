@@ -49,6 +49,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 /// The ways the condition is worded after "if": a count of the cards of a hand or a graveyard, whose wording a static
 /// ability shares.
 fn phrases(condition: &Condition) -> Vec<String> {
+    if let Some(state) = own_state(condition) {
+        return vec![state];
+    }
     let Condition::Compare {
         left: Amount::Count(Selector(preds)) | Amount::CardTypes(Selector(preds)),
         ..
@@ -65,6 +68,18 @@ fn phrases(condition: &Condition) -> Vec<String> {
     let mut found = as_long_as::texts(condition);
     found.extend(player_hand(condition));
     found
+}
+
+/// "~ is untapped": the state of the card the trigger belongs to.
+fn own_state(condition: &Condition) -> Option<String> {
+    let Condition::Matches {
+        subject: Ref::This,
+        selector,
+    } = condition
+    else {
+        return None;
+    };
+    (selector.0 == [Pred::Untapped]).then(|| "~ is untapped".to_owned())
 }
 
 /// "that player has no cards in hand", "that player has seven or more cards in hand".

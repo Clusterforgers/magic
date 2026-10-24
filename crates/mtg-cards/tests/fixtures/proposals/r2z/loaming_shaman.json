@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Player"},{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"bounds":{"min":0,"max":null}}],"effects":[{"Move":{"what":{"Target":1},"to":{"Library":{"place":"Shuffled"}}}}]}}]}]}

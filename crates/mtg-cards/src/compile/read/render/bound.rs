@@ -10,6 +10,9 @@ impl Writer<'_> {
     /// Tokens made and the sentence after them, as sentences, and the number of effects they cover: what is done to the
     /// tokens, or the delayed exile or sacrifice of a copy.
     pub(super) fn made_then(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+        if let Some(found) = self.token_and_attach(effects) {
+            return Some(found);
+        }
         if let Some(found) = self.bound_tokens(effects) {
             return Some(found);
         }
@@ -22,6 +25,7 @@ impl Writer<'_> {
             return Some((sentences, 1 + used));
         }
         self.exile_and_return_later(effects)
+            .or_else(|| self.exile_and_maybe_return(effects))
     }
 
     /// The creation and the sentence that acts on its tokens, and the number of effects they cover.

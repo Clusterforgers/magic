@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1593ea18-2f2f-4ab4-83fb-6ccc0bec8a90",
+  "name": "Kodama's Reach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kodama's Reach",
+      "oracle_fingerprint": "f8952bf1d76fc6e53e288385c7844b5b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Choose": { "from": { "Bound": "found" }, "as": "battlefield", "rest_as": "hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "battlefield" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Move": { "what": { "Bound": "hand" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

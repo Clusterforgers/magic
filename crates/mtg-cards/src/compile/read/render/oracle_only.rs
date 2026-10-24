@@ -4,12 +4,16 @@
 
 mod conditions;
 mod each_of;
+mod each_sweep;
 mod either_event;
 mod entry_counters;
 mod exile_play;
+mod itself;
 mod land_types;
 mod look_split;
 mod non_lists;
+mod other_players;
+mod put_into;
 mod wheres;
 
 use crate::ability::Ability;
@@ -18,11 +22,15 @@ use crate::ability::Ability;
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     conditions::add(ability, texts);
     each_of::add(ability, texts);
+    each_sweep::add(ability, texts);
     either_event::add(ability, texts);
     entry_counters::add(ability, texts);
     exile_play::add(ability, texts);
+    itself::add(ability, texts);
     land_types::add(ability, texts);
     look_split::add(ability, texts);
     non_lists::add(ability, texts);
+    other_players::add(ability, texts);
+    put_into::add(ability, texts);
     wheres::add(ability, texts);
 }

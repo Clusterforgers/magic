@@ -1,0 +1,33 @@
+{
+  "oracle_id": "32dc847a-d8e9-4bc5-aa73-dfe69ff330a2",
+  "name": "Goblin Cadets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Cadets",
+      "oracle_fingerprint": "20c11a761e9ef5d1fd5caad0efb352a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesBlocked": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

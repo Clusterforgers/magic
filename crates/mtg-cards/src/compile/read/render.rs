@@ -5,6 +5,7 @@
 
 mod and_lists;
 mod bound;
+mod control;
 mod created;
 mod damage_by;
 mod delayed;
@@ -16,21 +17,26 @@ mod free_casts;
 mod from_graveyard;
 mod graveyards;
 mod group_becomes;
+mod hand_returns;
 mod instead;
 mod library_steps;
 mod loyalty;
 mod may_have;
 mod multi;
+mod optional_return;
 mod oracle_only;
 mod otherwise;
 mod player_events;
 mod populated;
 mod put_onto;
 mod revealed;
+mod shuffled_in;
+mod split_search;
 mod switched;
 mod target_counts;
 mod those;
 mod together;
+mod token_attach;
 mod twins;
 mod untapped;
 
@@ -2014,6 +2020,7 @@ impl Writer<'_> {
     fn moved(&mut self, effect: &Effect) -> Option<String> {
         mass_moves::text(effect)
             .or_else(|| self.hand_shuffled(effect))
+            .or_else(|| hand_returns::all_text(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
     }
@@ -2028,6 +2035,7 @@ impl Writer<'_> {
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))
+            .or_else(|| self.control_for_good(effect))
     }
 
     /// A search another player may make: "its controller may search their library for a basic land card, put it onto
@@ -2244,6 +2252,9 @@ impl Writer<'_> {
             .or_else(|| self.opponent_exiles(effects))
             .or_else(|| populated::text(effects))
             .or_else(|| revealed::text(effects))
+            .or_else(|| split_search::text(effects))
+            .or_else(|| self.mill_then_hand(effects))
+            .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
@@ -2498,6 +2509,9 @@ impl Writer<'_> {
         duration: Duration,
     ) -> Option<String> {
         if let Some(sentence) = self.switched(affected, mods, duration) {
+            return Some(sentence);
+        }
+        if let Some(sentence) = self.control(affected, mods, duration) {
             return Some(sentence);
         }
         if duration == Duration::UntilEndOfTurn

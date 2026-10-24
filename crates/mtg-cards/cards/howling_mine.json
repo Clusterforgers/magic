@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d26b27db-a567-4631-b4b6-7294222fbdd1",
+  "name": "Howling Mine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Howling Mine",
+      "oracle_fingerprint": "43dd7969d7811d8c1251f78a272696a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

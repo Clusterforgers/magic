@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"effects":[{"PutCounters":{"on":"This","counter":"charge","count":1}},{"Draw":{"count":{"Counters":{"on":"This","counter":"charge"}}}}]}}]}]}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6f4ac4a4-53ec-4bc9-8f5c-d4b801d867b2",
+  "name": "Grave Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Pact",
+      "oracle_fingerprint": "8a40fb2d36b4404a9e9b88cc54958beb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
