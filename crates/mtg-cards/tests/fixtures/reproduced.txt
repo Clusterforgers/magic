@@ -194,6 +194,7 @@ Chomping Kavu
 Chromanticore
 Chromatic Lantern
 Circle of Dreams Druid
+Circuitous Route
 Citadel Gate
 Citanul Hierophants
 Cliffgate
@@ -229,6 +230,7 @@ Cormela, Glamour Thief
 Coruscation Mage
 Counterspell
 Courser of Kruphix
+Court of Grace
 Cram Session
 Creeping Tar Pit
 Crib Swap
@@ -239,6 +241,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crypt Ghast
 Crystal Quarry
+Cultivate
 Curate
 Curse of Bounty
 Curse of Conformity
@@ -297,6 +300,7 @@ Dire Fleet Interloper
 Direct Current
 Disciple of Griselbrand
 Disembowel
+Dismantling Blow
 Disrupt Decorum
 Distorting Wake
 Dockside Extortionist
@@ -381,6 +385,7 @@ Fallen Ideal
 Familiar Ground
 Famine
 Fanatic of Rhonas
+Far Wanderings
 Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
@@ -435,6 +440,7 @@ Garruk, Primal Hunter
 Gavony Dawnguard
 Gemhide Sliver
 Gemrazer
+General's Enforcer
 Generous Ent
 Genesis Storm
 Gerrard's Wisdom
@@ -555,6 +561,7 @@ Insatiable Hemophage
 Inspired Sphinx
 Inspiring Statuary
 Intelligence Bobblehead
+Into the Roil
 Intrepid Rabbit
 Invading Manticore
 Invisible Force Field
@@ -596,6 +603,7 @@ Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
+Kodama's Reach
 Kolaghan Skirmisher
 Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
@@ -624,6 +632,7 @@ Light 'Em Up
 Light Up the Stage
 Lightning Bolt
 Lignify
+Lion Sash
 Liquimetal Torque
 Lithoform Engine
 Living Twister
@@ -652,6 +661,7 @@ Mana Bloom
 Manabarbs
 Manaweft Sliver
 Manor Gate
+Map the Frontier
 Map the Wastes
 Marchesa's Emissary
 Mardu Devotee
@@ -801,6 +811,7 @@ Powder Ganger
 Prava of the Steel Legion
 Predator Dragon
 Pridemalkin
+Primal Growth
 Primeval Protector
 Primordial Hydra
 Prismatic Lens
@@ -904,6 +915,7 @@ Savage Ventmaw
 Saw It Coming
 Sawtusk Demolisher
 Scatter to the Winds
+Scavenging Ooze
 Scheming Aspirant
 Scorn-Blade Berserker
 Scrapshooter
@@ -1154,6 +1166,7 @@ Vanguard Suppressor
 Vanishing Verse
 Vanishment
 Vanquish the Horde
+Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
@@ -1220,6 +1233,7 @@ Zanikev Locust
 Zendikar Farguide
 Zendikar Resurgent
 Zhang Fei, Fierce Warrior
+Zimone, Quandrix Prodigy
 Zodiac Goat
 Zoetic Cavern
 Zombie Master

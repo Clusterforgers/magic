@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c2898bbd-82a4-4d26-b6ee-169b0ebe71b4",
+  "name": "Into the Roil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Roil",
+      "oracle_fingerprint": "5208c66a815c11c01911fafbfcfcf170",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "If": { "condition": "Kicked", "then": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
