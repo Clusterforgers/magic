@@ -1168,8 +1168,20 @@ fn ability() -> impl Strategy<Value = Ability> {
                 color().prop_map(|other| ReplaceBy::Choose(EntersChoice::ColorOtherThan(other))),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
                 Just(ReplaceBy::UmbraArmor),
-                (selector(), proptest::collection::vec(modification(), 0..3))
-                    .prop_map(|(of, except)| ReplaceBy::AsCopy { of, except }),
+                (
+                    selector(),
+                    proptest::collection::vec(modification(), 0..3),
+                    any::<bool>(),
+                    any::<bool>()
+                )
+                    .prop_map(|(of, except, tapped, until_end_of_turn)| {
+                        ReplaceBy::AsCopy {
+                            of,
+                            except,
+                            tapped,
+                            until_end_of_turn,
+                        }
+                    }),
             ],
             tail()
         )

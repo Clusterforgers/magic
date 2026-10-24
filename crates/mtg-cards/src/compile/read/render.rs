@@ -34,7 +34,9 @@ use super::draws;
 use super::effects::{BACK, RETURNED, dead_card, returns_itself};
 use super::event_wordings;
 use super::flicker;
+use super::group_copies;
 use super::group_pump;
+use super::kicked_copies;
 use super::lands;
 use super::library;
 use super::manifest;
@@ -640,6 +642,8 @@ struct Wording {
     again: bool,
     /// Which of the wordings of a condition is written ("three or more" or "3 or more").
     condition: usize,
+    /// A group that becomes a copy of the target is worded after a sentence that chooses the target.
+    chosen: bool,
 }
 
 /// "each player discards their hand, then draws seven cards": every hand emptied and the cards drawn, one sentence.
@@ -694,6 +698,11 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         &[false]
     };
     let agains: &[bool] = if repeats { &[false, true] } else { &[false] };
+    let chosens: &[bool] = if effects.iter().any(group_copies::is_group_copy) {
+        &[false, true]
+    } else {
+        &[false]
+    };
     let conditions = effects
         .iter()
         .filter_map(|effect| match effect {
@@ -705,11 +714,13 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         .max(1);
     pers.iter()
         .flat_map(|per| agains.iter().map(move |again| (*per, *again)))
-        .flat_map(|(per, again)| {
+        .flat_map(|pair| chosens.iter().map(move |chosen| (pair, *chosen)))
+        .flat_map(|((per, again), chosen)| {
             (0..conditions).map(move |condition| Wording {
                 per,
                 again,
                 condition,
+                chosen,
             })
         })
         .collect()
@@ -796,17 +807,12 @@ fn written(
             start += used;
             continue;
         }
-        // A permanent chosen and the target that becomes a copy of it are two sentences, which no joint splits.
-        if let [
-            choose @ Effect::Choose { .. },
-            copy @ Effect::BecomeCopy { .. },
-            ..,
-        ] = &effects[start..]
-            && let Some(texts) = writer.become_copy(choose, copy)
-        {
-            unsplit(mask, start, 2)?;
+        // A permanent chosen and the target that becomes a copy of it, a copy made more times when the spell was
+        // kicked, or a group that becomes a copy of the target: sentences that no joint splits.
+        if let Some((texts, used)) = writer.copy_group(&effects[start..], wording.chosen) {
+            unsplit(mask, start, used)?;
             sentences.extend(texts);
-            start += 2;
+            start += used;
             continue;
         }
         // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
@@ -1546,6 +1552,10 @@ impl Writer<'_> {
             return None;
         };
         if let Ref::Each(selector) = of {
+            // The player of "creature target player controls" is the target, named by the group.
+            if selector.0.contains(&Pred::ControlledBy(Ref::Target(0))) {
+                self.named = true;
+            }
             return if delayed {
                 None
             } else {
@@ -1591,6 +1601,39 @@ impl Writer<'_> {
         let text = copy_spells::copy_text(effect, self.targets.first()?)?;
         self.named = true;
         Some(text)
+    }
+
+    /// The sentences of a permanent chosen and the target that becomes a copy of it, of a token copy and the same copy
+    /// made more times when the spell was kicked, or of a group that becomes a copy of the target (after a sentence that
+    /// chooses it or not), and the number of effects they cover.
+    fn copy_group(&mut self, effects: &[Effect], chosen: bool) -> Option<(Vec<String>, usize)> {
+        if let [
+            choose @ Effect::Choose { .. },
+            copy @ Effect::BecomeCopy { .. },
+            ..,
+        ] = effects
+        {
+            return Some((self.become_copy(choose, copy)?.to_vec(), 2));
+        }
+        let effect = effects.first()?;
+        if let Some((one, _, many)) = kicked_copies::is_kicked_copy(effect) {
+            let first = self.copy_token(one, false)?;
+            return Some((vec![first, kicked_copies::more_text(many)?], 1));
+        }
+        if group_copies::is_group_copy(effect) {
+            return Some((self.group_becomes(effect, chosen)?, 1));
+        }
+        None
+    }
+
+    /// The sentence of a group that becomes a copy of the target, or the two of a target chosen first.
+    fn group_becomes(&mut self, copy: &Effect, chosen: bool) -> Option<Vec<String>> {
+        if !self.is_a_permanent(&Ref::Target(0)) {
+            return None;
+        }
+        let target = self.name_target()?;
+        let kind = &self.targets.first()?.what;
+        group_copies::texts(copy, &target, kind, chosen)
     }
 
     /// The two sentences of a permanent chosen and a target that becomes a copy of it.

@@ -261,7 +261,6 @@ fn near_misses_of_copying_a_spell_or_an_ability_stay_unread(#[case] text: &str) 
 #[case::a_card_in_a_graveyard(
     "Choose a creature on the battlefield. Target creature card in your graveyard becomes a copy of that creature until end of turn."
 )]
-#[case::the_card_without_a_duration("~ becomes a copy of target creature.")]
 #[case::the_card_copying_a_card(
     "~ becomes a copy of target creature card in a graveyard until end of turn."
 )]

@@ -212,6 +212,7 @@ mod granted_mana;
 mod granted_triggers;
 mod grants_counted;
 mod graveyard;
+mod group_copies;
 mod group_statics;
 mod hideaway;
 mod if_sentence;

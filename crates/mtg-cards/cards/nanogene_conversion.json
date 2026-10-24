@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c06d1127-a269-453f-9c06-e9c424998eb7",
+  "name": "Nanogene Conversion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nanogene Conversion",
+      "oracle_fingerprint": "f421db48cf11eaa275fdc3f3581f8c30",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                  "of": { "Target": 0 },
+                  "except": [{ "RemoveSupertype": "Legendary" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
