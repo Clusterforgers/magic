@@ -84,7 +84,7 @@ effect Amass => Effect.Amass
 effect Connive => Effect.Connive
 effect Explore => Effect.Explore
 effect AddTurn => Effect.ExtraTurn
-effect AddPhase => -
+effect AddPhase => Effect.AddPhase
 effect WinsGame => Effect.WinGame
 effect LosesGame => -
 

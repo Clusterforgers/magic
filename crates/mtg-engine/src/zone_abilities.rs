@@ -294,6 +294,7 @@ fn a_state_trigger_waits_for_its_state(#[case] my_turn: bool, #[case] expected: 
             Event::TurnBegan {
                 number: 2,
                 active: PlayerId(1),
+                extra: false,
             },
             Event::StepBegan { step: Step::Main1 },
         ];

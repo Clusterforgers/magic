@@ -291,6 +291,14 @@ pub struct TurnView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub active_left: bool,
+    /// Whether the turn is an extra turn (CR 500.7); left out otherwise.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub extra: bool,
+    /// The players who still have an extra turn to take, the one taken first last; left out when there is none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<PlayerId>>", optional)]
+    pub extra_turns: Vec<PlayerId>,
     /// The current step.
     pub step: Step,
     /// Lands the active player has played this turn.

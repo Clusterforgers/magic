@@ -24,6 +24,7 @@ mod counter_view;
 mod crew_hidden;
 mod effect_view;
 mod exile_open;
+mod extra_turn_view;
 mod faces_view;
 mod foretell_view;
 mod granted_miracle_hidden;

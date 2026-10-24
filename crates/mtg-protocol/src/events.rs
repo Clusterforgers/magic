@@ -248,6 +248,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::MulliganKept { .. }
         | Event::MulliganPhaseEnded
         | Event::TurnBegan { .. }
+        | Event::ExtraTurnAdded { .. }
+        | Event::ExtraTurnSkipped { .. }
+        | Event::PhasesAdded { .. }
         | Event::StepBegan { .. }
         | Event::NothingToDo { .. }
         | Event::PriorityGranted { .. }

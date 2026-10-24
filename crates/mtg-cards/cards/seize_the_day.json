@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2a6abd59-e448-46f1-9af8-bb9040645971",
+  "name": "Seize the Day",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seize the Day",
+      "oracle_fingerprint": "a10bbc2745db261c8ebe0770084dd73f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "AddPhase": { "phases": ["Combat", "Main"] } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{R}" } }
+      ]
+    }
+  ]
+}

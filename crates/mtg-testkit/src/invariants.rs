@@ -843,16 +843,26 @@ impl InvariantChecker {
                 }),
             _ => 0,
         };
-        // The next turn goes to the next player in turn order after the last active player, who may have left (CR 800.4).
-        if let Event::TurnBegan { number, active } = event
+        // The next turn goes to the latest extra turn added, else to the next player in turn order after the seat of the
+        // regular turn, who may have left (CR 500.7, 800.4).
+        if let Event::TurnBegan {
+            number,
+            active,
+            extra,
+        } = event
             && self.shadow.turn().number() > 0
-            && (self.shadow.next_alive_after(self.shadow.turn().active()) != Some(*active)
-                || *number != self.shadow.turn().number() + 1)
         {
-            return Err(Violation::Bookkeeping(format!(
-                "turn {number} goes to {active:?}, not to the next player in turn order after {:?}",
-                self.shadow.turn().active()
-            )));
+            let regular = self.shadow.turn().regular();
+            let expected = if *extra {
+                self.shadow.extra_turns().last().map(|turn| turn.player)
+            } else {
+                self.shadow.next_alive_after(regular)
+            };
+            if expected != Some(*active) || *number != self.shadow.turn().number() + 1 {
+                return Err(Violation::Bookkeeping(format!(
+                    "turn {number} goes to {active:?}, not to {expected:?} (extra turn: {extra}) after {regular:?}"
+                )));
+            }
         }
         apply_event(&mut self.shadow, event)
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;

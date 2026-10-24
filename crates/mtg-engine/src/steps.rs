@@ -16,7 +16,7 @@ use crate::priority::{all_passed, priority_options};
 use crate::rules::{cant_draw, no_max_hand_size, skips_draw_step};
 use crate::stack::resolve_top;
 use crate::state::{GameResult, GameState};
-use crate::turn::Step;
+use crate::turn::{ExtraTurn, Step};
 use crate::zones::Zone;
 
 /// The next batch of events or decision for the current step.
@@ -230,12 +230,13 @@ fn next_step(state: &GameState, step: Step) -> Step {
 /// Empties mana pools (CR 500.4), closes combat if leaving it, and starts the next step.
 pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     let step = state.turn().step();
-    let next = next_step(state, step);
-    // Mana kept through the steps of a phase goes as the phase ends.
-    let through = if step.phase() == next.phase() {
-        ManaLasts::Step
-    } else {
-        ManaLasts::Combat
+    let natural = next_step(state, step);
+    // Mana kept through the steps of a phase goes as the phase ends; a phase added after it (CR 500.8) comes next.
+    let ends_phase = natural.phase() != step.phase();
+    let (next, through) = match state.turn().phases_ahead().first() {
+        Some(added) if ends_phase => (*added, ManaLasts::Combat),
+        _ if ends_phase => (natural, ManaLasts::Combat),
+        _ => (natural, ManaLasts::Step),
     };
     let mut events = pool_emptying(state, through);
     if step == Step::EndCombat {
@@ -336,17 +337,46 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             events
         };
     }
-    let active = state.turn().active();
+    let (passed, active, extra) = next_turn(state);
+    events.extend(passed);
     events.push(Event::TurnBegan {
         number: state.turn().number() + 1,
-        active: state.next_alive_after(active).unwrap_or(active),
+        active,
+        extra: extra.is_some(),
     });
     // The spells the ending turn's active player cast are counted before the new turn clears the count (CR 726.3a).
     if let Some(to) = crate::day_night::at_turn_start(state) {
         events.push(Event::DayNightChanged { to });
     }
-    events.push(Event::StepBegan { step: Step::Untap });
+    // A skipped untap step does not begin at all (CR 614.10).
+    let first = if extra.is_some_and(|turn| turn.skip_untap) {
+        Step::Upkeep
+    } else {
+        Step::Untap
+    };
+    events.push(Event::StepBegan { step: first });
     events
+}
+
+/// Who takes the next turn: the latest extra turn added whose player is still in the game (an earlier one waits), else
+/// the next player in turn order after the seat of the regular turn (CR 500.7). The events pass over the extra turns of
+/// players who have left.
+fn next_turn(state: &GameState) -> (Vec<Event>, PlayerId, Option<ExtraTurn>) {
+    let mut passed = Vec::new();
+    for turn in state.extra_turns().iter().rev() {
+        if state.is_alive(turn.player) {
+            return (passed, turn.player, Some(*turn));
+        }
+        passed.push(Event::ExtraTurnSkipped {
+            player: turn.player,
+        });
+    }
+    let regular = state.turn().regular();
+    (
+        passed,
+        state.next_alive_after(regular).unwrap_or(regular),
+        None,
+    )
 }
 
 /// Whether the turn that is ending is the last of the last round the house rule allows.

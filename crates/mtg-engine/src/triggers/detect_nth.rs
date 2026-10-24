@@ -271,6 +271,7 @@ fn a_new_turn_starts_the_count_again() {
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
+        extra: false,
     };
     let next = fold(&first, &[turn]);
     assert!(next.tallies.objects.is_empty(), "the count is cleared");
@@ -367,6 +368,7 @@ fn the_attacks_of_a_turn_start_again_with_the_next_turn() {
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
+        extra: false,
     };
     let next = fold(&attacked, &[turn]);
     assert_eq!(fired(&next, &[attack(&next, &["Bear"])]), 1);
@@ -464,6 +466,7 @@ fn damage_in_a_new_turn_is_the_first_again() {
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
+        extra: false,
     };
     let next = fold(&first, &[turn]);
     assert_eq!(fired(&next, &[again]), 1);

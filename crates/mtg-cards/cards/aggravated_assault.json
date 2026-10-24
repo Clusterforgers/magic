@@ -1,0 +1,25 @@
+{
+  "oracle_id": "20129459-a386-41eb-899d-1aede3427300",
+  "name": "Aggravated Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aggravated Assault",
+      "oracle_fingerprint": "45fa73c6b72f87a9abc29e6fc6b2f80a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{R}{R}",
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              { "AddPhase": { "phases": ["Combat", "Main"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -225,7 +225,7 @@ fn conceding_at_any_point_keeps_the_game_consistent(
             let began: Vec<(u32, PlayerId)> = events
                 .iter()
                 .filter_map(|e| match e {
-                    Event::TurnBegan { number, active } => Some((*number, *active)),
+                    Event::TurnBegan { number, active, .. } => Some((*number, *active)),
                     _ => None,
                 })
                 .collect();

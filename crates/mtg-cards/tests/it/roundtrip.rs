@@ -4,7 +4,7 @@
 use mtg_cards::ability::{Ability, CostChange, Limit, LoyaltyCost, Timing};
 use mtg_cards::card::{Span, TokenSpec};
 use mtg_cards::cost::{Cost, CostItem};
-use mtg_cards::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
+use mtg_cards::effect::{Destination, Effect, Mode, Order, PhaseKind, Place, Produce, TokenRef};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
@@ -761,209 +761,223 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         }),
         reference().prop_map(|what| Effect::Counter { what }),
     ];
-    let part2 =
-        prop_oneof![
-            (proptest::option::of(reference()), reference(), amount())
-                .prop_map(|(source, to, amount)| Effect::DealDamage { source, to, amount }),
-            (who(), amount()).prop_map(|(who, amount)| Effect::GainLife { who, amount }),
-            (who(), amount()).prop_map(|(who, amount)| Effect::LoseLife { who, amount }),
-            (
-                who(),
-                prop_oneof![
-                    vec(
-                        select(vec![ManaType::White, ManaType::Colorless, ManaType::Green]),
-                        1..3
-                    )
-                    .prop_map(Produce::Fixed),
-                    amount().prop_map(Produce::AnyColor),
-                    (
-                        select(vec![ManaType::Green, ManaType::Colorless]),
-                        condition(),
-                        select(vec![ManaType::Black, ManaType::Colorless])
-                    )
-                        .prop_map(|(base, when, instead)| Produce::Instead {
-                            base: Box::new(Produce::Fixed(vec![base])),
-                            when,
-                            instead: Box::new(Produce::Fixed(vec![instead, instead])),
-                        }),
+    let part2 = prop_oneof![
+        (proptest::option::of(reference()), reference(), amount())
+            .prop_map(|(source, to, amount)| Effect::DealDamage { source, to, amount }),
+        (who(), amount()).prop_map(|(who, amount)| Effect::GainLife { who, amount }),
+        (who(), amount()).prop_map(|(who, amount)| Effect::LoseLife { who, amount }),
+        (
+            who(),
+            prop_oneof![
+                vec(
+                    select(vec![ManaType::White, ManaType::Colorless, ManaType::Green]),
+                    1..3
+                )
+                .prop_map(Produce::Fixed),
+                amount().prop_map(Produce::AnyColor),
+                (
+                    select(vec![ManaType::Green, ManaType::Colorless]),
+                    condition(),
+                    select(vec![ManaType::Black, ManaType::Colorless])
+                )
+                    .prop_map(|(base, when, instead)| Produce::Instead {
+                        base: Box::new(Produce::Fixed(vec![base])),
+                        when,
+                        instead: Box::new(Produce::Fixed(vec![instead, instead])),
+                    }),
+                vec(
+                    select(vec![ManaType::White, ManaType::Blue, ManaType::Colorless]),
+                    2..4
+                )
+                .prop_map(Produce::OneOf),
+                vec(
                     vec(
                         select(vec![ManaType::White, ManaType::Blue, ManaType::Colorless]),
-                        2..4
-                    )
-                    .prop_map(Produce::OneOf),
-                    vec(
-                        vec(
-                            select(vec![ManaType::White, ManaType::Blue, ManaType::Colorless]),
-                            1..3
-                        ),
-                        2..4
-                    )
-                    .prop_map(Produce::OneOfLists),
-                    (1u32..3).prop_map(Produce::ChosenColor),
-                    select(vec![ManaType::Red, ManaType::Colorless])
-                        .prop_map(Produce::OrChosenColor),
-                    (1u32..3).prop_map(Produce::CommanderIdentity),
-                    (selector(), 1u32..3, any::<bool>()).prop_map(|(among, count, colorless)| {
-                        Produce::ProducedBy {
-                            among,
-                            count,
-                            colorless,
-                        }
-                    }),
-                ],
-                amount(),
-                vec(spend_on(), 0..3),
-                select(vec![ManaLasts::Step, ManaLasts::Combat, ManaLasts::Turn])
-            )
-                .prop_map(|(who, mana, times, only, lasts)| Effect::AddMana {
-                    who,
-                    mana,
-                    times,
-                    only,
-                    lasts
-                }),
-            (reference(), counter(), amount())
-                .prop_map(|(on, counter, count)| Effect::PutCounters { on, counter, count }),
-            (reference(), proptest::option::of(counter()), 2u32..6).prop_map(
-                |(on, counter, factor)| Effect::MultiplyCounters {
-                    on,
-                    counter,
-                    factor
-                }
-            ),
-            reference().prop_map(|what| Effect::Tap { what }),
-            reference().prop_map(|what| Effect::Untap { what }),
-            (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),
-            reference().prop_map(|what| Effect::Transform { what }),
-            who().prop_map(|who| Effect::WinGame { who }),
-            (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),
-            who().prop_map(|who| Effect::Proliferate { who }),
-            reference().prop_map(|what| Effect::Goad { what }),
-            (
-                who(),
-                reference(),
-                amount(),
-                any::<bool>(),
-                vec(modification(), 0..2)
-            )
-                .prop_map(|(who, what, count, new_targets, except)| {
-                    Effect::CopySpell {
-                        who,
-                        what,
+                        1..3
+                    ),
+                    2..4
+                )
+                .prop_map(Produce::OneOfLists),
+                (1u32..3).prop_map(Produce::ChosenColor),
+                select(vec![ManaType::Red, ManaType::Colorless]).prop_map(Produce::OrChosenColor),
+                (1u32..3).prop_map(Produce::CommanderIdentity),
+                (selector(), 1u32..3, any::<bool>()).prop_map(|(among, count, colorless)| {
+                    Produce::ProducedBy {
+                        among,
                         count,
-                        new_targets,
-                        except,
+                        colorless,
                     }
                 }),
-            (reference(), amount(), any::<bool>()).prop_map(|(what, count, new_targets)| {
-                Effect::CopyAbility {
+            ],
+            amount(),
+            vec(spend_on(), 0..3),
+            select(vec![ManaLasts::Step, ManaLasts::Combat, ManaLasts::Turn])
+        )
+            .prop_map(|(who, mana, times, only, lasts)| Effect::AddMana {
+                who,
+                mana,
+                times,
+                only,
+                lasts
+            }),
+        (reference(), counter(), amount()).prop_map(|(on, counter, count)| Effect::PutCounters {
+            on,
+            counter,
+            count
+        }),
+        (reference(), proptest::option::of(counter()), 2u32..6).prop_map(
+            |(on, counter, factor)| Effect::MultiplyCounters {
+                on,
+                counter,
+                factor
+            }
+        ),
+        reference().prop_map(|what| Effect::Tap { what }),
+        reference().prop_map(|what| Effect::Untap { what }),
+        (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),
+        reference().prop_map(|what| Effect::Transform { what }),
+        who().prop_map(|who| Effect::WinGame { who }),
+        (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),
+        who().prop_map(|who| Effect::Proliferate { who }),
+        reference().prop_map(|what| Effect::Goad { what }),
+        (
+            who(),
+            reference(),
+            amount(),
+            any::<bool>(),
+            vec(modification(), 0..2)
+        )
+            .prop_map(|(who, what, count, new_targets, except)| {
+                Effect::CopySpell {
+                    who,
                     what,
                     count,
                     new_targets,
-                }
-            }),
-            (
-                reference(),
-                reference(),
-                vec(modification(), 0..2),
-                duration()
-            )
-                .prop_map(|(what, of, except, duration)| Effect::BecomeCopy {
-                    what,
-                    of,
                     except,
-                    duration
-                }),
-            (reference(), reference()).prop_map(|(what, with)| Effect::Fight { what, with }),
-            who().prop_map(|who| Effect::BecomeMonarch { who }),
-            (text(), amount()).prop_map(|(subtype, count)| Effect::Amass {
-                subtype: Subtype(subtype),
-                count
+                }
             }),
-            amount().prop_map(|count| Effect::Monstrosity { count }),
-            (2u32..=3).prop_map(|level| Effect::BecomeLevel { level }),
-            amount().prop_map(|count| Effect::Adapt { count }),
-            amount().prop_map(|count| Effect::Bolster { count }),
-            reference().prop_map(|what| Effect::Explore { what }),
-            reference().prop_map(|what| Effect::Connive { what }),
-            (who(), selector(), bound_name(), bound_name()).prop_map(
-                |(who, filter, bind, exiled_as)| Effect::ExileUntil {
-                    who,
-                    filter,
-                    bind,
-                    exiled_as
-                }
-            ),
-            (who(), selector(), amount(), bound_name(), bound_name()).prop_map(
-                |(who, filter, count, bind, revealed_as)| Effect::RevealUntil {
-                    who,
-                    filter,
-                    count,
-                    bind,
-                    revealed_as
-                }
-            ),
-            (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::ExileTop {
-                who,
+        (reference(), amount(), any::<bool>()).prop_map(|(what, count, new_targets)| {
+            Effect::CopyAbility {
+                what,
                 count,
-                bind
+                new_targets,
+            }
+        }),
+        (
+            reference(),
+            reference(),
+            vec(modification(), 0..2),
+            duration()
+        )
+            .prop_map(|(what, of, except, duration)| Effect::BecomeCopy {
+                what,
+                of,
+                except,
+                duration
             }),
-            (
-                who(),
-                amount(),
-                proptest::option::of(who()),
-                proptest::option::of(bound_name()),
-                any::<bool>()
-            )
-                .prop_map(|(who, count, from, bind, cloak)| if cloak {
-                    Effect::Cloak {
-                        who,
-                        count,
-                        from,
-                        bind,
-                    }
-                } else {
-                    Effect::Manifest {
-                        who,
-                        count,
-                        from,
-                        bind,
-                    }
-                }),
-            who().prop_map(|who| Effect::TimeTravel { who }),
-            who().prop_map(|who| Effect::ExtraTurn { who }),
-            (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(
-                |(who, token, count, tapped, attacking)| Effect::CreateToken {
+        (reference(), reference()).prop_map(|(what, with)| Effect::Fight { what, with }),
+        who().prop_map(|who| Effect::BecomeMonarch { who }),
+        (text(), amount()).prop_map(|(subtype, count)| Effect::Amass {
+            subtype: Subtype(subtype),
+            count
+        }),
+        amount().prop_map(|count| Effect::Monstrosity { count }),
+        (2u32..=3).prop_map(|level| Effect::BecomeLevel { level }),
+        amount().prop_map(|count| Effect::Adapt { count }),
+        amount().prop_map(|count| Effect::Bolster { count }),
+        reference().prop_map(|what| Effect::Explore { what }),
+        reference().prop_map(|what| Effect::Connive { what }),
+        (who(), selector(), bound_name(), bound_name()).prop_map(
+            |(who, filter, bind, exiled_as)| Effect::ExileUntil {
+                who,
+                filter,
+                bind,
+                exiled_as
+            }
+        ),
+        (who(), selector(), amount(), bound_name(), bound_name()).prop_map(
+            |(who, filter, count, bind, revealed_as)| Effect::RevealUntil {
+                who,
+                filter,
+                count,
+                bind,
+                revealed_as
+            }
+        ),
+        (who(), amount(), bound_name()).prop_map(|(who, count, bind)| Effect::ExileTop {
+            who,
+            count,
+            bind
+        }),
+        (
+            who(),
+            amount(),
+            proptest::option::of(who()),
+            proptest::option::of(bound_name()),
+            any::<bool>()
+        )
+            .prop_map(|(who, count, from, bind, cloak)| if cloak {
+                Effect::Cloak {
                     who,
-                    token,
                     count,
-                    tapped,
-                    attacking,
-                    bind: None
+                    from,
+                    bind,
                 }
-            ),
-            (reference(), vec(modification(), 1..3), duration()).prop_map(
-                |(affected, mods, duration)| Effect::Continuous {
-                    affected,
-                    mods,
-                    duration
+            } else {
+                Effect::Manifest {
+                    who,
+                    count,
+                    from,
+                    bind,
                 }
-            ),
-            (game_rule(), duration()).prop_map(|(rule, duration)| Effect::Rule { rule, duration }),
-            reference().prop_map(|what| Effect::Regenerate { what }),
-            (
-                proptest::option::of(reference()),
-                selector(),
-                proptest::option::of(any::<bool>()),
-                proptest::option::of(1u32..6),
-                duration()
-            )
-                .prop_map(|(to, source, combat, most, duration)| Effect::Shield {
-                    when: ReplaceWhen::Damage { to, source, combat },
-                    by: most.map_or(ReplaceBy::Prevent, ReplaceBy::PreventUpTo),
-                    duration
-                }),
-        ];
+            }),
+        who().prop_map(|who| Effect::TimeTravel { who }),
+        (who(), amount(), any::<bool>()).prop_map(|(who, count, skip_untap)| Effect::ExtraTurn {
+            who,
+            count,
+            skip_untap
+        }),
+        prop::collection::vec(
+            prop_oneof![
+                Just(PhaseKind::Beginning),
+                Just(PhaseKind::Combat),
+                Just(PhaseKind::Main)
+            ],
+            1..4
+        )
+        .prop_map(|phases| Effect::AddPhase { phases }),
+        (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(
+            |(who, token, count, tapped, attacking)| Effect::CreateToken {
+                who,
+                token,
+                count,
+                tapped,
+                attacking,
+                bind: None
+            }
+        ),
+        (reference(), vec(modification(), 1..3), duration()).prop_map(
+            |(affected, mods, duration)| Effect::Continuous {
+                affected,
+                mods,
+                duration
+            }
+        ),
+        (game_rule(), duration()).prop_map(|(rule, duration)| Effect::Rule { rule, duration }),
+        reference().prop_map(|what| Effect::Regenerate { what }),
+        (
+            proptest::option::of(reference()),
+            selector(),
+            proptest::option::of(any::<bool>()),
+            proptest::option::of(1u32..6),
+            duration()
+        )
+            .prop_map(|(to, source, combat, most, duration)| Effect::Shield {
+                when: ReplaceWhen::Damage { to, source, combat },
+                by: most.map_or(ReplaceBy::Prevent, ReplaceBy::PreventUpTo),
+                duration
+            }),
+    ];
     prop_oneof![part1, part2]
 }
 

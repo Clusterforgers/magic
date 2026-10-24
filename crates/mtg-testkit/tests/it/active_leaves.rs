@@ -57,7 +57,7 @@ impl Remainder {
     /// The turn that began after it: its number and active player.
     fn next_turn(&self) -> Option<(u32, PlayerId)> {
         self.events.iter().find_map(|e| match e {
-            Event::TurnBegan { number, active } => Some((*number, *active)),
+            Event::TurnBegan { number, active, .. } => Some((*number, *active)),
             _ => None,
         })
     }
@@ -583,7 +583,8 @@ fn nobody_discards_for_the_active_player_who_left_before_cleanup() -> Result<(),
     assert!(
         events.contains(&Event::TurnBegan {
             number: 3,
-            active: pid(1)
+            active: pid(1),
+            extra: false
         }),
         "the turn ends with the cleanup, which has nobody to ask"
     );

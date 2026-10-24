@@ -21,7 +21,7 @@ use crate::priority::PriorityState;
 use crate::resolve::Resolving;
 use crate::rules::{RuleEffect, RulesCache};
 use crate::triggers::{Delayed, PendingTrigger};
-use crate::turn::TurnState;
+use crate::turn::{ExtraTurn, TurnState};
 use crate::zones::{Zone, Zones};
 
 /// How the game ended.
@@ -185,6 +185,8 @@ pub struct GameState {
     pub(crate) ceased: BTreeMap<ObjectId, GameObject>,
     pub(crate) zones: Zones,
     pub(crate) turn: TurnState,
+    /// The extra turns still to take, the latest added last: it is taken first (CR 500.7).
+    pub(crate) extra_turns: Vec<ExtraTurn>,
     pub(crate) priority: Option<PriorityState>,
     pub(crate) combat: CombatState,
     pub(crate) effects: Vec<ContinuousEffect>,
@@ -358,6 +360,11 @@ impl GameState {
     /// Turn structure position.
     pub const fn turn(&self) -> &TurnState {
         &self.turn
+    }
+
+    /// The extra turns still to take, the latest added last: it is taken first (CR 500.7).
+    pub fn extra_turns(&self) -> &[ExtraTurn] {
+        &self.extra_turns
     }
 
     /// Current priority state, if a priority round is under way.
@@ -589,8 +596,9 @@ impl GameState {
 
     /// Whether the turn now being played is the last of its round: the next turn is the first of another.
     pub(crate) fn ends_round(&self) -> bool {
-        let active = self.turn.active;
-        self.opens_round(active, self.next_alive_after(active).unwrap_or(active))
+        let regular = self.turn.regular;
+        self.extra_turns.is_empty()
+            && self.opens_round(regular, self.next_alive_after(regular).unwrap_or(regular))
     }
 
     /// The next living player after `player` in turn order (possibly `player` itself).
@@ -621,6 +629,10 @@ impl Hash for GameState {
         self.ceased.hash(state);
         self.zones.hash(state);
         self.turn.hash(state);
+        // A game that added no extra turn hashes as it did before they existed.
+        if !self.extra_turns.is_empty() {
+            self.extra_turns.hash(state);
+        }
         self.priority.hash(state);
         self.combat.hash(state);
         self.effects.hash(state);
@@ -745,12 +757,31 @@ mod tests {
                 .unwrap();
         game.first_player = PlayerId::from_index(first);
         game.turn.active = PlayerId::from_index(active);
+        game.turn.regular = game.turn.active;
         for seat in left {
             let lost = Event::PlayerLost {
                 player: PlayerId::from_index(*seat),
                 reason: LossReason::Conceded,
             };
             apply_event(&mut game, &lost).unwrap();
+        }
+        assert_eq!(game.ends_round(), ends);
+    }
+
+    #[rstest]
+    #[case::no_extra_turn_waiting(false, true)]
+    #[case::an_extra_turn_waiting(true, false)]
+    fn a_waiting_extra_turn_keeps_the_round_open(#[case] waiting: bool, #[case] ends: bool) {
+        let mut game =
+            GameState::from_setup(&setup(vec![Vec::new(); 3], vec![Vec::new(); 3])).unwrap();
+        game.turn.active = PlayerId::from_index(2);
+        game.turn.regular = PlayerId::from_index(2);
+        if waiting {
+            let added = Event::ExtraTurnAdded {
+                player: PlayerId::from_index(0),
+                skip_untap: false,
+            };
+            apply_event(&mut game, &added).unwrap();
         }
         assert_eq!(game.ends_round(), ends);
     }

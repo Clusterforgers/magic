@@ -27,6 +27,17 @@ pub(crate) const fn yes() -> bool {
     true
 }
 
+/// A phase an effect adds to the turn (CR 500.8).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PhaseKind {
+    /// A beginning phase: untap, upkeep and draw.
+    Beginning,
+    /// A combat phase.
+    Combat,
+    /// A main phase, which is a postcombat main phase (CR 505.1a).
+    Main,
+}
+
 /// Where in a library cards go.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Place {
@@ -734,11 +745,23 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
-    /// The player takes an extra turn after this one.
+    /// The player takes extra turns after this one (CR 500.7): the latest added is taken first.
     ExtraTurn {
-        /// Who takes it.
+        /// Who takes them.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The untap step of each is skipped ("Skip the untap step of that turn").
+        #[serde(default, skip_serializing_if = "is_false")]
+        skip_untap: bool,
+    },
+    /// Phases are added after the current phase (CR 500.8), in this order and before any phase added earlier:
+    /// "After this main phase, there is an additional combat phase followed by an additional main phase."
+    AddPhase {
+        /// The phases added.
+        phases: Vec<PhaseKind>,
     },
     /// The player wins the game.
     WinGame {

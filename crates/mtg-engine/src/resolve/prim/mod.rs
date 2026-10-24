@@ -7,6 +7,7 @@
 
 mod adapt;
 mod add_mana;
+mod add_phase;
 mod amass;
 mod attach;
 mod become_copy;
@@ -158,6 +159,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::CastFromZone { .. } => cast_from_zone::run(cx, effect),
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
+        Effect::AddPhase { .. } => add_phase::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CopySpell { .. } => copy_spell::run(cx, effect),
         Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
@@ -201,7 +203,7 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"WinGame":{}},
+        {"Untap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"WinGame":{}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
@@ -231,7 +233,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 76, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 77, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -298,6 +300,7 @@ mod tests {
         "Effect.Transform",
         "Effect.Flip",
         "Effect.WinGame",
+        "Effect.AddPhase",
         "Effect.Surveil",
         "Effect.Proliferate",
         "Effect.Goad",
@@ -322,6 +325,7 @@ mod tests {
         "Effect.Manifest",
         "Effect.Cloak",
         "Effect.CastFromZone",
+        "Effect.ExtraTurn",
         "Effect.CopySpell",
         "Effect.CopyAbility",
         "Effect.CopyCard",

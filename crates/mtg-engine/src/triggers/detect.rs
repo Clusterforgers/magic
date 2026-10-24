@@ -2147,6 +2147,7 @@ mod tests {
         let turn = Event::TurnBegan {
             number: 2,
             active: FOE,
+            extra: false,
         };
         let lost = Event::PlayerLost {
             player: FOE,
@@ -2171,6 +2172,7 @@ mod tests {
         let turn = Event::TurnBegan {
             number: 2,
             active: FOE,
+            extra: false,
         };
         apply_event(&mut pre, &turn).unwrap();
         let (post, found) = fire(&pre, &[Event::StepBegan { step: Step::Upkeep }]);
@@ -2327,6 +2329,7 @@ mod tests {
             &[Event::TurnBegan {
                 number: 2,
                 active: FOE,
+                extra: false,
             }],
         );
         assert!(
@@ -2428,6 +2431,7 @@ mod tests {
             &[Event::TurnBegan {
                 number: 2,
                 active: FOE,
+                extra: false,
             }],
         );
         assert!(

@@ -100,7 +100,28 @@ number: number,
 /**
  * The active player.
  */
-active: PlayerId, } } | { "StepBegan": { 
+active: PlayerId, 
+/**
+ * Whether it is an extra turn: the latest extra turn added is taken, and the turn order goes on from the seat
+ * it was added after (CR 500.7).
+ */
+extra?: boolean, } } | { "ExtraTurnAdded": { 
+/**
+ * Who takes it.
+ */
+player: PlayerId, 
+/**
+ * Whether its untap step is skipped.
+ */
+skip_untap?: boolean, } } | { "ExtraTurnSkipped": { 
+/**
+ * Whose turn.
+ */
+player: PlayerId, } } | { "PhasesAdded": { 
+/**
+ * The first step of each added phase.
+ */
+steps: Array<Step>, } } | { "StepBegan": { 
 /**
  * The step.
  */

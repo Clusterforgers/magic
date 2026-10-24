@@ -1,0 +1,12 @@
+{
+  "oracle_id": "89aa65d9-2502-40b0-90b6-b25a8e9f6155",
+  "name": "Capture of Jingzhou",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Capture of Jingzhou",
+      "oracle_fingerprint": "21dae84ac6f563e23866327868602238",
+      "abilities": [{ "Spell": { "effects": [{ "ExtraTurn": {} }] } }]
+    }
+  ]
+}

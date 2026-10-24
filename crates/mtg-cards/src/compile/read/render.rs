@@ -2261,11 +2261,7 @@ impl Writer<'_> {
                     "becomes"
                 }
             ),
-            _ => {
-                return prevention::effect_text(effect)
-                    .or_else(|| lands::effect_text(effect))
-                    .or_else(|| super::attack_tax::effect_text(effect));
-            }
+            _ => return self.module_effect(effect),
         })
     }
 
@@ -2371,6 +2367,18 @@ impl Writer<'_> {
             )),
             _ => create::text(effect, self.per).or_else(|| self.copy_token(effect, false)),
         }
+    }
+
+    /// The effects of the modules that write their own words; a player who acts is named first.
+    fn module_effect(&mut self, effect: &Effect) -> Option<String> {
+        if let Effect::ExtraTurn { who, .. } = effect {
+            let subject = self.player(who)?;
+            return super::turns::effect_text(effect, Some(&subject));
+        }
+        prevention::effect_text(effect)
+            .or_else(|| lands::effect_text(effect))
+            .or_else(|| super::attack_tax::effect_text(effect))
+            .or_else(|| super::turns::effect_text(effect, None))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

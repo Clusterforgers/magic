@@ -1,0 +1,19 @@
+{
+  "oracle_id": "3da5977a-36d4-4f32-ab9b-8b93809d818d",
+  "name": "Time Sieve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Sieve",
+      "oracle_fingerprint": "5ef528e8ac901f424e7d6f76e6b408c5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }], "count": 5 } }],
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

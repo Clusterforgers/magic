@@ -251,7 +251,15 @@ mod tests {
 
     fn next_turn(state: &mut GameState, active: PlayerId) {
         let number = state.turn().number() + 1;
-        apply_event(state, &Event::TurnBegan { number, active }).unwrap();
+        apply_event(
+            state,
+            &Event::TurnBegan {
+                number,
+                active,
+                extra: false,
+            },
+        )
+        .unwrap();
     }
 
     #[rstest]

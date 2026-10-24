@@ -1146,6 +1146,7 @@ fn a_loyalty_ability_is_activated_once_for_each_planeswalker_each_turn() {
         &[Event::TurnBegan {
             number: 2,
             active: PlayerId(1),
+            extra: false,
         }],
     );
     assert!(!game.loyalty_spent(walker), "a new turn allows one more");
@@ -1156,6 +1157,7 @@ fn a_loyalty_ability_is_activated_once_for_each_planeswalker_each_turn() {
             Event::TurnBegan {
                 number: 3,
                 active: PlayerId(0),
+                extra: false,
             },
             activate(1),
         ],
@@ -1237,6 +1239,7 @@ fn a_turn_begins_by_recording_whether_each_permanent_of_its_player_came_under_th
         &[Event::TurnBegan {
             number: 2,
             active: PlayerId::from_index(active),
+            extra: false,
         }],
     );
     let permanent = game.object(holder).unwrap().permanent().unwrap();

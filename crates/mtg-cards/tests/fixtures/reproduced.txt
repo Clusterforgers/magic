@@ -15,6 +15,7 @@ Aeromunculus
 Aether Gale
 Aether Hub
 Agate Instigator
+Aggravated Assault
 Ainok Bond-Kin
 Ainok Survivalist
 Air Bladder
@@ -176,6 +177,7 @@ Caldera Hellion
 Caller of the Pack
 Caprichrome
 Capsize
+Capture of Jingzhou
 Caravan Escort
 Carnage Tyrant
 Carrion Grub
@@ -701,6 +703,7 @@ Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
 Machine God's Effigy
+Magistrate's Scepter
 Magmatic Insight
 Make Disappear
 Makeshift Mauler
@@ -985,6 +988,7 @@ Sarah Jane Smith
 Satyr Wayfinder
 Sauroform Hybrid
 Savage Ventmaw
+Savor the Moment
 Saw It Coming
 Sawtusk Demolisher
 Scatter to the Winds
@@ -1003,6 +1007,7 @@ Second Harvest
 Seedglaive Mentor
 Seeds of Renewal
 Seekers' Squire
+Seize the Day
 Seraph of the Sword
 Serpent-Blade Assailant
 Serra Angel
@@ -1161,6 +1166,7 @@ Teacher's Pest
 Team Pennant
 Tectonic Reformation
 Tempestra, Dame of Games
+Temporal Manipulation
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -1207,6 +1213,10 @@ Thunderherd Migration
 Thunderous Wrath
 Tiamat's Fanatics
 Tilonalli's Skinshifter
+Time Sieve
+Time Stretch
+Time Walk
+Time Warp
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker

@@ -116,6 +116,29 @@ pub enum Event {
         number: u32,
         /// The active player.
         active: PlayerId,
+        /// Whether it is an extra turn: the latest extra turn added is taken, and the turn order goes on from the seat
+        /// it was added after (CR 500.7).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        extra: bool,
+    },
+    /// A player gets an extra turn after the current one (CR 500.7); the latest added is taken first.
+    ExtraTurnAdded {
+        /// Who takes it.
+        player: PlayerId,
+        /// Whether its untap step is skipped.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        skip_untap: bool,
+    },
+    /// The latest extra turn added is not taken, because its player has left the game or a rule skips it.
+    ExtraTurnSkipped {
+        /// Whose turn.
+        player: PlayerId,
+    },
+    /// Phases were added after the current one (CR 500.8): each is the step it begins with, in the order they begin,
+    /// before any phase added earlier.
+    PhasesAdded {
+        /// The first step of each added phase.
+        steps: Vec<Step>,
     },
     /// A step began.
     StepBegan {
@@ -865,6 +888,9 @@ impl Event {
             | Event::MulliganKept { .. }
             | Event::MulliganPhaseEnded
             | Event::TurnBegan { .. }
+            | Event::ExtraTurnAdded { .. }
+            | Event::ExtraTurnSkipped { .. }
+            | Event::PhasesAdded { .. }
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
             | Event::DayNightChanged { .. }

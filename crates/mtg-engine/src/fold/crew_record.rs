@@ -199,6 +199,7 @@ fn the_next_turn_clears_the_record_and_the_hash_follows(#[values(2, 3, 4)] seats
     let turn = Event::TurnBegan {
         number: 2,
         active: PlayerId(1),
+        extra: false,
     };
     let next = fold(&crew, std::slice::from_ref(&turn));
     assert!(!selected(&next, Pred::Crewed(Ref::This), "Skiff", "Ann"));

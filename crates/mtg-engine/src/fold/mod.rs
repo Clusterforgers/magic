@@ -26,7 +26,7 @@ use crate::priority::PriorityState;
 use crate::sight;
 use crate::state::{GameResult, GameState, Stage, Tally};
 use crate::triggers::{has_state_trigger, triggers_something};
-use crate::turn::Step;
+use crate::turn::{ExtraTurn, Step};
 use crate::zones::Zone;
 
 pub(crate) fn invalid(message: impl Into<String>) -> EngineError {
@@ -212,31 +212,95 @@ fn settle_permanents(state: &mut GameState, active: PlayerId) {
     }
 }
 
-/// A turn begins: its number and active player, the first step, and a fresh combat.
-fn begin_turn(state: &mut GameState, number: u32, active: PlayerId) {
-    let (before, previous) = (state.turn.number, state.turn.active);
+/// A turn begins: its number and active player, the first step, and a fresh combat. An extra turn takes the latest
+/// one added (CR 500.7) and keeps the seat of the regular turn it came after; it opens no round.
+fn begin_turn(
+    state: &mut GameState,
+    number: u32,
+    active: PlayerId,
+    extra: bool,
+) -> Result<(), EngineError> {
+    let (before, previous) = (state.turn.number, state.turn.regular);
+    if extra {
+        if state.extra_turns.pop().map(|turn| turn.player) != Some(active) {
+            return Err(invalid(format!("{active:?} has no extra turn to take")));
+        }
+    } else {
+        state.turn.regular = active;
+    }
     state.turn.number = number;
     state.turn.active = active;
+    state.turn.extra = extra;
     state.turn.step = Step::Untap;
     state.turn.lands_played = 0;
-    if before == 0 || state.opens_round(previous, active) {
+    state.turn.combats = 0;
+    state.turn.ahead.clear();
+    if !extra && (before == 0 || state.opens_round(previous, active)) {
         state.turn.round += 1;
     }
     state.clear_turn_uses();
     state.priority = None;
     state.combat = crate::combat::CombatState::default();
     settle_permanents(state, active);
+    Ok(())
 }
 
-fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+/// Phases are added after the current one (CR 500.8): they begin before any added earlier, and the phase of the
+/// regular sequence that follows the current one comes after all of them.
+fn add_phases(state: &mut GameState, steps: &[Step]) -> Result<(), EngineError> {
+    let turn = &mut state.turn;
+    if turn.ahead.is_empty() {
+        let held = turn.step.phase().next_start();
+        turn.ahead
+            .push(held.ok_or_else(|| invalid("no phase follows the ending phase"))?);
+    }
+    turn.ahead.splice(0..0, steps.iter().copied());
+    Ok(())
+}
+
+/// The events of the turn sequence: turns begin, extra turns and phases are added, steps begin.
+fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
-        Event::TurnBegan { number, active } => begin_turn(state, *number, *active),
+        Event::TurnBegan {
+            number,
+            active,
+            extra,
+        } => begin_turn(state, *number, *active, *extra)?,
+        Event::ExtraTurnAdded { player, skip_untap } => state.extra_turns.push(ExtraTurn {
+            player: *player,
+            skip_untap: *skip_untap,
+        }),
+        Event::ExtraTurnSkipped { player } => {
+            if state.extra_turns.pop().map(|turn| turn.player) != Some(*player) {
+                return Err(invalid(format!("{player:?} has no extra turn to skip")));
+            }
+        }
+        Event::PhasesAdded { steps } => add_phases(state, steps)?,
         Event::StepBegan { step } => {
+            // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
+            if state.turn.ahead.first() == Some(step) {
+                state.turn.ahead.remove(0);
+            }
+            if *step == Step::BeginCombat {
+                state.turn.combats += 1;
+            }
             state.turn.step = *step;
             state.priority = None;
             // Each combat damage step divides its damage afresh: a double striker divides twice.
             state.combat.clear_assignments();
         }
+        _ => {}
+    }
+    Ok(())
+}
+
+fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    match event {
+        Event::TurnBegan { .. }
+        | Event::ExtraTurnAdded { .. }
+        | Event::ExtraTurnSkipped { .. }
+        | Event::PhasesAdded { .. }
+        | Event::StepBegan { .. } => apply_turn(state, event)?,
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
         | Event::ManaBurned { .. }
