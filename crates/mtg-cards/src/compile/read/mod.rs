@@ -54,6 +54,7 @@ mod flicker;
 mod group_copies;
 mod group_pump;
 mod instead_pairs;
+mod joined;
 mod kicked_copies;
 mod lands;
 mod levels;
@@ -90,6 +91,7 @@ mod token_binds;
 mod tokens;
 mod transform;
 mod triggers;
+mod untap_rules;
 mod where_x;
 mod zone_moves;
 

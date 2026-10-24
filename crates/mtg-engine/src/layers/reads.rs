@@ -59,6 +59,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::GrantAbility(_)
         | Modification::CantAttack
         | Modification::CantBlock
+        | Modification::DoesntUntap
         | Modification::CantBeBlocked
         | Modification::CantBeBlockedBy { .. }
         | Modification::CanBlockOnly { .. }
@@ -90,6 +91,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::RemoveSupertype(_)
         | Wanted::CantAttack
         | Wanted::CantBlock
+        | Wanted::DoesntUntap
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)
@@ -125,6 +127,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilities
         | Wanted::CantAttack
         | Wanted::CantBlock
+        | Wanted::DoesntUntap
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)

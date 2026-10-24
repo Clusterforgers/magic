@@ -1031,6 +1031,7 @@ impl<'a> Walker<'a> {
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantBlock
+            | Modification::DoesntUntap
             | Modification::CantBeBlocked
             | Modification::Goaded => {}
         }

@@ -391,6 +391,7 @@ mod umbra_armor;
 mod umbra_fuzz;
 mod undaunted;
 mod unearth;
+mod untap_rules;
 mod upkeep_keywords;
 mod upkeep_keywords_fuzz;
 mod vehicle_shapes;

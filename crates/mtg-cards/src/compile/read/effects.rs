@@ -127,7 +127,7 @@ pub(super) const IMPERATIVES: [Template; 16] = [
 
 /// Every sentence shape, in the order they are tried: the shapes of `conditional` first, which read a sentence
 /// that another shape would read in part.
-fn templates() -> impl Iterator<Item = Template> {
+pub(super) fn templates() -> impl Iterator<Item = Template> {
     conditional::TEMPLATES
         .into_iter()
         .chain(TEMPLATES)
@@ -153,7 +153,17 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     // A where clause at the end of the sentence gives the X inside it its amount.
     let named = where_x::ahead(r);
     let outer = std::mem::replace(&mut r.where_x, named);
-    let read = sentence_shapes(r, effects);
+    // A sentence may open with "Then" (", then you gain 2 life"); the writer says it for the sentences of a sequence.
+    let read = r
+        .attempt(|r| {
+            if r.lookahead(|r| r.word("then").then(|| r.word("you")))
+                .unwrap_or(false)
+            {
+                r.word("then");
+            }
+            sentence_shapes(r, effects).then_some(())
+        })
+        .is_some();
     r.where_x = outer;
     read
 }
@@ -194,7 +204,8 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
             return true;
         }
     }
-    false
+    r.attempt(|r| super::joined::and_you(r, effects)).is_some()
+        || r.attempt(|r| super::joined::then_you(r, effects)).is_some()
 }
 
 /// "Counter target spell unless its controller pays {2}.", "You may draw a card unless that player

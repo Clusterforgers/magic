@@ -90,6 +90,7 @@ Banishing Stroke
 Banshee of the Dread Choir
 Barbed Batterfist
 Bard's Bow
+Basalt Monolith
 Basilica Screecher
 Basilisk Gate
 Basking Rootwalla
@@ -390,6 +391,7 @@ Eyetwitch
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
+Fall from Favor
 Fallen Ideal
 Familiar Ground
 Famine
@@ -478,6 +480,7 @@ Gluttonous Troll
 Gnarled Professor
 Gnarlwood Dryad
 Goblin Chieftain
+Goblin Sharpshooter
 Goblin Spy
 Goblin War Buggy
 Goblin-town Flunkies
@@ -1269,6 +1272,7 @@ Wedgelight Rammer
 Wei Scout
 Weigh Down
 Weirding Wood
+Well Rested
 Whir of Invention
 Whisperer of the Wilds
 Whispering Madness

@@ -187,7 +187,9 @@ fn a_compound_has_more_than_one_wording_and_a_second_target_cannot_be_named_twic
         [
             "Draw a card. You gain 2 life.",
             "You draw a card and gain 2 life.",
-            "You draw a card and you gain 2 life."
+            "You draw a card and you gain 2 life.",
+            "Draw a card and you gain 2 life.",
+            "Draw a card. Then you gain 2 life."
         ]
     );
     let targeted = ability(

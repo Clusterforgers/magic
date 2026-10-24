@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6b8cf2a0-b045-4d91-9d91-c602d40c6237",
+  "name": "Basalt Monolith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basalt Monolith",
+      "oracle_fingerprint": "d2d1c9d4b58f670c5a03ff6632d7bd37",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless", "Colorless"] } } }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}", "effects": [{ "Untap": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

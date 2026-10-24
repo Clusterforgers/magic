@@ -305,6 +305,7 @@ mod triggers;
 mod turn_events;
 mod turned_face_up;
 mod twin_writers;
+mod untap_rules;
 mod vocabulary;
 mod where_x;
 mod written_effects;

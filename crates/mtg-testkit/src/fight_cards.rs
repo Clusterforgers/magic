@@ -41,6 +41,10 @@ pub const CORPUS_CARDS: &[(&str, usize)] = &[
     ("Smell Fear", 1),
     ("Apex Altisaur", 1),
     ("Gruul Ragebeast", 1),
+    ("Fall from Favor", 2),
+    ("Well Rested", 2),
+    ("Basalt Monolith", 1),
+    ("Goblin Sharpshooter", 1),
 ];
 
 /// The spells whose resolution is a fight.
