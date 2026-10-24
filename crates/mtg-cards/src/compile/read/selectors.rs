@@ -1622,6 +1622,19 @@ pub fn second_target(r: &mut Reader<'_>) -> Option<Ref> {
     Some(Ref::Target(1))
 }
 
+/// One target of several kinds of objects: "target artifact, enchantment, or creature with power 4 or greater".
+fn either_objects(kinds: &[Targetable]) -> Option<String> {
+    let phrases: Vec<String> = kinds
+        .iter()
+        .map(|kind| match kind {
+            Targetable::Object(selector) => phrase_text(selector, Form::Target),
+            _ => None,
+        })
+        .collect::<Option<_>>()?;
+    let phrases: Vec<&str> = phrases.iter().map(String::as_str).collect();
+    Some(format!("target {}", join_or(&phrases)))
+}
+
 /// A target as the card words it.
 pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     if spec.divide.is_some() {
@@ -1659,6 +1672,8 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 {
                     "target opponent or planeswalker".to_owned()
                 }
+                // Objects of different kinds: "target artifact, enchantment, or creature with power 4 or greater".
+                [_, _, ..] => either_objects(kinds)?,
                 _ => return None,
             },
             Targetable::Object(selector) => {
@@ -1708,6 +1723,10 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
         Some(Amount::Fixed(count)) => Some(format!(
             "up to {} target {}",
             count_word(u32::try_from(*count).ok()?)?,
+            phrase_text(selector, Form::Targets)?
+        )),
+        Some(Amount::X) => Some(format!(
+            "up to X target {}",
             phrase_text(selector, Form::Targets)?
         )),
         Some(_) => None,

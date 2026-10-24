@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":3}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"shield"}}}]}}]}]}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "7fa5237e-dd79-4646-b935-cb8c6ee803ab",
+  "name": "Mister Fantastic, Reed Richards",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mister Fantastic, Reed Richards",
+      "oracle_fingerprint": "7ab13b3f16c31acd7c0be0bc1a26807e",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

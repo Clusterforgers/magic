@@ -203,6 +203,19 @@ pub fn effect_text(effect: &Effect) -> Option<String> {
                 damage_text(*combat)
             ))
         }
+        Effect::Shield {
+            when:
+                ReplaceWhen::Damage {
+                    to: Some(Ref::You),
+                    source,
+                    combat,
+                },
+            by: ReplaceBy::Prevent,
+            duration: Duration::UntilEndOfTurn,
+        } if source.0.is_empty() => Some(format!(
+            "prevent all {} that would be dealt to you this turn",
+            damage_text(*combat)
+        )),
         _ => None,
     }
 }

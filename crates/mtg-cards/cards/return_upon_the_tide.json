@@ -1,0 +1,52 @@
+{
+  "oracle_id": "b0bd6135-4257-4f71-bdfe-71fb3f7a36a5",
+  "name": "Return Upon the Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Return Upon the Tide",
+      "oracle_fingerprint": "975ca0e51e92397eedd6c539660b0395",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Subtype": "Elf" }] }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elf Warrior",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elf", "Warrior"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{3}{B}" } }
+      ]
+    }
+  ]
+}

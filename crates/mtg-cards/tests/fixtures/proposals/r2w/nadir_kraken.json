@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Drew":{"who":"You"}},"effects":[{"Pay":{"cost":"{1}","paid":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"CreateToken":{"token":{"Custom":{"name":"Tentacle","colors":["Blue"],"types":["Creature"],"subtypes":["Tentacle"],"power":1,"toughness":1}}}}]}}]}}]}]}

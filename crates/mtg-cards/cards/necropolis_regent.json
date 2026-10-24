@@ -1,0 +1,28 @@
+{
+  "oracle_id": "33c3a6be-8cae-4de8-9d9b-43216d727e93",
+  "name": "Necropolis Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necropolis Regent",
+      "oracle_fingerprint": "28dd62b5bcaa61934860eb25ea48e20c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

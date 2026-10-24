@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1380f0cc-e875-46ec-a802-c6684bf3965c",
+  "name": "Protection Magic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protection Magic",
+      "oracle_fingerprint": "55f4635b617ae9106baaafbb2d04dc27",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -251,6 +251,10 @@ fn counts(value: &Value, found: &mut Vec<Value>) {
 
 /// How a card names a characteristic of an object in a where clause.
 fn tails(of: &Ref, stat: StatKind) -> Vec<String> {
+    // The colors of the spell that was cast are counted, not named.
+    if stat == StatKind::Colors && *of == Ref::Triggering {
+        return vec!["the number of colors that spell is".to_owned()];
+    }
     let Some(name) = stat_name(stat) else {
         return Vec::new();
     };
@@ -356,8 +360,22 @@ fn equal_to_forms(text: &str, said: &str) -> Vec<String> {
     })
 }
 
+/// Whether a condition of the data compares the amount: its X would not be the announced X of a spell.
+fn compared(value: &Value, amount: &Value) -> bool {
+    match value {
+        Value::Object(map) => {
+            map.get("Compare").is_some_and(|cmp| {
+                cmp.get("left") == Some(amount) || cmp.get("right") == Some(amount)
+            }) || map.values().any(|child| compared(child, amount))
+        }
+        Value::Array(items) => items.iter().any(|child| compared(child, amount)),
+        _ => false,
+    }
+}
+
 /// The ability with the amount in the data written as X.
 fn with_x(mut json: Value, amount: &Value) -> Option<Ability> {
+    (!compared(&json, amount)).then_some(())?;
     replace(&mut json, amount, &x()).then_some(())?;
     serde_json::from_value(json).ok()
 }

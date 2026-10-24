@@ -1,0 +1,38 @@
+{
+  "oracle_id": "20582c7b-edd3-4189-98ec-8fabd39034b0",
+  "name": "Mandate of Abaddon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mandate of Abaddon",
+      "oracle_fingerprint": "0e144e8950a7e762c3f3378c0e6b8c48",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

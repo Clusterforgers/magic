@@ -1,0 +1,32 @@
+{
+  "oracle_id": "26d28b68-e03b-4367-ae4b-5e54f42f8a88",
+  "name": "Mana Cannons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Cannons",
+      "oracle_fingerprint": "16d3067b0f3ae90455e40c1faee30dd7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
