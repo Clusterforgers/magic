@@ -6,6 +6,7 @@
 //! printed text, and it then has a support state like any other rules.
 
 mod blame;
+mod blocks;
 mod complete;
 mod pairing;
 mod render;
@@ -173,7 +174,7 @@ pub fn check(
         }
     };
     let clauses = compile(printed).clauses;
-    let paired = pairing::pair_card(&proposed, &clauses);
+    let paired = pairing::pair_card(&proposed, &clauses, printed);
     let card = complete::finish(proposed, &paired, printed);
     report.problems = hand_written.check_generated(&card, printed, names);
     if report.problems.is_empty() {

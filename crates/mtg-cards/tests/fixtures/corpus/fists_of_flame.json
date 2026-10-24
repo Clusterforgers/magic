@@ -1,0 +1,23 @@
+{
+  "id": "c06d88b3-d882-4c98-8f70-fed67b772386",
+  "oracle_id": "e05abb6b-e9f4-4d9e-ad1e-7805ebc09914",
+  "name": "Fists of Flame",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tle",
+  "collector_number": "166",
+  "rarity": "common",
+  "released_at": "2025-11-21",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw a card. Until end of turn, target creature gains trample and gets +1/+0 for each card you've drawn this turn. (A creature with trample can deal excess combat damage to the player or planeswalker it's attacking.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

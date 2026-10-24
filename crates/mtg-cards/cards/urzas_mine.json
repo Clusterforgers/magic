@@ -1,0 +1,55 @@
+{
+  "oracle_id": "33e85a8a-86df-4cdc-a9cc-8cbabe92c3c0",
+  "name": "Urza's Mine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Mine",
+      "oracle_fingerprint": "8cc1682abcbd4190cef5b6444ab8c240",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Instead": {
+                      "base": { "Fixed": ["Colorless"] },
+                      "when": {
+                        "All": [
+                          {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Subtype": "Urza's Power-Plant" },
+                                  { "ControlledBy": "You" }
+                                ]
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          {
+                            "Compare": {
+                              "left": {
+                                "Count": [{ "Subtype": "Urza's Tower" }, { "ControlledBy": "You" }]
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          }
+                        ]
+                      },
+                      "instead": { "Fixed": ["Colorless", "Colorless"] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

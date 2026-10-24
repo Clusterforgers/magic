@@ -1,0 +1,51 @@
+{
+  "oracle_id": "12401ad1-b5c9-43dc-9389-04aaf5db8b26",
+  "name": "Tempestra, Dame of Games",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempestra, Dame of Games",
+      "oracle_fingerprint": "a5078dd07e496761da4445edeb2074c1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{R}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }
+            ],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "RemoveSupertype": "Legendary" }]
+                    }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "beaf7a85-426a-4a33-80c8-33ad01614ad3",
+  "name": "Sylvan Advocate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Advocate",
+      "oracle_fingerprint": "11ab56335bb2703ee76ded4f6a0a7601",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": ["This", { "Type": "Land" }] },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 6
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

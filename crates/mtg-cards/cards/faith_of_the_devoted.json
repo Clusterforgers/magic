@@ -1,0 +1,29 @@
+{
+  "oracle_id": "99af5247-06cf-40b2-9a7c-65ad59b1ddf6",
+  "name": "Faith of the Devoted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faith of the Devoted",
+      "oracle_fingerprint": "7605d7d935056cdb80e4fe77e1b8130e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AnyOf": [{ "Cycled": { "by": "You" } }, { "Discarded": { "by": "You" } }] },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                    { "GainLife": { "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

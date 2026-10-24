@@ -220,6 +220,15 @@ fn outlaw() -> Pred {
     )
 }
 
+/// Held by the player the first target is, or by the controller of the permanent it is: "that player or that
+/// planeswalker's controller".
+fn target_or_its_controller() -> Vec<Pred> {
+    vec![
+        Pred::ControlledBy(Ref::Target(0)),
+        Pred::ControlledBy(Ref::ControllerOf(Box::new(Ref::Target(0)))),
+    ]
+}
+
 fn not(pred: Pred) -> Pred {
     Pred::Not(Box::new(pred))
 }
@@ -567,6 +576,17 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
             return Some(pred);
         }
         let stat = stat_word(r)?;
+        // The damage that triggered the ability: "mana value less than or equal to that damage".
+        if stat == StatKind::ManaValue
+            && r.triggered
+            && r.words("less than or equal to that damage")
+        {
+            return Some(Pred::Compare {
+                stat,
+                op: Cmp::Le,
+                to: Amount::Triggering,
+            });
+        }
         // "mana value X or less": the X of the card's own cost.
         let to = if r.x_free && !r.x_unpaid && r.word("x") {
             Amount::X
@@ -637,6 +657,11 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
         Pred::ControlledBy(Ref::Target(0)) => "target player controls".to_owned(),
+        Pred::ControlledBy(Ref::Target(1)) => "another target player controls".to_owned(),
+        // The player target, or the controller of the planeswalker target.
+        Pred::AnyOf(held) if *held == target_or_its_controller() => {
+            "that player or that planeswalker's controller controls".to_owned()
+        }
         Pred::Not(inner) if **inner == Pred::ControlledBy(Ref::You) => {
             "you don't control".to_owned()
         }
@@ -653,6 +678,11 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),
             _ => return None,
         },
+        Pred::Compare {
+            stat: StatKind::ManaValue,
+            op: Cmp::Le,
+            to: Amount::Triggering,
+        } => "with mana value less than or equal to that damage".to_owned(),
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),
@@ -683,6 +713,12 @@ fn counter_on_it(r: &mut Reader<'_>) -> Option<CounterKind> {
 pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
     r.attempt(|r| {
         let name = r.name()?;
+        if let Some(whole) = r.attempt(|r| {
+            let second = r.name()?;
+            super::subtypes::is_two_word_land(name, second).then(|| format!("{name} {second}"))
+        }) {
+            return Some(whole);
+        }
         r.is_subtype(name).then(|| name.to_owned())
     })
 }
@@ -1386,6 +1422,15 @@ fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> O
         };
         return Some(format!("{preposition} your {place}"));
     }
+    // The hand of the player an event is about is counted as "their hand".
+    if form == Form::Count
+        && *zone == ZoneKind::Hand
+        && rest
+            .next_if(|next| **next == Pred::OwnedBy(Ref::Triggering))
+            .is_some()
+    {
+        return Some("in their hand".to_owned());
+    }
     if *zone != ZoneKind::Graveyard || form == Form::Count {
         return None;
     }
@@ -1543,10 +1588,48 @@ pub fn each(r: &mut Reader<'_>) -> Option<Ref> {
     })
 }
 
+/// "other than the first target": what "another target" says after a first target (CR 115.3), which the engine keeps
+/// apart when the targets are chosen.
+pub fn other_than_first() -> Pred {
+    Pred::Not(Box::new(Pred::Is(Ref::Target(0))))
+}
+
+/// A "target ..." phrase after the first target of the clause: `Target(1)`. "Another" and "other" in it mean other than
+/// the first target, not other than the card.
+pub fn second_target(r: &mut Reader<'_>) -> Option<Ref> {
+    (r.targets.len() == 1).then_some(())?;
+    let mut spec = r.attempt(spec)?;
+    if let Targetable::Object(selector) = &mut spec.what {
+        for pred in &mut selector.0 {
+            if *pred == Pred::Other {
+                *pred = other_than_first();
+            }
+        }
+    }
+    r.targets.push(spec);
+    Some(Ref::Target(1))
+}
+
 /// A target as the card words it.
 pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     if spec.divide.is_some() {
         return None;
+    }
+    // "Another target creature" after a first target: the same word as "other than the card".
+    let mut own;
+    let mut spec = spec;
+    if let Targetable::Object(selector) = &spec.what
+        && selector.0.contains(&other_than_first())
+    {
+        own = spec.clone();
+        if let Targetable::Object(chosen) = &mut own.what {
+            for pred in &mut chosen.0 {
+                if *pred == other_than_first() {
+                    *pred = Pred::Other;
+                }
+            }
+        }
+        spec = &own;
     }
     if spec.bounds.is_one() {
         return Some(match &spec.what {

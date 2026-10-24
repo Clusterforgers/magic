@@ -1,0 +1,32 @@
+{
+  "id": "0f961cec-2f1f-4cd5-bcc3-72e1deb8779e",
+  "oracle_id": "5fca0ce6-e6ba-4319-b3c4-b4d48901e9b4",
+  "name": "Kydele, Chosen of Kruphix",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c16",
+  "collector_number": "35",
+  "rarity": "mythic",
+  "released_at": "2016-11-11",
+  "digital": false,
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "{T}: Add {C} for each card you've drawn this turn.\nPartner (You can have two commanders if both have partner.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Partner"
+  ],
+  "produced_mana": [
+    "C"
+  ]
+}

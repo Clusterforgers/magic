@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Blue"]},"times":{"Counters":{"on":"This"}},"only":[{"Spell":{"without":["Creature"]}}]}}]}},{"Keyword":"Undying"},{"Keyword":"DoctorsCompanion"}]}]}

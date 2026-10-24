@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b06c9a4b-f309-45b3-ae5b-0ce3f067a5cb",
+  "name": "Shelinda, Yevon Acolyte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shelinda, Yevon Acolyte",
+      "oracle_fingerprint": "e0b0686e49fd51f0aae3281bf7760b65",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                      "op": "Lt",
+                      "right": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }],
+                  "otherwise": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

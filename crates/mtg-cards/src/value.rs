@@ -221,6 +221,15 @@ pub enum TurnTally {
     CreaturesDied,
     /// The same without the tokens ("for each nontoken creature put into your graveyard from the battlefield this turn").
     NontokenCreaturesDied,
+    /// The cards the player drew this turn ("for each card you've drawn this turn").
+    Drawn,
+    /// The lands the player played this turn: a land put onto the battlefield by an effect is not played (CR 305.1).
+    LandsPlayed,
+    /// The creatures that died under the control of the players read, tokens included: put into a graveyard from the
+    /// battlefield while they controlled them ("a creature died under your control this turn"). Added up over the players.
+    CreaturesDiedUnder,
+    /// The same without the tokens ("for each nontoken creature that died under your control this turn").
+    NontokenCreaturesDiedUnder,
 }
 
 /// A number, fixed or worked out when the effect runs.
@@ -332,7 +341,7 @@ pub enum Amount {
     StartingLife(Ref),
     /// The amount of the event that triggered the ability ("that much", "that many", "the damage dealt"): the damage
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
-    /// the pattern found.
+    /// the pattern found, and for a batch of damage the damage dealt in all.
     Triggering,
 }
 

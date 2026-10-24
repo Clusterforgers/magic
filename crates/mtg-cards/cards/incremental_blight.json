@@ -1,0 +1,27 @@
+{
+  "oracle_id": "159cd205-6afc-4d8c-a4b9-501911a9c345",
+  "name": "Incremental Blight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incremental Blight",
+      "oracle_fingerprint": "cb06254410a35671aec086fa0c05a933",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": ["Other", { "Type": "Creature" }] } },
+              { "what": { "Object": ["Other", { "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "-1/-1", "count": 2 } },
+              { "PutCounters": { "on": { "Target": 2 }, "counter": "-1/-1", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

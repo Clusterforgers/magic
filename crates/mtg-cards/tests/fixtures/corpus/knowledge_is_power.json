@@ -1,0 +1,25 @@
+{
+  "id": "1afe55c3-53c3-4257-afb6-32a553639f50",
+  "oracle_id": "8806ee05-10d5-4492-b672-2f6bcab94be0",
+  "name": "Knowledge Is Power",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "42",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{3}{W}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control get +X/+X, where X is the number of cards you've drawn this turn.",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

@@ -15,13 +15,13 @@ use super::create::colors_text;
 use super::render;
 use super::selectors::{
     Form, card_type, color, granted_keywords, granted_text, phrase, phrase_in, phrase_text,
-    subtype, type_name,
+    subtype, target, type_name,
 };
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
 use crate::effect::{Effect, TokenRef};
-use crate::modify::Modification;
+use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use crate::value::Amount;
@@ -37,6 +37,10 @@ const CHOSEN: &str = "token";
 pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if let Some(each) = r.attempt(each_copy) {
         return Some(each);
+    }
+    let chosen = r.attempt(chosen_first).is_some();
+    if chosen {
+        r.it = Some(Ref::Target(0));
     }
     r.need("create")?;
     let mut tapped = false;
@@ -55,21 +59,25 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("tokens that are copies of")?;
         (count, true)
     };
-    let of = copied(r)?;
+    // One token for each object the sentence before chose.
+    (!chosen || !(plural || tapped)).then_some(())?;
+    let of = copied(r);
+    let of = of?;
     let except = r
         .attempt(|r| {
             r.punct(',').then_some(())?;
             exceptions(r, if plural { Subject::They } else { Subject::It })
         })
         .unwrap_or_default();
+    // A token for each of several targets is several tokens to the sentences after it.
+    let several = plural || (chosen && r.targets.first().is_some_and(|spec| !spec.bounds.is_one()));
+    let gains = r.attempt(|r| {
+        r.punct('.').then_some(())?;
+        copy_gains(r, several)
+    });
     let delay = r.attempt(|r| {
         r.punct('.').then_some(())?;
-        let verb = ["exile", "sacrifice"]
-            .into_iter()
-            .find(|verb| r.word(verb))?;
-        r.word(if plural { "them" } else { "it" }).then_some(())?;
-        r.need("at the beginning of the next end step")?;
-        Some(verb)
+        copy_delay(r, several)
     });
     let create = Effect::CreateToken {
         who: Ref::You,
@@ -81,35 +89,140 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         count,
         tapped,
         attacking: false,
-        bind: delay.map(|_| COPY.to_owned()),
+        bind: (gains.is_some() || delay.is_some()).then(|| COPY.to_owned()),
     };
     let copy = Ref::Bound(COPY.to_owned());
-    Some(match delay {
-        None => vec![create],
-        Some(verb) => vec![
-            create,
-            Effect::DelayedTrigger {
-                when: TriggerPattern::StepBegins {
-                    step: Step::End,
-                    whose: Ref::EachPlayer,
-                },
-                once: true,
-                effects: vec![if verb == "exile" {
-                    Effect::Exile {
-                        what: copy,
-                        bind: None,
-                        duration: None,
-                    }
-                } else {
-                    Effect::Sacrifice {
-                        who: Ref::You,
-                        filter: Selector(vec![Pred::Is(copy)]),
-                        count: Amount::one(),
-                    }
-                }],
+    let mut effects = vec![create];
+    effects.extend(gains);
+    if let Some((verb, step)) = delay {
+        effects.push(Effect::DelayedTrigger {
+            when: TriggerPattern::StepBegins {
+                step,
+                whose: Ref::EachPlayer,
             },
-        ],
+            once: true,
+            effects: vec![if verb == "exile" {
+                Effect::Exile {
+                    what: copy,
+                    bind: None,
+                    duration: None,
+                }
+            } else {
+                Effect::Sacrifice {
+                    who: Ref::You,
+                    filter: Selector(vec![Pred::Is(copy)]),
+                    count: Amount::one(),
+                }
+            }],
+        });
+    }
+    Some(effects)
+}
+
+/// "Choose target artifact creature you control. For each creature chosen this way,", "Choose up to two target
+/// creatures you don't control. For each of those creatures,": the sentence that chooses the targets and the words
+/// that make a token for each of them.
+fn chosen_first(r: &mut Reader<'_>) -> Option<()> {
+    r.need("choose")?;
+    target(r)?;
+    r.punct('.').then_some(())?;
+    r.need("for each")?;
+    let spec = r.targets.first()?;
+    let Targetable::Object(selector) = &spec.what else {
+        return None;
+    };
+    let noun = chosen_kind(selector)?;
+    if spec.bounds.is_one() {
+        r.need(noun)?;
+        r.need("chosen this way")?;
+    } else if !r.words("of them") {
+        r.need("of those")?;
+        r.need(&format!("{noun}s"))?;
+    }
+    r.punct(',').then_some(())
+}
+
+/// Whether the effect makes one token copy of the clause's target, which a card may word after a sentence that chooses it.
+pub(super) fn is_target_copy(effect: &Effect) -> bool {
+    matches!(
+        effect,
+        Effect::CreateToken {
+            token: TokenRef::CopyOf {
+                of: Ref::Target(0), ..
+            },
+            count,
+            tapped: false,
+            ..
+        } if count.is_one()
+    )
+}
+
+/// The noun the sentence after a choice calls what was chosen: "creature" for an artifact creature, else the one card
+/// type or "permanent".
+pub(super) fn chosen_kind(from: &Selector) -> Option<&'static str> {
+    if from.0.contains(&Pred::Type(CardType::Creature))
+        && !from.0.iter().any(|pred| matches!(pred, Pred::AnyOf(_)))
+    {
+        return Some("creature");
+    }
+    copy_spells::chosen_noun(from)
+}
+
+/// The words that name the copy in the sentences after its creation: one token or several.
+const fn copy_words(plural: bool) -> [&'static str; 3] {
+    if plural {
+        ["they", "those tokens", "the tokens"]
+    } else {
+        ["it", "that token", "the token"]
+    }
+}
+
+/// "It gains haste until end of turn.", "That token gains haste.", "Those tokens gain haste.": the keywords the copy gets
+/// (for good when no end is named, since the sentence after it takes the copy away).
+fn copy_gains(r: &mut Reader<'_>, plural: bool) -> Option<Effect> {
+    copy_words(plural)
+        .into_iter()
+        .find(|subject| r.words(subject))?;
+    r.word(if plural { "gain" } else { "gains" })
+        .then_some(())?;
+    let mut mods: Vec<Modification> = granted_keywords(r)?
+        .into_iter()
+        .map(Modification::AddKeyword)
+        .collect();
+    while let Some(more) = r.attempt(|r| {
+        r.word("and").then_some(())?;
+        granted_keywords(r)
+    }) {
+        mods.extend(more.into_iter().map(Modification::AddKeyword));
+    }
+    let duration = if r.words("until end of turn") {
+        Duration::UntilEndOfTurn
+    } else {
+        Duration::Forever
+    };
+    Some(Effect::Continuous {
+        affected: Ref::Bound(COPY.to_owned()),
+        mods,
+        duration,
     })
+}
+
+/// "Exile it at the beginning of the next end step.", "Sacrifice those tokens at end of combat.": what is done to the
+/// copy and the step it waits for.
+fn copy_delay(r: &mut Reader<'_>, plural: bool) -> Option<(&'static str, Step)> {
+    let verb = ["exile", "sacrifice"]
+        .into_iter()
+        .find(|verb| r.word(verb))?;
+    copy_objects(plural)
+        .into_iter()
+        .find(|object| r.words(object))?;
+    let step = if r.words("at the beginning of the next end step") {
+        Step::End
+    } else {
+        r.need("at end of combat")?;
+        Step::EndCombat
+    };
+    Some((verb, step))
 }
 
 /// "For each token you control, create a token that's a copy of that permanent.": one token for each permanent the
@@ -776,15 +889,110 @@ pub(super) fn token_text(effect: &Effect, of: &str, delayed: bool) -> Option<Str
     Some(format!("create {head} {of}{tail}"))
 }
 
+/// The sentences after the creation of a copy that the effects after it write: what the copy gains ("it gains haste until
+/// end of turn") and what is done to it later, and the number of effects they cover.
+pub(super) fn after_texts(
+    created: &Effect,
+    rest: &[Effect],
+    several: bool,
+) -> Option<(Vec<String>, usize)> {
+    let Effect::CreateToken {
+        count,
+        bind: Some(name),
+        ..
+    } = created
+    else {
+        return None;
+    };
+    (name == COPY).then_some(())?;
+    let plural = *count != Amount::one() || several;
+    let mut texts = Vec::new();
+    let mut used = 0;
+    if let Some(Effect::Continuous {
+        affected,
+        mods,
+        duration,
+    }) = rest.first()
+        && *affected == Ref::Bound(COPY.to_owned())
+    {
+        let end = match duration {
+            Duration::UntilEndOfTurn => " until end of turn",
+            Duration::Forever => "",
+            _ => return None,
+        };
+        let verb = if plural { "gain" } else { "gains" };
+        texts.push(format!(
+            "{} {verb} {}{end}",
+            copy_words(plural)[0],
+            granted_text(mods)?
+        ));
+        used += 1;
+    }
+    if let Some(delayed) = rest.get(used) {
+        texts.push(delay_text(created, delayed, plural)?);
+        used += 1;
+    }
+    (used > 0).then_some((texts, used))
+}
+
+/// The other ways a card names the copy in the sentences after its creation ("that token gains haste", "exile the
+/// tokens"), for each text that names it as "it" or "they".
+pub(super) fn pronoun_wordings(texts: &[String]) -> Vec<String> {
+    let mut found = Vec::new();
+    for text in texts {
+        if !(text.contains(" copy of ") || text.contains(" copies of ")) {
+            continue;
+        }
+        let mut bases = vec![text.clone()];
+        // "For each of those creatures, create ..." is also "For each of them, create ...".
+        if let Some(from) = text
+            .find("For each of those ")
+            .or_else(|| text.find("for each of those "))
+            && let Some(len) = text[from..].find(", create")
+        {
+            let head = &text[..from + "For each of ".len()];
+            bases.push(format!("{head}them{}", &text[from + len..]));
+        }
+        for base in &bases {
+            for plural in [false, true] {
+                let (subjects, objects) = (copy_words(plural), copy_objects(plural));
+                for subject in subjects {
+                    for object in objects {
+                        let swapped = base
+                            .replace(
+                                &format!(". {} ", render::capitalize(subjects[0])),
+                                &format!(". {} ", render::capitalize(subject)),
+                            )
+                            .replace(&format!(" {} at ", objects[0]), &format!(" {object} at "));
+                        if swapped != *text {
+                            found.push(swapped);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    found
+}
+
+/// The words that name the copy as what a sentence acts on: one token or several.
+const fn copy_objects(plural: bool) -> [&'static str; 3] {
+    if plural {
+        ["them", "those tokens", "the tokens"]
+    } else {
+        ["it", "that token", "the token"]
+    }
+}
+
 /// The sentence that acts on the copy at the next end step: "exile it at the beginning of the next end step".
-pub(super) fn delay_text(created: &Effect, delayed: &Effect) -> Option<String> {
-    let Effect::CreateToken { count, .. } = created else {
+pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Option<String> {
+    let Effect::CreateToken { .. } = created else {
         return None;
     };
     let Effect::DelayedTrigger {
         when:
             TriggerPattern::StepBegins {
-                step: Step::End,
+                step,
                 whose: Ref::EachPlayer,
             },
         once: true,
@@ -792,6 +1000,11 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect) -> Option<String> {
     } = delayed
     else {
         return None;
+    };
+    let when = match step {
+        Step::End => "at the beginning of the next end step",
+        Step::EndCombat => "at end of combat",
+        _ => return None,
     };
     let copy = Ref::Bound(COPY.to_owned());
     let verb = match effects.as_slice() {
@@ -811,14 +1024,8 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect) -> Option<String> {
         ] if filter.0 == [Pred::Is(copy)] && count.is_one() => "sacrifice",
         _ => return None,
     };
-    let pronoun = if *count == Amount::one() {
-        "it"
-    } else {
-        "them"
-    };
-    Some(format!(
-        "{verb} {pronoun} at the beginning of the next end step"
-    ))
+    let pronoun = copy_objects(plural)[0];
+    Some(format!("{verb} {pronoun} {when}"))
 }
 
 /// "a creature you control" or "any creature on the battlefield": the permanents a permanent may enter as a copy of.

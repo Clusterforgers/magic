@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "9952da7c-3cfc-413f-8849-0f10e9c8dceb",
+  "oracle_id": "15fbb7b1-c62d-4f82-9f35-2c10299779f4",
+  "multiverse_ids": [
+    489393
+  ],
+  "arena_id": 72472,
+  "tcgplayer_id": 216247,
+  "cardmarket_id": 473589,
+  "name": "Lurking Predators",
+  "lang": "en",
+  "released_at": "2020-07-17",
+  "uri": "https://api.scryfall.com/cards/9952da7c-3cfc-413f-8849-0f10e9c8dceb",
+  "scryfall_uri": "https://scryfall.com/card/jmp/410/lurking-predators?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:12:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.jpg?1783930360",
+    "normal": "https://cards.scryfall.io/normal/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.jpg?1783930360",
+    "large": "https://cards.scryfall.io/large/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.jpg?1783930360",
+    "png": "https://cards.scryfall.io/png/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.png?1783930360",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.jpg?1783930360",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.jpg?1783930360",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.webp?1783930360",
+    "grid": "https://cards.scryfall.io/grid/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.webp?1783930360",
+    "display": "https://cards.scryfall.io/display/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.webp?1783930360",
+    "art": "https://cards.scryfall.io/art/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.webp?1783930360",
+    "crop": "https://cards.scryfall.io/crop/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.webp?1783930360",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/9/9952da7c-3cfc-413f-8849-0f10e9c8dceb.jpg?1783930360"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever an opponent casts a spell, reveal the top card of your library. If it's a creature card, put it onto the battlefield. Otherwise, you may put that card on the bottom of your library.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0f6ccf25-a627-4263-86df-5757137f1696",
+  "set": "jmp",
+  "set_name": "Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/0f6ccf25-a627-4263-86df-5757137f1696",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9952da7c-3cfc-413f-8849-0f10e9c8dceb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A15fbb7b1-c62d-4f82-9f35-2c10299779f4&unique=prints",
+  "collector_number": "410",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "All are prey to the eyes of the wild.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mike Bierek",
+  "artist_ids": [
+    "e5f52ef5-1a2e-4128-90b0-ccc71cd47ea7"
+  ],
+  "illustration_id": "df568e24-482a-4a0a-8130-59a76778924c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3201,
+  "penny_rank": 10947,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/wizards_magic/status/1273718703272517633",
+    "previewed_at": "2020-06-18"
+  },
+  "prices": {
+    "usd": "18.61",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "10.48",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489393&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLurking%2BPredators",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLurking%2BPredators",
+    "edhrec": "https://edhrec.com/route/?cc=Lurking+Predators"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F216247%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=473589&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lurking+Predators&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -117,7 +117,8 @@ pub struct Cause {
     /// The objects among them, as they were.
     pub snapshots: Vec<Snapshot>,
     /// How much the event was (`Amount::Triggering`): the damage dealt, the life gained or lost, the counters put or
-    /// removed, how many events a batch held; zero for an event with no amount.
+    /// removed, how many events a batch held and the damage a batch of damage dealt in all; zero for an event with no
+    /// amount.
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub amount: u32,

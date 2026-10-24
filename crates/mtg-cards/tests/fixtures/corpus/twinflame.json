@@ -1,0 +1,25 @@
+{
+  "id": "85c863ef-b266-410d-87b3-ced791f99966",
+  "oracle_id": "83cf1169-5853-4332-b897-7b17d72d76ab",
+  "name": "Twinflame",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "258",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Strive — This spell costs {2}{R} more to cast for each target beyond the first.\nChoose any number of target creatures you control. For each of them, create a token that's a copy of that creature, except it has haste. Exile those tokens at the beginning of the next end step.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Strive"
+  ]
+}

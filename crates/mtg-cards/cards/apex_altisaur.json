@@ -1,0 +1,37 @@
+{
+  "oracle_id": "fc467fe5-85ab-4c95-8d21-49096778b107",
+  "name": "Apex Altisaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apex Altisaur",
+      "oracle_fingerprint": "ddf60ad4d2f491cdb59c7005e9201c99",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

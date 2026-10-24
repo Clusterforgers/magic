@@ -1,0 +1,33 @@
+{
+  "oracle_id": "31123cb5-2dd5-4f2b-a2fd-8f87095972c6",
+  "name": "Epic Confrontation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Epic Confrontation",
+      "oracle_fingerprint": "46f53f7d69e589f984d6dab23fe3f4c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

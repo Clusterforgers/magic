@@ -1,0 +1,32 @@
+{
+  "oracle_id": "88f5d146-420b-417c-bcf1-fe0e78312a74",
+  "name": "Stensia Masquerade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stensia Masquerade",
+      "oracle_fingerprint": "00feec3eea389152c9e1c5bba7674867",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "FirstStrike" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": { "Madness": "{2}{R}" } }
+      ]
+    }
+  ]
+}

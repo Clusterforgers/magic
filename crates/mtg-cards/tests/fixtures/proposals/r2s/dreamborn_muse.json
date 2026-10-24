@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"EachPlayer"}},"effects":[{"Mill":{"who":"Triggering","count":{"Count":[{"In":"Hand"},{"OwnedBy":"Triggering"}]}}}]}}]}]}

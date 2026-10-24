@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Either":["Player",{"Object":[{"Type":"Planeswalker"}]}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}},{"DealDamage":{"to":{"Each":[{"Type":"Creature"},{"AnyOf":[{"ControlledBy":{"Target":0}},{"ControlledBy":{"ControllerOf":{"Target":0}}}]}]},"amount":"X"}}]}}]}]}

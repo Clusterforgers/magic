@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4b8d82fe-571d-4fd6-8d0c-77b7e5ef3e23",
+  "name": "Deeproot Historian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deeproot Historian",
+      "oracle_fingerprint": "4ff3543107d32d0cea70c6ecaad30567",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "In": "Graveyard" },
+                { "OwnedBy": "You" },
+                { "AnyOf": [{ "Subtype": "Merfolk" }, { "Subtype": "Druid" }] }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Retrace" }]
+          }
+        }
+      ]
+    }
+  ]
+}

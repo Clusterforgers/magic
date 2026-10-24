@@ -136,6 +136,33 @@ pub fn entering(r: &mut Reader<'_>) -> Option<(CounterKind, Amount)> {
     Some((counter, count))
 }
 
+/// "an additional +1/+1 counter", "two additional charge counters": the counters a permanent enters with besides any
+/// others.
+pub fn additional(r: &mut Reader<'_>) -> Option<(CounterKind, i32)> {
+    let number = if r.word("an") {
+        1
+    } else {
+        number_word(r.take_word()?)?
+    };
+    r.need("additional")?;
+    let counter = kind(r)?;
+    r.word(if number == 1 { "counter" } else { "counters" })
+        .then_some(())?;
+    Some((counter, i32::try_from(number).ok().filter(|n| *n > 0)?))
+}
+
+/// The counters `additional` reads, written back.
+pub fn additional_text(counter: &CounterKind, number: i32) -> Option<String> {
+    let kind = kind_text(counter)?;
+    Some(match number {
+        1 => format!("an additional {kind} counter"),
+        many => format!(
+            "{} additional {kind} counters",
+            count_word(u32::try_from(many).ok().filter(|n| *n > 1)?)?
+        ),
+    })
+}
+
 /// The object counters are on, leave or go onto: "~" or one target.
 fn place(r: &mut Reader<'_>) -> Option<Ref> {
     if r.source() || (r.it == Some(Ref::This) && r.word("it")) {
@@ -179,6 +206,10 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // The card the counters went on is what a later "it" means ("Then if there are five or more counters on it").
     if on == Ref::This {
         r.it = Some(Ref::This);
+    }
+    // The one target the counters went on is what the next sentence's "it" and "that creature" mean.
+    if on == Ref::Target(0) && r.targets.first().is_some_and(|spec| spec.bounds.is_one()) {
+        r.it = Some(on.clone());
     }
     let count = if equal {
         defining::equal_to(r)?

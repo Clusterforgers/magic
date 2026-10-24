@@ -1,0 +1,26 @@
+{
+  "id": "7f50aa6e-ce6a-4479-9725-202926245f2c",
+  "oracle_id": "f6de5bd7-7704-4a0c-a27a-9e565e49f5e9",
+  "name": "Dragonstorm Globe",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdm",
+  "collector_number": "241",
+  "rarity": "common",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Each Dragon you control enters with an additional +1/+1 counter on it.\n{T}: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

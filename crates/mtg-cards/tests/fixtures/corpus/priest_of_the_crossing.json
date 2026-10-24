@@ -1,0 +1,27 @@
+{
+  "id": "f0740a86-84eb-4720-b4d7-c5f5e561ddc7",
+  "oracle_id": "524e5098-9c6d-43ad-80cb-52fd6d14ef53",
+  "name": "Priest of the Crossing",
+  "lang": "en",
+  "layout": "normal",
+  "set": "drc",
+  "collector_number": "6",
+  "rarity": "rare",
+  "released_at": "2025-02-14",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Zombie Bird Cleric",
+  "oracle_text": "Flying\nAt the beginning of each end step, put X +1/+1 counters on each creature you control, where X is the number of creatures that died under your control this turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

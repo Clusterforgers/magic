@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ef4b0ced-70a1-41d8-9aed-34e75f979c5f",
+  "name": "Pit Fight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pit Fight",
+      "oracle_fingerprint": "d833d1a8fd895df4684604f124b86359",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

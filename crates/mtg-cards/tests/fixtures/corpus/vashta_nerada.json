@@ -1,0 +1,29 @@
+{
+  "id": "8bb2765f-4016-4e41-9db4-5ad463faceab",
+  "oracle_id": "9ae26054-caf4-47a3-b4bb-3dc14a634740",
+  "name": "Vashta Nerada",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "73",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3,
+  "type_line": "Creature — Alien Horror",
+  "oracle_text": "Indestructible\nShadow (This creature can block or be blocked by only creatures with shadow.)\nMorbid — At the beginning of each end step, if a creature died this turn, put a +1/+1 counter on this creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Shadow",
+    "Indestructible",
+    "Morbid"
+  ]
+}

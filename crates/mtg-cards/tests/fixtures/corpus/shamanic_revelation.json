@@ -1,0 +1,25 @@
+{
+  "id": "b3784eff-ab7b-4fd4-9a07-fbc852d116bf",
+  "oracle_id": "d1d171de-1c6d-4fb9-817a-9c689c709f3d",
+  "name": "Shamanic Revelation",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "311",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5,
+  "type_line": "Sorcery",
+  "oracle_text": "Draw a card for each creature you control.\nFerocious — You gain 4 life for each creature you control with power 4 or greater.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Ferocious"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "86f97dd8-8647-4938-aee0-690bb715f88b",
+  "oracle_id": "ae5f30cc-a22e-4fbb-9510-e9429de3623c",
+  "name": "Gorma, the Gullet",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "3",
+  "rarity": "mythic",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{B}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Pest Frog",
+  "oracle_text": "Lifelink\nWhenever another creature you control dies, put a +1/+1 counter on Gorma.\nNontoken creatures you control enter with an additional +1/+1 counter on them for each creature that died under your control this turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Lifelink"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "ca10e2b8-a317-4c98-a866-43bf274e82cb",
+  "oracle_id": "198c05ca-fb2d-4f15-a28f-1dad36466a4f",
+  "name": "Clash of Titans",
+  "lang": "en",
+  "layout": "normal",
+  "set": "iko",
+  "collector_number": "111",
+  "rarity": "uncommon",
+  "released_at": "2020-04-24",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Target creature fights another target creature. (Each deals damage equal to its power to the other.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Fight"
+  ]
+}

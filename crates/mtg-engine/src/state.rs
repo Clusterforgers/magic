@@ -103,6 +103,10 @@ pub(crate) enum Tally {
     Died,
     /// A nontoken creature put into a graveyard from the battlefield (counted for its owner).
     DiedNontoken,
+    /// A creature put into a graveyard from the battlefield, a token too (counted for the player who controlled it as it died).
+    DiedUnder,
+    /// A nontoken creature put into a graveyard from the battlefield (counted for the player who controlled it as it died).
+    DiedNontokenUnder,
     /// A creature declared as an attacker (counted for its controller, once for each creature).
     Attackers,
     /// A Vehicle that became crewed (counted for the object).
@@ -127,6 +131,8 @@ pub(crate) enum Tally {
     Countered,
     /// Life gained, by the amount (counted for the player).
     GainedTotal,
+    /// A land played from a hand or another zone (counted for the player).
+    LandsPlayed,
 }
 
 /// The events counted in the turn so far.
@@ -143,6 +149,8 @@ pub(crate) struct Tallies {
     pub(crate) monarch_began: Option<PlayerId>,
     /// The creatures tapped to crew or saddle a permanent, as (permanent, saddled, creature).
     pub(crate) crews: BTreeSet<(ObjectRef, bool, ObjectRef)>,
+    /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
+    pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -630,6 +638,9 @@ impl Hash for GameState {
         }
         if !self.tallies.crews.is_empty() {
             self.tallies.crews.hash(state);
+        }
+        if !self.tallies.modes.is_empty() {
+            self.tallies.modes.hash(state);
         }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.

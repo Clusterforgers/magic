@@ -42,6 +42,7 @@ Angelic Accord
 Angelic Ascension
 Angelic Field Marshal
 Ant-Man, Elusive Avenger
+Apex Altisaur
 Aquastrand Spider
 Arbor Colossus
 Arboreal Grazer
@@ -126,6 +127,7 @@ Blightwidow
 Bloodbraid Elf
 Bloodghast
 Bloom Hulk
+Body Count
 Body Double
 Bog Wraith
 Boggart Ram-Gang
@@ -152,6 +154,7 @@ Brimstone Vandal
 Brion Stoutarm
 Bronzeplate Boar
 Broodbirth Viper
+Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
 Cached Defenses
@@ -197,6 +200,7 @@ Circle of Dreams Druid
 Circuitous Route
 Citadel Gate
 Citanul Hierophants
+Clash of Titans
 Cliffgate
 Clifftop Lookout
 Clive's Hideaway
@@ -311,6 +315,7 @@ Doom Whisperer
 Draconic Lore
 Dragonlord Ojutai
 Dragonspeaker Shaman
+Dragonstorm Globe
 Dragonwing Glider
 Dreadship Reef
 Dream's Grip
@@ -357,6 +362,7 @@ Enraged Revolutionary
 Enthusiastic Study
 Entreat the Angels
 Entreat the Dead
+Epic Confrontation
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
@@ -405,6 +411,7 @@ Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Firmament Sage
+Fists of Flame
 Flame Jab
 Flamebraider
 Flatline
@@ -476,6 +483,7 @@ Goldwarden's Helm
 Goliath Truck
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
+Gorma, the Gullet
 Grapeshot
 Graveblade Marauder
 Graven Cairns
@@ -491,7 +499,9 @@ Grim Haruspex
 Grim Initiate
 Grisly Salvage
 Growing Ranks
+Grumgully, the Generous
 Gruul Cluestone
+Gruul Ragebeast
 Guard Gomazoa
 Guardian Augmenter
 Guardian Gladewalker
@@ -511,6 +521,7 @@ Harabaz Druid
 Harmonious Archon
 Harrow
 Harvest Season
+Hate Mirage
 Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
@@ -518,6 +529,7 @@ Hearthhull, the Worldseed
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
+Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
 Herald of Hoofbeats
@@ -540,6 +552,7 @@ Hour of Revelation
 Howltooth Hollow
 Hulking Raptor
 Hungry Lynx
+Hunt the Weak
 Huntmaster Liger
 Icefeather Aven
 Idyllic Beachfront
@@ -603,6 +616,7 @@ Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
+Knowledge Is Power
 Kodama's Reach
 Kolaghan Skirmisher
 Kolvori, God of Kinship // The Ringhart Crest
@@ -616,6 +630,7 @@ Krosan Cloudscraper
 Krosan Colossus
 Krosan Grip
 Krosan Verge
+Kydele, Chosen of Kruphix
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
@@ -632,8 +647,10 @@ Light 'Em Up
 Light Up the Stage
 Lightning Bolt
 Lignify
+Liliana's Standard Bearer
 Lion Sash
 Liquimetal Torque
+Lita, Little Orphan Amphibian
 Lithoform Engine
 Living Twister
 Lizard Blades
@@ -749,6 +766,7 @@ Norwood Riders
 Notion Rain
 Novijen, Heart of Progress
 Nyxborn Behemoth
+Oath of Gideon
 Oath of Jace
 Obscuring Haze
 Octomancer
@@ -757,6 +775,7 @@ Okiba Reckoner Raid // Nezumi Road Captain
 Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
+Oona's Blackguard
 Opt
 Oran-Rief, the Vastwood
 Orazca Relic
@@ -794,6 +813,7 @@ Phyrexian Soulgorger
 Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
+Pit Fight
 Plague Myr
 Plague Stinger
 Planar Outburst
@@ -810,11 +830,16 @@ Pouncing Shoreshark
 Powder Ganger
 Prava of the Steel Legion
 Predator Dragon
+Prey Upon
 Pridemalkin
+Priest of the Crossing
 Primal Growth
+Primal Might
+Primaris Eliminator
 Primeval Protector
 Primordial Hydra
 Prismatic Lens
+Prizefight
 Professional Face-Breaker
 Professor of Symbology
 Propaganda
@@ -879,6 +904,7 @@ Righteous Avengers
 Riptide Survivor
 Rising Miasma
 Rite of Replication
+River of Tears
 Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
@@ -974,6 +1000,7 @@ Skysovereign, Consul Flagship
 Slip Through Space
 Slitherhead
 Sluiceway Scorpion
+Smell Fear
 Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra
@@ -1072,6 +1099,7 @@ Tavern Ruffian // Tavern Smasher
 Teacher's Pest
 Team Pennant
 Tectonic Reformation
+Tempestra, Dame of Games
 Temur Devotee
 Tender Wildguide
 Tendershoot Dryad
@@ -1081,6 +1109,7 @@ Termagant Swarm
 Terminus
 Terrus Wurm
 Teshar, Ancestor's Apostle
+Teval's Judgment
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
@@ -1139,12 +1168,15 @@ Turn to Frog
 Tuskguard Captain
 Twilight Mire
 Twincast
+Twinflame
 Tyranid Prime
 Tyrant's Familiar
 Uktabi Efreet
 Ulamog's Crusher
+Ulamog's Dreadsire
 Ultramarines Honour Guard
 Ultron, Unlimited
+Umaro, Raging Yeti
 Umbral Collar Zealot
 Unbreakable Bond
 Unclaimed Territory
@@ -1154,6 +1186,9 @@ Universal Automaton
 Universal Surveillance
 Unstable Molecule Suit
 Urabrask the Hidden
+Urza's Mine
+Urza's Power Plant
+Urza's Tower
 Uthros Research Craft
 Uthros Scanship
 Utopia Sprawl

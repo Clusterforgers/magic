@@ -1,0 +1,26 @@
+{
+  "id": "956a2a42-6a91-45b5-99f1-87c2cf1dd608",
+  "oracle_id": "c9739382-9fe0-4d24-b58e-1e45a88491b6",
+  "name": "Smell Fear",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh2",
+  "collector_number": "173",
+  "rarity": "common",
+  "released_at": "2021-06-18",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)\nTarget creature you control fights up to one target creature you don't control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fight",
+    "Proliferate"
+  ]
+}

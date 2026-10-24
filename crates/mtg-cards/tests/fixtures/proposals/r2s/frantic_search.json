@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":2}},{"Discard":{"count":2}},{"Choose":{"from":{"Each":[{"Type":"Land"}]},"count":{"min":0,"max":3},"as":"lands"}},{"Untap":{"what":{"Bound":"lands"}}}]}}]}]}

@@ -36,15 +36,16 @@ use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
-use crate::value::{Amount, CastWay, Cmp, Condition};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 25] = [
+const TEMPLATES: [Template; 26] = [
     entering,
     entering_tapped_if,
     group_enters_tapped,
+    group_enters_with,
     life_gain::replacement,
     no_life_loss,
     copies::enters_as_copy,
@@ -208,6 +209,68 @@ fn group_enters_tapped(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
+/// "Nontoken creatures you control enter with an additional +1/+1 counter on them for each creature that died under your
+/// control this turn.", "Each other creature you control enters with an additional +1/+1 counter on it.": a replacement
+/// of the entering of every permanent the group names that puts counters on it, as many as the number says or one for
+/// each of what follows "for each".
+fn group_enters_with(r: &mut Reader<'_>) -> Option<Ability> {
+    let each = r.word("each");
+    let what = phrase(r, if each { Form::Each } else { Form::All })?;
+    entering_group(&what).then_some(())?;
+    r.word(if each { "enters" } else { "enter" })
+        .then_some(())?;
+    r.need("with")?;
+    let (counter, number) = counters::additional(r)?;
+    r.need(if each { "on it" } else { "on them" })?;
+    let count = match r.attempt(for_each) {
+        Some(per) if number == 1 => per,
+        Some(_) => return None,
+        None => Amount::Fixed(number),
+    };
+    Some(Ability::Replacement {
+        when: ReplaceWhen::Enters { what },
+        by: ReplaceBy::WithCounters {
+            counter,
+            count,
+            tapped: false,
+        },
+        condition: None,
+        from: ZoneKind::Battlefield,
+    })
+}
+
+/// Whether the group names permanents that are not the card itself and not in a zone: the objects a replacement of
+/// entering may be about.
+fn entering_group(what: &Selector) -> bool {
+    !what.0.is_empty()
+        && !what
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Spell | Pred::This | Pred::In(_)))
+}
+
+/// What `group_enters_with` reads, written back.
+fn group_enters_with_texts(what: &Selector, counter: &CounterKind, count: &Amount) -> Vec<String> {
+    let (number, tail) = match count {
+        Amount::Fixed(number) => (*number, String::new()),
+        other => match for_each_text(other) {
+            Some(per) => (1, format!(" for each {per}")),
+            None => return Vec::new(),
+        },
+    };
+    let Some(counters) = counters::additional_text(counter, number) else {
+        return Vec::new();
+    };
+    let mut texts = Vec::new();
+    if let Some(group) = phrase_text(what, Form::All) {
+        texts.push(format!("{group} enter with {counters} on them{tail}"));
+    }
+    if let Some(group) = phrase_text(what, Form::Each) {
+        texts.push(format!("each {group} enters with {counters} on it{tail}"));
+    }
+    texts
+}
+
 /// "As ~ enters, choose a color.", "As it enters, choose a color other than red.", "As ~ enters, you may pay 2 life.
 /// If you don't, it enters tapped."
 fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
@@ -250,7 +313,11 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
 /// What must hold for a permanent not to enter tapped: one thing, or several joined by "or" ("you have two or more
 /// opponents or a player has 13 or less life").
 pub(super) fn holds(r: &mut Reader<'_>) -> Option<Condition> {
-    let mut any = vec![held(r)?];
+    let first = held(r)?;
+    if let Some(all) = r.attempt(|r| and_also(r, &first)) {
+        return Some(all);
+    }
+    let mut any = vec![first];
     while let Some(next) = r.attempt(|r| {
         r.need("or")?;
         held(r)
@@ -262,6 +329,35 @@ pub(super) fn holds(r: &mut Reader<'_>) -> Option<Condition> {
     } else {
         Some(Condition::Any(any))
     }
+}
+
+/// "and an Urza's Power-Plant" after "you control an Urza's Mine": more kinds of permanent the same player controls, the
+/// verb said once; all of them must be controlled.
+fn and_also(r: &mut Reader<'_>, first: &Condition) -> Option<Condition> {
+    let Condition::Compare {
+        left: Amount::Count(Selector(preds)),
+        op: Cmp::Ge,
+        right: Amount::Fixed(1),
+    } = first
+    else {
+        return None;
+    };
+    let who = preds.iter().find_map(|pred| match pred {
+        Pred::ControlledBy(who) => Some(who.clone()),
+        _ => None,
+    })?;
+    let mut all = vec![first.clone()];
+    while r.word("and") {
+        (r.word("a") || r.word("an")).then_some(())?;
+        let mut kind = one_kind(r)?.0;
+        kind.push(Pred::ControlledBy(who.clone()));
+        all.push(Condition::Compare {
+            left: Amount::Count(Selector(kind)),
+            op: Cmp::Ge,
+            right: Amount::Fixed(1),
+        });
+    }
+    (all.len() > 1).then_some(Condition::All(all))
 }
 
 /// One thing that can hold: what a player controls, how many opponents there are, or how low a life total is.
@@ -1007,6 +1103,17 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             .map(|group| format!("{group} enter tapped"))
             .into_iter()
             .collect(),
+        Ability::Replacement {
+            when: ReplaceWhen::Enters { what },
+            by:
+                ReplaceBy::WithCounters {
+                    counter,
+                    count,
+                    tapped: false,
+                },
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } => group_enters_with_texts(what, counter, count),
         Ability::Rule {
             rule: GameRule::NoLifeLossFromDamage(Ref::You),
             condition,

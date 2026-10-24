@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e1a776d2-fb3a-4215-a14e-4b6e9bda95df",
+  "name": "Hunter's Prowess",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunter's Prowess",
+      "oracle_fingerprint": "62c122a1b7b245e12a89a0d79c74d9ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Trample" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Draw": { "count": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

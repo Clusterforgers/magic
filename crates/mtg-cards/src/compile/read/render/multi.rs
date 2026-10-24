@@ -7,11 +7,24 @@ use serde_json::Value;
 use super::{Effect, TargetSpec};
 
 /// The ways to write the effects of a clause with several targets as sentences, which are the ways to write the
-/// effects of each target joined; empty when an effect acts on more than one target or the targets are not used in order.
+/// effects of each target joined, and counters on targets that differ in one sentence; empty when an effect acts on
+/// more than one target or the targets are not used in order.
 pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
-    if let Some(sentence) = super::each_target::text(targets, effects) {
+    if let Some(sentence) = super::each_target::text(targets, effects)
+        .or_else(|| super::target_counts::text(targets, effects))
+    {
         return vec![vec![sentence]];
     }
+    if let Some(options) = super::each_target::fight_among(targets, effects) {
+        return options;
+    }
+    let mut all = by_target(targets, effects);
+    all.extend(super::each_target::on_different(targets, effects).map(|sentence| vec![sentence]));
+    all
+}
+
+/// The sentences of each target's effects, one after the other.
+fn by_target(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
     let Some(parts) = split(targets.len(), effects) else {
         return Vec::new();
     };
@@ -57,7 +70,7 @@ fn split(count: usize, effects: &[Effect]) -> Option<Vec<Vec<Effect>>> {
 }
 
 /// The numbers of the targets the data refers to.
-fn targets_used(value: &Value, found: &mut Vec<u8>) {
+pub(super) fn targets_used(value: &Value, found: &mut Vec<u8>) {
     match value {
         Value::Object(map) => {
             if let (1, Some(Value::Number(number))) = (map.len(), map.get("Target"))

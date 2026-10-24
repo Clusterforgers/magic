@@ -1,0 +1,29 @@
+{
+  "id": "080ef367-7904-4e5c-a8b4-1fb62f951f3e",
+  "oracle_id": "e5fa93a3-0b2b-4477-ad3f-4fc1b325ca19",
+  "name": "Gruul Ragebeast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gtc",
+  "collector_number": "170",
+  "rarity": "rare",
+  "released_at": "2013-02-01",
+  "digital": false,
+  "mana_cost": "{5}{R}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Whenever this creature or another creature you control enters, that creature fights target creature an opponent controls.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Fight"
+  ]
+}

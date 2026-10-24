@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f6de5bd7-7704-4a0c-a27a-9e565e49f5e9",
+  "name": "Dragonstorm Globe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonstorm Globe",
+      "oracle_fingerprint": "7fff78f1124c04d1abc2000d2f6a628c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

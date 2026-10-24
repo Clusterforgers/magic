@@ -8,7 +8,7 @@ use mtg_core::card::Subtype;
 use super::amounts::counted_stats;
 use super::becomes::{colors, colors_text};
 use super::effects::{power_toughness, pump_grants, subject as plain_subject};
-use super::render::stats_text;
+use super::render::{self, stats_text};
 use super::selectors::{Form, granted_keywords, granted_text, phrase};
 use super::tokens::Reader;
 use super::triggers::article;
@@ -252,6 +252,10 @@ pub(super) fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     {
         *stats = counted_stats(r, stats.clone())?;
     }
+    // The one target that changed is what the next sentence's "it" means ("It fights target creature").
+    if affected == Ref::Target(0) && r.targets.first().is_some_and(|spec| spec.bounds.is_one()) {
+        r.it = Some(affected.clone());
+    }
     Some(vec![Effect::Continuous {
         affected,
         mods,
@@ -303,7 +307,16 @@ fn part_texts(mods: &[Modification], plural: bool) -> Option<(Vec<String>, Strin
                 tail = counted;
             }
             Modification::AddKeyword(_) | Modification::AddProtectionFromChosenColor => {
-                parts.push(format!("{} {}", verbs.gains, granted_text(group)?));
+                let mut gained = granted_text(group)?;
+                // An ability in quotes follows the keywords it is gained with.
+                if let Some((Modification::GrantAbility(given), after)) = rest.split_first() {
+                    gained = format!("{gained} and \"{}\"", render::ability(given)?);
+                    rest = after;
+                }
+                parts.push(format!("{} {gained}", verbs.gains));
+            }
+            Modification::GrantAbility(given) => {
+                parts.push(format!("{} \"{}\"", verbs.gains, render::ability(given)?));
             }
             Modification::RemoveKeyword(_) => {
                 let kept: Vec<Modification> = group

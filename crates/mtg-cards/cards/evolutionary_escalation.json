@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f9837988-a097-4f00-a94f-4856d5d9894e",
+  "name": "Evolutionary Escalation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolutionary Escalation",
+      "oracle_fingerprint": "1061da37560e916afec40cfde5f06b91",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "4ccb74c9-046a-4d6b-b8c2-641e2a238d52",
+  "oracle_id": "12401ad1-b5c9-43dc-9389-04aaf5db8b26",
+  "name": "Tempestra, Dame of Games",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tmc",
+  "collector_number": "27",
+  "rarity": "rare",
+  "released_at": "2026-03-06",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Elemental Illusion",
+  "oracle_text": "{2}{R}, {T}, Sacrifice an artifact: Create a token that's a copy of another target creature you control, except it isn't legendary. It gains haste. Sacrifice it at the beginning of the next end step.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

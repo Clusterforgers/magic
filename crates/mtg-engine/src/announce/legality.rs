@@ -4,23 +4,28 @@
 //! legal for it, and every amount to divide is shared out. What fails rewinds the announcement.
 
 use super::{Ctx, Next, Work, targets};
-use crate::choose::legal_for;
+use crate::choose::{legal_for, without_earlier};
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let specs = targets::specs(ctx, work.choices);
     let chosen = &work.choices.targets;
     let legal = chosen.len() == specs.len()
-        && specs.iter().zip(chosen).all(|(spec, picked)| {
-            let legal = legal_for(
-                ctx.state,
-                spec,
-                ctx.source,
-                ctx.player,
-                ctx.cause(),
-                work.choices.x,
-            );
-            picked.iter().all(|target| legal.contains(target))
-        });
+        && specs
+            .iter()
+            .zip(chosen)
+            .enumerate()
+            .all(|(at, (spec, picked))| {
+                let mut legal = legal_for(
+                    ctx.state,
+                    spec,
+                    ctx.source,
+                    ctx.player,
+                    ctx.cause(),
+                    work.choices.x,
+                );
+                without_earlier(spec, &chosen[..at], &mut legal);
+                picked.iter().all(|target| legal.contains(target))
+            });
     let shared = specs
         .iter()
         .zip(chosen)

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9041338d-b660-4fc2-922f-cdf9d1a25993",
+  "name": "Body Count",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Body Count",
+      "oracle_fingerprint": "6a6c8552f227da9469e30353e2fe2358",
+      "abilities": [
+        { "Keyword": { "Spectacle": "{B}" } },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": { "Tallied": { "who": "You", "what": "CreaturesDiedUnder" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

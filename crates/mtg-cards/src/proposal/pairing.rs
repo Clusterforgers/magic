@@ -1,13 +1,16 @@
 //! Pairing: which ability of a proposal stands for which clause of the printed text, and whether the renderers write it back as that clause.
 
 use super::blame;
+use super::blocks;
 use super::{ClauseReport, ClauseState, Stray};
 use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
-    Clause, ClauseKind, read_keyword, read_keywords, same_text, static_pair_texts, written_variants,
+    Clause, ClauseKind, block_plan, creature_at, read_keyword, read_keywords, same_text,
+    static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
+use crate::support::PrintedCard;
 use crate::trigger::TriggerPattern;
 
 /// The pairing of a whole card.
@@ -32,7 +35,7 @@ impl Paired {
 }
 
 /// Pairs the abilities of every face with the clauses of its text.
-pub(super) fn pair_card(card: &Card, clauses: &[Clause]) -> Paired {
+pub(super) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) -> Paired {
     let faces = clauses
         .iter()
         .map(|clause| clause.face + 1)
@@ -46,7 +49,8 @@ pub(super) fn pair_card(card: &Card, clauses: &[Clause]) -> Paired {
             .get(face)
             .map_or(&[][..], |rules| rules.abilities.as_slice());
         let of_face: Vec<&Clause> = clauses.iter().filter(|c| c.face == face).collect();
-        let found = Pairer::new(face, abilities, &of_face).run();
+        let creature_at = printed.faces.get(face).and_then(creature_at);
+        let found = Pairer::new(face, abilities, &of_face, creature_at).run();
         paired.clauses.extend(found.clauses);
         paired.strays.extend(found.strays);
         paired.places.extend(found.places);
@@ -150,6 +154,8 @@ enum Choice {
 struct Pairer<'a> {
     face: usize,
     abilities: &'a [Ability],
+    /// Where a Spacecraft with a printed power becomes a creature, for the head of a station block.
+    creature_at: Option<i32>,
     slots: Vec<Slot<'a>>,
     taken: Vec<bool>,
     slot_of: Vec<Option<usize>>,
@@ -158,10 +164,16 @@ struct Pairer<'a> {
 }
 
 impl<'a> Pairer<'a> {
-    fn new(face: usize, abilities: &'a [Ability], clauses: &[&'a Clause]) -> Self {
+    fn new(
+        face: usize,
+        abilities: &'a [Ability],
+        clauses: &[&'a Clause],
+        creature_at: Option<i32>,
+    ) -> Self {
         Pairer {
             face,
             abilities,
+            creature_at,
             slots: clauses
                 .iter()
                 .map(|&clause| Slot {
@@ -182,6 +194,7 @@ impl<'a> Pairer<'a> {
         self.keywords();
         self.static_pairs();
         self.exact();
+        self.blocks();
         self.leftovers();
         self.tables();
         let face = self.face;
@@ -335,6 +348,39 @@ impl<'a> Pairer<'a> {
         }
     }
 
+    /// The blocks of a leveler, a Class or a Spacecraft: the abilities that work under a block's level stand for it.
+    fn blocks(&mut self) {
+        for slot in 0..self.slots.len() {
+            let text = &self.slots[slot].clause.text;
+            if self.slots[slot].state.is_some() || !is_block(text) {
+                continue;
+            }
+            let Some(plan) = block_plan(text, self.creature_at) else {
+                continue;
+            };
+            let free: Vec<usize> = (0..self.abilities.len())
+                .filter(|&at| !self.taken[at])
+                .collect();
+            let Some(found) = blocks::read(&plan, self.abilities, &free) else {
+                continue;
+            };
+            for &at in &found.claimed {
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = Some(self.slots[slot].clause.span.start);
+            }
+            for &at in &found.strays {
+                self.taken[at] = true;
+                self.strays.push(Stray {
+                    face: self.face,
+                    ability: at,
+                    construct: blame::name(&self.abilities[at]),
+                });
+            }
+            self.slots[slot].state = Some(found.state);
+        }
+    }
+
     /// The rows of the table of a die roll (`1—9 | ...`) stand for the ability of the clause before them when it rolls.
     fn tables(&mut self) {
         for at in 1..self.slots.len() {
@@ -451,7 +497,7 @@ impl<'a> Pairer<'a> {
 }
 
 /// Why an ability does not read back as its clause: the renderers write other text, or cannot write it.
-fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str) -> ClauseState {
+pub(super) fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str) -> ClauseState {
     if let Ability::Keyword(_) = ability {
         return match read_keyword(clause) {
             Some(other) => ClauseState::Differs {

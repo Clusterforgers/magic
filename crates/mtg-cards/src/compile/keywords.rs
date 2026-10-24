@@ -359,7 +359,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         return None;
     }
     match found.name {
-        "ward" => cost(rest).map(Keyword::Ward),
+        "ward" => spell_cost(rest).map(Keyword::Ward),
         "equip" => equip(rest),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
         "cycling" => cost(rest).map(Keyword::Cycling),
@@ -1351,6 +1351,19 @@ mod tests {
     }
 
     #[rstest]
+    #[case::a_permanent("Ward\u{2014}Sacrifice a permanent.", "Sacrifice a permanent")]
+    #[case::a_permanent_with_a_mana_value(
+        "Ward\u{2014}Sacrifice a permanent with mana value 1 or greater.",
+        "Sacrifice a permanent with mana value 1 or greater"
+    )]
+    #[case::a_creature("Ward\u{2014}Sacrifice a creature.", "Sacrifice a creature")]
+    #[case::mana_and_life("Ward\u{2014}{2}, Pay 2 life.", "{2}, Pay 2 life")]
+    fn ward_costs_what_an_ability_can_cost_in_words(#[case] item: &str, #[case] words: &str) {
+        let paid = super::super::read::cost_in_words(words).unwrap();
+        assert_eq!(read(item), Some(Keyword::Ward(paid)));
+    }
+
+    #[rstest]
     #[case::two_kicker_costs("Kicker {1}{R} and/or {2}{G}")]
     #[case::equip_for_a_quality_it_does_not_name("Equip worthy {2}")]
     #[case::equip_for_a_made_up_type("Equip Banana {2}")]
@@ -1361,7 +1374,9 @@ mod tests {
     #[case::protection_from_a_subtype("Protection from Vampires")]
     #[case::protection_without_a_quality("Protection from")]
     #[case::cycling_by_sacrifice("Cycling\u{2014}Sacrifice a land.")]
-    #[case::ward_sacrifice("Ward\u{2014}Sacrifice a permanent.")]
+    #[case::ward_with_nothing_to_pay("Ward\u{2014}")]
+    #[case::ward_sacrificing_a_made_up_kind("Ward\u{2014}Sacrifice a frobnicator.")]
+    #[case::ward_with_a_cost_that_is_a_sentence("Ward\u{2014}Draw a card.")]
     #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
     #[case::enchant_with_a_quality_the_table_keeps("Enchant noncommander creature")]
     #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]

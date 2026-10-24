@@ -1,0 +1,28 @@
+{
+  "id": "1e6beba4-128c-418e-83ed-8a82afc0c39e",
+  "oracle_id": "fc467fe5-85ab-4c95-8d21-49096778b107",
+  "name": "Apex Altisaur",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "232",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{7}{G}{G}",
+  "cmc": 9.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "When this creature enters, it fights up to one target creature you don't control.\nEnrage — Whenever this creature is dealt damage, it fights up to one target creature you don't control.",
+  "power": "10",
+  "toughness": "10",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enrage",
+    "Fight"
+  ]
+}

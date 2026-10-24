@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2db23ceb-448b-45d6-a931-d72e8ccdb541",
+  "name": "Hate Mirage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hate Mirage",
+      "oracle_fingerprint": "f29bfcfcfc2aaa5c5329410333a1a9fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "copy" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

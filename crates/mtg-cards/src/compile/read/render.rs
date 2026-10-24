@@ -3,21 +3,36 @@
 //! player in a row are one compound sentence; the readers take ", then" between two steps as the
 //! same sequence.
 
+mod and_lists;
 mod bound;
 mod created;
 mod damage_by;
 mod delayed;
 mod divided;
 mod each_target;
+mod either;
+mod exiled_until;
+mod free_casts;
 mod from_graveyard;
 mod graveyards;
+mod group_becomes;
 mod instead;
+mod library_steps;
 mod loyalty;
 mod may_have;
 mod multi;
 mod oracle_only;
+mod otherwise;
+mod player_events;
+mod populated;
 mod put_onto;
+mod revealed;
+mod switched;
+mod target_counts;
 mod those;
+mod together;
+mod twins;
+mod untapped;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -120,6 +135,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
     let controller = create::other_wordings(&texts);
     texts.extend(controller);
+    let named = copies::pronoun_wordings(&texts);
+    texts.extend(named);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
     let replaced = instead_pairs::other_wordings(&texts);
@@ -352,6 +369,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     texts.extend(where_x::equal_to_wordings(ability));
     event_wordings::add(ability, &mut texts);
     those::add(ability, &mut texts);
+    together::add(&mut texts);
+    and_lists::add(ability, &mut texts);
+    twins::add(ability, &mut texts);
     super::shortened::add(&mut texts);
     oracle_only::add(ability, &mut texts);
     texts
@@ -648,14 +668,17 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             choose,
             repeat: false,
             modes,
+            at_random,
+            once_each_turn,
         },
     ] = effects
     {
         if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return choices::texts(choose, modes)
+        return choices::texts(choose, modes, *at_random, *once_each_turn)
             .into_iter()
+            .chain(either::texts(choose, modes))
             .map(|text| vec![text])
             .collect();
     }
@@ -744,7 +767,10 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         &[false]
     };
     let agains: &[bool] = if repeats { &[false, true] } else { &[false] };
-    let chosens: &[bool] = if effects.iter().any(group_copies::is_group_copy) {
+    let chosens: &[bool] = if effects
+        .iter()
+        .any(|effect| group_copies::is_group_copy(effect) || copies::is_target_copy(effect))
+    {
         &[false, true]
     } else {
         &[false]
@@ -810,6 +836,11 @@ fn written(
         again: wording.again,
         condition: wording.condition,
         made: None,
+        naming: if wording.chosen {
+            Naming::ChosenFirst
+        } else {
+            Naming::InPlace
+        },
     };
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
@@ -846,25 +877,13 @@ fn written(
             start += used;
             continue;
         }
-        // Tokens and what is done to them, or a copy and its delayed exile, are two sentences, which no joint splits.
-        if let Some((texts, used)) = writer.made_then(&effects[start..]) {
-            unsplit(mask, start, used)?;
-            sentences.extend(texts);
-            start += used;
-            continue;
-        }
-        // A permanent chosen and the target that becomes a copy of it, a copy made more times when the spell was
-        // kicked, or a group that becomes a copy of the target: sentences that no joint splits.
-        if let Some((texts, used)) = writer.copy_group(&effects[start..], wording.chosen) {
-            unsplit(mask, start, used)?;
-            sentences.extend(texts);
-            start += used;
-            continue;
-        }
-        // An exile and what follows when the object was of a kind, or an effect that another replaces when a condition
-        // holds: two sentences, which no joint splits.
+        // Tokens and what is done to them, a copy and its delayed exile, a permanent chosen and the target that becomes a
+        // copy of it, a group that becomes a copy, an exile and what follows when the object was of a kind, or an
+        // effect that another replaces when a condition holds: sentences that no joint splits.
         if let Some((texts, used)) = writer
-            .exile_kind(&effects[start..])
+            .made_then(&effects[start..])
+            .or_else(|| writer.copy_group(&effects[start..], wording.chosen))
+            .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -919,6 +938,7 @@ fn chosen_move_text(choose: &Effect, moved: &Effect) -> Option<String> {
         .or_else(|| put_back_text(choose, moved))
         .or_else(|| returned_text(choose, moved))
         .or_else(|| put_onto::put_onto_text(choose, moved))
+        .or_else(|| put_onto::returned_to_battlefield_text(choose, moved))
 }
 
 /// "put two cards from your hand on top of your library in any order": the choice of cards of the
@@ -1042,7 +1062,8 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     {
         return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
     }
-    let mut parts = vec![format!("{},", pattern_text(when)?)];
+    let event = player_events::text(when).or_else(|| pattern_text(when))?;
+    let mut parts = vec![format!("{event},")];
     if let Some(condition) = condition {
         parts.push(format!("if {},", condition_text(condition)?));
     }
@@ -1414,6 +1435,17 @@ struct Writer<'a> {
     condition: usize,
     /// Whether the tokens the sentence being written names are one token, while that sentence acts on tokens just made.
     made: Option<bool>,
+    /// Whether a copy of the target is worded after a sentence that chooses it.
+    naming: Naming,
+}
+
+/// Where a copy of the target names it.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Naming {
+    /// In the sentence that makes the copy.
+    InPlace,
+    /// In a sentence of its own before: "Choose target creature you control."
+    ChosenFirst,
 }
 
 impl Writer<'_> {
@@ -1508,7 +1540,7 @@ impl Writer<'_> {
                 .to_owned(),
             ),
             Ref::Target(0)
-                if self.single(place)
+                if self.at_most_one(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
             {
                 self.name_target()
@@ -1544,10 +1576,7 @@ impl Writer<'_> {
                 count,
             } => {
                 let counters = counters::text(counter, count)?;
-                format!(
-                    "remove {counters} from {}",
-                    self.counter_place(from, false)?
-                )
+                format!("remove {counters} from {}", self.counter_place(from, true)?)
             }
             Effect::MultiplyCounters {
                 on,
@@ -1666,6 +1695,7 @@ impl Writer<'_> {
         let copied = match of {
             Ref::This => "~".to_owned(),
             Ref::Attached => "enchanted creature".to_owned(),
+            Ref::Paid => "the sacrificed creature".to_owned(),
             Ref::Target(0) if self.is_a_permanent(of) => {
                 if self.named {
                     "it".to_owned()
@@ -1676,6 +1706,50 @@ impl Writer<'_> {
             _ => return None,
         };
         copies::token_text(effect, &copied, delayed)
+    }
+
+    /// Whether the copy is made of several targets, so the sentences after it name several tokens.
+    fn several_copies(&self, created: &Effect) -> bool {
+        self.naming == Naming::ChosenFirst
+            && copies::is_target_copy(created)
+            && self.are_permanents(&Ref::Target(0))
+    }
+
+    /// The sentences of a token copy: one, or (`chosen`) the sentence that chooses the target and the one that makes a
+    /// token for each of them.
+    fn copy_sentences(&mut self, effect: &Effect, delayed: bool) -> Option<Vec<String>> {
+        let Effect::CreateToken {
+            token: TokenRef::CopyOf {
+                of: Ref::Target(0), ..
+            },
+            count,
+            tapped: false,
+            ..
+        } = effect
+        else {
+            return Some(vec![self.copy_token(effect, delayed)?]);
+        };
+        if self.naming != Naming::ChosenFirst
+            || self.named
+            || *count != Amount::one()
+            || !(self.is_a_permanent(&Ref::Target(0)) || self.are_permanents(&Ref::Target(0)))
+        {
+            return Some(vec![self.copy_token(effect, delayed)?]);
+        }
+        let spec = self.targets.first()?;
+        let Targetable::Object(selector) = &spec.what else {
+            return None;
+        };
+        let noun = copies::chosen_kind(selector)?;
+        let several = !spec.bounds.is_one();
+        let target = self.name_target()?;
+        let (each, copied) = if several {
+            (format!("for each of those {noun}s"), format!("that {noun}"))
+        } else {
+            (format!("for each {noun} chosen this way"), "it".to_owned())
+        };
+        let token = copies::token_text(effect, &copied, delayed)?;
+        Some(vec![format!("choose {target}"), format!("{each}, {token}")])
     }
 
     /// A copy of a spell or an ability, or the card that becomes a copy of the target, naming the one target the first
@@ -1724,6 +1798,22 @@ impl Writer<'_> {
         if group_copies::is_group_copy(effect) {
             return Some((self.group_becomes(effect, chosen)?, 1));
         }
+        // A token copy of the target chosen first, with nothing done to it later.
+        if chosen
+            && matches!(
+                effect,
+                Effect::CreateToken {
+                    token: TokenRef::CopyOf {
+                        of: Ref::Target(0),
+                        ..
+                    },
+                    bind: None,
+                    ..
+                }
+            )
+        {
+            return Some((self.copy_sentences(effect, false)?, 1));
+        }
         None
     }
 
@@ -1762,6 +1852,10 @@ impl Writer<'_> {
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
             Effect::Goad { what } => format!("goad {}", self.object(what)?),
+            Effect::Fight {
+                what: Ref::Triggering,
+                with,
+            } => format!("that creature fights {}", self.object(with)?),
             Effect::Fight { what, with } => {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
@@ -1885,6 +1979,12 @@ impl Writer<'_> {
     /// An exile with no binding: "exile target creature", and "... until ~ leaves the battlefield" with the duration.
     fn exiled(&mut self, effect: &Effect) -> Option<String> {
         match effect {
+            // The card of a trigger that put it into a graveyard is "it" in what that trigger does about it.
+            Effect::Exile {
+                what,
+                bind: None,
+                duration: None,
+            } if *what == dead_card() => Some("exile it".to_owned()),
             // A target exiled and bound for a later step ("the mana value of the permanent exiled this way") is the same.
             Effect::Exile {
                 what,
@@ -1916,6 +2016,7 @@ impl Writer<'_> {
     /// A move that is a mass move, a cast or a keyword action.
     fn moved(&mut self, effect: &Effect) -> Option<String> {
         mass_moves::text(effect)
+            .or_else(|| self.hand_shuffled(effect))
             .or_else(|| cast::text(effect))
             .or_else(|| self.keyword_action(effect))
     }
@@ -1923,6 +2024,7 @@ impl Writer<'_> {
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.graveyard_exile(effect)
+            .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
@@ -2136,7 +2238,16 @@ impl Writer<'_> {
         self.explore_twice(effects)
             .or_else(|| self.mill_then_change(effects))
             .or_else(|| self.move_instead(effects))
+            .or_else(|| self.either_way(effects))
+            .or_else(|| self.library_steps(effects))
+            .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
+            .or_else(|| untapped::text(effects))
+            .or_else(|| free_casts::text(effects))
+            .or_else(|| self.opponent_exiles(effects))
+            .or_else(|| populated::text(effects))
+            .or_else(|| revealed::text(effects))
+            .or_else(|| self.owner_shuffles(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
     }
@@ -2389,6 +2500,9 @@ impl Writer<'_> {
         mods: &[Modification],
         duration: Duration,
     ) -> Option<String> {
+        if let Some(sentence) = self.switched(affected, mods, duration) {
+            return Some(sentence);
+        }
         if duration == Duration::UntilEndOfTurn
             && let Some(sentence) = becomes::text(affected, mods)
         {
@@ -2403,6 +2517,14 @@ impl Writer<'_> {
                 } else {
                     ("those tokens".to_owned(), true)
                 }
+            }
+            // The target a sentence before named is "it" ("Put two +1/+1 counters on target creature. It gains vigilance").
+            Ref::Target(0)
+                if self.named
+                    && self.single(affected)
+                    && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
+            {
+                ("it".to_owned(), false)
             }
             Ref::Target(0)
                 if self.at_most_one(affected)
@@ -2428,7 +2550,22 @@ impl Writer<'_> {
         if let [Modification::CantBeBlocked] = mods {
             return Some(format!("{subject} can't be blocked this turn"));
         }
+        if duration == Duration::UntilEndOfTurn
+            && matches!(
+                mods,
+                [Modification::CantAttack | Modification::CantBlock]
+                    | [Modification::CantAttack, Modification::CantBlock]
+            )
+        {
+            let restriction = statics::predicate(mods, plural, false, false)?;
+            return Some(format!("{subject} {restriction} this turn"));
+        }
         if !plural && let Some(sentence) = becomes::animate_text(&subject, mods) {
+            return Some(sentence);
+        }
+        if let Ref::Each(group) = affected
+            && let Some(sentence) = group_becomes::text(&subject, group, mods, duration)
+        {
             return Some(sentence);
         }
         if !plural

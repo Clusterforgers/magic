@@ -50,6 +50,9 @@ impl Characteristics {
     /// Whether the object is `subtype`, given the subtypes its card prints: one an effect gave, or a printed one that
     /// no effect replaced (CR 205.1b).
     pub fn has_subtype(&self, printed: &[Subtype], subtype: &Subtype) -> bool {
+        if let Some((first, second)) = subtype.two_word_land() {
+            return self.has_subtype(printed, &first) && self.has_subtype(printed, &second);
+        }
         self.subtypes.contains(subtype)
             || (self.all_creature_types && subtype.is_creature_type())
             || (printed.contains(subtype)

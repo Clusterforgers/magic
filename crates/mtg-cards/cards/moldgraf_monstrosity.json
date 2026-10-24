@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3c4d5392-27cf-492e-9ae1-dee330b82223",
+  "name": "Moldgraf Monstrosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moldgraf Monstrosity",
+      "oracle_fingerprint": "eeafc14a35af1023c08d67b45fb7496e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }, "This"] } } },
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                  },
+                  "count": 2,
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

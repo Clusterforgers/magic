@@ -1,0 +1,22 @@
+{
+  "id": "396bbb7d-ae61-4d8d-b931-9ed2f712832e",
+  "oracle_id": "33e85a8a-86df-4cdc-a9cc-8cbabe92c3c0",
+  "name": "Urza's Mine",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "1051",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Urza's Mine",
+  "oracle_text": "{T}: Add {C}. If you control an Urza's Power-Plant and an Urza's Tower, add {C}{C} instead.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}
