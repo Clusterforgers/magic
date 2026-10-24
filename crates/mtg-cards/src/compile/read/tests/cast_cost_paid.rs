@@ -26,6 +26,16 @@ fn spell_of(text: &str) -> Option<Ability> {
     ClauseKind::Spell,
     r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":3}},{"GainLife":{"amount":3}},{"If":{"condition":{"CastWith":"Mayhem"},"then":[{"Draw":{}}]}}]}}"#
 )]
+#[case::kicked_with_its_first_kicker(
+    "When this creature enters, if it was kicked with its {W} kicker, you gain 3 life.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"KickedWith":"{W}"},"effects":[{"GainLife":{"amount":3}}]}}"#
+)]
+#[case::kicked_with_its_second_kicker(
+    "When this creature enters, if it was kicked with its {2}{B} kicker, you gain 3 life.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"KickedWith":"{2}{B}"},"effects":[{"GainLife":{"amount":3}}]}}"#
+)]
 fn the_cost_paid_condition_reads_and_writes_back(
     #[case] text: &str,
     #[case] kind: ClauseKind,
@@ -38,6 +48,7 @@ fn the_cost_paid_condition_reads_and_writes_back(
 #[case::another_cost("If this spell's kicker cost was paid, draw a card.")]
 #[case::the_wrong_owner("If its prowl cost was paid, draw a card.")]
 #[case::no_cost("If this spell's prowl was paid, draw a card.")]
+#[case::a_kicker_without_a_cost("If this spell was kicked with its kicker, draw a card.")]
 fn a_condition_the_template_does_not_model_is_left_to_the_table(#[case] text: &str) {
     assert!(spell_of(text).is_none(), "{text}");
 }

@@ -149,6 +149,11 @@ fn place(r: &mut Reader<'_>) -> Option<Ref> {
         Some(Ref::This)
     } else if r.it == Some(Ref::Triggering) && r.word("it") {
         Some(Ref::Triggering)
+    } else if matches!(r.it, Some(Ref::Bound(_)))
+        && (r.word("it") || r.words("that token") || r.words("each of them"))
+    {
+        // The tokens the sentence before created.
+        r.it.clone()
     } else if let Some(host) = attached(r) {
         Some(host)
     } else {

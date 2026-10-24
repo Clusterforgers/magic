@@ -264,6 +264,7 @@ mod stations;
 mod strive;
 mod tap_and_mill;
 mod this_or_another;
+mod token_binds;
 mod token_groups;
 mod token_keywords;
 mod token_sizes;
@@ -656,6 +657,7 @@ mod removal {
     #[case::wrath("Destroy all creatures. They can't be regenerated.", r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"}]},"regenerate":false}}]}}"#)]
     #[case::swords("Exile target creature. Its controller gains life equal to its power.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Exile":{"what":{"Target":0}}},{"GainLife":{"who":{"ControllerOf":{"Target":0}},"amount":{"Stat":{"of":{"Target":0},"stat":"Power"}}}}]}}"#)]
     #[case::no_regeneration("Destroy target creature. It can't be regenerated.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#)]
+    #[case::that_creature_cant_be_regenerated("Destroy target creature. That creature can't be regenerated.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#)]
     #[case::any_permanent("Destroy target permanent.", r#"{"Spell":{"targets":[{"what":{"Object":[]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#)]
     #[case::artifact_or_enchantment("Destroy target artifact or enchantment.", r#"{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Enchantment"}]}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#)]
     #[case::an_opponent_controls("Destroy target creature an opponent controls.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#)]
