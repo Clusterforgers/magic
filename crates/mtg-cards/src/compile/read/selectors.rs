@@ -553,6 +553,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
         return Some(Pred::EnteredThisTurn);
     }
+    if r.words("that attacked this turn") {
+        return Some(Pred::AttackedThisTurn);
+    }
     // The creatures that paid for the source: "creature that crewed it this turn".
     if r.words("that crewed it this turn") {
         return Some(Pred::Crewed(Ref::This));
@@ -673,6 +676,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
         Pred::EnteredThisTurn => "that entered this turn".to_owned(),
+        Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::DamagedBy(Ref::This) => "dealt damage by ~ this turn".to_owned(),

@@ -941,6 +941,7 @@ impl<'a> Scope<'a> {
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
+            Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
             Pred::DamagedBy(named) => self
                 .objects(named)?
                 .iter()
@@ -1337,6 +1338,11 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// Whether the turn is in a combat phase.
+    fn in_combat(&self) -> bool {
+        self.state.turn().step().phase() == crate::turn::Phase::Combat
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -1412,7 +1418,8 @@ impl<'a> Scope<'a> {
             Condition::BeforeAttackers => {
                 self.state.turn().step() < crate::turn::Step::DeclareAttackers
             }
-            Condition::InCombat => self.state.turn().step().phase() == crate::turn::Phase::Combat,
+            Condition::InCombat => self.in_combat(),
+            Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

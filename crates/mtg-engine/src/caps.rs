@@ -209,6 +209,7 @@ const RUNS: &[&str] = &[
     "Rule.PlayersHave",
     "Rule.CantDraw",
     "Rule.CantSearch",
+    "Rule.SkipExtraTurns",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
     "Rule.SkipDrawStep",
@@ -444,6 +445,7 @@ const RUNS: &[&str] = &[
     "Condition.Step",
     "Condition.BeforeAttackers",
     "Condition.InCombat",
+    "Condition.FirstCombat",
     "Rule.CanBeCommander",
 ];
 
@@ -872,6 +874,7 @@ mod tests {
     #[case::a_step_of_the_turn("Condition.Step", true)]
     #[case::before_attackers("Condition.BeforeAttackers", true)]
     #[case::in_combat("Condition.InCombat", true)]
+    #[case::the_first_combat("Condition.FirstCombat", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

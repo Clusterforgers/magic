@@ -19,6 +19,7 @@ mod bare;
 mod battalion;
 mod blink;
 mod bounce_all;
+mod c4_phases;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -241,6 +242,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     counters_equal::add(ability, texts);
     counters_put::add(ability, texts);
     add_more(ability, texts);
+    c4_oracle_only(ability, texts);
+}
+
+/// The wordings of the added phases, dice, coins and votes of the (r1as) pass.
+fn c4_oracle_only(ability: &Ability, texts: &mut Vec<String>) {
+    c4_phases::add(ability, texts);
 }
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.

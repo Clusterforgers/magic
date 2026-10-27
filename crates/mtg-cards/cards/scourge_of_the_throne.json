@@ -1,0 +1,31 @@
+{
+  "oracle_id": "06496a05-7f1a-402c-9594-304cd82bfefd",
+  "name": "Scourge of the Throne",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scourge of the Throne",
+      "oracle_fingerprint": "e68f8fbe7c8544d4b2eecee319482d6a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Dethrone" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Attacks": { "what": ["This"] } }, "nth": 1 } },
+            "if": {
+              "Compare": {
+                "left": { "Life": "Defending" },
+                "op": "Ge",
+                "right": { "HighestLife": "EachPlayer" }
+              }
+            },
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

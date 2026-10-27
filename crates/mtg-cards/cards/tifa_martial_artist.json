@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0836c8d1-c453-4a3a-a52a-eb66839b8542",
+  "name": "Tifa, Martial Artist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tifa, Martial Artist",
+      "oracle_fingerprint": "a8e020e887349de0045eea9656ceb8e8",
+      "abilities": [
+        { "Keyword": "Melee" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 7 } }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              {
+                "If": {
+                  "condition": { "All": ["YourTurn", "FirstCombat"] },
+                  "then": [{ "AddPhase": { "phases": ["Combat"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -65,6 +65,8 @@ pub enum Rule {
     CantDraw(Vec<PlayerId>),
     /// The players can't search libraries.
     CantSearch(Vec<PlayerId>),
+    /// The players skip each extra turn they would begin (CR 500.7).
+    SkipExtraTurns(Vec<PlayerId>),
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
@@ -238,6 +240,7 @@ pub(crate) struct RulesInForce {
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
+    skip_extra_turns: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
@@ -339,6 +342,7 @@ impl RulesInForce {
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
@@ -464,6 +468,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
@@ -522,6 +527,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
+        | Rule::SkipExtraTurns(players)
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
@@ -626,6 +632,7 @@ static NONE: RulesInForce = RulesInForce {
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
+    skip_extra_turns: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
@@ -802,6 +809,11 @@ pub(crate) fn granted_player_keywords(state: &GameState, player: PlayerId) -> Ve
         .filter(|(who, _)| *who == player)
         .map(|(_, keyword)| keyword)
         .collect()
+}
+
+/// Whether `player` skips each extra turn they would begin: the one place the turn order reads this rule.
+pub fn skips_extra_turns(state: &GameState, player: PlayerId) -> bool {
+    state.rules().skip_extra_turns.contains(&player)
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.

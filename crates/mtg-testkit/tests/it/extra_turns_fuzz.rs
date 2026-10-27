@@ -63,6 +63,7 @@ fn bot_games_with_extra_turns_and_added_phases_keep_every_invariant() {
         "phases were added",
         "a second combat phase began",
         "a turn began at its upkeep step",
+        "an extra turn was passed over",
     ] {
         assert!(
             seen.contains_key(what),

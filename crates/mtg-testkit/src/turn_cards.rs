@@ -5,7 +5,8 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::{Effect, PhaseKind};
-use mtg_cards::refs::Ref;
+use mtg_cards::modify::GameRule;
+use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
@@ -29,7 +30,27 @@ pub const TURN_CARDS: &[&str] = &[
     "Seize the Day",
     "Time Sieve",
     "Magistrate's Scepter",
+    "Hellkite Charger",
+    "Lightning Runner",
+    "Godo, Bandit Warlord",
+    "Scourge of the Throne",
+    "Hexplate Wallbreaker",
+    "Tifa, Martial Artist",
 ];
+
+/// A free artifact with a rule: "If an opponent would begin an extra turn, that player skips that turn instead."
+pub fn stranglehold() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Fuzz Stranglehold")
+            .with_type(CardType::Artifact)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(Ability::Rule {
+                rule: GameRule::SkipExtraTurns(Ref::Opponents),
+                condition: None,
+                from: ZoneKind::Battlefield,
+            }),
+    )
+}
 
 /// A free sorcery whose effects are `effects`.
 fn free_spell(name: &str, card_type: CardType, effects: Vec<Effect>) -> Arc<CardDefinition> {
@@ -80,6 +101,7 @@ pub fn turn_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
         time_spell("Fuzz Hourglass", Ref::EachPlayer, 1, true),
         2,
     ));
+    deck.extend(std::iter::repeat_n(stranglehold(), 2));
     deck.extend(std::iter::repeat_n(
         phase_spell(
             "Fuzz Assault",
