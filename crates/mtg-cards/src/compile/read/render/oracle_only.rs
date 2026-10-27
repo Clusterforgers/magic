@@ -23,11 +23,14 @@ mod c4_af;
 mod c4_attack_token;
 mod c4_aura_becomes;
 mod c4_counters_you_put;
+mod c4_group_effects;
+mod c4_moves;
 mod c4_mr;
 mod c4_phases;
 mod c4_prevent_combat;
 mod c4_support;
 mod c4_swaps;
+mod c4_token_counts;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -253,6 +256,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c4_af(ability, texts);
     add_c4_mr(ability, texts);
     c4_oracle_only(ability, texts);
+    add_c4(ability, texts);
 }
 
 /// The wordings of the fourth sample of the names A to F; it runs after the others because it rewrites their texts.
@@ -273,6 +277,13 @@ fn add_c4_gl(ability: &Ability, texts: &mut Vec<String>) {
 /// The wordings of the added phases, dice, coins and votes of the (r1as) pass.
 fn c4_oracle_only(ability: &Ability, texts: &mut Vec<String>) {
     c4_phases::add(ability, texts);
+}
+
+/// The wordings of the gaps of the model-assisted reading that (r2bi) closes.
+fn add_c4(ability: &Ability, texts: &mut Vec<String>) {
+    c4_group_effects::add(ability, texts);
+    c4_moves::add(ability, texts);
+    c4_token_counts::add(ability, texts);
 }
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.

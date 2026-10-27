@@ -191,6 +191,7 @@ const RUNS: &[&str] = &[
     "Effect.CopyAbility",
     "Effect.BecomeCopy",
     "Effect.Continuous",
+    "Duration.WhileYouControlSource",
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.Shield",
@@ -580,6 +581,11 @@ mod tests {
     #[case::exiling("Effect.Exile", true)]
     #[case::countering("Effect.Counter", true)]
     #[case::continuous_effects("Effect.Continuous", true)]
+    #[case::control_for_as_long_as_you_control_the_source("Duration.WhileYouControlSource", true)]
+    #[case::a_rule_for_as_long_as_you_control_the_source(
+        "Rule.Duration.WhileYouControlSource",
+        false
+    )]
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]
     #[case::protection_from_a_chosen_colour("Mod.AddProtectionFromChosenColor", true)]

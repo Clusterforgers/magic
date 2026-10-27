@@ -144,6 +144,8 @@ pub enum Duration {
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
+    /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).
+    WhileYouControlSource,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Without end (until the object or the game is gone).

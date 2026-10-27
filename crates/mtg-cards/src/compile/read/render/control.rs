@@ -22,6 +22,8 @@ impl Writer<'_> {
         let until = match duration {
             Duration::UntilEndOfTurn => " until end of turn",
             Duration::Forever => "",
+            Duration::WhileYouControlSource => " for as long as you control ~",
+            Duration::WhileSourceOnBattlefield => " for as long as ~ remains on the battlefield",
             _ => return None,
         };
         match (affected, new) {
@@ -49,12 +51,15 @@ impl Writer<'_> {
         let Effect::Continuous {
             affected,
             mods,
-            duration: Duration::Forever,
+            duration:
+                duration @ (Duration::Forever
+                | Duration::WhileYouControlSource
+                | Duration::WhileSourceOnBattlefield),
         } = effect
         else {
             return None;
         };
-        self.control(affected, mods, Duration::Forever)
+        self.control(affected, mods, *duration)
     }
 
     /// "untap all creatures and gain control of them until end of turn. They gain haste until end of turn": the untap

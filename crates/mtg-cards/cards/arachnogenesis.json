@@ -1,0 +1,47 @@
+{
+  "oracle_id": "b655bee5-52d3-467e-b16c-cfc2edf2b1a1",
+  "name": "Arachnogenesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arachnogenesis",
+      "oracle_fingerprint": "c9c6ba443d4c7f8835f8f157548f649f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  },
+                  "count": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] }
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [{ "Type": "Creature" }, { "Not": { "Subtype": "Spider" } }],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

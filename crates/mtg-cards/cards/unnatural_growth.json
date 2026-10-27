@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7324abaa-48da-439d-9339-b0ea5eea612e",
+  "name": "Unnatural Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnatural Growth",
+      "oracle_fingerprint": "06cddae45f46cf48a3f5bb4851844924",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "creature" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Stat": { "of": { "Bound": "creature" }, "stat": "Power" }
+                              },
+                              "toughness": {
+                                "Stat": { "of": { "Bound": "creature" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

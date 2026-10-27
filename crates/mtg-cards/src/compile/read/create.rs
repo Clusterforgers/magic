@@ -627,6 +627,15 @@ fn quantity_text(count: &Amount, what: &str, per: bool) -> Option<(String, bool,
                 format!(" equal to {owner} {}", stat_name(*stat)?),
             )
         }
+        // "a number of 1/1 white Soldier creature tokens equal to your devotion to white"
+        Amount::Devotion(colors) if matches!(colors.len(), 1 | 2) => {
+            let names: Vec<&str> = colors.iter().map(|color| color_name(*color)).collect();
+            (
+                "a number of".to_owned(),
+                false,
+                format!(" equal to your devotion to {}", names.join(" and ")),
+            )
+        }
         // The same count in the other wording: "a Goblin token for each Goblin you control".
         counted if per => {
             let (each, tail) = counted_parts(counted)?;

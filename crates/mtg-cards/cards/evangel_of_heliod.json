@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4fbe1c02-f5bf-47c7-80de-09a32d01e5db",
+  "name": "Evangel of Heliod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evangel of Heliod",
+      "oracle_fingerprint": "0d01f22126dfde368421e6976b57fe8f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Devotion": ["White"] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -309,6 +309,20 @@ pub(crate) fn lasts(
                 .object(source.id)
                 .is_some_and(|o| o.counter() == source.counter && o.zone().is_permanent_zone())
         }),
+        // The control of the source is derived by the layers. The pass that decides which effects apply asks only that the
+        // source is there (`lasts_before_control`) and checks the control itself after the control layer, so this full
+        // check is for everything outside that pass.
+        Duration::WhileYouControlSource => {
+            lasts(
+                state,
+                Duration::WhileSourceOnBattlefield,
+                began,
+                controller,
+                source,
+            ) && source.is_some_and(|source| {
+                crate::characteristics::controller_of(state, source.id) == Some(controller)
+            })
+        }
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
         Duration::UntilOpponentBecomesMonarch => false,
@@ -352,7 +366,7 @@ pub struct ContinuousEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"WhileYouControlSource\" | \"Forever\""
         )
     )]
     pub duration: Duration,
@@ -414,6 +428,18 @@ impl ContinuousEffect {
             self.controller,
             self.source,
         ) && !self.spent(state)
+            && !self.gives_control_to_a_player_who_left(state)
+    }
+
+    /// [`is_active`](Self::is_active) without asking who controls the source of a "for as long as you control ~" effect:
+    /// the layers answer that themselves after the control layer, so asking them here would be circular.
+    pub(crate) fn is_active_before_control(&self, state: &GameState) -> bool {
+        let duration = match self.duration {
+            Duration::WhileYouControlSource => Duration::WhileSourceOnBattlefield,
+            other => other,
+        };
+        lasts(state, duration, self.turn, self.controller, self.source)
+            && !self.spent(state)
             && !self.gives_control_to_a_player_who_left(state)
     }
 

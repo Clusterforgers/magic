@@ -793,20 +793,43 @@ impl<'a> Scope<'a> {
     /// The zones a selector looks in: the one it names, the stack for spells, else the battlefield.
     fn zones_of(&self, selector: &Selector) -> Vec<Zone> {
         let seats = || (0..self.state.players().len()).map(PlayerId::from_index);
-        let named = selector.0.iter().find_map(|pred| match pred {
-            Pred::In(kind) => Some(*kind),
-            _ => None,
-        });
-        match named {
-            Some(ZoneKind::Hand) => seats().map(Zone::Hand).collect(),
-            Some(ZoneKind::Library) => seats().map(Zone::Library).collect(),
-            Some(ZoneKind::Graveyard) => seats().map(Zone::Graveyard).collect(),
-            Some(ZoneKind::Stack) => vec![Zone::Stack],
-            Some(ZoneKind::Exile) => vec![Zone::Exile],
-            Some(ZoneKind::Command) => seats().map(Zone::Command).collect(),
-            None if selector.0.iter().any(on_the_stack) => vec![Zone::Stack],
-            Some(ZoneKind::Battlefield) | None => vec![Zone::Battlefield],
+        // "from your hand and/or graveyard" is an `AnyOf` of zones: the objects of each of them are looked at.
+        let named: Vec<ZoneKind> = selector
+            .0
+            .iter()
+            .find_map(|pred| match pred {
+                Pred::In(kind) => Some(vec![*kind]),
+                Pred::AnyOf(list) if list.iter().all(|pred| matches!(pred, Pred::In(_))) => Some(
+                    list.iter()
+                        .filter_map(|pred| match pred {
+                            Pred::In(kind) => Some(*kind),
+                            _ => None,
+                        })
+                        .collect(),
+                ),
+                _ => None,
+            })
+            .unwrap_or_default();
+        if named.is_empty() {
+            return if selector.0.iter().any(on_the_stack) {
+                vec![Zone::Stack]
+            } else {
+                vec![Zone::Battlefield]
+            };
         }
+        let mut zones = Vec::new();
+        for kind in named {
+            match kind {
+                ZoneKind::Hand => zones.extend(seats().map(Zone::Hand)),
+                ZoneKind::Library => zones.extend(seats().map(Zone::Library)),
+                ZoneKind::Graveyard => zones.extend(seats().map(Zone::Graveyard)),
+                ZoneKind::Stack => zones.push(Zone::Stack),
+                ZoneKind::Exile => zones.push(Zone::Exile),
+                ZoneKind::Command => zones.extend(seats().map(Zone::Command)),
+                ZoneKind::Battlefield => zones.push(Zone::Battlefield),
+            }
+        }
+        zones
     }
 
     /// Every object the selector matches, in id order.

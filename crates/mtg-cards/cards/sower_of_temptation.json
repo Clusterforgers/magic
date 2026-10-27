@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5881aac2-4f31-45cb-bdb5-64a29ec23316",
+  "name": "Sower of Temptation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sower of Temptation",
+      "oracle_fingerprint": "82bbd7b33311317a0e96acca51ddaf39",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

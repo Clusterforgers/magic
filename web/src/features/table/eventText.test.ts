@@ -721,6 +721,10 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller until end of turn',
     ],
     [
+      effect(objects(2), { SetController: 1 }, 'WhileYouControlSource', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while its controller controls Jace Beleren',
+    ],
+    [
       effect(objects(1, 2), { ModifyPowerToughness: { power: 3, toughness: 3 } }, 'UntilYourNextTurn'),
       "Grizzly Bears and Hill Giant get +3/+3 until their controller's next turn",
     ],

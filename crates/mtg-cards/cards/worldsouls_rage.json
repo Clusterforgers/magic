@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3b6ef144-bb98-4686-9718-204f1c3cf020",
+  "name": "Worldsoul's Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldsoul's Rage",
+      "oracle_fingerprint": "7d11ef72f38168a9726a01f3c9557fc9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": "X" },
+                  "as": "lands"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "lands" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
