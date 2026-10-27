@@ -76,6 +76,8 @@ pub struct Merged {
     components: Vec<Component>,
     definition: Arc<CardDefinition>,
     fingerprint: u64,
+    /// The cards that go to another zone than the permanent when it leaves, with that zone (`Event::CardParted`).
+    parted: Vec<(ObjectId, Zone)>,
 }
 
 impl Merged {
@@ -90,6 +92,7 @@ impl Merged {
             fingerprint: stable_hash(&*definition),
             components,
             definition,
+            parted: Vec::new(),
         }
     }
 
@@ -154,6 +157,14 @@ impl Merged {
     fn others(&self) -> &[Component] {
         self.components.get(1..).unwrap_or_default()
     }
+
+    /// The zone `card` goes to in place of the permanent's when the permanent leaves, if one was set.
+    fn parted(&self, card: ObjectId) -> Option<Zone> {
+        self.parted
+            .iter()
+            .find(|(id, _)| *id == card)
+            .map(|(_, zone)| *zone)
+    }
 }
 
 impl PartialEq for Merged {
@@ -163,6 +174,7 @@ impl PartialEq for Merged {
             && self.components.iter().zip(&other.components).all(|(a, b)| {
                 (a.id, a.counter, a.over, a.kind) == (b.id, b.counter, b.over, b.kind)
             })
+            && self.parted == other.parted
     }
 }
 
@@ -173,6 +185,10 @@ impl Hash for Merged {
         self.fingerprint.hash(state);
         for card in &self.components {
             (card.id, card.counter, card.over).hash(state);
+        }
+        // Hashed only when set, so a game without it hashes as before.
+        if !self.parted.is_empty() {
+            self.parted.hash(state);
         }
     }
 }
@@ -317,28 +333,88 @@ pub(crate) fn cards_apart(object: &GameObject) -> Vec<ObjectId> {
         .map_or_else(Vec::new, |merged| merged.apart().collect())
 }
 
+/// The commander cards of `object` with their zone-change counters when it is a merged permanent (the card it was among
+/// them), else none.
+pub(crate) fn commander_cards(state: &GameState, object: &GameObject) -> Vec<(ObjectId, u32)> {
+    let Some(merged) = object.permanent().and_then(PermanentState::merged) else {
+        return Vec::new();
+    };
+    let others = merged
+        .others()
+        .iter()
+        .filter(|card| !card.is_token())
+        .map(|card| (card.id, card.counter));
+    std::iter::once((object.id(), object.counter()))
+        .chain(others)
+        .filter(|(id, _)| state.is_commander(*id))
+        .collect()
+}
+
+/// The name of the card `card` of the merged permanent `object`.
+pub(crate) fn card_name(object: &GameObject, card: ObjectId) -> Option<&str> {
+    object
+        .permanent()
+        .and_then(PermanentState::merged)?
+        .components
+        .iter()
+        .find(|part| part.id == card)
+        .map(|part| part.card().name.as_str())
+}
+
+/// Folds `Event::CardParted`: the card `card` of the merged permanent `permanent` goes to `to` when the permanent leaves.
+pub(crate) fn part(
+    state: &mut GameState,
+    permanent: ObjectId,
+    card: ObjectId,
+    to: Zone,
+) -> Result<(), EngineError> {
+    if !state.zones.exists(to) || matches!(to, Zone::Battlefield | Zone::Stack) {
+        return Err(invalid(format!("{card:?} cannot part to {to:?}")));
+    }
+    let merged = state
+        .objects
+        .get_mut(&permanent)
+        .and_then(|object| object.permanent.as_mut())
+        .and_then(|held| held.merged.as_mut())
+        .ok_or_else(|| invalid(format!("{permanent:?} is no merged permanent")))?;
+    if !merged.others().iter().any(|part| part.id == card) {
+        return Err(invalid(format!("{card:?} is no card of {permanent:?}")));
+    }
+    merged.parted.retain(|(id, _)| *id != card);
+    merged.parted.push((card, to));
+    Ok(())
+}
+
 /// What the permanent that left the battlefield was made of, besides its own card: the cards that become objects of their
-/// own in the zone it went to.
-pub(crate) fn taken(permanent: &mut Option<PermanentState>) -> Vec<Component> {
+/// own, each with the zone set for it in place of the permanent's, if any.
+pub(crate) fn taken(permanent: &mut Option<PermanentState>) -> Vec<(Component, Option<Zone>)> {
     permanent
         .as_mut()
         .and_then(|p| p.merged.take())
-        .map_or_else(Vec::new, |merged| merged.others().to_vec())
+        .map_or_else(Vec::new, |merged| {
+            merged
+                .others()
+                .iter()
+                .map(|card| (card.clone(), merged.parted(card.id)))
+                .collect()
+        })
 }
 
-/// Puts the cards of a merged permanent that left into `to` as objects of their own, owned by `owner` (CR 729.3).
+/// Puts the cards of a merged permanent that left into `to`, or into the zone set for a card, as objects of their own
+/// owned by `owner` (CR 729.3).
 pub(crate) fn scatter(
     state: &mut GameState,
-    cards: Vec<Component>,
+    cards: Vec<(Component, Option<Zone>)>,
     owner: PlayerId,
     to: Zone,
     placement: Placement,
 ) {
-    for card in cards {
+    for (card, parted) in cards {
         // A token of the merged permanent ceases to exist (CR 111.7).
         if card.is_token() {
             continue;
         }
+        let to = parted.unwrap_or(to);
         let mut object = GameObject::new(card.id, owner, Arc::clone(&card.definition), to);
         object.counter = card.counter + 1;
         state.zones.insert(to, card.id, placement);

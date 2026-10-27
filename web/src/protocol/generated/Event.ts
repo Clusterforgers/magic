@@ -704,7 +704,19 @@ over: boolean,
 /**
  * The controller of the spell.
  */
-player: PlayerId, } } | { "Adapted": { 
+player: PlayerId, } } | { "CardParted": { 
+/**
+ * The merged permanent.
+ */
+permanent: ObjectId, 
+/**
+ * The card, an object of its own again once the permanent has left.
+ */
+card: ObjectId, 
+/**
+ * Where it goes.
+ */
+to: Zone, } } | { "Adapted": { 
 /**
  * The creature that adapted.
  */

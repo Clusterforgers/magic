@@ -86,6 +86,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::ZoneChanged { .. }
         | Event::Entered { .. }
         | Event::Mutated { .. }
+        | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
         Event::CompanionRevealed { .. } | Event::CompanionBrought { .. } => {

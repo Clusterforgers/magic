@@ -1,12 +1,17 @@
-//! Goal: a merged permanent (a creature a mutating creature spell merged with) is one object to every seat: the same id with the characteristics of the top card, the abilities of both and the cards it is made of from the top down, the same for each viewer, while the spell is gone from the stack and the cards still in the hands stay hidden from the seats that may not see them.
+//! Goal: a merged permanent (a creature a mutating creature spell merged with) is one object to every seat: the same id with the characteristics of the top card, the abilities of both and the cards it is made of from the top down, the same for each viewer, while the spell is gone from the stack and the cards still in the hands stay hidden from the seats that may not see them; a commander card its owner puts into the command zone apart from the other cards reaches every seat as a public event.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use std::sync::Arc;
+
 use mtg_core::ids::PlayerId;
+use mtg_engine::Event;
 use mtg_engine::choose::{ChoiceOption, OptionChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+use mtg_engine::format::Commander;
 use mtg_engine::zones::Zone;
-use mtg_protocol::{ObjectView, StateView};
+use mtg_protocol::{EventView, ObjectView, StateView, project_events};
 use mtg_testkit::cards::{bear, forest, island};
+use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -103,5 +108,53 @@ fn every_seat_sees_one_object_made_of_the_cards_from_the_top_down(
         assert!(!text.contains(hidden), "{hidden}");
     }
     assert!(state.zone(Zone::Battlefield).contains(&bear_id));
+    Ok(())
+}
+
+#[rstest]
+fn a_commander_card_parted_from_a_merged_permanent_reaches_every_seat(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] over: bool,
+) -> Result<(), ScriptError> {
+    let lands = (0..8).map(|i| ready(if i % 2 == 0 { forest() } else { island() }));
+    let scenario = (0..seats).fold(
+        Scenario::new(seats)
+            .format(Arc::new(Commander))
+            .commanders(0, [card(GNARR).unwrap()])
+            .hand_named(0, ["Snap"])
+            .battlefield(0, lands.chain([ready(bear())]).collect::<Vec<_>>()),
+        |scenario, seat| scenario.library(seat, vec![forest(); 8]),
+    );
+    let mut driver = Driver::from_scenario(scenario)?;
+    let bear_id = driver.id_of("Grizzly Bears")?;
+    merge(&mut driver, over)?;
+    let name = driver.state().object(bear_id).unwrap().card().name.clone();
+    let target = driver.target_named(&name)?;
+    driver.cast_at("Snap", &[target])?;
+    while !matches!(&driver.decision()?.kind,
+        DecisionKind::YesNo(options) if options.text.contains("command zone"))
+    {
+        driver.answer_passively()?;
+    }
+    let before = driver.state().clone();
+    let start = driver.engine().events().len();
+    driver.answer(Answer::YesNo(YesNoChoice(true)))?;
+    let events = driver.engine().events()[start..].to_vec();
+    let gnarr = driver.state().commanders().next().unwrap();
+    assert_eq!(
+        driver.state().object(gnarr).unwrap().zone(),
+        Zone::Command(PlayerId(0))
+    );
+    let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    let batches = project_events(&before, &events, &viewers, 0).unwrap();
+    assert_eq!(batches.len(), seats);
+    for batch in batches {
+        assert!(
+            batch.events.iter().any(|view| matches!(view,
+                EventView::Public(Event::CardParted { card, to: Zone::Command(_), .. }) if *card == gnarr)),
+            "{:?}",
+            batch.events
+        );
+    }
     Ok(())
 }
