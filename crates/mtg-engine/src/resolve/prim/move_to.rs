@@ -1246,7 +1246,7 @@ mod tests {
         want.sort_unstable();
         got.sort_unstable();
         assert_eq!(got, want);
-        assert!(folded.object(wolf).is_none() == token);
+        assert_eq!(folded.object(wolf).is_none(), token);
         assert!(!folded.zone(Zone::Battlefield).contains(&wolf));
         let mut ends: Vec<ObjectId> = match place {
             BOTTOM => library(&folded, ME)[..moved.len()].to_vec(),
