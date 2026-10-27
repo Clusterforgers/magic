@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c4fb12cb-05e1-4df2-b62e-3391621a601b",
+  "name": "Here Comes a New Hero!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Here Comes a New Hero!",
+      "oracle_fingerprint": "a9e95cb2bb7a1b2ef1a26d15a7b61552",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": "X" } },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 1 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

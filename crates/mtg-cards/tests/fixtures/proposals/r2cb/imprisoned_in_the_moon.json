@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"AnyOf":[{"Type":"Creature"},{"Type":"Land"},{"Type":"Planeswalker"}]}]}},{"Static":{"affected":"Attached","mods":[{"SetTypes":["Land"]},{"SetColors":[]},"LoseAbilities",{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}}]}}]}]}

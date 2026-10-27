@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Hexproof"},{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":"Tapped"}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":2}}]}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}]}]}

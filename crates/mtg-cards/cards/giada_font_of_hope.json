@@ -1,0 +1,41 @@
+{
+  "oracle_id": "48e6d3d8-2f27-4017-acdd-40bce8cdbc02",
+  "name": "Giada, Font of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giada, Font of Hope",
+      "oracle_fingerprint": "5748b90026c2b1be4a477835d12297b8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": ["Other", { "Subtype": "Angel" }, { "ControlledBy": "You" }] }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Subtype": "Angel" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["White"] },
+                  "only": [{ "Spell": { "subtypes": ["Angel"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cc965557-f69e-4689-8791-d3618e4ffbfa",
+  "name": "Hormagaunt Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hormagaunt Horde",
+      "oracle_fingerprint": "a2b2fbed2b49227e2a10acfcef49287f",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": { "cost": "{2}{G}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

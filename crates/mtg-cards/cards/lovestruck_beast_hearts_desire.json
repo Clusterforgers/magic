@@ -1,0 +1,59 @@
+{
+  "oracle_id": "7e84aff5-2cb6-4214-befd-3d2de31229e5",
+  "name": "Lovestruck Beast // Heart's Desire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lovestruck Beast",
+      "oracle_fingerprint": "24c929c07bd1888059a72181af4d1bb1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Eq", "to": 1 } },
+                    { "Compare": { "stat": "Toughness", "op": "Eq", "to": 1 } }
+                  ]
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Heart's Desire",
+      "oracle_fingerprint": "04868706edaa1382945b7b50bc786175",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

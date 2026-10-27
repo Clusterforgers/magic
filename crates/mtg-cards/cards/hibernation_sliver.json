@@ -1,0 +1,28 @@
+{
+  "oracle_id": "edb8a6d6-9e25-4048-a842-e854eece42c2",
+  "name": "Hibernation Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hibernation Sliver",
+      "oracle_fingerprint": "ad2501ca126a06ef00ab3777c7517141",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "PayLife": 2 }],
+                    "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

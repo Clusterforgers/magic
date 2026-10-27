@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"Opponents"}},"effects":[{"DealDamage":{"source":"This","to":{"ControllerOf":"Triggering"},"amount":{"Stat":{"of":"This","stat":"Power"}}}}]}},{"Keyword":"Undying"}]}]}

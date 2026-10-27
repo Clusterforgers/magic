@@ -1,0 +1,45 @@
+{
+  "oracle_id": "4304035c-c3e4-4a19-aa1f-92a83d8aed1f",
+  "name": "Geist of Saint Traft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geist of Saint Traft",
+      "oracle_fingerprint": "4ec40bf5340c54f1634a95dcaa4b09af",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "angel"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "angel" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

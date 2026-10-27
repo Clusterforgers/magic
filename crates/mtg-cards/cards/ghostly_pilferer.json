@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fe168bf1-f626-460c-890b-1ce758af01fc",
+  "name": "Ghostly Pilferer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostly Pilferer",
+      "oracle_fingerprint": "f769e07ca068dbff991c93a49de7c785",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "effects": [{ "Pay": { "cost": "{2}", "paid": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "Opponents" }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Shield":{"when":{"Damage":{"source":[{"Type":"Creature"},{"Not":{"HasCounter":"+1/+1"}}],"combat":true}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}]}]}

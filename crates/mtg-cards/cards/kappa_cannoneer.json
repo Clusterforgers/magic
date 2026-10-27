@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7fffbe7f-ad78-4bb6-a611-c37e495c6ee0",
+  "name": "Kappa Cannoneer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kappa Cannoneer",
+      "oracle_fingerprint": "692eac8f1ebad3ae979823577afec963",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        { "Keyword": { "Ward": "{4}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": ["Other", { "Type": "Artifact" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

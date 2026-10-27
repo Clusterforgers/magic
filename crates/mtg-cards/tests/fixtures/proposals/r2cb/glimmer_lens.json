@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"ForMirrodin"},{"Triggered":{"when":{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"at_least":2}},"if":{"Matches":{"subject":"Attached","selector":["Attacking"]}},"effects":[{"Draw":{}}]}},{"Keyword":{"Equip":"{1}{W}"}}]}]}

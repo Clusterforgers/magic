@@ -1,0 +1,54 @@
+{
+  "oracle_id": "ab74c6b1-2099-4429-94b7-a5656ac04db3",
+  "name": "Kinetic Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinetic Ooze",
+      "oracle_fingerprint": "3956a01d5ca840fbfdad092e4897e5dc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": ["Other", { "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 10 } },
+                  "then": [{ "MultiplyCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

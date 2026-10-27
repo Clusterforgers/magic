@@ -1,0 +1,38 @@
+{
+  "oracle_id": "339a7418-9a29-4eae-a3c2-ea590d175936",
+  "name": "Imprisoned in the Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imprisoned in the Moon",
+      "oracle_fingerprint": "d8335c06e37d1eddd0890dd281a1c80b",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }, { "Type": "Planeswalker" }] }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetTypes": ["Land"] },
+              { "SetColors": [] },
+              "LoseAbilities",
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

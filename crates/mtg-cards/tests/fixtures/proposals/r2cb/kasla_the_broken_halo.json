@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Convoke"},{"Keyword":"Flying"},{"Keyword":"Vigilance"},{"Keyword":"Haste"},{"Triggered":{"when":{"SpellCast":{"what":["Other",{"HasKeyword":"Convoke"}],"by":"You"}},"effects":[{"Scry":{"count":2}},{"Draw":{}}]}}]}]}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d4e875d9-2245-470d-aa2f-1dfe66ce2d15",
+  "name": "Karoo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karoo",
+      "oracle_fingerprint": "66799ec1ed0708bfc71d5bff2043f1ac",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Plains" }, "Untapped"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

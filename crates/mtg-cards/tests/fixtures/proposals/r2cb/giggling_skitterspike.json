@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Indestructible"},{"Triggered":{"when":{"AnyOf":[{"Attacks":{"what":["This"]}},{"Blocks":{"what":["This"]}},{"BecomesTarget":{"what":["This"],"by":["Spell"]}}]},"effects":[{"DealDamage":{"source":"This","to":"Opponents","amount":{"Stat":{"of":"This","stat":"Power"}}}}]}},{"Activated":{"cost":"{5}","effects":[{"Monstrosity":{"count":5}}]}}]}]}

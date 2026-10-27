@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7b3e05e1-31b4-46af-b3d0-f2467f8551e9",
+  "name": "Goblin Razerunners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Razerunners",
+      "oracle_fingerprint": "efd66edf84e9c1882a7903c49809484c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": { "Target": 0 },
+                        "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

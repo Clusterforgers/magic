@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e7125493-febc-4e8e-abdc-5fc4f94a281c",
+  "name": "Kumena, Tyrant of Orazca",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kumena, Tyrant of Orazca",
+      "oracle_fingerprint": "18a01cad7c4bb4548275c23814572948",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": ["Other", { "Subtype": "Merfolk" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Merfolk" }], "count": 3 } }],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Merfolk" }], "count": 5 } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

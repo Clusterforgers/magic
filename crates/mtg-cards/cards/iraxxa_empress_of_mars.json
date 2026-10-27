@@ -1,0 +1,36 @@
+{
+  "oracle_id": "52925539-423a-42ec-91b9-0d39e7df565c",
+  "name": "Iraxxa, Empress of Mars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iraxxa, Empress of Mars",
+      "oracle_fingerprint": "9e6e53119f88b7839466982b89b5b5e0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "BattleCry" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien Warrior",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Alien", "Warrior"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Artifact"},{"Type":"Creature"},"Attacking",{"ControlledBy":"You"}]},"combat":true}},"by":"Prevent"}},{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"Type":"Artifact"},{"Type":"Creature"},{"ControlledBy":"You"}],"to":"Battlefield"}}},"limit":"OncePerTurn","effects":[{"Draw":{}}]}}]}]}
