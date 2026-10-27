@@ -46,6 +46,8 @@ mod c5_gl_modes;
 mod c5_gl_swaps;
 mod c5_gl_twins;
 mod c5_mr_writers;
+mod c5_sz_sentences;
+mod c5_sz_wholes;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -277,6 +279,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c5_af(ability, texts);
     add_c5_mr(ability, texts);
     add_c5_gl(ability, texts);
+    add_c5_sz(ability, texts);
 }
 
 /// The wordings of the dice, coins, votes and piles of the (r1at) pass.
@@ -498,4 +501,10 @@ fn add_c4_mr(ability: &Ability, texts: &mut Vec<String>) {
 /// Adds the wordings of the fifth sample of the names M to R; it runs last and edits what the others found.
 fn add_c5_mr(ability: &Ability, texts: &mut Vec<String>) {
     c5_mr_writers::add(ability, texts);
+}
+
+/// Adds the wordings of the fifth sample of the names S to Z.
+fn add_c5_sz(ability: &Ability, texts: &mut Vec<String>) {
+    c5_sz_sentences::add(ability, texts);
+    c5_sz_wholes::add(ability, texts);
 }

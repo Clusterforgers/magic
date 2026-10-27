@@ -1,0 +1,31 @@
+{
+  "oracle_id": "fbfe98f0-110b-4d4b-9240-2767b08acf68",
+  "name": "Toxicrene",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toxicrene",
+      "oracle_fingerprint": "72a2ec908dfb9e05e14a5b2cb100cab0",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }] },
+            "mods": [
+              "LoseAbilities",
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

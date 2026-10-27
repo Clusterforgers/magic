@@ -1,0 +1,41 @@
+{
+  "oracle_id": "411c3636-a5b3-42fa-8020-ceacf581a4f3",
+  "name": "Stone Idol Generator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stone Idol Generator",
+      "oracle_fingerprint": "2ae14c79da8c0e762dfd5b9c6338ed73",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 6 }],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 6,
+                      "toughness": 12,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

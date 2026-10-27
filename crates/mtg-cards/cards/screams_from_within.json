@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a3b3b9ae-1e48-481d-80a5-7e2a26cf2f50",
+  "name": "Screams from Within",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Screams from Within",
+      "oracle_fingerprint": "17e8bf422ff9ab0d38b110a653f237ae",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

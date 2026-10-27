@@ -1,0 +1,24 @@
+{
+  "oracle_id": "987a0b61-2ce4-47bd-8f5e-1e7bf01d0869",
+  "name": "Sergeant John Benton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sergeant John Benton",
+      "oracle_fingerprint": "3f12d3293e417df6882a6c53e0ffe6cc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Draw": { "count": "Triggering" } },
+              { "Draw": { "who": "Triggering", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

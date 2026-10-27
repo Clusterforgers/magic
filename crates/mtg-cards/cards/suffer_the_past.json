@@ -1,0 +1,34 @@
+{
+  "oracle_id": "edf46ef0-159d-4f0b-ae14-14e0c8446382",
+  "name": "Suffer the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suffer the Past",
+      "oracle_fingerprint": "821e8db5694494d20e7af2ccc786b65c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 1 }, "as": "e" } },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Count": [{ "Is": { "Bound": "e" } }] }
+                }
+              },
+              { "GainLife": { "amount": { "Count": [{ "Is": { "Bound": "e" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

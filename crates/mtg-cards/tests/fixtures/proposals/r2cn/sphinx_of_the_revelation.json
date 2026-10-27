@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Lifelink"},{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"energy"},"count":"Triggering"}}]}},{"Activated":{"cost":[{"Mana":"{W}{U}{U}"},"Tap",{"PayEnergy":"X"}],"effects":[{"Draw":{"count":"X"}}]}}]}]}

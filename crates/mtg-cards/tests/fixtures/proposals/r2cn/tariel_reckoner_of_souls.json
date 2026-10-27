@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Vigilance"},{"Activated":{"cost":["Tap"],"targets":[{"what":"Opponent"}],"effects":[{"ChooseAtRandom":{"from":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"as":"c"}},{"Move":{"what":{"Bound":"c"},"to":{"Battlefield":{"under":"You"}}}}]}}]}]}

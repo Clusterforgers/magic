@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"NoMaxHandSize":"You"}}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"op":"Eq","right":13}},"effects":[{"WinGame":{}}]}},{"Activated":{"cost":"{3}{U}","effects":[{"Draw":{}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"p","effects":[{"If":{"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":{"Bound":"p"}},{"Compare":{"stat":"Power","op":"Ge","to":4}}]},"op":"Ge","right":1}},"then":[{"Draw":{"who":{"Bound":"p"}}}]}}]}},{"Destroy":{"what":{"Each":[{"Type":"Creature"}]}}}]}}]}]}

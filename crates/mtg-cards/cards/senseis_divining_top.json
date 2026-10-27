@@ -1,0 +1,36 @@
+{
+  "oracle_id": "13575cf9-65c1-4861-b21e-eb2155e07766",
+  "name": "Sensei's Divining Top",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sensei's Divining Top",
+      "oracle_fingerprint": "3e5449eb60878e31d3c192f6975ab1fc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

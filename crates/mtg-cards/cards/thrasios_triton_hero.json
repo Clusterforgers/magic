@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3d867016-2601-4a37-a73d-308898d3bd37",
+  "name": "Thrasios, Triton Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrasios, Triton Hero",
+      "oracle_fingerprint": "cbc507618f15e14615a791a7b8425f96",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              { "Scry": {} },
+              { "LookAtTop": { "as": "t" } },
+              { "Reveal": { "what": { "Bound": "t" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Bound": "t" }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "t" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

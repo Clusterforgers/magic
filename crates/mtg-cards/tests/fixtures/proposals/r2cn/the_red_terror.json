@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"Color":"Red"},{"ControlledBy":"You"}]}}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

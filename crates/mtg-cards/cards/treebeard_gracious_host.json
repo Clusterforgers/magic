@@ -1,0 +1,38 @@
+{
+  "oracle_id": "83860749-1603-46e9-9065-e98001244193",
+  "name": "Treebeard, Gracious Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treebeard, Gracious Host",
+      "oracle_fingerprint": "c5f8000d9f61edd67d89ee1ec09a62fd",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Subtype": "Halfling" }, { "Subtype": "Treefolk" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Triggering" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

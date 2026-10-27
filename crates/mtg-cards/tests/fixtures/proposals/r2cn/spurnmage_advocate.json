@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"Opponents"}]},"bounds":{"min":2,"max":2}},{"what":{"Object":[{"Type":"Creature"},"Attacking"]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"Destroy":{"what":{"Target":1}}}]}}]}]}

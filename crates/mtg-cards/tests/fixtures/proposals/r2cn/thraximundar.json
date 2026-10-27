@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Haste"},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Sacrifice":{"who":"Defending","filter":[{"Type":"Creature"}]}}]}},{"Triggered":{"when":{"Sacrificed":{"what":[{"Type":"Creature"}]}},"effects":[{"May":{"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}}]}]}

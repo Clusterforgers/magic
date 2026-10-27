@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0477b923-9f32-4e7f-ac08-c715cca819a4",
+  "name": "Spurnmage Advocate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spurnmage Advocate",
+      "oracle_fingerprint": "5475dcc1acc9541b8bfb081c29ac69a1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] },
+                "bounds": { "min": 2, "max": 2 }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Destroy": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9b8f6c6a-49a1-4061-a2c4-5be612e138fa",
+  "name": "Sphinx of the Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of the Revelation",
+      "oracle_fingerprint": "94ef0628f8c2dd797b03647ee17fe06f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}{U}" }, "Tap", { "PayEnergy": "X" }],
+            "effects": [{ "Draw": { "count": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "38c83332-2d21-450c-ae97-34109b565f59",
+  "name": "Tyrite Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyrite Sanctum",
+      "oracle_fingerprint": "6933fe09113d21609b2f07d0ac0dac1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "God" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Subtype": "God" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "indestructible" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

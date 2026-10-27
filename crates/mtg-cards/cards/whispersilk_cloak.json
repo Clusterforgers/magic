@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9ad4f730-a18e-4a7c-a468-a926c718c741",
+  "name": "Whispersilk Cloak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whispersilk Cloak",
+      "oracle_fingerprint": "ef444b9066f9af1a00941e9d7c9456cc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["CantBeBlocked", { "AddKeyword": "Shroud" }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

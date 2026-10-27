@@ -1,0 +1,58 @@
+{
+  "oracle_id": "0c4e2c90-c17b-42cc-b4d7-cf75970fbe90",
+  "name": "Staff of the Storyteller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of the Storyteller",
+      "oracle_fingerprint": "33d16a97b461342ed6116a8efa97280b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "story" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "story" } } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

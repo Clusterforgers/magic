@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Reach"},{"Keyword":"Deathtouch"},{"Static":{"affected":{"Each":[{"Type":"Land"}]},"mods":["LoseAbilities",{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}}]}}]}]}

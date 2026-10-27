@@ -1,0 +1,42 @@
+{
+  "oracle_id": "04260930-ff38-4b35-9ec4-e89196a4f2c7",
+  "name": "Zegana, Utopian Speaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zegana, Utopian Speaker",
+      "oracle_fingerprint": "60dc9603c64bb717349d302c1534d96e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    "Other",
+                    { "ControlledBy": "You" },
+                    { "HasCounter": "+1/+1" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Activated": { "cost": "{4}{U}{G}", "effects": [{ "Adapt": { "count": 4 } }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9c00b503-ae5e-4ce3-ad6a-92b541b2e3cd",
+  "name": "Tariel, Reckoner of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tariel, Reckoner of Souls",
+      "oracle_fingerprint": "4c6c229277144f01ca89f1fb2db80266",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "c"
+                }
+              },
+              { "Move": { "what": { "Bound": "c" }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

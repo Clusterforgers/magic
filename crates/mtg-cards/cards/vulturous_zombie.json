@@ -1,0 +1,20 @@
+{
+  "oracle_id": "11a28f60-2456-4ed5-b1cc-03c395f55e59",
+  "name": "Vulturous Zombie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulturous Zombie",
+      "oracle_fingerprint": "22a21d76469dfe70d8900b2366e89e7f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "Opponents" }], "to": "Graveyard" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

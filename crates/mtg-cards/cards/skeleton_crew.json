@@ -1,0 +1,61 @@
+{
+  "oracle_id": "2536750c-3c4f-4e00-b517-680ad4fd2ecc",
+  "name": "Skeleton Crew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skeleton Crew",
+      "oracle_fingerprint": "e653658ad11120f4d3278fd6032153f6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" },
+                { "AnyOf": [{ "Subtype": "Skeleton" }, { "Subtype": "Pirate" }] }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Skeleton Pirate",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Skeleton", "Pirate"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{B}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

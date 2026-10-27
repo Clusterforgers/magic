@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"},{"Supertype":"Legendary"}]}}],"required":true}},{"Spell":{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"}]}}},{"Exile":{"what":{"Each":[{"In":"Graveyard"}]}}},{"Move":{"what":"This","to":{"Library":{"place":"Bottom"}}}}]}}]}]}

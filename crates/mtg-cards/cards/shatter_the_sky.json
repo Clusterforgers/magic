@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2ffc7509-c7ce-44c4-a8cf-90ed161b5d10",
+  "name": "Shatter the Sky",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shatter the Sky",
+      "oracle_fingerprint": "ee2beb54d9bdd1f1506266c3da37f3f8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "p" } },
+                                { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Draw": { "who": { "Bound": "p" } } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

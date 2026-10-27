@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Activated":{"cost":[{"Mana":"{2}"},{"ReturnToHand":{"filter":[{"Type":"Land"}],"count":2}}],"targets":[{"what":{"Object":["Spell",{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]}}],"effects":[{"CopySpell":{"what":{"Target":0},"new_targets":true}}]}}]}]}

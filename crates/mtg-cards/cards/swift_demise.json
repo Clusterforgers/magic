@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7eaf3fd0-e141-42c2-874d-b471f4a94ad2",
+  "name": "Swift Demise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swift Demise",
+      "oracle_fingerprint": "047d78f6997fa632453a24ca03934473",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "ControlledBy": "You" } },
+                      "DamagedThisTurn"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

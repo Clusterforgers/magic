@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8bf8e846-9d10-4dbc-a379-df37bb9fb6d4",
+  "name": "Temur Sabertooth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temur Sabertooth",
+      "oracle_fingerprint": "a4b4752370b2c1c5a5eb1f0dbd7c90bf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

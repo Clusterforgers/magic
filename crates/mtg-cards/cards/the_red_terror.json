@@ -1,0 +1,23 @@
+{
+  "oracle_id": "557bd3c9-1c60-480d-9650-30c317506097",
+  "name": "The Red Terror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Red Terror",
+      "oracle_fingerprint": "16b922ec66eb314f55b5f87cba4de523",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": { "source": [{ "Color": "Red" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

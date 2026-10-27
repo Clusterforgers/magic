@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bc59977f-b3a7-4bc1-9f20-0a1e36d418ae",
+  "name": "Spreading Insurrection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spreading Insurrection",
+      "oracle_fingerprint": "29719526413418f8f62ad9b9282d5aa5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}
