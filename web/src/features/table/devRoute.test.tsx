@@ -2,6 +2,7 @@
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { maybePrimaryButton, primaryButton } from '@/test-utils/passControls'
 import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { FIXTURE_MARKER } from './dev/fixture'
@@ -40,7 +41,7 @@ describe('/dev/table in development', () => {
   it('shows a four-seat grid table when the address says nothing', async () => {
     await visit('/dev/table')
     // The first visit pays for importing the whole route tree again, which can pass 1 s under a loaded runner.
-    await screen.findByRole('region', { name: 'Game table' }, { timeout: 8000 })
+    await screen.findByRole('region', { name: 'Game table' }, { timeout: scaled(8000) })
     expect(panels()).toEqual([1, 2, 3, 0])
     expect(document.querySelector('[data-layout]')).toHaveAttribute('data-layout', 'grid')
     expect(document.querySelector(`[data-fixture="${FIXTURE_MARKER}"]`)).not.toBeNull()
@@ -203,7 +204,7 @@ describe('/dev/table with table effects', () => {
     await screen.findByRole('region', { name: 'Game table' })
     expect(document.querySelector('[data-fx]')).toBeNull()
     await waitFor(() => expect(document.querySelector('[data-fx="damaged"]')).not.toBeNull(), {
-      timeout: 4000,
+      timeout: scaled(4000),
     })
     expect(document.querySelectorAll('[data-slot="fx-float"]').length).toBeGreaterThan(0)
   })

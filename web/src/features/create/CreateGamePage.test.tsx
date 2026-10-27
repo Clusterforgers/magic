@@ -2,6 +2,7 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS } from '@/lib/limits'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 import { MADE_GAME, startServer, tokenOf } from '@/test-utils/fakeServer'
@@ -39,7 +40,7 @@ describe('loading the decks', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Loading the decks')
     expect(document.querySelector('[data-slot="skeleton"]')).toBeNull()
     await waitFor(() => expect(document.querySelector('[data-slot="skeleton"]')).not.toBeNull(), {
-      timeout: 1500,
+      timeout: scaled(1500),
     })
     expect(screen.queryByRole('form')).toBeNull()
   })

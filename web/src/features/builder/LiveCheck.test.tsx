@@ -1,6 +1,7 @@
 // Goal: while cards are added to or taken out of the draft the builder checks it live: the counts line, the marks, the reasons and the legality section follow the draft after the pause, "Checking…" shows while the counts are old and "as saved" says so until a check of the draft has come back, a failed check keeps the last report with a note and a Try again, a rename asks nothing, and taking the draft back to the saved list shows the saved report at once.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { deckError, legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { CheckRequest } from '@/protocol/generated'
 import type { CheckScript } from './fakeCheck'
@@ -47,7 +48,7 @@ const judging = (extra: Partial<CheckScript> = {}): BuilderScript => ({
 const counts = () => deckPane().querySelector('[data-slot="check-counts"]')
 const status = () => deckPane().querySelector('[data-slot="check-status"]')
 const SAVED_COUNTS = '26 of 26 verified'
-const WAIT = { timeout: 4000 }
+const WAIT = { timeout: scaled(4000) }
 
 async function add(user: Awaited<ReturnType<typeof renderBuilder>>['user'], query: string, name: string) {
   const box = searchBox()
