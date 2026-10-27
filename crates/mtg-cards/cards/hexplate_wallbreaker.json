@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f7f78825-10d6-441a-ae26-51b77cc271cd",
+  "name": "Hexplate Wallbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexplate Wallbreaker",
+      "oracle_fingerprint": "108dcfe6875b065e25ead9d17230e947",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "if": "FirstCombat",
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}{R}" } }
+      ]
+    }
+  ]
+}

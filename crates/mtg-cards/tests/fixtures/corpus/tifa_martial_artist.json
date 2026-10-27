@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "31513afc-329c-4913-8fcd-945c39ec82b2",
+  "oracle_id": "0836c8d1-c453-4a3a-a52a-eb66839b8542",
+  "multiverse_ids": [],
+  "resource_id": "65C5A8137EE25BC92C2F3D21F6894F5351B5C4E24D45004B835BCF8C098093C7",
+  "mtgo_id": 140003,
+  "arena_id": 96872,
+  "tcgplayer_id": 630712,
+  "cardmarket_id": 824195,
+  "name": "Tifa, Martial Artist",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/31513afc-329c-4913-8fcd-945c39ec82b2",
+  "scryfall_uri": "https://scryfall.com/card/fic/6/tifa-martial-artist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.jpg?1783906372",
+    "normal": "https://cards.scryfall.io/normal/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.jpg?1783906372",
+    "large": "https://cards.scryfall.io/large/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.jpg?1783906372",
+    "png": "https://cards.scryfall.io/png/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.png?1783906372",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.jpg?1783906372",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.jpg?1783906372",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.webp?1783906372",
+    "grid": "https://cards.scryfall.io/grid/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.webp?1783906372",
+    "display": "https://cards.scryfall.io/display/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.webp?1783906372",
+    "art": "https://cards.scryfall.io/art/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.webp?1783906372",
+    "crop": "https://cards.scryfall.io/crop/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.webp?1783906372",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/1/31513afc-329c-4913-8fcd-945c39ec82b2.jpg?1783906372"
+  },
+  "mana_cost": "{1}{R}{G}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Monk",
+  "oracle_text": "Melee (Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)\nWhenever one or more creatures you control with power 7 or greater deal combat damage to a player, untap all creatures you control. If it's the first combat phase of your turn, there is an additional combat phase after this phase.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Melee"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/31513afc-329c-4913-8fcd-945c39ec82b2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0836c8d1-c453-4a3a-a52a-eb66839b8542&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yumi Yaoshida",
+  "artist_ids": [
+    "4aa6d30b-cfee-4b70-8454-0c7a616ea191"
+  ],
+  "illustration_id": "d00ee5f3-1101-4957-a27f-c9072f7d553e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "ffvii"
+  ],
+  "edhrec_rank": 3789,
+  "prices": {
+    "usd": "2.85",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "1.16",
+    "eur_foil": "0.50",
+    "tix": "3.49"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTifa%252C%2BMartial%2BArtist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTifa%252C%2BMartial%2BArtist",
+    "edhrec": "https://edhrec.com/route/?cc=Tifa%2C+Martial+Artist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F630712%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824195&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140003?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

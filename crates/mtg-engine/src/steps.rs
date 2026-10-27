@@ -358,13 +358,13 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
     events
 }
 
-/// Who takes the next turn: the latest extra turn added whose player is still in the game (an earlier one waits), else
-/// the next player in turn order after the seat of the regular turn (CR 500.7). The events pass over the extra turns of
-/// players who have left.
+/// Who takes the next turn: the latest extra turn added whose player is still in the game and does not skip it (an
+/// earlier one waits), else the next player in turn order after the seat of the regular turn (CR 500.7). The events
+/// pass over the extra turns of players who have left or skip them.
 fn next_turn(state: &GameState) -> (Vec<Event>, PlayerId, Option<ExtraTurn>) {
     let mut passed = Vec::new();
     for turn in state.extra_turns().iter().rev() {
-        if state.is_alive(turn.player) {
+        if state.is_alive(turn.player) && !crate::rules::skips_extra_turns(state, turn.player) {
             return (passed, turn.player, Some(*turn));
         }
         passed.push(Event::ExtraTurnSkipped {

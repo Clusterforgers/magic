@@ -211,6 +211,8 @@ pub enum Pred {
     Targeting(Selector),
     /// Was dealt damage this turn.
     DamagedThisTurn,
+    /// Was declared as an attacker this turn ("creatures that attacked this turn").
+    AttackedThisTurn,
     /// Was dealt damage this turn by one of the objects the reference names (the object as it is now: one that left and came back is another).
     DamagedBy(Ref),
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a

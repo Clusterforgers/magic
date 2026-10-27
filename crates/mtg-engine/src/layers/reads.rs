@@ -182,6 +182,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Monstrous
         | Pred::EnteredThisTurn
         | Pred::DamagedThisTurn
+        | Pred::AttackedThisTurn
         | Pred::Attacking
         | Pred::Blocking
         | Pred::Unblocked
@@ -287,6 +288,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Step(_)
         | Condition::BeforeAttackers
         | Condition::InCombat
+        | Condition::FirstCombat
         | Condition::NeitherDayNorNight
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)

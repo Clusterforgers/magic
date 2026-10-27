@@ -28,6 +28,8 @@ mod attackers;
 mod aura_forms;
 mod batches;
 mod becomes;
+mod c4_phase;
+mod c4_rules;
 mod card_grants;
 mod cast;
 mod chance;

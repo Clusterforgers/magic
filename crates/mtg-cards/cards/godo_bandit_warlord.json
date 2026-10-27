@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f890d51a-dc90-4179-8423-4738a72a527c",
+  "name": "Godo, Bandit Warlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Godo, Bandit Warlord",
+      "oracle_fingerprint": "872698677947b33d784c5bd78bd0f3cf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Subtype": "Equipment" }], "as": "card" } },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Attacks": { "what": ["This"] } }, "nth": 1 } },
+            "effects": [
+              { "Untap": { "what": "This" } },
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Subtype": "Samurai" }, { "ControlledBy": "You" }] }
+                }
+              },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

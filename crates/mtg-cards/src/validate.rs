@@ -429,6 +429,7 @@ impl<'a> Walker<'a> {
             | Pred::Monstrous
             | Pred::EnteredThisTurn
             | Pred::DamagedThisTurn
+            | Pred::AttackedThisTurn
             | Pred::Attacking
             | Pred::Blocking
             | Pred::Unblocked
@@ -657,6 +658,7 @@ impl<'a> Walker<'a> {
             Condition::Step(_) => self.uses("Condition", "Step"),
             Condition::BeforeAttackers => self.uses("Condition", "BeforeAttackers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
+            Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
@@ -2492,6 +2494,7 @@ impl<'a> Walker<'a> {
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
+            | GameRule::SkipExtraTurns(who)
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)

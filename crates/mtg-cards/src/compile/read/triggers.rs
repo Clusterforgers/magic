@@ -807,6 +807,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(monarch) = monarch_condition(r) {
         return Some(monarch);
     }
+    if let Some(phase) = r.attempt(super::c4_phase::read) {
+        return Some(phase);
+    }
     if let Some(bare) = r.attempt(no_counters) {
         return Some(bare);
     }
@@ -970,6 +973,9 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(monarch) = monarch_text(condition) {
         return Some(monarch);
+    }
+    if let Some(phase) = super::c4_phase::text(condition) {
+        return Some(phase);
     }
     if let Some(fact) = super::facts::texts(condition).into_iter().next() {
         return Some(fact);

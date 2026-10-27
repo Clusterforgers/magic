@@ -672,6 +672,8 @@ pub enum Condition {
     BeforeAttackers,
     /// The turn is in its combat phase: "Activate only during combat".
     InCombat,
+    /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).
+    FirstCombat,
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.

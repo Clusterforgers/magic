@@ -252,6 +252,8 @@ pub enum GameRule {
     CantDraw(Ref),
     /// The players can't search libraries.
     CantSearch(Ref),
+    /// A player in the group who would begin an extra turn skips that turn instead (CR 500.7).
+    SkipExtraTurns(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
     /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana

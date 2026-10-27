@@ -556,6 +556,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if let Some(rule) = life_gain::rule(r) {
         return Some(rule);
     }
+    if let Some(rule) = r.attempt(super::c4_rules::read) {
+        return Some(rule);
+    }
     lands::additional(r)
 }
 
@@ -1456,6 +1459,9 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
                 .collect()
         }
         (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
+        (GameRule::CantSearch(_) | GameRule::SkipExtraTurns(_), ZoneKind::Battlefield) => {
+            super::c4_rules::texts(rule)
+        }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
         }
