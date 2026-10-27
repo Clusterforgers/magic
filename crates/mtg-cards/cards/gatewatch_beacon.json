@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2a31cd16-fb30-4bb0-b775-d5e8b9221dd4",
+  "name": "Gatewatch Beacon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatewatch Beacon",
+      "oracle_fingerprint": "97206fe45c3a3e988c27c63cf5ab85d8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "loyalty", "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "loyalty" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "MoveCounters": { "from": "This", "to": "Triggering", "counter": "loyalty" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

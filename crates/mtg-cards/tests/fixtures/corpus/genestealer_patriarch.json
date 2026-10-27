@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "a0df01d1-6131-4ef7-abea-ba084f3b0954",
+  "oracle_id": "785ef850-4cd7-4e7d-88f2-7b6368c91a9c",
+  "multiverse_ids": [
+    580844
+  ],
+  "mtgo_id": 108516,
+  "tcgplayer_id": 285870,
+  "cardmarket_id": 674722,
+  "name": "Genestealer Patriarch",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/a0df01d1-6131-4ef7-abea-ba084f3b0954",
+  "scryfall_uri": "https://scryfall.com/card/40k/22/genestealer-patriarch?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:35:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.jpg?1783920938",
+    "normal": "https://cards.scryfall.io/normal/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.jpg?1783920938",
+    "large": "https://cards.scryfall.io/large/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.jpg?1783920938",
+    "png": "https://cards.scryfall.io/png/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.png?1783920938",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.jpg?1783920938",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.jpg?1783920938",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.webp?1783920938",
+    "grid": "https://cards.scryfall.io/grid/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.webp?1783920938",
+    "display": "https://cards.scryfall.io/display/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.webp?1783920938",
+    "art": "https://cards.scryfall.io/art/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.webp?1783920938",
+    "crop": "https://cards.scryfall.io/crop/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.webp?1783920938",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/0/a0df01d1-6131-4ef7-abea-ba084f3b0954.jpg?1783920938"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Tyranid",
+  "oracle_text": "Genestealer's Kiss — Whenever this creature attacks, put an infection counter on target creature defending player controls.\nChildren of the Cult — Whenever a creature with an infection counter on it dies, you create a token that's a copy of that creature, except it's a Tyranid in addition to its other types.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Genestealer's Kiss",
+    "Children of the Cult"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a8d09d18-5f82-4007-ba82-336cb429bcbf",
+      "component": "combo_piece",
+      "name": "Genestealer Patriarch",
+      "type_line": "Creature — Tyranid",
+      "uri": "https://api.scryfall.com/cards/a8d09d18-5f82-4007-ba82-336cb429bcbf"
+    },
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a0df01d1-6131-4ef7-abea-ba084f3b0954/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A785ef850-4cd7-4e7d-88f2-7b6368c91a9c&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Games Workshop",
+  "artist_ids": [
+    "9456da4e-410b-4932-8bf3-a69a2da3cdc9"
+  ],
+  "illustration_id": "78c3f403-b4e3-4106-9092-e87b9fb30eb4",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 15727,
+  "preview": {
+    "source": "Tabletop Titans",
+    "source_uri": "https://www.youtube.com/watch?v=RSOE17i-Djo",
+    "previewed_at": "2022-09-13"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": null,
+    "tix": "0.35"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580844&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGenestealer%2BPatriarch",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGenestealer%2BPatriarch",
+    "edhrec": "https://edhrec.com/route/?cc=Genestealer+Patriarch"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F285870%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=674722&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108516?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

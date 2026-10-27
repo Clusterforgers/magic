@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0347b8b7-0553-4a1f-9677-ad730470c345",
+  "name": "Junk Jet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Junk Jet",
+      "oracle_fingerprint": "1bc7268ff8a332c54179e1a11fa9727e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "junk" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              { "Sacrifice": { "filter": ["Other", { "Type": "Artifact" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Attached", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

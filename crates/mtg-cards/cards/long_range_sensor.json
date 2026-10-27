@@ -1,0 +1,50 @@
+{
+  "oracle_id": "358297cd-4a9f-48e2-aaa5-131b0849f8dc",
+  "name": "Long-Range Sensor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Long-Range Sensor",
+      "oracle_fingerprint": "d4526e4a4e12867287923bd97e72e5db",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "EachPlayer" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": "charge", "count": 2 } }],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

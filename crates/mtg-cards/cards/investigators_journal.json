@@ -1,0 +1,37 @@
+{
+  "oracle_id": "22e0e822-c4aa-4ec1-b7e4-0c1c869ef71b",
+  "name": "Investigator's Journal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Investigator's Journal",
+      "oracle_fingerprint": "5bd3f46fd74d76deaa523612fb3920b6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": { "Other": "suspect" },
+                "count": { "Largest": { "who": "EachPlayer", "of": [{ "Type": "Creature" }] } }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "suspect" } } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": { "cost": [{ "Mana": "{2}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

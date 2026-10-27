@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5e4d69de-1876-49a8-8ec6-a891d4a84ccf",
+  "name": "Komainu Battle Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Komainu Battle Armor",
+      "oracle_fingerprint": "ea73e0af41921676915b2c994d63fcd9",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "AnyOf": ["This", { "Is": "Attached" }] }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Goad": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{4}" } }
+      ]
+    }
+  ]
+}

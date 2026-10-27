@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d2310103-ec84-49df-bb12-0f0f175ee801",
+  "name": "Geth, Lord of the Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geth, Lord of the Vault",
+      "oracle_fingerprint": "3f849ab1b18ea9166539632b48a78130",
+      "abilities": [
+        { "Keyword": "Intimidate" },
+        {
+          "Activated": {
+            "cost": "{X}{B}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                }
+              },
+              { "Mill": { "who": { "OwnerOf": { "Target": 0 } }, "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

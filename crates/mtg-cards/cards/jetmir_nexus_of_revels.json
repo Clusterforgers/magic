@@ -1,0 +1,55 @@
+{
+  "oracle_id": "da72a4bc-ce6f-4b72-bc66-2ee33cfa87df",
+  "name": "Jetmir, Nexus of Revels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jetmir, Nexus of Revels",
+      "oracle_fingerprint": "7f6bec7a41ed2e19d3128e1586ce295e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 6
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddKeyword": "DoubleStrike" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 9
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "57170e91-6ebe-4b14-bf56-96d8cf6a4d03",
+  "name": "Licia, Sanguine Tribune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Licia, Sanguine Tribune",
+      "oracle_fingerprint": "ba22a21030d0c0dc25a73f506cb074fe",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+          }
+        },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 5 }],
+            "condition": "YourTurn",
+            "limit": "OncePerTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

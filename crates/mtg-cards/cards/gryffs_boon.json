@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f62f3f4e-d506-43a9-91d8-bbc86e0a9167",
+  "name": "Gryff's Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gryff's Boon",
+      "oracle_fingerprint": "df2d54ff5c4fcd61d200dc24db0e63f9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": "This", "to": { "Battlefield": {} } } },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

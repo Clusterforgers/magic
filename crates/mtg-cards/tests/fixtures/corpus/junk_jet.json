@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "2397c9b8-3974-48b8-94bd-f05f2e20750c",
+  "oracle_id": "0347b8b7-0553-4a1f-9677-ad730470c345",
+  "multiverse_ids": [
+    652147
+  ],
+  "mtgo_id": 132369,
+  "tcgplayer_id": 539635,
+  "cardmarket_id": 757853,
+  "name": "Junk Jet",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/2397c9b8-3974-48b8-94bd-f05f2e20750c",
+  "scryfall_uri": "https://scryfall.com/card/pip/60/junk-jet?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.jpg?1783912403",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.jpg?1783912403",
+    "large": "https://cards.scryfall.io/large/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.jpg?1783912403",
+    "png": "https://cards.scryfall.io/png/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.png?1783912403",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.jpg?1783912403",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.jpg?1783912403",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.webp?1783912403",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.webp?1783912403",
+    "display": "https://cards.scryfall.io/display/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.webp?1783912403",
+    "art": "https://cards.scryfall.io/art/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.webp?1783912403",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.webp?1783912403",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/2397c9b8-3974-48b8-94bd-f05f2e20750c.jpg?1783912403"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "When this Equipment enters, create a Junk token. (It's an artifact with \"{T}, Sacrifice this token: Exile the top card of your library. You may play that card this turn. Activate only as a sorcery.\")\n{3}, Sacrifice another artifact: Double equipped creature's power until end of turn.\nEquip {1}",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Equip",
+    "Double"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6b92550d-7cc9-43f4-80b4-4a49bd8806b1",
+      "component": "combo_piece",
+      "name": "Junk Jet",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/6b92550d-7cc9-43f4-80b4-4a49bd8806b1"
+    },
+    {
+      "object": "related_card",
+      "id": "62c4a6f6-6425-4c0c-b35a-880fcab42aad",
+      "component": "token",
+      "name": "Junk",
+      "type_line": "Token Artifact — Junk",
+      "uri": "https://api.scryfall.com/cards/62c4a6f6-6425-4c0c-b35a-880fcab42aad"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2397c9b8-3974-48b8-94bd-f05f2e20750c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0347b8b7-0553-4a1f-9677-ad730470c345&unique=prints",
+  "collector_number": "60",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Billy Christian",
+  "artist_ids": [
+    "10f26f94-64fc-4174-856e-701bea4f1521"
+  ],
+  "illustration_id": "c2da008e-62be-492d-88a6-13505abccc54",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9635,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "0.65",
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": "0.47",
+    "tix": "0.31"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652147&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJunk%2BJet",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJunk%2BJet",
+    "edhrec": "https://edhrec.com/route/?cc=Junk+Jet"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539635%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757853&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132369?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

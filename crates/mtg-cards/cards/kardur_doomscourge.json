@@ -1,0 +1,42 @@
+{
+  "oracle_id": "bc14356c-3a1a-47af-9a6e-2b449de0331f",
+  "name": "Kardur, Doomscourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kardur, Doomscourge",
+      "oracle_fingerprint": "7da972184922a04a7e48a0e0fd093718",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": ["Goaded"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Attacking"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

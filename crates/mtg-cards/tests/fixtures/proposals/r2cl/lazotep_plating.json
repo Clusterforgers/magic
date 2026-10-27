@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Amass":{"subtype":"Zombie","count":1}},{"Rule":{"rule":{"PlayersHave":{"who":"You","keyword":"Hexproof"}},"duration":"UntilEndOfTurn"}},{"Continuous":{"affected":{"Each":[{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Hexproof"}],"duration":"UntilEndOfTurn"}}]}}]}]}

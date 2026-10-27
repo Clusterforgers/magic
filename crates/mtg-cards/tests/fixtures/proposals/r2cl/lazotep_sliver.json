@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Subtype":"Sliver"},{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Afflict":2}}]}},{"Triggered":{"when":{"ZoneChange":{"to":"Graveyard","from":"Battlefield","what":[{"Subtype":"Sliver"},{"Not":"Token"},{"ControlledBy":"You"}]}},"effects":[{"Amass":{"count":2,"subtype":"Sliver"}}]}}]}]}

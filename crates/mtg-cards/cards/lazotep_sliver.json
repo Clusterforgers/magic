@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2017d355-403a-4408-9779-94d1125e373f",
+  "name": "Lazotep Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazotep Sliver",
+      "oracle_fingerprint": "fd2f8348daceea5af213e31e283d1e8a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Sliver" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": { "Afflict": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Sliver" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Amass": { "subtype": "Sliver", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
