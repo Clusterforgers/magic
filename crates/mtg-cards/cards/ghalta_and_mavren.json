@@ -1,0 +1,76 @@
+{
+  "oracle_id": "756042c5-e444-45d7-8dc6-ae7c83c98438",
+  "name": "Ghalta and Mavren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghalta and Mavren",
+      "oracle_fingerprint": "b8f810ceb2a9b3a4bfc7074a54a7a06c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Sized": {
+                                "size": {
+                                  "Greatest": {
+                                    "of": ["Other", "Attacking", { "Type": "Creature" }],
+                                    "stat": "Power"
+                                  }
+                                },
+                                "token": {
+                                  "name": "Dinosaur",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Dinosaur"],
+                                  "abilities": [{ "Keyword": "Trample" }]
+                                }
+                              }
+                            },
+                            "tapped": true,
+                            "attacking": true
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Vampire",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Vampire"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Lifelink" }]
+                              }
+                            },
+                            "count": { "Count": ["Other", "Attacking", { "Type": "Creature" }] }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

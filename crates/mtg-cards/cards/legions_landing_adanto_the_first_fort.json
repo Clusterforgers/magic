@@ -1,0 +1,80 @@
+{
+  "oracle_id": "f7d8b91b-6541-4d3e-af51-7e000eac69c1",
+  "name": "Legion's Landing // Adanto, the First Fort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion's Landing",
+      "oracle_fingerprint": "08e3af8ab2f77b8b40e46e7787b21887",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 3
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Adanto, the First Fort",
+      "oracle_fingerprint": "e022004837ca7412f0d9974159466c98",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

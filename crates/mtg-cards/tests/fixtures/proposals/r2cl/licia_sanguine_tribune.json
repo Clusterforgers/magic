@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":{"Tallied":{"who":"You","what":"LifeGainedTotal"}}}},{"Keyword":"FirstStrike"},{"Keyword":"Lifelink"},{"Activated":{"cost":[{"PayLife":5}],"limit":"OncePerTurn","effects":[{"PutCounters":{"on":"This","count":3,"counter":"+1/+1"}}],"condition":"YourTurn"}}]}]}

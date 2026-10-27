@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e",
+  "oracle_id": "687e772a-cdfe-41fd-a066-6cb3aee04193",
+  "multiverse_ids": [
+    642442
+  ],
+  "mtgo_id": 119220,
+  "tcgplayer_id": 524264,
+  "cardmarket_id": 740941,
+  "name": "Hakbal of the Surging Soul",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e",
+  "scryfall_uri": "https://scryfall.com/card/lcc/3/hakbal-of-the-surging-soul?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.jpg?1783913937",
+    "normal": "https://cards.scryfall.io/normal/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.jpg?1783913937",
+    "large": "https://cards.scryfall.io/large/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.jpg?1783913937",
+    "png": "https://cards.scryfall.io/png/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.png?1783913937",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.jpg?1783913937",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.jpg?1783913937",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.webp?1783913937",
+    "grid": "https://cards.scryfall.io/grid/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.webp?1783913937",
+    "display": "https://cards.scryfall.io/display/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.webp?1783913937",
+    "art": "https://cards.scryfall.io/art/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.webp?1783913937",
+    "crop": "https://cards.scryfall.io/crop/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.webp?1783913937",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/7/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e.jpg?1783913937"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Merfolk Scout",
+  "oracle_text": "At the beginning of combat on your turn, each Merfolk creature you control explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on the exploring creature, then put the card back or put it into your graveyard.)\nWhenever Hakbal attacks, you may put a land card from your hand onto the battlefield. If you don't, draw a card.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Explore"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e738e675-4fd1-4bc3-97f5-71d0e2fc3f2e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A687e772a-cdfe-41fd-a066-6cb3aee04193&unique=prints",
+  "collector_number": "3",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tyler Walpole",
+  "artist_ids": [
+    "70c4c8c7-61a8-44e7-8fb1-161b7f943e7e"
+  ],
+  "illustration_id": "fadd8715-5f96-4fd1-a85a-03fbd1a362d4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3902,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=Szm0yzSUUm0",
+    "previewed_at": "2023-10-24"
+  },
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "1.19",
+    "eur_foil": "1.18",
+    "tix": "2.00"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642442&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHakbal%2Bof%2Bthe%2BSurging%2BSoul",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHakbal%2Bof%2Bthe%2BSurging%2BSoul",
+    "edhrec": "https://edhrec.com/route/?cc=Hakbal+of+the+Surging+Soul"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F524264%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=740941&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119220?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

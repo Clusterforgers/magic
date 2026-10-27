@@ -1,0 +1,57 @@
+{
+  "oracle_id": "3edd6272-20fa-4c3a-bf34-2f253cc8ac9e",
+  "name": "Glass-Cast Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glass-Cast Heart",
+      "oracle_fingerprint": "c55e4a7a0775ebf89da4b9c429a84886",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap", { "PayLife": 1 }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}{B}" },
+              "Tap",
+              "SacrificeSelf",
+              { "Sacrifice": { "filter": [{ "Subtype": "Blood" }, "Token"], "count": 13 } }
+            ],
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 13 } },
+              { "GainLife": { "amount": 13 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

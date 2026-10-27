@@ -1,0 +1,62 @@
+{
+  "oracle_id": "acc9c16a-5e72-43bd-87e1-56a16aa892f5",
+  "name": "Haven of the Spirit Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haven of the Spirit Dragon",
+      "oracle_fingerprint": "cf0e315bcb3b0e244aae55e572030d9f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "types": ["Creature"], "subtypes": ["Dragon"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "Subtype": "Dragon" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    {
+                      "Object": [
+                        { "Type": "Planeswalker" },
+                        { "Subtype": "Ugin" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

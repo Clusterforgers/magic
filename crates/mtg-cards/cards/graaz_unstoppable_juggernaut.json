@@ -1,0 +1,32 @@
+{
+  "oracle_id": "aebfdcc0-c5b9-4737-8498-764a5021b087",
+  "name": "Graaz, Unstoppable Juggernaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graaz, Unstoppable Juggernaut",
+      "oracle_fingerprint": "ee154d9bc2400deddbc8f58a95c7cd2e",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MustAttack": { "Each": [{ "Subtype": "Juggernaut" }, { "ControlledBy": "You" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Juggernaut" }, { "ControlledBy": "You" }] },
+            "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Wall" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": ["Other", { "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "SetPT": { "power": 5, "toughness": 3 } }, { "AddSubtype": "Juggernaut" }]
+          }
+        }
+      ]
+    }
+  ]
+}

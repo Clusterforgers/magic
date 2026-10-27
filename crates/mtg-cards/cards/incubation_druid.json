@@ -1,0 +1,50 @@
+{
+  "oracle_id": "34428f42-03ac-4795-8286-6cbea796df2b",
+  "name": "Incubation Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incubation Druid",
+      "oracle_fingerprint": "ab84e8a5693f7a212c03cf1eb30c5039",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Instead": {
+                      "base": {
+                        "ProducedBy": {
+                          "among": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "count": 1,
+                          "colorless": true
+                        }
+                      },
+                      "when": {
+                        "Compare": {
+                          "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "instead": {
+                        "ProducedBy": {
+                          "among": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "count": 3,
+                          "colorless": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}{G}{G}", "effects": [{ "Adapt": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

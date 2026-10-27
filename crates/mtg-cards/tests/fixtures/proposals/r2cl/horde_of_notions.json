@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Keyword":"Trample"},{"Keyword":"Haste"},{"Activated":{"cost":"{W}{U}{B}{R}{G}","targets":[{"what":{"Object":[{"Subtype":"Elemental"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"CastFromZone":{"what":{"Target":0},"free":true,"play":true}}]}}]}]}

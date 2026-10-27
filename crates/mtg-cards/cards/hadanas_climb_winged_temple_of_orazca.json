@@ -1,0 +1,73 @@
+{
+  "oracle_id": "93b91d18-6acf-42e5-9a31-bc6e01f90c1f",
+  "name": "Hadana's Climb // Winged Temple of Orazca",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hadana's Climb",
+      "oracle_fingerprint": "80e6b82b1caf1483d21f353d0f2f9866",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Winged Temple of Orazca",
+      "oracle_fingerprint": "500bf3bca847ad8f5805876e75c78029",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}{G}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Flying" },
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

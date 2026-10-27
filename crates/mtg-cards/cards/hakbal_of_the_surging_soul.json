@@ -1,0 +1,54 @@
+{
+  "oracle_id": "687e772a-cdfe-41fd-a066-6cb3aee04193",
+  "name": "Hakbal of the Surging Soul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hakbal of the Surging Soul",
+      "oracle_fingerprint": "ab46d317a5c273548ec33669484c1833",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Explore": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Merfolk" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "If": { "condition": { "Not": "Performed" }, "then": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7c3a8766-e440-48c5-a561-197490efdba5",
+  "name": "Heirloom Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heirloom Blade",
+      "oracle_fingerprint": "684044f53fb8cc8d6aec2fc6c504f7ad",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Type": "Creature" }, { "SharesSubtype": "Triggering" }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

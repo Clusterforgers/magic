@@ -40,6 +40,9 @@ mod c4_sz;
 mod c4_those_creatures;
 mod c4_token_counts;
 mod c4_twins;
+mod c5_gl_modes;
+mod c5_gl_swaps;
+mod c5_gl_twins;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -267,6 +270,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     c4_oracle_only(ability, texts);
     add_c4(ability, texts);
     c4_writers(ability, texts);
+    add_c5_gl(ability, texts);
 }
 
 /// The wordings of the fourth sample of the names A to F; it runs after the others because it rewrites their texts.
@@ -294,6 +298,13 @@ fn add_c4(ability: &Ability, texts: &mut Vec<String>) {
     c4_group_effects::add(ability, texts);
     c4_moves::add(ability, texts);
     c4_token_counts::add(ability, texts);
+}
+
+/// The wordings of the fifth sample of the names G to L; the swaps run last because they edit the wordings before them.
+fn add_c5_gl(ability: &Ability, texts: &mut Vec<String>) {
+    c5_gl_twins::c5_gl_add(ability, texts);
+    c5_gl_modes::c5_gl_add(ability, texts);
+    c5_gl_swaps::c5_gl_add(ability, texts);
 }
 
 /// The wordings of the party, chosen-player and prepare cards (c14a), in a function of their own.

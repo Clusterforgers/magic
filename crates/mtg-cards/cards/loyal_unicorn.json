@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6cf8191c-acca-4145-86c2-53a138b3fe4a",
+  "name": "Loyal Unicorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loyal Unicorn",
+      "oracle_fingerprint": "f37bce58b91c3f963a967f994fc18c3b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": ["Other", { "Type": "Creature" }, { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

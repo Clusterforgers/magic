@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ba0082fb-2d4c-489e-8140-93a6fa693fd0",
+  "name": "Lazotep Plating",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazotep Plating",
+      "oracle_fingerprint": "71aa3241248c5d59444415999d0cc0c4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Amass": { "subtype": "Zombie", "count": 1 } },
+              {
+                "Rule": {
+                  "rule": { "PlayersHave": { "who": "You", "keyword": "Hexproof" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "934bd9f9-937b-4c6b-a849-012ae6bd3321",
+  "name": "Incandescent Soulstoke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incandescent Soulstoke",
+      "oracle_fingerprint": "569b4cc6293ef674af35bc981bb2f75c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Elemental" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Subtype": "Elemental" },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "card" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "card" } }] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "276eccd6-4a76-46e8-b604-94472e618115",
+  "name": "Ghoulish Impetus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghoulish Impetus",
+      "oracle_fingerprint": "906af57e1a750418491ece55532757ab",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Deathtouch" },
+              "Goaded"
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

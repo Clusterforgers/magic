@@ -1,0 +1,44 @@
+{
+  "oracle_id": "785ef850-4cd7-4e7d-88f2-7b6368c91a9c",
+  "name": "Genestealer Patriarch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genestealer Patriarch",
+      "oracle_fingerprint": "2fae99535685e83c499019aeac3f8886",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "infection" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "HasCounter": { "Other": "infection" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Triggering", "except": [{ "AddSubtype": "Tyranid" }] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

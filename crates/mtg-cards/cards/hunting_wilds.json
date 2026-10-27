@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e9bc324e-c200-45ef-8b9b-52a61d0f7374",
+  "name": "Hunting Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunting Wilds",
+      "oracle_fingerprint": "bbca25d6bd80bd104be7fce954455bc6",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{G}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Forest" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    { "Untap": { "what": { "Bound": "found" } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "found" },
+                        "mods": [
+                          { "AddType": "Creature" },
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "SetColors": ["Green"] },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
