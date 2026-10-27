@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Keyword":"Lifelink"},{"Triggered":{"when":{"DealsDamage":{"source":[{"Subtype":"Knight"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Dealer","counter":"+1/+1"}},{"CreateToken":{"token":{"Named":"blood"}}}]}}]}]}

@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "84a9485a-d356-4cbe-b257-b62008a21328",
+  "oracle_id": "05f0feb6-6783-49fd-acf6-68b44aaff846",
+  "multiverse_ids": [
+    485503
+  ],
+  "mtgo_id": 81587,
+  "arena_id": 71962,
+  "tcgplayer_id": 215627,
+  "cardmarket_id": 470309,
+  "name": "Feline Sovereign",
+  "lang": "en",
+  "released_at": "2020-07-03",
+  "uri": "https://api.scryfall.com/cards/84a9485a-d356-4cbe-b257-b62008a21328",
+  "scryfall_uri": "https://scryfall.com/card/m21/180/feline-sovereign?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:17:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.jpg?1783930677",
+    "normal": "https://cards.scryfall.io/normal/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.jpg?1783930677",
+    "large": "https://cards.scryfall.io/large/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.jpg?1783930677",
+    "png": "https://cards.scryfall.io/png/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.png?1783930677",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.jpg?1783930677",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.jpg?1783930677",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.webp?1783930677",
+    "grid": "https://cards.scryfall.io/grid/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.webp?1783930677",
+    "display": "https://cards.scryfall.io/display/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.webp?1783930677",
+    "art": "https://cards.scryfall.io/art/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.webp?1783930677",
+    "crop": "https://cards.scryfall.io/crop/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.webp?1783930677",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/4/84a9485a-d356-4cbe-b257-b62008a21328.jpg?1783930677"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "Other Cats you control get +1/+1 and have protection from Dogs.\nWhenever one or more Cats you control deal combat damage to a player, destroy up to one target artifact or enchantment that player controls.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "bc94aba1-7376-4e02-a12d-3a2efb66ab0f",
+  "set": "m21",
+  "set_name": "Core Set 2021",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/bc94aba1-7376-4e02-a12d-3a2efb66ab0f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/84a9485a-d356-4cbe-b257-b62008a21328/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A05f0feb6-6783-49fd-acf6-68b44aaff846&unique=prints",
+  "collector_number": "180",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Dogs beg. Cats lay claim.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Murayama Scott",
+  "artist_ids": [
+    "f852fa13-137e-40f2-bbc1-0f01df09c0e0"
+  ],
+  "illustration_id": "14a79592-9436-4d8e-bf32-84b3da9f7c33",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3452,
+  "penny_rank": 3702,
+  "preview": {
+    "source": "AliasV",
+    "source_uri": "https://twitter.com/coL_AliasV/status/1271109942267658240",
+    "previewed_at": "2020-06-11"
+  },
+  "prices": {
+    "usd": "1.59",
+    "usd_foil": "1.38",
+    "usd_etched": null,
+    "eur": "0.92",
+    "eur_foil": "1.52",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=485503&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFeline%2BSovereign",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFeline%2BSovereign",
+    "edhrec": "https://edhrec.com/route/?cc=Feline+Sovereign"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F215627%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=470309&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/81587?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

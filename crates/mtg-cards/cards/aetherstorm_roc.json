@@ -1,0 +1,52 @@
+{
+  "oracle_id": "06f09e5a-5cfb-437f-9dd1-1682d71f4e7f",
+  "name": "Aetherstorm Roc",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherstorm Roc",
+      "oracle_fingerprint": "51750a1f2ba823808f2e953f4b81d7f4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 2 }],
+                  "paid": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                    { "Tap": { "what": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

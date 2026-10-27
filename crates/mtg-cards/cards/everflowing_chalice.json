@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0a79237e-0811-4a8a-bd4d-db3ca91bff22",
+  "name": "Everflowing Chalice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Everflowing Chalice",
+      "oracle_fingerprint": "1f86c535d878caa6cecedc00b6f4a92f",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{2}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "Kicks" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

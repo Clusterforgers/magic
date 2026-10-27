@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8520ee67-439b-4f15-838b-420bacbb8b13",
+  "name": "Experiment One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Experiment One",
+      "oracle_fingerprint": "9ea98b13ed91d3b862c7ee4082f7b982",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1", "count": 2 } }],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

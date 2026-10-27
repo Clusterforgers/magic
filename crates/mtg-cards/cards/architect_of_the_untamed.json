@@ -1,0 +1,44 @@
+{
+  "oracle_id": "be6cab52-b3ae-46a2-a581-2468a49bff25",
+  "name": "Architect of the Untamed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Architect of the Untamed",
+      "oracle_fingerprint": "f3af27c15e8fff4f1703f81a16391a03",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 8 }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 6,
+                      "toughness": 6
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d3bdfb25-dfb2-4df4-b502-ef0909a39f86",
+  "name": "Cid, Freeflier Pilot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cid, Freeflier Pilot",
+      "oracle_fingerprint": "93a931e67e666c81d6fe0b36f09b6452",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Vehicle" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Vehicle" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

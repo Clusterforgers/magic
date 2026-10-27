@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Multikicker":"{2}"}},{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"charge","count":"Kicks"}}}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"times":{"Counters":{"on":"This","counter":"charge"}}}}]}}]}]}

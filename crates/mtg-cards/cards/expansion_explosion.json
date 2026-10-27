@@ -1,0 +1,44 @@
+{
+  "oracle_id": "af6f771f-5154-4fb3-8ed4-768d71eea568",
+  "name": "Expansion // Explosion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expansion",
+      "oracle_fingerprint": "0adb56241d40d551e4eb8cf02a95b8cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Explosion",
+      "oracle_fingerprint": "c1749dd34f251b3eb844ee7a2e7f7c77",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }, { "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              { "Draw": { "who": { "Target": 1 }, "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

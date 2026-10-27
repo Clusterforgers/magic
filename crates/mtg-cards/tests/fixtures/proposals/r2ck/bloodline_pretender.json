@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Changeling"},{"Replacement":{"by":{"Choose":"CreatureType"},"when":{"Enters":{"what":["This"]}}}},{"Triggered":{"when":{"ZoneChange":{"what":["Other",{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

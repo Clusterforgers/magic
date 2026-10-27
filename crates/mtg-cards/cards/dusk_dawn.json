@@ -1,0 +1,55 @@
+{
+  "oracle_id": "7bc3f92f-68a2-4934-afc4-89f6d0e8cf98",
+  "name": "Dusk // Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusk",
+      "oracle_fingerprint": "58db358fbc262b44494fe3721b5ee5b1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dawn",
+      "oracle_fingerprint": "2ba0ca170e2408eb229f957e24051346",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

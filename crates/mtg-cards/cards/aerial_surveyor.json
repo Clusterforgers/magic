@@ -1,0 +1,39 @@
+{
+  "oracle_id": "92c9b2fd-95d6-4937-aee2-67b4bb8ca29d",
+  "name": "Aerial Surveyor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aerial Surveyor",
+      "oracle_fingerprint": "0f5831ced4f5007b610d0078d7c668da",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Defending" }] },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "3fdf5020-ea97-4f95-a096-cb5688dad2e2",
+  "oracle_id": "c8deef08-fcf2-41e1-8aeb-aa4e0af147ca",
+  "multiverse_ids": [
+    622616
+  ],
+  "mtgo_id": 115115,
+  "tcgplayer_id": 507433,
+  "cardmarket_id": 723648,
+  "name": "Alharu, Solemn Ritualist",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/3fdf5020-ea97-4f95-a096-cb5688dad2e2",
+  "scryfall_uri": "https://scryfall.com/card/cmm/8/alharu-solemn-ritualist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:08:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.jpg?1783915730",
+    "normal": "https://cards.scryfall.io/normal/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.jpg?1783915730",
+    "large": "https://cards.scryfall.io/large/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.jpg?1783915730",
+    "png": "https://cards.scryfall.io/png/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.png?1783915730",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.jpg?1783915730",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.jpg?1783915730",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.webp?1783915730",
+    "grid": "https://cards.scryfall.io/grid/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.webp?1783915730",
+    "display": "https://cards.scryfall.io/display/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.webp?1783915730",
+    "art": "https://cards.scryfall.io/art/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.webp?1783915730",
+    "crop": "https://cards.scryfall.io/crop/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.webp?1783915730",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/f/3fdf5020-ea97-4f95-a096-cb5688dad2e2.jpg?1783915730"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Monk",
+  "oracle_text": "When Alharu enters, put a +1/+1 counter on each of up to two other target creatures.\nWhenever a nontoken creature you control with a +1/+1 counter on it dies, create a 1/1 white Spirit creature token with flying.\nPartner (You can have two commanders if both have partner.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "3fdf5020-ea97-4f95-a096-cb5688dad2e2",
+      "component": "combo_piece",
+      "name": "Alharu, Solemn Ritualist",
+      "type_line": "Legendary Creature — Human Monk",
+      "uri": "https://api.scryfall.com/cards/3fdf5020-ea97-4f95-a096-cb5688dad2e2"
+    },
+    {
+      "object": "related_card",
+      "id": "6e8ba2be-4e95-4d10-b866-9fde3f8c8a3f",
+      "component": "token",
+      "name": "Spirit",
+      "type_line": "Token Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/6e8ba2be-4e95-4d10-b866-9fde3f8c8a3f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3fdf5020-ea97-4f95-a096-cb5688dad2e2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8deef08-fcf2-41e1-8aeb-aa4e0af147ca&unique=prints",
+  "collector_number": "8",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "c839a7c1-dd15-4ed8-aeab-2a10b9cbd574",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15092,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.19",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=622616&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAlharu%252C%2BSolemn%2BRitualist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAlharu%252C%2BSolemn%2BRitualist",
+    "edhrec": "https://edhrec.com/route/?cc=Alharu%2C+Solemn+Ritualist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F507433%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723648&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/115115?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

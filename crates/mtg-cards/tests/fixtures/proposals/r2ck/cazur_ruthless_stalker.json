@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"PartnerWith":"Ukkima, Stalking Shadow"}},{"Triggered":{"when":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Dealer","counter":"+1/+1"}}]}}]}]}

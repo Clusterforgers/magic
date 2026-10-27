@@ -1,0 +1,51 @@
+{
+  "oracle_id": "74ed0bd3-ac31-41a4-8220-d8e7c8c1c437",
+  "name": "Dwarven Mine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Mine",
+      "oracle_fingerprint": "2ba4a14bd948dd020eafa3bc693bb08c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [{ "Subtype": "Mountain" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "op": "Ge",
+                  "right": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Untapped"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dwarf",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dwarf"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

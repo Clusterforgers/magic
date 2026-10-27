@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Casualty":1}},{"Spell":{"effects":[{"LookAtTop":{"count":2,"as":"top"}},{"Choose":{"from":{"Bound":"top"},"as":"card","rest_as":"rest"}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"Move":{"what":{"Bound":"rest"},"to":{"Library":{"place":"Bottom"}}}}]}}]}]}

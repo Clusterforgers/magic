@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Deathtouch"},{"Rule":{"rule":{"SkipDrawStep":"You"}}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"op":"Lt","right":7}},"effects":[{"Draw":{"count":{"Sum":[7,{"Times":{"by":-1,"of":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}}]}}]}]}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fa55177c-ba65-4113-9c05-2d63318cf7c5",
+  "name": "Astrid Peth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astrid Peth",
+      "oracle_fingerprint": "5c8f0bd680e2b6fc6b659ddfdfc189e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": [{ "AnyOf": [{ "Subtype": "Clue" }, { "Subtype": "Food" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Explore": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

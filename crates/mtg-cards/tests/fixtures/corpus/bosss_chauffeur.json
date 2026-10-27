@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "147a0ccf-3408-48c7-b4a8-6d81aed39f18",
+  "oracle_id": "5a6176cc-98bf-43ac-815a-1f19c4e9329c",
+  "multiverse_ids": [
+    598127
+  ],
+  "mtgo_id": 99357,
+  "tcgplayer_id": 269588,
+  "cardmarket_id": 652402,
+  "name": "Boss's Chauffeur",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/147a0ccf-3408-48c7-b4a8-6d81aed39f18",
+  "scryfall_uri": "https://scryfall.com/card/ncc/13/bosss-chauffeur?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:16:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.jpg?1783923377",
+    "normal": "https://cards.scryfall.io/normal/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.jpg?1783923377",
+    "large": "https://cards.scryfall.io/large/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.jpg?1783923377",
+    "png": "https://cards.scryfall.io/png/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.png?1783923377",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.jpg?1783923377",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.jpg?1783923377",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.webp?1783923377",
+    "grid": "https://cards.scryfall.io/grid/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.webp?1783923377",
+    "display": "https://cards.scryfall.io/display/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.webp?1783923377",
+    "art": "https://cards.scryfall.io/art/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.webp?1783923377",
+    "crop": "https://cards.scryfall.io/crop/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.webp?1783923377",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/4/147a0ccf-3408-48c7-b4a8-6d81aed39f18.jpg?1783923377"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Elf Citizen",
+  "oracle_text": "This creature enters with a number of +1/+1 counters on it equal to one plus the number of other creatures you control.\nAlliance — Whenever another creature you control enters, put a +1/+1 counter on this creature.\nWhen this creature dies, create a 1/1 green and white Citizen creature token for each +1/+1 counter on it.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Alliance"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e388935b-fc98-476b-8fe4-234fb4d7f105",
+      "component": "combo_piece",
+      "name": "Boss's Chauffeur",
+      "type_line": "Creature — Elf Citizen",
+      "uri": "https://api.scryfall.com/cards/e388935b-fc98-476b-8fe4-234fb4d7f105"
+    },
+    {
+      "object": "related_card",
+      "id": "3f03e9fe-cb71-498e-bf16-5af6af37a192",
+      "component": "token",
+      "name": "Citizen",
+      "type_line": "Token Creature — Citizen",
+      "uri": "https://api.scryfall.com/cards/3f03e9fe-cb71-498e-bf16-5af6af37a192"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/147a0ccf-3408-48c7-b4a8-6d81aed39f18/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a6176cc-98bf-43ac-815a-1f19c4e9329c&unique=prints",
+  "collector_number": "13",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "cabaretti",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yangtian Li",
+  "artist_ids": [
+    "a212599d-0efe-4f3c-b3e1-336611145615"
+  ],
+  "illustration_id": "c76541fc-68da-4fc4-addd-91b1d2e41b45",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6641,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": null,
+    "tix": "0.48"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=598127&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBoss%2527s%2BChauffeur",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBoss%2527s%2BChauffeur",
+    "edhrec": "https://edhrec.com/route/?cc=Boss%27s+Chauffeur"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269588%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652402&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/99357?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

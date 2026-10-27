@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e017e323-e297-40de-bc77-dd49b610cf5a",
+  "name": "Everett K. Ross, Hapless Attaché",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Everett K. Ross, Hapless Attaché",
+      "oracle_fingerprint": "d3df75f5f9c868a1ce790e6bd3e3a7a2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "ControlledBy": "Opponents" }, { "AttackingPlayer": "You" }],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

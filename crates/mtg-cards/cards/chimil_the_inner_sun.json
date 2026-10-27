@@ -1,0 +1,48 @@
+{
+  "oracle_id": "119d9671-61ba-4629-89b1-f94bdec5cb74",
+  "name": "Chimil, the Inner Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chimil, the Inner Sun",
+      "oracle_fingerprint": "c4e6b4599f47b665e327656ec97cb717",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "CantBeCountered": { "Each": ["Spell", { "ControlledBy": "You" }] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

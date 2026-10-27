@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"mods":[{"ModifyPT":{"power":1,"toughness":1}},{"AddKeyword":"Lifelink"}],"affected":{"Each":[{"Type":"Creature"},"Commander",{"ControlledBy":"You"}]}}},{"Triggered":{"when":{"GroupAttacks":{"what":[{"ControlledBy":"Opponents"},{"AttackingPlayer":"You"}],"at_least":2}},"effects":[{"Draw":{}}]}}]}]}

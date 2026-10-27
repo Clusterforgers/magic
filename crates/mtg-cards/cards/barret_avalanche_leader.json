@@ -1,0 +1,53 @@
+{
+  "oracle_id": "83f776d9-f3b6-40c2-8008-1ace4d110825",
+  "name": "Barret, Avalanche Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barret, Avalanche Leader",
+      "oracle_fingerprint": "31e2b2b3557b863985c528dcf8bdb363",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rebel",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rebel"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              { "what": { "Object": [{ "Subtype": "Rebel" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

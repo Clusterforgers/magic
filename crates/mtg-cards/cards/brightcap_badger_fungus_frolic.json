@@ -1,0 +1,81 @@
+{
+  "oracle_id": "f61c0fc0-7241-455e-bbf5-f1f3862d46e3",
+  "name": "Brightcap Badger // Fungus Frolic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brightcap Badger",
+      "oracle_fingerprint": "3dc749d765f355340063e1cbaa00d0bd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Fungus" }, { "Subtype": "Saproling" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fungus Frolic",
+      "oracle_fingerprint": "320c8f5116b6652f3367bf56f6f429c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

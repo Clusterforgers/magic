@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f8b12c43-d83a-4e5b-a525-5ee1ae850817",
+  "name": "Dusk Legion Sergeant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusk Legion Sergeant",
+      "oracle_fingerprint": "62935b5ade70af0c10e59e64cab7bece",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Not": "Token" },
+                      { "Subtype": "Vampire" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Persist" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

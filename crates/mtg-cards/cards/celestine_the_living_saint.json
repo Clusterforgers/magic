@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6503ed78-6499-47f6-856b-ee1003ce4a4f",
+  "name": "Celestine, the Living Saint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestine, the Living Saint",
+      "oracle_fingerprint": "930415b92de8e4b734ec01fed3ca2fe9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

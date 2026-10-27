@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6d174448-52f5-4439-9586-3abc5af940d7",
+  "name": "Drogskol Reinforcements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drogskol Reinforcements",
+      "oracle_fingerprint": "6fd76732de09a1b4f9cb9a69c0f85275",
+      "abilities": [
+        { "Keyword": "Melee" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spirit" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Melee" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] },
+                "combat": false
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

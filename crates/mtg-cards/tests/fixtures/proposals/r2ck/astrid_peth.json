@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"to":"Battlefield","what":["This"]}},{"Attacks":{"what":["This"]}}]},"effects":[{"CreateToken":{"token":{"Named":"food"}}}]}},{"Triggered":{"when":{"Sacrificed":{"what":[{"AnyOf":[{"Subtype":"Clue"},{"Subtype":"Food"}]}],"by":"You"}},"effects":[{"Explore":{"what":"This"}}]}}]}]}

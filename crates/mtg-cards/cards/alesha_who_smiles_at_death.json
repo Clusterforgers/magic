@@ -1,0 +1,47 @@
+{
+  "oracle_id": "6969a7e2-6866-4001-a139-24b3be13deae",
+  "name": "Alesha, Who Smiles at Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alesha, Who Smiles at Death",
+      "oracle_fingerprint": "9728f048c65ac90bfa7a6ff1b9828946",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{W/B}{W/B}",
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

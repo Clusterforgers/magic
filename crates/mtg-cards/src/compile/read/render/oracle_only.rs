@@ -40,6 +40,7 @@ mod c4_sz;
 mod c4_those_creatures;
 mod c4_token_counts;
 mod c4_twins;
+mod c5_af;
 mod c5_dice_piles;
 mod cant_countered;
 mod cant_unless;
@@ -269,11 +270,17 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c4(ability, texts);
     c4_writers(ability, texts);
     add_c5_dice(ability, texts);
+    add_c5_af(ability, texts);
 }
 
 /// The wordings of the dice, coins, votes and piles of the (r1at) pass.
 fn add_c5_dice(ability: &Ability, texts: &mut Vec<String>) {
     c5_dice_piles::add(ability, texts);
+}
+
+/// The wordings of the fifth sample of the names A to F; it runs last because it rewrites the texts of the others.
+fn add_c5_af(ability: &Ability, texts: &mut Vec<String>) {
+    c5_af::c5_af_add(ability, texts);
 }
 
 /// The wordings of the fourth sample of the names A to F; it runs after the others because it rewrites their texts.

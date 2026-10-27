@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a3099143-0146-435f-8d29-cd364aefbc2b",
+  "name": "Crack in Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crack in Time",
+      "oracle_fingerprint": "96449d52a64a1d4f054be77a23edccdc",
+      "abilities": [
+        { "Keyword": { "Vanishing": 3 } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Main1", "whose": "You" } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

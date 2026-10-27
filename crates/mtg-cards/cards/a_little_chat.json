@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1167fe30-32b8-4381-8067-a05cd345977b",
+  "name": "A Little Chat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "A Little Chat",
+      "oracle_fingerprint": "da9c42b6b81a252bf983176de5a0e7e9",
+      "abilities": [
+        { "Keyword": { "Casualty": 1 } },
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "card", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              {
+                "Move": { "what": { "Bound": "rest" }, "to": { "Library": { "place": "Bottom" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

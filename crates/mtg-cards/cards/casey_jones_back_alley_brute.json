@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ab9ff8e9-0ffa-4ccf-a4bf-8505079616f6",
+  "name": "Casey Jones, Back Alley Brute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Casey Jones, Back Alley Brute",
+      "oracle_fingerprint": "3cbfc0653dc880a74b5565186680d615",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "CountersPut": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "counter": "+1/+1"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

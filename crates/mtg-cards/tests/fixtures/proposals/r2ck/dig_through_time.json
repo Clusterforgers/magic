@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Delve"},{"Spell":{"effects":[{"LookAtTop":{"count":7,"as":"top"}},{"Choose":{"from":{"Bound":"top"},"count":{"min":2,"max":2},"as":"cards","rest_as":"rest"}},{"Move":{"what":{"Bound":"cards"},"to":"Hand"}},{"Move":{"what":{"Bound":"rest"},"to":{"Library":{"place":"Bottom","order":"Chosen"}}}}]}}]}]}

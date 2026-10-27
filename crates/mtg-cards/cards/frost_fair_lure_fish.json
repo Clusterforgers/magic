@@ -1,0 +1,43 @@
+{
+  "oracle_id": "51e0a61d-69f0-475d-b40b-50d69252800d",
+  "name": "Frost Fair Lure Fish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frost Fair Lure Fish",
+      "oracle_fingerprint": "9a7a87fed9f961c8938e60a932716f85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fish",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fish"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 2, "tapped": true } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Fish" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }, { "CantBeBlockedBy": [{ "Subtype": "Human" }] }]
+          }
+        },
+        { "Keyword": { "Foretell": "{3}{U}{R}" } }
+      ]
+    }
+  ]
+}

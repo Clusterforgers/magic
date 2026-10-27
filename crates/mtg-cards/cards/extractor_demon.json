@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1fb5c014-9366-4f9e-9728-303ff766002b",
+  "name": "Extractor Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extractor Demon",
+      "oracle_fingerprint": "63d56b09709fb7c18da4ea7957b591ed",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Other", { "Type": "Creature" }], "from": "Battlefield" }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "May": { "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": "{2}{B}" } }
+      ]
+    }
+  ]
+}

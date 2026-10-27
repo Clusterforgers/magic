@@ -1,0 +1,53 @@
+{
+  "oracle_id": "54175132-2c44-4749-8dfd-d08dcc63e4b3",
+  "name": "Elusive Otter // Grove's Bounty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elusive Otter",
+      "oracle_fingerprint": "d4011183649b94608e0a4ce222dc0974",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Lt",
+                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Grove's Bounty",
+      "oracle_fingerprint": "60495a88b96226ee924c97228d4ecd47",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": "X" },
+                "divide": "X"
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

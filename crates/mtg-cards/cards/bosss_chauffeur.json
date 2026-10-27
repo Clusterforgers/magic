@@ -1,0 +1,62 @@
+{
+  "oracle_id": "5a6176cc-98bf-43ac-815a-1f19c4e9329c",
+  "name": "Boss's Chauffeur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boss's Chauffeur",
+      "oracle_fingerprint": "2a352a22a4205f0a4e4baeed220a4bbd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Sum": [
+                    1,
+                    { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Citizen",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Citizen"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
