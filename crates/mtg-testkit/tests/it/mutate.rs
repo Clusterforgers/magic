@@ -1,4 +1,4 @@
-//! Goal: mutate (CR 702.140, 729) is an alternative cost from the hand or the command zone that casts a creature spell targeting a non-Human creature with the same owner; it is offered only with such a creature and the mana, the controller puts the spell over or under the creature as it resolves, the result is the same object with the characteristics of the top card and the abilities of both (counters stay, "whenever this creature mutates" triggers), a target that is gone makes the spell resolve as a creature spell, and when the merged permanent leaves the battlefield each card is an object of its own in the new zone, a commander card going on to the command zone alone; at 2 to 4 seats.
+//! Goal: mutate (CR 702.140, 729) is an alternative cost from the hand or the command zone that casts a creature spell targeting a non-Human creature with the same owner; it is offered only with such a creature and the mana, the controller puts the spell over or under the creature as it resolves, the result is the same object with the characteristics of the top card and the abilities of both (counters stay, "whenever this creature mutates" triggers), a target that is gone makes the spell resolve as a creature spell, and when the merged permanent leaves the battlefield each card is an object of its own in the new zone, a commander card going on to the command zone alone, and a merged permanent shuffled into the library replays; at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -14,7 +14,7 @@ use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::format::Commander;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, GameState, PresetPermanent, characteristics, replay};
-use mtg_testkit::cards::{bear, forest, free_creature, island, swamp};
+use mtg_testkit::cards::{bear, forest, free_creature, island, plains, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, check_state, ready, with_counters};
 use rstest::rstest;
@@ -300,20 +300,23 @@ fn a_merged_permanent_that_dies_puts_each_card_into_the_graveyard_as_an_object_o
     Ok(())
 }
 
-#[rstest]
-fn a_commander_card_of_a_merged_permanent_goes_to_the_command_zone_and_the_other_card_stays(
-    #[values(2, 3, 4)] seats: usize,
-    #[values(true, false)] commander_is_the_spell: bool,
-) -> Result<(), ScriptError> {
-    // The commander is the Gnarr, cast onto a Bear, or a Bear cast first with the Gnarr mutating onto it.
+/// A merged permanent of seat 0 with its commander: the Gnarr cast onto a Bear, or a Bear commander cast first with the
+/// Gnarr mutating onto it; seat 0 also holds `removal` and the lands for it, and a library of Forests. Returns the
+/// driver, the scenario, the permanent, the commander card and the other card.
+fn merged_commander(
+    seats: usize,
+    commander_is_the_spell: bool,
+    removal: &str,
+    removal_lands: Vec<PresetPermanent>,
+) -> Result<(Driver, Scenario, ObjectId, ObjectId, ObjectId), ScriptError> {
     let commander = if commander_is_the_spell {
         card(GNARR).unwrap()
     } else {
         bear()
     };
     let mut board = lands(9);
-    board.extend([ready(swamp()), ready(swamp())]);
-    let mut hand = vec![card("Doom Blade").unwrap()];
+    board.extend(removal_lands);
+    let mut hand = vec![card(removal).unwrap()];
     if commander_is_the_spell {
         board.push(ready(bear()));
     } else {
@@ -325,10 +328,12 @@ fn a_commander_card_of_a_merged_permanent_goes_to_the_command_zone_and_the_other
         .battlefield(0, board)
         .battlefield(1, vec![ready(swamp())])
         .hand(0, hand);
-    let scenario = (2..seats).fold(scenario, |scenario, seat| {
-        scenario.library(seat, (0..8).map(|_| forest()))
-    });
-    let mut driver = Driver::from_scenario(scenario)?;
+    let scenario = (0..seats)
+        .filter(|seat| *seat != 1)
+        .fold(scenario, |scenario, seat| {
+            scenario.library(seat, (0..8).map(|_| forest()))
+        });
+    let mut driver = Driver::from_scenario(scenario.clone())?;
     if !commander_is_the_spell {
         // The Bear commander comes from the command zone; the Gnarr then mutates onto it.
         driver.begin_cast(BEARS)?;
@@ -340,28 +345,36 @@ fn a_commander_card_of_a_merged_permanent_goes_to_the_command_zone_and_the_other
     }
     cast_mutating(&mut driver, BEARS)?;
     settle(&mut driver, true)?;
-    let (host, commander_id, other) = {
-        let state = driver.state();
-        let host = state
-            .objects()
-            .find(|object| object.merged().is_some())
-            .map(mtg_engine::object::GameObject::id)
-            .unwrap();
-        let parts: Vec<ObjectId> = state
-            .object(host)
-            .unwrap()
-            .merged()
-            .unwrap()
-            .from_the_top()
-            .iter()
-            .map(|part| part.id())
-            .collect();
-        let commander = *parts.iter().find(|id| state.is_commander(**id)).unwrap();
-        let other = *parts.iter().find(|id| **id != commander).unwrap();
-        // The commander is the host or the card that merged with it, whichever the case.
-        assert_eq!(commander == host, !commander_is_the_spell);
-        (host, commander, other)
-    };
+    let state = driver.state();
+    let host = state
+        .objects()
+        .find(|object| object.merged().is_some())
+        .map(mtg_engine::object::GameObject::id)
+        .unwrap();
+    let parts: Vec<ObjectId> = state
+        .object(host)
+        .unwrap()
+        .merged()
+        .unwrap()
+        .from_the_top()
+        .iter()
+        .map(|part| part.id())
+        .collect();
+    let commander = *parts.iter().find(|id| state.is_commander(**id)).unwrap();
+    let other = *parts.iter().find(|id| **id != commander).unwrap();
+    // The commander is the host or the card that merged with it, whichever the case.
+    assert_eq!(commander == host, !commander_is_the_spell);
+    Ok((driver, scenario, host, commander, other))
+}
+
+#[rstest]
+fn a_commander_card_of_a_merged_permanent_goes_to_the_command_zone_and_the_other_card_stays(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] commander_is_the_spell: bool,
+) -> Result<(), ScriptError> {
+    let swamps = vec![ready(swamp()), ready(swamp())];
+    let (mut driver, _, host, commander_id, other) =
+        merged_commander(seats, commander_is_the_spell, "Doom Blade", swamps)?;
     let victim = driver.state().object(host).unwrap().card().name.clone();
     blade(&mut driver, &victim)?;
     // The owner is asked about the commander card alone; yes sends it on.
@@ -380,5 +393,44 @@ fn a_commander_card_of_a_merged_permanent_goes_to_the_command_zone_and_the_other
     );
     assert_eq!(state.object(other).unwrap().zone(), Zone::Graveyard(pid(0)));
     check_state(state).unwrap();
+    Ok(())
+}
+
+#[rstest]
+fn a_merged_permanent_with_a_commander_shuffled_into_the_library_replays(
+    #[values(2, 3)] seats: usize,
+    #[values(true, false)] commander_is_the_spell: bool,
+    #[values(true, false)] to_the_command_zone: bool,
+) -> Result<(), ScriptError> {
+    let plains = vec![ready(plains()), ready(plains()), ready(plains())];
+    let (mut driver, scenario, host, commander_id, other) =
+        merged_commander(seats, commander_is_the_spell, "Oblation", plains)?;
+    let victim = driver.state().object(host).unwrap().card().name.clone();
+    let target = driver.target_named(&victim)?;
+    driver.cast_at("Oblation", &[target])?;
+    for _ in 0..50 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        match &driver.decision()?.kind {
+            DecisionKind::YesNo(options) if options.source == commander_id => {
+                driver.answer(Answer::YesNo(YesNoChoice(to_the_command_zone)))?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    let state = driver.state();
+    // Each card is an object of its own in the library, or in the command zone when the commander went there.
+    for id in [commander_id, other] {
+        let zone = state.object(id).unwrap().zone();
+        assert!(
+            zone == Zone::Library(pid(0)) || zone == Zone::Command(pid(0)),
+            "{zone:?}"
+        );
+    }
+    check_state(state).unwrap();
+    replays(&driver, seats, &scenario);
     Ok(())
 }

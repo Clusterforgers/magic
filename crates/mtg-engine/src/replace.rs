@@ -1995,11 +1995,22 @@ impl Pass<'_> {
             })
             .collect();
         self.slots.splice(at..=at, slots);
-        // An object sent elsewhere is not among the cards an effect then bottoms or shuffles into the library.
+        // An object sent elsewhere, with the other cards of a merged permanent that go with it, is not among the cards
+        // an effect then bottoms or shuffles into the library.
+        let mut gone = self
+            .state
+            .object(object)
+            .map(crate::merged::cards_apart)
+            .unwrap_or_default();
+        gone.push(object);
         for slot in &mut self.slots {
             match &mut slot.item {
-                Item::One(Event::LibraryBottomed { cards, .. }) => cards.retain(|id| *id != object),
-                Item::One(Event::LibraryShuffled { order, .. }) => order.retain(|id| *id != object),
+                Item::One(Event::LibraryBottomed { cards, .. }) => {
+                    cards.retain(|id| !gone.contains(id));
+                }
+                Item::One(Event::LibraryShuffled { order, .. }) => {
+                    order.retain(|id| !gone.contains(id));
+                }
                 _ => {}
             }
         }

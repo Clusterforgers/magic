@@ -321,6 +321,15 @@ fn into_libraries(
         let (cards, tokens): (Vec<&GameObject>, Vec<&GameObject>) =
             group.iter().partition(|object| object.kind().is_card());
         let mut ids: Vec<ObjectId> = cards.iter().map(|object| object.id()).collect();
+        // The other cards of a merged permanent go with it as cards of their own (CR 729.3); on top they go where the
+        // permanent goes, put on the bottom or shuffled in they are among the cards ordered or shuffled.
+        if place != Place::Top {
+            ids.extend(
+                group
+                    .iter()
+                    .flat_map(|object| crate::merged::cards_apart(object)),
+            );
+        }
         let drawn = random && place == Place::Bottom && ids.len() > 1;
         if drawn {
             ids = shuffled(state, shuffles, ids);
@@ -380,7 +389,7 @@ fn into_libraries(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, a card put onto the battlefield enters untapped or tapped under its owner or the player named while an instant or sorcery card and a permanent already there stay, a permanent that is phased out does not move at all, and an order the engine does not play is refused by name; a transforming double-faced card put onto the battlefield transformed comes in back face up as one object with the mana value of its front face, and any other card stays where it is.
+    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, a card put onto the battlefield enters untapped or tapped under its owner or the player named while an instant or sorcery card and a permanent already there stay, a permanent that is phased out does not move at all, and an order the engine does not play is refused by name; a transforming double-faced card put onto the battlefield transformed comes in back face up as one object with the mana value of its front face, and any other card stays where it is; each other card of a merged permanent put on the bottom or shuffled in is among the cards ordered or shuffled, a token among them ceases to exist, and the log folds back to that library.
     use rstest::rstest;
 
     use std::sync::Arc;
@@ -1176,5 +1185,108 @@ mod tests {
         let run = run_bound(&game, both, Vec::new(), &moving(TRANSFORMED)).unwrap();
         let (events, _) = done(run);
         assert_eq!(events.len(), 2, "the card enters, the permanent stays");
+    }
+
+    /// The game with card A of seat 0 merged with the Wolf, over or under it, and the Wolf a token or a card.
+    fn merged_wolf(over: bool, token: bool) -> (GameState, ObjectId, ObjectId) {
+        let mut game = game();
+        let (wolf, card) = (game.zone(Zone::Battlefield)[1], hand(&game, ME)[0]);
+        if token {
+            game.objects.get_mut(&wolf).unwrap().kind = ObjectKind::Token;
+        }
+        let cast = to(card, Zone::Hand(ME), Zone::Stack);
+        let merged = Event::Mutated {
+            object: wolf,
+            spell: card,
+            over,
+            player: ME,
+        };
+        (after(&game, &[cast, merged]), wolf, card)
+    }
+
+    /// The events of the move of `cards` to `to`, each order asked answered as offered.
+    fn settled(game: &GameState, cards: &[ObjectId], to: &str) -> Vec<Event> {
+        let mut journal = Vec::new();
+        loop {
+            match run_with(game, cards, journal.clone(), &moving(to)).unwrap() {
+                Run::Ask(decision) => {
+                    let DecisionKind::OrderCards(options) = decision.kind else {
+                        panic!("only an order is asked");
+                    };
+                    journal.push((decision.player, Choice::Order(options.cards)));
+                }
+                run => return done(run).0,
+            }
+        }
+    }
+
+    #[rstest]
+    #[case::card_over_a_card_shuffled(SHUFFLED, true, false)]
+    #[case::card_under_a_card_shuffled(SHUFFLED, false, false)]
+    #[case::card_over_a_token_shuffled(SHUFFLED, true, true)]
+    #[case::card_under_a_token_shuffled(SHUFFLED, false, true)]
+    #[case::card_over_a_card_bottomed(BOTTOM, true, false)]
+    #[case::card_under_a_token_bottomed(BOTTOM, false, true)]
+    #[case::card_over_a_card_on_top(TOP, true, false)]
+    #[case::card_under_a_token_on_top(TOP, false, true)]
+    fn each_card_of_a_merged_permanent_put_into_the_library_is_in_it_and_a_token_is_not(
+        #[case] place: &str,
+        #[case] over: bool,
+        #[case] token: bool,
+    ) {
+        let (game, wolf, card) = merged_wolf(over, token);
+        let events = settled(&game, &[wolf], place);
+        let folded = after(&game, &events);
+        let mut moved = vec![card];
+        if !token {
+            moved.push(wolf);
+        }
+        let mut want = [library(&game, ME), moved.clone()].concat();
+        let mut got = library(&folded, ME);
+        want.sort_unstable();
+        got.sort_unstable();
+        assert_eq!(got, want);
+        assert_eq!(folded.object(wolf).is_none(), token);
+        assert!(!folded.zone(Zone::Battlefield).contains(&wolf));
+        let mut ends: Vec<ObjectId> = match place {
+            BOTTOM => library(&folded, ME)[..moved.len()].to_vec(),
+            TOP => library(&folded, ME)[library(&game, ME).len()..].to_vec(),
+            _ => moved.clone(),
+        };
+        ends.sort_unstable();
+        moved.sort_unstable();
+        assert_eq!(ends, moved, "the cards are where the move put them");
+    }
+
+    #[rstest]
+    #[case::a_token_from_the_battlefield(Zone::Battlefield, true)]
+    #[case::a_card_from_the_battlefield(Zone::Battlefield, false)]
+    #[case::a_card_from_the_graveyard(Zone::Graveyard(ME), false)]
+    fn a_shuffle_into_the_library_holds_the_cards_and_no_token(
+        #[case] from: Zone,
+        #[case] token: bool,
+    ) {
+        let mut game = game();
+        let object = if from == Zone::Battlefield {
+            game.zone(Zone::Battlefield)[1]
+        } else {
+            let card = hand(&game, ME)[0];
+            game = after(&game, &[to(card, Zone::Hand(ME), from)]);
+            card
+        };
+        if token {
+            game.objects.get_mut(&object).unwrap().kind = ObjectKind::Token;
+        }
+        let events = settled(&game, &[object], SHUFFLED);
+        let folded = after(&game, &events);
+        let mut want = library(&game, ME);
+        if !token {
+            want.push(object);
+        }
+        let mut got = library(&folded, ME);
+        want.sort_unstable();
+        got.sort_unstable();
+        assert_eq!(got, want);
+        assert_eq!(folded.object(object).is_none(), token);
     }
 }

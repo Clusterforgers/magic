@@ -141,6 +141,15 @@ impl Merged {
             .with_abilities_of(cards.map(|(at, card)| if at == top { copy } else { card.card() }))
     }
 
+    /// The ids of the cards other than the one the permanent was that become objects of their own when it leaves the
+    /// battlefield; a token among them ceases to exist (CR 111.7, 729.3).
+    fn apart(&self) -> impl Iterator<Item = ObjectId> + '_ {
+        self.others()
+            .iter()
+            .filter(|card| !card.is_token())
+            .map(Component::id)
+    }
+
     /// The cards other than the one the permanent was, in the order they merged.
     fn others(&self) -> &[Component] {
         self.components.get(1..).unwrap_or_default()
@@ -298,6 +307,14 @@ pub(crate) fn fold(
     host.face_down = None;
     crate::fold::priority_to_active(state);
     Ok(())
+}
+
+/// The ids of the cards that leave with `object` as objects of their own when it is a merged permanent, else none.
+pub(crate) fn cards_apart(object: &GameObject) -> Vec<ObjectId> {
+    object
+        .permanent()
+        .and_then(PermanentState::merged)
+        .map_or_else(Vec::new, |merged| merged.apart().collect())
 }
 
 /// What the permanent that left the battlefield was made of, besides its own card: the cards that become objects of their
