@@ -59,7 +59,10 @@ const C5_GL_TWINS: [C5GlTwin; 23] = [
     },
     C5GlTwin {
         json: &[
-            (r#"{"Choose":{"from":{"Each":"#, r#"{"Exile":{"what":{"Each":"#),
+            (
+                r#"{"Choose":{"from":{"Each":"#,
+                r#"{"Exile":{"what":{"Each":"#,
+            ),
             (
                 r#"]},"count":{"min":0,"max":null},"as":"chosen"}},{"Exile":{"what":{"Bound":"chosen"},"#,
                 "]},",
@@ -82,7 +85,10 @@ const C5_GL_TWINS: [C5GlTwin; 23] = [
             r#"{"Explore":{"what":{"Each":[{"Subtype":"Merfolk"},{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#,
             r#"{"Explore":{"what":"This"}}"#,
         )],
-        words: &[(", ~ explores.", ", each Merfolk creature you control explores.")],
+        words: &[(
+            ", ~ explores.",
+            ", each Merfolk creature you control explores.",
+        )],
     },
     C5GlTwin {
         json: &[(
@@ -110,7 +116,10 @@ const C5_GL_TWINS: [C5GlTwin; 23] = [
                 r#"{"May":{"effects":[{"RevealUntil":{"filter":[{"Type":"Creature"},{"SharesSubtype":"Triggering"}]"#,
                 r#"{"RevealUntil":{"filter":[{"Type":"Creature"}]"#,
             ),
-            (r#""order":"Random"}}}}]}}]}}"#, r#""order":"Random"}}}}]}}"#),
+            (
+                r#""order":"Random"}}}}]}}]}}"#,
+                r#""order":"Random"}}}}]}}"#,
+            ),
         ],
         words: &[
             ("dies, reveal cards", "dies, you may reveal cards"),
@@ -131,7 +140,10 @@ const C5_GL_TWINS: [C5GlTwin; 23] = [
         )],
     },
     C5GlTwin {
-        json: &[(r#",{"Type":"Creature"},"ChosenSubtype"]"#, r#",{"Type":"Creature"}]"#)],
+        json: &[(
+            r#",{"Type":"Creature"},"ChosenSubtype"]"#,
+            r#",{"Type":"Creature"}]"#,
+        )],
         words: &[(
             "reveal a creature card from among",
             "reveal a creature card of the chosen type from among",
@@ -163,7 +175,10 @@ const C5_GL_TWINS: [C5GlTwin; 23] = [
                 "Add {G}.",
                 "Add one mana of any type that a land you control could produce.",
             ),
-            ("add {G}{G}{G} instead.", "add three mana of that type instead."),
+            (
+                "add {G}{G}{G} instead.",
+                "add three mana of that type instead.",
+            ),
         ],
     },
     C5GlTwin {

@@ -71,13 +71,7 @@ pub(super) fn c5_gl_add(ability: &Ability, texts: &mut Vec<String>) {
 
 /// Whether a step of the ability, or of one of its modes, creates tokens that are tapped and attacking.
 fn c5_gl_makes_attackers(ability: &Ability) -> bool {
-    let effects = match ability {
-        Ability::Triggered { effects, .. }
-        | Ability::Activated { effects, .. }
-        | Ability::Spell { effects, .. } => effects,
-        _ => return false,
-    };
-    effects.iter().any(|effect| match effect {
+    ability.effects().iter().any(|effect| match effect {
         Effect::CreateToken {
             tapped: true,
             attacking: true,
@@ -112,5 +106,7 @@ fn c5_gl_attacking_first(text: &str) -> Option<String> {
     if token.contains('.') {
         return None;
     }
-    Some(format!("{before}reate a tapped and attacking {token}{tail}"))
+    Some(format!(
+        "{before}reate a tapped and attacking {token}{tail}"
+    ))
 }
