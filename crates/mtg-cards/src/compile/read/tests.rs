@@ -173,6 +173,7 @@ mod c4_phases;
 mod c4_prepare_writers;
 mod c4_sz_writers;
 mod c4_writers;
+mod c5_dice_writers;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;

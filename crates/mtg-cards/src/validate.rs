@@ -1832,12 +1832,17 @@ impl<'a> Walker<'a> {
                 bind,
                 rest_as,
             } => {
+                // A choice among players ("an opponent", CR 800.4) binds players; any other binds objects.
+                let kind = match w.kind_of(from) {
+                    Kind::Player => Kind::Player,
+                    _ => Kind::Object,
+                };
                 w.at("who", |w| w.reference(who, Kind::Player));
-                w.at("from", |w| w.reference(from, Kind::Object));
+                w.at("from", |w| w.reference(from, kind));
                 w.at("count", |w| w.bounds(count));
-                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("as", |w| w.bind(bind, kind));
                 if let Some(rest) = rest_as {
-                    w.at("rest_as", |w| w.bind(rest, Kind::Object));
+                    w.at("rest_as", |w| w.bind(rest, kind));
                 }
             }
             Effect::ChooseAtRandom { from, count, bind } => {
@@ -3868,6 +3873,10 @@ mod tests {
     #[case::a_permission_for_a_player(
         r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","only":"You","play":true}},"duration":"UntilEndOfTurn"}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.only: expected an object but this is a player"
+    )]
+    #[case::a_chosen_opponent_is_a_player(
+        r#"{"Spell":{"effects":[{"Choose":{"from":"Opponents","as":"foe"}},{"Destroy":{"what":{"Bound":"foe"}}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[1].Destroy.what: expected an object but this is a player"
     )]
     #[case::triggering_outside_a_trigger(
         r#"{"Spell":{"effects":[{"Draw":{"who":"Triggering"}}]}}"#,

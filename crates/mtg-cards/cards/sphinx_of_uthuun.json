@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4b4f268d-34ae-416d-a412-66f4fe37659c",
+  "name": "Sphinx of Uthuun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of Uthuun",
+      "oracle_fingerprint": "577eb909fd6e98cd6c9f17dec57e10a3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": "Opponents", "as": "separator" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "separator" },
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "Move": { "what": { "Bound": "other" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
