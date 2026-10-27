@@ -1,0 +1,21 @@
+{
+  "oracle_id": "83734824-1cad-4649-87ae-a5c338771c4c",
+  "name": "Skaab Ruinator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skaab Ruinator",
+      "oracle_fingerprint": "c2acb2bc9f642ceae9669e6641a8cc29",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": 3 } }],
+            "required": true
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } } } }
+      ]
+    }
+  ]
+}

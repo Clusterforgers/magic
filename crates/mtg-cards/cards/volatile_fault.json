@@ -1,0 +1,55 @@
+{
+  "oracle_id": "95c44f28-f7fa-4785-83b9-0d81be0db0c8",
+  "name": "Volatile Fault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volatile Fault",
+      "oracle_fingerprint": "4655d9f760f1b9dd779f622b441555e3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "l"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "l" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

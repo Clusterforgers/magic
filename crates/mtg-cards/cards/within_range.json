@@ -1,0 +1,58 @@
+{
+  "oracle_id": "cc8c1e21-4540-4e74-a513-eb6c17372de1",
+  "name": "Within Range",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Within Range",
+      "oracle_fingerprint": "1e9bcd698b1c55b28e8d7b4e709b37ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "p" },
+                        "amount": {
+                          "Count": ["Attacking", { "AttackingPlayer": { "Bound": "p" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

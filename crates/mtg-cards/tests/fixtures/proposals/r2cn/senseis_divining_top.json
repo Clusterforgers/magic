@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":"{1}","effects":[{"LookAtTop":{"count":3,"as":"top"}},{"Move":{"what":{"Bound":"top"},"to":{"Library":{"place":"Top","order":"Chosen"}}}}]}},{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}},{"Move":{"what":"This","to":{"Library":{"place":"Top"}}}}]}}]}]}

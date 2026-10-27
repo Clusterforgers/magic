@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a72213e7-16f0-4fbe-91d3-750ca51a4336",
+  "name": "Vile Requiem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vile Requiem",
+      "oracle_fingerprint": "77e1ae8495c39e8015257d455b441fc2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "verse" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Counters": { "on": "This", "counter": { "Other": "verse" } } }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

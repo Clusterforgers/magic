@@ -1,0 +1,41 @@
+{
+  "oracle_id": "240e85d3-e495-4877-8609-4b4056c402f7",
+  "name": "Victimize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Victimize",
+      "oracle_fingerprint": "6f6437f9c466b4b250fa3140d0bcdc2e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

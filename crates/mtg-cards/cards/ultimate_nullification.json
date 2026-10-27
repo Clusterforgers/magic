@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2fe0ebf5-52ed-4e92-9b93-81e9ae564439",
+  "name": "Ultimate Nullification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultimate Nullification",
+      "oracle_fingerprint": "27086c67ba9c458bfad2ea2d1409663d",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] } }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

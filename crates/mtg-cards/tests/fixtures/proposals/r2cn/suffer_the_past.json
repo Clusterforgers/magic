@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"},{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"bounds":{"min":"X","max":"X"}}],"effects":[{"Exile":{"what":{"Target":1},"as":"e"}},{"LoseLife":{"who":{"Target":0},"amount":{"Count":[{"Is":{"Bound":"e"}}]}}},{"GainLife":{"amount":{"Count":[{"Is":{"Bound":"e"}}]}}}]}}]}]}

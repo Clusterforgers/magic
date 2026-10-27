@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "5a80f7e1-1d79-4302-a603-73eb060b97a6",
+  "oracle_id": "2d73a3bd-f052-4f48-9a72-12db03e27249",
+  "multiverse_ids": [],
+  "resource_id": "0884B4E4DE16FD8B6EEEC2F91189230295B618C8169A9F7ACD49AD84D1C0B048",
+  "mtgo_id": 142389,
+  "tcgplayer_id": 642020,
+  "cardmarket_id": 834128,
+  "name": "Soul of Windgrace",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "uri": "https://api.scryfall.com/cards/5a80f7e1-1d79-4302-a603-73eb060b97a6",
+  "scryfall_uri": "https://scryfall.com/card/eoc/126/soul-of-windgrace?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:27:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.jpg?1783906025",
+    "normal": "https://cards.scryfall.io/normal/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.jpg?1783906025",
+    "large": "https://cards.scryfall.io/large/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.jpg?1783906025",
+    "png": "https://cards.scryfall.io/png/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.png?1783906025",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.jpg?1783906025",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.jpg?1783906025",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.webp?1783906025",
+    "grid": "https://cards.scryfall.io/grid/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.webp?1783906025",
+    "display": "https://cards.scryfall.io/display/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.webp?1783906025",
+    "art": "https://cards.scryfall.io/art/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.webp?1783906025",
+    "crop": "https://cards.scryfall.io/crop/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.webp?1783906025",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/a/5a80f7e1-1d79-4302-a603-73eb060b97a6.jpg?1783906025"
+  },
+  "mana_cost": "{1}{B}{R}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Cat Avatar",
+  "oracle_text": "Whenever Soul of Windgrace enters or attacks, you may put a land card from a graveyard onto the battlefield tapped under your control.\n{G}, Discard a land card: You gain 3 life.\n{1}{R}, Discard a land card: Draw a card.\n{2}{B}, Discard a land card: Soul of Windgrace gains indestructible until end of turn. Tap it.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set": "eoc",
+  "set_name": "Edge of Eternities Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eoc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5a80f7e1-1d79-4302-a603-73eb060b97a6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2d73a3bd-f052-4f48-9a72-12db03e27249&unique=prints",
+  "collector_number": "126",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Liiga Smilshkalne",
+  "artist_ids": [
+    "5a50ced2-b301-4195-8af4-f7e1bae07d28"
+  ],
+  "illustration_id": "56be0ea6-2a80-4453-8c0f-9cd2a2c9082e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5198,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=HxXLWC_JRdM",
+    "previewed_at": "2025-07-09"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoul%2Bof%2BWindgrace",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoul%2Bof%2BWindgrace",
+    "edhrec": "https://edhrec.com/route/?cc=Soul+of+Windgrace"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F642020%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=834128&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142389?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

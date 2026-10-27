@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":"{4}","effects":[{"Scry":{}},{"LookAtTop":{"count":1,"as":"t"}},{"Reveal":{"what":{"Bound":"t"}}},{"If":{"condition":{"Matches":{"subject":{"Bound":"t"},"selector":[{"Type":"Land"}]}},"then":[{"Move":{"what":{"Bound":"t"},"to":{"Battlefield":{"tapped":true}}}}],"otherwise":[{"Draw":{}}]}}]}},{"Keyword":"Partner"}]}]}

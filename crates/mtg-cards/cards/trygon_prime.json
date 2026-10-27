@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6b2d1d7b-a4b4-46c3-a50b-df7e60f39ee2",
+  "name": "Trygon Prime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trygon Prime",
+      "oracle_fingerprint": "7e1e89c502c44932a6fb010e5c9208c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

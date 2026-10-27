@@ -1,0 +1,31 @@
+{
+  "oracle_id": "256e094a-a9e8-42d9-90e2-7a24ed85e426",
+  "name": "Thought Sponge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Sponge",
+      "oracle_fingerprint": "9b4caf9903d6c4f841fda591d82eb226",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Tallied": { "who": "Opponents", "what": "Drawn" } }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Draw": { "count": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

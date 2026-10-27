@@ -1,0 +1,59 @@
+{
+  "oracle_id": "eada96a1-4964-4ad0-b0e3-2df08d6ae188",
+  "name": "Wilhelt, the Rotcleaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wilhelt, the Rotcleaver",
+      "oracle_fingerprint": "af0a50f8f9c6736973901f5f07a8f312",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Not": {
+                "Matches": { "subject": "Triggering", "selector": [{ "HasKeyword": "Decayed" }] }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Zombie" }] } }],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

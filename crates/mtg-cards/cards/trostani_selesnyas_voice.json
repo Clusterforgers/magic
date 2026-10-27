@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e94ef397-f5c5-4b8d-ae27-528352fa1d1e",
+  "name": "Trostani, Selesnya's Voice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trostani, Selesnya's Voice",
+      "oracle_fingerprint": "279d4fe3c7f07e6dbffbf08381447e0e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}{G}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "token"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "token" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

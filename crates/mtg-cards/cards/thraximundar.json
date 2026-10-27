@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9e0e4217-fefe-48dd-9153-032460192b19",
+  "name": "Thraximundar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thraximundar",
+      "oracle_fingerprint": "1858842332c1bac65d70a9b356d874e1",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Sacrifice": { "who": "Defending", "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

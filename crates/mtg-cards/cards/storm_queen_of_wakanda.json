@@ -1,0 +1,56 @@
+{
+  "oracle_id": "d8e585c5-1de3-4558-8a2f-0d9fb07edad6",
+  "name": "Storm, Queen of Wakanda",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm, Queen of Wakanda",
+      "oracle_fingerprint": "10865a8cfa400c40250d0c71b79260d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Flying" },
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "at": "You"
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "Triggering",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

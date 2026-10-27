@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d1ec1e4e-faa6-4afc-9e00-a3327105c11b",
+  "name": "Wavesifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wavesifter",
+      "oracle_fingerprint": "c1e1205baefd7c01cc3786d29732547d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": 2 } }]
+          }
+        },
+        { "Keyword": { "Evoke": "{U}{G}" } }
+      ]
+    }
+  ]
+}

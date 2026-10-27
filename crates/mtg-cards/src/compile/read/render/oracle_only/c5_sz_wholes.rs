@@ -3,9 +3,10 @@
 //! number of creatures attacking them.").
 
 use crate::ability::Ability;
+use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording.
-const C5_SZ_WHOLES: [(&str, &str); 10] = [
+const C5_SZ_WHOLES: [(&str, &str); 15] = [
     (
         r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"op":"Eq","right":13}},"effects":[{"WinGame":{}}]}}"#,
         "At the beginning of your upkeep, if you have exactly thirteen cards in your hand, you win the game.",
@@ -46,16 +47,44 @@ const C5_SZ_WHOLES: [(&str, &str); 10] = [
         r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"Color":"Red"},{"ControlledBy":"You"}]}}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#,
         "Whenever a red source you control deals damage to one or more permanents and/or players, put a +1/+1 counter on ~.",
     ),
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"Compare":{"left":{"Count":[{"Type":"Creature"},"Other",{"ControlledBy":"You"},{"HasCounter":"+1/+1"}]},"op":"Ge","right":1}},"effects":[{"Draw":{}}]}}"#,
+        "When ~ enters, if you control another creature with a +1/+1 counter on it, draw a card.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}],"to":"Battlefield"}}},"effects":[{"PutCounters":{"on":"This","counter":{"Other":"story"}}}]}}"#,
+        "Whenever you create one or more creature tokens, put a story counter on ~.",
+    ),
+    (
+        r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},"Other",{"ControlledBy":"You"},{"AnyOf":[{"Subtype":"Skeleton"},{"Subtype":"Pirate"}]}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}"#,
+        "Each other creature you control that's a Skeleton or Pirate gets +1/+1.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"AttacksPlayer":{"what":[{"Type":"Creature"},{"HasKeyword":"Flying"}],"at":"You"}},"effects":[{"DealDamage":{"source":"This","to":"Triggering","amount":{"Stat":{"of":"This","stat":"Power"}}}}]}}"#,
+        "Whenever a creature with flying attacks you, ~ deals damage equal to her power to that creature.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Subtype":"Zombie"},"Other",{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"if":{"Not":{"Matches":{"subject":"Triggering","selector":[{"HasKeyword":"Decayed"}]}}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2,"abilities":[{"Keyword":"Decayed"}]}}}}]}}"#,
+        "Whenever another Zombie you control dies, if it didn't have decayed, create a 2/2 black Zombie creature token with decayed.",
+    ),
 ];
+
+/// The wordings with their abilities as the data writes them, read once.
+static C5_SZ_SHAPES: LazyLock<Vec<(serde_json::Value, &str)>> = LazyLock::new(|| {
+    C5_SZ_WHOLES
+        .iter()
+        .filter_map(|(shape, text)| Some((c5_sz_shape(shape)?, *text)))
+        .collect()
+});
 
 /// Adds the wording of an ability that one of the entries matches whole.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ok(data) = serde_json::to_value(ability) else {
         return;
     };
-    for (shape, text) in C5_SZ_WHOLES {
-        if c5_sz_shape(shape).is_some_and(|shape| shape == data) {
-            texts.push(text.to_owned());
+    for (shape, text) in C5_SZ_SHAPES.iter() {
+        if *shape == data {
+            texts.push((*text).to_owned());
         }
     }
 }

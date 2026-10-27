@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":2,"max":2}}],"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}},{"If":{"condition":"Performed","then":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{"tapped":true}}}}]}}]}}]}]}

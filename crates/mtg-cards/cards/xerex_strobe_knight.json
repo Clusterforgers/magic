@@ -1,0 +1,44 @@
+{
+  "oracle_id": "2e150f97-5688-4559-94b8-86c33fda28a0",
+  "name": "Xerex Strobe-Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xerex Strobe-Knight",
+      "oracle_fingerprint": "2528e8d40c61f8a53f6957f2b4d7d66b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
