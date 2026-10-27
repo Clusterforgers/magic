@@ -1,0 +1,58 @@
+{
+  "oracle_id": "a371d035-488e-4b3d-81de-ee7859452c0e",
+  "name": "Lorehold Archivist // Restore Relic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lorehold Archivist",
+      "oracle_fingerprint": "a8610ec33a81bb139568d82122c052d8",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restore Relic",
+      "oracle_fingerprint": "60a7b99ec040760e1d14e68707484c02",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

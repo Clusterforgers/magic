@@ -1,0 +1,34 @@
+{
+  "oracle_id": "883ad210-917b-40e6-8682-31d6eb3ed12a",
+  "name": "Burakos, Party Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burakos, Party Leader",
+      "oracle_fingerprint": "d7f08820aeb1f91c5fc3c11ffca06935",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddSubtype": "Cleric" },
+              { "AddSubtype": "Rogue" },
+              { "AddSubtype": "Warrior" },
+              { "AddSubtype": "Wizard" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LoseLife": { "who": "Defending", "amount": { "Party": "You" } } },
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": { "Party": "You" } } }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

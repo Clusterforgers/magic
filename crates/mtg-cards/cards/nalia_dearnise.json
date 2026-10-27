@@ -1,0 +1,54 @@
+{
+  "oracle_id": "1bf6248c-658c-4540-8bee-81af79d349be",
+  "name": "Nalia de'Arnise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nalia de'Arnise",
+      "oracle_fingerprint": "edc605233df40427c7480acbf3b96444",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Cleric" },
+                      { "Subtype": "Rogue" },
+                      { "Subtype": "Warrior" },
+                      { "Subtype": "Wizard" }
+                    ]
+                  }
+                ],
+                "from": "Library"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "Compare": { "left": { "Party": "You" }, "op": "Ge", "right": 4 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

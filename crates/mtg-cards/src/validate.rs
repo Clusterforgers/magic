@@ -460,6 +460,14 @@ impl<'a> Walker<'a> {
         self.at(name, |w| w.reference(who, Kind::Player));
     }
 
+    /// The fewest cards in a hand of the players a reference names, and the life lost by the resolving ability.
+    fn hand_or_life_lost(&mut self, amount: &Amount) {
+        match amount {
+            Amount::LowestHand(who) => self.player_amount("LowestHand", who),
+            _ => self.uses("Amount", "LifeLostThisWay"),
+        }
+    }
+
     /// A count of the turn: of players for the tallies of players, of one object for the times counters were put on it.
     fn tallied(&mut self, who: &Ref, what: TurnTally) {
         if what == TurnTally::CountersPut {
@@ -552,6 +560,7 @@ impl<'a> Walker<'a> {
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
+            Amount::LowestHand(_) | Amount::LifeLostThisWay => self.hand_or_life_lost(amount),
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
             Amount::Mutations(of) => {
                 self.uses("Amount", "Mutations");
@@ -1232,18 +1241,14 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// The patterns of an `AnyOf`: at least two, none of them a batch.
+    /// The patterns of an `AnyOf`: at least two; a batch may be one of them ("When this enters and whenever one or more
+    /// tokens you control deal combat damage to a player") but then the list holds events of one kind of pattern each.
     fn any_of(&mut self, patterns: &[TriggerPattern]) {
         if patterns.len() < 2 {
             self.problem("`AnyOf` needs at least two patterns");
         }
         for (i, inner) in patterns.iter().enumerate() {
-            self.at(format!("[{i}]"), |w| {
-                if matches!(inner, TriggerPattern::Batch(_)) {
-                    w.problem("a batch is the whole pattern of a triggered ability");
-                }
-                w.trigger_pattern(inner);
-            });
+            self.at(format!("[{i}]"), |w| w.trigger_pattern(inner));
         }
     }
 

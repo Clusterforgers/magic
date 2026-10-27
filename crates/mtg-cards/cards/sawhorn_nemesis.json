@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2f9107c5-991a-4c20-9b77-2e2fb4b9dc53",
+  "name": "Sawhorn Nemesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sawhorn Nemesis",
+      "oracle_fingerprint": "c22eac9a98cb31a50db6230a1b4b7372",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Player" }
+          }
+        },
+        { "Replacement": { "when": { "Damage": { "to": "Chosen" } }, "by": { "Multiply": 2 } } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": { "Each": [{ "ControlledBy": "Chosen" }] } } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

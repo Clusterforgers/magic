@@ -1,0 +1,52 @@
+{
+  "oracle_id": "10389ff7-2ea4-4413-90cc-0e3ca268c64d",
+  "name": "Striding Shotcaller // Run the Play",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Striding Shotcaller",
+      "oracle_fingerprint": "1b1a62d209a669ef5479d960042b4d4f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Run the Play",
+      "oracle_fingerprint": "5ee83c2e959df69c34ea4ea6d2c929a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": "X" } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

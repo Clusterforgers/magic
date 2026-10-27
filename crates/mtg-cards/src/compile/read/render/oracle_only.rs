@@ -19,6 +19,12 @@ mod bare;
 mod battalion;
 mod blink;
 mod bounce_all;
+mod c4_chosen_damage;
+mod c4_delayed_prepare;
+mod c4_each_of_up_to;
+mod c4_exile_copy;
+mod c4_party_roles;
+mod c4_those_creatures;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -241,6 +247,18 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     counters_equal::add(ability, texts);
     counters_put::add(ability, texts);
     add_more(ability, texts);
+    c4_writers(ability, texts);
+}
+
+/// The wordings of the party, chosen-player and prepare cards (c14a), in a function of their own.
+fn c4_writers(ability: &Ability, texts: &mut Vec<String>) {
+    c4_party_roles::add(texts);
+    c4_those_creatures::add(ability, texts);
+    c4_chosen_damage::add(ability, texts);
+    c4_delayed_prepare::add(ability, texts);
+    c4_each_of_up_to::add(ability, texts);
+    c4_exile_copy::add(ability, texts);
+    c4_exile_copy::add_and_or(texts);
 }
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.

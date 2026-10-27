@@ -1122,6 +1122,8 @@ impl<'a> Scope<'a> {
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
             Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
+            Amount::LowestHand(who) => self.lowest_hand(who)?,
+            Amount::LifeLostThisWay => self.life_lost_this_way(),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
@@ -1241,6 +1243,26 @@ impl<'a> Scope<'a> {
             largest = largest.max(party::size(&masks));
         }
         Ok(i64::from(largest))
+    }
+
+    /// The fewest cards in a hand among the players a reference names; larger than any hand when it names none.
+    fn lowest_hand(&self, who: &Ref) -> Result<i64, ResolveError> {
+        Ok(self
+            .players(who)?
+            .into_iter()
+            .map(|player| i64::try_from(self.state.zone(Zone::Hand(player)).len()).unwrap_or(0))
+            .min()
+            .unwrap_or(i64::from(i32::MAX)))
+    }
+
+    /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.
+    fn life_lost_this_way(&self) -> i64 {
+        i64::from(
+            self.state
+                .resolving
+                .as_ref()
+                .map_or(0, |resolving| resolving.lost),
+        )
     }
 
     /// The life totals of the players a reference names.
@@ -1680,6 +1702,9 @@ mod tests {
     #[case::highest_life_of_the_opponents(r#"{"HighestLife":"Opponents"}"#, 20)]
     #[case::lowest_life_of_no_one(r#"{"LowestLife":{"Each":[{"Named":"Nobody"}]}}"#, 2_147_483_647)]
     #[case::highest_life_of_no_one(r#"{"HighestLife":{"Each":[{"Named":"Nobody"}]}}"#, -2_147_483_648)]
+    #[case::lowest_hand_of_no_one(r#"{"LowestHand":{"Each":[{"Named":"Nobody"}]}}"#, 2_147_483_647)]
+    #[case::lowest_hand_of_everyone(r#"{"LowestHand":"EachPlayer"}"#, 0)]
+    #[case::no_life_lost_outside_a_resolution(r#""LifeLostThisWay""#, 0)]
     #[case::sum(r#"{"Sum":[2,{"Count":[{"Type":"Artifact"}]},-1]}"#, 2)]
     #[case::greatest_power(r#"{"Greatest":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#, 3)]
     #[case::greatest_of_yours(

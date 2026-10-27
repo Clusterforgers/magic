@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e54d207c-51b8-458e-86a1-2633ac064c8e",
+  "name": "Saskia the Unyielding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saskia the Unyielding",
+      "oracle_fingerprint": "58498c68489f6607256690a810105d83",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Player" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "DealDamage": { "source": "Dealer", "to": "Chosen", "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

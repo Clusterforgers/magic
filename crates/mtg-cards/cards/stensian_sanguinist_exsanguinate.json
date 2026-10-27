@@ -1,0 +1,58 @@
+{
+  "oracle_id": "25877c41-39a4-4cc3-ac4b-8f3dd06d579b",
+  "name": "Stensian Sanguinist // Exsanguinate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stensian Sanguinist",
+      "oracle_fingerprint": "a015544eba2e594ca2fc2e89da178eef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Choose": { "from": { "Target": 0 }, "as": "pumped" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Is": { "Bound": "pumped" } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "effects": [{ "Prepare": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exsanguinate",
+      "oracle_fingerprint": "c5df71917238dce021e4a331fc0e5eb2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": "X" } },
+              { "GainLife": { "amount": "LifeLostThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

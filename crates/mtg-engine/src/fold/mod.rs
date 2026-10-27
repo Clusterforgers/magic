@@ -381,7 +381,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ManaPoolEmptied { player, through } => pool_mut(state, *player)?.empty(*through),
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
         Event::LifeGained { player, amount } => gain_life(state, *player, *amount)?,
-        Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,
+        Event::LifeLost { player, amount } => lose_life(state, *player, *amount)?,
         Event::DrewFromEmptyLibrary { player } => {
             let seat = player_mut(state, *player)?;
             seat.failed_draws = seat.failed_draws.saturating_add(1);
@@ -488,6 +488,15 @@ fn change_life(
         }
         _ => Err(invalid(format!("{id:?} cannot change life by {amount}"))),
     }
+}
+
+/// A player loses life to an effect: the loss, and the sum "the life lost this way" reads while a spell or ability resolves.
+fn lose_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
+    change_life(state, id, amount, false)?;
+    if let Some(resolving) = state.resolving.as_mut() {
+        resolving.lost = resolving.lost.saturating_add(amount);
+    }
+    Ok(())
 }
 
 /// Gives priority to the active player (or the next player in turn order) with nobody having passed, as it
