@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"May":{"effects":[{"Draw":{"count":{"Stat":{"of":"This","stat":"Power"}}}}]}},{"If":{"condition":"Performed","then":[{"Discard":{"count":2}}]}}]}},{"Keyword":{"Eternalize":"{5}{U}{U}"}}]}]}

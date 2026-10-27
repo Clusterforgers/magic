@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "0fd5b48c-6850-47d4-8106-297be6c8f708",
+  "oracle_id": "2b3f2e85-5ea4-44d6-86e8-e8ce6d4f98c0",
+  "multiverse_ids": [
+    401863
+  ],
+  "mtgo_id": 58629,
+  "mtgo_foil_id": 58630,
+  "tcgplayer_id": 104737,
+  "cardmarket_id": 284371,
+  "name": "Drowner of Hope",
+  "lang": "en",
+  "released_at": "2015-10-02",
+  "uri": "https://api.scryfall.com/cards/0fd5b48c-6850-47d4-8106-297be6c8f708",
+  "scryfall_uri": "https://scryfall.com/card/bfz/57/drowner-of-hope?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:23:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.jpg?1783938213",
+    "normal": "https://cards.scryfall.io/normal/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.jpg?1783938213",
+    "large": "https://cards.scryfall.io/large/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.jpg?1783938213",
+    "png": "https://cards.scryfall.io/png/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.png?1783938213",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.jpg?1783938213",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.jpg?1783938213",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.webp?1783938213",
+    "grid": "https://cards.scryfall.io/grid/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.webp?1783938213",
+    "display": "https://cards.scryfall.io/display/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.webp?1783938213",
+    "art": "https://cards.scryfall.io/art/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.webp?1783938213",
+    "crop": "https://cards.scryfall.io/crop/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.webp?1783938213",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/f/0fd5b48c-6850-47d4-8106-297be6c8f708.jpg?1783938213"
+  },
+  "mana_cost": "{5}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Eldrazi",
+  "oracle_text": "Devoid (This card has no color.)\nWhen this creature enters, create two 1/1 colorless Eldrazi Scion creature tokens. They have \"Sacrifice this token: Add {C}.\"\nSacrifice an Eldrazi Scion: Tap target creature.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Devoid"
+  ],
+  "produced_mana": [
+    "C"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "20b7443e-7eb2-4fcb-8114-23bad3b3bf51",
+      "component": "token",
+      "name": "Eldrazi Scion",
+      "type_line": "Token Creature — Eldrazi Scion",
+      "uri": "https://api.scryfall.com/cards/20b7443e-7eb2-4fcb-8114-23bad3b3bf51"
+    },
+    {
+      "object": "related_card",
+      "id": "0fd5b48c-6850-47d4-8106-297be6c8f708",
+      "component": "combo_piece",
+      "name": "Drowner of Hope",
+      "type_line": "Creature — Eldrazi",
+      "uri": "https://api.scryfall.com/cards/0fd5b48c-6850-47d4-8106-297be6c8f708"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set": "bfz",
+  "set_name": "Battle for Zendikar",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/91719374-7ac5-4afa-ada8-5da964dcf1d4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abfz&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bfz?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0fd5b48c-6850-47d4-8106-297be6c8f708/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2b3f2e85-5ea4-44d6-86e8-e8ce6d4f98c0&unique=prints",
+  "collector_number": "57",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomasz Jedruszek",
+  "artist_ids": [
+    "bba69285-2445-4a4b-a847-59397be972ea"
+  ],
+  "illustration_id": "9815ced8-a12f-4f70-b3fe-1911ff29dbf9",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "devoid"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8078,
+  "penny_rank": 5433,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.56",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.46",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=401863&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDrowner%2Bof%2BHope",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDrowner%2Bof%2BHope",
+    "edhrec": "https://edhrec.com/route/?cc=Drowner+of+Hope"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F104737%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=284371&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/58629?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

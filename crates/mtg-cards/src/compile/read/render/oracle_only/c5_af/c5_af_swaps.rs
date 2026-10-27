@@ -7,6 +7,9 @@ use crate::ability::Ability;
 /// What the rules must hold for a swap to apply.
 type C5AfGuard = fn(&str) -> bool;
 
+/// A rework of a whole wording into the card's; `None` when the wording is not the one it reworks.
+type C5AfRework = fn(&str) -> Option<String>;
+
 /// The phrase swaps: where they apply, the renderers' words and the card's.
 const C5_AF_PHRASES: [(C5AfGuard, &str, &str); 10] = [
     (
@@ -50,7 +53,7 @@ const C5_AF_PHRASES: [(C5AfGuard, &str, &str); 10] = [
 ];
 
 /// The swaps that rework a whole wording: where they apply and the rework.
-const C5_AF_REWORDS: [(C5AfGuard, fn(&str) -> Option<String>); 5] = [
+const C5_AF_REWORDS: [(C5AfGuard, C5AfRework); 5] = [
     (c5_af_grants_to_two_kinds, c5_af_each_and),
     (c5_af_sacrificed_power, c5_af_where_sacrificed),
     (c5_af_prevents_noncombat, c5_af_prevent_all),

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a867be6f-46ce-4a12-a827-9429bd94243f",
+  "name": "Exsanguinator Cavalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exsanguinator Cavalry",
+      "oracle_fingerprint": "45ed8d119f10de3fd4090eadafab50fa",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Dealer", "counter": "+1/+1" } },
+              { "CreateToken": { "token": { "Named": "blood" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"PutCounters":{"on":"You","count":3,"counter":{"Other":"energy"}}}]}},{"Activated":{"cost":[{"PayEnergy":8}],"timing":"Sorcery","effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},"Other"]},"to":"Hand"}}]}}]}]}

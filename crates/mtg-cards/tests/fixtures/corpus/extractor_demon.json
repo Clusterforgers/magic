@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "c8d09723-3729-44b7-8f3d-3de47c135849",
+  "oracle_id": "1fb5c014-9366-4f9e-9728-303ff766002b",
+  "multiverse_ids": [
+    446798
+  ],
+  "tcgplayer_id": 168363,
+  "cardmarket_id": 358715,
+  "name": "Extractor Demon",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/c8d09723-3729-44b7-8f3d-3de47c135849",
+  "scryfall_uri": "https://scryfall.com/card/cm2/62/extractor-demon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:25:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.jpg?1783934758",
+    "normal": "https://cards.scryfall.io/normal/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.jpg?1783934758",
+    "large": "https://cards.scryfall.io/large/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.jpg?1783934758",
+    "png": "https://cards.scryfall.io/png/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.png?1783934758",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.jpg?1783934758",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.jpg?1783934758",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.webp?1783934758",
+    "grid": "https://cards.scryfall.io/grid/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.webp?1783934758",
+    "display": "https://cards.scryfall.io/display/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.webp?1783934758",
+    "art": "https://cards.scryfall.io/art/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.webp?1783934758",
+    "crop": "https://cards.scryfall.io/crop/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.webp?1783934758",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/8/c8d09723-3729-44b7-8f3d-3de47c135849.jpg?1783934758"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Flying\nWhenever another creature leaves the battlefield, you may have target player mill two cards.\nUnearth {2}{B} ({2}{B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Unearth",
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2ba5b1a3-40ed-422e-981d-56753004dfc6",
+  "set": "cm2",
+  "set_name": "Commander Anthology Volume II",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/2ba5b1a3-40ed-422e-981d-56753004dfc6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acm2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cm2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c8d09723-3729-44b7-8f3d-3de47c135849/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1fb5c014-9366-4f9e-9728-303ff766002b&unique=prints",
+  "collector_number": "62",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Carl Critchlow",
+  "artist_ids": [
+    "17948f16-611a-44b8-8d10-9895a0bdfff1"
+  ],
+  "illustration_id": "82fb1948-0fe8-4f78-beae-809244ae1fed",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16928,
+  "penny_rank": 6435,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=446798&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExtractor%2BDemon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExtractor%2BDemon",
+    "edhrec": "https://edhrec.com/route/?cc=Extractor+Demon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F168363%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358715&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Extractor+Demon&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

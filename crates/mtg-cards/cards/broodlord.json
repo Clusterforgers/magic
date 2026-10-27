@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e3a73311-25f7-4bd7-af1d-ab7b83ad01f2",
+  "name": "Broodlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broodlord",
+      "oracle_fingerprint": "4112ba54a7060a40fba328e6e4ff4d8f",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": "X" },
+                "divide": "X"
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c733873e-77db-471f-8061-139db24f7e7c",
+  "name": "Cephalid Coliseum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cephalid Coliseum",
+      "oracle_fingerprint": "0da851574c989ae5437ab2de3cd0f872",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Blue"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap", "SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+              { "Discard": { "who": { "Target": 0 }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

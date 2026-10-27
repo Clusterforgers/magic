@@ -1,0 +1,43 @@
+{
+  "oracle_id": "01c8d29f-4924-4d55-80bc-0c0c06bcb733",
+  "name": "Eight-and-a-Half-Tails",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eight-and-a-Half-Tails",
+      "oracle_fingerprint": "37236e0336809f4994b0d111a7b2dbc7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "Color": "White" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Either": [{ "Object": ["Spell"] }, { "Object": [] }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["White"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

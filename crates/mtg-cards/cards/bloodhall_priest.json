@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2eed5eb1-ab67-4f23-885d-922131364aba",
+  "name": "Bloodhall Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodhall Priest",
+      "oracle_fingerprint": "79c00117af2b20a5438206d1394616db",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        { "Keyword": { "Madness": "{1}{B}{R}" } }
+      ]
+    }
+  ]
+}

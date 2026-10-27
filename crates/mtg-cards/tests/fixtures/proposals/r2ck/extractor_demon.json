@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["Other",{"Type":"Creature"}],"from":"Battlefield"}},"targets":[{"what":"Player"}],"effects":[{"May":{"effects":[{"Mill":{"who":{"Target":0},"count":2}}]}}]}},{"Keyword":{"Unearth":"{2}{B}"}}]}]}

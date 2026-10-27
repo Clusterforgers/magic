@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bc483bab-14fb-498d-9310-9c070766c7ae",
+  "name": "Darksteel Reactor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darksteel Reactor",
+      "oracle_fingerprint": "d6adaeb640b25cf11c4ff58b28111f21",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": "charge" } },
+                    "op": "Ge",
+                    "right": 20
+                  }
+                }
+              }
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

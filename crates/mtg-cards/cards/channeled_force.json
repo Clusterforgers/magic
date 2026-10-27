@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e12ed186-01c1-4da5-b90f-cfbb77c4e8d0",
+  "name": "Channeled Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Channeled Force",
+      "oracle_fingerprint": "56973d8012379b46d402a1f29bed34bc",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": { "count": "X" } }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": "X" } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

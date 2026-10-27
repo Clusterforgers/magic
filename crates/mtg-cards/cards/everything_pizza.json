@@ -1,0 +1,46 @@
+{
+  "oracle_id": "aa481983-8f1a-4519-9371-5e7edcd3274f",
+  "name": "Everything Pizza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Everything Pizza",
+      "oracle_fingerprint": "491918ddad048c8e36d0b5c110709f07",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{U}{B}{R}{G}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": "Player" },
+              { "what": "AnyTarget" },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "GainLife": { "who": { "Target": 0 }, "amount": 3 } },
+              { "Draw": { "who": { "Target": 0 } } },
+              { "Discard": { "who": "Opponents" } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } },
+              { "PutCounters": { "on": { "Target": 2 }, "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

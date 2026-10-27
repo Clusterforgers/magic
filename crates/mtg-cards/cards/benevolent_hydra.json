@@ -1,0 +1,39 @@
+{
+  "oracle_id": "01dbf1bc-ca62-4fb6-959c-ef7c0dc03bb0",
+  "name": "Benevolent Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benevolent Hydra",
+      "oracle_fingerprint": "ce661a6e32925736dc2121831031f934",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "+1/+1" } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Ravenous"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}]},"bounds":{"min":0,"max":"X"},"divide":"X"}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":"Divided"}}]}}]}]}

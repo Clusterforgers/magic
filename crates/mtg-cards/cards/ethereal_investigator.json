@@ -1,0 +1,46 @@
+{
+  "oracle_id": "24038629-7c12-45ef-8ec4-0d2bb3e2265c",
+  "name": "Ethereal Investigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ethereal Investigator",
+      "oracle_fingerprint": "15095e0359d0ed62229a11a46fd0d018",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": { "token": { "Named": "clue" }, "count": { "Players": "Opponents" } }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

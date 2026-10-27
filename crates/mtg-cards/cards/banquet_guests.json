@@ -1,0 +1,37 @@
+{
+  "oracle_id": "7f2579ef-0422-4cb1-a0f8-6ad0d942515b",
+  "name": "Banquet Guests",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Banquet Guests",
+      "oracle_fingerprint": "970b895e38fa66a964bfa4b633aafec8",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Food" }] } },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "Times": { "by": 2, "of": "X" } } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Subtype": "Food" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "406f1982-5d0c-4dba-9010-28b1c6a3602c",
+  "name": "Dora Milaje Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dora Milaje Elite",
+      "oracle_fingerprint": "0e3702efb9dc32b9202b06c323cae96b",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Largest": { "who": "Opponents", "of": [{ "Type": "Land" }] } },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "vibranium" }, "tapped": true } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Supertype": "Legendary" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

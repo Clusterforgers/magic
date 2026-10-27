@@ -1,0 +1,43 @@
+{
+  "oracle_id": "af566158-23b2-4f91-8d59-a58342a9f576",
+  "name": "Adric, Mathematical Genius",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adric, Mathematical Genius",
+      "oracle_fingerprint": "7df14247897c101192e42fe1dff256a2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

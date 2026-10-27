@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"if":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"Triggering"}]},"op":"Eq","right":0}},"effects":[{"Draw":{}},{"LoseLife":{"amount":1}}]}},{"Keyword":{"Madness":"{1}{B}"}}]}]}

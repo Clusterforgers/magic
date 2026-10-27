@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Indestructible"},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"May":{"effects":[{"PutCounters":{"on":"This","counter":"charge"}}]}}]}},{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":"charge"}},"op":"Ge","right":20}}}},"effects":[{"WinGame":{}}]}}]}]}

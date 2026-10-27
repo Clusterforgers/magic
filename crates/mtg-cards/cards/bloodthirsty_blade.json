@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b2747459-05ec-42a6-81be-e97e182bc778",
+  "name": "Bloodthirsty Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodthirsty Blade",
+      "oracle_fingerprint": "30e1aea47d1ea430df431c16b43d320b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, "Goaded"]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

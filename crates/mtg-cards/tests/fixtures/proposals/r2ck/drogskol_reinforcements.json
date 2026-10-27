@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Melee"},{"Static":{"mods":[{"AddKeyword":"Melee"}],"affected":{"Each":[{"Subtype":"Spirit"},"Other",{"ControlledBy":"You"}]}}},{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Subtype":"Spirit"},{"ControlledBy":"You"}]},"combat":false}},"by":"Prevent"}}]}]}

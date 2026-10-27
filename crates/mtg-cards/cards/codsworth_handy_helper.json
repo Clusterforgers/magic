@@ -1,0 +1,50 @@
+{
+  "oracle_id": "f496ff42-3644-494a-9f21-27f781ee880b",
+  "name": "Codsworth, Handy Helper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Codsworth, Handy Helper",
+      "oracle_fingerprint": "6260775362eeab3d9169d81091874c2e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["Commander", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{2}" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["White", "White"] },
+                  "only": [{ "Spell": { "subtypes": ["Aura", "Equipment"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

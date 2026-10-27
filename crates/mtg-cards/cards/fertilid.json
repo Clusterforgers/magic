@@ -1,0 +1,38 @@
+{
+  "oracle_id": "21f1c6d7-8289-44b2-b88f-c09e202be200",
+  "name": "Fertilid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fertilid",
+      "oracle_fingerprint": "2cdc2e8ba47eeb12ca5575bc87bca69a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Search": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

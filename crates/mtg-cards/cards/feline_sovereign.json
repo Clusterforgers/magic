@@ -1,0 +1,47 @@
+{
+  "oracle_id": "05f0feb6-6783-49fd-acf6-68b44aaff846",
+  "name": "Feline Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feline Sovereign",
+      "oracle_fingerprint": "09e3b4911074bd786d6089c4782def33",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Cat" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": { "Protection": [{ "Subtype": "Dog" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Cat" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Triggering" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

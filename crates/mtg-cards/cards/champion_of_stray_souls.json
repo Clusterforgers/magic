@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4edbaac4-dcb3-40b4-abd7-ff2683bd366d",
+  "name": "Champion of Stray Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of Stray Souls",
+      "oracle_fingerprint": "c950c5af938fc331116090cc1a72cf87",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{B}{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "count": "X" } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{B}{B}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

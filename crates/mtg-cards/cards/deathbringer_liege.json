@@ -1,0 +1,60 @@
+{
+  "oracle_id": "caf89756-fb78-4e58-a730-001393ffa0a8",
+  "name": "Deathbringer Liege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathbringer Liege",
+      "oracle_fingerprint": "f6a6b336d6413a5a3473ba6fbb0a5664",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "White" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "Black" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "White" }], "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "May": { "effects": [{ "Tap": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Black" }], "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Matches": { "subject": { "Target": 0 }, "selector": ["Tapped"] } },
+                  "then": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "d041a51c-9a28-4b32-9da3-0f06807959f1",
+  "oracle_id": "d6cba688-faff-4d9f-8148-37d389fa5fb3",
+  "multiverse_ids": [],
+  "resource_id": "F1E1840CE293174326AC4B36E6FC3FFAE6C7A00B36DB66B37DE1D6E82B16EF6B",
+  "mtgo_id": 140143,
+  "arena_id": 98124,
+  "tcgplayer_id": 631118,
+  "cardmarket_id": 824702,
+  "name": "Aerith, Last Ancient",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/d041a51c-9a28-4b32-9da3-0f06807959f1",
+  "scryfall_uri": "https://scryfall.com/card/fic/76/aerith-last-ancient?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.jpg?1783906349",
+    "normal": "https://cards.scryfall.io/normal/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.jpg?1783906349",
+    "large": "https://cards.scryfall.io/large/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.jpg?1783906349",
+    "png": "https://cards.scryfall.io/png/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.png?1783906349",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.jpg?1783906349",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.jpg?1783906349",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.webp?1783906349",
+    "grid": "https://cards.scryfall.io/grid/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.webp?1783906349",
+    "display": "https://cards.scryfall.io/display/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.webp?1783906349",
+    "art": "https://cards.scryfall.io/art/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.webp?1783906349",
+    "crop": "https://cards.scryfall.io/crop/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.webp?1783906349",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/0/d041a51c-9a28-4b32-9da3-0f06807959f1.jpg?1783906349"
+  },
+  "mana_cost": "{2}{G}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Cleric Druid",
+  "oracle_text": "Lifelink\nRaise — At the beginning of your end step, if you gained life this turn, return target creature card from your graveyard to your hand. If you gained 7 or more life this turn, return that card to the battlefield instead.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Raise"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d041a51c-9a28-4b32-9da3-0f06807959f1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad6cba688-faff-4d9f-8148-37d389fa5fb3&unique=prints",
+  "collector_number": "76",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Right here, right now, I need to know I did everything I could.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marta Nael",
+  "artist_ids": [
+    "266ab861-ed64-4ba5-865c-f18758421cc3"
+  ],
+  "illustration_id": "ec7396b1-0380-48e7-b303-65f0844ac931",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond",
+    "ffvii"
+  ],
+  "edhrec_rank": 5218,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": null,
+    "tix": "1.63"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAerith%252C%2BLast%2BAncient",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAerith%252C%2BLast%2BAncient",
+    "edhrec": "https://edhrec.com/route/?cc=Aerith%2C+Last+Ancient"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631118%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824702&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140143?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

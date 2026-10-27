@@ -1,0 +1,188 @@
+{
+  "object": "card",
+  "id": "0e843102-b8cc-4bc8-872e-79924197f4cc",
+  "oracle_id": "f61c0fc0-7241-455e-bbf5-f1f3862d46e3",
+  "multiverse_ids": [
+    671145
+  ],
+  "mtgo_id": 128955,
+  "tcgplayer_id": 560241,
+  "cardmarket_id": 779368,
+  "name": "Brightcap Badger // Fungus Frolic",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/0e843102-b8cc-4bc8-872e-79924197f4cc",
+  "scryfall_uri": "https://scryfall.com/card/blc/28/brightcap-badger-fungus-frolic?utm_source=api",
+  "layout": "adventure",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:45:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.jpg?1783910732",
+    "normal": "https://cards.scryfall.io/normal/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.jpg?1783910732",
+    "large": "https://cards.scryfall.io/large/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.jpg?1783910732",
+    "png": "https://cards.scryfall.io/png/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.png?1783910732",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.jpg?1783910732",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.jpg?1783910732",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.webp?1783910732",
+    "grid": "https://cards.scryfall.io/grid/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.webp?1783910732",
+    "display": "https://cards.scryfall.io/display/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.webp?1783910732",
+    "art": "https://cards.scryfall.io/art/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.webp?1783910732",
+    "crop": "https://cards.scryfall.io/crop/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.webp?1783910732",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/e/0e843102-b8cc-4bc8-872e-79924197f4cc.jpg?1783910732"
+  },
+  "mana_cost": "{3}{G} // {2}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Badger Druid // Instant — Adventure",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Brightcap Badger",
+      "mana_cost": "{3}{G}",
+      "type_line": "Creature — Badger Druid",
+      "oracle_text": "Each Fungus and Saproling you control has \"{T}: Add {G}.\"\nAt the beginning of your end step, create a 1/1 green Saproling creature token.",
+      "power": "3",
+      "toughness": "4",
+      "artist": "Izzy",
+      "artist_id": "2c3d2473-ff5d-4309-8194-e0b2def2ab65",
+      "illustration_id": "1d418c43-17ea-4a04-bd4e-dc93e6ca6412"
+    },
+    {
+      "object": "card_face",
+      "name": "Fungus Frolic",
+      "mana_cost": "{2}{G}",
+      "type_line": "Instant — Adventure",
+      "oracle_text": "Create two 1/1 green Saproling creature tokens. (Then exile this card. You may cast the creature later from exile.)",
+      "artist": "Izzy",
+      "artist_id": "2c3d2473-ff5d-4309-8194-e0b2def2ab65"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "590abe94-9c71-4429-b1b5-8b5de877de03",
+      "component": "token",
+      "name": "Saproling",
+      "type_line": "Token Creature — Saproling",
+      "uri": "https://api.scryfall.com/cards/590abe94-9c71-4429-b1b5-8b5de877de03"
+    },
+    {
+      "object": "related_card",
+      "id": "5e289bb3-f6de-450d-9f7e-77e2e70cb7cc",
+      "component": "combo_piece",
+      "name": "On an Adventure",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/5e289bb3-f6de-450d-9f7e-77e2e70cb7cc"
+    },
+    {
+      "object": "related_card",
+      "id": "9df82a20-309e-4581-9f3f-e9ba9250747b",
+      "component": "combo_piece",
+      "name": "Brightcap Badger // Fungus Frolic",
+      "type_line": "Creature — Badger Druid // Instant — Adventure",
+      "uri": "https://api.scryfall.com/cards/9df82a20-309e-4581-9f3f-e9ba9250747b"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set": "blc",
+  "set_name": "Bloomburrow Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0e843102-b8cc-4bc8-872e-79924197f4cc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af61c0fc0-7241-455e-bbf5-f1f3862d46e3&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Izzy",
+  "artist_ids": [
+    "2c3d2473-ff5d-4309-8194-e0b2def2ab65"
+  ],
+  "illustration_id": "1d418c43-17ea-4a04-bd4e-dc93e6ca6412",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3520,
+  "preview": {
+    "source": "Bandit",
+    "source_uri": "https://www.youtube.com/watch?v=hpySvd-zvGU",
+    "previewed_at": "2024-07-18"
+  },
+  "prices": {
+    "usd": "2.17",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.54",
+    "eur_foil": null,
+    "tix": "2.88"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=671145&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBrightcap%2BBadger%2B%252F%252F%2BFungus%2BFrolic",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBrightcap%2BBadger%2B%252F%252F%2BFungus%2BFrolic",
+    "edhrec": "https://edhrec.com/route/?cc=Brightcap+Badger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F560241%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=779368&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128955?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Activated":{"cost":[{"Mana":"{1}{B}"},"SacrificeSelf"],"effects":[{"Continuous":{"affected":{"Each":[{"Not":"Token"},{"Subtype":"Vampire"},{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Persist"}],"duration":"UntilEndOfTurn"}}]}}]}]}

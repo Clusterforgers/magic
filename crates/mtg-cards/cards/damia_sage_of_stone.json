@@ -1,0 +1,44 @@
+{
+  "oracle_id": "eb7ae3e8-0489-4f3a-8343-7e7ec2fe3f01",
+  "name": "Damia, Sage of Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Damia, Sage of Stone",
+      "oracle_fingerprint": "2fbe4173f396fbb63e4cab1c94b7b564",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Rule": { "rule": { "SkipDrawStep": "You" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Lt",
+                "right": 7
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      7,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

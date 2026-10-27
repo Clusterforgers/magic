@@ -1,0 +1,43 @@
+{
+  "oracle_id": "74fedfc4-3eb7-4845-9d3e-9d5243a0062a",
+  "name": "Court Hussar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court Hussar",
+      "oracle_fingerprint": "27cb88d76be8acbab51dc780d8cb1d95",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "card", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Not": { "ManaSpent": "White" } },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

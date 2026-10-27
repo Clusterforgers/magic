@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f61c1dc4-2f09-4b50-957f-ee656c659072",
+  "name": "Dina, Essence Brewer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dina, Essence Brewer",
+      "oracle_fingerprint": "d3bfce1a6ee830b3353a6e7788ae6e29",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "Power" } } } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

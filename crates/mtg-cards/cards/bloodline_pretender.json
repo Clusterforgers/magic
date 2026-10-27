@@ -1,0 +1,36 @@
+{
+  "oracle_id": "51d6d164-6e5f-4be3-8f09-433e0b8d4c6b",
+  "name": "Bloodline Pretender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodline Pretender",
+      "oracle_fingerprint": "7bd43aa298e014f1d3191139de8d596d",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "Other",
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  "ChosenSubtype"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

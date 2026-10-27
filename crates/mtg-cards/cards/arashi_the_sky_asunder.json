@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9277b680-a146-4d4f-9649-39cddafdb585",
+  "name": "Arashi, the Sky Asunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arashi, the Sky Asunder",
+      "oracle_fingerprint": "ec486e9f310d1072a66281eccbca6022",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{G}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{G}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

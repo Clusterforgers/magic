@@ -1,0 +1,27 @@
+{
+  "oracle_id": "870deab4-8570-40e9-aeda-ac3726cebb84",
+  "name": "Asylum Visitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Asylum Visitor",
+      "oracle_fingerprint": "604b158e51a95f5c7f265146a52725f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "Madness": "{1}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "oracle_id": "8a70ddc5-bb51-45eb-96f2-8ecaecac0cc2",
+  "name": "Ajani Unyielding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani Unyielding",
+      "oracle_fingerprint": "d15a4e0695b52f17f5773bdf3535d104",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Land" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": 5
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Planeswalker" }, "Other", { "ControlledBy": "You" }] },
+                  "counter": "loyalty",
+                  "count": 5
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

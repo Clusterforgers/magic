@@ -1,0 +1,26 @@
+{
+  "oracle_id": "025939a0-424a-41bf-8fc9-2ef9ea5485f7",
+  "name": "Fire Covenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Covenant",
+      "oracle_fingerprint": "da7f92dad586a0692612d520233519cf",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "PayLife": "X" }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": "X" },
+                "divide": "X"
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

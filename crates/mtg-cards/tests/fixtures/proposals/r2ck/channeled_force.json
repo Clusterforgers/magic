@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"AdditionalCost":{"cost":[{"Discard":{"count":"X"}}],"required":true}},{"Spell":{"targets":[{"what":"Player"},{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]},"bounds":{"min":0,"max":1}}],"effects":[{"Draw":{"who":{"Target":0},"count":"X"}},{"DealDamage":{"to":{"Target":1},"amount":"X"}}]}}]}]}

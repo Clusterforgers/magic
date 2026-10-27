@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "bf952d23-291d-42fa-8f2a-e4002a04b95f",
+  "oracle_id": "2fe8d739-dee5-4220-8102-6fbae7d4fc19",
+  "multiverse_ids": [
+    634807
+  ],
+  "tcgplayer_id": 520223,
+  "cardmarket_id": 738693,
+  "name": "Alistair, the Brigadier",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/bf952d23-291d-42fa-8f2a-e4002a04b95f",
+  "scryfall_uri": "https://scryfall.com/card/who/112/alistair-the-brigadier?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.jpg?1783914643",
+    "normal": "https://cards.scryfall.io/normal/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.jpg?1783914643",
+    "large": "https://cards.scryfall.io/large/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.jpg?1783914643",
+    "png": "https://cards.scryfall.io/png/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.png?1783914643",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.jpg?1783914643",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.jpg?1783914643",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.webp?1783914643",
+    "grid": "https://cards.scryfall.io/grid/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.webp?1783914643",
+    "display": "https://cards.scryfall.io/display/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.webp?1783914643",
+    "art": "https://cards.scryfall.io/art/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.webp?1783914643",
+    "crop": "https://cards.scryfall.io/crop/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.webp?1783914643",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/f/bf952d23-291d-42fa-8f2a-e4002a04b95f.jpg?1783914643"
+  },
+  "mana_cost": "{1}{G}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Soldier",
+  "oracle_text": "Whenever you cast a historic spell, create a 1/1 white Soldier creature token. (Artifacts, legendaries, and Sagas are historic.)\nWhenever Alistair attacks, you may pay {8}. If you do, creatures you control get +X/+X until end of turn, where X is the number of historic permanents you control.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "39bf944a-8fad-4107-a9c5-5d98fd1a07df",
+      "component": "combo_piece",
+      "name": "Alistair, the Brigadier",
+      "type_line": "Legendary Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/39bf944a-8fad-4107-a9c5-5d98fd1a07df"
+    },
+    {
+      "object": "related_card",
+      "id": "29c10957-0b04-4a7b-879f-76d70f023818",
+      "component": "token",
+      "name": "Soldier",
+      "type_line": "Token Creature — Soldier",
+      "uri": "https://api.scryfall.com/cards/29c10957-0b04-4a7b-879f-76d70f023818"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bf952d23-291d-42fa-8f2a-e4002a04b95f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2fe8d739-dee5-4220-8102-6fbae7d4fc19&unique=prints",
+  "collector_number": "112",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Thanh Tuấn",
+  "artist_ids": [
+    "4092d03e-ede3-4946-bfdc-888fff30cfdf"
+  ],
+  "illustration_id": "f18c3588-e15e-4b79-b6f0-43c5d44f5ef2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 12461,
+  "preview": {
+    "source": "Tolarian Community College",
+    "source_uri": "https://www.youtube.com/watch?v=_5gqXG_PPjk",
+    "previewed_at": "2023-10-06"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.18",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634807&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAlistair%252C%2Bthe%2BBrigadier",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAlistair%252C%2Bthe%2BBrigadier",
+    "edhrec": "https://edhrec.com/route/?cc=Alistair%2C+the+Brigadier"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F520223%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738693&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Alistair%2C+the+Brigadier&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

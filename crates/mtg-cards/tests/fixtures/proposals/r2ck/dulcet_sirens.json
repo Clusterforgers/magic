@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{U}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"}]}},{"what":"Opponent"}],"effects":[{"Rule":{"rule":{"MustAttackPlayers":{"who":{"Target":0},"players":{"Target":1}}},"duration":"UntilEndOfTurn"}}]}},{"Keyword":{"Morph":"{U}"}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Vanishing":3}},{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"StepBegins":{"step":"Main1","whose":"You"}}]},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Exile":{"what":{"Target":0},"duration":"WhileSourceOnBattlefield"}}]}}]}]}

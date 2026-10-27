@@ -1,0 +1,58 @@
+{
+  "oracle_id": "1eed017a-342a-47a8-9395-890ef0bd1eb2",
+  "name": "Foot Chopper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foot Chopper",
+      "oracle_fingerprint": "63c06cbccf8d0ae634dbdcffe121b952",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ninja",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ninja"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "tokens"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "tokens" } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Sacrifice": { "filter": [{ "Is": "Dealer" }] } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Draw": { "count": { "Stat": { "of": "Dealer", "stat": "Power" } } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

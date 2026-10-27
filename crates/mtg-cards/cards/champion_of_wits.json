@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3fd8ba0c-75ec-43ea-8706-f71e6cf1d236",
+  "name": "Champion of Wits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of Wits",
+      "oracle_fingerprint": "66ffe9bec717af1e2264ff8d88ab235c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Draw": { "count": { "Stat": { "of": "This", "stat": "Power" } } } }
+                  ]
+                }
+              },
+              { "If": { "condition": "Performed", "then": [{ "Discard": { "count": 2 } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Eternalize": "{5}{U}{U}" } }
+      ]
+    }
+  ]
+}

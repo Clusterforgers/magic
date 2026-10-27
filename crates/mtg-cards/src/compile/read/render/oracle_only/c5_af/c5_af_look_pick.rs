@@ -52,9 +52,8 @@ fn c5_af_kept(effects: &[Effect]) -> Option<&'static str> {
 
 /// Adds the wording of a look at the top cards that keeps some and puts the rest on the bottom in any order.
 pub(super) fn c5_af_add(ability: &Ability, texts: &mut Vec<String>) {
-    let effects = match ability {
-        Ability::Spell { effects, .. } | Ability::Triggered { effects, .. } => effects,
-        _ => return,
+    let (Ability::Spell { effects, .. } | Ability::Triggered { effects, .. }) = ability else {
+        return;
     };
     let (Some(kept), Some(look)) = (c5_af_kept(effects), effects.first()) else {
         return;
