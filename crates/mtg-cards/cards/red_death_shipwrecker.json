@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0d40b2c3-9f39-45c6-8b25-12353f300613",
+  "name": "Red Death, Shipwrecker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Death, Shipwrecker",
+      "oracle_fingerprint": "9d80b5503be9b1b2fa0d5d9aa80f6e1f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Goad": { "what": { "Target": 0 } } },
+              { "Draw": { "who": { "ControllerOf": { "Target": 0 } } } },
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

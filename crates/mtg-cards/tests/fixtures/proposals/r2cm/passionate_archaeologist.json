@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":["Commander",{"Type":"Creature"},{"OwnedBy":"You"}]},"mods":[{"GrantAbility":{"Triggered":{"when":{"SpellCast":{"what":[{"CastFrom":"Exile"}],"by":"You"}},"targets":[{"what":"Opponent"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Stat":{"of":"Triggering","stat":"ManaValue"}}}}]}}}]}}]}]}

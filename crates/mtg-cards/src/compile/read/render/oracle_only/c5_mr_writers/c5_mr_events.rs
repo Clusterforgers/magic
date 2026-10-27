@@ -16,6 +16,13 @@ const C5_MR_YOUR_DRAW: &str =
 /// Damage to the controller of the permanent of the event, which the twin has that player lose as life.
 const C5_MR_DAMAGE_HEAD: &str = r#"{"DealDamage":{"to":{"ControllerOf":"Triggering"},"amount":"#;
 
+/// The names the twin gives the controller of the permanent of the event.
+const C5_MR_CONTROLLERS: [&str; 3] = [
+    "that player",
+    "that creature's controller",
+    "that permanent's controller",
+];
+
 /// Adds the wordings of the players.
 pub(super) fn add(json: &str, texts: &mut Vec<String>) {
     c5_mr_who_cant(json, texts);
@@ -30,11 +37,21 @@ pub(super) fn add(json: &str, texts: &mut Vec<String>) {
             r#"{{"LoseLife":{{"who":{{"ControllerOf":"Triggering"}},"amount":{amount}}}}}"#
         );
         let twin = c5_mr_twin(json, whole, &lose);
-        texts.extend(c5_mr_swapped(
-            &twin,
-            &format!("that player loses {amount} life"),
-            &format!("~ deals {amount} damage to that player"),
-        ));
+        for player in C5_MR_CONTROLLERS {
+            texts.extend(c5_mr_swapped(
+                &twin,
+                &format!("{player} loses {amount} life"),
+                &format!("~ deals {amount} damage to {player}"),
+            ));
+        }
+        // The twin calls the controller of a creature "that permanent's controller".
+        if json.contains(r#"{"Type":"Creature"}"#) {
+            texts.extend(c5_mr_swapped(
+                &twin,
+                &format!("that permanent's controller loses {amount} life"),
+                &format!("~ deals {amount} damage to that creature's controller"),
+            ));
+        }
     }
 }
 

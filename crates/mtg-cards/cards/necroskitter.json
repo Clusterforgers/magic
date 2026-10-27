@@ -1,0 +1,40 @@
+{
+  "oracle_id": "536f7c92-2f1e-49e7-98de-47382a9488f1",
+  "name": "Necroskitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necroskitter",
+      "oracle_fingerprint": "7cdb3e814fa44bc62250ccab450d9262",
+      "abilities": [
+        { "Keyword": "Wither" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  { "HasCounter": "-1/-1" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

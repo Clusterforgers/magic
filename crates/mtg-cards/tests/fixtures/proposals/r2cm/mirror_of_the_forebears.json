@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"CreatureType"}}},{"Activated":{"cost":"{1}","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"]}}],"effects":[{"BecomeCopy":{"what":"This","of":{"Target":0},"except":[{"AddType":"Artifact"}],"duration":"UntilEndOfTurn"}}]}}]}]}

@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "780743bf-e1a0-4114-9474-319632e0c775",
+  "oracle_id": "589b742c-fee5-413a-a56c-4d4ffaf0f73d",
+  "multiverse_ids": [
+    580873
+  ],
+  "mtgo_id": 108574,
+  "tcgplayer_id": 286347,
+  "cardmarket_id": 675355,
+  "name": "Psychomancer",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/780743bf-e1a0-4114-9474-319632e0c775",
+  "scryfall_uri": "https://scryfall.com/card/40k/51/psychomancer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:35:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.jpg?1783920912",
+    "normal": "https://cards.scryfall.io/normal/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.jpg?1783920912",
+    "large": "https://cards.scryfall.io/large/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.jpg?1783920912",
+    "png": "https://cards.scryfall.io/png/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.png?1783920912",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.jpg?1783920912",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.jpg?1783920912",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.webp?1783920912",
+    "grid": "https://cards.scryfall.io/grid/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.webp?1783920912",
+    "display": "https://cards.scryfall.io/display/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.webp?1783920912",
+    "art": "https://cards.scryfall.io/art/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.webp?1783920912",
+    "crop": "https://cards.scryfall.io/crop/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.webp?1783920912",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/8/780743bf-e1a0-4114-9474-319632e0c775.jpg?1783920912"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Artifact Creature — Necron Wizard",
+  "oracle_text": "Flying\nHarbinger of Despair — Whenever this creature or another nontoken artifact you control is put into a graveyard from the battlefield or is put into exile from the battlefield, target opponent loses 1 life and you gain 1 life.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Harbinger of Despair"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/780743bf-e1a0-4114-9474-319632e0c775/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A589b742c-fee5-413a-a56c-4d4ffaf0f73d&unique=prints",
+  "collector_number": "51",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alex Konstad",
+  "artist_ids": [
+    "58b2a57c-50ca-4047-b4e7-efb28cb22851"
+  ],
+  "illustration_id": "4cd42c54-bb5b-4554-8ee6-8883fd6f25df",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9145,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=g2UWu8lKU5k",
+    "previewed_at": "2022-09-15"
+  },
+  "prices": {
+    "usd": "1.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": null,
+    "tix": "0.62"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580873&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPsychomancer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPsychomancer",
+    "edhrec": "https://edhrec.com/route/?cc=Psychomancer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286347%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675355&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108574?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

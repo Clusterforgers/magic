@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Mill":{"count":3}},{"Choose":{"from":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"},{"AnyOf":[{"Type":"Land"},{"Subtype":"Elf"}]}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}]}]}

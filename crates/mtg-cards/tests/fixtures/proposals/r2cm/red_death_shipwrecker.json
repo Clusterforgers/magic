@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Goad":{"what":{"Target":0}}},{"Draw":{"who":{"ControllerOf":{"Target":0}}}},{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}]}]}

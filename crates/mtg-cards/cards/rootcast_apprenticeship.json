@@ -1,0 +1,70 @@
+{
+  "oracle_id": "ffe13100-99dd-41e3-82ba-eaead6fd0113",
+  "name": "Rootcast Apprenticeship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootcast Apprenticeship",
+      "oracle_fingerprint": "932680a66c56df95cbc222b4a42697be",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": ["Token", { "ControlledBy": "You" }] } }],
+                      "effects": [
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": {
+                              "Custom": {
+                                "name": "Squirrel",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Squirrel"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "Type": "Artifact" }, { "Not": "Token" }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

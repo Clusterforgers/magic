@@ -91,6 +91,9 @@ const C5_MR_ROAR_OF_RESISTANCE: &str = r#"{"Triggered":{"when":{"Batch":{"Attack
 /// "Whenever this Vehicle attacks, create three 1/1 red Hamster creature tokens, then it deals X damage to any target, where X is the number of Hamsters you control."
 const C5_MR_ROLLING_HAMSPHERE: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"CreateToken":{"token":{"Custom":{"name":"Hamster","colors":["Red"],"types":["Creature"],"subtypes":["Hamster"],"power":1,"toughness":1}},"count":3}},{"DealDamage":{"to":{"Target":0},"amount":{"Count":[{"Subtype":"Hamster"},{"ControlledBy":"You"}]}}}]}}"#;
 
+/// "Whenever another creature enters, this creature deals 1 damage to that creature's controller."
+const C5_MR_FEROCIDON: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["Other",{"Type":"Creature"}],"to":"Battlefield"}},"effects":[{"DealDamage":{"to":{"ControllerOf":"Triggering"},"amount":1}}]}}"#;
+
 /// The rules of each card of the sample with its oracle clause (the card's name written `~`).
 #[rstest]
 #[case(
@@ -195,21 +198,13 @@ const C5_MR_ROLLING_HAMSPHERE: &str = r#"{"Triggered":{"when":{"Attacks":{"what"
     C5_MR_ROLLING_HAMSPHERE,
     "Whenever this Vehicle attacks, create three 1/1 red Hamster creature tokens, then it deals X damage to any target, where X is the number of Hamsters you control."
 )]
+#[case(
+    C5_MR_FEROCIDON,
+    "Whenever another creature enters, this creature deals 1 damage to that creature's controller."
+)]
 fn c5_mr_golden(#[case] json: &str, #[case] clause: &str) {
     let (found, wordings) = c5_mr_written(json, clause);
     assert!(found, "{clause}\n{wordings:#?}");
-}
-
-#[test]
-fn c5_mr_scratch() {
-    let path = "/tmp/claude-1000/-home-chris-private-Clusterforgers-magic/f44b1a2c-badc-418e-8287-aae75c92e2ec/scratchpad/r2cm/scratch.jsonl";
-    for line in std::fs::read_to_string(path).unwrap_or_default().lines() {
-        println!(
-            "== {}\n{:#?}",
-            serde_json::to_string(&ability(line)).unwrap_or_default(),
-            written_variants(&ability(line))
-        );
-    }
 }
 
 /// A near-miss of each wording: the rules with another number, object, player, kind, zone or step keep the clause.
@@ -375,6 +370,12 @@ fn c5_mr_scratch() {
     r#"{"Subtype":"Hamster"},{"ControlledBy":"You"}"#,
     r#"{"Subtype":"Hamster"},{"ControlledBy":"Opponents"}"#,
     "Whenever this Vehicle attacks, create three 1/1 red Hamster creature tokens, then it deals X damage to any target, where X is the number of Hamsters you control."
+)]
+#[case(
+    C5_MR_FEROCIDON,
+    r#""amount":1"#,
+    r#""amount":3"#,
+    "Whenever another creature enters, this creature deals 1 damage to that creature's controller."
 )]
 fn c5_mr_near_miss(#[case] json: &str, #[case] from: &str, #[case] to: &str, #[case] clause: &str) {
     assert!(json.contains(from), "{from}");

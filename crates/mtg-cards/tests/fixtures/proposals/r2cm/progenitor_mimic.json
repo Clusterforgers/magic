@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsCopy":{"of":[{"Type":"Creature"}],"except":[{"GrantAbility":{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Not":{"Matches":{"subject":"This","selector":["Token"]}}},"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}}}}]}}}]}}}}]}]}

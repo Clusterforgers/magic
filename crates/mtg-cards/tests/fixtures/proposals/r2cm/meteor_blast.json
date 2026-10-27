@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":"X","max":"X"}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":4}}]}}]}]}

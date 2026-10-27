@@ -1,0 +1,53 @@
+{
+  "oracle_id": "589b742c-fee5-413a-a56c-4d4ffaf0f73d",
+  "name": "Psychomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychomancer",
+      "oracle_fingerprint": "fe5648f47c90188d0275a41dafce6d06",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Artifact" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Exile" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Artifact" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1ff9598a-0dac-4437-9450-fc8134fa3740",
+  "name": "Piper Wright, Publick Reporter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Piper Wright, Publick Reporter",
+      "oracle_fingerprint": "8b9620cf2697129162a18fdb40314c9a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "0007c283-5b7a-4c00-9ca1-b455c8dff8c3",
+  "name": "Road of Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Road of Return",
+      "oracle_fingerprint": "4f09bdb4632ce9852ee85e20d3a32862",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": ["Commander", { "OwnedBy": "You" }, { "In": "Command" }]
+                            },
+                            "to": "Hand"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "916bf331-455a-4694-93d3-15dcf6971072",
+  "oracle_id": "1ff9598a-0dac-4437-9450-fc8134fa3740",
+  "multiverse_ids": [
+    652123
+  ],
+  "mtgo_id": 132321,
+  "tcgplayer_id": 540759,
+  "cardmarket_id": 758510,
+  "name": "Piper Wright, Publick Reporter",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/916bf331-455a-4694-93d3-15dcf6971072",
+  "scryfall_uri": "https://scryfall.com/card/pip/36/piper-wright-publick-reporter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.jpg?1783912412",
+    "normal": "https://cards.scryfall.io/normal/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.jpg?1783912412",
+    "large": "https://cards.scryfall.io/large/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.jpg?1783912412",
+    "png": "https://cards.scryfall.io/png/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.png?1783912412",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.jpg?1783912412",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.jpg?1783912412",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.webp?1783912412",
+    "grid": "https://cards.scryfall.io/grid/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.webp?1783912412",
+    "display": "https://cards.scryfall.io/display/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.webp?1783912412",
+    "art": "https://cards.scryfall.io/art/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.webp?1783912412",
+    "crop": "https://cards.scryfall.io/crop/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.webp?1783912412",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/1/916bf331-455a-4694-93d3-15dcf6971072.jpg?1783912412"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Detective",
+  "oracle_text": "Whenever Piper Wright deals combat damage to a player, investigate that many times. (To investigate, create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a Clue, put a +1/+1 counter on target creature you control.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f313db51-fa28-4a66-b96f-f7f2bb4eae9f",
+      "component": "combo_piece",
+      "name": "Piper Wright, Publick Reporter",
+      "type_line": "Legendary Creature — Human Detective",
+      "uri": "https://api.scryfall.com/cards/f313db51-fa28-4a66-b96f-f7f2bb4eae9f"
+    },
+    {
+      "object": "related_card",
+      "id": "65ff5544-bdf8-43a3-a74d-4a2b7d79245a",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/65ff5544-bdf8-43a3-a74d-4a2b7d79245a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/916bf331-455a-4694-93d3-15dcf6971072/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1ff9598a-0dac-4437-9450-fc8134fa3740&unique=prints",
+  "collector_number": "36",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You can't stop the press.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Rafater",
+  "artist_ids": [
+    "5157b931-ac23-49b6-a2c4-c4cf4bbc2118"
+  ],
+  "illustration_id": "134c75fd-767c-4679-a7f5-0e383df2b839",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6419,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "6.17",
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": "0.75",
+    "tix": "0.62"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652123&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPiper%2BWright%252C%2BPublick%2BReporter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPiper%2BWright%252C%2BPublick%2BReporter",
+    "edhrec": "https://edhrec.com/route/?cc=Piper+Wright%2C+Publick+Reporter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F540759%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758510&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132321?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

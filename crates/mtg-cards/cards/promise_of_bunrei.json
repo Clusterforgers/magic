@@ -1,0 +1,48 @@
+{
+  "oracle_id": "6158ab85-a929-472c-9618-8e76d2d4b228",
+  "name": "Promise of Bunrei",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Promise of Bunrei",
+      "oracle_fingerprint": "9e53a1311031fdad4d9d1c1c5ce7e9e4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 4
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

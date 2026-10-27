@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a0753b28-e693-4f5b-a4e4-846e933058d3",
+  "name": "Roar of Resistance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roar of Resistance",
+      "oracle_fingerprint": "ea45caf73db43a789315c44b8e3ff62b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Attacks": { "what": [{ "Type": "Creature" }] } } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{R}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "f697c78d-7e4f-4320-bfc6-2a25e6d7dc94",
+  "name": "Riku of Two Reflections",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riku of Two Reflections",
+      "oracle_fingerprint": "07b537e723f5f39162bc3bb0bc926c51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{U}{R}",
+                  "paid": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{U}{G}",
+                  "paid": [{ "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

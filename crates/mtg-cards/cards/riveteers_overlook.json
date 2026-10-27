@@ -1,0 +1,51 @@
+{
+  "oracle_id": "5548ff43-e5f6-4a63-8562-a2b1de06d6f5",
+  "name": "Riveteers Overlook",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riveteers Overlook",
+      "oracle_fingerprint": "0d3bc5b1ad57922deead787bd2ad6fda",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Supertype": "Basic" },
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Swamp" },
+                              { "Subtype": "Mountain" },
+                              { "Subtype": "Forest" }
+                            ]
+                          }
+                        ],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} },
+                    { "GainLife": { "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
