@@ -3,6 +3,7 @@
 
 use mtg_cards::effect::{Effect, bound_names};
 
+use super::may::performed_name;
 use super::wrong_effect;
 use crate::choose::Target;
 use crate::resolve::tree::is_next_pass;
@@ -44,6 +45,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             bound.push((format!("{CLEAR}{name}"), Vec::new()));
         }
     }
+    // A "may" in the body binds whether it was accepted under its position, which every pass runs again.
+    let position = cx.resolving.position();
+    let at = if is_next_pass(position) {
+        position.split_last().map_or(position, |(_, holder)| holder)
+    } else {
+        position
+    };
+    let inside = format!("{}.", performed_name(at));
+    bound.extend(
+        held.keys()
+            .filter(|name| name.starts_with(&inside))
+            .map(|name| (format!("{CLEAR}{name}"), Vec::new())),
+    );
     bound.push((bind.clone(), vec![*first]));
     bound.push((left, rest.to_vec()));
     Ok(Run::Done {
@@ -198,6 +212,38 @@ mod tests {
         assert_eq!(bound[3].1, [Target::Player(PlayerId(1))]);
         assert_eq!(bound[4].1, [Target::Player(PlayerId(2))]);
         assert_eq!(next, Next::Enter(0));
+    }
+
+    #[test]
+    fn a_next_pass_frees_whether_a_may_of_the_body_was_accepted_and_keeps_the_others() {
+        let game = game(3);
+        let source = game
+            .object(game.zone(crate::zones::Zone::Battlefield)[0])
+            .unwrap();
+        let mut resolving = Resolving::begin(source.id());
+        resolving.position = vec![0, 1];
+        let me = vec![Target::Player(ME)];
+        resolving.bindings.insert("each".into(), me.clone());
+        resolving
+            .bindings
+            .insert("each~left".into(), vec![Target::Player(PlayerId(1))]);
+        resolving
+            .bindings
+            .insert(performed_name(&[0, 0, 0]), me.clone());
+        resolving.bindings.insert(performed_name(&[1]), me);
+        let cx = Cx {
+            scope: Scope::announcing(&game, ME, source.reference()),
+            resolving: &resolving,
+        };
+        let Run::Done { bound, .. } = run(&cx, &effect(r#""EachPlayer""#)).unwrap() else {
+            panic!("a repeat asks nothing");
+        };
+        let cleared: Vec<&str> = bound
+            .iter()
+            .filter_map(|(name, _)| name.strip_prefix(CLEAR))
+            .collect();
+        assert!(cleared.contains(&"?performed 0.0.0"), "{cleared:?}");
+        assert!(!cleared.contains(&"?performed 1"), "{cleared:?}");
     }
 
     #[test]
