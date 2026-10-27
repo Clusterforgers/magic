@@ -34,6 +34,8 @@ mod block_restrictions;
 mod block_restrictions_fuzz;
 mod c4_control;
 mod c4_control_cards;
+mod c4_fuzz;
+mod c4_move_cards;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;

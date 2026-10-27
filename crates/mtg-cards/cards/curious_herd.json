@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e6f2e363-e361-4571-af37-6c63da04bdbf",
+  "name": "Curious Herd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curious Herd",
+      "oracle_fingerprint": "079697d2550b7e1c328bc23459b98d3a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": {
+                    "Count": [{ "Type": "Artifact" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

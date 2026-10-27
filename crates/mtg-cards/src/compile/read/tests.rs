@@ -164,7 +164,7 @@ mod batch_writers;
 mod becomes;
 mod block_limits;
 mod c4_group_writers;
-mod c4_probe;
+mod c4_move_writers;
 mod c4_writers;
 mod card_grants;
 mod cast;

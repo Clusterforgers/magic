@@ -391,6 +391,7 @@ Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
 Eureka Moment
+Evangel of Heliod
 Evercoat Ursine
 Evolutionary Leap
 Exalted Angel

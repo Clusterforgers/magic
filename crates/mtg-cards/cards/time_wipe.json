@@ -1,0 +1,27 @@
+{
+  "oracle_id": "36c78a5f-0148-4596-a346-f8e35037b694",
+  "name": "Time Wipe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Wipe",
+      "oracle_fingerprint": "46a61010600000a157f7ba341e6e255d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "back"
+                }
+              },
+              { "Move": { "what": { "Bound": "back" }, "to": "Hand" } },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

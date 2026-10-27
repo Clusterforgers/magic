@@ -159,13 +159,19 @@ fn opportunistic_dragon_holds_an_opponents_human_silenced_while_it_remains(
     settle(&mut driver, Some("Master Thief"))?;
     assert_eq!(controller(&driver, "Master Thief"), 0);
     let thief = driver.id_of("Master Thief")?;
-    assert!(mtg_engine::ability_reader::abilities_of(driver.state(), thief).is_empty());
+    assert_eq!(
+        mtg_engine::ability_reader::abilities_of(driver.state(), thief).len(),
+        0
+    );
     if dragon_dies {
         let dragon = driver.target_named("Opportunistic Dragon")?;
         driver.cast_at("Bolt", &[dragon])?;
         settle(&mut driver, None)?;
         assert_eq!(controller(&driver, "Master Thief"), 1);
-        assert!(!mtg_engine::ability_reader::abilities_of(driver.state(), thief).is_empty());
+        assert_ne!(
+            mtg_engine::ability_reader::abilities_of(driver.state(), thief).len(),
+            0
+        );
     }
     replays(&driver);
     Ok(())

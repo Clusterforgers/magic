@@ -1,0 +1,42 @@
+{
+  "oracle_id": "15dca6a7-8367-4b86-a86c-e44f10fb3c53",
+  "name": "Nervous Gardener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nervous Gardener",
+      "oracle_fingerprint": "addd21ac4b5e4191d63ec2bd3896ba5f",
+      "abilities": [
+        { "Keyword": { "Disguise": "{G}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Plains" },
+                        { "Subtype": "Island" },
+                        { "Subtype": "Swamp" },
+                        { "Subtype": "Mountain" },
+                        { "Subtype": "Forest" }
+                      ]
+                    }
+                  ],
+                  "count": { "min": 0, "max": 1 },
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
