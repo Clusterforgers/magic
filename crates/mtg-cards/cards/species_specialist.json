@@ -1,0 +1,31 @@
+{
+  "oracle_id": "51feda69-0ae8-4df3-bb50-a4bb9deb965d",
+  "name": "Species Specialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Species Specialist",
+      "oracle_fingerprint": "a0709cc04b5e948901036dabb6377c36",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "ChosenSubtype"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

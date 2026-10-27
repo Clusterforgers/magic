@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bc3d5911-3580-4132-9daf-2826495b5739",
+  "name": "Stitch Together",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stitch Together",
+      "oracle_fingerprint": "7c95dc11844948412d0253f7afcbc64e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }],
+                  "otherwise": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

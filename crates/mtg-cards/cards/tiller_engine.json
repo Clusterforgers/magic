@@ -1,0 +1,45 @@
+{
+  "oracle_id": "62f6baba-da3b-45b8-a3c1-efb75763cca8",
+  "name": "Tiller Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tiller Engine",
+      "oracle_fingerprint": "4f9d942391f5816409e6a058aec13bf1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }, "Tapped"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Untap": { "what": "Triggering" } }] },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Not": { "Type": "Land" } },
+                              { "ControlledBy": "Opponents" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

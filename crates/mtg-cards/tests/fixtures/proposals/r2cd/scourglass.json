@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap","SacrificeSelf"],"condition":{"All":[{"Step":"Upkeep"},"YourTurn"]},"effects":[{"Destroy":{"what":{"Each":[{"Not":{"Type":"Artifact"}},{"Not":{"Type":"Land"}}]}}}]}}]}]}

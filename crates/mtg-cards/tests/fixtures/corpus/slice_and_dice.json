@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "dad077c9-abc7-4296-a5d1-9441aa6c38c0",
+  "oracle_id": "463fc961-d34e-4f40-b383-5b78a0fcb5c8",
+  "multiverse_ids": [
+    627719
+  ],
+  "mtgo_id": 114737,
+  "tcgplayer_id": 507445,
+  "cardmarket_id": 723661,
+  "name": "Slice and Dice",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/dad077c9-abc7-4296-a5d1-9441aa6c38c0",
+  "scryfall_uri": "https://scryfall.com/card/cmm/255/slice-and-dice?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:07:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.jpg?1783915643",
+    "normal": "https://cards.scryfall.io/normal/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.jpg?1783915643",
+    "large": "https://cards.scryfall.io/large/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.jpg?1783915643",
+    "png": "https://cards.scryfall.io/png/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.png?1783915643",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.jpg?1783915643",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.jpg?1783915643",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.webp?1783915643",
+    "grid": "https://cards.scryfall.io/grid/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.webp?1783915643",
+    "display": "https://cards.scryfall.io/display/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.webp?1783915643",
+    "art": "https://cards.scryfall.io/art/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.webp?1783915643",
+    "crop": "https://cards.scryfall.io/crop/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.webp?1783915643",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/a/dad077c9-abc7-4296-a5d1-9441aa6c38c0.jpg?1783915643"
+  },
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Slice and Dice deals 4 damage to each creature.\nCycling {2}{R} ({2}{R}, Discard this card: Draw a card.)\nWhen you cycle this card, you may have it deal 1 damage to each creature.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Cycling"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dad077c9-abc7-4296-a5d1-9441aa6c38c0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A463fc961-d34e-4f40-b383-5b78a0fcb5c8&unique=prints",
+  "collector_number": "255",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Tahngarth relished the chance to bloody his blades on those who had ravaged his home.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeremy Wilson",
+  "artist_ids": [
+    "eb66ec0c-e03d-4a7d-a732-193bfa421f67"
+  ],
+  "illustration_id": "ae267628-2e44-4225-b5de-f9d2b7cc8b7f",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14627,
+  "penny_rank": 5323,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.22",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=627719&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSlice%2Band%2BDice",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSlice%2Band%2BDice",
+    "edhrec": "https://edhrec.com/route/?cc=Slice+and+Dice"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F507445%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723661&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114737?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

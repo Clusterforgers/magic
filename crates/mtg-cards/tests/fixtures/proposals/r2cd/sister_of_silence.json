@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Either":[{"Object":["Spell",{"Type":"Instant"}]},{"Object":["Spell",{"Type":"Sorcery"}]},{"Object":[{"Ability":"Activated"}]},{"Object":[{"Ability":"Triggered"}]}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}]}]}

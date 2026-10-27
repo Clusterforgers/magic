@@ -30,7 +30,10 @@ mod c4_phases;
 mod c4_prevent_combat;
 mod c4_support;
 mod c4_swaps;
+mod c4_swaps_sz;
+mod c4_sz;
 mod c4_token_counts;
+mod c4_twins;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -432,6 +435,14 @@ fn add_sz3(ability: &Ability, texts: &mut Vec<String>) {
     leaves_graveyard::add(ability, texts);
     spell_controller::add(ability, texts);
     that_creature_sz2::add(ability, texts);
+    add_c4_sz(ability, texts);
+}
+
+/// Adds the wordings of the fourth sample of S to Z; it runs after the others because some of them change what was found.
+fn add_c4_sz(ability: &Ability, texts: &mut Vec<String>) {
+    c4_sz::add(ability, texts);
+    c4_twins::add(ability, texts);
+    c4_swaps_sz::add(ability, texts);
 }
 
 /// Adds the wordings of the fourth sample of the names M to R; it runs after the others and edits what they found.

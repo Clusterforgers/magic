@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"targets":[{"what":{"Object":[]}}],"effects":[{"May":{"effects":[{"Modal":{"modes":[{"effects":[{"Tap":{"what":{"Target":0}}}]},{"effects":[{"Untap":{"what":{"Target":0}}}]}]}}]}}]}}]}]}

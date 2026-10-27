@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1ea7b298-be87-4032-9f45-37f9b39ce3fa",
+  "name": "Shuri, the Black Panther",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shuri, the Black Panther",
+      "oracle_fingerprint": "ad7d08075a470995a30e9ca00cfd1928",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 6
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

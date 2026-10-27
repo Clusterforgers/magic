@@ -1,0 +1,26 @@
+{
+  "oracle_id": "70e58068-90d2-4720-a11c-5d243046b4a3",
+  "name": "Thirst for Meaning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thirst for Meaning",
+      "oracle_fingerprint": "8361a67e39eee072938ceecf2c28341c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Enchantment" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

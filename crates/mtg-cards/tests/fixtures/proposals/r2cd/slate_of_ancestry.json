@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{4}"},"Tap",{"Discard":{"count":{"Count":[{"In":"Hand"},{"ControlledBy":"You"}]}}}],"effects":[{"Draw":{"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}]}}]}]}

@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "be2d74cd-76fb-4bca-99b5-07749aef4d06",
+  "oracle_id": "516101be-be39-4d84-8fee-d8a79930dd0a",
+  "multiverse_ids": [
+    650212
+  ],
+  "mtgo_id": 122376,
+  "tcgplayer_id": 535721,
+  "cardmarket_id": 754133,
+  "name": "Sphinx of the Second Sun",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/be2d74cd-76fb-4bca-99b5-07749aef4d06",
+  "scryfall_uri": "https://scryfall.com/card/mkc/118/sphinx-of-the-second-sun?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:23:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.jpg?1783913012",
+    "normal": "https://cards.scryfall.io/normal/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.jpg?1783913012",
+    "large": "https://cards.scryfall.io/large/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.jpg?1783913012",
+    "png": "https://cards.scryfall.io/png/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.png?1783913012",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.jpg?1783913012",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.jpg?1783913012",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.webp?1783913012",
+    "grid": "https://cards.scryfall.io/grid/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.webp?1783913012",
+    "display": "https://cards.scryfall.io/display/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.webp?1783913012",
+    "art": "https://cards.scryfall.io/art/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.webp?1783913012",
+    "crop": "https://cards.scryfall.io/crop/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.webp?1783913012",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/e/be2d74cd-76fb-4bca-99b5-07749aef4d06.jpg?1783913012"
+  },
+  "mana_cost": "{6}{U}{U}",
+  "cmc": 8.0,
+  "type_line": "Creature — Sphinx",
+  "oracle_text": "Flying\nAt the beginning of each of your postcombat main phases, there is an additional beginning phase after this phase. (The beginning phase includes the untap, upkeep, and draw steps.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/be2d74cd-76fb-4bca-99b5-07749aef4d06/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A516101be-be39-4d84-8fee-d8a79930dd0a&unique=prints",
+  "collector_number": "118",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "He watches in silence as the shadows shift, bringing Amonkhet ever nearer to the Hour of Revelation.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Antonio José Manzanedo",
+  "artist_ids": [
+    "74986d28-0001-4a78-827c-e490b325d0e3"
+  ],
+  "illustration_id": "55ea1bee-9c30-4687-9bde-6fdc72b358f1",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2307,
+  "prices": {
+    "usd": "5.90",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.32",
+    "eur_foil": null,
+    "tix": "11.11"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650212&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSphinx%2Bof%2Bthe%2BSecond%2BSun",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSphinx%2Bof%2Bthe%2BSecond%2BSun",
+    "edhrec": "https://edhrec.com/route/?cc=Sphinx+of+the+Second+Sun"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535721%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=754133&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122376?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

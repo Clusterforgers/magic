@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Artifact"}],"by":"Opponents"}},"effects":[{"Continuous":{"affected":"Triggering","mods":[{"SetController":"You"}],"duration":"UntilEndOfYourNextTurn"}}]}}]}]}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "939e6f71-185e-41f2-9d54-72cce06f1dce",
+  "name": "Thirst for Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thirst for Knowledge",
+      "oracle_fingerprint": "e5bb7d38a1b940e4bd005fade20c18c3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Artifact" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

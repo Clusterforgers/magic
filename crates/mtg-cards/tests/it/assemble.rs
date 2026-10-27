@@ -44,7 +44,20 @@ fn owned_words(text: &str) -> Vec<String> {
 
 fn words(type_line: &str) -> (BTreeSet<String>, Vec<String>) {
     let (head, tail) = type_line.split_once('\u{2014}').unwrap_or((type_line, ""));
-    (owned_words(head).into_iter().collect(), owned_words(tail))
+    (owned_words(head).into_iter().collect(), subtype_words(tail))
+}
+
+/// The subtypes of a type line: `Time Lord` is one subtype of two words.
+fn subtype_words(tail: &str) -> Vec<String> {
+    let mut subtypes = owned_words(tail);
+    if let Some(at) = subtypes
+        .windows(2)
+        .position(|pair| pair[0] == "Time" && pair[1] == "Lord")
+    {
+        "Time Lord".clone_into(&mut subtypes[at]);
+        subtypes.remove(at + 1);
+    }
+    subtypes
 }
 
 /// The mana ability a definition carries (the only kind it has in `abilities`).

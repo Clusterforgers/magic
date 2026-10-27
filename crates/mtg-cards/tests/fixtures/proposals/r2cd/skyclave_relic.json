@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Kicker":"{3}"}},{"Keyword":"Indestructible"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":"Kicked","effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}},"count":2,"tapped":true}}]}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}]}

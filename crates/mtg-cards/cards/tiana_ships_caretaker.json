@@ -1,0 +1,43 @@
+{
+  "oracle_id": "80f8fb4c-cc6d-4b41-abb3-471dc96d4b2a",
+  "name": "Tiana, Ship's Caretaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tiana, Ship's Caretaker",
+      "oracle_fingerprint": "c7bf7ec287dbb98e858a7dff2e037537",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

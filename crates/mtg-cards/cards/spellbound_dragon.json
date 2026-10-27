@@ -1,0 +1,37 @@
+{
+  "oracle_id": "86b8a9ef-7cdf-47e9-accb-16fe1eab718f",
+  "name": "Spellbound Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellbound Dragon",
+      "oracle_fingerprint": "cacb0f40f2358b0bbe94e3ea9dc4a865",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "d" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Bound": "d" }, "stat": "ManaValue" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

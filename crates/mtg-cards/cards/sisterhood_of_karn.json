@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b32484ee-c7d8-472d-818f-2c37783d028a",
+  "name": "Sisterhood of Karn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sisterhood of Karn",
+      "oracle_fingerprint": "fc97b065fa55adb1c1b12a9dd6aff15b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "effects": [{ "MultiplyCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

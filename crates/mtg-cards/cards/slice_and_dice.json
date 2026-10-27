@@ -1,0 +1,42 @@
+{
+  "oracle_id": "463fc961-d34e-4f40-b383-5b78a0fcb5c8",
+  "name": "Slice and Dice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slice and Dice",
+      "oracle_fingerprint": "d21aab9697211eb74cc7a9f67671710b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 4 } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{R}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": { "Each": [{ "Type": "Creature" }] },
+                        "amount": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

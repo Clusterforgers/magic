@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":3}},{"Pay":{"cost":[{"Discard":{"filter":[{"Type":"Artifact"}]}}],"unpaid":[{"Discard":{"count":2}}]}}]}}]}]}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a27445db-33f2-4571-98b5-83206b797484",
+  "name": "Shared Animosity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shared Animosity",
+      "oracle_fingerprint": "ba53980dea338907c729086bf2d780a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            "Attacking",
+                            { "Not": { "Is": "Triggering" } },
+                            { "SharesSubtype": "Triggering" }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ed6607f4-20ab-4d3f-a8af-bcc148423336",
+  "name": "Sire of Stagnation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sire of Stagnation",
+      "oracle_fingerprint": "d7b6257112e1e56b427b03841dd9091c",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": { "ControllerOf": "Triggering" }, "count": 2, "as": "x" } },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c7d9ff27-f1fc-42e4-a47b-d2e6d68e4035",
+  "name": "Sanctum of Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctum of Eternity",
+      "oracle_fingerprint": "2e4df0fda12b1ed465ef7ec2f17d1393",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": { "Object": ["Commander", { "OwnedBy": "You" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

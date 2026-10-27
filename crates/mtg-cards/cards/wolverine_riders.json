@@ -1,0 +1,47 @@
+{
+  "oracle_id": "09070db6-01f6-4a8a-b167-a7825e6959f4",
+  "name": "Wolverine Riders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolverine Riders",
+      "oracle_fingerprint": "044483edd12c989589d8b08eed08be8c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "Subtype": "Elf" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

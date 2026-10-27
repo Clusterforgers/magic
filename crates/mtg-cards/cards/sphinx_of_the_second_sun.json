@@ -1,0 +1,20 @@
+{
+  "oracle_id": "516101be-be39-4d84-8fee-d8a79930dd0a",
+  "name": "Sphinx of the Second Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of the Second Sun",
+      "oracle_fingerprint": "e8fd7c071b21f0d8fc7ec0352c867f4b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "effects": [{ "AddPhase": { "phases": ["Beginning"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

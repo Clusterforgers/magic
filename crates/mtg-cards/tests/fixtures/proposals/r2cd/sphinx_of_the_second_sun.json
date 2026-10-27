@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"StepBegins":{"step":"Main2","whose":"You"}},"effects":[{"AddPhase":{"phases":["Beginning"]}}]}}]}]}

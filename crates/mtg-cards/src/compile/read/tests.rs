@@ -169,6 +169,7 @@ mod c4_gl_writers;
 mod c4_group_writers;
 mod c4_move_writers;
 mod c4_phases;
+mod c4_sz_writers;
 mod c4_writers;
 mod card_grants;
 mod cast;

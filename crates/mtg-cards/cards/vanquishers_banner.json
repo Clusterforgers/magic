@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8cf38025-5821-45a0-9483-266353b7e82d",
+  "name": "Vanquisher's Banner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanquisher's Banner",
+      "oracle_fingerprint": "ff6960d9c4c75b10ef8a5da9b04890c3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Creature" }, "ChosenSubtype"], "by": "You" }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"BecomesTarget":{"what":[{"Subtype":"Dragon"},{"ControlledBy":"You"}],"by":[{"ControlledBy":"Opponents"}]}},"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}},{"ControlledBy":{"ControllerOf":"Dealer"}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

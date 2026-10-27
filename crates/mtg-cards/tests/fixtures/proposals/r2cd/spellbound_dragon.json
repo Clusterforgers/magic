@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Draw":{}},{"Discard":{"as":"d"}},{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Bound":"d"},"stat":"ManaValue"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}]}
