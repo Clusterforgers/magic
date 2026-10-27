@@ -1,5 +1,7 @@
 //! Combat state and the legality of attacks and blocks.
 
+use std::collections::{BTreeMap, BTreeSet};
+
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -379,18 +381,26 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             (object, can_block)
         })
         .collect();
-    let blockable_together = |attacker: ObjectId| {
-        let able = candidates
-            .iter()
-            .filter(|(_, can_block)| can_block.contains(&attacker))
-            .count();
-        let needed = keywords::min_blockers(state, attacker);
-        // An attacker that must have more blockers than it may have can't be blocked at all.
-        able >= needed
-            && blocker_limits(state, attacker)
-                .1
-                .is_none_or(|most| needed <= most)
-    };
+    // How many candidates could block each attacker, counted once rather than per pair.
+    let mut able: BTreeMap<ObjectId, usize> = BTreeMap::new();
+    for (_, can_block) in &candidates {
+        for attacker in can_block {
+            *able.entry(*attacker).or_default() += 1;
+        }
+    }
+    let together: BTreeSet<ObjectId> = blockable
+        .iter()
+        .copied()
+        .filter(|attacker| {
+            let needed = keywords::min_blockers(state, *attacker);
+            // An attacker that must have more blockers than it may have can't be blocked at all.
+            able.get(attacker).copied().unwrap_or(0) >= needed
+                && blocker_limits(state, *attacker)
+                    .1
+                    .is_none_or(|most| needed <= most)
+        })
+        .collect();
+    let blockable_together = |attacker: ObjectId| together.contains(&attacker);
     let blockers: Vec<BlockerOption> = candidates
         .iter()
         .filter_map(|(object, can_block)| {
