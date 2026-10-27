@@ -2,6 +2,7 @@
 import { act } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { applyBatch, indexById } from '@/play/view'
 import type { EventBatch, ObjectView, PriorityOptions, ServerMessage, StateView } from '@/protocol/generated'
 import { batchOf, clone, must, tableOf, withTapped } from '@/test-utils/batches'
@@ -322,7 +323,7 @@ describe('a decision at the same table', () => {
 
 // ---- Stacked boards: 4 seats with 40 permanents each -------------------------------------------------------------
 
-/** What mounting 4 seats, 160 permanents and the pods around them may cost, in ms; five times what it takes here. */
+/** What mounting 4 seats, 160 permanents and the pods around them may cost, in ms idle (five times what it takes here); `scaled` stretches it by the load. */
 const MOUNT_BUDGET_MS = 1500
 const FOUR = buildFixture({ seats: 4 })
 
@@ -350,7 +351,7 @@ describe('a table of 4 seats with 40 permanents each, stacked', () => {
     const started = performance.now()
     const { view } = mountStacked()
     const elapsed = performance.now() - started
-    expect(elapsed).toBeLessThan(MOUNT_BUDGET_MS)
+    expect(elapsed).toBeLessThan(scaled(MOUNT_BUDGET_MS))
     const onBattlefield = must(view().battlefield.cards)
     expect(onBattlefield).toHaveLength(160)
     const boxes = [0, 1, 2, 3].reduce((sum, seat) => {
@@ -412,6 +413,6 @@ describe('a table of 4 seats with 40 permanents each, stacked', () => {
         objects: [withTapped(land, true)],
       })
     }
-    expect(performance.now() - started).toBeLessThan(MOUNT_BUDGET_MS)
+    expect(performance.now() - started).toBeLessThan(scaled(MOUNT_BUDGET_MS))
   })
 })

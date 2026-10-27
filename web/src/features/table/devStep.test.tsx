@@ -2,6 +2,7 @@
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import type { Step } from '@/protocol/generated'
 import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { fixtureGame } from './dev/devGame'
@@ -77,7 +78,7 @@ describe('/dev/table?step=', () => {
     'opens a table in the phase of %s',
     async (name, step) => {
       await visit(`/dev/table?seats=2&step=${name}`)
-      await screen.findByRole('region', { name: 'Game table' }, { timeout: 8000 })
+      await screen.findByRole('region', { name: 'Game table' }, { timeout: scaled(8000) })
       expect(document.querySelector('[data-slot="table-grid"]')).toHaveAttribute(
         'data-phase',
         phaseOf(step).id,
@@ -89,7 +90,7 @@ describe('/dev/table?step=', () => {
 
   it('shows the fixture’s own phase, combat, when the address names no step', async () => {
     await visit('/dev/table?seats=2')
-    await screen.findByRole('region', { name: 'Game table' }, { timeout: 8000 })
+    await screen.findByRole('region', { name: 'Game table' }, { timeout: scaled(8000) })
     expect(document.querySelector('[data-slot="table-grid"]')).toHaveAttribute('data-phase', 'combat')
   }, 10_000)
 })

@@ -3,6 +3,7 @@ import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/rea
 import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { clearFlash } from '@/lib/flash'
 import { fixtureRoster } from './lobbyGame'
 import { parseDevLobbySearch } from './lobbySearch'
@@ -59,7 +60,9 @@ describe('the address', () => {
 describe('/dev/lobby with decks', () => {
   it('lists the stored decks of a signed-in page with the built-in ones, and keeps a guest to the built-in ones', async () => {
     await visit('/dev/lobby?seats=3&me=1&nodeck=1&account=1')
-    expect(await screen.findByRole('list', { name: 'Your decks' }, { timeout: 5000 })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('list', { name: 'Your decks' }, { timeout: scaled(5000) }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('list', { name: 'Demo decks' })).toBeInTheDocument()
     cleanup()
     await visit('/dev/lobby?seats=3&me=1&nodeck=1')
@@ -73,11 +76,11 @@ describe('/dev/lobby with decks', () => {
     const ready = await screen.findByRole('button', { name: 'Ready' })
     expect(ready).toBeDisabled()
     await user.click(await screen.findByRole('button', { name: /Atraxa Superfriends/ }))
-    const alert = await screen.findByRole('alert', {}, { timeout: 5000 })
+    const alert = await screen.findByRole('alert', {}, { timeout: scaled(5000) })
     expect(within(alert).getAllByRole('listitem').length).toBeGreaterThan(0)
     await user.click(screen.getByRole('button', { name: /Burn/ }))
     await waitFor(() => expect(screen.getByRole('button', { name: 'Ready' })).toBeEnabled(), {
-      timeout: 5000,
+      timeout: scaled(5000),
     })
     expect(document.querySelectorAll('[data-slot="seat-deck"]')[1]).toHaveTextContent(
       'Burn, Modern, 3 cards need manual steps',

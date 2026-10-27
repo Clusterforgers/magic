@@ -1,5 +1,6 @@
 // Goal: grouping and fitting the permanents of a whole table (40 a seat, 6 or 12 seats) takes a few milliseconds, including the second pass that merges the other cards when the first leaves them under 64 px, so the table can afford to run both on every resize and every batch.
 import { describe, expect, it } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { indexById } from '@/play/view'
 import type { ObjectView, PlayerId } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
@@ -83,7 +84,7 @@ describe('fit and grouping over a whole table', () => {
       pass()
       return performance.now() - start
     })
-    expect(median(samples)).toBeLessThan(budget)
+    expect(median(samples)).toBeLessThan(scaled(budget))
   })
 
   it('is the same on every pass', () => {

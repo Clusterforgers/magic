@@ -1,6 +1,7 @@
 // Goal: the My games page sends a visitor who is not signed in to the sign-in form and back, and every state of the signed-in page is designed in the Play page's wide column: a skeleton only after 300 ms, an empty state with two ways on, an error with Retry that keeps old rows dimmed, and a table (stacked rows on a narrow screen) of state badges, results and a Continue link only where a game can be continued, and a failed game shows its reason beside a Remove button that takes it off the list and no link into it.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { AuthProvider } from '@/features/auth/AuthProvider'
 import { createAuthStore } from '@/features/auth/store'
 import type { MyGame } from '@/protocol/generated'
@@ -171,7 +172,7 @@ describe('the page', () => {
     await waitFor(() => expect(app.store.getState().games.status).toBe('loading'))
     expect(document.querySelector('[data-slot="skeleton"]')).toBeNull()
     await waitFor(() => expect(document.querySelectorAll('[data-slot="skeleton"]')).toHaveLength(4), {
-      timeout: 1500,
+      timeout: scaled(1500),
     })
     expect(document.querySelector('[data-slot="loading"]')).toHaveTextContent('Loading your games…')
   })

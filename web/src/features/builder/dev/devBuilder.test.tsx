@@ -3,6 +3,7 @@ import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/rea
 import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { scaled } from '@/test-utils/loadFactor'
 import { reportFor } from '../fakeCheck'
 import { parseDevBuilderSearch } from './builderSearch'
 import {
@@ -202,7 +203,7 @@ describe('/dev/builder in development', () => {
     await waitFor(
       () => expect(counts()).toHaveTextContent(/^98 of 104 verified, 3 manual, 2 partial, 1 stale$/),
       {
-        timeout: 5000,
+        timeout: scaled(5000),
       },
     )
     expect(within(deck).getByRole('region', { name: /^Not legal in Commander/ })).toHaveTextContent(
