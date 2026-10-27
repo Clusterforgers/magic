@@ -201,7 +201,7 @@ pub fn play_game_with(
         } else if crowded(engine.state(), &decision) {
             pass.clone()
         } else {
-            bot.choose(&decision)
+            bot.choose_in(&decision, engine.state())
         };
         let seat_passes = !table_passes && answer == pass;
         let given = answer.clone();
