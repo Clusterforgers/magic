@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "5bd5cd33-20e2-4063-b422-2bde13021888",
+  "oracle_id": "4b4f268d-34ae-416d-a412-66f4fe37659c",
+  "multiverse_ids": [
+    500886
+  ],
+  "mtgo_id": 85624,
+  "tcgplayer_id": 227305,
+  "cardmarket_id": 514549,
+  "name": "Sphinx of Uthuun",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/5bd5cd33-20e2-4063-b422-2bde13021888",
+  "scryfall_uri": "https://scryfall.com/card/cmr/406/sphinx-of-uthuun?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:45:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.jpg?1783928716",
+    "normal": "https://cards.scryfall.io/normal/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.jpg?1783928716",
+    "large": "https://cards.scryfall.io/large/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.jpg?1783928716",
+    "png": "https://cards.scryfall.io/png/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.png?1783928716",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.jpg?1783928716",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.jpg?1783928716",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.webp?1783928716",
+    "grid": "https://cards.scryfall.io/grid/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.webp?1783928716",
+    "display": "https://cards.scryfall.io/display/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.webp?1783928716",
+    "art": "https://cards.scryfall.io/art/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.webp?1783928716",
+    "crop": "https://cards.scryfall.io/crop/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.webp?1783928716",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/b/5bd5cd33-20e2-4063-b422-2bde13021888.jpg?1783928716"
+  },
+  "mana_cost": "{5}{U}{U}",
+  "cmc": 7.0,
+  "type_line": "Creature — Sphinx",
+  "oracle_text": "Flying\nWhen this creature enters, reveal the top five cards of your library. An opponent separates those cards into two piles. Put one pile into your hand and the other into your graveyard.",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5bd5cd33-20e2-4063-b422-2bde13021888/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4b4f268d-34ae-416d-a412-66f4fe37659c&unique=prints",
+  "collector_number": "406",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kekai Kotaki",
+  "artist_ids": [
+    "4b771085-c049-4308-930d-ec9665f803a4"
+  ],
+  "illustration_id": "5eb4f5d3-ae53-474d-be67-ec307184bf7b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9735,
+  "penny_rank": 4627,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=500886&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSphinx%2Bof%2BUthuun",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSphinx%2Bof%2BUthuun",
+    "edhrec": "https://edhrec.com/route/?cc=Sphinx+of+Uthuun"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F227305%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=514549&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85624?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

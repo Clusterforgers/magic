@@ -1,0 +1,48 @@
+{
+  "oracle_id": "437b2dab-15e0-4b9a-a204-58622d37a3b3",
+  "name": "Fact or Fiction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fact or Fiction",
+      "oracle_fingerprint": "f71f561a61f01bdb62e2b429850cce69",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": "Opponents", "as": "separator" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "separator" },
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "Move": { "what": { "Bound": "other" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
