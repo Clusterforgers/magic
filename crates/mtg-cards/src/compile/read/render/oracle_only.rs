@@ -40,6 +40,7 @@ mod c4_sz;
 mod c4_those_creatures;
 mod c4_token_counts;
 mod c4_twins;
+mod c5_mr_writers;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -267,6 +268,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     c4_oracle_only(ability, texts);
     add_c4(ability, texts);
     c4_writers(ability, texts);
+    add_c5_mr(ability, texts);
 }
 
 /// The wordings of the fourth sample of the names A to F; it runs after the others because it rewrites their texts.
@@ -466,4 +468,9 @@ fn add_c4_sz(ability: &Ability, texts: &mut Vec<String>) {
 /// Adds the wordings of the fourth sample of the names M to R; it runs after the others and edits what they found.
 fn add_c4_mr(ability: &Ability, texts: &mut Vec<String>) {
     c4_mr::add(ability, texts);
+}
+
+/// Adds the wordings of the fifth sample of the names M to R; it runs last and edits what the others found.
+fn add_c5_mr(ability: &Ability, texts: &mut Vec<String>) {
+    c5_mr_writers::add(ability, texts);
 }
