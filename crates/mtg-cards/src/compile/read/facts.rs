@@ -39,6 +39,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(counter_this_turn))
         .or_else(|| r.attempt(died_under_you))
         .or_else(|| r.attempt(full_party))
+        .or_else(|| r.attempt(super::c4_hands::read))
 }
 
 /// What `died_under_you` reads, written back.
@@ -367,6 +368,7 @@ fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
         (Amount::Count(of), Cmp::Eq) if number == 0 && *of == every_hand() => {
             vec!["each player has no cards in hand".to_owned()]
         }
+        (Amount::LowestHand(who), Cmp::Le) => super::c4_hands::texts(who, number),
         (
             Amount::Tallied {
                 who: Ref::This,

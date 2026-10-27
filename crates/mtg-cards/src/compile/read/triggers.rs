@@ -184,8 +184,22 @@ const NEWER_STEPS: [(Step, &str); 2] = [
 ];
 
 /// The event of a trigger, from its first word: "When ~ enters", "Whenever you cast a spell",
-/// "At the beginning of your upkeep".
+/// "At the beginning of your upkeep", and two events of one ability: "When ~ enters and whenever one or more creature
+/// tokens you control deal combat damage to a player".
 pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    let first = single_event(r)?;
+    let second = r.attempt(|r| {
+        r.word("and").then_some(())?;
+        single_event(r)
+    });
+    Some(match second {
+        Some(second) => TriggerPattern::AnyOf(vec![first, second]),
+        None => first,
+    })
+}
+
+/// The event of one "When" or "Whenever" or "At the beginning of".
+fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if r.words("at the beginning of") {
         return step(r);
     }
@@ -417,6 +431,9 @@ fn spell_cast(r: &mut Reader<'_>, by: Ref, third: bool) -> Option<TriggerPattern
         return None;
     }
     spell.remove(0);
+    if !third {
+        super::c4_cast_hand::from_hand(&mut spell, r);
+    }
     Some(TriggerPattern::SpellCast {
         what: Selector(spell),
         by,
@@ -1054,7 +1071,7 @@ fn own_commander(what: &Selector) -> bool {
 }
 
 /// "you cast", "an opponent casts", "a player casts" for the verb ("cast" or "sacrifice").
-fn player_verb(by: &Ref, verb: &str) -> Option<String> {
+pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
     Some(match by {
         Ref::You => format!("you {verb}"),
         Ref::Opponents => format!("an opponent {verb}s"),
@@ -1219,12 +1236,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::SpellCast { what, by: Ref::You } if what.0 == [Pred::This] => {
             Some("When you cast ~".to_owned())
         }
-        TriggerPattern::SpellCast { what, by } => {
-            let mut preds = vec![Pred::Spell];
-            preds.extend(what.0.iter().cloned());
-            let spell = subject_text(&Selector(preds))?;
-            Some(format!("Whenever {} {spell}", player_verb(by, "cast")?))
-        }
+        TriggerPattern::SpellCast { what, by } => super::c4_cast_hand::cast_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(
             "Whenever {} {}",
             player_verb(by, "sacrifice")?,
@@ -1325,6 +1337,11 @@ fn cycled_text(what: &Selector, by: &Ref) -> Option<String> {
 /// Several events of one subject ("~ enters or attacks"), or of the card and a second subject in turn: "Whenever ~ or
 /// another Elf you control enters or dies".
 fn any_of_text(patterns: &[TriggerPattern]) -> Option<String> {
+    any_of_listed(patterns).or_else(|| super::c4_joined_events::joined_text(patterns))
+}
+
+/// The events of one subject, or of the card and a second subject, as one list of verbs.
+fn any_of_listed(patterns: &[TriggerPattern]) -> Option<String> {
     let happenings: Vec<(Selector, String)> =
         patterns.iter().map(happening).collect::<Option<Vec<_>>>()?;
     let (what, _) = happenings.first()?;

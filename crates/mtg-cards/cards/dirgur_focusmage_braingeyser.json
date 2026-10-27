@@ -1,0 +1,51 @@
+{
+  "oracle_id": "655ee0db-1913-464f-bd06-072c6bf446bd",
+  "name": "Dirgur Focusmage // Braingeyser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dirgur Focusmage",
+      "oracle_fingerprint": "e3f7f10063d6091d04e9e0632bf444ac",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } },
+                  { "CastFrom": "Hand" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Braingeyser",
+      "oracle_fingerprint": "131db5b13968a1fc7a8c70083b1bf08f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

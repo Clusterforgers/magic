@@ -22,16 +22,22 @@ mod bounce_all;
 mod c4_af;
 mod c4_attack_token;
 mod c4_aura_becomes;
+mod c4_chosen_damage;
 mod c4_counters_you_put;
+mod c4_delayed_prepare;
+mod c4_each_of_up_to;
+mod c4_exile_copy;
 mod c4_group_effects;
 mod c4_moves;
 mod c4_mr;
+mod c4_party_roles;
 mod c4_phases;
 mod c4_prevent_combat;
 mod c4_support;
 mod c4_swaps;
 mod c4_swaps_sz;
 mod c4_sz;
+mod c4_those_creatures;
 mod c4_token_counts;
 mod c4_twins;
 mod cant_countered;
@@ -260,6 +266,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c4_mr(ability, texts);
     c4_oracle_only(ability, texts);
     add_c4(ability, texts);
+    c4_writers(ability, texts);
 }
 
 /// The wordings of the fourth sample of the names A to F; it runs after the others because it rewrites their texts.
@@ -287,6 +294,17 @@ fn add_c4(ability: &Ability, texts: &mut Vec<String>) {
     c4_group_effects::add(ability, texts);
     c4_moves::add(ability, texts);
     c4_token_counts::add(ability, texts);
+}
+
+/// The wordings of the party, chosen-player and prepare cards (c14a), in a function of their own.
+fn c4_writers(ability: &Ability, texts: &mut Vec<String>) {
+    c4_party_roles::add(texts);
+    c4_those_creatures::add(ability, texts);
+    c4_chosen_damage::add(ability, texts);
+    c4_delayed_prepare::add(ability, texts);
+    c4_each_of_up_to::add(ability, texts);
+    c4_exile_copy::add(ability, texts);
+    c4_exile_copy::add_and_or(texts);
 }
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.

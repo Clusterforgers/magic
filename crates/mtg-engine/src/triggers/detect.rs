@@ -1306,6 +1306,17 @@ pub(crate) fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool
 /// are about (or one in all when they are about none).
 fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Vec<Cause> {
     match (pattern, happened) {
+        // A batch among the patterns waits for the events together, the others for each event alone.
+        (TriggerPattern::AnyOf(inner), _)
+            if inner
+                .iter()
+                .any(|member| matches!(member, TriggerPattern::Batch(_))) =>
+        {
+            inner
+                .iter()
+                .flat_map(|member| causes(member, happened, scope))
+                .collect()
+        }
         (TriggerPattern::Batch(inner), Happened::Batch(members)) => {
             let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
             for member in members {
@@ -1558,7 +1569,9 @@ fn delayed(
             continue;
         };
         let (source, controller) = (waiting.source(), waiting.controller());
-        let scope = Scope::announcing(state, controller, source);
+        // The event it waits for may name what the resolution bound ("whenever that creature deals combat damage").
+        let mut scope = Scope::announcing(state, controller, source);
+        scope.bindings = &waiting.bindings;
         let Some(cause) = matching(pattern, happened, &scope) else {
             continue;
         };

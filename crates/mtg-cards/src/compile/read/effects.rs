@@ -494,6 +494,9 @@ pub(super) fn player(r: &mut Reader<'_>) -> Option<Ref> {
 pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
     if r.word("life") {
         r.need("equal to")?;
+        if r.words("the life lost this way") {
+            return Some(Amount::LifeLostThisWay);
+        }
         return r.attempt(its_stat).or_else(|| defining::value(r));
     }
     let amount = points(r)?;

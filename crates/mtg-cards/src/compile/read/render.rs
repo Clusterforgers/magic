@@ -787,6 +787,7 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
                 count: Amount::Count(_)
                     | Amount::Counters { .. }
                     | Amount::Players(_)
+                    | Amount::Party(_)
                     | Amount::Times { .. }
                     | Amount::Tallied { .. }
                     | Amount::CommanderCasts(_),
@@ -2416,6 +2417,7 @@ impl Writer<'_> {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
+            Amount::LifeLostThisWay => "life equal to the life lost this way".to_owned(),
             Amount::Half { of, up } => {
                 let Amount::Life(whose) = of.as_ref() else {
                     return None;
@@ -2428,7 +2430,10 @@ impl Writer<'_> {
             }
             _ => match counted_parts(amount) {
                 Some((each, tail)) => format!("{} life {tail}", points_text(&each)?),
-                None => format!("{} life", points_text(amount)?),
+                None => match points_text(amount) {
+                    Some(points) => format!("{points} life"),
+                    None => format!("life equal to {}", super::defining::value_text(amount)?),
+                },
             },
         })
     }

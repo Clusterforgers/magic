@@ -61,6 +61,8 @@ pub struct Resolving {
     pub(crate) snapshots: Vec<Snapshot>,
     pub(crate) journal: Vec<(PlayerId, Choice)>,
     pub(crate) shown: Vec<Shown>,
+    /// The life the resolution has made players lose so far, which "the life lost this way" reads.
+    pub(crate) lost: u32,
 }
 
 impl Resolving {
@@ -72,6 +74,7 @@ impl Resolving {
             snapshots: Vec::new(),
             journal: Vec::new(),
             shown: Vec::new(),
+            lost: 0,
         }
     }
 

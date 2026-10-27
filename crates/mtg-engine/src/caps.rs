@@ -81,6 +81,8 @@ const RUNS: &[&str] = &[
     "Amount.Devotion",
     "Amount.LowestLife",
     "Amount.HighestLife",
+    "Amount.LowestHand",
+    "Amount.LifeLostThisWay",
     "Cost.Tap",
     "Cost.Mana",
     "Cost.Mana.X",
@@ -884,6 +886,8 @@ mod tests {
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]
+    #[case::the_fewest_cards_in_a_hand("Amount.LowestHand", true)]
+    #[case::the_life_lost_this_way("Amount.LifeLostThisWay", true)]
     #[case::myriad("Keyword.Myriad", true)]
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]

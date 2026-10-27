@@ -235,6 +235,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::CastWith(_)
         | Amount::ColorsSpent
         | Amount::PermanentsGraved
+        | Amount::LifeLostThisWay
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
@@ -246,6 +247,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Tallied { who, .. }
         | Amount::StartingLife(who)
         | Amount::LowestLife(who)
+        | Amount::LowestHand(who)
         | Amount::HighestLife(who) => reads_of_ref(who),
         Amount::Sum(parts) => parts
             .iter()

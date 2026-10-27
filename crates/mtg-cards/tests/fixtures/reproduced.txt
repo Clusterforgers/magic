@@ -317,6 +317,7 @@ Dimir Infiltrator
 Dina, Soul Steeper
 Dire Fleet Interloper
 Direct Current
+Dirgur Focusmage // Braingeyser
 Disciple of Griselbrand
 Disembowel
 Dismantling Blow
@@ -603,6 +604,7 @@ Indulging Patrician
 Inferno Project
 Inkwell Leviathan
 Insatiable Hemophage
+Inspired Skypainter // Maestro's Gift
 Inspired Sphinx
 Inspiring Statuary
 Intelligence Bobblehead
@@ -790,6 +792,7 @@ Mycoloth
 Myr Retriever
 Myriad Landscape
 Mystic Gate
+Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
 Nanogene Conversion
 Nantuko Husk
@@ -1099,6 +1102,7 @@ Spirit of the Hearth
 Spoils of Adventure
 Spring // Mind
 Springleaf Drum
+Squad Commander
 Squirrel Nest
 Sram, Senior Edificer
 Staggering Insight

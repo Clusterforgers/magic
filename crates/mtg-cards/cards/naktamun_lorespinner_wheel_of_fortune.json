@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c78783e5-868d-4a8b-a4f8-95a92853cf0a",
+  "name": "Naktamun Lorespinner // Wheel of Fortune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naktamun Lorespinner",
+      "oracle_fingerprint": "37785f1494e86db36dbe7b8d2d189c7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "LowestHand": "EachPlayer" }, "op": "Le", "right": 1 } },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wheel of Fortune",
+      "oracle_fingerprint": "91ea23a756ea725770854858052dc00e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

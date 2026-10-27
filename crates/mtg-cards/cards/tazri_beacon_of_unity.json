@@ -1,0 +1,58 @@
+{
+  "oracle_id": "ce703e1d-b7b2-4b8b-a12c-714fc152d0a5",
+  "name": "Tazri, Beacon of Unity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tazri, Beacon of Unity",
+      "oracle_fingerprint": "c28211519be48da12c22ae0c6993dbc0",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Party": "You" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2/U}{2/B}{2/R}{2/G}",
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Cleric" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warrior" },
+                          { "Subtype": "Wizard" },
+                          { "Subtype": "Ally" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

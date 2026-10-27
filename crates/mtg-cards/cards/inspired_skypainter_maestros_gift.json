@@ -1,0 +1,56 @@
+{
+  "oracle_id": "d751580b-bb72-4d1d-be27-d0410f883b2a",
+  "name": "Inspired Skypainter // Maestro's Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspired Skypainter",
+      "oracle_fingerprint": "2cccaaed260758de6935d10225e0a91b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "Batch": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Maestro's Gift",
+      "oracle_fingerprint": "8bc1b425d5eaadf8832efce62c0d1015",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "copy" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

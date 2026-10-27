@@ -319,6 +319,12 @@ pub enum Amount {
     /// The highest life total among the players the reference names ("each opponent has 10 or less life": `Opponents`).
     /// With no player named it is smaller than any life total, so "at most" is true of no one.
     HighestLife(Ref),
+    /// The fewest cards in a hand among the players the reference names (a player "has one or fewer cards in hand":
+    /// `EachPlayer`). With no player named it is larger than any hand, so "at most" is false.
+    LowestHand(Ref),
+    /// The life the players lost to the effects of the spell or ability that is resolving ("you gain life equal to the
+    /// life lost this way"): the amounts of its `LifeLost` events so far.
+    LifeLostThisWay,
     /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
     /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
     Kicks,
@@ -414,6 +420,8 @@ enum Tagged {
     Players(Ref),
     LowestLife(Ref),
     HighestLife(Ref),
+    LowestHand(Ref),
+    LifeLostThisWay,
     Kicks,
     Mutations(Ref),
     Promised,
@@ -467,6 +475,8 @@ enum TaggedRef<'a> {
     Players(&'a Ref),
     LowestLife(&'a Ref),
     HighestLife(&'a Ref),
+    LowestHand(&'a Ref),
+    LifeLostThisWay,
     Kicks,
     Mutations(&'a Ref),
     Promised,
@@ -508,6 +518,8 @@ impl From<Tagged> for Amount {
             Tagged::Players(who) => Amount::Players(who),
             Tagged::LowestLife(who) => Amount::LowestLife(who),
             Tagged::HighestLife(who) => Amount::HighestLife(who),
+            Tagged::LowestHand(who) => Amount::LowestHand(who),
+            Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
             Tagged::Kicks => Amount::Kicks,
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
@@ -552,6 +564,8 @@ impl Serialize for Amount {
             Amount::Players(who) => TaggedRef::Players(who).serialize(serializer),
             Amount::LowestLife(who) => TaggedRef::LowestLife(who).serialize(serializer),
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
+            Amount::LowestHand(who) => TaggedRef::LowestHand(who).serialize(serializer),
+            Amount::LifeLostThisWay => TaggedRef::LifeLostThisWay.serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
@@ -748,6 +762,8 @@ mod tests {
     #[case::opponents(Amount::Players(Ref::Opponents), r#"{"Players":"Opponents"}"#)]
     #[case::lowest_life(Amount::LowestLife(Ref::EachPlayer), r#"{"LowestLife":"EachPlayer"}"#)]
     #[case::highest_life(Amount::HighestLife(Ref::Opponents), r#"{"HighestLife":"Opponents"}"#)]
+    #[case::lowest_hand(Amount::LowestHand(Ref::EachPlayer), r#"{"LowestHand":"EachPlayer"}"#)]
+    #[case::life_lost_this_way(Amount::LifeLostThisWay, r#""LifeLostThisWay""#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },
         r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#

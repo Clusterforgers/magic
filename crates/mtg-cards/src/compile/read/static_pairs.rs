@@ -36,6 +36,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !attacking.is_empty() {
         return attacking;
     }
+    let chosen = super::c4_chosen_pairs::texts(first, second);
+    if !chosen.is_empty() {
+        return chosen;
+    }
     let (
         Ability::Static {
             affected: Ref::This,
