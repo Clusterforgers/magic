@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f11e914c-16bc-4836-bc14-bc1b5de9cd87",
+  "name": "Michelangelo, the Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Michelangelo, the Heart",
+      "oracle_fingerprint": "fb42859666694ac9f82ce116de26ca79",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Character select" } }
+      ]
+    }
+  ]
+}

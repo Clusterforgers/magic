@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Keyword":{"Cycling":"{X}{2}{R}"}},{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"targets":[{"what":{"Object":[{"Type":"Artifact"}]},"bounds":{"min":0,"max":"X"}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

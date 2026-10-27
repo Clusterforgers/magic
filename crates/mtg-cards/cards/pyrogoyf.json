@@ -1,0 +1,57 @@
+{
+  "oracle_id": "7fd7457a-388d-4cca-a7cf-86b4ea922037",
+  "name": "Pyrogoyf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyrogoyf",
+      "oracle_fingerprint": "29a8658be43eee01a006a9e20690be93",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "CardTypes": [{ "In": "Graveyard" }] },
+                  "toughness": { "Sum": [{ "CardTypes": [{ "In": "Graveyard" }] }, 1] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Subtype": "Lhurgoyf" },
+                      { "Type": "Creature" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "00756441-a734-4960-9c69-f03a508a1522",
+  "oracle_id": "ffe13100-99dd-41e3-82ba-eaead6fd0113",
+  "multiverse_ids": [
+    671149
+  ],
+  "mtgo_id": 128965,
+  "tcgplayer_id": 560005,
+  "cardmarket_id": 778957,
+  "name": "Rootcast Apprenticeship",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/00756441-a734-4960-9c69-f03a508a1522",
+  "scryfall_uri": "https://scryfall.com/card/blc/32/rootcast-apprenticeship?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:45:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/0/00756441-a734-4960-9c69-f03a508a1522.jpg?1783910728",
+    "normal": "https://cards.scryfall.io/normal/front/0/0/00756441-a734-4960-9c69-f03a508a1522.jpg?1783910728",
+    "large": "https://cards.scryfall.io/large/front/0/0/00756441-a734-4960-9c69-f03a508a1522.jpg?1783910728",
+    "png": "https://cards.scryfall.io/png/front/0/0/00756441-a734-4960-9c69-f03a508a1522.png?1783910728",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/0/00756441-a734-4960-9c69-f03a508a1522.jpg?1783910728",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/0/00756441-a734-4960-9c69-f03a508a1522.jpg?1783910728",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/0/00756441-a734-4960-9c69-f03a508a1522.webp?1783910728",
+    "grid": "https://cards.scryfall.io/grid/front/0/0/00756441-a734-4960-9c69-f03a508a1522.webp?1783910728",
+    "display": "https://cards.scryfall.io/display/front/0/0/00756441-a734-4960-9c69-f03a508a1522.webp?1783910728",
+    "art": "https://cards.scryfall.io/art/front/0/0/00756441-a734-4960-9c69-f03a508a1522.webp?1783910728",
+    "crop": "https://cards.scryfall.io/crop/front/0/0/00756441-a734-4960-9c69-f03a508a1522.webp?1783910728",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/0/00756441-a734-4960-9c69-f03a508a1522.jpg?1783910728"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose three. You may choose the same mode more than once.\n• Put two +1/+1 counters on target creature.\n• Create a token that's a copy of target token you control.\n• Target player creates a 1/1 green Squirrel creature token.\n• Target opponent sacrifices a nontoken artifact of their choice.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "5a6ec62e-0e9b-4312-bfe8-cc85d76fd9e0",
+      "component": "token",
+      "name": "Squirrel",
+      "type_line": "Token Creature — Squirrel",
+      "uri": "https://api.scryfall.com/cards/5a6ec62e-0e9b-4312-bfe8-cc85d76fd9e0"
+    },
+    {
+      "object": "related_card",
+      "id": "0ce616c9-af7f-4b81-bc94-dae14ffbf822",
+      "component": "combo_piece",
+      "name": "Rootcast Apprenticeship",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/0ce616c9-af7f-4b81-bc94-dae14ffbf822"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set": "blc",
+  "set_name": "Bloomburrow Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/00756441-a734-4960-9c69-f03a508a1522/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Affe13100-99dd-41e3-82ba-eaead6fd0113&unique=prints",
+  "collector_number": "32",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andreia Ugrai",
+  "artist_ids": [
+    "f72c1593-751b-45a4-ba65-205509b81b93"
+  ],
+  "illustration_id": "230e73c3-3011-46e7-bd82-78959a53b6f0",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3723,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=gkwO1W3YU6Q",
+    "previewed_at": "2024-07-18"
+  },
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.81",
+    "eur_foil": null,
+    "tix": "3.14"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=671149&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRootcast%2BApprenticeship",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRootcast%2BApprenticeship",
+    "edhrec": "https://edhrec.com/route/?cc=Rootcast+Apprenticeship"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F560005%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=778957&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128965?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

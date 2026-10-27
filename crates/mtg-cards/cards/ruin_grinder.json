@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8d0445ef-370b-4f4f-8975-a40cb02c031e",
+  "name": "Ruin Grinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruin Grinder",
+      "oracle_fingerprint": "4bb3b7079657e57b1ddc785fa3e4de8c",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Discard": {
+                              "who": { "Bound": "player" },
+                              "count": {
+                                "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                              }
+                            }
+                          },
+                          { "Draw": { "who": { "Bound": "player" }, "count": 7 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Mountain" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

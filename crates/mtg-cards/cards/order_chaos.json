@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bc540259-459d-4561-9268-c4f323ea62d2",
+  "name": "Order // Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Order",
+      "oracle_fingerprint": "087fc3132b1df2e005cce5cb127521e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chaos",
+      "oracle_fingerprint": "b0302e09fca4fe6c480d8291bea23fd6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

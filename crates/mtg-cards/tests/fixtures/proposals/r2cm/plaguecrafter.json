@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Sacrifice":{"who":{"Bound":"player"},"filter":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}},{"If":{"condition":{"Not":"Performed"},"then":[{"Discard":{"who":{"Bound":"player"}}}]}}]}}]}}]}]}

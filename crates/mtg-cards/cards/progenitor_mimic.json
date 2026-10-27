@@ -1,0 +1,34 @@
+{
+  "oracle_id": "88929ea9-900f-4dbb-b16c-cf3bad4e410c",
+  "name": "Progenitor Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Progenitor Mimic",
+      "oracle_fingerprint": "017b7aaf4033d55c786e6a3f63ef276e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                        "if": { "Not": { "Matches": { "subject": "This", "selector": ["Token"] } } },
+                        "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

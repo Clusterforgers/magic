@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Nth":{"event":{"SpellCast":{"by":"Opponents"}},"nth":1}},"effects":[{"ExileTop":{"who":{"ControllerOf":"Triggering"},"as":"card"}},{"If":{"condition":{"Matches":{"subject":{"Bound":"card"},"selector":[{"Not":{"Type":"Land"}}]}},"then":[{"CastFromZone":{"what":{"Bound":"card"},"free":true}}]}}]}}]}]}

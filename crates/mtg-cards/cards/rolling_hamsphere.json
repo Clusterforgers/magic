@@ -1,0 +1,56 @@
+{
+  "oracle_id": "a6c3aa17-8338-4daa-889e-d36dc715e546",
+  "name": "Rolling Hamsphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rolling Hamsphere",
+      "oracle_fingerprint": "3c4c69dfd196ab563946f7ab4fa89f05",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Hamster" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Hamster" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hamster",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hamster"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 3
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Hamster" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

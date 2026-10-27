@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c45e96cb-2539-4e00-9fff-782a182c2f4b",
+  "name": "Nezahal, Primal Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nezahal, Primal Tide",
+      "oracle_fingerprint": "47c43ea8b2662f5f119ae4ae26294491",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "count": 3 } }],
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1080c5b5-6651-4c6a-93e6-099fbe389e26",
+  "name": "Murderous Rider // Swift End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murderous Rider",
+      "oracle_fingerprint": "c43a1fa793f291492ac0e4dff4814356",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Swift End",
+      "oracle_fingerprint": "e33c28dd8a5aff3db08d7a0d028c9a97",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "LoseLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

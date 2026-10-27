@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Wither"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"Opponents"},{"HasCounter":"-1/-1"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"May":{"effects":[{"Move":{"what":"Triggering","to":{"Battlefield":{"under":"You"}}}}]}}]}}]}]}

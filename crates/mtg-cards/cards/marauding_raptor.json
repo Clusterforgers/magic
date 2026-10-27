@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b3fe2f61-c58e-4ebc-a5e3-99d6b6f62caf",
+  "name": "Marauding Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marauding Raptor",
+      "oracle_fingerprint": "010c82e7f09de4afac7b205731a609bb",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": "Triggering", "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Dinosaur" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4b8bf64b-4800-45ff-81c6-2857f34999b5",
+  "name": "Multani, Yavimaya's Avatar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Multani, Yavimaya's Avatar",
+      "oracle_fingerprint": "bd810d25a0314dba1a4acaa8594070e4",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Sum": [
+                      { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      { "Count": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }] }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      { "Count": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{G}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Land" }], "count": 2 } }
+            ],
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

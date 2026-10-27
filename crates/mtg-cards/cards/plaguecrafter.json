@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2e3ee458-fa3f-4452-ab95-5a7fb5a0483b",
+  "name": "Plaguecrafter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plaguecrafter",
+      "oracle_fingerprint": "10bad8b28907786fa8deb3c81274abc7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "Not": "Performed" },
+                        "then": [{ "Discard": { "who": { "Bound": "player" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
