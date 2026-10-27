@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0607b289-74a6-4f3a-b15c-a639244873b6",
+  "name": "Awaken the Sky Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awaken the Sky Tyrant",
+      "oracle_fingerprint": "0096e41f37e2644ab2eda6c0ffb48a25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "Opponents" }], "to": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dragon",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dragon"],
+                            "power": 5,
+                            "toughness": 5,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

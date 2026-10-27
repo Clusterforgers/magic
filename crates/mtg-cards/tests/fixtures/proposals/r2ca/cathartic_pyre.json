@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Modal":{"modes":[{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":3}}]},{"effects":[{"Discard":{"count":2,"as":"cards"}},{"Draw":{"count":{"Count":[{"Is":{"Bound":"cards"}}]}}}]}]}}]}}]}]}

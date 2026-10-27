@@ -1,0 +1,25 @@
+{
+  "oracle_id": "539be0f3-0863-4d44-87ee-5912dd003475",
+  "name": "Dearly Departed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dearly Departed",
+      "oracle_fingerprint": "d02faacbeca1802cb6be8e571627fba4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Human" }, { "ControlledBy": "You" }]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

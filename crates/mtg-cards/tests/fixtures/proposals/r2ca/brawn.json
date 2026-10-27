@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Trample"}],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Forest"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}]}]}

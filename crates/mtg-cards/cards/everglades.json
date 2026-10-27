@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ef3b8b0c-cea7-4bae-934c-9c65fd64245d",
+  "name": "Everglades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Everglades",
+      "oracle_fingerprint": "b3c3cc08f4330728c6b86c277842ab58",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Swamp" }, "Untapped"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

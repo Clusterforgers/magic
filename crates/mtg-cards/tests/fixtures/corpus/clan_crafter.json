@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "3e82f96f-bd2b-4672-b729-c44c943fcac9",
+  "oracle_id": "6ebd4b3f-246e-475f-8cec-838eaaf597e2",
+  "multiverse_ids": [
+    567144
+  ],
+  "mtgo_id": 101472,
+  "tcgplayer_id": 273528,
+  "cardmarket_id": 661284,
+  "name": "Clan Crafter",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/3e82f96f-bd2b-4672-b729-c44c943fcac9",
+  "scryfall_uri": "https://scryfall.com/card/clb/651/clan-crafter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:01:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.jpg?1783922517",
+    "normal": "https://cards.scryfall.io/normal/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.jpg?1783922517",
+    "large": "https://cards.scryfall.io/large/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.jpg?1783922517",
+    "png": "https://cards.scryfall.io/png/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.png?1783922517",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.jpg?1783922517",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.jpg?1783922517",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.webp?1783922517",
+    "grid": "https://cards.scryfall.io/grid/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.webp?1783922517",
+    "display": "https://cards.scryfall.io/display/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.webp?1783922517",
+    "art": "https://cards.scryfall.io/art/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.webp?1783922517",
+    "crop": "https://cards.scryfall.io/crop/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.webp?1783922517",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/e/3e82f96f-bd2b-4672-b729-c44c943fcac9.jpg?1783922517"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Enchantment — Background",
+  "oracle_text": "Commander creatures you own have \"{2}, Sacrifice an artifact: Put a +1/+1 counter on this creature and draw a card.\"",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3e82f96f-bd2b-4672-b729-c44c943fcac9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6ebd4b3f-246e-475f-8cec-838eaaf597e2&unique=prints",
+  "collector_number": "651",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "Trained by a dwarven master, you see the potential in every scrap of metal.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yeong-Hao Han",
+  "artist_ids": [
+    "f8e7f8d6-6dde-4059-973c-30f1fd1bbe4e"
+  ],
+  "illustration_id": "036b5610-7db3-47df-b5e5-f0f83f3b01a0",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11717,
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.68",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "0.42",
+    "tix": "4.23"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=567144&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DClan%2BCrafter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DClan%2BCrafter",
+    "edhrec": "https://edhrec.com/route/?cc=Clan+Crafter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273528%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=661284&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101472?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

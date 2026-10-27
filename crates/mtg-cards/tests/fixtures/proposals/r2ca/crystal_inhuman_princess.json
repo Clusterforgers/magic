@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"You"}},"effects":[{"DealDamage":{"source":"This","to":"Opponents","amount":{"Stat":{"of":"Triggering","stat":"Colors"}}}}]}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["Red","Green","White","Blue"]}}}]}}]}]}

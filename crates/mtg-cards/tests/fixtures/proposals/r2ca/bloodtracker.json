@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Activated":{"cost":[{"Mana":"{B}"},{"PayLife":2}],"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield"}},"effects":[{"Draw":{"count":{"Counters":{"on":"This","counter":"+1/+1"}}}}]}}]}]}

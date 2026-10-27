@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fcf9ced2-867d-4bc5-b7b6-6153ed2cac97",
+  "name": "Bloodtracker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodtracker",
+      "oracle_fingerprint": "67c5559a0607f609bc1fa12c5798ca2b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "PayLife": 2 }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

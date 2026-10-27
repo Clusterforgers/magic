@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fbf9f8c5-849f-45d5-8129-5fc683c21a04",
+  "name": "Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fury",
+      "oracle_fingerprint": "87f408f7136afe798bfad07feac55fff",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 1, "max": null },
+                "divide": 4
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        },
+        { "Keyword": { "Evoke": [{ "ExileFromHand": { "filter": [{ "Color": "Red" }] } }] } }
+      ]
+    }
+  ]
+}

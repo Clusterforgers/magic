@@ -1,0 +1,35 @@
+{
+  "oracle_id": "38ba1956-5505-4a7a-b6af-e75715b1401f",
+  "name": "Dormant Volcano",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dormant Volcano",
+      "oracle_fingerprint": "38061edef688b4106dbd49329ccbe8ef",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "ReturnToHand": { "filter": [{ "Subtype": "Mountain" }, "Untapped"] } }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

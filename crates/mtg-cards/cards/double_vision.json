@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6629a48b-be9a-4636-8add-69d096a1ca7e",
+  "name": "Double Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Double Vision",
+      "oracle_fingerprint": "1c4d4fe229c54df961d2427febac3061",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

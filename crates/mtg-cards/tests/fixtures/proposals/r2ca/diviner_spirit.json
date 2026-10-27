@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"Draw":{"count":"Triggering"}},{"Draw":{"who":"Triggering","count":"Triggering"}}]}}]}]}

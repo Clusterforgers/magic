@@ -1,0 +1,34 @@
+{
+  "oracle_id": "32c14d7f-fdaa-4340-af94-1f10bf064f51",
+  "name": "Crystal, Inhuman Princess",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal, Inhuman Princess",
+      "oracle_fingerprint": "4fe4cbcf63371c15c814e411116d6c29",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Colors" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green", "White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

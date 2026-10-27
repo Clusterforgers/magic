@@ -107,7 +107,7 @@ pub(super) fn ability_word_len(line: &str) -> Option<usize> {
         && word.chars().count() <= 40
         && word
             .chars()
-            .all(|c| c.is_alphabetic() || matches!(c, ' ' | '\'' | '\u{2019}' | '-'))
+            .all(|c| c.is_alphabetic() || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!'))
         && !word.starts_with("Choose");
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)

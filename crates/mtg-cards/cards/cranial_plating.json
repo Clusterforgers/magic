@@ -1,0 +1,36 @@
+{
+  "oracle_id": "75564721-e4e9-463a-b49e-f0c7cd6f53a7",
+  "name": "Cranial Plating",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cranial Plating",
+      "oracle_fingerprint": "558e1c5025b384999e035ab06a8c7faa",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{B}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

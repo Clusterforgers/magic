@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Nth":{"event":{"SpellCast":{"what":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}],"by":"You"}},"nth":1}},"effects":[{"CopySpell":{"what":"Triggering","new_targets":true}}]}}]}]}

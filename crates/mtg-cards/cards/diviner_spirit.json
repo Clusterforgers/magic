@@ -1,0 +1,22 @@
+{
+  "oracle_id": "911b8849-dd0a-4383-8403-ea80227c5d7d",
+  "name": "Diviner Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diviner Spirit",
+      "oracle_fingerprint": "b3f65f69369b4b6c8b3cbcd7d175134f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Draw": { "count": "Triggering" } },
+              { "Draw": { "who": "Triggering", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

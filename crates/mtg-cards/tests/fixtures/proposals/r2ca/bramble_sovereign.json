@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"Not":"Token"}],"to":"Battlefield"}},"effects":[{"Pay":{"cost":"{1}{G}","paid":[{"CreateToken":{"who":{"ControllerOf":"Triggering"},"token":{"CopyOf":{"of":"Triggering"}}}}]}}]}}]}]}

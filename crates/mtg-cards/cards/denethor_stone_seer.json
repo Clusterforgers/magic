@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6669a19e-7944-44c9-ac37-a92016783375",
+  "name": "Denethor, Stone Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Denethor, Stone Seer",
+      "oracle_fingerprint": "a08bf6ac53d312e880f1c97f6b0dba3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }, { "what": "AnyTarget" }],
+            "effects": [
+              { "BecomeMonarch": { "who": { "Target": 0 } } },
+              { "DealDamage": { "source": "This", "to": { "Target": 1 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

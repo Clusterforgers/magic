@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"when":{"SpellCast":{"what":[{"AnyOf":[{"Subtype":"Aura"},{"Subtype":"Equipment"}]}],"by":"You"}},"effects":[{"ExileTop":{"as":"impulse"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"impulse"},"play":true}},"duration":"UntilEndOfYourNextTurn"}}]}}]}]}

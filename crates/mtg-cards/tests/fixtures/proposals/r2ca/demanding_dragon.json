@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Opponent"}],"effects":[{"Pay":{"who":{"Target":0},"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"unpaid":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":5}}]}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Scry":{"count":2}}]}},{"Activated":{"cost":[{"Mana":"{3}{R}"},"Tap","SacrificeSelf"],"targets":[{"what":"Player"},{"what":"AnyTarget"}],"effects":[{"BecomeMonarch":{"who":{"Target":0}}},{"DealDamage":{"source":"This","to":{"Target":1},"amount":3}}]}}]}]}

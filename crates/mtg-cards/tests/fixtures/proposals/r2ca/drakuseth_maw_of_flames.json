@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"},{"what":"AnyTarget","bounds":{"min":0,"max":2}}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":4}},{"DealDamage":{"source":"This","to":{"Target":1},"amount":3}}]}}]}]}
