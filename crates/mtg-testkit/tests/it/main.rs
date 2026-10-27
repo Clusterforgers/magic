@@ -187,6 +187,7 @@ mod foretell_fuzz;
 mod format_hooks;
 mod free_cast_fuzz;
 mod free_casts;
+mod free_loops;
 mod fuse;
 mod fuzz_games;
 mod gap_fuzz;

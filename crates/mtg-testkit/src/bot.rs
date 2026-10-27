@@ -1,5 +1,7 @@
 //! A bot that always picks uniformly at random among the legal options it is offered.
 
+use std::hash::{Hash, Hasher};
+
 use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
@@ -14,12 +16,14 @@ use mtg_engine::decision::{
     PriorityAction, PriorityOptions,
 };
 use mtg_engine::error::IllegalAnswer;
+use mtg_engine::hash::StableHasher;
 use mtg_engine::help::{Convoked, Used, reduce, without_tapped};
 use mtg_engine::mana::{ManaOption, ManaSource, Payment, check_payment};
 use mtg_engine::rng::GameRng;
 use mtg_engine::spend::Restricted;
 use mtg_engine::turn::Step;
-use mtg_engine::{Decision, Engine, EngineError, Event};
+use mtg_engine::zones::Zone;
+use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
 
 use crate::windows::{Mode, SeatWindows, Side, Stop};
 
@@ -30,6 +34,7 @@ pub struct RandomBot {
     partial_payments: bool,
     symbol_choices: bool,
     taxed: Taxed,
+    repeats: Repeats,
 }
 
 /// Where the bot is in declaring an attack that costs mana.
@@ -155,6 +160,162 @@ impl Supply {
     }
 }
 
+/// Every action a priority decision offers, passing first; the bot picks one of them at random.
+fn priority_actions(options: &PriorityOptions) -> Vec<PriorityAction> {
+    let mut actions = vec![PriorityAction::Pass];
+    actions.extend(
+        options
+            .playable_lands
+            .iter()
+            .map(|o| PriorityAction::PlayLand(*o)),
+    );
+    // A land face of a modal double-faced card is played as that face, the back one included.
+    actions.extend(
+        options
+            .faces
+            .iter()
+            .filter(|option| option.land)
+            .map(|option| PriorityAction::PlayLandFace(option.card, option.face)),
+    );
+    actions.extend(
+        options
+            .castable
+            .iter()
+            .map(|o| PriorityAction::CastSpell(*o)),
+    );
+    actions.extend(
+        options
+            .mana_abilities
+            .iter()
+            .map(|m| PriorityAction::ActivateMana(m.source)),
+    );
+    actions.extend(
+        options
+            .abilities
+            .iter()
+            .map(|a| PriorityAction::Activate(*a)),
+    );
+    actions.extend(
+        options
+            .suspendable
+            .iter()
+            .map(|o| PriorityAction::Suspend(*o)),
+    );
+    actions.extend(
+        options
+            .foretellable
+            .iter()
+            .map(|o| PriorityAction::Foretell(*o)),
+    );
+    actions.extend(
+        options
+            .turnable
+            .iter()
+            .map(|o| PriorityAction::TurnFaceUp(*o)),
+    );
+    // The spell face of a prepared permanent is listed with no card in `castable`.
+    actions.extend(
+        options
+            .faces
+            .iter()
+            .filter(|option| !option.land && !options.castable.contains(&option.card))
+            .map(|option| PriorityAction::CastPrepared(option.card)),
+    );
+    if options.companion {
+        actions.push(PriorityAction::BringCompanion);
+    }
+    actions
+}
+
+/// Most times the bot activates one ability of one source in one step, however much each activation changes: an
+/// ability that is free (an `{X}` at X = 0, a mana ability that pays its cost back) is offered again and again, and a
+/// table of bots that each take it with chance n / (n + 1) passes a step only after a number of rounds that grows with
+/// the power of the seats.
+pub const STEP_REPEATS: u32 = 3;
+
+/// What a bot that is shown the game ([`RandomBot::choose_in`]) activated in the step it is in.
+///
+/// It holds back an activation of an ability it already activated in the step when the table looks as it did when it
+/// last chose that ability (the activation changed nothing [`observable`] reads), or once it has taken it
+/// [`STEP_REPEATS`] times.
+#[derive(Debug, Clone, Default)]
+struct Repeats {
+    /// The turn and step the record is of.
+    step: Option<(u32, Step)>,
+    /// Each activation taken in the step: how often, and what the table looked like when it was last chosen.
+    taken: Vec<(PriorityAction, u32, u64)>,
+}
+
+impl Repeats {
+    /// Starts a new record when `state` is in another step than the last one seen.
+    fn enter(&mut self, state: &GameState) {
+        let step = Some((state.turn().number(), state.turn().step()));
+        if self.step != step {
+            self.step = step;
+            self.taken.clear();
+        }
+    }
+
+    /// Whether `action` is an activation to hold back now; `seen` caches the look of the table.
+    fn holds_back(
+        &self,
+        action: &PriorityAction,
+        state: &GameState,
+        seen: &mut Option<u64>,
+    ) -> bool {
+        let Some((_, count, before)) = self.taken.iter().find(|(taken, ..)| taken == action) else {
+            return false;
+        };
+        *count >= STEP_REPEATS || *seen.get_or_insert_with(|| observable(state)) == *before
+    }
+
+    /// Records `action` when it is an activation; `seen` is the look of the table if it was already worked out.
+    fn taken(&mut self, action: &PriorityAction, state: &GameState, seen: Option<u64>) {
+        if !matches!(
+            action,
+            PriorityAction::Activate(_) | PriorityAction::ActivateMana(_)
+        ) {
+            return;
+        }
+        let look = seen.unwrap_or_else(|| observable(state));
+        match self.taken.iter_mut().find(|(taken, ..)| taken == action) {
+            Some((_, count, before)) => {
+                *count += 1;
+                *before = look;
+            }
+            None => self.taken.push((action.clone(), 1, look)),
+        }
+    }
+}
+
+/// A fingerprint of what an activation can change that a player sees or values: the players (life, mana pool,
+/// counters), every object outside the stack with its zone, place and state, and the continuous effects. The stack,
+/// the counters of ids and timestamps and the turn's tallies are left out, so an activation that resolves to nothing
+/// leaves it as it was.
+fn observable(state: &GameState) -> u64 {
+    let mut hasher = StableHasher::default();
+    state.players().hash(&mut hasher);
+    let mut zones = vec![Zone::Battlefield, Zone::Exile, Zone::PhasedOut];
+    for player in state.players() {
+        let id = player.id();
+        zones.extend([
+            Zone::Library(id),
+            Zone::Hand(id),
+            Zone::Graveyard(id),
+            Zone::Command(id),
+        ]);
+    }
+    for zone in zones {
+        state.zone(zone).len().hash(&mut hasher);
+        for id in state.zone(zone) {
+            id.hash(&mut hasher);
+            state.object(*id).hash(&mut hasher);
+        }
+    }
+    state.effects().hash(&mut hasher);
+    hasher.finish()
+}
+
 impl RandomBot {
     /// A bot using substream `stream` of the generator keyed by `seed`.
     ///
@@ -166,6 +327,7 @@ impl RandomBot {
             partial_payments: false,
             symbol_choices: false,
             taxed: Taxed::Idle,
+            repeats: Repeats::default(),
         }
     }
 
@@ -208,6 +370,21 @@ impl RandomBot {
             }
         }
         SeatWindows { stops, mode }
+    }
+
+    /// [`Self::choose`] for a game in `state`: at priority it holds back an activation it already took in this step when
+    /// the table looks as it did then or when it took it [`STEP_REPEATS`] times, so a free ability that changes nothing
+    /// cannot keep a step going. It draws as `choose` does until it holds one back.
+    pub fn choose_in(&mut self, decision: &Decision, state: &GameState) -> Answer {
+        match &decision.kind {
+            DecisionKind::Priority(options) => {
+                if self.taxed == Taxed::Paying {
+                    self.taxed = Taxed::Idle;
+                }
+                Answer::Priority(self.guarded_priority(options, state))
+            }
+            _ => self.choose(decision),
+        }
     }
 
     /// Answers `decision` with a uniformly random legal choice.
@@ -336,69 +513,19 @@ impl RandomBot {
     }
 
     fn priority(&mut self, options: &PriorityOptions) -> PriorityAction {
-        let mut actions = vec![PriorityAction::Pass];
-        actions.extend(
-            options
-                .playable_lands
-                .iter()
-                .map(|o| PriorityAction::PlayLand(*o)),
-        );
-        // A land face of a modal double-faced card is played as that face, the back one included.
-        actions.extend(
-            options
-                .faces
-                .iter()
-                .filter(|option| option.land)
-                .map(|option| PriorityAction::PlayLandFace(option.card, option.face)),
-        );
-        actions.extend(
-            options
-                .castable
-                .iter()
-                .map(|o| PriorityAction::CastSpell(*o)),
-        );
-        actions.extend(
-            options
-                .mana_abilities
-                .iter()
-                .map(|m| PriorityAction::ActivateMana(m.source)),
-        );
-        actions.extend(
-            options
-                .abilities
-                .iter()
-                .map(|a| PriorityAction::Activate(*a)),
-        );
-        actions.extend(
-            options
-                .suspendable
-                .iter()
-                .map(|o| PriorityAction::Suspend(*o)),
-        );
-        actions.extend(
-            options
-                .foretellable
-                .iter()
-                .map(|o| PriorityAction::Foretell(*o)),
-        );
-        actions.extend(
-            options
-                .turnable
-                .iter()
-                .map(|o| PriorityAction::TurnFaceUp(*o)),
-        );
-        // The spell face of a prepared permanent is listed with no card in `castable`.
-        actions.extend(
-            options
-                .faces
-                .iter()
-                .filter(|option| !option.land && !options.castable.contains(&option.card))
-                .map(|option| PriorityAction::CastPrepared(option.card)),
-        );
-        if options.companion {
-            actions.push(PriorityAction::BringCompanion);
-        }
+        let mut actions = priority_actions(options);
         actions.swap_remove(self.rng.index(actions.len()))
+    }
+
+    /// [`Self::priority`] without the activations [`Repeats`] holds back in this step of `state`.
+    fn guarded_priority(&mut self, options: &PriorityOptions, state: &GameState) -> PriorityAction {
+        self.repeats.enter(state);
+        let mut seen = None;
+        let mut actions = priority_actions(options);
+        actions.retain(|action| !self.repeats.holds_back(action, state, &mut seen));
+        let action = actions.swap_remove(self.rng.index(actions.len()));
+        self.repeats.taken(&action, state, seen);
+        action
     }
 
     /// [`Self::pay`], remembering that the payment of an attack was backed out of (`attack`).
