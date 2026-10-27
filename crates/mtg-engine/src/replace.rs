@@ -251,8 +251,8 @@ enum Origin {
     /// The spell that resolved as an Adventure, which is exiled instead of going to its owner's graveyard (CR 715.4).
     Adventure,
     /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
-    /// (CR 903.9b).
-    Commander,
+    /// (CR 903.9b): the card, which is one card of a merged permanent that moves.
+    Commander(ObjectId),
 }
 
 impl Origin {
@@ -275,13 +275,17 @@ impl Origin {
 }
 
 /// Whether the event puts a commander into a hand or a library (a draw included), where its owner may send it to the
-/// command zone.
+/// command zone; a commander card of a merged permanent counts (CR 729.3).
 fn commander_leaves(state: &GameState, event: &Event) -> bool {
     state.commanders.any()
         && match event {
             Event::CardDrawn { object, .. } => state.is_commander(*object),
             _ => moving(state, event).is_some_and(|(object, _, to)| {
-                matches!(to, Zone::Hand(_) | Zone::Library(_)) && state.is_commander(object)
+                matches!(to, Zone::Hand(_) | Zone::Library(_))
+                    && (state.is_commander(object)
+                        || state.object(object).is_some_and(|moving| {
+                            !crate::merged::commander_cards(state, moving).is_empty()
+                        }))
             }),
         }
 }
@@ -980,7 +984,7 @@ impl Pass<'_> {
         if matches!(&unit, Unit::Move { .. }) {
             found.extend(self.move_rule_candidates(slot));
         }
-        found.extend(self.commander_candidate(at, &unit));
+        found.extend(self.commander_candidates(at, &unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
     }
@@ -1075,28 +1079,146 @@ impl Pass<'_> {
     }
 
     /// The command zone in place of a hand or a library for a commander, when its owner has not been asked yet
-    /// (CR 903.9b). A draw puts the card into a hand, so a commander that would be drawn is offered it too.
-    fn commander_candidate(&self, at: usize, unit: &Unit) -> Option<Candidate> {
+    /// (CR 903.9b). A draw puts the card into a hand, so a commander that would be drawn is offered it too. Each
+    /// commander card of a merged permanent that moves is offered it alone, for the zone that card goes to (CR 729.3).
+    fn commander_candidates(&self, at: usize, unit: &Unit) -> Vec<Candidate> {
         let (object, to) = match unit {
             Unit::Move { object, to, .. } => (*object, *to),
-            Unit::Draw { player } => (self.drawn_at(at)?, Zone::Hand(*player)),
-            _ => return None,
+            Unit::Draw { player } => match self.drawn_at(at) {
+                Some(drawn) => (drawn, Zone::Hand(*player)),
+                None => return Vec::new(),
+            },
+            _ => return Vec::new(),
         };
-        if self.slots[at].applied.contains(&Origin::Commander)
-            || !matches!(to, Zone::Hand(_) | Zone::Library(_))
-            || !self.state.is_commander(object)
-        {
-            return None;
+        let Some(moving) = self.state.object(object) else {
+            return Vec::new();
+        };
+        let cards = if moving.merged().is_some() {
+            crate::merged::commander_cards(self.state, moving)
+                .into_iter()
+                .map(|(id, counter)| {
+                    let goes = self.parted_in_batch(object, id).unwrap_or(to);
+                    (ObjectRef { id, counter }, goes)
+                })
+                .collect()
+        } else if self.state.is_commander(object) {
+            vec![(moving.reference(), to)]
+        } else {
+            Vec::new()
+        };
+        if !self.state.is_alive(moving.owner()) {
+            return Vec::new();
         }
-        let card = self.state.object(object)?;
-        self.state.is_alive(card.owner()).then(|| Candidate {
-            origin: Origin::Commander,
-            object: card.reference(),
-            controller: card.owner(),
-            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Command)),
-            // The rule is no effect of the commander, so it is ordered with the others (CR 616.1).
-            is_self: false,
+        cards
+            .into_iter()
+            .filter(|(card, goes)| {
+                matches!(goes, Zone::Hand(_) | Zone::Library(_))
+                    && !self.slots[at].applied.contains(&Origin::Commander(card.id))
+            })
+            .map(|(card, _)| Candidate {
+                origin: Origin::Commander(card.id),
+                object: card,
+                controller: moving.owner(),
+                action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Command)),
+                // The rule is no effect of the commander, so it is ordered with the others (CR 616.1).
+                is_self: false,
+            })
+            .collect()
+    }
+
+    /// The zone a card of the merged permanent `permanent` was set to go to in this batch, in place of the permanent's.
+    fn parted_in_batch(&self, permanent: ObjectId, card: ObjectId) -> Option<Zone> {
+        self.slots.iter().find_map(|slot| match &slot.item {
+            Item::One(Event::CardParted {
+                permanent: p,
+                card: c,
+                to,
+            }) if *p == permanent && *c == card => Some(*to),
+            _ => None,
         })
+    }
+
+    /// The owner of the commander card `card` of the merged permanent `permanent` puts it into the command zone, and the
+    /// other cards go where the permanent goes (CR 729.3, 903.9b): a card under the others is set apart, and for the
+    /// card the permanent was the permanent goes to the command zone with the others set apart to its old destination.
+    fn part_commander(
+        &mut self,
+        at: usize,
+        card: ObjectId,
+        (permanent, from, to): (ObjectId, Zone, Zone),
+        applied: &[Origin],
+    ) {
+        self.slots[at].applied = applied.to_vec();
+        let Some(object) = self.state.object(permanent) else {
+            return;
+        };
+        let command = Zone::Command(object.owner());
+        if card != permanent {
+            self.part(at, (permanent, card, command), applied);
+            return;
+        }
+        let others: Vec<ObjectId> = crate::merged::cards_apart(object)
+            .into_iter()
+            .filter(|other| self.parted_in_batch(permanent, *other).is_none())
+            .collect();
+        let mut at = at;
+        for other in others {
+            if self.part(at, (permanent, other, to), applied) {
+                at += 1;
+            }
+        }
+        self.redirect(at, permanent, from, command, applied);
+    }
+
+    /// Sets the zone a card of a merged permanent goes to in this batch: in the slot that set it before, else in a new one
+    /// before `at` (true then). A card that goes elsewhere than a library is taken out of the cards an effect bottoms or
+    /// shuffles into one.
+    fn part(
+        &mut self,
+        at: usize,
+        (permanent, card, to): (ObjectId, ObjectId, Zone),
+        applied: &[Origin],
+    ) -> bool {
+        let event = Event::CardParted {
+            permanent,
+            card,
+            to,
+        };
+        if !matches!(to, Zone::Library(_)) {
+            self.out_of_library_batches(&[card]);
+        }
+        let earlier = self.slots.iter_mut().find(|slot| {
+            matches!(&slot.item, Item::One(Event::CardParted { permanent: p, card: c, .. })
+                if *p == permanent && *c == card)
+        });
+        if let Some(slot) = earlier {
+            slot.item = Item::One(event);
+            return false;
+        }
+        self.slots.insert(
+            at,
+            Slot {
+                item: Item::One(event),
+                applied: applied.to_vec(),
+                frozen: true,
+            },
+        );
+        true
+    }
+
+    /// Takes `gone` out of the cards the `LibraryBottomed` and `LibraryShuffled` events of the batch put into a library.
+    fn out_of_library_batches(&mut self, gone: &[ObjectId]) {
+        for slot in &mut self.slots {
+            match &mut slot.item {
+                Item::One(Event::LibraryBottomed { cards, .. }) => {
+                    cards.retain(|id| !gone.contains(id));
+                }
+                Item::One(Event::LibraryShuffled { order, .. }) => {
+                    order.retain(|id| !gone.contains(id));
+                }
+                _ => {}
+            }
+        }
     }
 
     /// The return of a spell that resolved with its buyback cost paid to its owner's hand, when it has not been applied.
@@ -1570,6 +1692,18 @@ impl Pass<'_> {
                 self.scale(at, by, &applied);
             }
             (
+                ReplaceBy::MoveTo(ZoneKind::Command),
+                Unit::Move {
+                    object, from, to, ..
+                },
+            ) if self
+                .state
+                .object(*object)
+                .is_some_and(|moving| moving.merged().is_some()) =>
+            {
+                self.part_commander(at, candidate.object.id, (*object, *from, *to), &applied);
+            }
+            (
                 ReplaceBy::MoveTo(kind),
                 Unit::Move {
                     object, from, to, ..
@@ -1864,8 +1998,9 @@ impl Pass<'_> {
                 // The questions of the commander and of a dredge were about the first card drawn: another draw is
                 // another event.
                 if index > 0 && matches!(item, Item::One(Event::CardDrawn { .. })) {
-                    applied
-                        .retain(|origin| !matches!(origin, Origin::Commander | Origin::Dredge(_)));
+                    applied.retain(|origin| {
+                        !matches!(origin, Origin::Commander(_) | Origin::Dredge(_))
+                    });
                 }
                 Slot {
                     item,
@@ -1996,24 +2131,17 @@ impl Pass<'_> {
             .collect();
         self.slots.splice(at..=at, slots);
         // An object sent elsewhere, with the other cards of a merged permanent that go with it, is not among the cards
-        // an effect then bottoms or shuffles into the library.
-        let mut gone = self
+        // an effect then bottoms or shuffles into the library; a card set apart goes where it was set to.
+        let mut gone: Vec<ObjectId> = self
             .state
             .object(object)
             .map(crate::merged::cards_apart)
-            .unwrap_or_default();
+            .unwrap_or_default()
+            .into_iter()
+            .filter(|card| self.parted_in_batch(object, *card).is_none())
+            .collect();
         gone.push(object);
-        for slot in &mut self.slots {
-            match &mut slot.item {
-                Item::One(Event::LibraryBottomed { cards, .. }) => {
-                    cards.retain(|id| !gone.contains(id));
-                }
-                Item::One(Event::LibraryShuffled { order, .. }) => {
-                    order.retain(|id| !gone.contains(id));
-                }
-                _ => {}
-            }
-        }
+        self.out_of_library_batches(&gone);
     }
 
     /// The `Entered` event that follows the enter event of `object`, made when the batch has none yet.
@@ -2377,7 +2505,7 @@ impl Pass<'_> {
     fn confirmed(&mut self, at: usize, candidate: &Candidate) -> Result<Asked<bool>, EngineError> {
         match &candidate.action {
             Action::Replace(ReplaceBy::Dredge(cards)) => self.dredge_wanted(at, candidate, *cards),
-            _ if candidate.origin == Origin::Commander => {
+            _ if matches!(candidate.origin, Origin::Commander(_)) => {
                 self.may_go_to_command_zone(at, candidate)
             }
             _ => Ok(Asked::Got(true)),
@@ -2394,15 +2522,25 @@ impl Pass<'_> {
         let owner = candidate.controller;
         match self.answer() {
             None => {
-                let to = match self.unit(&self.slots[at].item) {
-                    Unit::Move { to, .. } => zone_word(to),
-                    Unit::Draw { .. } => "drawing it",
-                    _ => "another zone",
+                let card = candidate.object.id;
+                let (to, name) = match self.unit(&self.slots[at].item) {
+                    // A card of a merged permanent goes where it was set to, and is named by its own card.
+                    Unit::Move { object, to, .. } => (
+                        zone_word(self.parted_in_batch(object, card).unwrap_or(to)),
+                        self.state
+                            .object(object)
+                            .and_then(|moving| crate::merged::card_name(moving, card)),
+                    ),
+                    Unit::Draw { .. } => ("drawing it", None),
+                    _ => ("another zone", None),
                 };
-                let name = self
-                    .state
-                    .object(candidate.object.id)
-                    .map_or("the commander", |card| card.card().name.as_str());
+                let name = name
+                    .or_else(|| {
+                        self.state
+                            .object(card)
+                            .map(|card| card.card().name.as_str())
+                    })
+                    .unwrap_or("the commander");
                 Ok(Asked::Ask(Decision {
                     player: owner,
                     kind: DecisionKind::YesNo(YesNoOptions::new(
@@ -2414,7 +2552,7 @@ impl Pass<'_> {
             Some((who, Choice::YesNo(yes))) if *who == owner => {
                 let yes = *yes;
                 if !yes {
-                    self.slots[at].applied.push(Origin::Commander);
+                    self.slots[at].applied.push(candidate.origin);
                 }
                 Ok(Asked::Got(yes))
             }

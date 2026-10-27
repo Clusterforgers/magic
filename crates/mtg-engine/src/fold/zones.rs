@@ -283,6 +283,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         } => spell_cast(state, *player, *object, choices)?,
         Event::SpellResolved { object } => resolve_spell(state, *object)?,
         Event::CommanderStayed { object } => state.commanders.stay(*object),
+        Event::CardParted {
+            permanent,
+            card,
+            to,
+        } => crate::merged::part(state, *permanent, *card, *to)?,
         Event::Mutated {
             object,
             spell,

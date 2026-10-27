@@ -328,6 +328,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceUp { .. }
         | Event::Mutated { .. }
+        // The cards of a merged permanent are public on the battlefield, and so is where one goes.
+        | Event::CardParted { .. }
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
         | Event::CommanderStayed { .. }

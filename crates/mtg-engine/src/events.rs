@@ -728,6 +728,17 @@ pub enum Event {
         /// The controller of the spell.
         player: PlayerId,
     },
+    /// A card of the merged permanent `permanent` goes to `to` in place of the zone the permanent goes to when it leaves
+    /// the battlefield in this batch (CR 729.3): a commander card its owner puts into the command zone (CR 903.9b), or
+    /// the other cards when the card the permanent was goes there.
+    CardParted {
+        /// The merged permanent.
+        permanent: ObjectId,
+        /// The card, an object of its own again once the permanent has left.
+        card: ObjectId,
+        /// Where it goes.
+        to: Zone,
+    },
     /// A creature adapted (CR 701.46): the counters are the event before it.
     Adapted {
         /// The creature that adapted.
@@ -1001,6 +1012,7 @@ impl Event {
             | Event::CopyCeased { object }
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
+            | Event::CardParted { permanent: object, .. }
             | Event::ObjectLeftGame { object } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::AttackersDeclared { attackers, .. } => {

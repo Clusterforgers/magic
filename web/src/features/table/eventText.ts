@@ -531,6 +531,10 @@ function describePublic(event: Event, n: EventNames): LogLine {
   }
   if ('TurnedFaceUp' in event)
     return line(`${n.seat(event.TurnedFaceUp.player)} turns ${n.card(event.TurnedFaceUp.object)} face up`)
+  if ('CardParted' in event) {
+    const { permanent, card, to } = event.CardParted
+    return line(`${n.card(card)} goes to ${zoneWord(to, n)} apart from ${n.card(permanent)}`)
+  }
   if ('Mutated' in event)
     return line(
       `${n.seat(event.Mutated.player)} mutates a creature ${event.Mutated.over ? 'over' : 'under'} ${n.card(event.Mutated.object)}`,

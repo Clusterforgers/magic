@@ -289,6 +289,7 @@ mod mulligan;
 mod multiply_counters;
 mod multiply_fuzz;
 mod mutate;
+mod mutate_commander;
 mod mutate_counts;
 mod mutate_fuzz;
 mod ninjutsu;
