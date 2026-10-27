@@ -1,4 +1,4 @@
-//! Goal: the writers of the fifth sample of S to Z give the oracle wording of a card returned with its Aura's creature, a draw that puts the artifact back, draws for strong creatures, energy for life gained, cards exiled for life, damage then a sweep of the damaged, Clues that become creatures, a random reanimation, Treasure offered to each opponent, a scry and a revealed land, a sacrifice by the defending player, populate, counters and an unblockable attacker, a God added, an exile of all graveyards, lands searched by each player, chosen cards returned for a sacrifice, cards returned from an opponent's graveyard, a token of the creature count, a land taken from a graveyard, two modal spells, a land destroyed and replaced, a mana ability until your next turn, an indestructible gift, investigate twice, a win at thirteen cards, a loss per attacker, cards put into a graveyard, an unblockable shroud, lands that lose their abilities, counters for cards drawn, a cast from the graveyard, two lands returned, a condition on spells cast, a red source, a creature with a counter, tokens created, a choice of two types, a blow at fliers and a token for a death; another count, kind, player, zone, duration or condition never reads back.
+//! Goal: the writers of the fifth sample of S to Z give the oracle wording of a card returned with its Aura's creature, a draw that puts the artifact back, draws for strong creatures, energy for life gained, cards exiled for life, damage then a sweep of the damaged, Clues that become creatures, a random reanimation, a scry and a revealed land, a sacrifice by the defending player, populate, counters and an unblockable attacker, a God added, an exile of all graveyards, chosen cards returned for a sacrifice, cards returned from an opponent's graveyard, a token of the creature count, a land taken from a graveyard, two modal spells, a land destroyed and replaced, a mana ability until your next turn, an indestructible gift, investigate twice, a win at thirteen cards, a loss per attacker, cards put into a graveyard, an unblockable shroud, lands that lose their abilities, counters for cards drawn, a cast from the graveyard, two lands returned, a condition on spells cast, a red source, a creature with a counter, tokens created, a choice of two types, a blow at fliers and a token for a death; another count, kind, player, zone, duration or condition never reads back.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -16,14 +16,12 @@ const C5_SZ_SUFFER_THE_PAST: &str = r#"{"Spell":{"targets":[{"what":"Player"},{"
 const C5_SZ_SWIFT_DEMISE: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":1}},{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}},"DamagedThisTurn"]}}}]}}"#;
 const C5_SZ_TANGLETROVE_KELP: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat"}},"effects":[{"Continuous":{"affected":{"Each":[{"Subtype":"Clue"},"Other",{"ControlledBy":"You"}]},"mods":[{"AddType":"Creature"},{"AddSubtype":"Plant"},{"SetPT":{"power":6,"toughness":6}}],"duration":"UntilEndOfTurn"}}]}}"#;
 const C5_SZ_TARIEL_RECKONER_OF_SOULS: &str = r#"{"Activated":{"cost":["Tap"],"targets":[{"what":"Opponent"}],"effects":[{"ChooseAtRandom":{"from":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]},"as":"c"}},{"Move":{"what":{"Bound":"c"},"to":{"Battlefield":{"under":"You"}}}}]}}"#;
-const C5_SZ_TEMPTING_CONTRACT: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"RepeatEach":{"over":"Opponents","as":"p","effects":[{"May":{"who":{"Bound":"p"},"effects":[{"CreateToken":{"who":{"Bound":"p"},"token":{"Named":"treasure"}}}]}},{"If":{"condition":"Performed","then":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}]}}]}}"#;
 const C5_SZ_THRASIOS_TRITON_HERO: &str = r#"{"Activated":{"cost":"{4}","effects":[{"Scry":{}},{"LookAtTop":{"count":1,"as":"t"}},{"Reveal":{"what":{"Bound":"t"}}},{"If":{"condition":{"Matches":{"subject":{"Bound":"t"},"selector":[{"Type":"Land"}]}},"then":[{"Move":{"what":{"Bound":"t"},"to":{"Battlefield":{"tapped":true}}}}],"otherwise":[{"Draw":{}}]}}]}}"#;
 const C5_SZ_THRAXIMUNDAR: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Sacrifice":{"who":"Defending","filter":[{"Type":"Creature"}]}}]}}"#;
 const C5_SZ_TROSTANI_SELESNYAS_VOICE: &str = r#"{"Activated":{"cost":[{"Mana":"{1}{G}{W}"},"Tap"],"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]},"as":"token"}},{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"token"}}}}}]}}"#;
 const C5_SZ_TRYGON_PRIME: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking","Other"]},"bounds":{"min":0,"max":1}}],"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"PutCounters":{"on":{"Target":0},"counter":"+1/+1"}},{"Continuous":{"affected":{"Target":0},"mods":["CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}}"#;
 const C5_SZ_TYRITE_SANCTUM: &str = r#"{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},{"Supertype":"Legendary"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddSubtype":"God"}],"duration":"Forever"}},{"PutCounters":{"on":{"Target":0},"counter":"+1/+1"}}]}}"#;
 const C5_SZ_ULTIMATE_NULLIFICATION: &str = r#"{"Spell":{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"}]}}},{"Exile":{"what":{"Each":[{"In":"Graveyard"}]}}},{"Move":{"what":"This","to":{"Library":{"place":"Bottom"}}}}]}}"#;
-const C5_SZ_VETERAN_EXPLORER: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"RepeatEach":{"over":"EachPlayer","as":"p","effects":[{"May":{"who":{"Bound":"p"},"effects":[{"Search":{"who":{"Bound":"p"},"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"count":{"min":0,"max":2},"as":"l"}},{"Move":{"what":{"Bound":"l"},"to":{"Battlefield":{}}}},{"Shuffle":{"who":{"Bound":"p"}}}]}}]}}]}}"#;
 const C5_SZ_VICTIMIZE: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":2,"max":2}}],"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}},{"If":{"condition":"Performed","then":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{"tapped":true}}}}]}}]}}"#;
 const C5_SZ_SPURNMAGE_ADVOCATE: &str = r#"{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"Opponents"}]},"bounds":{"min":2,"max":2}},{"what":{"Object":[{"Type":"Creature"},"Attacking"]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"Destroy":{"what":{"Target":1}}}]}}"#;
 const C5_SZ_VERNAL_SOVEREIGN: &str = r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Elemental","colors":["Green","White"],"types":["Creature"],"subtypes":["Elemental"],"power":0,"toughness":0,"abilities":[{"Static":{"affected":"This","mods":[{"SetPT":{"power":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"toughness":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}],"defining":true}}]}}}}]}}"#;
@@ -85,10 +83,6 @@ const C5_SZ_WILHELT_THE_ROTCLEAVER: &str = r#"{"Triggered":{"when":{"ZoneChange"
     C5_SZ_TARIEL_RECKONER_OF_SOULS,
     "{T}: Choose a creature card at random from target opponent's graveyard. Put that card onto the battlefield under your control."
 )]
-#[case::tempting_contract(
-    C5_SZ_TEMPTING_CONTRACT,
-    "At the beginning of your upkeep, each opponent may create a Treasure token. For each opponent who does, you create a Treasure token."
-)]
 #[case::thrasios_triton_hero(
     C5_SZ_THRASIOS_TRITON_HERO,
     "{4}: Scry 1, then reveal the top card of your library. If it's a land card, put it onto the battlefield tapped. Otherwise, draw a card."
@@ -109,10 +103,6 @@ const C5_SZ_WILHELT_THE_ROTCLEAVER: &str = r#"{"Triggered":{"when":{"ZoneChange"
 #[case::ultimate_nullification(
     C5_SZ_ULTIMATE_NULLIFICATION,
     "Exile all creatures and graveyards. Put ~ on the bottom of its owner's library."
-)]
-#[case::veteran_explorer(
-    C5_SZ_VETERAN_EXPLORER,
-    "When this creature dies, each player may search their library for up to two basic land cards, put them onto the battlefield, then shuffle."
 )]
 #[case::victimize(
     C5_SZ_VICTIMIZE,
@@ -261,12 +251,6 @@ fn c5_sz_the_clause_reads_back(#[case] json: &str, #[case] clause: &str) {
     "{\"Battlefield\":{}}",
     "{T}: Choose a creature card at random from target opponent's graveyard. Put that card onto the battlefield under your control."
 )]
-#[case::tempting_contract(
-    C5_SZ_TEMPTING_CONTRACT,
-    "\"treasure\"",
-    "\"food\"",
-    "At the beginning of your upkeep, each opponent may create a Treasure token. For each opponent who does, you create a Treasure token."
-)]
 #[case::thrasios_triton_hero(
     C5_SZ_THRASIOS_TRITON_HERO,
     "\"tapped\":true",
@@ -302,12 +286,6 @@ fn c5_sz_the_clause_reads_back(#[case] json: &str, #[case] clause: &str) {
     "\"Bottom\"",
     "\"Top\"",
     "Exile all creatures and graveyards. Put ~ on the bottom of its owner's library."
-)]
-#[case::veteran_explorer(
-    C5_SZ_VETERAN_EXPLORER,
-    "\"max\":2",
-    "\"max\":3",
-    "When this creature dies, each player may search their library for up to two basic land cards, put them onto the battlefield, then shuffle."
 )]
 #[case::victimize(
     C5_SZ_VICTIMIZE,

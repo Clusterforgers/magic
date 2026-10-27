@@ -20,7 +20,7 @@ struct C5SzBody {
 }
 
 /// The bodies, as JSON, each with its sentence in lower case and without the period at its end.
-const C5_SZ_SENTENCES: [(&str, &str); 26] = [
+const C5_SZ_SENTENCES: [(&str, &str); 24] = [
     (
         r#"{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}"#,
         "return this card from your graveyard to the battlefield",
@@ -54,10 +54,6 @@ const C5_SZ_SENTENCES: [(&str, &str); 26] = [
         "choose a creature card at random from target opponent's graveyard. Put that card onto the battlefield under your control",
     ),
     (
-        r#"{"effects":[{"RepeatEach":{"over":"Opponents","as":"p","effects":[{"May":{"who":{"Bound":"p"},"effects":[{"CreateToken":{"who":{"Bound":"p"},"token":{"Named":"treasure"}}}]}},{"If":{"condition":"Performed","then":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}]}}]}"#,
-        "each opponent may create a Treasure token. For each opponent who does, you create a Treasure token",
-    ),
-    (
         r#"{"effects":[{"Scry":{}},{"LookAtTop":{"count":1,"as":"t"}},{"Reveal":{"what":{"Bound":"t"}}},{"If":{"condition":{"Matches":{"subject":{"Bound":"t"},"selector":[{"Type":"Land"}]}},"then":[{"Move":{"what":{"Bound":"t"},"to":{"Battlefield":{"tapped":true}}}}],"otherwise":[{"Draw":{}}]}}]}"#,
         "scry 1, then reveal the top card of your library. If it's a land card, put it onto the battlefield tapped. Otherwise, draw a card",
     ),
@@ -80,10 +76,6 @@ const C5_SZ_SENTENCES: [(&str, &str); 26] = [
     (
         r#"{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"}]}}},{"Exile":{"what":{"Each":[{"In":"Graveyard"}]}}},{"Move":{"what":"This","to":{"Library":{"place":"Bottom"}}}}]}"#,
         "exile all creatures and graveyards. Put ~ on the bottom of its owner's library",
-    ),
-    (
-        r#"{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"p","effects":[{"May":{"who":{"Bound":"p"},"effects":[{"Search":{"who":{"Bound":"p"},"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"count":{"min":0,"max":2},"as":"l"}},{"Move":{"what":{"Bound":"l"},"to":{"Battlefield":{}}}},{"Shuffle":{"who":{"Bound":"p"}}}]}}]}}]}"#,
-        "each player may search their library for up to two basic land cards, put them onto the battlefield, then shuffle",
     ),
     (
         r#"{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":2,"max":2}}],"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}},{"If":{"condition":"Performed","then":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{"tapped":true}}}}]}}]}"#,

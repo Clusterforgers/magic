@@ -1,1 +1,0 @@
-{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"RepeatEach":{"over":"Opponents","as":"p","effects":[{"May":{"who":{"Bound":"p"},"effects":[{"CreateToken":{"who":{"Bound":"p"},"token":{"Named":"treasure"}}}]}},{"If":{"condition":"Performed","then":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}]}}]}}]}]}
