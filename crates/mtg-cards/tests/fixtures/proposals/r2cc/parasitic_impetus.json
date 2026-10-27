@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":2,"toughness":2}},"Goaded"]}},{"Triggered":{"when":{"Attacks":{"what":[{"Is":"Attached"}]}},"effects":[{"LoseLife":{"who":{"ControllerOf":"Triggering"},"amount":2}},{"GainLife":{"amount":2}}]}}]}]}

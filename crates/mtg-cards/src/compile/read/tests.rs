@@ -277,6 +277,7 @@ mod riot;
 mod sample_af2_writers;
 mod sample_af_writers;
 mod sample_ba_writers;
+mod sample_c4_writers;
 mod sample_gl2_writers;
 mod sample_gl3_writers;
 mod sample_gl_writers;

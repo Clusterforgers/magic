@@ -1,0 +1,33 @@
+{
+  "oracle_id": "be8b9bef-a98d-40a8-bedd-d78f1f08f93b",
+  "name": "Merfolk Windrobber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Windrobber",
+      "oracle_fingerprint": "d4cfd595f2440aa721005a48bd0d849f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Mill": { "who": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": { "Largest": { "who": "Opponents", "of": [{ "In": "Graveyard" }] } },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

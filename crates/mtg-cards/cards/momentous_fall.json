@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6a5ce1b0-ac78-4a74-9eb7-4064e1687bf1",
+  "name": "Momentous Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momentous Fall",
+      "oracle_fingerprint": "cc2141e1fef203cc67ab5823de1d4b37",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": { "Stat": { "of": "Paid", "stat": "Power" } } } },
+              { "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "Toughness" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

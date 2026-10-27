@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b3739b5a-5731-4c64-a244-815a363b0d5c",
+  "name": "Mind's Desire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind's Desire",
+      "oracle_fingerprint": "0da05fa5cd6a050dcdc2a9879450f017",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Shuffle": {} },
+              { "ExileTop": { "as": "card" } },
+              { "CastFromZone": { "what": { "Bound": "card" }, "free": true, "play": true } }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

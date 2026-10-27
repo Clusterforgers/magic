@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"FlipCoin":{"lose":[{"Sacrifice":{"filter":["This"]}}]}}]}},{"Triggered":{"when":{"SpellCast":{"by":"EachPlayer"}},"effects":[{"FlipCoin":{"who":{"ControllerOf":"Triggering"},"lose":[{"Counter":{"what":"Triggering"}}]}}]}}]}]}

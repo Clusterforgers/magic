@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":2,"toughness":2}}],"duration":"UntilEndOfTurn"}},{"DelayedTrigger":{"when":{"Blocks":{"what":[{"Type":"Creature"}]}},"once":false,"effects":[{"PutCounters":{"on":{"ControllerOf":"Triggering"},"counter":"poison"}}]}}]}}]}]}

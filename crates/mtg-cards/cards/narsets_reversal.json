@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d55f6c70-321f-4fb4-bd33-0850ae1a7c36",
+  "name": "Narset's Reversal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narset's Reversal",
+      "oracle_fingerprint": "de8acabaf340d670f03eeed9f3ed1201",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "CopySpell": { "what": { "Target": 0 }, "new_targets": true } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

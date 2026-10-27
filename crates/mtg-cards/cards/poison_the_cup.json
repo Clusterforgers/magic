@@ -1,0 +1,28 @@
+{
+  "oracle_id": "58020778-554c-4af6-8484-0b90f64bc5d9",
+  "name": "Poison the Cup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poison the Cup",
+      "oracle_fingerprint": "b28803357efebfc80e6a286d83eb6890",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": { "CastWith": "Foretold" },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{B}" } }
+      ]
+    }
+  ]
+}

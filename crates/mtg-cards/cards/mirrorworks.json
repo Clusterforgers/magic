@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fd9c4ebe-cc9c-427c-8105-adb1703c191b",
+  "name": "Mirrorworks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorworks",
+      "oracle_fingerprint": "99b7c79e11d8e62f8a33937500d823c9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Artifact" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [{ "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "620ff5f2-7d3f-467f-943d-3b62c2135023",
+  "name": "Oloro, Ageless Ascetic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oloro, Ageless Ascetic",
+      "oracle_fingerprint": "d2b44adff085a62a717b205dbaf8ea09",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [{ "Draw": {} }, { "LoseLife": { "who": "Opponents", "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "from": "Command",
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

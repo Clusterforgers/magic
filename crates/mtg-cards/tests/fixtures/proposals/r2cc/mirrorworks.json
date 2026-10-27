@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Artifact"},"Other",{"Not":"Token"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"Pay":{"cost":"{2}","paid":[{"CreateToken":{"token":{"CopyOf":{"of":"Triggering"}}}}]}}]}}]}]}

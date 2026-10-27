@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"In":"Graveyard"},{"OwnedBy":"Opponents"},{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]}}],"effects":[{"CastFromZone":{"what":{"Target":0},"free":true}}]}}]}]}

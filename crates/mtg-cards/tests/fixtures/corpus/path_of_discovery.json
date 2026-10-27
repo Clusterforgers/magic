@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "8063528c-7347-4757-8254-5aa3e4b61c6f",
+  "oracle_id": "52714c3c-6821-44dd-88ba-813554df9914",
+  "multiverse_ids": [],
+  "resource_id": "9CA979E8F253535CE1817636BE9DEC6AD6D254C3FF58CC1243C2588514C63BDA",
+  "mtgo_id": 150827,
+  "tcgplayer_id": 697590,
+  "cardmarket_id": 891841,
+  "name": "Path of Discovery",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/8063528c-7347-4757-8254-5aa3e4b61c6f",
+  "scryfall_uri": "https://scryfall.com/card/msc/179/path-of-discovery?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:40:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.jpg?1783903227",
+    "normal": "https://cards.scryfall.io/normal/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.jpg?1783903227",
+    "large": "https://cards.scryfall.io/large/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.jpg?1783903227",
+    "png": "https://cards.scryfall.io/png/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.png?1783903227",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.jpg?1783903227",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.jpg?1783903227",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.webp?1783903227",
+    "grid": "https://cards.scryfall.io/grid/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.webp?1783903227",
+    "display": "https://cards.scryfall.io/display/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.webp?1783903227",
+    "art": "https://cards.scryfall.io/art/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.webp?1783903227",
+    "crop": "https://cards.scryfall.io/crop/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.webp?1783903227",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/0/8063528c-7347-4757-8254-5aa3e4b61c6f.jpg?1783903227"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature you control enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on the creature, then put the card back or put it into your graveyard.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Explore"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8063528c-7347-4757-8254-5aa3e4b61c6f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A52714c3c-6821-44dd-88ba-813554df9914&unique=prints",
+  "collector_number": "179",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "After a perilous journey, the Fantastic Four beheld Attilan, the Great Refuge of the Inhumans.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Rytis Sabaliauskas",
+  "artist_ids": [
+    "6fb39816-7d41-4419-8e27-27ace87fb092"
+  ],
+  "illustration_id": "8846ff6a-5961-48f6-b864-3a4b0e7a7486",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3630,
+  "penny_rank": 7059,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPath%2Bof%2BDiscovery",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPath%2Bof%2BDiscovery",
+    "edhrec": "https://edhrec.com/route/?cc=Path+of+Discovery"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697590%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891841&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150827?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

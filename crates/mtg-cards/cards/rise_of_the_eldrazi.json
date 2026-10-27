@@ -1,0 +1,25 @@
+{
+  "oracle_id": "982f70af-077f-40df-b2fe-7c80ebcc7712",
+  "name": "Rise of the Eldrazi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise of the Eldrazi",
+      "oracle_fingerprint": "602511184b2b4d3bdf66369b2b23316e",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }, { "what": "Player" }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Draw": { "who": { "Target": 1 }, "count": 4 } },
+              { "ExtraTurn": {} },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

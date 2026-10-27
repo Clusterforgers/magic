@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Haste"}]}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"If":{"condition":{"Matches":{"subject":"Attached","selector":[{"Color":"Red"}]}},"then":[{"PutCounters":{"on":"Attached","counter":"+1/+1"}}]}}]}},{"Keyword":{"Equip":"{1}"}}]}]}

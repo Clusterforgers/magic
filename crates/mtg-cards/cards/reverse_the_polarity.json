@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4499d8cd-d090-4acc-a1d9-3d9d9b6ef768",
+  "name": "Reverse the Polarity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverse the Polarity",
+      "oracle_fingerprint": "66d6e201ca4d402e1b5d94161f65d32c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Counter": { "what": { "Each": ["Spell", "Other"] } } }] },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }] },
+                            "mods": ["SwitchPT"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }] },
+                            "mods": ["CantBeBlocked"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

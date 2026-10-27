@@ -1,0 +1,66 @@
+{
+  "oracle_id": "8cc7e418-cc5e-4aef-9757-874223fccd74",
+  "name": "Phoenix Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phoenix Down",
+      "oracle_fingerprint": "32ca928b05b6705cbe49d2db46b73271",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  { "Subtype": "Skeleton" },
+                                  { "Subtype": "Spirit" },
+                                  { "Subtype": "Zombie" }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

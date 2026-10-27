@@ -1,0 +1,33 @@
+{
+  "oracle_id": "530f088d-bfa1-4410-b1aa-ade8abdb2b7a",
+  "name": "Phthisis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phthisis",
+      "oracle_fingerprint": "a5014e2a8cd33b62c5925f14766f7851",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "LoseLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": {
+                    "Sum": [
+                      { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                      { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 5, "cost": "{1}{B}" } } }
+      ]
+    }
+  ]
+}

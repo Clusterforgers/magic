@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b8619990-9dc2-4fcc-bc7e-457b77cd2a8e",
+  "name": "Rankle, Master of Pranks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rankle, Master of Pranks",
+      "oracle_fingerprint": "c5d092d398fa882fa2d86e8f7f3ee297",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 3 },
+                  "modes": [
+                    { "effects": [{ "Discard": { "who": "EachPlayer" } }] },
+                    {
+                      "effects": [
+                        { "LoseLife": { "who": "EachPlayer", "amount": 1 } },
+                        { "Draw": { "who": "EachPlayer" } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

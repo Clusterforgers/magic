@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Haste"},{"Keyword":"Shadow"},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"OwnedBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"from":"Graveyard","effects":[{"Pay":{"cost":"{B}","paid":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}]}}]}]}

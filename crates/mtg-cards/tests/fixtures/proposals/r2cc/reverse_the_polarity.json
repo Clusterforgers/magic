@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Modal":{"modes":[{"effects":[{"Counter":{"what":{"Each":["Spell","Other"]}}}]},{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"}]},"mods":["SwitchPT"],"duration":"UntilEndOfTurn"}}]},{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"}]},"mods":["CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}]}}]}}]}]}

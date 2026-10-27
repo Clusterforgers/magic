@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "a0b202d8-3c25-467e-86ed-6bea19bb869f",
+  "oracle_id": "14f55fc9-ec19-4b4a-b3de-d75898c19edf",
+  "multiverse_ids": [
+    620729
+  ],
+  "mtgo_id": 113118,
+  "tcgplayer_id": 499804,
+  "cardmarket_id": 717402,
+  "name": "Prize Pig",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/a0b202d8-3c25-467e-86ed-6bea19bb869f",
+  "scryfall_uri": "https://scryfall.com/card/ltc/43/prize-pig?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.jpg?1783916025",
+    "normal": "https://cards.scryfall.io/normal/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.jpg?1783916025",
+    "large": "https://cards.scryfall.io/large/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.jpg?1783916025",
+    "png": "https://cards.scryfall.io/png/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.png?1783916025",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.jpg?1783916025",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.jpg?1783916025",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.webp?1783916025",
+    "grid": "https://cards.scryfall.io/grid/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.webp?1783916025",
+    "display": "https://cards.scryfall.io/display/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.webp?1783916025",
+    "art": "https://cards.scryfall.io/art/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.webp?1783916025",
+    "crop": "https://cards.scryfall.io/crop/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.webp?1783916025",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/0/a0b202d8-3c25-467e-86ed-6bea19bb869f.jpg?1783916025"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Boar",
+  "oracle_text": "Whenever you gain life, put that many ribbon counters on this creature. Then if there are three or more ribbon counters on this creature, remove those counters and untap it.\n{T}: Add one mana of any color.",
+  "power": "0",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a0b202d8-3c25-467e-86ed-6bea19bb869f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A14f55fc9-ec19-4b4a-b3de-d75898c19edf&unique=prints",
+  "collector_number": "43",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The habit of building farmhouses and barns began among the inhabitants of the Marish down by the Brandywine.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bartłomiej Gaweł",
+  "artist_ids": [
+    "85ce2dbb-ec19-4037-85d0-274ef9de81ad"
+  ],
+  "illustration_id": "f1b6823f-a4d3-4800-97a3-09e419581413",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5348,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": null,
+    "tix": "1.32"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620729&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPrize%2BPig",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPrize%2BPig",
+    "edhrec": "https://edhrec.com/route/?cc=Prize+Pig"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499804%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=717402&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113118?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

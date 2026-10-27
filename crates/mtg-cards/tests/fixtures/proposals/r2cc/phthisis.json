@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"LoseLife":{"who":{"ControllerOf":{"Target":0}},"amount":{"Sum":[{"Stat":{"of":{"Target":0},"stat":"Power"}},{"Stat":{"of":{"Target":0},"stat":"Toughness"}}]}}}]}},{"Keyword":{"Suspend":{"time":5,"cost":"{1}{B}"}}}]}]}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ff3de07d-86c3-49e1-9de0-97c85301ff93",
+  "name": "Parasitic Impetus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parasitic Impetus",
+      "oracle_fingerprint": "3d459b44c8418be9ce03f69fdcbc377f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "Goaded"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

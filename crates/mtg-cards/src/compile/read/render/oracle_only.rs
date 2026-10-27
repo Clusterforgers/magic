@@ -19,6 +19,7 @@ mod bare;
 mod battalion;
 mod blink;
 mod bounce_all;
+mod c4_mr;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -241,6 +242,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     counters_equal::add(ability, texts);
     counters_put::add(ability, texts);
     add_more(ability, texts);
+    add_c4_mr(ability, texts);
 }
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.
@@ -388,4 +390,9 @@ fn add_sz3(ability: &Ability, texts: &mut Vec<String>) {
     leaves_graveyard::add(ability, texts);
     spell_controller::add(ability, texts);
     that_creature_sz2::add(ability, texts);
+}
+
+/// Adds the wordings of the fourth sample of the names M to R; it runs after the others and edits what they found.
+fn add_c4_mr(ability: &Ability, texts: &mut Vec<String>) {
+    c4_mr::add(ability, texts);
 }

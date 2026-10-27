@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6754753d-790e-4a95-a150-76741c4a02d4",
+  "name": "RMS Titanic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "RMS Titanic",
+      "oracle_fingerprint": "3c2509d3e7286ea4fe7aa6a1482ad066",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": "Triggering" } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

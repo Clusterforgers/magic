@@ -1,0 +1,29 @@
+{
+  "oracle_id": "36b67014-0507-4976-ad52-a2a36676197d",
+  "name": "Memory Plunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Plunder",
+      "oracle_fingerprint": "edf16a84ca75f13db0b99c96e6e0e42d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" },
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CastFromZone": { "what": { "Target": 0 }, "free": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

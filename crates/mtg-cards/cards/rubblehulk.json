@@ -1,0 +1,50 @@
+{
+  "oracle_id": "063960e0-3f9c-4697-ba5e-81c56ac1b5d2",
+  "name": "Rubblehulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rubblehulk",
+      "oracle_fingerprint": "561583167d4b6a790410f9535ea73edc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

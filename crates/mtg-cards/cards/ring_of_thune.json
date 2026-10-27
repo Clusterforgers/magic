@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f72e8ccb-a6fb-4161-bfa1-69c94cc5d49a",
+  "name": "Ring of Thune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ring of Thune",
+      "oracle_fingerprint": "b96b796586ff14820914cdf5f8ee4217",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Vigilance" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Attached", "selector": [{ "Color": "White" }] }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

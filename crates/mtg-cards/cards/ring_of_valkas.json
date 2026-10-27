@@ -1,0 +1,30 @@
+{
+  "oracle_id": "412f57e8-76af-4636-bab0-e0940300ee2e",
+  "name": "Ring of Valkas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ring of Valkas",
+      "oracle_fingerprint": "e3c5f05d5ccf446bf783218a31c06d87",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Haste" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Attached", "selector": [{ "Color": "Red" }] }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}
