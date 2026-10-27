@@ -1,0 +1,24 @@
+{
+  "oracle_id": "52714c3c-6821-44dd-88ba-813554df9914",
+  "name": "Path of Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of Discovery",
+      "oracle_fingerprint": "f45664a092035e2cebc4fe6d5d4558c1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Explore": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

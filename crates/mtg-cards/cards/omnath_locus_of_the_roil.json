@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ffd34151-457a-4a93-82db-24b18319a06b",
+  "name": "Omnath, Locus of the Roil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omnath, Locus of the Roil",
+      "oracle_fingerprint": "6089f5ec3ee0e1201416ad25ab38cc7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Elemental" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Elemental" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

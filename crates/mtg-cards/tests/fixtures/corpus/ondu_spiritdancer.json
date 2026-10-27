@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "ee1c6432-54d7-4b57-a554-f7194d74e03c",
+  "oracle_id": "d2ae893f-52af-4645-8712-d62fb78f901e",
+  "multiverse_ids": [
+    675974
+  ],
+  "mtgo_id": 130825,
+  "tcgplayer_id": 578973,
+  "cardmarket_id": 788592,
+  "name": "Ondu Spiritdancer",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/ee1c6432-54d7-4b57-a554-f7194d74e03c",
+  "scryfall_uri": "https://scryfall.com/card/dsc/101/ondu-spiritdancer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.jpg?1783909632",
+    "normal": "https://cards.scryfall.io/normal/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.jpg?1783909632",
+    "large": "https://cards.scryfall.io/large/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.jpg?1783909632",
+    "png": "https://cards.scryfall.io/png/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.png?1783909632",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.jpg?1783909632",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.jpg?1783909632",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.webp?1783909632",
+    "grid": "https://cards.scryfall.io/grid/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.webp?1783909632",
+    "display": "https://cards.scryfall.io/display/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.webp?1783909632",
+    "art": "https://cards.scryfall.io/art/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.webp?1783909632",
+    "crop": "https://cards.scryfall.io/crop/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.webp?1783909632",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/e/ee1c6432-54d7-4b57-a554-f7194d74e03c.jpg?1783909632"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Kor Cleric",
+  "oracle_text": "Whenever an enchantment you control enters, you may create a token that's a copy of it. Do this only once each turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b19112b9-1583-445d-bc48-5ca3325fab48",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/b19112b9-1583-445d-bc48-5ca3325fab48"
+    },
+    {
+      "object": "related_card",
+      "id": "ee1c6432-54d7-4b57-a554-f7194d74e03c",
+      "component": "combo_piece",
+      "name": "Ondu Spiritdancer",
+      "type_line": "Creature — Kor Cleric",
+      "uri": "https://api.scryfall.com/cards/ee1c6432-54d7-4b57-a554-f7194d74e03c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ee1c6432-54d7-4b57-a554-f7194d74e03c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad2ae893f-52af-4645-8712-d62fb78f901e&unique=prints",
+  "collector_number": "101",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"We travel to know the land—its sacred spirit, its perils and blessings.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tran Nguyen",
+  "artist_ids": [
+    "fcd05833-d82b-4d3b-b7a7-8fddb3ed2485"
+  ],
+  "illustration_id": "c7845e15-9666-4485-a1a7-ead1510ad577",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1668,
+  "prices": {
+    "usd": "9.76",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "13.13",
+    "eur_foil": null,
+    "tix": "2.86"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675974&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOndu%2BSpiritdancer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOndu%2BSpiritdancer",
+    "edhrec": "https://edhrec.com/route/?cc=Ondu+Spiritdancer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F578973%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788592&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130825?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

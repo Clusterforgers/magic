@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c6815bbb-24a5-4c9f-bf30-6190bc766d05",
+  "name": "Recurring Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recurring Insight",
+      "oracle_fingerprint": "4774ea65939b16d41af02660a52ab4eb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Draw": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

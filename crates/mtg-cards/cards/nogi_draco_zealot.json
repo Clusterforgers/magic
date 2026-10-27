@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3d04aa8c-7bff-42c6-bed3-0b18d2cb1529",
+  "name": "Nogi, Draco-Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nogi, Draco-Zealot",
+      "oracle_fingerprint": "cabb2d0d7277b5cc0dbaa30375635405",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetCreatureTypes": ["Dragon"] },
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

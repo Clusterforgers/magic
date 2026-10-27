@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"Mill":{"who":"Triggering"}}]}},{"Activated":{"cost":["SacrificeSelf"],"condition":{"Compare":{"left":{"Largest":{"who":"Opponents","of":[{"In":"Graveyard"}]}},"op":"Ge","right":8}},"effects":[{"Draw":{}}]}}]}]}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "86ef2ceb-b7e6-4451-92ec-8528ea191d3a",
+  "name": "Old One Eye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Old One Eye",
+      "oracle_fingerprint": "c18112fc6085623411c1b8938c1fd1ed",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tyranid",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Tyranid"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "count": 2 } }],
+                  "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

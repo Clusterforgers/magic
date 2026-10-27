@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d2ae893f-52af-4645-8712-d62fb78f901e",
+  "name": "Ondu Spiritdancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ondu Spiritdancer",
+      "oracle_fingerprint": "dc81582369276cd75a6d860a0d29c51f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

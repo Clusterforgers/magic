@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ccb39f4a-2684-4eb7-9066-aad81ae08962",
+  "name": "Massacre Girl, Known Killer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Massacre Girl, Known Killer",
+      "oracle_fingerprint": "ec30e3d5d4c33ca9f77beba2c804e85e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Wither" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "Compare": { "stat": "Toughness", "op": "Lt", "to": 1 } }]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

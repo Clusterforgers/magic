@@ -1,0 +1,54 @@
+{
+  "oracle_id": "14f55fc9-ec19-4b4a-b3de-d75898c19edf",
+  "name": "Prize Pig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prize Pig",
+      "oracle_fingerprint": "d25832a1bf98366961d3bab859200913",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "ribbon" },
+                  "count": "Triggering"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "ribbon" } } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": { "Other": "ribbon" },
+                        "count": { "Counters": { "on": "This", "counter": { "Other": "ribbon" } } }
+                      }
+                    },
+                    { "Untap": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

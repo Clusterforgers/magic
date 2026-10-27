@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "e717e4b0-a8c1-4411-b18a-1d17e7225503",
+  "oracle_id": "f09388e2-f190-4b48-ba85-3ffc33020392",
+  "multiverse_ids": [
+    652134
+  ],
+  "mtgo_id": 132343,
+  "tcgplayer_id": 539407,
+  "cardmarket_id": 757654,
+  "name": "Nuclear Fallout",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/e717e4b0-a8c1-4411-b18a-1d17e7225503",
+  "scryfall_uri": "https://scryfall.com/card/pip/47/nuclear-fallout?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.jpg?1783912408",
+    "normal": "https://cards.scryfall.io/normal/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.jpg?1783912408",
+    "large": "https://cards.scryfall.io/large/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.jpg?1783912408",
+    "png": "https://cards.scryfall.io/png/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.png?1783912408",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.jpg?1783912408",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.jpg?1783912408",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.webp?1783912408",
+    "grid": "https://cards.scryfall.io/grid/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.webp?1783912408",
+    "display": "https://cards.scryfall.io/display/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.webp?1783912408",
+    "art": "https://cards.scryfall.io/art/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.webp?1783912408",
+    "crop": "https://cards.scryfall.io/crop/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.webp?1783912408",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/7/e717e4b0-a8c1-4411-b18a-1d17e7225503.jpg?1783912408"
+  },
+  "mana_cost": "{X}{B}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each creature gets twice -X/-X until end of turn. Each player gets X rad counters.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    },
+    {
+      "object": "related_card",
+      "id": "daf96a60-ab61-410e-9faf-1aba5fb81bfb",
+      "component": "combo_piece",
+      "name": "Nuclear Fallout",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/daf96a60-ab61-410e-9faf-1aba5fb81bfb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e717e4b0-a8c1-4411-b18a-1d17e7225503/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af09388e2-f190-4b48-ba85-3ffc33020392&unique=prints",
+  "collector_number": "47",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The end of the world occurred as predicted: too many humans, not enough space or resources to go around. The details are trivial and pointless. The reasons, as always, purely human ones.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Rainville",
+  "artist_ids": [
+    "6ed7e669-579b-443d-b223-e5cbcb2a7483"
+  ],
+  "illustration_id": "ffbb62ee-3930-488c-bb33-220dbed32d93",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3129,
+  "prices": {
+    "usd": "2.76",
+    "usd_foil": "5.74",
+    "usd_etched": null,
+    "eur": "2.14",
+    "eur_foil": "4.02",
+    "tix": "2.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652134&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNuclear%2BFallout",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNuclear%2BFallout",
+    "edhrec": "https://edhrec.com/route/?cc=Nuclear+Fallout"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539407%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757654&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132343?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

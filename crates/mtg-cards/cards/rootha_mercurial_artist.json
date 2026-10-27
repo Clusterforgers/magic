@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3735559f-efe5-43ad-9b3e-3ef127c0ceda",
+  "name": "Rootha, Mercurial Artist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootha, Mercurial Artist",
+      "oracle_fingerprint": "1e4ff928f5dd902ce20c44b290a6cce8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "ReturnToHand": { "filter": ["This"] } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

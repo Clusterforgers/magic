@@ -1,0 +1,21 @@
+{
+  "oracle_id": "58a2d15f-1b4b-4303-b524-8cc0d1b3e7d2",
+  "name": "Painful Truths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Painful Truths",
+      "oracle_fingerprint": "3188cca950f1fdb7b0a142d50f4a52de",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": "ColorsSpent" } },
+              { "LoseLife": { "amount": "ColorsSpent" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b85d54e9-4f21-4440-9fd4-7b73b560c99d",
+  "name": "Phyrexian Atlas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Atlas",
+      "oracle_fingerprint": "89f838f4a066f691b174ae546c0f01dc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Counters": { "on": { "Bound": "opp" }, "counter": "poison" }
+                            },
+                            "op": "Ge",
+                            "right": 3
+                          }
+                        },
+                        "then": [{ "LoseLife": { "who": { "Bound": "opp" }, "amount": 1 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

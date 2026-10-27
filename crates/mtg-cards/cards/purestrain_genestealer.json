@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3d4c7f1a-deca-4bae-90c7-68d623da400e",
+  "name": "Purestrain Genestealer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purestrain Genestealer",
+      "oracle_fingerprint": "ff79eabb21122420ddd7513ad8be14af",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

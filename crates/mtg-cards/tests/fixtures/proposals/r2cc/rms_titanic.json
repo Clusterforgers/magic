@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Trample"},{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"Sacrifice":{"filter":["This"]}},{"CreateToken":{"token":{"Named":"treasure"},"count":"Triggering"}}]}},{"Keyword":{"Crew":3}}]}]}

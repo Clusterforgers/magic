@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f500a8a4-6135-448c-9116-bd2695a72229",
+  "name": "Port of Karfell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Port of Karfell",
+      "oracle_fingerprint": "61734dc1318df83763ed0477ea0be27b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}{B}{B}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Mill": { "count": 4 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                  },
+                  "as": "returned"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "returned" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1c0d4f28-2494-45b0-acb8-921fee602c01",
+  "name": "Pentavus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pentavus",
+      "oracle_fingerprint": "eb21ffa48f878d5f190ad8fad0712dce",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Pentavite",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Pentavite"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "Sacrifice": { "filter": [{ "Subtype": "Pentavite" }] } }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

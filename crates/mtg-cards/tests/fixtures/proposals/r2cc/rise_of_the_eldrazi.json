@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}},{"Spell":{"targets":[{"what":{"Object":[]}},{"what":"Player"}],"effects":[{"Destroy":{"what":{"Target":0}}},{"Draw":{"who":{"Target":1},"count":4}},{"ExtraTurn":{}},{"Exile":{"what":"This"}}]}}]}]}

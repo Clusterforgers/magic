@@ -23,6 +23,7 @@ mod c4_af;
 mod c4_attack_token;
 mod c4_aura_becomes;
 mod c4_counters_you_put;
+mod c4_mr;
 mod c4_prevent_combat;
 mod c4_support;
 mod c4_swaps;
@@ -249,6 +250,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     counters_put::add(ability, texts);
     add_more(ability, texts);
     add_c4_af(ability, texts);
+    add_c4_mr(ability, texts);
 }
 
 /// The wordings of the fourth sample of the names A to F; it runs after the others because it rewrites their texts.
@@ -412,4 +414,9 @@ fn add_sz3(ability: &Ability, texts: &mut Vec<String>) {
     leaves_graveyard::add(ability, texts);
     spell_controller::add(ability, texts);
     that_creature_sz2::add(ability, texts);
+}
+
+/// Adds the wordings of the fourth sample of the names M to R; it runs after the others and edits what they found.
+fn add_c4_mr(ability: &Ability, texts: &mut Vec<String>) {
+    c4_mr::add(ability, texts);
 }
