@@ -1,0 +1,37 @@
+{
+  "oracle_id": "904b2603-00c3-44d2-a43c-c25439dd8038",
+  "name": "Kellogg, Dangerous Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kellogg, Dangerous Mind",
+      "oracle_fingerprint": "6f970a001ef445f2ccf063d7b88ba7b4",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Treasure" }], "count": 5 } }],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
