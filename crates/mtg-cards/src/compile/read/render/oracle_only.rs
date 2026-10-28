@@ -256,6 +256,11 @@ mod w4f_sentences;
 mod w4f_tokens;
 mod w4g_amounts;
 mod w4g_texts;
+mod w5b_casts;
+mod w5b_damage;
+mod w5b_mana;
+mod w5b_parts;
+mod w5b_rules;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -342,6 +347,15 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_w4f(texts);
     add_w4d(ability, texts);
     add_w4b(ability, texts);
+    add_w5b(ability, texts);
+}
+
+/// Adds the wordings of the spells built of several steps and of the draw, choice, rule and mana steps (r3w9).
+fn add_w5b(ability: &Ability, texts: &mut Vec<String>) {
+    w5b_casts::add(ability, texts);
+    w5b_rules::add(ability, texts);
+    w5b_mana::add(ability, texts);
+    w5b_damage::add(ability, texts);
 }
 
 /// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
