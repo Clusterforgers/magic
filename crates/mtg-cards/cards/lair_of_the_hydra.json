@@ -1,0 +1,51 @@
+{
+  "oracle_id": "126e9140-2c05-4c00-8b01-5653456c736a",
+  "name": "Lair of the Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lair of the Hydra",
+      "oracle_fingerprint": "c2022b8d016e546c897794911d70fa9d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": "X", "toughness": "X" } },
+                    { "SetColors": ["Green"] },
+                    { "AddSubtype": "Hydra" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

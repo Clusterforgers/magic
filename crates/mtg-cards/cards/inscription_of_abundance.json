@@ -1,0 +1,62 @@
+{
+  "oracle_id": "a5e28749-18ea-4a2b-b7d9-905cf2913d4e",
+  "name": "Inscription of Abundance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inscription of Abundance",
+      "oracle_fingerprint": "b1e21ad849948a24c9dc4c2d64971a0d",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{G}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": "Kicked",
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "GainLife": {
+                            "who": { "Target": 0 },
+                            "amount": {
+                              "Greatest": {
+                                "of": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }],
+                                "stat": "Power"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

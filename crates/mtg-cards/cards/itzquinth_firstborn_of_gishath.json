@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f976a244-1240-4430-9182-bb8d6d932ea0",
+  "name": "Itzquinth, Firstborn of Gishath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Itzquinth, Firstborn of Gishath",
+      "oracle_fingerprint": "f1b6b833d0f3db3c56ebd10bf2484fd5",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

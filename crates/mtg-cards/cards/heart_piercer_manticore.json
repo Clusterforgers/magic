@@ -1,0 +1,43 @@
+{
+  "oracle_id": "253bec96-108c-4880-9c04-8bc99ceafa64",
+  "name": "Heart-Piercer Manticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heart-Piercer Manticore",
+      "oracle_fingerprint": "84e35020bfc0b71ef55572ff6f3987e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": ["Other", { "Type": "Creature" }, { "ControlledBy": "You" }]
+                        },
+                        "as": "fodder"
+                      }
+                    },
+                    { "Sacrifice": { "filter": [{ "Is": { "Bound": "fodder" } }] } },
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "fodder" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Embalm": "{5}{R}" } }
+      ]
+    }
+  ]
+}

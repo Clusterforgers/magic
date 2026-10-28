@@ -1,0 +1,78 @@
+{
+  "oracle_id": "38a55562-1e2d-4240-9454-219a4a25d38d",
+  "name": "Lord Windgrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord Windgrace",
+      "oracle_fingerprint": "ce0181e9e98f8e86e2eaefb73790b629",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Land" }]
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 11 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 6 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat", "Warrior"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } }]
+                    }
+                  },
+                  "count": 6
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

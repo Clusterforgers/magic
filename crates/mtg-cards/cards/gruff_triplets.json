@@ -1,0 +1,41 @@
+{
+  "oracle_id": "32de1b70-f993-4423-b0ef-0762c2b4d1b1",
+  "name": "Gruff Triplets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruff Triplets",
+      "oracle_fingerprint": "cd1c1283c9ddaae7d6544c54e0661418",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Not": { "Matches": { "subject": "This", "selector": ["Token"] } } },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } }, "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Named": "Gruff Triplets" }
+                    ]
+                  },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

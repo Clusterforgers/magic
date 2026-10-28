@@ -1,0 +1,46 @@
+{
+  "oracle_id": "787e6a7b-64f9-48ba-bccd-68dda3489b0f",
+  "name": "Jocasta, Automaton Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jocasta, Automaton Avenger",
+      "oracle_fingerprint": "402e95ee9667350e9fcd1045d1172cda",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["Commander", { "OwnedBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }]
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } },
+                    { "JoinAttack": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

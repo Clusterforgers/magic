@@ -7,12 +7,18 @@ use serde_json::{Value, json};
 
 /// The groups an attack names, as the selector's JSON, each with its words.
 const C6_GL_GROUPS: [(&str, &str); 3] = [
-    (r#"["Commander",{"OwnedBy":"You"},{"ControlledBy":"You"}]"#, "your commander"),
+    (
+        r#"["Commander",{"OwnedBy":"You"},{"ControlledBy":"You"}]"#,
+        "your commander",
+    ),
     (
         r#"[{"Supertype":"Legendary"},{"Type":"Creature"},{"ControlledBy":"You"}]"#,
         "one or more legendary creatures",
     ),
-    (r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#, "one or more creatures"),
+    (
+        r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#,
+        "one or more creatures",
+    ),
 ];
 
 /// Adds the wordings of a return from the graveyard into an attack, bought with a choice or a payment.

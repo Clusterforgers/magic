@@ -1,0 +1,65 @@
+{
+  "oracle_id": "7b70696e-b09e-4bc9-8438-d31075d78c0c",
+  "name": "Glimpse the Impossible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimpse the Impossible",
+      "oracle_fingerprint": "dc04887b409962753c4ec99acfff9d67",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Is": { "Bound": "impulse" } }, { "In": "Exile" }] },
+                        "to": "Graveyard"
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Eldrazi Spawn",
+                            "types": ["Creature"],
+                            "subtypes": ["Eldrazi", "Spawn"],
+                            "power": 0,
+                            "toughness": 1,
+                            "abilities": [
+                              {
+                                "Activated": {
+                                  "cost": ["SacrificeSelf"],
+                                  "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "count": {
+                          "Count": [{ "Is": { "Bound": "impulse" } }, { "In": "Graveyard" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

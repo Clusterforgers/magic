@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d3c56fc4-3611-41b1-952e-4c5311b1510b",
+  "name": "Lathiel, the Bounteous Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lathiel, the Bounteous Dawn",
+      "oracle_fingerprint": "532aa839b21b80df9fbcc6ef11cf4739",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": ["Other", { "Type": "Creature" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                },
+                "divide": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

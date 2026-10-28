@@ -1,0 +1,38 @@
+{
+  "oracle_id": "73ec7a0b-274a-4a10-a173-ff1625d62fce",
+  "name": "Intellectual Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intellectual Offering",
+      "oracle_fingerprint": "6373531fa3c2d2c29d11f9065f1e06a9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              { "Draw": { "count": 3 } },
+              { "Draw": { "who": { "Bound": "opponent" }, "count": 3 } },
+              { "Choose": { "from": "Opponents", "as": "untapper" } },
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      {
+                        "AnyOf": [
+                          { "ControlledBy": "You" },
+                          { "ControlledBy": { "Bound": "untapper" } }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

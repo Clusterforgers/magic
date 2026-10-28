@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Choose":{"from":"Opponents","as":"opponent"}},{"Draw":{"count":3}},{"Draw":{"who":{"Bound":"opponent"},"count":3}},{"Choose":{"from":"Opponents","as":"untapper"}},{"Untap":{"what":{"Each":[{"Not":{"Type":"Land"}},{"AnyOf":[{"ControlledBy":"You"},{"ControlledBy":{"Bound":"untapper"}}]}]}}}]}}]}]}

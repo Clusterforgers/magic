@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a5ca7bd9-0964-405f-adb9-7c27153595e6",
+  "name": "Increasing Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Increasing Vengeance",
+      "oracle_fingerprint": "933e65d51a987e0736e47dc71846a0d1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Graveyard" }] }
+                  },
+                  "then": [
+                    { "CopySpell": { "what": { "Target": 0 }, "count": 2, "new_targets": true } }
+                  ],
+                  "otherwise": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}{R}" } }
+      ]
+    }
+  ]
+}

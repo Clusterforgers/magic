@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c02c5547-b9c9-4b2d-9d12-e87bfba8f2d2",
+  "name": "Herald's Horn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald's Horn",
+      "oracle_fingerprint": "79b1296489a296dc232de6b533652303",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }, "ChosenSubtype"],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" },
+                      { "Type": "Creature" },
+                      "ChosenSubtype"
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

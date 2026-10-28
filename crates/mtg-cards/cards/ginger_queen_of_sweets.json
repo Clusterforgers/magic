@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5ea93956-085d-409b-bd95-dd669fa69eeb",
+  "name": "Ginger, Queen of Sweets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ginger, Queen of Sweets",
+      "oracle_fingerprint": "bbf13cdaab3b90eb3aa964d6ce2d7b85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": 6 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": { "Monarch": "You" },
+            "effects": [{ "CreateToken": { "token": { "Named": "gingerbrute" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

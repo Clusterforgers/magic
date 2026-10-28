@@ -1,0 +1,20 @@
+{
+  "oracle_id": "466d5226-f4c7-4d69-9f56-4f893010127f",
+  "name": "Krang, the All-Powerful",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krang, the All-Powerful",
+      "oracle_fingerprint": "4534b77fd35c1fbb126eb4bf307bf353",
+      "abilities": [
+        { "Rule": { "rule": { "TriggerAgain": { "cause": { "Drew": {} } } } } },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": {} }, "nth": 2 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

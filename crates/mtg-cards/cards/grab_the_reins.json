@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3ceda405-8175-416a-beda-9a95f5acc60c",
+  "name": "Grab the Reins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grab the Reins",
+      "oracle_fingerprint": "77b33bb2e20ad14f9b10db14e9d1dda6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "SetController": "You" }, { "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "AnyTarget" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "as": "sacrificed"
+                          }
+                        },
+                        { "Sacrifice": { "filter": [{ "Is": { "Bound": "sacrificed" } }] } },
+                        {
+                          "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": {
+                              "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}{R}" } }
+      ]
+    }
+  ]
+}
