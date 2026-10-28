@@ -1,0 +1,44 @@
+{
+  "oracle_id": "73b26f12-78eb-4d01-9dd6-ee643c7a80a8",
+  "name": "Gaea's Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaea's Might",
+      "oracle_fingerprint": "66c079cb182d162fb5c120eb88c843e8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Distinct": {
+                            "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                            "stat": "BasicLandTypes"
+                          }
+                        },
+                        "toughness": {
+                          "Distinct": {
+                            "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                            "stat": "BasicLandTypes"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "51f561db-ca7f-4661-bc04-99b8af02b8c9",
+  "name": "Collective Restraint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collective Restraint",
+      "oracle_fingerprint": "bf7cf3c99193d72b303daf8c5a14e4f4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "attacked": "Player",
+                "mana": "{1}",
+                "per": {
+                  "Distinct": {
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                    "stat": "BasicLandTypes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

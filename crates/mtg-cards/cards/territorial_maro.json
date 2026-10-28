@@ -1,0 +1,57 @@
+{
+  "oracle_id": "478eeed5-8170-4fb3-8ec2-bcebc0265622",
+  "name": "Territorial Maro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Territorial Maro",
+      "oracle_fingerprint": "7755a45390b28807a4101f30abfd2664",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      },
+                      {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      },
+                      {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

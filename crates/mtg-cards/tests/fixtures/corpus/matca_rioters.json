@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "0eac937f-9d61-4da2-8946-187839e13590",
+  "oracle_id": "b46294cb-9971-415e-90d1-a02c44cd1391",
+  "multiverse_ids": [
+    397886
+  ],
+  "mtgo_id": 57110,
+  "mtgo_foil_id": 57111,
+  "tcgplayer_id": 98841,
+  "cardmarket_id": 282981,
+  "name": "Matca Rioters",
+  "lang": "en",
+  "released_at": "2015-05-22",
+  "uri": "https://api.scryfall.com/cards/0eac937f-9d61-4da2-8946-187839e13590",
+  "scryfall_uri": "https://scryfall.com/card/mm2/148/matca-rioters?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:26:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.jpg?1783938398",
+    "normal": "https://cards.scryfall.io/normal/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.jpg?1783938398",
+    "large": "https://cards.scryfall.io/large/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.jpg?1783938398",
+    "png": "https://cards.scryfall.io/png/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.png?1783938398",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.jpg?1783938398",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.jpg?1783938398",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.webp?1783938398",
+    "grid": "https://cards.scryfall.io/grid/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.webp?1783938398",
+    "display": "https://cards.scryfall.io/display/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.webp?1783938398",
+    "art": "https://cards.scryfall.io/art/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.webp?1783938398",
+    "crop": "https://cards.scryfall.io/crop/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.webp?1783938398",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/e/0eac937f-9d61-4da2-8946-187839e13590.jpg?1783938398"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Domain — Matca Rioters's power and toughness are each equal to the number of basic land types among lands you control.",
+  "power": "*",
+  "toughness": "*",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Domain"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "28cac015-43df-4e88-90d0-95dcdd894834",
+  "set": "mm2",
+  "set_name": "Modern Masters 2015",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/28cac015-43df-4e88-90d0-95dcdd894834",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amm2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mm2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0eac937f-9d61-4da2-8946-187839e13590/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab46294cb-9971-415e-90d1-a02c44cd1391&unique=prints",
+  "collector_number": "148",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "When outsiders interrupted the matca championship, things got ugly.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steve Argyle",
+  "artist_ids": [
+    "a44ddda4-5331-4f83-aac9-3e00ed36bd7b"
+  ],
+  "illustration_id": "176ebceb-c45d-4ddb-bd70-a458877cc218",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29303,
+  "penny_rank": 9884,
+  "prices": {
+    "usd": "0.08",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.10",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397886&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMatca%2BRioters",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMatca%2BRioters",
+    "edhrec": "https://edhrec.com/route/?cc=Matca+Rioters"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F98841%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=282981&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/57110?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

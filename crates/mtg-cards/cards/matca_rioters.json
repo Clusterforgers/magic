@@ -1,0 +1,37 @@
+{
+  "oracle_id": "b46294cb-9971-415e-90d1-a02c44cd1391",
+  "name": "Matca Rioters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matca Rioters",
+      "oracle_fingerprint": "c3bacd569be868666019bb628c6096a3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "toughness": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

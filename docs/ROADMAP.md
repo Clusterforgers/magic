@@ -28,7 +28,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1va), (r1vb), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a), (r2dgc-a).
 - Cast ways and zones: (c5e), (c2l3a) to (c2l3c), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
-- Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
+- Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-c).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
@@ -45,7 +45,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank and leak tests (`docs/arena-flow.md`).
 - Web: the game UI with prompts for all eight decision kinds, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
-- Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts and stored `card_rules` (`docs/cards-dsl.md`).
+- Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
 - Changes of control: targets, groups, the enchanted permanent, one target for each opponent with the untap and keywords after it, and exchanges of control (`docs/engine.md`, `docs/cards-dsl.md`).
 - Abilities and characteristics: one ability reader, CR 613 in one pass, `GameRule` effects, state triggers and abilities that work from hands, graveyards, exile and the stack.
 - Counters and planeswalkers: counters on permanents and players, keyword counters, counters of any kind, counter costs on other permanents, counters of any kind removed by a cost or an effect, "if it had counters on it", multiplied counters, loyalty abilities and the legend rule.
@@ -174,7 +174,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c8jb) Prevention for "you and" a group, quoted static abilities given under a condition, and the Slivers' quoted abilities left (flip, becomes a type, top of library); frees about 20 cards (Rune of Flight, The Wanderer, Pulmonic Sliver)
 - [ ] (r1ab) The rest of the `Continuous` statics: types for spells and cards, every land type, a color added, group unions, "modified", attachment conditions; frees about 25 cards (Arcane Adaptation, Death Baron, Song of the Dryads)
 - [ ] (r2az-a) "No more than one creature can attack each combat" and "... can block each combat": a limit on the whole declaration; frees about 3 cards (Silent Arbiter, Dueling Grounds, Caverns of Despair)
-- [~] (r2az-b) (r2az-b-domain-amount) Domain: "the number of basic land types among lands you control" as an amount; frees about 20 cards (Collective Restraint, Tribal Flames, Territorial Kavu)
+- [ ] (r2az-c) Domain of another player and the effects around domain the compiler does not read: "lands they control", "lands that player controls", "discards a card for each", "unless its controller pays {1} for each", "look at the top X ... put up to two into your hand", "prevent the next X damage"; frees about 10 cards (Allied Strategies, Mask of Intolerance, Evasive Action, Shadow Prophecy)
 - [ ] (r2bhd) Untaps in other players' untap steps and groups held through their next untap step; frees about 8 cards (Seedborn Muse, Unwinding Clock, Lorthos, the Tidemaker)
 - [ ] (r2u) Attached Auras and Equipment as a count, and attachments made by effects (any number, onto tokens, onto returned cards); frees about 15 cards (Kor Spiritdancer, Kemba, Goldwardens' Gambit)
 - [ ] (r2db-a) Several statics, or a player rule and statics, in one sentence, and hexproof from the Aura controller's opponents; frees about 6 cards (Tenza, Godo's Maul, Nighthowler, Sigarda, Heron's Grace)

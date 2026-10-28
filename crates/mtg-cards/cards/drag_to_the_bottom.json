@@ -1,0 +1,63 @@
+{
+  "oracle_id": "c4d7a200-7401-4c9a-a7cf-6c98fa8eb61a",
+  "name": "Drag to the Bottom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drag to the Bottom",
+      "oracle_fingerprint": "07afb4f07cd4e988b0d7bf15d85134e1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                1,
+                                {
+                                  "Distinct": {
+                                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                    "stat": "BasicLandTypes"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                1,
+                                {
+                                  "Distinct": {
+                                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                    "stat": "BasicLandTypes"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

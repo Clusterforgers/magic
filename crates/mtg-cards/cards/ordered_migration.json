@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ee0a59ba-8d34-43d5-b9a5-42015588e3d5",
+  "name": "Ordered Migration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ordered Migration",
+      "oracle_fingerprint": "65a9e70b3c05e77ba66063cf9f3f0fbb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
