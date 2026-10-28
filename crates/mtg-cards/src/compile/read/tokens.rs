@@ -347,6 +347,7 @@ fn merge_source(tokens: Vec<Token>) -> Vec<Token> {
 /// A reader over a clause's tokens, with the targets the clause has asked for so far. The flags are independent facts
 /// about the ability being read.
 #[allow(clippy::struct_excessive_bools)]
+#[derive(Clone)]
 pub struct Reader<'a> {
     tokens: &'a [Token],
     at: usize,
@@ -624,6 +625,30 @@ impl<'a> Reader<'a> {
             r.at = close + 1;
             Some(found)
         })
+    }
+
+    /// Reads the rest of the sentence, up to its period, as `edit` rewrites its tokens (one for one) with `read`, which
+    /// must read it whole; the reader then stands after it with the targets `read` asked for.
+    pub fn c10_dice_rewritten<T>(
+        &mut self,
+        edit: impl FnOnce(&[Token]) -> Option<Vec<Token>>,
+        read: impl FnOnce(&mut Reader<'_>) -> Option<T>,
+    ) -> Option<T> {
+        let rest = self.tokens.get(self.at..)?;
+        let end = rest.iter().position(|token| *token == Token::Punct('.'))?;
+        let edited = edit(rest.get(..=end)?)?;
+        (edited.len() == end + 1).then_some(())?;
+        let mut inner = Reader {
+            tokens: &edited,
+            at: 0,
+            ..self.clone()
+        };
+        let found = read(&mut inner)?;
+        (inner.at >= end).then_some(())?;
+        self.at += end;
+        self.targets = inner.targets;
+        self.it = inner.it;
+        Some(found)
     }
 
     /// Reads with `read` and puts the reader back where it was, with the same targets, whether it read or not.

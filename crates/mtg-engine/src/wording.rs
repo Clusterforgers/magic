@@ -177,6 +177,9 @@ fn kind_of(what: &Targetable) -> (String, String) {
         Targetable::Player => ("player".to_owned(), String::new()),
         Targetable::Opponent => ("opponent".to_owned(), String::new()),
         Targetable::Object(selector) => phrase(selector),
+        Targetable::PerPlayer { players, what } => {
+            phrase(&Targetable::c10_dice_per_player_objects(players, what))
+        }
         Targetable::Either(kinds) => (
             kinds
                 .iter()

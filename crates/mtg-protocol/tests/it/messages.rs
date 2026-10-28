@@ -342,6 +342,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             can_cancel: false,
             wording: "up to two target creatures".into(),
             triggered: true,
+            apart: Vec::new(),
         }),
         DecisionKind::ChooseMode(ModeOptions {
             source: b,
@@ -1522,6 +1523,7 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             can_cancel: true,
             wording: String::new(),
             triggered: false,
+            apart: Vec::new(),
         }),
     };
     assert_eq!(

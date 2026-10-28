@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1b26a54f-6c27-4940-b77e-2a66175c5eff",
+  "name": "Grasp of Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grasp of Fate",
+      "oracle_fingerprint": "fec223accedf66a00538118110eccfb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Not": { "Type": "Land" } }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -165,6 +165,7 @@ mod becomes;
 mod block_limits;
 mod c10_any_counters;
 mod c10_cen_writers;
+mod c10_dice_targets;
 mod c10_uc;
 mod c10_xp_copy_until;
 mod c4_af_writers;

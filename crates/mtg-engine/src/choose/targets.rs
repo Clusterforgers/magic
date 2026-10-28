@@ -130,6 +130,23 @@ pub struct TargetOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub triggered: bool,
+    /// For targets chosen for each of several players, the player each legal target belongs to, in the order of `legal`:
+    /// no two targets may belong to one player. Empty for any other specification.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PlayerId>>", optional))]
+    pub apart: Vec<PlayerId>,
+}
+
+impl TargetOptions {
+    /// The targets a chooser may take any of together: the first legal target of each player when no two may belong to
+    /// one player, else every legal target.
+    pub fn c10_dice_choosable(&self) -> &[Target] {
+        if self.apart.is_empty() {
+            return &self.legal;
+        }
+        let each = usize::try_from(self.max).unwrap_or(usize::MAX);
+        self.legal.get(..each).unwrap_or(&self.legal)
+    }
 }
 
 /// The answer to a target decision.
@@ -164,6 +181,11 @@ fn candidates(scope: &Scope<'_>, what: &Targetable) -> Result<Vec<Target>, Resol
             .collect(),
         Targetable::Object(selector) => scope
             .matching(selector)?
+            .into_iter()
+            .map(Target::Object)
+            .collect(),
+        Targetable::PerPlayer { players, what } => scope
+            .matching(&Targetable::c10_dice_per_player_objects(players, what))?
             .into_iter()
             .map(Target::Object)
             .collect(),
@@ -283,6 +305,7 @@ pub(crate) fn options_for(
 ) -> Option<TargetOptions> {
     let legal = legal_for(state, spec, source, controller, cause, x);
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
+    let (legal, apart) = c10_dice_first_of_each(&legal, c10_dice_apart(state, spec, &legal));
     let amount_of = |amount: &Amount| -> Option<u32> {
         if let Amount::Fixed(n) = amount {
             return Some(u32::try_from(*n).unwrap_or(0));
@@ -315,6 +338,7 @@ pub(crate) fn options_for(
     };
     // A specification whose most is zero asks for nothing, whatever its least is (a target only a promised gift adds).
     let min = amount_of(&spec.bounds.min)?.min(max);
+    let (min, max) = c10_dice_per_player_bounds(&apart, min, max);
     if available < min {
         return None;
     }
@@ -327,6 +351,7 @@ pub(crate) fn options_for(
         can_cancel,
         wording: wording::spec(spec),
         triggered: false,
+        apart,
     })
 }
 
@@ -376,6 +401,7 @@ pub(crate) fn answer(
             return Err(IllegalAnswer::NotOffered("target").into());
         }
     }
+    c10_dice_check_apart(options, &targets)?;
     let count = u32::try_from(targets.len()).unwrap_or(u32::MAX);
     let wanted = if count < options.min {
         Some(options.min)
@@ -398,6 +424,78 @@ pub(crate) fn answer(
         player,
         choice: Choice::Targets(targets),
     }]))
+}
+
+/// The player each legal target of a `PerPlayer` specification belongs to: the controller of a permanent, the owner of a
+/// card elsewhere. Empty for any other specification.
+fn c10_dice_apart(state: &GameState, spec: &TargetSpec, legal: &[Target]) -> Vec<PlayerId> {
+    if !matches!(spec.what, Targetable::PerPlayer { .. }) {
+        return Vec::new();
+    }
+    legal
+        .iter()
+        .map(|target| match target {
+            Target::Player(player) => *player,
+            Target::Object(object) => state.object(object.id).map_or(PlayerId(0), |o| {
+                if o.zone() == Zone::Battlefield {
+                    o.controller()
+                } else {
+                    o.owner()
+                }
+            }),
+        })
+        .collect()
+}
+
+/// The legal targets with the first one of each player in front, in their order, and whose each is; unchanged when no
+/// player is named. A chooser that takes the first `max` of them takes one of each player.
+fn c10_dice_first_of_each(legal: &[Target], apart: Vec<PlayerId>) -> (Vec<Target>, Vec<PlayerId>) {
+    if apart.is_empty() {
+        return (legal.to_vec(), apart);
+    }
+    let mut seen = Vec::new();
+    let (mut front, mut back) = (Vec::new(), Vec::new());
+    for (target, player) in legal.iter().zip(&apart) {
+        if seen.contains(player) {
+            back.push((*target, *player));
+        } else {
+            seen.push(*player);
+            front.push((*target, *player));
+        }
+    }
+    front.extend(back);
+    front.into_iter().unzip()
+}
+
+/// The bounds of a specification chosen for each of several players: at most one target of each player who has one,
+/// and one of each when the specification asks for at least one.
+fn c10_dice_per_player_bounds(apart: &[PlayerId], min: u32, max: u32) -> (u32, u32) {
+    if apart.is_empty() {
+        return (min, max);
+    }
+    let mut players = apart.to_vec();
+    players.sort_unstable();
+    players.dedup();
+    let each = u32::try_from(players.len()).unwrap_or(u32::MAX);
+    (
+        if min > 0 { each } else { 0 },
+        if max > 0 { each } else { 0 },
+    )
+}
+
+/// Refuses two targets of one player when the options say whose each is.
+fn c10_dice_check_apart(options: &TargetOptions, targets: &[Target]) -> Result<(), EngineError> {
+    let mut seen = Vec::new();
+    for target in targets {
+        let at = options.legal.iter().position(|legal| legal == target);
+        if let Some(player) = at.and_then(|at| options.apart.get(at)) {
+            if seen.contains(player) {
+                return Err(IllegalAnswer::Duplicate("target of one player").into());
+            }
+            seen.push(*player);
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]
@@ -596,6 +694,7 @@ mod tests {
             can_cancel,
             wording: String::new(),
             triggered: false,
+            apart: Vec::new(),
         }
     }
 

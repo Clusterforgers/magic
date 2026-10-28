@@ -1,0 +1,25 @@
+{
+  "id": "39e7bb05-96df-4e76-90a6-3f3625b7965a",
+  "oracle_id": "25012c1f-c069-43d7-b930-a3a5a7eb1389",
+  "name": "Dismantling Wave",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "layout": "normal",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "For each opponent, destroy up to one target artifact or enchantment that player controls.\nCycling {6}{W}{W} ({6}{W}{W}, Discard this card: Draw a card.)\nWhen you cycle this card, destroy all artifacts and enchantments.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Cycling"
+  ],
+  "set": "msc",
+  "collector_number": "129",
+  "digital": false,
+  "rarity": "rare"
+}

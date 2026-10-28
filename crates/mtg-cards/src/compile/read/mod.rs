@@ -28,6 +28,7 @@ mod attackers;
 mod aura_forms;
 mod batches;
 mod becomes;
+mod c10_dice_targets;
 mod c10_uc;
 mod c4_cast_hand;
 mod c4_chosen_pairs;

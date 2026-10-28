@@ -455,7 +455,9 @@ impl RandomBot {
                 let spread =
                     usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
                 let wanted = options.min as usize + self.rng.index(spread);
-                Answer::ChooseTargets(TargetChoice::Targets(self.pick(&options.legal, wanted)))
+                Answer::ChooseTargets(TargetChoice::Targets(
+                    self.pick(options.c10_dice_choosable(), wanted),
+                ))
             }
             DecisionKind::ChooseMode(options) => {
                 // Any number of the modes offered between the bounds, in no particular order, a mode more than

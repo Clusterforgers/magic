@@ -115,6 +115,7 @@ pub(super) fn retarget(
                         can_cancel: false,
                         wording,
                         triggered: false,
+                        apart: Vec::new(),
                     }),
                 }));
             }

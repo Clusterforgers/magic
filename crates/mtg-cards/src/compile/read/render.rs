@@ -8,6 +8,7 @@ mod all_graveyards;
 mod and_lists;
 mod becomes_subtype;
 mod bound;
+mod c10_dice_per_player;
 mod c10_uc;
 mod c6_blk_aura;
 mod c7_untap;
@@ -150,6 +151,9 @@ pub fn ability(ability: &Ability) -> Option<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = c10_dice_per_player::c10_dice_variants(ability) {
+        return texts;
+    }
     let mut texts = ability_texts(ability);
     let singulars: Vec<String> = texts.iter().flat_map(|text| spend::more(text)).collect();
     texts.extend(singulars);

@@ -33,6 +33,7 @@ mod block_limits_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
 mod c10_any_cards;
+mod c10_dice_per_player;
 mod c10_uc_sleep;
 mod c10_vp_planar_votes;
 mod c10_xp_copy_until;

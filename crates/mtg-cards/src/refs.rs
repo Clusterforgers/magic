@@ -259,6 +259,32 @@ pub enum Targetable {
     Object(Selector),
     /// Any of the listed kinds.
     Either(Vec<Targetable>),
+    /// For each player `players` names, an object of `what` that player controls (owns, outside the battlefield): at
+    /// most one target of each player ("for each opponent, destroy up to one target artifact that player controls").
+    PerPlayer {
+        /// The players the targets are chosen for.
+        players: Ref,
+        /// What each may be, without the player.
+        what: Selector,
+    },
+}
+
+impl Targetable {
+    /// The objects a `PerPlayer` lets a spell target, as one selector: `what` controlled by the players, or owned by
+    /// them for a selector of another zone.
+    pub fn c10_dice_per_player_objects(players: &Ref, what: &Selector) -> Selector {
+        let elsewhere = what
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::In(zone) if *zone != ZoneKind::Battlefield));
+        let mut all = what.0.clone();
+        all.push(if elsewhere {
+            Pred::OwnedBy(players.clone())
+        } else {
+            Pred::ControlledBy(players.clone())
+        });
+        Selector(all)
+    }
 }
 
 /// How many of something: at least `min`, at most `max`.

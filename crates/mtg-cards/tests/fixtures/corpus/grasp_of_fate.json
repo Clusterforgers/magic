@@ -1,0 +1,23 @@
+{
+  "id": "43787574-7700-47ab-b57c-98ef968cce71",
+  "oracle_id": "1b26a54f-6c27-4940-b77e-2a66175c5eff",
+  "name": "Grasp of Fate",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "layout": "normal",
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, for each opponent, exile up to one target nonland permanent that player controls until this enchantment leaves the battlefield. (Those permanents return under their owners' control.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "set": "cmm",
+  "collector_number": "823",
+  "digital": false,
+  "rarity": "rare"
+}
