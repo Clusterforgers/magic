@@ -110,6 +110,7 @@ const RUNS: &[&str] = &[
     "Cost.TapPower",
     "Effect.Draw",
     "Effect.Discard",
+    "Effect.Discard.Random",
     "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
@@ -255,6 +256,7 @@ const RUNS: &[&str] = &[
     "Effect.If",
     "Effect.May",
     "Effect.Pay",
+    "Effect.Pay.Counted",
     "Effect.Choose",
     "Effect.ChooseAtRandom",
     "Effect.Modal",
@@ -510,7 +512,7 @@ mod tests {
     #[case::tapping("Cost.Tap", true)]
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
-    #[case::discarding_at_random("Effect.Discard.Random", false)]
+    #[case::discarding_at_random("Effect.Discard.Random", true)]
     #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
@@ -695,6 +697,7 @@ mod tests {
         false
     )]
     #[case::paying_or_not("Effect.Pay", true)]
+    #[case::c6_eg_paying_counted_life_in_an_effect("Effect.Pay.Counted", true)]
     #[case::flash("Keyword.Flash", true)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]

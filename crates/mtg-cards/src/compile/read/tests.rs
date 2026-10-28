@@ -179,6 +179,7 @@ mod c5_gl_writers;
 mod c5_mr_writers;
 mod c5_sz_writers;
 mod c6_au_dead;
+mod c6_eg_writers;
 mod c6_kw_renown_exploit;
 mod card_grants;
 mod cast;

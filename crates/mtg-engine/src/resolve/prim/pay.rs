@@ -53,7 +53,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             snapshots: Vec::new(),
         });
     }
-    let price = price_of(&repeated(cost, times))?;
+    let price = price_of(&repeated(&c6_eg_counted(cx, cost)?, times))?;
     let state = cx.state();
     let mut journal = cx
         .journal()
@@ -91,6 +91,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         bound: Vec::new(),
         snapshots: Vec::new(),
     })
+}
+
+/// The cost with the life of a counted amount ("pay that much life", "pay X life, where X is ...") counted as the
+/// effect resolves (CR 119.4, CR 608.2h); a negative count pays nothing.
+fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
+    let mut counted = cost.clone();
+    for item in &mut counted.0 {
+        if let CostItem::PayLife(amount) = item
+            && !matches!(amount, Amount::Fixed(_) | Amount::X)
+        {
+            let count = cx.scope.amount(amount)?.clamp(0, i64::from(i32::MAX));
+            *amount = Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX));
+        }
+    }
+    Ok(counted)
 }
 
 /// The cost paid `times` times at once: the mana repeated so that it adds up, and the number of life, energy, counters
@@ -643,6 +658,8 @@ mod tests {
     #[case::three_times_with_two_lands("{1}", "3", 2, &[], Said::Declines(0, "Pay {3}?".into()))]
     #[case::two_colours_twice("{G}{1}", "2", 4, &[], Said::Asks(0, "Pay {2}{G}{G}?".into()))]
     #[case::life_twice("[{\"PayLife\":1}]", "2", 0, &[], Said::Asks(0, "Pay 2 life?".into()))]
+    #[case::c6_eg_counted_life("[{\"PayLife\":{\"Life\":\"You\"}}]", "1", 0, &[], Said::Asks(0, "Pay 20 life?".into()))]
+    #[case::c6_eg_counted_life_twice("[{\"PayLife\":{\"Life\":\"You\"}}]", "2", 0, &[], Said::Declines(0, "Pay 40 life?".into()))]
     #[case::yes_to_twice("{1}", "2", 2, &[(0, true)], Said::Pays(0, "{2}".into(), false))]
     #[case::paid_twice("{1}", "2", 2, &[(0, true), (0, true)], PAID)]
     #[case::declined("{1}", "2", 2, &[(0, false)], UNPAID)]
@@ -773,10 +790,6 @@ mod tests {
     #[case::counted_mana_and_energy(
         r#"[{"Mana":"{1}"},{"PayEnergy":"X"}]"#,
         ResolveError::Unsupported("Effect.Pay.X")
-    )]
-    #[case::an_amount_nothing_counts(
-        r#"[{"PayLife":{"Life":"You"}}]"#,
-        ResolveError::Unsupported("Cost.PayLife.Counted")
     )]
     #[case::sacrifice(
         r#"["SacrificeSelf"]"#,

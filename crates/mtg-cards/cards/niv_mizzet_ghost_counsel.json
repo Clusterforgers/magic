@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a5350327-e84c-44b6-8359-87882e521048",
+  "name": "Niv-Mizzet, Ghost Counsel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Niv-Mizzet, Ghost Counsel",
+      "oracle_fingerprint": "8eb621ba4aa7737e9d7e303820f61f7a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": "Triggering" }],
+                  "paid": [{ "Draw": { "count": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

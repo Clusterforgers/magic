@@ -681,6 +681,32 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") is counted as the effect
+    /// resolves (`Effect.Pay.Counted`); every other part is named as in any cost.
+    fn c6_eg_paid_cost(&mut self, cost: &Cost) {
+        let counted: Vec<(usize, &Amount)> = cost
+            .0
+            .iter()
+            .enumerate()
+            .filter_map(|(i, item)| match item {
+                CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
+                _ => None,
+            })
+            .collect();
+        if counted.is_empty() {
+            return self.cost(cost);
+        }
+        let mut fixed = cost.clone();
+        for (i, _) in &counted {
+            fixed.0[*i] = CostItem::PayLife(Amount::Fixed(0));
+        }
+        self.cost(&fixed);
+        self.uses("Effect", "Pay.Counted");
+        for (i, amount) in counted {
+            self.at(format!("[{i}]"), |w| w.amount(amount));
+        }
+    }
+
     fn cost(&mut self, cost: &Cost) {
         for (i, item) in cost.0.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {
@@ -2096,7 +2122,7 @@ impl<'a> Walker<'a> {
                 unpaid,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
-                w.at("cost", |w| w.cost(cost));
+                w.at("cost", |w| w.c6_eg_paid_cost(cost));
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
                 w.effect_list("paid", paid, false);
@@ -3266,6 +3292,8 @@ mod tests {
     #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
+    #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
+    #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted", "Effect.Draw"])]
     #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]
     #[case::attaching_the_source_to_a_target(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":"This","to":{"Target":0}}}]}}"#, &["Ability.Activated", "Ability.Sorcery", "Cost.Mana", "Effect.Attach"])]
     #[case::equip_pays_a_mana_cost(r#"{"Keyword":{"Equip":"{2}"}}"#, &["Cost.Mana", "Keyword.Equip"])]

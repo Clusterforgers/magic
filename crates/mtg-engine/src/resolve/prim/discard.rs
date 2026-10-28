@@ -2,17 +2,20 @@
 
 use mtg_cards::effect::Effect;
 
-use super::{unsupported, wrong_effect};
+use mtg_core::ids::{ObjectId, PlayerId};
+
+use super::wrong_effect;
 use crate::choose::{Chooser, Picked, Target, pick_cards};
 use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::rng::GameRng;
 use crate::wording;
 use crate::zones::Zone;
 
 /// Each player the effect names who is still in the game discards the number of cards from their hand, in turn
 /// order. The player chooses which and is asked only when the hand holds more than they discard; a smaller hand is
-/// discarded whole, and an empty one is no event. A random discard is not played yet and `Caps` does not name it.
+/// discarded whole, and an empty one is no event. A random discard asks no one (`c6_eg_at_random`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Discard {
         who,
@@ -23,56 +26,87 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("Discard"));
     };
-    if *random {
-        return unsupported("Effect.Discard.Random");
-    }
     let take = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
-    let choosers: Vec<Chooser> = cx
+    let players: Vec<PlayerId> = cx
         .scope
         .players(who)?
         .into_iter()
         .filter(|player| cx.state().is_alive(*player))
-        .map(|player| Chooser {
-            player,
-            from: cx.state().zone(Zone::Hand(player)).to_vec(),
-            take,
-            text: wording::discard(take),
+        .collect();
+    let (picks, chosen) = if *random {
+        c6_eg_at_random(cx, &players, take)
+    } else {
+        let choosers: Vec<Chooser> = players
+            .into_iter()
+            .map(|player| Chooser {
+                player,
+                from: cx.state().zone(Zone::Hand(player)).to_vec(),
+                take,
+                text: wording::discard(take),
+            })
+            .collect();
+        match pick_cards(cx, &choosers)? {
+            Picked::Ask(decision) => return Ok(Run::Ask(decision)),
+            Picked::Done(chosen) => (Vec::new(), chosen),
+        }
+    };
+    // The cards as they become in their graveyards (CR 400.7), for a later step that counts them.
+    let discarded: Vec<Target> = chosen
+        .iter()
+        .flat_map(|(_, cards)| cards)
+        .filter_map(|id| cx.state().object(*id))
+        .map(|object| {
+            Target::Object(ObjectRef {
+                id: object.id(),
+                counter: object.counter() + 1,
+            })
         })
         .collect();
-    Ok(match pick_cards(cx, &choosers)? {
-        Picked::Ask(decision) => Run::Ask(decision),
-        Picked::Done(chosen) => {
-            // The cards as they become in their graveyards (CR 400.7), for a later step that counts them.
-            let discarded: Vec<Target> = chosen
-                .iter()
-                .flat_map(|(_, cards)| cards)
-                .filter_map(|id| cx.state().object(*id))
-                .map(|object| {
-                    Target::Object(ObjectRef {
-                        id: object.id(),
-                        counter: object.counter() + 1,
-                    })
-                })
-                .collect();
-            let events = chosen
+    let events = picks
+        .into_iter()
+        .chain(chosen.into_iter().flat_map(|(player, cards)| {
+            cards
                 .into_iter()
-                .flat_map(|(player, cards)| {
-                    cards
-                        .into_iter()
-                        .map(move |object| Event::CardDiscarded { player, object })
-                })
-                .collect();
-            match bind {
-                None => Run::events(events),
-                Some(name) => Run::Done {
-                    events,
-                    bound: vec![(name.clone(), discarded)],
-                    snapshots: Vec::new(),
-                    next: Next::Sibling,
-                },
-            }
-        }
+                .map(move |object| Event::CardDiscarded { player, object })
+        }))
+        .collect();
+    Ok(match bind {
+        None => Run::events(events),
+        Some(name) => Run::Done {
+            events,
+            bound: vec![(name.clone(), discarded)],
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        },
     })
+}
+
+/// The cards each player discards at random (CR 701.9b): the hand is shuffled with the next unspent substream of the
+/// game's random source, one substream per player with cards in hand, and the first cards are taken. Each pick is
+/// logged as [`Event::ChosenAtRandom`] before the discards, so a replay spends the same substreams; it names only the
+/// cards the discard then reveals, never the rest of the hand.
+fn c6_eg_at_random(
+    cx: &Cx<'_>,
+    players: &[PlayerId],
+    take: usize,
+) -> (Vec<Event>, Vec<(PlayerId, Vec<ObjectId>)>) {
+    let state = cx.state();
+    let mut picks = Vec::new();
+    let mut chosen = Vec::new();
+    for player in players {
+        let mut cards = state.zone(Zone::Hand(*player)).to_vec();
+        if cards.is_empty() || take == 0 {
+            continue;
+        }
+        let offset = u64::try_from(picks.len()).unwrap_or(u64::MAX);
+        GameRng::substream(state.seed, state.rng_index.saturating_add(offset)).shuffle(&mut cards);
+        cards.truncate(take);
+        picks.push(Event::ChosenAtRandom {
+            cards: cards.clone(),
+        });
+        chosen.push((*player, cards));
+    }
+    (picks, chosen)
 }
 
 #[cfg(test)]
@@ -341,19 +375,133 @@ mod tests {
     }
 
     #[test]
-    fn a_random_discard_is_refused_by_name() {
-        let game = game();
-        let refused = run_with(&game, Vec::new(), &effect(r#"{"Discard":{"random":true}}"#));
-        assert_eq!(
-            refused.unwrap_err(),
-            ResolveError::Unsupported("Effect.Discard.Random")
-        );
-    }
-
-    #[test]
     fn another_effect_is_a_bug_in_the_dispatch() {
         let game = game();
         let refused = run_with(&game, Vec::new(), &effect(r#"{"Draw":{}}"#));
         assert!(matches!(refused, Err(ResolveError::Invalid(_))));
+    }
+}
+
+#[cfg(test)]
+mod c6_eg_random_tests {
+    //! Goal: a discard at random asks no one, takes the count from each player it names with one substream per player with cards in hand, discards a smaller hand whole, logs each pick before the discards and names only the cards discarded, and replays to the same state hash at 2 to 4 seats.
+    use mtg_core::ids::{ObjectId, PlayerId};
+    use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::{creature, setup};
+    use crate::resolve::{Resolving, Scope};
+    use crate::state::GameState;
+
+    /// Every seat holds `held` cards; seat 0 has the Source on the battlefield.
+    fn c6_eg_game(seed: u64, seats: usize, held: usize) -> GameState {
+        let hands = (0..seats)
+            .map(|seat| {
+                (0..held)
+                    .map(|card| creature(&format!("C{seat}.{card}"), 1, 1))
+                    .collect()
+            })
+            .collect();
+        let mut battlefield = vec![vec![creature("Source", 1, 1)]];
+        battlefield.extend((1..seats).map(|_| Vec::new()));
+        let mut table = setup(hands, battlefield);
+        table.seed = seed;
+        GameState::from_setup(&table).unwrap()
+    }
+
+    fn c6_eg_run(game: &GameState, json: &str) -> Vec<Event> {
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving::begin(source.id());
+        let cx = Cx {
+            scope: Scope::announcing(game, PlayerId(0), source.reference()),
+            resolving: &resolving,
+        };
+        let effect: Effect = serde_json::from_str(json).unwrap();
+        let Run::Done { events, .. } = run(&cx, &effect).unwrap() else {
+            panic!("a discard at random asks no one");
+        };
+        events
+    }
+
+    fn c6_eg_fold(game: &GameState, events: &[Event]) -> GameState {
+        let mut after = game.clone();
+        for event in events {
+            crate::fold::apply_event(&mut after, event).unwrap();
+        }
+        after
+    }
+
+    const C6_EG_EACH: &str = r#"{"Discard":{"who":"EachPlayer","count":2,"random":true}}"#;
+
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn c6_eg_each_player_discards_at_random_and_the_replay_is_the_same(#[case] seats: usize) {
+        let game = c6_eg_game(7, seats, 4);
+        let events = c6_eg_run(&game, C6_EG_EACH);
+        assert_eq!(events.len(), seats * 3, "a pick and two discards per seat");
+        let (picks, discards) = events.split_at(seats);
+        for (seat, chunk) in discards.chunks(2).enumerate() {
+            let player = PlayerId::from_index(seat);
+            let Event::ChosenAtRandom { cards } = &picks[seat] else {
+                panic!("the picks come first: {picks:?}");
+            };
+            let discarded: Vec<ObjectId> = chunk
+                .iter()
+                .map(|event| match event {
+                    Event::CardDiscarded {
+                        player: who,
+                        object,
+                    } if *who == player => *object,
+                    other => panic!("a discard of seat {seat}: {other:?}"),
+                })
+                .collect();
+            assert_eq!(cards, &discarded, "the pick names only the cards discarded");
+            assert!(
+                discarded
+                    .iter()
+                    .all(|id| game.zone(Zone::Hand(player)).contains(id))
+            );
+        }
+        let after = c6_eg_fold(&game, &events);
+        assert_eq!(after.rng_index(), game.rng_index() + seats as u64);
+        let replayed = c6_eg_fold(&game, &c6_eg_run(&game, C6_EG_EACH));
+        assert_eq!(after.state_hash(), replayed.state_hash());
+        for seat in 0..seats {
+            assert_eq!(after.zone(Zone::Hand(PlayerId::from_index(seat))).len(), 2);
+        }
+    }
+
+    #[test]
+    fn c6_eg_the_seed_decides_which_cards_go() {
+        let json = r#"{"Discard":{"random":true}}"#;
+        let first = |seed| c6_eg_run(&c6_eg_game(seed, 2, 4), json);
+        let differ = (1..32).any(|seed| first(seed)[1] != first(0)[1]);
+        assert!(differ, "another seed discards another card for some seed");
+    }
+
+    #[rstest]
+    #[case::smaller_hand(2, 3, 2)]
+    #[case::empty_hand(0, 1, 0)]
+    #[case::nothing_asked(3, 0, 0)]
+    fn c6_eg_a_short_hand_goes_whole_and_an_empty_one_spends_nothing(
+        #[case] held: usize,
+        #[case] count: usize,
+        #[case] gone: usize,
+    ) {
+        let json = format!(r#"{{"Discard":{{"count":{count},"random":true}}}}"#);
+        let game = c6_eg_game(3, 2, held);
+        let events = c6_eg_run(&game, &json);
+        let discards = events
+            .iter()
+            .filter(|event| matches!(event, Event::CardDiscarded { .. }))
+            .count();
+        assert_eq!(discards, gone);
+        let after = c6_eg_fold(&game, &events);
+        assert_eq!(
+            after.rng_index(),
+            game.rng_index() + u64::from(discards > 0)
+        );
     }
 }

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e6cd9203-e4d3-4d9f-b59f-4e454fc5a477",
+  "name": "Unbreathing Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unbreathing Horde",
+      "oracle_fingerprint": "1b75627233bd91bbc1f16a207dc39f1e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Sum": [
+                    { "Count": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }] },
+                    {
+                      "Count": [
+                        { "Subtype": "Zombie" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": { "PreventRemovingCounter": "+1/+1" }
+          }
+        }
+      ]
+    }
+  ]
+}
