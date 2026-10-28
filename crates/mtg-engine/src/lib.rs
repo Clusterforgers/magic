@@ -101,6 +101,7 @@ pub mod state;
 pub mod tokens;
 pub mod triggers;
 pub mod turn;
+pub mod w6b_emblems;
 pub mod zones;
 
 pub use caps::caps;

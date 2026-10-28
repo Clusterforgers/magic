@@ -194,6 +194,7 @@ const RUNS: &[&str] = &[
     "Effect.Learn",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
+    "Effect.CreateEmblem",
     "Condition.Monarch",
     "Condition.MonarchAtTurnStart",
     "Effect.BecomeDayNight",

@@ -92,6 +92,7 @@ export type { DiscardOptions } from "./DiscardOptions";
 export type { DivideChoice } from "./DivideChoice";
 export type { DivideOptions } from "./DivideOptions";
 export type { EffectId } from "./EffectId";
+export type { EmblemCreated } from "./EmblemCreated";
 export type { EmptyLibrary } from "./EmptyLibrary";
 export type { ErrorCode } from "./ErrorCode";
 export type { Event } from "./Event";

@@ -30,6 +30,8 @@ pub enum ObjectKind {
     Token,
     /// An activated or triggered ability on the stack.
     Ability,
+    /// An emblem in its owner's command zone (CR 114).
+    Emblem,
 }
 
 impl ObjectKind {

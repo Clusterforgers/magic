@@ -1572,6 +1572,28 @@ impl Walker<'_> {
         self.scope = saved;
     }
 
+    /// An emblem: the players who get it, and its abilities, each of a kind a permanent can have, walked as the abilities
+    /// of a token are (in a scope of their own).
+    fn w6b_emblem(&mut self, who: &Ref, abilities: &[Ability]) {
+        self.at("who", |w| w.reference(who, Kind::Player));
+        if abilities.is_empty() {
+            self.problem("an emblem needs at least one ability");
+        }
+        let saved = std::mem::take(&mut self.scope);
+        self.nested += 1;
+        for (i, ability) in abilities.iter().enumerate() {
+            if matches!(
+                ability,
+                Ability::Spell { .. } | Ability::Loyalty { .. } | Ability::Manual { .. }
+            ) {
+                self.problem("an emblem has no spell, loyalty or manual ability");
+            }
+            self.at(format!("abilities[{i}]"), |w| w.ability(ability));
+        }
+        self.nested -= 1;
+        self.scope = saved;
+    }
+
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
         self.effect_list_with(field, list, top, None);
     }
@@ -2020,6 +2042,7 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::CreateEmblem { who, abilities } => w.w6b_emblem(who, abilities),
             Effect::AddPhase { phases } => {
                 if phases.is_empty() {
                     w.problem("an added phase list names no phase");

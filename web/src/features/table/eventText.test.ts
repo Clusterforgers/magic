@@ -78,6 +78,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   CopyCeased: [{ CopyCeased: { object: 3 } }, 'Forest ceases to exist'],
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
+  EmblemCreated: [{ EmblemCreated: { object: 9, owner: 1 } }, 'Bo gets an emblem'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
