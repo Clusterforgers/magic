@@ -2,8 +2,8 @@
 //! "Put one, two, or three target creature cards from graveyards onto the battlefield under your control. Each of them
 //! enters with an additional -1/-1 counter on it.", "that player chooses up to two creatures they control, then
 //! sacrifices the rest", "defending player loses 1 life for each card in their graveyard", "target permanent phases
-//! out", "create a 0/0 green and blue Fractal creature token. Put X +1/+1 counters on it" and a random discard before
-//! the shuffle of a search.
+//! out", "return target spell to its owner's hand", "create a 0/0 green and blue Fractal creature token. Put X
+//! +1/+1 counters on it" and a random discard before the shuffle of a search.
 
 use super::super::super::amounts::count_word;
 use super::super::super::selectors::{Form, phrase_text, spec_text};
@@ -22,6 +22,7 @@ pub(super) fn sentences(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Strin
     found.extend(per_card_lost(targets, effects));
     found.extend(phased(targets, effects));
     found.extend(token_with_counters(targets, effects));
+    found.extend(spell_returned(targets, effects));
     found
 }
 
@@ -140,6 +141,27 @@ fn per_card_lost(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
     Some(format!(
         "{player} loses 1 life for each card in their {zone}"
     ))
+}
+
+/// "return target spell to its owner's hand".
+fn spell_returned(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
+    let [
+        Effect::Move {
+            what: Ref::Target(0),
+            to: Destination::Hand,
+        },
+    ] = effects
+    else {
+        return None;
+    };
+    let [spec] = targets else { return None };
+    let Targetable::Object(Selector(preds)) = &spec.what else {
+        return None;
+    };
+    (spec.bounds.is_one() && preds.contains(&Pred::Spell))
+        .then(|| spec_text(spec))
+        .flatten()
+        .map(|target| format!("return {target} to its owner's hand"))
 }
 
 /// "target permanent phases out".

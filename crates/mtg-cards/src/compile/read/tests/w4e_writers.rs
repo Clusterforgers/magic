@@ -392,3 +392,51 @@ const KALAMAX: &str = r#"{"Triggered":{"effects":[{"CopySpell":{"new_targets":tr
 fn the_state_of_the_source_follows_the_event(#[case] clause: &str, #[case] reads: bool) {
     assert_eq!(written(KALAMAX, clause), reads);
 }
+
+fn take_back(kind: &str, to: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{kind}]}}}}],"effects":[{{"Move":{{"what":{{"Target":0}},"to":"{to}"}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::spell(r#""Spell""#, "Hand", true)]
+#[case::creature_spell(r#""Spell",{"Type":"Creature"}"#, "Hand", false)]
+#[case::graveyard(r#""Spell""#, "Graveyard", false)]
+fn a_target_spell_returns_to_the_hand(#[case] kind: &str, #[case] to: &str, #[case] reads: bool) {
+    let clause = "Return target spell to its owner's hand.";
+    assert_eq!(written(&take_back(kind, to), clause), reads);
+}
+
+fn flash(what: &str, free: bool) -> String {
+    format!(
+        r#"{{"Rule":{{"rule":{{"MayCast":{{"flash":true,"free":{free},"what":["Spell",{what}]}}}}}}}}"#
+    )
+}
+
+const SORCERY_OR_DRAGON: &str = r#"{"AnyOf":[{"Type":"Sorcery"},{"Subtype":"Dragon"}]}"#;
+const FLASH: &str = "You may cast sorcery spells and Dragon spells as though they had flash.";
+
+#[rstest]
+#[case::printed(SORCERY_OR_DRAGON, false, FLASH, true)]
+#[case::one_kind(
+    r#"{"Type":"Sorcery"}"#,
+    false,
+    "You may cast sorcery spells as though they had flash.",
+    true
+)]
+#[case::instant(
+    r#"{"AnyOf":[{"Type":"Instant"},{"Subtype":"Dragon"}]}"#,
+    false,
+    FLASH,
+    false
+)]
+#[case::free(SORCERY_OR_DRAGON, true, FLASH, false)]
+fn kinds_of_spells_cast_with_flash(
+    #[case] what: &str,
+    #[case] free: bool,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(written(&flash(what, free), clause), reads, "{clause}");
+}

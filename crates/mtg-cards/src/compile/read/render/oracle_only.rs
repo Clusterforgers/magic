@@ -228,6 +228,7 @@ mod unless;
 mod untap_lands;
 mod untapped_cost;
 mod w4e_counters;
+mod w4e_flash;
 mod w4e_if;
 mod w4e_modes;
 mod w4e_moves;
@@ -333,6 +334,7 @@ fn w4e_bodies(ability: &Ability) -> Vec<String> {
         found
     }));
     found.extend(w4e_modes::wordings(ability));
+    found.extend(w4e_flash::wordings(ability));
     found
 }
 
