@@ -335,12 +335,8 @@ impl<'a> Pairer<'a> {
                 continue;
             }
             if matches!(ability, Ability::Spell { .. }) {
-                let open = self.open_slots(kinds_of(ability));
-                let joined = self.joined(&open);
-                if written.iter().any(|variant| self.same(variant, &joined)) {
-                    for &slot in &open {
-                        self.settle(at, slot, ClauseState::Reads { ability: at });
-                    }
+                for slot in self.c11f_spell_slots(&written) {
+                    self.settle(at, slot, ClauseState::Reads { ability: at });
                 }
                 continue;
             }
@@ -527,6 +523,22 @@ impl<'a> Pairer<'a> {
             .collect()
     }
 
+    /// The clauses a spell ability reads as one text: its spell and modal lines, else those with the lines the compiler
+    /// takes for statics ("Metalcraft — If you control three or more artifacts, exile that creature."), which a whole
+    /// wording of the spell then has to name.
+    fn c11f_spell_slots(&self, written: &[String]) -> Vec<usize> {
+        let spell = [ClauseKind::Spell, ClauseKind::Modal];
+        let wider = [ClauseKind::Spell, ClauseKind::Modal, ClauseKind::Static];
+        for kinds in [&spell[..], &wider[..]] {
+            let open = self.open_slots(kinds);
+            let joined = self.joined(&open);
+            if written.iter().any(|variant| self.same(variant, &joined)) {
+                return open;
+            }
+        }
+        Vec::new()
+    }
+
     fn joined(&self, slots: &[usize]) -> String {
         slots
             .iter()
@@ -571,10 +583,52 @@ pub(super) fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause.
+    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a spell ability reads a line the compiler takes for a static only when its wording names every line.
     use rstest::rstest;
 
     use super::*;
+
+    fn c11f_states(type_line: &str, oracle_text: &str, proposal: &str) -> Vec<ClauseState> {
+        let printed = PrintedCard {
+            name: "Test Spell".into(),
+            faces: vec![crate::support::PrintedFace {
+                name: "Test Spell".into(),
+                type_line: type_line.into(),
+                oracle_text: oracle_text.into(),
+                ..Default::default()
+            }],
+            ..Default::default()
+        };
+        let card = super::super::complete::parse(proposal, &printed, "cards/test_spell.json")
+            .expect("the proposal parses");
+        let clauses = crate::compile::compile(&printed).clauses;
+        pair_card(&card, &clauses, &printed)
+            .clauses
+            .into_iter()
+            .map(|clause| clause.state)
+            .collect()
+    }
+
+    /// Tap, then an exile under Metalcraft (Dispatch): one spell ability of two lines, the second one a static's.
+    const C11F_DISPATCH: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Tap":{"what":{"Target":0}}},{"If":{"condition":{"Compare":{"left":{"Count":[{"Type":"Artifact"},{"ControlledBy":"You"}]},"op":"Ge","right":3}},"then":[{"Exile":{"what":{"Target":0}}}]}}]}}]}]}"#;
+
+    #[rstest]
+    #[case::both_lines(
+        "Tap target creature.\nMetalcraft \u{2014} If you control three or more artifacts, exile that creature.",
+        true
+    )]
+    #[case::another_count(
+        "Tap target creature.\nMetalcraft \u{2014} If you control four or more artifacts, exile that creature.",
+        false
+    )]
+    #[case::the_first_line_alone("Tap target creature.", false)]
+    fn c11f_a_spell_reads_a_static_line_only_whole(#[case] text: &str, #[case] reads: bool) {
+        let states = c11f_states("Instant", text, C11F_DISPATCH);
+        let all_read = states
+            .iter()
+            .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
+        assert_eq!(all_read, reads, "{states:?}");
+    }
 
     #[rstest]
     #[case::a_range("1—9 | Each player sacrifices a permanent of their choice.", true)]
