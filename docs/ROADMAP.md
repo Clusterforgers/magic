@@ -73,6 +73,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser.
 - Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
 - Replacements that name their event: `Instead` steps read the replaced player, amount and source of damage, and "tap or untap" is a choice of the controller.
+- X in triggers: an `{X}` paid in an effect and read by what follows it, the X of a cycling cost or a monstrosity in its trigger, and "up to X" targets.
 
 ## M3 Card system
 
@@ -194,7 +195,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2dgc-b) Modal headers left: "Each mode must target a different player" and "Choose one. Activate only as a sorcery."; frees about 3 cards (Vindictive Lich, Shadrix Silverquill, Aetheric Amplifier)
 - [ ] (r2dgc-c) Charm and commander-pair mode sentences: "each of one or two targets", counters distributed among targets, "each creature deals 1 damage to its controller", "counter target spell that targets you", a power-limited "can't block", phasing and goad by a target player; frees about 15 cards (Prismari Charm, Abzan Charm, Will of the Abzan)
 - [ ] (r2dgd) Intervening "if" with a may-pay, a removed counter or a cast from the hand, and "you win the game" under a count; frees about 8 cards (Ingenious Prodigy, Reiver Demon, Helix Pinnacle)
-- [~] (r2cxe) (r2cxe-x-in-triggers) X paid in a trigger without X in the cost, half X on cast and the X of a cycling cost in its trigger; frees about 6 cards (Elenda and Azor, Flameblast Dragon, Shark Typhoon)
+- [ ] (r2cxe-a) The X of a morph cost in "when it is turned face up" and of a madness cost under "if its madness cost was paid"; frees about 2 cards (Bane of the Living, From Under the Floorboards)
+- [ ] (r2cxe-b) Half X on cast and a part of a payment in an effect that counts X ("you may pay X life", `Effect.Pay.X.Parts`)
 - [~] (r2aa) (r2aa-control-changes) Control changes left: by a type, of all artifacts, exchanges, a gift of a permanent, and with untap and haste; frees about 8 cards (Djinn of Infinite Deceits, Hellkite Tyrant, Zedruu the Greathearted)
 - [ ] (r2ab) A color, creature type or card type chosen as a spell resolves or by each player; frees about 10 cards (Sudden Demise, Wash Out, Kindred Charge)
 - [~] (r2ac) (r2ac-selectors-left) Selectors left: names shared with an object, goaded or enchanted creatures, spells with {X}, a type shared with a spell; frees about 12 cards (Declaration in Stone, Maelstrom Pulse, Zaxara, the Exemplary)
