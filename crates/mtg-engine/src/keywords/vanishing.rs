@@ -70,8 +70,9 @@ impl KeywordRules for Vanishing {
             targets: Vec::new(),
             effects: vec![Effect::RemoveCounters {
                 from: Ref::This,
-                counter: time.clone(),
+                counter: Some(time.clone()),
                 count: Amount::one(),
+                up_to: false,
             }],
         });
         abilities.push(Ability::Triggered {

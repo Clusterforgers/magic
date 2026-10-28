@@ -1662,9 +1662,14 @@ impl Writer<'_> {
                 from,
                 counter,
                 count,
+                up_to,
             } => {
-                let counters = counters::text(counter, count)?;
-                format!("remove {counters} from {}", self.counter_place(from, true)?)
+                let counters = super::w2f_any_counters::w2f_text(counter.as_ref(), count)?;
+                let up_to = if *up_to { "up to " } else { "" };
+                format!(
+                    "remove {up_to}{counters} from {}",
+                    self.counter_place(from, true)?
+                )
             }
             Effect::MultiplyCounters {
                 on,

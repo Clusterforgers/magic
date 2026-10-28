@@ -61,13 +61,14 @@ pub(crate) fn activation_events(
             }
             // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
             let mut picks = choices.cost_picks().iter();
+            let mut kinds = choices.cost_kinds().iter();
             for part in &price.parts {
                 let picked = if matches!(part, Part::Pick(_)) {
                     picks.next()?.as_slice()
                 } else {
                     &[]
                 };
-                events.extend(part.events(state, player, ability.object, picked));
+                events.extend(part.w2f_events(state, (player, ability.object), picked, &mut kinds));
                 if let Part::Counters { counter, count } = part {
                     parts::after_removal(&mut before.counters, counter, *count);
                 }
@@ -393,7 +394,14 @@ pub(crate) fn spell_events(
     choices: &Choices,
     granted: bool,
 ) -> Option<Vec<Event>> {
-    let mut events = parts::pay(state, player, spell, parts, choices.cost_picks())?;
+    let mut events = parts::pay(
+        state,
+        player,
+        spell,
+        parts,
+        choices.cost_picks(),
+        choices.cost_kinds(),
+    )?;
     let shots = parts::photographed(state, parts, choices.cost_picks());
     events.extend(spell_cast(
         player,

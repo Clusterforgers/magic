@@ -161,7 +161,8 @@ fn step(r: &mut Reader<'_>, condition: &Condition) -> Option<Vec<Effect>> {
                 on: Ref::This,
                 counter: counter.clone(),
             },
-            counter: counter.clone(),
+            counter: Some(counter.clone()),
+            up_to: false,
         }]);
     }
     effects::IMPERATIVES
@@ -262,7 +263,8 @@ pub fn remove_all_text(condition: &Condition, effect: &Effect) -> Option<String>
             on: Ref::This,
             counter: counter.clone(),
         },
-        counter: counter.clone(),
+        counter: Some(counter.clone()),
+        up_to: false,
     };
     (*effect == all).then(|| "remove all of them".to_owned())
 }

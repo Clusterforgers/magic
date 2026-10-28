@@ -37,8 +37,9 @@ impl KeywordRules for Fading {
                 condition: counters_are(&fade(), Cmp::Ge, 1),
                 then: vec![Effect::RemoveCounters {
                     from: Ref::This,
-                    counter: fade(),
+                    counter: Some(fade()),
                     count: Amount::one(),
+                    up_to: false,
                 }],
                 otherwise: vec![Effect::Sacrifice {
                     who: Ref::You,

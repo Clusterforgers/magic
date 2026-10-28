@@ -155,12 +155,12 @@ impl Part {
                 from: Some(filter),
             } => {
                 let mut filter = filter.clone();
-                filter.0.push(Pred::HasCounter(counter.clone()));
+                filter.0.push(counter.clone().map_or(Pred::HasAnyCounter, Pred::HasCounter));
                 pick(Kind::Counter, &filter, count, item)?
             }
             CostItem::RemoveCounters { counter, count, .. } => {
                 let (number, x) = amount(count, item)?;
-                let counter = counter.clone();
+                let counter = counter.clone().ok_or("Cost.RemoveCounters.AnyKind")?;
                 (
                     Part::Counters {
                         counter,
@@ -323,6 +323,17 @@ impl Part {
         source: ObjectId,
         picked: &[ObjectId],
     ) -> Vec<Event> {
+        self.w2f_events(state, (player, source), picked, &mut [].iter())
+    }
+
+    /// The events that pay the part, a counter of any kind taking its kind from `kinds` (`Choices::cost_kinds`), in turn.
+    pub(crate) fn w2f_events(
+        &self,
+        state: &GameState,
+        (player, source): (PlayerId, ObjectId),
+        picked: &[ObjectId],
+        kinds: &mut std::slice::Iter<'_, CounterKind>,
+    ) -> Vec<Event> {
         match self {
             Part::Life(amount) => life::events(player, *amount),
             Part::Energy(amount) => energy::events(player, *amount),
@@ -330,9 +341,9 @@ impl Part {
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
             Part::Pick(pick) => picked
                 .iter()
-                .filter_map(|object| pick.event(state, player, *object))
+                .filter_map(|object| pick.event(state, player, *object, kinds))
                 .collect(),
-            Part::X(inner) => inner.events(state, player, source, picked),
+            Part::X(inner) => inner.w2f_events(state, (player, source), picked, kinds),
         }
     }
 }
@@ -368,8 +379,10 @@ pub(crate) fn pay(
     source: ObjectId,
     parts: &[Part],
     picks: &[Vec<ObjectId>],
+    kinds: &[CounterKind],
 ) -> Option<Vec<Event>> {
     let mut picks = picks.iter();
+    let mut kinds = kinds.iter();
     let mut events = Vec::new();
     for part in parts {
         let picked = if matches!(part, Part::Pick(_)) {
@@ -377,7 +390,7 @@ pub(crate) fn pay(
         } else {
             &[]
         };
-        events.extend(part.events(state, player, source, picked));
+        events.extend(part.w2f_events(state, (player, source), picked, &mut kinds));
     }
     Some(events)
 }
@@ -418,6 +431,11 @@ impl Payer<'_> {
 }
 
 impl Pick {
+    /// Whether the part removes a counter of any kind, whose kind the player picks for each permanent.
+    pub(crate) fn w2f_any_kind(&self) -> bool {
+        self.kind == Kind::Counter && c11c_counter_picks::c11c_kind(&self.filter).is_none()
+    }
+
     /// The objects the player may pick for this part.
     pub(crate) fn candidates(&self, payer: &Payer<'_>) -> Vec<ObjectId> {
         match self.kind {
@@ -492,7 +510,13 @@ impl Pick {
     }
 
     /// The event that pays this part with `object`, picked for it.
-    fn event(&self, state: &GameState, player: PlayerId, object: ObjectId) -> Option<Event> {
+    fn event(
+        &self,
+        state: &GameState,
+        player: PlayerId,
+        object: ObjectId,
+        kinds: &mut std::slice::Iter<'_, CounterKind>,
+    ) -> Option<Event> {
         match self.kind {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
@@ -501,7 +525,7 @@ impl Pick {
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
-            Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object),
+            Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object, kinds),
         }
     }
 }

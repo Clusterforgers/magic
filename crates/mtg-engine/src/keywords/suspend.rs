@@ -56,8 +56,9 @@ impl KeywordRules for Suspend {
                 targets: Vec::new(),
                 effects: vec![Effect::RemoveCounters {
                     from: Ref::This,
-                    counter: time_counter(),
+                    counter: Some(time_counter()),
                     count: Amount::one(),
+                    up_to: false,
                 }],
             },
             Ability::Triggered {

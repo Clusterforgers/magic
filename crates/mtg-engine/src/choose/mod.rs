@@ -17,7 +17,7 @@ mod targets;
 mod triggers;
 mod yes_no;
 
-use mtg_cards::value::CastWay;
+use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -162,6 +162,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u8>", optional))]
     pub variant: u8,
+    /// The kind of counter removed from each permanent picked for a part that removes a counter of any kind ("Remove a
+    /// counter from a permanent you control"), in the order of the picks.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<CounterKind>>", optional))]
+    pub kinds: Vec<CounterKind>,
 }
 
 /// Whether a count is 0, so serialization can leave it out.
@@ -210,7 +215,18 @@ impl Choices {
     pub(crate) fn forget_cost_picks(&mut self) {
         if let Some(taken) = self.cost_taken.as_deref_mut() {
             taken.picks.clear();
+            taken.kinds.clear();
         }
+    }
+
+    /// The kinds of counter chosen for the picks that remove a counter of any kind (`CostTaken::kinds`).
+    pub fn cost_kinds(&self) -> &[CounterKind] {
+        self.cost_taken.as_deref().map_or(&[], |taken| &taken.kinds)
+    }
+
+    /// Adds the kind of counter removed from the next permanent picked for a part that removes one of any kind.
+    pub(crate) fn w2f_kind_for_cost(&mut self, kind: CounterKind) {
+        self.cost_taken.get_or_insert_with(Box::default).kinds.push(kind);
     }
 
     /// Adds the objects picked for the next part of the cost that takes some.

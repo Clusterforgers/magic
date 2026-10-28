@@ -17,6 +17,7 @@ mod modes;
 mod modifiers;
 mod optional;
 mod parts;
+mod w2f_counter_kinds;
 mod payment;
 pub(crate) mod required;
 pub(crate) mod suspend;
@@ -234,6 +235,9 @@ pub(crate) struct Done {
     pub(crate) x: bool,
     /// How many target specifications have their division settled.
     pub(crate) divided: usize,
+    /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
+    /// position in the options.
+    pub(crate) w2f_kind_picked: Option<usize>,
     /// The step whose decision the player has been asked.
     asked: Option<Phase>,
 }
@@ -351,6 +355,7 @@ impl Pending {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
             Answered::Way(_) if self.done.asked == Some(Phase::Face) => Phase::Face,
+            Answered::Way(_) if self.done.asked == Some(Phase::Parts) => Phase::Parts,
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
             Answered::Cards(_) => Phase::Parts,
@@ -380,6 +385,7 @@ impl Pending {
                 self.done.modes = true;
             }
             Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
+            Answered::Way(pick) if wanted == Phase::Parts => self.done.w2f_kind_picked = Some(pick),
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),
             Answered::Targets(targets) => self.choices.targets.push(targets),

@@ -89,7 +89,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             can_cancel: ctx.can_cancel(),
         })));
     }
-    None
+    super::w2f_counter_kinds::w2f_run(ctx, work, &price)
 }
 
 /// The most X the counted parts of the cost allow, `None` when no part is counted: each part can take as much as the

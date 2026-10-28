@@ -17,11 +17,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         from,
         counter,
         count,
+        up_to,
     } = effect
     else {
         return Err(wrong_effect("RemoveCounters"));
     };
     let count = whole(cx.scope.amount(count)?);
+    let counter = match counter {
+        Some(counter) if !*up_to => counter,
+        _ if count > 0 => {
+            let count = count.unsigned_abs();
+            return super::w2f_any_counters::w2f_run(cx, from, counter.as_ref(), count, *up_to);
+        }
+        _ => return Ok(Run::events(Vec::new())),
+    };
     let mut events = Vec::new();
     if count > 0 {
         for holder in holders(cx, from)? {

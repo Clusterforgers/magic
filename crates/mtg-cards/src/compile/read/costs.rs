@@ -2,7 +2,7 @@
 //! in the order it is printed and written back the same way.
 
 use super::amounts::{cards, cards_text, count_word, number_word, points, points_text};
-use super::counters::{entering, text as counters_text};
+use super::w2f_any_counters::w2f_text;
 use super::effects::describes_a_kind;
 use super::selectors::{Form, phrase, phrase_in, phrase_text};
 use super::tokens::Reader;
@@ -230,9 +230,11 @@ fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
 
 /// "Remove a charge counter from ~": counters of the card itself.
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
-    let (counter, count) = entering(r)?;
+    let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
     r.need("from")?;
     if r.source() {
+        // A counter of any kind from the source asks for its kind, which the engine does not yet.
+        counter.as_ref()?;
         return Some(CostItem::RemoveCounters {
             counter,
             count,
@@ -401,7 +403,7 @@ fn item_text(item: &CostItem) -> Option<String> {
             count,
             from: None,
         } => {
-            format!("Remove {} from ~", counters_text(counter, count)?)
+            format!("Remove {} from ~", w2f_text(counter.as_ref(), count)?)
         }
         CostItem::RemoveCounters {
             counter,
@@ -412,7 +414,7 @@ fn item_text(item: &CostItem) -> Option<String> {
             said.0.push(Pred::ControlledBy(Ref::You));
             format!(
                 "Remove {} from {}",
-                counters_text(counter, count)?,
+                w2f_text(counter.as_ref(), count)?,
                 taken_text(&said, &Amount::one())?
             )
         }
