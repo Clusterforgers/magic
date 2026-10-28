@@ -749,7 +749,7 @@ impl<'a> Walker<'a> {
                     CostItem::TapPower { filter, .. } => {
                         w.at("filter", |w| w.selector(filter));
                     }
-                    CostItem::LessToActivate { per, condition, .. } => {
+                    CostItem::Changed { per, condition, .. } => {
                         w.at("per", |w| w.amount(per));
                         if let Some(condition) = condition {
                             w.at("condition", |w| w.condition(condition));

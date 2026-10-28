@@ -1,7 +1,7 @@
-//! The reduction an activated ability prints for itself after its effects: "This ability costs {1} less to activate for
+//! The change an activated ability prints of its own cost after its effects: "This ability costs {1} less to activate for
 //! each instant and sorcery card in your graveyard.", "This ability costs {4} less to activate if an opponent controls
 //! four or more nonland permanents.", "This ability costs {X} less to activate, where X is the total power of creatures
-//! you control." It is a `CostItem::LessToActivate` at the end of the ability's cost, read with the counts and
+//! you control." It is a `CostItem::Changed` at the end of the ability's cost, read with the counts and
 //! conditions of a spell's cost reduction and written back the same way.
 
 use super::cost_conditions;
@@ -20,11 +20,17 @@ pub(super) fn c11a_at_less(r: &mut Reader<'_>) -> bool {
         .is_some()
 }
 
-/// "This ability costs {1} less to activate ...", with its closing period.
+/// "This ability costs {1} less to activate ..." (or "more"), with its closing period.
 pub(super) fn c11a_less(r: &mut Reader<'_>) -> Option<CostItem> {
     r.words("this ability costs").then_some(())?;
     let (mana, x) = cost_mana(r)?;
-    r.word("less").then_some(())?;
+    let change = if r.word("less") {
+        CostChange::Reduce
+    } else if r.word("more") {
+        CostChange::Increase
+    } else {
+        return None;
+    };
     r.need("to activate")?;
     let per = match r.attempt(c11a_two_types) {
         Some(per) if !x => per,
@@ -35,7 +41,8 @@ pub(super) fn c11a_less(r: &mut Reader<'_>) -> Option<CostItem> {
     } else {
         None
     };
-    r.sentence_end().then_some(CostItem::LessToActivate {
+    r.sentence_end().then_some(CostItem::Changed {
+        change,
         mana,
         per,
         condition,
@@ -49,8 +56,12 @@ fn c11a_two_types(r: &mut Reader<'_>) -> Option<Amount> {
     r.word("and").then_some(())?;
     let second = card_type(r.take_word()?)?;
     let placed = phrase(r, Form::Count)?;
-    (!placed.0.is_empty() && placed.0.iter().all(|pred| matches!(pred, Pred::In(_) | Pred::OwnedBy(_))))
-        .then_some(())?;
+    (!placed.0.is_empty()
+        && placed
+            .0
+            .iter()
+            .all(|pred| matches!(pred, Pred::In(_) | Pred::OwnedBy(_))))
+    .then_some(())?;
     let mut counted = vec![Pred::AnyOf(vec![Pred::Type(first), Pred::Type(second)])];
     counted.extend(placed.0);
     Some(Amount::Count(Selector(counted)))
@@ -68,12 +79,17 @@ fn c11a_two_types_text(per: &Amount) -> Option<String> {
         return None;
     };
     let place = phrase_text(&Selector(placed.to_vec()), Form::Count)?;
-    Some(format!("{} and {} {place}", type_name(*first), type_name(*second)))
+    Some(format!(
+        "{} and {} {place}",
+        type_name(*first),
+        type_name(*second)
+    ))
 }
 
-/// The wordings of the reduction, with its closing period.
+/// The wordings of the change, with its closing period.
 fn c11a_less_texts(item: &CostItem) -> Vec<String> {
-    let CostItem::LessToActivate {
+    let CostItem::Changed {
+        change,
         mana,
         per,
         condition,
@@ -82,21 +98,25 @@ fn c11a_less_texts(item: &CostItem) -> Vec<String> {
         return Vec::new();
     };
     if let Some(counted) = c11a_two_types_text(per) {
+        let more = match change {
+            CostChange::Increase => "more",
+            CostChange::Reduce => "less",
+        };
         return vec![format!(
-            "This ability costs {mana} less to activate for each {counted}."
+            "This ability costs {mana} {more} to activate for each {counted}."
         )];
     }
     cost_sentences(
         "This ability",
         &Selector::this(),
-        CostChange::Reduce,
+        *change,
         mana,
         per,
         condition.as_ref(),
     )
     .into_iter()
     .filter(|sentence| sentence.starts_with("This ability"))
-    .map(|sentence| format!("{}.", sentence.replacen(" less to cast", " less to activate", 1)))
+    .map(|sentence| format!("{}.", sentence.replacen(" to cast", " to activate", 1)))
     .collect()
 }
 
@@ -109,7 +129,7 @@ pub(super) fn c11a_variants(ability: &Ability) -> Option<Vec<String>> {
     let (less, paid): (Vec<&CostItem>, Vec<&CostItem>) = cost
         .0
         .iter()
-        .partition(|item| matches!(item, CostItem::LessToActivate { .. }));
+        .partition(|item| matches!(item, CostItem::Changed { .. }));
     let [less] = less.as_slice() else {
         // Without a reduction the other writers word it; two have no wording.
         return (!less.is_empty()).then(Vec::new);

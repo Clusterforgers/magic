@@ -110,7 +110,7 @@ const RUNS: &[&str] = &[
     "Cost.RevealFromHand",
     "Cost.OneOf",
     "Cost.TapPower",
-    "Cost.LessToActivate",
+    "Cost.Changed",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
@@ -912,7 +912,7 @@ mod tests {
     #[case::the_life_lost_this_way("Amount.LifeLostThisWay", true)]
     #[case::myriad("Keyword.Myriad", true)]
     #[case::crew("Keyword.Crew", true)]
-    #[case::an_ability_that_costs_less_to_activate("Cost.LessToActivate", true)]
+    #[case::an_ability_that_costs_less_to_activate("Cost.Changed", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]
     #[case::mutate("Keyword.Mutate", true)]
     #[case::mutating_triggers("Trigger.Mutates", true)]

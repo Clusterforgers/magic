@@ -100,7 +100,7 @@ fn cast_cost_x(cost: &mtg_cards::cost::Cost, counted: bool) -> Option<(ManaCost,
     let price = Price::announced(cost).ok()?;
     let unpaid = price.tap
         || price.moves_source()
-        || !price.less.is_empty()
+        || !price.changes.is_empty()
         || (price.mana.is_none() && price.parts.is_empty())
         || price
             .parts

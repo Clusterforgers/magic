@@ -6,6 +6,7 @@ use std::str::FromStr;
 use serde::de::{self, SeqAccess, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+use crate::ability::CostChange;
 use crate::mana::ManaCostX;
 use crate::refs::Selector;
 use crate::value::{Amount, Condition, CounterKind};
@@ -109,15 +110,17 @@ pub enum CostItem {
     /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
     /// the required additional cost of a spell.
     OneOf(Vec<Cost>),
-    /// Not paid: an activated ability costs `mana` less as many times as `per` counts, while `condition` holds ("This
-    /// ability costs {1} less to activate for each artifact you control."); generic mana goes down to nothing.
-    LessToActivate {
-        /// The mana taken off each time.
+    /// Not paid: an activated ability costs `mana` more or less as many times as `per` counts, while `condition` holds
+    /// ("This ability costs {1} less to activate for each artifact you control."); generic mana goes down to nothing.
+    Changed {
+        /// More or less.
+        change: CostChange,
+        /// The mana added or taken off each time.
         mana: ManaCostX,
         /// How many times.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         per: Amount,
-        /// The fact the reduction needs; always when absent.
+        /// The fact the change needs; always when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         condition: Option<Condition>,
     },

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "00187de2-bc48-4137-97d8-a9a0fafc76c1",
+  "name": "Pteramander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pteramander",
+      "oracle_fingerprint": "6e6093a5df81cfe83ec09891d9131ecd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{7}{U}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Adapt": { "count": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -425,6 +425,7 @@ Evolutionary Leap
 Exalted Angel
 Excavation Technique
 Exotic Orchard
+Exploding Barrel
 Exploration
 Explore
 Exquisite Huntmaster
@@ -743,6 +744,7 @@ Loki, the Deceiver
 Looter il-Kor
 Lord of Extinction
 Lord of the Forsaken
+Loreseeker's Stone
 Lotleth Troll
 Lotus Petal
 Loyal Retainers
@@ -956,6 +958,7 @@ Prosperous Bandit
 Proven Combatant
 Psychic Impetus
 Psychosis Crawler
+Pteramander
 Putrid Goblin
 Pygmy Kavu
 Quantum Misalignment
@@ -1244,6 +1247,7 @@ Syphon Life
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
+Tamiyo's Logbook
 Tangle Tumbler
 Tanuki Transplanter
 Taurean Mauler

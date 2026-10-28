@@ -125,7 +125,8 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                     choices.cost_picks().iter().flatten().copied().collect();
                 crate::mana_takes::leave(&mut sources, &picked);
                 let life = price.life();
-                let mana = crate::c11a_less::c11a_mana(ctx.state, ctx.player, ability.object, &price);
+                let mana =
+                    crate::c11a_less::c11a_mana(ctx.state, ctx.player, ability.object, &price);
                 Some(Printed::new(mana, sources, life))
             }
             _ => Some(Printed::new(None, Vec::new(), 0)),
