@@ -20,7 +20,7 @@
                 "Continuous": {
                   "affected": { "Target": 0 },
                   "mods": ["DoesntUntap"],
-                  "duration": "WhileSourceOnBattlefield"
+                  "duration": "WhileYouControlSource"
                 }
               }
             ]

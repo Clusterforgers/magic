@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9b93ff69-f195-4d72-8e1d-574c3e53bca8",
+  "name": "Sleep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleep",
+      "oracle_fingerprint": "ef0c34ffbc588e2c9dc5324001a2988a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

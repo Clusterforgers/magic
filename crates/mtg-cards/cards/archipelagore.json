@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ae1df2ad-f34c-4569-92f2-98be776c612d",
+  "name": "Archipelagore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archipelagore",
+      "oracle_fingerprint": "3557e1b197b9b45ce46c77f35609cdb5",
+      "abilities": [
+        { "Keyword": { "Mutate": "{5}{U}" } },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Mutations": "This" } }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

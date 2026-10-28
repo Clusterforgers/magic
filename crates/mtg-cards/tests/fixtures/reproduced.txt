@@ -55,6 +55,7 @@ Arbor Colossus
 Arboreal Grazer
 Arcane Signet
 Arch of Orazca
+Archipelagore
 Archivist of Gondor
 Archmage of Echoes
 Archon of Absolution
@@ -364,6 +365,7 @@ Drudge Beetle
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
+Dungeon Geists
 Dunland Crebain
 Durkwood Baloth
 Dusk Charger
@@ -1075,6 +1077,7 @@ Shenanigans
 Shields of Velis Vel
 Shifting Sliver
 Shiny Impetus
+Shipbreaker Kraken
 Shu Cavalry
 Siege Smash
 Siege Wurm
@@ -1109,6 +1112,7 @@ Skyreach Manta
 Skyshroud Behemoth
 Skyshroud Ridgeback
 Skysovereign, Consul Flagship
+Sleep
 Slip Through Space
 Slitherhead
 Sluiceway Scorpion
@@ -1291,6 +1295,7 @@ Trace of Abundance
 Trash for Treasure
 Traumatic Visions
 Traverse the Outlands
+Traxos, Scourge of Kroog
 Treasure Cruise
 Treasure Hunt
 Trove Tracker

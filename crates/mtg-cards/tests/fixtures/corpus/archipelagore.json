@@ -1,0 +1,27 @@
+{
+  "cmc": 7.0,
+  "collector_number": "41",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "f24b1030-64d5-4c94-a04c-1d9520bfddab",
+  "keywords": [
+    "Mutate"
+  ],
+  "lang": "en",
+  "layout": "mutate",
+  "mana_cost": "{5}{U}{U}",
+  "name": "Archipelagore",
+  "oracle_id": "ae1df2ad-f34c-4569-92f2-98be776c612d",
+  "oracle_text": "Mutate {5}{U} (If you cast this spell for its mutate cost, put it over or under target non-Human creature you own. They mutate into the creature on top plus all abilities from under it.)\nWhenever this creature mutates, tap up to X target creatures, where X is the number of times this creature has mutated. Those creatures don't untap during their controller's next untap step.",
+  "power": "7",
+  "rarity": "uncommon",
+  "released_at": "2020-04-24",
+  "set": "iko",
+  "toughness": "7",
+  "type_line": "Creature — Leviathan"
+}

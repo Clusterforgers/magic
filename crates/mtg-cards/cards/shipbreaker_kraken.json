@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dda7a088-61e3-4c47-b9e0-529fc047f77e",
+  "name": "Shipbreaker Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shipbreaker Kraken",
+      "oracle_fingerprint": "2b83f0c145d958a8cd86e1524c492ae0",
+      "abilities": [
+        { "Activated": { "cost": "{6}{U}{U}", "effects": [{ "Monstrosity": { "count": 4 } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 4 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

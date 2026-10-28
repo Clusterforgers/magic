@@ -1,0 +1,23 @@
+{
+  "cmc": 4.0,
+  "collector_number": "195",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "8566e91a-5f2c-4854-aeb3-68b3c4344582",
+  "keywords": [
+    "Trample"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}",
+  "name": "Traxos, Scourge of Kroog",
+  "oracle_id": "c1c78144-b335-4d22-a668-9173ab6a0d04",
+  "oracle_text": "Trample\nTraxos enters tapped and doesn't untap during your untap step.\nWhenever you cast a historic spell, untap Traxos. (Artifacts, legendaries, and Sagas are historic.)",
+  "power": "7",
+  "rarity": "rare",
+  "released_at": "2022-09-09",
+  "set": "dmc",
+  "toughness": "7",
+  "type_line": "Legendary Artifact Creature — Dragon Construct"
+}

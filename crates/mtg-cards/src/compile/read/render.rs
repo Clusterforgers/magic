@@ -8,6 +8,7 @@ mod all_graveyards;
 mod and_lists;
 mod becomes_subtype;
 mod bound;
+mod c10_uc;
 mod c6_blk_aura;
 mod c7_untap;
 mod chance;
@@ -28,7 +29,6 @@ mod graveyards;
 mod group_becomes;
 mod hand_returns;
 mod has_counter;
-mod held_down;
 mod instead;
 mod library_steps;
 mod loyalty;
@@ -2327,7 +2327,7 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.stolen(effects))
-            .or_else(|| self.held_down(effects))
+            .or_else(|| self.c10_uc_held(effects))
             .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))

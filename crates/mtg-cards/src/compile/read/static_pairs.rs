@@ -14,6 +14,9 @@ use crate::refs::{Ref, ZoneKind};
 
 /// The two statics of the sentence, when the card gets a bonus and a group gets a bonus or a keyword.
 pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
+    if let Some(found) = r.attempt(super::c10_uc::c10_uc_enters_held) {
+        return Some(found);
+    }
     let condition = leading_condition(r)?;
     r.source().then_some(())?;
     r.word("gets").then_some(())?;
@@ -32,6 +35,10 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// Every wording of two statics that read as one sentence, with a capital and a period; empty for any other two
 /// abilities.
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let held = super::c10_uc::c10_uc_enters_held_texts(first, second);
+    if !held.is_empty() {
+        return held;
+    }
     let attacking = super::attack_pairs::texts(first, second);
     if !attacking.is_empty() {
         return attacking;

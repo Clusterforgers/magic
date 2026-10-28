@@ -1,0 +1,27 @@
+{
+  "cmc": 6.0,
+  "collector_number": "404",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "2e558f0a-f921-4ecf-b1c9-2c93aa2d3fd9",
+  "keywords": [
+    "Monstrosity"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{U}{U}",
+  "name": "Shipbreaker Kraken",
+  "oracle_id": "dda7a088-61e3-4c47-b9e0-529fc047f77e",
+  "oracle_text": "{6}{U}{U}: Monstrosity 4. (If this creature isn't monstrous, put four +1/+1 counters on it and it becomes monstrous.)\nWhen this creature becomes monstrous, tap up to four target creatures. Those creatures don't untap during their controllers' untap steps for as long as you control this creature.",
+  "power": "6",
+  "rarity": "rare",
+  "released_at": "2020-11-20",
+  "set": "cmr",
+  "toughness": "6",
+  "type_line": "Creature — Kraken"
+}
