@@ -1,0 +1,55 @@
+{
+  "oracle_id": "9b87b4cd-4fb9-4bb3-b4c0-de1fcc6f44a2",
+  "name": "Love Song of Night and Day",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Love Song of Night and Day",
+      "oracle_fingerprint": "9e28f83c0813730d1e97f7c28fee0706",
+      "abilities": [
+        { "Keyword": "ReadAhead" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
