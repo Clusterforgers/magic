@@ -19,6 +19,7 @@ const FLESH: &str = r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Target":
 const CRUELTY: &str = r#"{"Spell":{"effects":[{"DealDamage":{"amount":2,"to":{"Target":0}}},{"Discard":{"count":2,"who":{"Target":0}}}],"targets":[{"what":"Player"}]}}"#;
 const SNIPER: &str = r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"DealDamage":{"amount":1,"to":{"Target":0},"source":"This"}},{"Tap":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
 const SNIPER_TWO: &str = r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"DealDamage":{"amount":1,"to":{"Target":0},"source":"This"}},{"Tap":{"what":{"Target":1}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}},{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
+const TWICE: &str = r#"{"Spell":{"effects":[{"Draw":{"count":3,"who":{"Target":0}}},{"LoseLife":{"amount":3,"who":{"Target":0}}},{"Discard":{"who":{"Target":0}}}],"targets":[{"what":"Player"}]}}"#;
 const SILKENFIST: &str = r#"{"Triggered":{"effects":[{"Untap":{"what":"This"}}],"when":{"BecomesBlocked":{"what":["This"]}}}}"#;
 const THRASHER: &str = r#"{"Triggered":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":["CantBlock"]}}],"when":{"Attacks":{"what":[{"Is":"This"}]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
 const TRAINEE: &str = r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Is":"This"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":-2,"toughness":0}}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}"#;
@@ -102,6 +103,10 @@ fn writes_the_oracle_wording(#[case] json: &str, #[case] clause: &str) {
 #[case::sniper_two(
     SNIPER_TWO,
     "{1}, {T}: This creature deals 1 damage to target creature. Tap that creature."
+)]
+#[case::twice(
+    TWICE,
+    "Target player draws three cards. That player loses 3 life. That player discards a card."
 )]
 #[case::silkenfist_tap(SILKENFIST, "Whenever this creature becomes blocked, tap it.")]
 #[case::thrasher_attack(

@@ -8,8 +8,8 @@ use super::w4d_parts::{capitalized, parts, with_effects, wordings};
 use super::w8c_then_tap::w8c_names;
 use crate::ability::Ability;
 
-/// Adds the wordings of an ability with one target split into a first part that names it and sentences that say it
-/// again as "it" or "that creature".
+/// Adds the wordings of an ability with one target whose first effect names it and exactly one later effect names it
+/// again, as "it" or "that creature".
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Some((value, effects)) = parts(ability) else {
         return;
@@ -21,22 +21,20 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     };
     let target = json!({"Target": 0});
-    for split in 1..effects.len() {
-        let (lead, tail) = effects.split_at(split);
-        if !lead.iter().any(|effect| w8c_names(effect, &target))
-            || !tail.iter().any(|effect| w8c_names(effect, &target))
-        {
-            continue;
-        }
-        let rests = w12a_said_again(tail, &targets, noun);
-        if rests.is_empty() {
-            continue;
-        }
-        for first in with_effects(&value, lead) {
-            if !first.ends_with('.') {
-                continue;
-            }
-            texts.extend(rests.iter().map(|rest| format!("{first} {rest}")));
+    let Some((first, tail)) = effects.split_first() else {
+        return;
+    };
+    let again = tail
+        .iter()
+        .filter(|effect| w8c_names(effect, &target))
+        .count();
+    if !w8c_names(first, &target) || again != 1 {
+        return;
+    }
+    let rests = w12a_said_again(tail, &targets, noun);
+    for lead in with_effects(&value, std::slice::from_ref(first)) {
+        if lead.ends_with('.') {
+            texts.extend(rests.iter().map(|rest| format!("{lead} {rest}")));
         }
     }
 }
