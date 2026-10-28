@@ -88,6 +88,27 @@ pub(crate) fn mode_at(root: &[Effect], chosen: &[usize], position: &[usize]) -> 
     }
 }
 
+/// The effects of the mode chosen that `position` begins when it is the first effect of a mode chosen after the first:
+/// each such mode runs in a scope of its own, so a mode chosen twice binds its names again.
+pub(crate) fn later_mode_begun<'a>(
+    root: &'a [Effect],
+    chosen: &[usize],
+    position: &[usize],
+) -> Option<&'a [Effect]> {
+    let (holder, inside) = position.split_at(position.len().checked_sub(2)?);
+    let [place, 0] = inside else {
+        return None;
+    };
+    if *place == 0 || holder.is_empty() {
+        return None;
+    }
+    let Some(Effect::Modal { modes, .. }) = effect_at(root, chosen, holder) else {
+        return None;
+    };
+    let mode = modes.get(*chosen.get(*place)?)?;
+    Some(mode.effects.as_slice())
+}
+
 /// Where the effect after the one at `position` runs: the effect itself again, inside the branch it enters, else the
 /// next sibling, else the effect after the one that holds the list. Past the last effect of the root it is the end,
 /// one beyond.
@@ -161,7 +182,7 @@ fn sibling(root: &[Effect], chosen: &[usize], position: &[usize]) -> Vec<usize> 
 
 #[cfg(test)]
 mod tests {
-    //! Goal: positions walk the effect tree in the order the effects happen, entering the branch an effect chooses and leaving a list after its last effect, for any nesting, and a modal effect walks the modes chosen in the order chosen, a mode chosen twice twice and a mode with nothing to do not at all.
+    //! Goal: positions walk the effect tree in the order the effects happen, entering the branch an effect chooses and leaving a list after its last effect, for any nesting, and a modal effect walks the modes chosen in the order chosen, a mode chosen twice twice and a mode with nothing to do not at all, and only the first step of a mode chosen after the first begins a run of its own.
     use super::*;
     use rstest::rstest;
 
@@ -296,6 +317,25 @@ mod tests {
         #[case] expected: &[&str],
     ) {
         assert_eq!(walk(chosen), expected);
+    }
+
+    #[rstest]
+    #[case::the_first_mode_chosen(&[0, 0, 0], &[1, 1], None)]
+    #[case::the_second_run_of_a_mode(&[0, 1, 0], &[1, 1], Some("Draw"))]
+    #[case::the_third_mode_chosen(&[0, 2, 0], &[0, 3, 0], Some("GainLife"))]
+    #[case::a_later_step_of_a_mode(&[0, 1, 1], &[0, 0], None)]
+    #[case::the_modal_effect_itself(&[0], &[1, 1], None)]
+    fn a_later_mode_begins_at_its_first_step(
+        #[case] position: &[usize],
+        #[case] chosen: &[usize],
+        #[case] expected: Option<&str>,
+    ) {
+        let tree = modal();
+        let begun = later_mode_begun(&tree, chosen, position);
+        assert_eq!(
+            begun.map(|mode| name(mode.first())),
+            expected.map(str::to_owned)
+        );
     }
 
     #[rstest]

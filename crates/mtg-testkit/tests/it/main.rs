@@ -50,6 +50,7 @@ mod c6_blk_draws;
 mod c6_eg_cards;
 mod c6_gap_batches;
 mod c6_kw_renown_exploit;
+mod c6_mr_modes_again;
 mod c7_untap_dies;
 mod c7_untap_held;
 mod c8_eg_cards;
