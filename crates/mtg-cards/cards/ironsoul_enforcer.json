@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a613b00e-d6e8-4470-a7dc-5eab5e48dce0",
+  "name": "Ironsoul Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironsoul Enforcer",
+      "oracle_fingerprint": "89b625ea9f29a88469aa4211de0ceca1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "AttacksAlone": { "what": ["This"] } },
+                { "AttacksAlone": { "what": ["Commander", { "ControlledBy": "You" }] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b11187ab-f8a8-422b-b550-4495f96de0f2",
+  "name": "It That Betrays",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "It That Betrays",
+      "oracle_fingerprint": "f2d675a6ce74a823ae1cdfa5b865ac33",
+      "abilities": [
+        { "Keyword": { "Annihilator": 2 } },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Not": "Token" }], "by": "Opponents" } },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

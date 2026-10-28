@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0f7c7035-e395-4da5-8536-9f192d03e3ba",
+  "name": "Falcon and Redwing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falcon and Redwing",
+      "oracle_fingerprint": "4659acbabe112a7371f7b0fe49b3187b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "Triggering"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

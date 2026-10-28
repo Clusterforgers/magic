@@ -1,0 +1,47 @@
+{
+  "oracle_id": "61816f98-9d1a-4b16-9194-cb7249880710",
+  "name": "Leitmotif Composer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leitmotif Composer",
+      "oracle_fingerprint": "99cc4432adcb29aa276c02383384e79f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Named": "Leitmotif Composer" }] },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

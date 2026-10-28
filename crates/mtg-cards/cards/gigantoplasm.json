@@ -1,0 +1,41 @@
+{
+  "oracle_id": "52fdfe4b-10a7-421d-80ea-f6c39013062b",
+  "name": "Gigantoplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gigantoplasm",
+      "oracle_fingerprint": "5f881be97dfdcc59d0ceec57289da023",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Activated": {
+                        "cost": "{X}",
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "SetPT": { "power": "X", "toughness": "X" } }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

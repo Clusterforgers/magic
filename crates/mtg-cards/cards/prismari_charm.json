@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c3c25a2c-f71c-4cb7-9117-0bcda9248bfd",
+  "name": "Prismari Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismari Charm",
+      "oracle_fingerprint": "0bc5a08f985b6a067b7140d05726d38f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Surveil": { "count": 2 } }, { "Draw": {} }] },
+                    {
+                      "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

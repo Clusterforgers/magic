@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a07ceaca-9964-4c24-937e-090b6643b327",
+  "name": "Chrome Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chrome Courier",
+      "oracle_fingerprint": "f11615ae24978c0dd5c50a9583656f5d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "card", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Type": "Artifact" }]
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

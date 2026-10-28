@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8b50de69-121a-48c4-bd7c-c8858f35f6ed",
+  "name": "Blood Curdle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Curdle",
+      "oracle_fingerprint": "60af110396d8c0f8548badd1b9377a48",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "mine"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "mine" }, "counter": { "Other": "menace" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

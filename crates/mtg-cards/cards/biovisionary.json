@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e99fde0d-ca28-4a49-abe0-d01cf4e322b6",
+  "name": "Biovisionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biovisionary",
+      "oracle_fingerprint": "fab8e083062f2b61f2dd082e09903e2c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Named": "Biovisionary" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

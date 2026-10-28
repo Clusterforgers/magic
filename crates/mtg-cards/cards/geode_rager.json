@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3969d1d6-0aed-4fa8-aa09-d9be50576fb4",
+  "name": "Geode Rager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geode Rager",
+      "oracle_fingerprint": "4b318742b498ddc708cbd8aaad80d0ae",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Goad": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

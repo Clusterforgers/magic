@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e",
+  "oracle_id": "e3955573-3db5-490e-903e-65e0172a9202",
+  "multiverse_ids": [
+    627852
+  ],
+  "mtgo_id": 115005,
+  "tcgplayer_id": 504045,
+  "cardmarket_id": 722520,
+  "name": "Hammer of Nazahn",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e",
+  "scryfall_uri": "https://scryfall.com/card/cmm/388/hammer-of-nazahn?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:06:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.jpg?1783915599",
+    "normal": "https://cards.scryfall.io/normal/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.jpg?1783915599",
+    "large": "https://cards.scryfall.io/large/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.jpg?1783915599",
+    "png": "https://cards.scryfall.io/png/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.png?1783915599",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.jpg?1783915599",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.jpg?1783915599",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.webp?1783915599",
+    "grid": "https://cards.scryfall.io/grid/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.webp?1783915599",
+    "display": "https://cards.scryfall.io/display/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.webp?1783915599",
+    "art": "https://cards.scryfall.io/art/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.webp?1783915599",
+    "crop": "https://cards.scryfall.io/crop/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.webp?1783915599",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/7/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e.jpg?1783915599"
+  },
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "Whenever Hammer of Nazahn or another Equipment you control enters, you may attach that Equipment to target creature you control.\nEquipped creature gets +2/+0 and has indestructible.\nEquip {4}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8f21a5b4-1cfa-466b-8a16-a8b11f20b818",
+      "component": "combo_piece",
+      "name": "Nazahn, Revered Bladesmith",
+      "type_line": "Legendary Creature — Cat Artificer",
+      "uri": "https://api.scryfall.com/cards/8f21a5b4-1cfa-466b-8a16-a8b11f20b818"
+    },
+    {
+      "object": "related_card",
+      "id": "abe0ad2c-9553-4f55-8e8a-f593971bf601",
+      "component": "combo_piece",
+      "name": "Hammer of Nazahn",
+      "type_line": "Legendary Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/abe0ad2c-9553-4f55-8e8a-f593971bf601"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e77a8ac1-f40d-423e-a0b3-0a8e236a6c1e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae3955573-3db5-490e-903e-65e0172a9202&unique=prints",
+  "collector_number": "388",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Victor Adame Minguez",
+  "artist_ids": [
+    "bd8f7368-5b10-4554-b6b8-d052c6aca89f"
+  ],
+  "illustration_id": "42d10f58-a44a-4965-ba0a-ee88e5c984f4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 722,
+  "preview": {
+    "source": "TCGplayer",
+    "source_uri": "https://infinite.tcgplayer.com/article/Our-EXCLUSIVE-Commander-Masters-Preview-Card/bade4a0c-119c-48ab-8c18-78fb18393bc5/",
+    "previewed_at": "2023-07-13"
+  },
+  "prices": {
+    "usd": "14.36",
+    "usd_foil": "17.56",
+    "usd_etched": null,
+    "eur": "9.92",
+    "eur_foil": "16.08",
+    "tix": "0.49"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=627852&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHammer%2Bof%2BNazahn",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHammer%2Bof%2BNazahn",
+    "edhrec": "https://edhrec.com/route/?cc=Hammer+of+Nazahn"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F504045%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=722520&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/115005?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

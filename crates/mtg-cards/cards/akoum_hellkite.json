@@ -1,0 +1,40 @@
+{
+  "oracle_id": "05b6f9e3-9acd-43a6-acff-caa811aaf0a1",
+  "name": "Akoum Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akoum Hellkite",
+      "oracle_fingerprint": "5ff24dddac23f8fb57bfb13c63616c24",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Mountain" }] }
+                  },
+                  "then": [
+                    { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 2 } }
+                  ],
+                  "otherwise": [
+                    { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

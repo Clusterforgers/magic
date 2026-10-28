@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2829ae08-9964-4679-80e8-46d5d33d10b9",
+  "name": "In Too Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In Too Deep",
+      "oracle_fingerprint": "f6bb4cb57b1deb8e77786b5a28e8597f",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Keyword": {
+            "Enchant": [
+              {
+                "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }, { "Subtype": "Clue" }]
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetTypes": ["Artifact"] },
+              { "AddSubtype": "Clue" },
+              { "SetColors": [] },
+              "LoseAbilities",
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

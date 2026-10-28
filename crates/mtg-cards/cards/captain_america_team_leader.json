@@ -1,0 +1,34 @@
+{
+  "oracle_id": "916cf34a-fd2c-47fe-bebb-f7b52b3dabed",
+  "name": "Captain America, Team Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America, Team Leader",
+      "oracle_fingerprint": "de1faa0a3c054d6fbd92e6bb846a56b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Hero" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

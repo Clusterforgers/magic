@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c95bedcc-911f-4c0f-a148-1cf5787e82bd",
+  "name": "Run for Your Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Run for Your Life",
+      "oracle_fingerprint": "a0463576c17fcf692ece5d90f7b40327",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 1, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Haste" },
+                    { "CantBeBlockedBy": [{ "Not": { "HasKeyword": "Haste" } }] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{2}{U}{R}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

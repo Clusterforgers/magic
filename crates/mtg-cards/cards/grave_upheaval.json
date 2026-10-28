@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e5b43523-809a-4baf-b76d-9f59b82846b6",
+  "name": "Grave Upheaval",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Upheaval",
+      "oracle_fingerprint": "cc51ae1a5347c3cfe0a207f669af5c3b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

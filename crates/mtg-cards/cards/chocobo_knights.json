@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6cbefcba-0c1c-48fd-9b78-905ed61aae1e",
+  "name": "Chocobo Knights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chocobo Knights",
+      "oracle_fingerprint": "e2eaf29bde9a759d1951ef67be672db1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": { "Other": "x" } }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

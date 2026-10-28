@@ -15,19 +15,20 @@ pub mod session;
 pub mod store;
 
 use std::fmt::Write as _;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use mtg_cards::PrintedCard;
 use mtg_cards::builtin;
 use mtg_cards::reference::dsl_reference;
 use mtg_db::Database;
 
-use crate::args::{ProposeArgs, Provider};
+use crate::args::{PromoteArgs, ProposeArgs, Provider};
 use crate::audit::stored_cards;
 use crate::cache::Cache;
 use crate::compile::names_of;
 use crate::error::CliError;
 use crate::progress::Progress;
+use crate::w2a_promote::w2a_promote;
 use anthropic::{AnthropicClient, AnthropicConfig, ApiKey};
 use c11i_openai::{OpenAi, OpenAiClient};
 use examples::ExampleIndex;
@@ -246,11 +247,40 @@ pub async fn run_command(
     }
     let client = c11i_client_of(args, env, api, progress.clone())?;
     let store = Store::new(args.out.clone().unwrap_or_else(|| default_out(cache)));
+    let accepted: Vec<PathBuf> = targets
+        .iter()
+        .map(|&index| store.accepted_path(&cards[index].name))
+        .collect();
     // The client blocks on the runtime, so the loop runs on a blocking thread.
     let report = tokio::task::spawn_blocking(move || {
         propose_cards(&cards, &targets, &*client, &options, &store, &progress)
     })
     .await
     .map_err(|error| CliError::Config(format!("the run stopped: {error}")))??;
-    Ok(report.render())
+    let mut text = report.render();
+    if let Some(out) = &args.promote {
+        text.push('\n');
+        text.push_str(&w2a_promote_run(db, cache, out, accepted).await?);
+    }
+    Ok(text)
+}
+
+/// Promotes the accepted proposals a run saved, into the `mtg-cards` crate directory `out`, as `promote` does.
+async fn w2a_promote_run(
+    db: &Database,
+    cache: &Cache,
+    out: &Path,
+    accepted: Vec<PathBuf>,
+) -> Result<String, CliError> {
+    let files: Vec<PathBuf> = accepted.into_iter().filter(|path| path.is_file()).collect();
+    if files.is_empty() {
+        return Ok("nothing to promote".into());
+    }
+    let args = PromoteArgs {
+        dry_run: false,
+        partial: false,
+        out: Some(out.to_path_buf()),
+        files,
+    };
+    Ok(w2a_promote(db, cache, &args).await?.render())
 }

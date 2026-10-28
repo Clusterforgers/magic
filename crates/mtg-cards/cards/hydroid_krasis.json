@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6bd872b2-5c40-4e11-9a7f-0136a51b0642",
+  "name": "Hydroid Krasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hydroid Krasis",
+      "oracle_fingerprint": "3ea7e6bacb825136652e4769b69a6f4a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              { "GainLife": { "amount": { "Half": { "of": "X", "up": false } } } },
+              { "Draw": { "count": { "Half": { "of": "X", "up": false } } } }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        }
+      ]
+    }
+  ]
+}

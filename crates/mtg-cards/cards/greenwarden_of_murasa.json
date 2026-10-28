@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2facb1b3-4522-4610-a0ab-29ac53ca7fcd",
+  "name": "Greenwarden of Murasa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greenwarden of Murasa",
+      "oracle_fingerprint": "dbaf10b51aef69209b765d8226db408d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "May": { "effects": [{ "Exile": { "what": "This" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

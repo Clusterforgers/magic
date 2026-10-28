@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b14d05c0-fe10-4079-a90e-0aea1a8fd375",
+  "name": "Lifeblood Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifeblood Hydra",
+      "oracle_fingerprint": "16068e909a782a051ce2f81ffa613a4f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } },
+              { "Draw": { "count": { "Stat": { "of": "This", "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

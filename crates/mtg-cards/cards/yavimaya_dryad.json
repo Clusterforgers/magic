@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6d1a1ea3-6d83-4bee-a7fe-0ddd0f3019cf",
+  "name": "Yavimaya Dryad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yavimaya Dryad",
+      "oracle_fingerprint": "3d85df254f385825675c93d0b4a82ae0",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Subtype": "Forest" }], "as": "card" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "tapped": true, "under": { "Target": 0 } } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

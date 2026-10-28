@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c26964c7-4259-4281-b450-f0c2ed34b37c",
+  "name": "Forgotten Creation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forgotten Creation",
+      "oracle_fingerprint": "8be57573048cd7f5573cf127e66111ae",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Discard": {
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "discarded"
+                      }
+                    },
+                    { "Draw": { "count": { "Count": [{ "Is": { "Bound": "discarded" } }] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "19586946-a6a6-4154-a544-15a052483f96",
+  "oracle_id": "9ecd53b0-4551-4505-b5d2-02ae49d4cbdb",
+  "multiverse_ids": [
+    652140
+  ],
+  "mtgo_id": 132355,
+  "tcgplayer_id": 539609,
+  "cardmarket_id": 757852,
+  "name": "Acquired Mutation",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/19586946-a6a6-4154-a544-15a052483f96",
+  "scryfall_uri": "https://scryfall.com/card/pip/53/acquired-mutation?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/9/19586946-a6a6-4154-a544-15a052483f96.jpg?1783912408",
+    "normal": "https://cards.scryfall.io/normal/front/1/9/19586946-a6a6-4154-a544-15a052483f96.jpg?1783912408",
+    "large": "https://cards.scryfall.io/large/front/1/9/19586946-a6a6-4154-a544-15a052483f96.jpg?1783912408",
+    "png": "https://cards.scryfall.io/png/front/1/9/19586946-a6a6-4154-a544-15a052483f96.png?1783912408",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/9/19586946-a6a6-4154-a544-15a052483f96.jpg?1783912408",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/9/19586946-a6a6-4154-a544-15a052483f96.jpg?1783912408",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/9/19586946-a6a6-4154-a544-15a052483f96.webp?1783912408",
+    "grid": "https://cards.scryfall.io/grid/front/1/9/19586946-a6a6-4154-a544-15a052483f96.webp?1783912408",
+    "display": "https://cards.scryfall.io/display/front/1/9/19586946-a6a6-4154-a544-15a052483f96.webp?1783912408",
+    "art": "https://cards.scryfall.io/art/front/1/9/19586946-a6a6-4154-a544-15a052483f96.webp?1783912408",
+    "crop": "https://cards.scryfall.io/crop/front/1/9/19586946-a6a6-4154-a544-15a052483f96.webp?1783912408",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/9/19586946-a6a6-4154-a544-15a052483f96.jpg?1783912408"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2 and is goaded. (It attacks each combat if able and attacks a player other than you if able.)\nWhenever enchanted creature attacks, defending player gets two rad counters.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Goad",
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    },
+    {
+      "object": "related_card",
+      "id": "dd34f1bc-1386-45a5-a229-a948bbe373c5",
+      "component": "combo_piece",
+      "name": "Acquired Mutation",
+      "type_line": "Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/dd34f1bc-1386-45a5-a229-a948bbe373c5"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/19586946-a6a6-4154-a544-15a052483f96/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9ecd53b0-4551-4505-b5d2-02ae49d4cbdb&unique=prints",
+  "collector_number": "53",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The radiation of the wasteland has changed you!",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Xavier Ribeiro",
+  "artist_ids": [
+    "e17c2662-0491-47b2-bf1d-8c111a8ad3f8"
+  ],
+  "illustration_id": "086a3026-1eb8-46c4-8cc8-0fae1798ccad",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10094,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "1.17",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.40",
+    "tix": "0.47"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652140&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAcquired%2BMutation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAcquired%2BMutation",
+    "edhrec": "https://edhrec.com/route/?cc=Acquired+Mutation"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539609%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757852&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132355?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

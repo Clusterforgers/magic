@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8d13fabc-1e0f-41f2-8873-9f44b68f7e43",
+  "name": "Hindervines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hindervines",
+      "oracle_fingerprint": "b99d2b17d05e10ea9c202f39affdd4ad",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [{ "Type": "Creature" }, { "Not": { "HasCounter": "+1/+1" } }],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

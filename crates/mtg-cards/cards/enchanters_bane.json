@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1f0548f8-5dec-44b5-b5a9-e55fa4366e08",
+  "name": "Enchanter's Bane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enchanter's Bane",
+      "oracle_fingerprint": "6c8a1947e4fa3a13d133049d986fd1a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "Sacrifice": { "filter": [{ "Is": { "Target": 0 } }] } }],
+                  "unpaid": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "ControllerOf": { "Target": 0 } },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

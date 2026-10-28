@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - M0 to M2 (foundations, card data, engine core, protocol and server, game flow, web client, deck builder): done.
-- M3 card system and M6 coverage: in progress; 4,022 of the 6,429 stored precon cards (62.6%) and 79.7% of the copies are Verified.
+- M3 card system and M6 coverage: in progress; 4,141 of the 6,429 stored precon cards (64.4%) and 80.7% of the copies are Verified.
 - M4 Commander: done in the engine, server and lobby except the companion conditions that need more than the card (m4c).
 - M5 table and prompts, M7 product, M8 polish and deploy: not started.
 
@@ -30,7 +30,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
-- Model-assisted reading: (r3) the next sample, (r2ea), (r2dge), (r2eba) a local run, (r2ec) a specialist model.
+- Model-assisted reading: (r3) the next sample, (r2dge), (r2eba) a local run, (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
@@ -67,7 +67,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Chance and choices: dice tables, coin flips, votes, piles, repeat for each player or object, planechase votes and modes at random, once each turn, once ever, repeated or one or more.
 - Fights and targets: fights of two targets, ability counters, second targets kept apart, targets for each opponent and the chosen player.
 - Turn structure: extra turns, added phases, phase conditions, skipped extra turns and time travel.
-- Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server) and `dsl-reference`, the census of stored proposals and writers for every accepted sample wording.
+- Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server), `promote` and `dsl-reference`, the census of stored proposals and writers for every accepted sample wording.
 - Reference engines: Forge, XMage and Magarena surveyed, and `mtg-cli forge-check` maps Forge's scripts to DSL verbs (`docs/reference-engines.md`).
 - Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser.
 - Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
@@ -121,7 +121,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,022 of 6,429 precon cards, 62.6%; 79.7% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,141 of 6,429 precon cards, 64.4%; 80.7% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
@@ -201,7 +201,6 @@ The server is settled first, then the web is built once against the final types.
 
 ### Model-assisted reading
 - [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
-- [~] (r2ea) (r2ea-promote-proposals) `mtg-cli propose --promote` copies accepted proposals into `crates/mtg-cards/cards/` with their fixtures, and the yield of a live run is recorded in `docs/cards-dsl.md`
 - [ ] (r2eba) A `propose --provider openai` run of `gpt-oss:20b` on a 16 GB GPU over a sample, with its yield and tokens a second recorded in `docs/cards-dsl.md`
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each

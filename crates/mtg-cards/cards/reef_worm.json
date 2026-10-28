@@ -1,0 +1,92 @@
+{
+  "oracle_id": "e3ad5cbc-4245-4e1e-8204-509381fa0c1c",
+  "name": "Reef Worm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reef Worm",
+      "oracle_fingerprint": "9292ef99ab0d0caee92d39b0a86628bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fish",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fish"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Whale",
+                                      "colors": ["Blue"],
+                                      "types": ["Creature"],
+                                      "subtypes": ["Whale"],
+                                      "power": 6,
+                                      "toughness": 6,
+                                      "abilities": [
+                                        {
+                                          "Triggered": {
+                                            "when": {
+                                              "ZoneChange": {
+                                                "what": ["This"],
+                                                "from": "Battlefield",
+                                                "to": "Graveyard"
+                                              }
+                                            },
+                                            "effects": [
+                                              {
+                                                "CreateToken": {
+                                                  "token": {
+                                                    "Custom": {
+                                                      "name": "Kraken",
+                                                      "colors": ["Blue"],
+                                                      "types": ["Creature"],
+                                                      "subtypes": ["Kraken"],
+                                                      "power": 9,
+                                                      "toughness": 9
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

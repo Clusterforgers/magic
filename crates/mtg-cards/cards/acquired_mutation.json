@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9ecd53b0-4551-4505-b5d2-02ae49d4cbdb",
+  "name": "Acquired Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acquired Mutation",
+      "oracle_fingerprint": "f02f0fc25309de11ec2b0c8cde35a85f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "Goaded"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "PutCounters": { "on": "Defending", "counter": { "Other": "rad" }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "7bcf3090-95c6-4384-a857-9fe571e6da85",
+  "name": "Fathom Fleet Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fathom Fleet Captain",
+      "oracle_fingerprint": "afbde8cedf762ddaa5734df58667f9fe",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Pirate" },
+                    "Other",
+                    { "Not": "Token" },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Pirate",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Pirate"],
+                            "power": 2,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Menace" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

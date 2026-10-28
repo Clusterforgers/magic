@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "741e7d92-1570-4eb2-8195-e48c44672648",
+  "oracle_id": "2373e035-25f7-473a-9386-2093f77d3f94",
+  "multiverse_ids": [
+    650278
+  ],
+  "mtgo_id": 122508,
+  "tcgplayer_id": 535858,
+  "cardmarket_id": 753528,
+  "name": "Salt Road Ambushers",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/741e7d92-1570-4eb2-8195-e48c44672648",
+  "scryfall_uri": "https://scryfall.com/card/mkc/184/salt-road-ambushers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:23:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.jpg?1783912988",
+    "normal": "https://cards.scryfall.io/normal/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.jpg?1783912988",
+    "large": "https://cards.scryfall.io/large/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.jpg?1783912988",
+    "png": "https://cards.scryfall.io/png/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.png?1783912988",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.jpg?1783912988",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.jpg?1783912988",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.webp?1783912988",
+    "grid": "https://cards.scryfall.io/grid/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.webp?1783912988",
+    "display": "https://cards.scryfall.io/display/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.webp?1783912988",
+    "art": "https://cards.scryfall.io/art/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.webp?1783912988",
+    "crop": "https://cards.scryfall.io/crop/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.webp?1783912988",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/4/741e7d92-1570-4eb2-8195-e48c44672648.jpg?1783912988"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Dog Warrior",
+  "oracle_text": "Whenever another permanent you control is turned face up, if it's a creature, put two +1/+1 counters on it.\nMegamorph {3}{G}{G} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its megamorph cost and put a +1/+1 counter on it.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Megamorph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "741e7d92-1570-4eb2-8195-e48c44672648",
+      "component": "combo_piece",
+      "name": "Salt Road Ambushers",
+      "type_line": "Creature — Dog Warrior",
+      "uri": "https://api.scryfall.com/cards/741e7d92-1570-4eb2-8195-e48c44672648"
+    },
+    {
+      "object": "related_card",
+      "id": "5430da88-b72e-4d64-bd3c-b21062cac1c2",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/5430da88-b72e-4d64-bd3c-b21062cac1c2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/741e7d92-1570-4eb2-8195-e48c44672648/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2373e035-25f7-473a-9386-2093f77d3f94&unique=prints",
+  "collector_number": "184",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Joseph Meehan",
+  "artist_ids": [
+    "6befd6d5-7f8d-4b7c-87e3-5511391a3359"
+  ],
+  "illustration_id": "d92ecd29-e2d0-415c-86ad-4a17ec408cb5",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12450,
+  "penny_rank": 12265,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650278&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSalt%2BRoad%2BAmbushers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSalt%2BRoad%2BAmbushers",
+    "edhrec": "https://edhrec.com/route/?cc=Salt+Road+Ambushers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535858%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753528&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122508?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

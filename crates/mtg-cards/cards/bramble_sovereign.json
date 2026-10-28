@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5e26a688-67d7-48a5-8862-653851bf3784",
+  "name": "Bramble Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bramble Sovereign",
+      "oracle_fingerprint": "b8eae2bed36ea8ac328a71b66f8cfa27",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "Not": "Token" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{G}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": "Triggering" },
+                        "token": { "CopyOf": { "of": "Triggering" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

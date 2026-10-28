@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9103f01f-e60b-4cda-9102-edc4aef74cc3",
+  "name": "Necromancer's Covenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromancer's Covenant",
+      "oracle_fingerprint": "a62ab8f8637a8e6f51745dc783f5235b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Count": [{ "Is": { "Bound": "exiled" } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d99e8f94-4a8a-42a1-b5d0-2b08cacb8676",
+  "name": "Fleetfoot Panther",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleetfoot Panther",
+      "oracle_fingerprint": "6e06106a3ad8a561fb1178236c35cdde",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

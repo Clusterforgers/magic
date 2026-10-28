@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "2c216ff3-26e1-43bc-beb5-65fc7fd1b6db",
+  "oracle_id": "f5a74cee-6b17-4ed4-bc05-94fac53f87d7",
+  "multiverse_ids": [
+    405250
+  ],
+  "tcgplayer_id": 107964,
+  "cardmarket_id": 285885,
+  "name": "Grave Peril",
+  "lang": "en",
+  "released_at": "2015-11-13",
+  "uri": "https://api.scryfall.com/cards/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db",
+  "scryfall_uri": "https://scryfall.com/card/c15/128/grave-peril?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:21:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.jpg?1783938089",
+    "normal": "https://cards.scryfall.io/normal/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.jpg?1783938089",
+    "large": "https://cards.scryfall.io/large/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.jpg?1783938089",
+    "png": "https://cards.scryfall.io/png/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.png?1783938089",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.jpg?1783938089",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.jpg?1783938089",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.webp?1783938089",
+    "grid": "https://cards.scryfall.io/grid/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.webp?1783938089",
+    "display": "https://cards.scryfall.io/display/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.webp?1783938089",
+    "art": "https://cards.scryfall.io/art/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.webp?1783938089",
+    "crop": "https://cards.scryfall.io/crop/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.webp?1783938089",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/c/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db.jpg?1783938089"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When a nonblack creature enters, sacrifice this enchantment. If you do, destroy that creature.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ea6c99f9-5489-4504-b30c-c819fa3b1fd3",
+  "set": "c15",
+  "set_name": "Commander 2015",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/ea6c99f9-5489-4504-b30c-c819fa3b1fd3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac15&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c15?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2c216ff3-26e1-43bc-beb5-65fc7fd1b6db/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af5a74cee-6b17-4ed4-bc05-94fac53f87d7&unique=prints",
+  "collector_number": "128",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Sometimes the grave does not wait for death before relishing its feast of flesh and bones.\"\n—Ezrith, druid of the Dark Hours",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "11e6ce6a-95fe-4666-bf65-a7304b3e01fa",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 26392,
+  "penny_rank": 15884,
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=405250&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGrave%2BPeril",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGrave%2BPeril",
+    "edhrec": "https://edhrec.com/route/?cc=Grave+Peril"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F107964%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=285885&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Grave+Peril&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

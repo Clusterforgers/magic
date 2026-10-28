@@ -1,0 +1,33 @@
+{
+  "oracle_id": "750d846e-2774-4296-8d9f-5207477d842d",
+  "name": "Nimble Obstructionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimble Obstructionist",
+      "oracle_fingerprint": "27bccaec616d5576035eae9a367cfce4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Keyword": { "Cycling": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7264d3b3-fd46-4ea3-a85d-f0b068c331ad",
+  "name": "Calculating Lich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calculating Lich",
+      "oracle_fingerprint": "753dc0a17b956fa48842f686d696ece1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "effects": [{ "LoseLife": { "who": "Attacked", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

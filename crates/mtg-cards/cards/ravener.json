@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6c4ac289-edca-4dce-8572-817efbdd08b2",
+  "name": "Ravener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravener",
+      "oracle_fingerprint": "871c90b6ecf78662872d35098957b357",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Ravenous" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": { "who": { "Target": 0 }, "players": { "Target": 1 } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

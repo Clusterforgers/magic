@@ -1,0 +1,40 @@
+{
+  "oracle_id": "67391f99-739a-490a-ba16-7fa1d758ec34",
+  "name": "Drana, Kalastria Bloodchief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drana, Kalastria Bloodchief",
+      "oracle_fingerprint": "55c80cdd0943677833c1658a14463d0e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{X}{B}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": { "power": 0, "toughness": { "Times": { "by": -1, "of": "X" } } }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": "X", "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

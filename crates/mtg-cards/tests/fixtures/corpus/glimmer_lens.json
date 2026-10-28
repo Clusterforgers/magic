@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "c9262000-e6f3-4da1-ad1c-038f65d3bef6",
+  "oracle_id": "bb7cebb7-a979-4879-b834-deab13f2a22c",
+  "multiverse_ids": [
+    605688
+  ],
+  "mtgo_id": 106875,
+  "arena_id": 100138,
+  "tcgplayer_id": 478420,
+  "cardmarket_id": 693317,
+  "name": "Glimmer Lens",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/c9262000-e6f3-4da1-ad1c-038f65d3bef6",
+  "scryfall_uri": "https://scryfall.com/card/onc/6/glimmer-lens?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:49:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.jpg?1783918163",
+    "normal": "https://cards.scryfall.io/normal/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.jpg?1783918163",
+    "large": "https://cards.scryfall.io/large/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.jpg?1783918163",
+    "png": "https://cards.scryfall.io/png/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.png?1783918163",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.jpg?1783918163",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.jpg?1783918163",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.webp?1783918163",
+    "grid": "https://cards.scryfall.io/grid/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.webp?1783918163",
+    "display": "https://cards.scryfall.io/display/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.webp?1783918163",
+    "art": "https://cards.scryfall.io/art/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.webp?1783918163",
+    "crop": "https://cards.scryfall.io/crop/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.webp?1783918163",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/9/c9262000-e6f3-4da1-ad1c-038f65d3bef6.jpg?1783918163"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nWhenever equipped creature and at least one other creature attack, draw a card.\nEquip {1}{W}",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a41eb9df-d8b4-4697-a759-886faf16754d",
+      "component": "token",
+      "name": "Rebel",
+      "type_line": "Token Creature — Rebel",
+      "uri": "https://api.scryfall.com/cards/a41eb9df-d8b4-4697-a759-886faf16754d"
+    },
+    {
+      "object": "related_card",
+      "id": "06b0b327-9da7-4652-ba4a-cb2db6b75e92",
+      "component": "combo_piece",
+      "name": "Glimmer Lens",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/06b0b327-9da7-4652-ba4a-cb2db6b75e92"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set": "onc",
+  "set_name": "Phyrexia: All Will Be One Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aonc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/onc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c9262000-e6f3-4da1-ad1c-038f65d3bef6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abb7cebb7-a979-4879-b834-deab13f2a22c&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sidharth Chaturvedi",
+  "artist_ids": [
+    "55e6d846-2f73-4fba-9b88-441686bb8dcb"
+  ],
+  "illustration_id": "ab741fdf-9ec6-4867-a7a8-846ded85a30b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5529,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=80xv4ZP1k-E",
+    "previewed_at": "2023-01-18"
+  },
+  "prices": {
+    "usd": "3.89",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.01",
+    "eur_foil": null,
+    "tix": "6.44"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=605688&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGlimmer%2BLens",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGlimmer%2BLens",
+    "edhrec": "https://edhrec.com/route/?cc=Glimmer+Lens"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F478420%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=693317&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106875?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

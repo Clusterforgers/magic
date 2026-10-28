@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2373e035-25f7-473a-9386-2093f77d3f94",
+  "name": "Salt Road Ambushers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Salt Road Ambushers",
+      "oracle_fingerprint": "28205ff268895287c2320849c3506e6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["Other", { "ControlledBy": "You" }] } },
+            "if": { "Matches": { "subject": "Triggering", "selector": [{ "Type": "Creature" }] } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 2 } }]
+          }
+        },
+        { "Keyword": { "Megamorph": "{3}{G}{G}" } }
+      ]
+    }
+  ]
+}

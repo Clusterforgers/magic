@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "08fe7e9c-7c3b-435f-bc0d-e380e6b852c0",
+  "oracle_id": "55adf2f0-f023-4f41-ae9d-3c002e9e6e8d",
+  "multiverse_ids": [
+    633186
+  ],
+  "mtgo_id": 117292,
+  "tcgplayer_id": 513624,
+  "cardmarket_id": 730094,
+  "name": "Knickknack Ouphe",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0",
+  "scryfall_uri": "https://scryfall.com/card/woc/18/knickknack-ouphe?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:56:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.jpg?1783914984",
+    "normal": "https://cards.scryfall.io/normal/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.jpg?1783914984",
+    "large": "https://cards.scryfall.io/large/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.jpg?1783914984",
+    "png": "https://cards.scryfall.io/png/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.png?1783914984",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.jpg?1783914984",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.jpg?1783914984",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.webp?1783914984",
+    "grid": "https://cards.scryfall.io/grid/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.webp?1783914984",
+    "display": "https://cards.scryfall.io/display/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.webp?1783914984",
+    "art": "https://cards.scryfall.io/art/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.webp?1783914984",
+    "crop": "https://cards.scryfall.io/crop/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.webp?1783914984",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/8/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0.jpg?1783914984"
+  },
+  "mana_cost": "{X}{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Ouphe",
+  "oracle_text": "This creature enters with X +1/+1 counters on it.\nWhen this creature enters, reveal the top X cards of your library. You may put any number of Aura cards with mana value X or less from among them onto the battlefield. Then put all cards revealed this way that weren't put onto the battlefield on the bottom of your library in a random order.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "51c0814a-2db2-4182-9aac-77340e9a540d",
+  "set": "woc",
+  "set_name": "Wilds of Eldraine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/51c0814a-2db2-4182-9aac-77340e9a540d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/woc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/08fe7e9c-7c3b-435f-bc0d-e380e6b852c0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A55adf2f0-f023-4f41-ae9d-3c002e9e6e8d&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Iris Compiet",
+  "artist_ids": [
+    "aa807c8c-d07f-4f09-90d3-b2cbf5b86dbf"
+  ],
+  "illustration_id": "bd610837-f3f9-4bb7-bf26-472180c73df7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14721,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": null,
+    "tix": "0.69"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=633186&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKnickknack%2BOuphe",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKnickknack%2BOuphe",
+    "edhrec": "https://edhrec.com/route/?cc=Knickknack+Ouphe"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513624%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=730094&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117292?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -6,6 +6,9 @@ use std::path::Path;
 use std::sync::mpsc;
 
 use flate2::read::MultiGzDecoder;
+use mtg_import::scryfall::array_stream::ArrayStream;
+use mtg_import::scryfall::line_stream::LineStream;
+use mtg_import::scryfall::stream::ElementSource;
 use mtg_import::scryfall::{
     CardRecord, RulingRecord, ScryfallError, cards, cards_jsonl, rulings, rulings_jsonl,
 };
@@ -57,6 +60,15 @@ pub fn open_cards(path: &Path) -> Result<Records<CardRecord>, CliError> {
     Ok(match framing {
         Framing::Array => Box::new(cards(reader)),
         Framing::Lines => Box::new(cards_jsonl(reader)),
+    })
+}
+
+/// The raw JSON bytes of each record of a cached Scryfall file, in the file's order.
+pub fn w2a_open_elements(path: &Path) -> Result<Box<dyn ElementSource + Send>, CliError> {
+    let (reader, framing) = open(path).map_err(|e| CliError::io(path, e))?;
+    Ok(match framing {
+        Framing::Array => Box::new(ArrayStream::new(reader)),
+        Framing::Lines => Box::new(LineStream::new(reader)),
     })
 }
 

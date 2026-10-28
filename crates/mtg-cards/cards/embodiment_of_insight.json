@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ee1c7532-dc97-432d-964f-1c4087ab5248",
+  "name": "Embodiment of Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embodiment of Insight",
+      "oracle_fingerprint": "ca56162853342656fb4089331f3db2f5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Land" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "AddType": "Creature" },
+                          { "AddSubtype": "Elemental" },
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

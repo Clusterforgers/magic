@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0c8cb2ec-5b58-497c-a6e7-2d25512d5a44",
+  "name": "Dire Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire Tactics",
+      "oracle_fingerprint": "3dbe2f9a06d65cde852d5ff09949bc8f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Human" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

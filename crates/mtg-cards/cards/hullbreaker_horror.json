@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d4a84e78-d9b9-4c67-8a4b-4329e65f0f15",
+  "name": "Hullbreaker Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hullbreaker Horror",
+      "oracle_fingerprint": "740c218017e07964ce6ab4ef55e32707",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 1 },
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": ["Spell", { "Not": { "ControlledBy": "You" } }] } }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

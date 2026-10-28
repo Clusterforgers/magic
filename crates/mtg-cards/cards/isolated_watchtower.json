@@ -1,0 +1,62 @@
+{
+  "oracle_id": "3893f320-47fd-49ec-a78c-80bfb607a279",
+  "name": "Isolated Watchtower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isolated Watchtower",
+      "oracle_fingerprint": "3b9acd9c29e959b28d7bdac92c0bb957",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Largest": { "who": "Opponents", "of": [{ "Type": "Land" }] } },
+                "op": "Ge",
+                "right": {
+                  "Sum": [{ "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }, 2]
+                }
+              }
+            },
+            "effects": [
+              { "Scry": {} },
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [{ "Supertype": "Basic" }, { "Type": "Land" }]
+                          }
+                        },
+                        "then": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

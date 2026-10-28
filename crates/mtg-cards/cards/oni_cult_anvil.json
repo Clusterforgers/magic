@@ -1,0 +1,51 @@
+{
+  "oracle_id": "c018f072-8f6d-4835-a717-ed4ecba70d97",
+  "name": "Oni-Cult Anvil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oni-Cult Anvil",
+      "oracle_fingerprint": "302867786eaf8709351ce6762aeb275c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                  "from": "Battlefield"
+                }
+              }
+            },
+            "if": "YourTurn",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

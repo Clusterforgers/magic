@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "626db678-2dec-4026-af5a-83e834692ba0",
+  "oracle_id": "0acc9372-58b4-43bf-ab82-1f95831c81d4",
+  "multiverse_ids": [
+    696381
+  ],
+  "mtgo_id": 138387,
+  "tcgplayer_id": 624937,
+  "cardmarket_id": 819301,
+  "name": "Nesting Dragon",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/626db678-2dec-4026-af5a-83e834692ba0",
+  "scryfall_uri": "https://scryfall.com/card/tdc/225/nesting-dragon?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:44:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.jpg?1783907063",
+    "normal": "https://cards.scryfall.io/normal/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.jpg?1783907063",
+    "large": "https://cards.scryfall.io/large/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.jpg?1783907063",
+    "png": "https://cards.scryfall.io/png/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.png?1783907063",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.jpg?1783907063",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.jpg?1783907063",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.webp?1783907063",
+    "grid": "https://cards.scryfall.io/grid/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.webp?1783907063",
+    "display": "https://cards.scryfall.io/display/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.webp?1783907063",
+    "art": "https://cards.scryfall.io/art/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.webp?1783907063",
+    "crop": "https://cards.scryfall.io/crop/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.webp?1783907063",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/2/626db678-2dec-4026-af5a-83e834692ba0.jpg?1783907063"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nLandfall — Whenever a land you control enters, create a 0/2 red Dragon Egg creature token with defender and \"When this token dies, create a 2/2 red Dragon creature token with flying and '{R}: This token gets +1/+0 until end of turn.'\"",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Landfall",
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "435577cb-a8b6-4795-a301-92128a68d070",
+      "component": "token",
+      "name": "Dragon Egg",
+      "type_line": "Token Creature — Dragon Egg",
+      "uri": "https://api.scryfall.com/cards/435577cb-a8b6-4795-a301-92128a68d070"
+    },
+    {
+      "object": "related_card",
+      "id": "626db678-2dec-4026-af5a-83e834692ba0",
+      "component": "combo_piece",
+      "name": "Nesting Dragon",
+      "type_line": "Creature — Dragon",
+      "uri": "https://api.scryfall.com/cards/626db678-2dec-4026-af5a-83e834692ba0"
+    },
+    {
+      "object": "related_card",
+      "id": "1e2aaaca-6563-406f-b1bc-6849ba555da8",
+      "component": "token",
+      "name": "Dragon",
+      "type_line": "Token Creature — Dragon",
+      "uri": "https://api.scryfall.com/cards/1e2aaaca-6563-406f-b1bc-6849ba555da8"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/626db678-2dec-4026-af5a-83e834692ba0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0acc9372-58b4-43bf-ab82-1f95831c81d4&unique=prints",
+  "collector_number": "225",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jehan Choo",
+  "artist_ids": [
+    "515df9fe-9c29-4e75-9e49-6ce5be4ec8c8"
+  ],
+  "illustration_id": "a81cfaeb-c9f1-4461-a88c-cdfded98928e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3588,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.37",
+    "eur_foil": null,
+    "tix": "0.40"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=696381&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNesting%2BDragon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNesting%2BDragon",
+    "edhrec": "https://edhrec.com/route/?cc=Nesting+Dragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624937%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=819301&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138387?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

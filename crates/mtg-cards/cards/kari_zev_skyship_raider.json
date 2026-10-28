@@ -1,0 +1,46 @@
+{
+  "oracle_id": "786baa29-afd4-40f0-95c8-920a972b9175",
+  "name": "Kari Zev, Skyship Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kari Zev, Skyship Raider",
+      "oracle_fingerprint": "d533640e706cc78875b30235890ce166",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ragavan",
+                      "colors": ["Red"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Monkey"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "ragavan"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "ragavan" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

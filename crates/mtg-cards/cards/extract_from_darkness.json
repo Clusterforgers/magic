@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e597d8a1-3bbc-4001-b642-f4421447970f",
+  "name": "Extract from Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extract from Darkness",
+      "oracle_fingerprint": "ae55ec57ac9e2d3c2637648f3f17bcdf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "Type": "Creature" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "under": "You" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

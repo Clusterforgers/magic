@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e197104f-5382-4cb2-8afe-5ca0594629c2",
+  "name": "Reinterpret",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reinterpret",
+      "oracle_fingerprint": "06e4d4b7553d8cee1f4d19ac0a986733",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0bb896ba-e15e-43a9-9120-e674d7ba003c",
+  "name": "Hall of Oracles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hall of Oracles",
+      "oracle_fingerprint": "d870f1d3379e9e13d7f8350d2532e690",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "InstantsAndSorceriesCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

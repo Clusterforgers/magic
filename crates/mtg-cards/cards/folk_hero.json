@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c5126d6e-969c-4034-98e3-f8653163346f",
+  "name": "Folk Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Folk Hero",
+      "oracle_fingerprint": "a158679c6e64554ff000bfb1e57af950",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "SpellCast": { "what": [{ "SharesSubtype": "This" }], "by": "You" } },
+                    "limit": "OncePerTurn",
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

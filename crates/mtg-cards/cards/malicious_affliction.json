@@ -1,0 +1,37 @@
+{
+  "oracle_id": "18f22cc4-e10b-4af0-9c1f-d7d15dbcce63",
+  "name": "Malicious Affliction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malicious Affliction",
+      "oracle_fingerprint": "1fc643dba97fe2638a9910b878a45cde",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Stack",
+            "effects": [
+              { "May": { "effects": [{ "CopySpell": { "what": "This", "new_targets": true } }] } }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

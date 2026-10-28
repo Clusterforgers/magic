@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a0892be5-3272-431e-bbed-fc6520b259a7",
+  "name": "Slurrk, All-Ingesting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slurrk, All-Ingesting",
+      "oracle_fingerprint": "79805f7535ad049cc09ad5ea5865a4f8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "if": {
+              "Matches": { "subject": "Triggering", "selector": [{ "HasCounter": "+1/+1" }] }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": "+1/+1" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

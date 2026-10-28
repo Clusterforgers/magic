@@ -1,0 +1,37 @@
+{
+  "oracle_id": "95c0611a-b6f1-4cb8-8b47-73aa9c2a7d2c",
+  "name": "Noxious Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noxious Assault",
+      "oracle_fingerprint": "1f198e7053f6bf758e83bd942d4ccf14",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "Blocks": { "what": [{ "Type": "Creature" }] } },
+                  "once": false,
+                  "effects": [
+                    {
+                      "PutCounters": { "on": { "ControllerOf": "Triggering" }, "counter": "poison" }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

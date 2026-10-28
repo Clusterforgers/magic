@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7e79cb6c-df9a-46d1-b3c6-240297e7d47d",
+  "name": "Curse of Unbinding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Unbinding",
+      "oracle_fingerprint": "e758d8c30477da1d4552747a435de346",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "AttachedPlayer",
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

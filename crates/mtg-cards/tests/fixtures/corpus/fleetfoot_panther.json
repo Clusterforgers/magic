@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "02db0f8e-5f87-427f-a3ff-0f261da679cd",
+  "oracle_id": "d99e8f94-4a8a-42a1-b5d0-2b08cacb8676",
+  "multiverse_ids": [
+    249391
+  ],
+  "mtgo_id": 42156,
+  "mtgo_foil_id": 42157,
+  "tcgplayer_id": 52085,
+  "cardmarket_id": 250482,
+  "name": "Fleetfoot Panther",
+  "lang": "en",
+  "released_at": "2011-09-02",
+  "uri": "https://api.scryfall.com/cards/02db0f8e-5f87-427f-a3ff-0f261da679cd",
+  "scryfall_uri": "https://scryfall.com/card/ddh/12/fleetfoot-panther?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:10:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.jpg?1783941023",
+    "normal": "https://cards.scryfall.io/normal/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.jpg?1783941023",
+    "large": "https://cards.scryfall.io/large/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.jpg?1783941023",
+    "png": "https://cards.scryfall.io/png/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.png?1783941023",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.jpg?1783941023",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.jpg?1783941023",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.webp?1783941023",
+    "grid": "https://cards.scryfall.io/grid/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.webp?1783941023",
+    "display": "https://cards.scryfall.io/display/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.webp?1783941023",
+    "art": "https://cards.scryfall.io/art/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.webp?1783941023",
+    "crop": "https://cards.scryfall.io/crop/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.webp?1783941023",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/2/02db0f8e-5f87-427f-a3ff-0f261da679cd.jpg?1783941023"
+  },
+  "mana_cost": "{1}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "Flash\nWhen this creature enters, return a green or white creature you control to its owner's hand.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "bad1fe7e-27df-4999-821b-d477c2ec658d",
+  "set": "ddh",
+  "set_name": "Duel Decks: Ajani vs. Nicol Bolas",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/bad1fe7e-27df-4999-821b-d477c2ec658d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addh&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddh?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/02db0f8e-5f87-427f-a3ff-0f261da679cd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad99e8f94-4a8a-42a1-b5d0-2b08cacb8676&unique=prints",
+  "collector_number": "12",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Brill",
+  "artist_ids": [
+    "46dc4b5e-e42c-4d65-a4f3-ad75b0f6f6dd"
+  ],
+  "illustration_id": "c19dbe92-4341-4e52-8d7a-5bb420138780",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 15113,
+  "penny_rank": 11315,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.42",
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=249391&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFleetfoot%2BPanther",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFleetfoot%2BPanther",
+    "edhrec": "https://edhrec.com/route/?cc=Fleetfoot+Panther"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F52085%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=250482&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/42156?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

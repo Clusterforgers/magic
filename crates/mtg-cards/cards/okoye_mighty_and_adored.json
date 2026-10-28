@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8fbfc5b1-2146-4d07-a5fe-5f025da31bd6",
+  "name": "Okoye, Mighty and Adored",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Okoye, Mighty and Adored",
+      "oracle_fingerprint": "8238be07bb7487611e9624b4b8888f76",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AttacksPlayer": { "what": [{ "Is": { "Target": 0 } }], "at": "Monarch" }
+                  },
+                  "once": false,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "AddKeyword": "DoubleStrike" }, { "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

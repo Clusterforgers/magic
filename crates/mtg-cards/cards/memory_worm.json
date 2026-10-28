@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8fb39f48-10a1-4d9c-870a-eeda070bf12b",
+  "name": "Memory Worm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Worm",
+      "oracle_fingerprint": "89b292bfc463d87c91c92e722ca52143",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "Discard": { "who": { "Target": 0 } } },
+              { "Draw": { "who": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -306,6 +306,8 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             };
             assert!(
                 wanted.iter().any(|text| written.iter().any(|variant| {
+                    // A wording may carry the ability word that the clause loses above ("Morbid — ...").
+                    let variant = without_ability_word(variant);
                     same_text(without_numerals(variant), text)
                         || same_text(without_numerals(&shown(variant)), text)
                 })),

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a7656948-4d7d-47f7-b8a1-fc9716155e37",
+  "name": "Horde of Notions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horde of Notions",
+      "oracle_fingerprint": "2bb33f136638b2fdb3268886168c6ca4",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{W}{U}{B}{R}{G}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Elemental" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CastFromZone": { "what": { "Target": 0 }, "free": true, "play": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

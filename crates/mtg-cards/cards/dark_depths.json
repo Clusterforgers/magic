@@ -1,0 +1,66 @@
+{
+  "oracle_id": "c9b82110-7dfd-4617-9399-9510be449043",
+  "name": "Dark Depths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Depths",
+      "oracle_fingerprint": "7a13a83bde23cd83367a54af855574ec",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "ice" }, "count": 10 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "ice" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "ice" } } },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Marit Lage",
+                            "colors": ["Black"],
+                            "supertypes": ["Legendary"],
+                            "types": ["Creature"],
+                            "subtypes": ["Avatar"],
+                            "power": 20,
+                            "toughness": 20,
+                            "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Indestructible" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

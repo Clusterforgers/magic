@@ -1,0 +1,174 @@
+{
+  "object": "card",
+  "id": "25576181-a5a4-4baf-a2b4-fbfe13fb9df6",
+  "oracle_id": "e3ad5cbc-4245-4e1e-8204-509381fa0c1c",
+  "multiverse_ids": [
+    664050
+  ],
+  "mtgo_id": 125953,
+  "arena_id": 91097,
+  "tcgplayer_id": 552730,
+  "cardmarket_id": 771819,
+  "name": "Reef Worm",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/25576181-a5a4-4baf-a2b4-fbfe13fb9df6",
+  "scryfall_uri": "https://scryfall.com/card/mh3/271/reef-worm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:53:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.jpg?1783911216",
+    "normal": "https://cards.scryfall.io/normal/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.jpg?1783911216",
+    "large": "https://cards.scryfall.io/large/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.jpg?1783911216",
+    "png": "https://cards.scryfall.io/png/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.png?1783911216",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.jpg?1783911216",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.jpg?1783911216",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.webp?1783911216",
+    "grid": "https://cards.scryfall.io/grid/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.webp?1783911216",
+    "display": "https://cards.scryfall.io/display/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.webp?1783911216",
+    "art": "https://cards.scryfall.io/art/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.webp?1783911216",
+    "crop": "https://cards.scryfall.io/crop/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.webp?1783911216",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/5/25576181-a5a4-4baf-a2b4-fbfe13fb9df6.jpg?1783911216"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Worm",
+  "oracle_text": "When this creature dies, create a 3/3 blue Fish creature token with \"When this token dies, create a 6/6 blue Whale creature token with 'When this token dies, create a 9/9 blue Kraken creature token.'\"",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "51b8f3b4-d0f3-4f2f-8e6f-7da1e852dac1",
+      "component": "token",
+      "name": "Whale",
+      "type_line": "Token Creature — Whale",
+      "uri": "https://api.scryfall.com/cards/51b8f3b4-d0f3-4f2f-8e6f-7da1e852dac1"
+    },
+    {
+      "object": "related_card",
+      "id": "e081becb-40f1-4151-aea3-5a9a9bd672c6",
+      "component": "token",
+      "name": "Fish",
+      "type_line": "Token Creature — Fish",
+      "uri": "https://api.scryfall.com/cards/e081becb-40f1-4151-aea3-5a9a9bd672c6"
+    },
+    {
+      "object": "related_card",
+      "id": "9155825a-6449-4b36-aa14-4c227075ed51",
+      "component": "token",
+      "name": "Kraken",
+      "type_line": "Token Creature — Kraken",
+      "uri": "https://api.scryfall.com/cards/9155825a-6449-4b36-aa14-4c227075ed51"
+    },
+    {
+      "object": "related_card",
+      "id": "25576181-a5a4-4baf-a2b4-fbfe13fb9df6",
+      "component": "combo_piece",
+      "name": "Reef Worm",
+      "type_line": "Creature — Worm",
+      "uri": "https://api.scryfall.com/cards/25576181-a5a4-4baf-a2b4-fbfe13fb9df6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set": "mh3",
+  "set_name": "Modern Horizons 3",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/25576181-a5a4-4baf-a2b4-fbfe13fb9df6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae3ad5cbc-4245-4e1e-8204-509381fa0c1c&unique=prints",
+  "collector_number": "271",
+  "digital": false,
+  "rarity": "uncommon",
+  "watermark": "set",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Murayama Scott",
+  "artist_ids": [
+    "f852fa13-137e-40f2-bbc1-0f01df09c0e0"
+  ],
+  "illustration_id": "ea85fc83-780b-4b97-8417-2128d470510e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 5525,
+  "preview": {
+    "source": "Steve Stillman",
+    "source_uri": "https://x.com/stillman_steve/status/1793705536799772903",
+    "previewed_at": "2024-05-23"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=664050&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReef%2BWorm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReef%2BWorm",
+    "edhrec": "https://edhrec.com/route/?cc=Reef+Worm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552730%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=771819&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125953?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

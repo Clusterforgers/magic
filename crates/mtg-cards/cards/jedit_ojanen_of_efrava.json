@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c065a7c0-272b-4b7e-a41c-7164352cd189",
+  "name": "Jedit Ojanen of Efrava",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jedit Ojanen of Efrava",
+      "oracle_fingerprint": "7a2ea0281a48610f55e9fb20ea70ca92",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat", "Warrior"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

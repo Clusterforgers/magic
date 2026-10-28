@@ -1,0 +1,33 @@
+{
+  "oracle_id": "aaed2f39-6d5d-4880-a7c4-5a045399dab3",
+  "name": "Geode Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geode Golem",
+      "oracle_fingerprint": "e94935f22cf5174240fff5a0f92f391b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": ["Commander", { "In": "Command" }, { "OwnedBy": "You" }] },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
