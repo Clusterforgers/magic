@@ -54,6 +54,21 @@ const X_DAMAGE: &str = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[
     X_DAMAGE,
     &["faces[0].abilities[0].Spell.effects[0].DealDamage.amount: uses X but the imported mana cost has none"]
 )]
+#[case::x_of_a_paid_x(
+    printed("Creature \u{2014} Dragon", "{4}{R}{R}", "Pay X.", &[]),
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"Pay":{"cost":"{X}{R}","paid":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}]}}"#,
+    &[]
+)]
+#[case::x_unpaid_beside_a_paid_x(
+    printed("Creature \u{2014} Dragon", "{4}{R}{R}", "Pay X.", &[]),
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Pay":{"cost":"{X}{R}","unpaid":[{"Draw":{"count":"X"}}]}}]}}"#,
+    &["faces[0].abilities[0].Triggered.effects[0].Pay.unpaid[0].Draw.count: uses X but the imported mana cost has none"]
+)]
+#[case::x_paid_without_an_x_in_the_payment(
+    printed("Creature \u{2014} Dragon", "{4}{R}{R}", "Pay X.", &[]),
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Pay":{"cost":"{2}{R}","paid":[{"Draw":{"count":"X"}}]}}]}}"#,
+    &["faces[0].abilities[0].Triggered.effects[0].Pay.paid[0].Draw.count: uses X but the imported mana cost has none"]
+)]
 #[case::spell_on_a_creature(
     printed("Creature \u{2014} Elf", "{G}", "Deal 3.", &[]),
     DAMAGE,

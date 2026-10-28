@@ -686,6 +686,15 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The effects of a payment: an `{X}` its mana announces is the X they read ("you may pay {X}{R}. If you do, it
+    /// deals X damage"), whatever the mana cost of the card.
+    fn c11f_paid_x(&mut self, cost: &Cost, paid: &[Effect]) {
+        let saved = self.x_free;
+        self.x_free |= has_x_mana(cost);
+        self.effect_list("paid", paid, false);
+        self.x_free = saved;
+    }
+
     /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") is counted as the effect
     /// resolves (`Effect.Pay.Counted`); every other part is named as in any cost.
     fn c6_eg_paid_cost(&mut self, cost: &Cost) {
@@ -2175,7 +2184,7 @@ impl Walker<'_> {
                 w.at("cost", |w| w.c6_eg_paid_cost(cost));
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
-                w.effect_list("paid", paid, false);
+                w.c11f_paid_x(cost, paid);
                 w.effect_list("unpaid", unpaid, false);
             }
             Effect::Modal {

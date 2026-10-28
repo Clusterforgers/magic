@@ -21,6 +21,7 @@ mod blink;
 mod bounce_all;
 mod c10_cen_land_look;
 mod c10_cen_power_damage;
+mod c11f_wholes;
 mod c4_af;
 mod c4_attack_token;
 mod c4_aura_becomes;
@@ -302,6 +303,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c6_mr(ability, texts);
     add_c9_wr(ability, texts);
     add_c10_cen(ability, texts);
+    add_c11f(ability, texts);
+}
+
+/// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.
+fn add_c11f(ability: &Ability, texts: &mut Vec<String>) {
+    c11f_wholes::c11f_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the third census (r2dg): the land put from the top of the library and damage equal to its power.
