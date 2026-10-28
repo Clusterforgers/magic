@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dabbf796-3b88-499e-8839-06fa36fe01ac",
+  "name": "Marionette Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marionette Master",
+      "oracle_fingerprint": "9bf8dff6a97e0164818d0bf17dfe091f",
+      "abilities": [
+        { "Keyword": { "Fabricate": 3 } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

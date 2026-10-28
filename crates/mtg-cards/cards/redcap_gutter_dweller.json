@@ -1,0 +1,70 @@
+{
+  "oracle_id": "ada48353-4c86-44d6-83a5-e7e3c703b948",
+  "name": "Redcap Gutter-Dweller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redcap Gutter-Dweller",
+      "oracle_fingerprint": "0cdf8ecc6a69d2bfe2dba85749281b7b",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Sacrifice": { "filter": ["Other", { "Type": "Creature" }] } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                    { "ExileTop": { "as": "impulse" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "impulse" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

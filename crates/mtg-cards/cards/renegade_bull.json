@@ -1,0 +1,62 @@
+{
+  "oracle_id": "61747805-0c34-4beb-8cbf-97bac7a998d0",
+  "name": "Renegade Bull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renegade Bull",
+      "oracle_fingerprint": "b9d7ded57a29b206bf293d95049a654d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy" } },
+              { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

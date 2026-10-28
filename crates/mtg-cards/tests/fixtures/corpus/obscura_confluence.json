@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529",
+  "oracle_id": "1f2fb1dd-82e4-45fa-b2a9-7df7b8a4d533",
+  "multiverse_ids": [
+    598190
+  ],
+  "mtgo_id": 99487,
+  "tcgplayer_id": 269731,
+  "cardmarket_id": 652470,
+  "name": "Obscura Confluence",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529",
+  "scryfall_uri": "https://scryfall.com/card/ncc/76/obscura-confluence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:15:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.jpg?1783923347",
+    "normal": "https://cards.scryfall.io/normal/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.jpg?1783923347",
+    "large": "https://cards.scryfall.io/large/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.jpg?1783923347",
+    "png": "https://cards.scryfall.io/png/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.png?1783923347",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.jpg?1783923347",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.jpg?1783923347",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.webp?1783923347",
+    "grid": "https://cards.scryfall.io/grid/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.webp?1783923347",
+    "display": "https://cards.scryfall.io/display/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.webp?1783923347",
+    "art": "https://cards.scryfall.io/art/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.webp?1783923347",
+    "crop": "https://cards.scryfall.io/crop/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.webp?1783923347",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/c/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529.jpg?1783923347"
+  },
+  "mana_cost": "{1}{W}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose three. You may choose the same mode more than once.\n• Until end of turn, target creature loses all abilities and has base power and toughness 1/1.\n• Target creature connives. (Draw a card, then discard a card. If you discarded a nonland card, put a +1/+1 counter on that creature.)\n• Target player returns a creature card from their graveyard to their hand.",
+  "colors": [
+    "B",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Connive"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ac75648d-a7f8-4bf6-8ba4-c5bd89ba4529/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1f2fb1dd-82e4-45fa-b2a9-7df7b8a4d533&unique=prints",
+  "collector_number": "76",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "obscura",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wisnu Tan",
+  "artist_ids": [
+    "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4"
+  ],
+  "illustration_id": "097361ef-5a0d-4e43-aaa7-0e0cfbdecc07",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 17789,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "0.65"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=598190&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DObscura%2BConfluence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DObscura%2BConfluence",
+    "edhrec": "https://edhrec.com/route/?cc=Obscura+Confluence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269731%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652470&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/99487?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f40a1a41-d340-4256-8f97-77499cd511a8",
+  "name": "MacCready, Lamplight Mayor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "MacCready, Lamplight Mayor",
+      "oracle_fingerprint": "da779f376aa14f6868bf99b5229b27e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Skulk" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                ],
+                "at": "You"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

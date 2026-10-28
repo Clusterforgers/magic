@@ -1,0 +1,51 @@
+{
+  "oracle_id": "fc2768a5-621b-48de-9160-4dbaeddb3de1",
+  "name": "Muzzio, Visionary Architect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muzzio, Visionary Architect",
+      "oracle_fingerprint": "bb9f36cc30ecf56c350c3cd12f20e466",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}" }, "Tap"],
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Greatest": {
+                      "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

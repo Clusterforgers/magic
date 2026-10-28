@@ -1,0 +1,27 @@
+{
+  "oracle_id": "9ee50bae-47c4-4ae7-a82b-f2a0b366df35",
+  "name": "Nymris, Oona's Trickster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nymris, Oona's Trickster",
+      "oracle_fingerprint": "41295ca82a7dea5a7a301a2b55e4b84e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "Not": "YourTurn" },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "card", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

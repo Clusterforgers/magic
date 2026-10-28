@@ -1,0 +1,58 @@
+{
+  "oracle_id": "220e3298-1663-4731-b50f-247076e1328b",
+  "name": "Oracle's Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oracle's Vault",
+      "oracle_fingerprint": "48793118e8615fbbfa4cd56b936a1d72",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "brick" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "brick" } } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "impulse" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
