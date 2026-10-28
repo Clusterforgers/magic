@@ -1344,10 +1344,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::CountersRemoved { what, .. } => {
                 self.at("what", |w| w.selector(what));
             }
-            TriggerPattern::Attached { what, to } => {
-                self.at("what", |w| w.selector(what));
-                self.at("to", |w| w.selector(to));
-            }
+            TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
             TriggerPattern::GroupAttacks { .. } | TriggerPattern::Chapter { .. } => {
                 self.w2e_counted(pattern);
             }
@@ -1358,6 +1355,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
         }
+    }
+
+    /// "is attached to": the attachment and what it is attached to.
+    fn w11b_attached(&mut self, what: &Selector, to: &Selector) {
+        self.at("what", |w| w.selector(what));
+        self.at("to", |w| w.selector(to));
     }
 
     /// The patterns that count: the attackers of a `GroupAttacks` and the number of a `Chapter`.

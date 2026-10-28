@@ -194,6 +194,27 @@ pub fn w7e_keyword_out_events(state: &GameState, player: PlayerId) -> Vec<Event>
     out_events(state, &named)
 }
 
+/// The fold of `Event::PermanentPhasedOut`: the permanent phases out as the event says.
+pub(crate) fn w11b_fold_out_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    let Event::PermanentPhasedOut {
+        object,
+        controller,
+        indirect,
+        until,
+        tapped,
+    } = event
+    else {
+        return Ok(());
+    };
+    let phasing = Phasing {
+        controller: *controller,
+        indirect: *indirect,
+        until: *until,
+        tapped: *tapped,
+    };
+    fold_out(state, *object, phasing)
+}
+
 /// A permanent phases out: it leaves the battlefield's list without leaving the battlefield, and leaves combat (CR 506.4).
 pub(crate) fn fold_out(
     state: &mut GameState,

@@ -183,7 +183,7 @@ fn w11b_an_oubliette_destroyed_in_response_phases_nothing_out(
     let oubliette = driver.id_of("Oubliette")?;
     w11b_beast_within(&mut driver, oubliette)?;
     assert_eq!(w11b_zone(&driver, wolf), Zone::Battlefield);
-    assert!(driver.state().zone(Zone::PhasedOut).is_empty());
+    assert_eq!(driver.state().zone(Zone::PhasedOut), [] as [ObjectId; 0]);
     assert!(
         !driver
             .engine()
