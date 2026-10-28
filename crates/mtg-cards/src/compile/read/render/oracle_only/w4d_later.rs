@@ -252,7 +252,7 @@ fn bodies(effects: &[Value]) -> Vec<String> {
 
 /// The wording of one effect a delayed trigger names and no renderer writes alone: "you get an experience counter",
 /// "return that card to the battlefield under your control", "sacrifice ~", "destroy that creature".
-fn lone_effect(effect: &Value) -> Option<String> {
+pub(super) fn lone_effect(effect: &Value) -> Option<String> {
     if let Some(put) = effect.get("PutCounters") {
         let name = put.pointer("/counter/Other")?.as_str()?;
         let one = put.get("count").is_none_or(|count| count == 1);
