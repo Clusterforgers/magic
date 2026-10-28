@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{1}{R}"},{"OneOf":[[{"RemoveCounters":{"counter":"+1/+1","from":[{"ControlledBy":"You"}]}}],[{"RemoveCounters":{"counter":"charge","from":[{"ControlledBy":"You"}]}}]]}],"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap",{"Sacrifice":{"filter":[{"Type":"Creature"},"Other"]}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]},"times":{"Stat":{"of":"Paid","stat":"ManaValue"}}}}]}}]}]}

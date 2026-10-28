@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Fear"},{"Triggered":{"when":{"Unblocked":{"what":["This"]}},"effects":[{"LoseLife":{"who":"Defending","amount":{"Count":[{"In":"Graveyard"},{"OwnedBy":"Defending"}]}}}]}}]}]}
