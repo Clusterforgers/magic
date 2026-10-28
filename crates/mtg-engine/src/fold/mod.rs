@@ -340,6 +340,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. } => designate(state, event),
 
+        Event::Exerted { object, player } => {
+            crate::w11a_exert::w11a_fold_exerted(state, *object, *player)?;
+        }
+        Event::ExertEnded { object, player } => {
+            crate::w11a_exert::w11a_fold_ended(state, *object, *player)?;
+        }
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
         Event::PermanentPhasedOut {

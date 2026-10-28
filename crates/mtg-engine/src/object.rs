@@ -181,6 +181,8 @@ pub struct PermanentState {
     pub(crate) merged: Option<Merged>,
     /// Set while the permanent is phased out (CR 702.26); it keeps everything else it had.
     pub(crate) phased: PhasedState,
+    /// The players who exerted it, whose next untap step it skips (CR 701.43c).
+    pub(crate) exerted: crate::w11a_exert::W11aExerted,
 }
 
 impl PermanentState {
@@ -214,7 +216,13 @@ impl PermanentState {
             copy: None,
             merged: None,
             phased: PhasedState::default(),
+            exerted: crate::w11a_exert::W11aExerted::default(),
         }
+    }
+
+    /// The players who exerted the permanent and whose next untap step it skips (CR 701.43c).
+    pub fn exerted(&self) -> &[PlayerId] {
+        self.exerted.players()
     }
 
     /// How the permanent is phased out, or `None` while it is phased in (CR 702.26).

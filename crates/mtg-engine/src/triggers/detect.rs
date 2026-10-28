@@ -170,6 +170,8 @@ enum Happened {
     Explored { object: ObjectId, player: PlayerId },
     /// A creature connived.
     Connived { object: ObjectId, player: PlayerId },
+    /// A creature was exerted by a player (CR 701.43).
+    Exerted { object: ObjectId, player: PlayerId },
     /// A player amassed.
     Amassed { player: PlayerId },
     /// A creature became monstrous.
@@ -933,6 +935,10 @@ fn about_players_and_permanents(
             object: *object,
             player: *player,
         }),
+        Event::Exerted { object, player } => found.push(Happened::Exerted {
+            object: *object,
+            player: *player,
+        }),
         Event::Connived { object, player } => found.push(Happened::Connived {
             object: *object,
             player: *player,
@@ -1290,6 +1296,13 @@ fn matching_permanents(
         | (
             TriggerPattern::Connived { what },
             Happened::Connived {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Exerted { what },
+            Happened::Exerted {
                 object: actor,
                 player,
             },

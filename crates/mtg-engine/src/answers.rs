@@ -23,7 +23,7 @@ pub(crate) enum Outcome {
     /// Start casting this spell; its announcement and payment are decided next.
     BeginCast(ObjectId),
     /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
-    BeginAttack(Vec<(ObjectId, AttackTarget)>),
+    BeginAttack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
     /// Start activating this ability; its announcement is decided next.
     BeginActivation(AbilityRef),
     /// Start suspending this card from the hand: the payment of its suspend cost is decided next.
@@ -101,7 +101,15 @@ pub(crate) fn handle(
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
             check_attackers(options, &attackers)?;
-            attack_tax::declare(state, player, attackers)
+            attack_tax::declare(state, player, attackers, Vec::new())
+        }
+        (
+            DecisionKind::DeclareAttackers(options),
+            Answer::DeclareExerting { attackers, exert },
+        ) => {
+            check_attackers(options, &attackers)?;
+            crate::w11a_exert::w11a_check_exert(options, &attackers, &exert)?;
+            attack_tax::declare(state, player, attackers, exert)
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
             check_blockers(state, options, &blocks)?;

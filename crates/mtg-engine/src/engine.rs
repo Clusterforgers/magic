@@ -339,8 +339,8 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Spell(spell)));
                 Ok(())
             }
-            Outcome::BeginAttack(attackers) => {
-                self.pending = Some(Pending::new(player, What::Attack(attackers)));
+            Outcome::BeginAttack(attackers, exert) => {
+                self.pending = Some(Pending::new(player, What::Attack(attackers, exert)));
                 Ok(())
             }
             Outcome::BeginActivation(ability) => {

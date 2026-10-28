@@ -66,6 +66,7 @@ const RUNS: &[&str] = &[
     "Trigger.DiceRolled",
     "Trigger.Explored",
     "Trigger.Connived",
+    "Trigger.Exerted",
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
     "Trigger.BecomesRenowned",
@@ -439,6 +440,7 @@ const RUNS: &[&str] = &[
     "Keyword.Outlast",
     "Keyword.Saddle",
     "Keyword.Saddled",
+    "Keyword.Exert",
     "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
@@ -837,6 +839,7 @@ mod tests {
     #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::exploring_triggers("Trigger.Explored", true)]
     #[case::conniving_triggers("Trigger.Connived", true)]
+    #[case::exerted_triggers("Trigger.Exerted", true)]
     #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
     #[case::becoming_crewed_triggers("Trigger.BecomesCrewed", true)]
@@ -916,6 +919,7 @@ mod tests {
     #[case::outlast("Keyword.Outlast", true)]
     #[case::saddle("Keyword.Saddle", true)]
     #[case::saddled("Keyword.Saddled", true)]
+    #[case::exert("Keyword.Exert", true)]
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]

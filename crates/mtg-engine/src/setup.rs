@@ -298,6 +298,7 @@ fn preset_state(
         copy: None,
         merged: None,
         phased: crate::object::PhasedState::default(),
+        exerted: crate::w11a_exert::W11aExerted::default(),
     }
 }
 
