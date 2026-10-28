@@ -22,7 +22,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         return;
     };
     let once = delayed.get("once").is_none_or(|once| *once == json!(true));
-    let this_turn = delayed.get("this_turn").is_some_and(|turn| *turn == json!(true));
+    let this_turn = delayed
+        .get("this_turn")
+        .is_some_and(|turn| *turn == json!(true));
     let (Some(when), Some(Value::Array(steps))) = (delayed.get("when"), delayed.get("effects"))
     else {
         return;

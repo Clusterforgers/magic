@@ -71,7 +71,7 @@ pub(super) fn w5c_gerund(event: &str) -> Option<String> {
     loop {
         let ing = words.get(at).and_then(|word| w5c_ing(word))?;
         if let Some(word) = words.get_mut(at) {
-            *word = ing.to_owned();
+            ing.clone_into(word);
         }
         let joined = matches!(words.get(at + 1).map(String::as_str), Some("or" | "and"))
             && words.get(at + 2).and_then(|word| w5c_ing(word)).is_some();

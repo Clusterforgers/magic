@@ -32,7 +32,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             continue;
         };
         if any_kind && text.contains("a permanent you control deals ") {
-            texts.push(text.replacen("a permanent you control deals ", "a source you control deals ", 1));
+            texts.push(text.replacen(
+                "a permanent you control deals ",
+                "a source you control deals ",
+                1,
+            ));
         }
         texts.push(text);
     }
