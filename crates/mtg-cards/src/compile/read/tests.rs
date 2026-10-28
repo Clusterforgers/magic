@@ -385,6 +385,7 @@ mod w4b_writers;
 mod w4c_writers;
 mod w4d_writers;
 mod w4f_writers;
+mod w4g_variants;
 mod where_x;
 mod written_effects;
 mod x_after;

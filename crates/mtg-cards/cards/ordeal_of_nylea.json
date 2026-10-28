@@ -1,0 +1,55 @@
+{
+  "oracle_id": "5fff2bf4-9e26-4815-9bf6-672ed7e55b96",
+  "name": "Ordeal of Nylea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ordeal of Nylea",
+      "oracle_fingerprint": "95ce4228b5213bad3f263bbbb8a634c2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "PutCounters": { "on": "Attached", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "Attached", "counter": "+1/+1" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["This"], "by": "You" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "lands"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "lands" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

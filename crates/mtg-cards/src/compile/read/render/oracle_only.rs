@@ -244,6 +244,8 @@ mod w4f_counts;
 mod w4f_pronouns;
 mod w4f_sentences;
 mod w4f_tokens;
+mod w4g_amounts;
+mod w4g_texts;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -324,6 +326,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c11g(ability, texts);
     add_c11f(ability, texts);
     add_w4c(ability, texts);
+    add_w4g(ability, texts);
     add_w4f(texts);
     add_w4d(ability, texts);
     add_w4b(ability, texts);
@@ -359,6 +362,12 @@ fn add_w4f(texts: &mut Vec<String>) {
     w4f_counts::add(texts);
     w4f_tokens::add(texts);
     w4f_pronouns::add(texts);
+}
+
+/// Adds the other printed wordings of the Mismatch proposals of the names M to Z (r3w7): amounts, then texts.
+fn add_w4g(ability: &Ability, texts: &mut Vec<String>) {
+    w4g_amounts::w4g_add_amounts(ability, texts);
+    w4g_texts::w4g_add_texts(ability, texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.

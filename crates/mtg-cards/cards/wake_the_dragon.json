@@ -1,0 +1,68 @@
+{
+  "oracle_id": "cfa5b168-d112-4b92-ac42-8bba30f15d77",
+  "name": "Wake the Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wake the Dragon",
+      "oracle_fingerprint": "cdddf6f91026c4d69c24eead30da5538",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Black", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 6,
+                      "toughness": 6,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "Menace" },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "DealsDamage": {
+                                "source": ["This"],
+                                "to": "EachPlayer",
+                                "combat": true
+                              }
+                            },
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [
+                                    { "Type": "Artifact" },
+                                    { "ControlledBy": "Triggering" }
+                                  ]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "SetController": "You" }],
+                                  "duration": "Forever"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{B}{R}" } }
+      ]
+    }
+  ]
+}

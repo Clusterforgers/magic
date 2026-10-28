@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "f9cf5f78-0316-4c35-a40e-9bfba2e46ad8",
+  "oracle_id": "cfa5b168-d112-4b92-ac42-8bba30f15d77",
+  "multiverse_ids": [
+    620760
+  ],
+  "mtgo_id": 113180,
+  "tcgplayer_id": 499707,
+  "cardmarket_id": 717164,
+  "name": "Wake the Dragon",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8",
+  "scryfall_uri": "https://scryfall.com/card/ltc/74/wake-the-dragon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.jpg?1783916013",
+    "normal": "https://cards.scryfall.io/normal/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.jpg?1783916013",
+    "large": "https://cards.scryfall.io/large/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.jpg?1783916013",
+    "png": "https://cards.scryfall.io/png/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.png?1783916013",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.jpg?1783916013",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.jpg?1783916013",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.webp?1783916013",
+    "grid": "https://cards.scryfall.io/grid/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.webp?1783916013",
+    "display": "https://cards.scryfall.io/display/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.webp?1783916013",
+    "art": "https://cards.scryfall.io/art/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.webp?1783916013",
+    "crop": "https://cards.scryfall.io/crop/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.webp?1783916013",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/9/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8.jpg?1783916013"
+  },
+  "mana_cost": "{4}{B}{R}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Create a 6/6 black and red Dragon creature token with flying, menace, and \"Whenever this token deals combat damage to a player, gain control of target artifact that player controls.\"\nFlashback {6}{B}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "11335886-a422-42ff-be14-226602202603",
+      "component": "token",
+      "name": "Dragon",
+      "type_line": "Token Creature — Dragon",
+      "uri": "https://api.scryfall.com/cards/11335886-a422-42ff-be14-226602202603"
+    },
+    {
+      "object": "related_card",
+      "id": "5a307db8-4beb-4a42-b9e2-8b6a6df78936",
+      "component": "combo_piece",
+      "name": "Wake the Dragon",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/5a307db8-4beb-4a42-b9e2-8b6a6df78936"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f9cf5f78-0316-4c35-a40e-9bfba2e46ad8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acfa5b168-d112-4b92-ac42-8bba30f15d77&unique=prints",
+  "collector_number": "74",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Henry Peters",
+  "artist_ids": [
+    "2ffd9e06-94af-44f5-bec6-06f781941a6c"
+  ],
+  "illustration_id": "2384615a-6185-4927-a61a-b6f31cd87159",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8307,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": "0.40"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620760&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWake%2Bthe%2BDragon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWake%2Bthe%2BDragon",
+    "edhrec": "https://edhrec.com/route/?cc=Wake+the+Dragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499707%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=717164&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113180?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

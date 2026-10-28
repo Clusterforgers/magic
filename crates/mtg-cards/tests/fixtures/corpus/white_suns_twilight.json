@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "ae7a778c-f4a7-447f-90f0-146997e03398",
+  "oracle_id": "a38828be-781e-4340-9c6f-f40b1d34773f",
+  "multiverse_ids": [],
+  "resource_id": "7BC905480D276F03683D7259368A94D38C37E7B033F0E142521B78771EE618B2",
+  "mtgo_id": 156472,
+  "tcgplayer_id": 717704,
+  "cardmarket_id": 909831,
+  "name": "White Sun's Twilight",
+  "lang": "en",
+  "released_at": "2026-10-02",
+  "uri": "https://api.scryfall.com/cards/ae7a778c-f4a7-447f-90f0-146997e03398",
+  "scryfall_uri": "https://scryfall.com/card/frc/38/white-suns-twilight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-09-16T23:03:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.jpg?1789599802",
+    "normal": "https://cards.scryfall.io/normal/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.jpg?1789599802",
+    "large": "https://cards.scryfall.io/large/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.jpg?1789599802",
+    "png": "https://cards.scryfall.io/png/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.png?1789599802",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.jpg?1789599802",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.jpg?1789599802",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.webp?1789599802",
+    "grid": "https://cards.scryfall.io/grid/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.webp?1789599802",
+    "display": "https://cards.scryfall.io/display/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.webp?1789599802",
+    "art": "https://cards.scryfall.io/art/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.webp?1789599802",
+    "crop": "https://cards.scryfall.io/crop/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.webp?1789599802",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/e/ae7a778c-f4a7-447f-90f0-146997e03398.jpg?1789599802"
+  },
+  "mana_cost": "{X}{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "You gain X life. Create X 1/1 colorless Phyrexian Mite artifact creature tokens with toxic 1 and \"This token can't block.\" If X is 5 or more, destroy all other creatures. (Players dealt combat damage by a creature with toxic 1 also get a poison counter.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e9c68c64-f3b9-45b7-83d1-bd1439a49942",
+      "component": "token",
+      "name": "Phyrexian Mite",
+      "type_line": "Token Artifact Creature — Phyrexian Mite",
+      "uri": "https://api.scryfall.com/cards/e9c68c64-f3b9-45b7-83d1-bd1439a49942"
+    },
+    {
+      "object": "related_card",
+      "id": "8a9cb417-8709-4336-be36-2fb0cea31fe1",
+      "component": "combo_piece",
+      "name": "Poison Counter",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/8a9cb417-8709-4336-be36-2fb0cea31fe1"
+    },
+    {
+      "object": "related_card",
+      "id": "ae7a778c-f4a7-447f-90f0-146997e03398",
+      "component": "combo_piece",
+      "name": "White Sun's Twilight",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/ae7a778c-f4a7-447f-90f0-146997e03398"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cfd10490-7397-4143-bda7-d388b877636f",
+  "set": "frc",
+  "set_name": "Reality Fracture Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/cfd10490-7397-4143-bda7-d388b877636f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/frc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ae7a778c-f4a7-447f-90f0-146997e03398/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa38828be-781e-4340-9c6f-f40b1d34773f&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Julian Kok Joon Wen",
+  "artist_ids": [
+    "7f1868e3-325f-4df9-8f27-a381fed4f0fc"
+  ],
+  "illustration_id": "88a6b201-2e2d-43a2-8cb7-2ec419db9ae9",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1897,
+  "penny_rank": 3872,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": null,
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWhite%2BSun%2527s%2BTwilight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWhite%2BSun%2527s%2BTwilight",
+    "edhrec": "https://edhrec.com/route/?cc=White+Sun%27s+Twilight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F717704%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=909831&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156472?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

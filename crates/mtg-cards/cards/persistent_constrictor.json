@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bf0ee9da-6071-440c-9149-d441f730fcfb",
+  "name": "Persistent Constrictor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Persistent Constrictor",
+      "oracle_fingerprint": "3b2438ea9f0b92e7434ce0d824adf320",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "LoseLife": { "who": "Triggering", "amount": 1 } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}
