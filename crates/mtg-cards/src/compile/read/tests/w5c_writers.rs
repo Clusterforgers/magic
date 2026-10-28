@@ -1,4 +1,4 @@
-//! Goal: the writers of the step leftovers give the oracle wording of a trigger that triggers an additional time, a delayed trigger said after its effect, a damage trigger of at least an amount from a source you control, cost increases for spells and abilities that target, and a permission to cast as long as a count holds; a wrong count, kind, player, zone, step or condition never reads back.
+//! Goal: the writers of the step leftovers give the oracle wording of a trigger that triggers an additional time, a delayed trigger said after its effect, a damage trigger of at least an amount from a source you control, cost increases for spells and abilities that target, and a permission to cast as long as a count holds, and counters a player gets; a wrong count, kind, player, zone, step or condition never reads back.
 use super::*;
 
 /// The wordings the checker accepts for the rules, for the message of a failed golden.
@@ -21,7 +21,19 @@ const KOPALA_SPELLS: &str = r#"{"CostModifier":{"applies_to":["Spell",{"Controll
 const KOPALA_ABILITIES: &str = r#"{"CostModifier":{"applies_to":[{"Ability":"Activated"},{"ControlledBy":"Opponents"},{"Targeting":[{"Subtype":"Merfolk"},{"ControlledBy":"You"}]}],"change":"Increase","mana":"{2}"}}"#;
 const INDOMITABLE: &str = r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard"}},"condition":{"Compare":{"left":{"Count":[{"AnyOf":[{"Subtype":"Pirate"},{"Subtype":"Vehicle"}]},"Tapped",{"ControlledBy":"You"}]},"op":"Ge","right":3}}}}"#;
 
+const RADGULL: &str = r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"If":{"condition":{"Compare":{"left":{"Counters":{"on":"Triggering","counter":{"Other":"rad"}}},"op":"Eq","right":0}},"then":[{"PutCounters":{"on":"Triggering","counter":{"Other":"rad"},"count":2}}],"otherwise":[{"Proliferate":{}}]}}]}}"#;
+const MEREN: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"experience"}}}]}}"#;
+const ON_ITSELF: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"PutCounters":{"on":"This","counter":{"Other":"experience"}}}]}}"#;
+
 #[rstest]
+#[case::radgull(
+    RADGULL,
+    "Whenever this creature deals combat damage to a player, that player gets two rad counters if they don't have any rad counters. Otherwise, proliferate."
+)]
+#[case::meren(
+    MEREN,
+    "Whenever another creature you control dies, you get an experience counter."
+)]
 #[case::felix(
     FELIX,
     "If a creature you control dealing combat damage to a player causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time."
@@ -55,6 +67,30 @@ fn writes_the_oracle_wording(#[case] json: &str, #[case] clause: &str) {
 }
 
 #[rstest]
+#[case::radgull_count(
+    RADGULL,
+    "Whenever this creature deals combat damage to a player, that player gets three rad counters if they don't have any rad counters. Otherwise, proliferate."
+)]
+#[case::radgull_kind(
+    RADGULL,
+    "Whenever this creature deals combat damage to a player, that player gets two poison counters if they don't have any rad counters. Otherwise, proliferate."
+)]
+#[case::radgull_player(
+    RADGULL,
+    "Whenever this creature deals combat damage to a player, you get two rad counters if they don't have any rad counters. Otherwise, proliferate."
+)]
+#[case::meren_player(
+    MEREN,
+    "Whenever another creature you control dies, that player gets an experience counter."
+)]
+#[case::meren_count(
+    MEREN,
+    "Whenever another creature you control dies, you get two experience counters."
+)]
+#[case::on_itself(
+    ON_ITSELF,
+    "Whenever another creature you control dies, you get an experience counter."
+)]
 #[case::felix_noncombat(
     FELIX,
     "If a creature you control dealing noncombat damage to a player causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time."

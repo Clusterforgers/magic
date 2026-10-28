@@ -260,6 +260,7 @@ mod w5c_cast_while;
 mod w5c_costs;
 mod w5c_damage;
 mod w5c_later;
+mod w5c_player_counters;
 mod w5c_trigger_again;
 mod wheres;
 mod while_control;
@@ -352,13 +353,14 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 
 /// Adds the wordings of the step leftovers of the writer wave (r3wa): triggers that trigger an additional time, a
 /// delayed trigger said after its effects, damage of at least an amount, cost changes for what targets and a
-/// permission to cast under a condition.
+/// permission to cast under a condition and counters a player gets.
 fn add_w5c(ability: &Ability, texts: &mut Vec<String>) {
     w5c_trigger_again::add(ability, texts);
     w5c_later::add(ability, texts);
     w5c_damage::add(ability, texts);
     w5c_costs::add(ability, texts);
     w5c_cast_while::add(ability, texts);
+    w5c_player_counters::add(ability, texts);
 }
 
 /// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
