@@ -1,0 +1,28 @@
+{
+  "id": "27b29b3f-1f99-4880-8f66-442fa5326150",
+  "oracle_id": "12cc97ec-5d03-4434-a31b-51e77d208466",
+  "name": "Grey Knight Paragon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "13",
+  "rarity": "uncommon",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Astartes Knight",
+  "oracle_text": "Flash\nRites of Banishment — When this creature enters, destroy target attacking creature. If that creature is a Demon, exile it instead.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Rites of Banishment",
+    "Flash"
+  ]
+}

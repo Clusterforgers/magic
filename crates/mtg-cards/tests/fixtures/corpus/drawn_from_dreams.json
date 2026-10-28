@@ -1,0 +1,23 @@
+{
+  "id": "d61e811a-a744-40df-8d98-93f41a7bb0a0",
+  "oracle_id": "77acdc13-e1b5-4a6c-9be1-b987e8256f10",
+  "name": "Drawn from Dreams",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "220",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top seven cards of your library. Put two of them into your hand and the rest on the bottom of your library in a random order.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

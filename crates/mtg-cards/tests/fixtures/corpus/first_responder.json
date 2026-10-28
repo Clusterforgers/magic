@@ -1,0 +1,27 @@
+{
+  "id": "3688a806-9bff-4106-a14e-81d00bc6c87c",
+  "oracle_id": "8f5aed57-d0f3-4fa8-826c-0d94fa143f08",
+  "name": "First Responder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "60",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Ogre Citizen",
+  "oracle_text": "Vigilance\nAt the beginning of your end step, you may return another creature you control to its owner's hand, then put a number of +1/+1 counters equal to that creature's power on this creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance"
+  ]
+}

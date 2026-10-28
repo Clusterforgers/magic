@@ -1,0 +1,36 @@
+{
+  "oracle_id": "aeaf7768-ed67-487d-8506-e667babb88ba",
+  "name": "Narset, Enlightened Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narset, Enlightened Master",
+      "oracle_fingerprint": "0d159bd1403505fe9d275431481c7782",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "count": 4, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Creature" } }],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

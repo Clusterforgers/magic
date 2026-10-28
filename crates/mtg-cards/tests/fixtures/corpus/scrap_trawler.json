@@ -1,0 +1,21 @@
+{
+  "id": "614be454-3829-4c3b-9485-930755dfa16d",
+  "oracle_id": "164f3f85-21fc-40b7-9871-4f303ba98428",
+  "name": "Scrap Trawler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "373",
+  "rarity": "rare",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "Whenever this creature dies or another artifact you control is put into a graveyard from the battlefield, return to your hand target artifact card in your graveyard with lesser mana value.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

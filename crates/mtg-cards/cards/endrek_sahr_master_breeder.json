@@ -1,0 +1,51 @@
+{
+  "oracle_id": "47a0079f-3544-45bc-a32a-bd93844c8c43",
+  "name": "Endrek Sahr, Master Breeder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endrek Sahr, Master Breeder",
+      "oracle_fingerprint": "1ba675cd3440c1186b049487477767e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thrull",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Thrull"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Thrull" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 7
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

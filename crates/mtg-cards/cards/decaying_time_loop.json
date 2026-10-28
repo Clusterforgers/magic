@@ -1,0 +1,27 @@
+{
+  "oracle_id": "13e94530-defb-4c9b-9ec7-bb7789ec2630",
+  "name": "Decaying Time Loop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decaying Time Loop",
+      "oracle_fingerprint": "31ff724573c1579d2dfad3cc2d2c29ae",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "discarded" } }] } } }
+            ]
+          }
+        },
+        { "Keyword": "Retrace" }
+      ]
+    }
+  ]
+}

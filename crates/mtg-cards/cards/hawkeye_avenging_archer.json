@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e90d6903-5415-4ddf-88c0-15ddd8614bde",
+  "name": "Hawkeye, Avenging Archer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hawkeye, Avenging Archer",
+      "oracle_fingerprint": "264836d1333caecb8184dfab958b3fa5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "Matches": { "subject": "Triggering", "selector": [{ "DamagedBy": "This" }] } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

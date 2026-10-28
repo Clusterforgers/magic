@@ -1,0 +1,32 @@
+{
+  "oracle_id": "71b5fdf2-4475-4102-85eb-9be164a9ae29",
+  "name": "Deathbringer Regent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathbringer Regent",
+      "oracle_fingerprint": "0a7b497b39ff7ab1f407e3756bbbefc7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "All": [
+                { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }, "Other"] },
+                    "op": "Ge",
+                    "right": 5
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

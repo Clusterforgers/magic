@@ -1,0 +1,69 @@
+{
+  "oracle_id": "f58117e4-ba85-41b8-8fd5-4245716a84dc",
+  "name": "Prismari Pianist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismari Pianist",
+      "oracle_fingerprint": "6f08b1f0ea223496685686a025384a7a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Blue", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 3
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Blue", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

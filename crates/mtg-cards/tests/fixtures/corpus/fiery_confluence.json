@@ -1,0 +1,23 @@
+{
+  "id": "85d431c2-e4fa-426d-83cb-ecb782e7e87d",
+  "oracle_id": "3c22e031-4804-4c31-bd3c-c3f29d456b34",
+  "name": "Fiery Confluence",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tle",
+  "collector_number": "165",
+  "rarity": "rare",
+  "released_at": "2025-11-21",
+  "digital": false,
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose three. You may choose the same mode more than once.\n• Fiery Confluence deals 1 damage to each creature.\n• Fiery Confluence deals 2 damage to each opponent.\n• Destroy target artifact.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

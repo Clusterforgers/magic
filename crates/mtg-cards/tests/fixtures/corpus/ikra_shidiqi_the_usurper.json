@@ -1,0 +1,30 @@
+{
+  "id": "a6fd7a8c-e0cd-4fb5-b492-8f3ef7579682",
+  "oracle_id": "a1a1761c-88e5-40b4-ba4c-60735c054b09",
+  "name": "Ikra Shidiqi, the Usurper",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "100",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}{B}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Snake Wizard",
+  "oracle_text": "Menace\nWhenever a creature you control deals combat damage to a player, you gain life equal to that creature's toughness.\nPartner (You can have two commanders if both have partner.)",
+  "power": "3",
+  "toughness": "7",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Partner",
+    "Menace"
+  ]
+}

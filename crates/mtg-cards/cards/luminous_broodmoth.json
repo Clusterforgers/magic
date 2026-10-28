@@ -1,0 +1,37 @@
+{
+  "oracle_id": "28c7c816-07e7-42fb-923c-bf149ba28b38",
+  "name": "Luminous Broodmoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luminous Broodmoth",
+      "oracle_fingerprint": "e124249055d2ba60e5b24ebec421e169",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "HasKeyword": "Flying" } }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "flying" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

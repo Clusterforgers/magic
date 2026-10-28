@@ -1,0 +1,27 @@
+{
+  "id": "31ae4ee7-c540-4e32-95a4-6a2e7def094f",
+  "oracle_id": "93e1d3a6-e12f-4a0a-be0f-fbf568d89f1a",
+  "name": "Bloodhusk Ritualist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c17",
+  "collector_number": "101",
+  "rarity": "uncommon",
+  "released_at": "2017-08-25",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Vampire Shaman",
+  "oracle_text": "Multikicker {B} (You may pay an additional {B} any number of times as you cast this spell.)\nWhen this creature enters, target opponent discards a card for each time it was kicked.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Multikicker"
+  ]
+}

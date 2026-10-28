@@ -1,0 +1,23 @@
+{
+  "id": "155ae16c-f32b-421d-a92a-bf13d9f32891",
+  "oracle_id": "69d4ecac-4735-4667-bfc1-c8800b436d08",
+  "name": "Endless Ranks of the Dead",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mic",
+  "collector_number": "116",
+  "rarity": "rare",
+  "released_at": "2021-09-24",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, create X 2/2 black Zombie creature tokens, where X is half the number of Zombies you control, rounded down.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

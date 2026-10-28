@@ -1,0 +1,29 @@
+{
+  "id": "010a4b07-c2d5-433e-9898-6e148104e9e0",
+  "oracle_id": "52e1546a-63eb-48d7-acc4-81b912aabc90",
+  "name": "Malfegor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ima",
+  "collector_number": "205",
+  "rarity": "rare",
+  "released_at": "2017-11-17",
+  "digital": false,
+  "mana_cost": "{2}{B}{B}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Demon Dragon",
+  "oracle_text": "Flying\nWhen Malfegor enters, discard your hand. Each opponent sacrifices a creature of their choice for each card discarded this way.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

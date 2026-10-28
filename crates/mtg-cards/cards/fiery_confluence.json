@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3c22e031-4804-4c31-bd3c-c3f29d456b34",
+  "name": "Fiery Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Confluence",
+      "oracle_fingerprint": "7569248951d5632757d221d47d585792",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }] },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

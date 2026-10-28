@@ -1,0 +1,23 @@
+{
+  "id": "960f45a3-f9cf-41e6-b813-f3dee620a944",
+  "oracle_id": "f61680da-606e-4d16-b0a0-361aa5210901",
+  "name": "Chandra's Ignition",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "220",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target creature you control deals damage equal to its power to each other creature and each opponent.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

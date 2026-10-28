@@ -1,0 +1,27 @@
+{
+  "id": "a9e8eb41-3800-4553-843b-ec27a44e8d55",
+  "oracle_id": "434e58f4-4237-454f-a2d0-61885c9aafaa",
+  "name": "Archon of Redemption",
+  "lang": "en",
+  "layout": "normal",
+  "set": "jmp",
+  "collector_number": "90",
+  "rarity": "rare",
+  "released_at": "2020-07-17",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Archon",
+  "oracle_text": "Flying\nWhenever this creature or another creature you control with flying enters, you may gain life equal to that creature's power.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

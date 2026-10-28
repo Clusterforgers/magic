@@ -1,0 +1,28 @@
+{
+  "id": "f0e7ee3a-18f1-4771-86d6-db1e0b2aa542",
+  "oracle_id": "ac830812-2f33-4f9e-ba3a-ea665989011c",
+  "name": "Paladin Danse, Steel Maverick",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "20",
+  "rarity": "uncommon",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact Creature — Synth Knight",
+  "oracle_text": "Vigilance, lifelink\nExile Paladin Danse: Each creature you control that's an artifact or Human gains indestructible until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Vigilance"
+  ]
+}

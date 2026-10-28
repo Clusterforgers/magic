@@ -1,0 +1,23 @@
+{
+  "id": "44dc5937-4186-4ebf-a3cb-053c270370f3",
+  "oracle_id": "285fecb7-f872-454d-ac2f-bc5615c70cd8",
+  "name": "Nightmare Unmaking",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "253",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose one —\n• Exile each creature with power greater than the number of cards in your hand.\n• Exile each creature with power less than the number of cards in your hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

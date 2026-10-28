@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e100f9fc-b6fb-42ab-b9b3-796bede6804d",
+  "name": "Kalemne, Disciple of Iroas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalemne, Disciple of Iroas",
+      "oracle_fingerprint": "3ee9e791bfdaf51a5bb20f0d76373a4e",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "You", "counter": { "Other": "experience" } } },
+                  "toughness": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

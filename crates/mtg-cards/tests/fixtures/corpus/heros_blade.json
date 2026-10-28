@@ -1,0 +1,21 @@
+{
+  "id": "6f2fa911-5735-4ee2-828f-59dea6927b20",
+  "oracle_id": "e6bcd25d-39b6-4619-8a27-9f3d87f4a17b",
+  "name": "Hero's Blade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "201",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +3/+2.\nWhenever a legendary creature you control enters, you may attach this Equipment to it.\nEquip {4} ({4}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

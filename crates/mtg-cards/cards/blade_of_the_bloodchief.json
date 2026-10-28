@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8985e545-07c3-45f9-9058-fe3c1f50de04",
+  "name": "Blade of the Bloodchief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blade of the Bloodchief",
+      "oracle_fingerprint": "71810e2f143731300f0f00dd3b2e6a42",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Vampire" }] }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1", "count": 2 } }],
+                  "otherwise": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f61680da-606e-4d16-b0a0-361aa5210901",
+  "name": "Chandra's Ignition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Ignition",
+      "oracle_fingerprint": "c027dc3ebbc6401bacce2838673527e4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

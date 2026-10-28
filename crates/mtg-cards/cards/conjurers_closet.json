@@ -1,0 +1,36 @@
+{
+  "oracle_id": "cd1eda60-53e4-44d0-9b2c-7a57395e291f",
+  "name": "Conjurer's Closet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conjurer's Closet",
+      "oracle_fingerprint": "b1938251bc54c494de1b102736ca1f5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8f5aed57-d0f3-4fa8-826c-0d94fa143f08",
+  "name": "First Responder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First Responder",
+      "oracle_fingerprint": "510ab053046984236b8adc1c6265ca24",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                        },
+                        "as": "returned"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } },
+                    {
+                      "PutCounters": {
+                        "on": "This",
+                        "counter": "+1/+1",
+                        "count": { "Stat": { "of": { "Bound": "returned" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

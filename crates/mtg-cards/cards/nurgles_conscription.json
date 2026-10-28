@@ -1,0 +1,43 @@
+{
+  "oracle_id": "967f0c23-7af2-4e86-9ebc-dc2f8856c7c5",
+  "name": "Nurgle's Conscription",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nurgle's Conscription",
+      "oracle_fingerprint": "3b0d354477980db0db9c68d5a28bf4ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "Type": "Creature" },
+                    { "OwnedBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "OwnerOf": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "8a91dea7-9792-4714-82b0-ba2c06cef304",
+  "oracle_id": "4fc2755c-ae7b-4147-a573-b33679a461e8",
+  "name": "Phyrexian Swarmlord",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nph",
+  "collector_number": "119",
+  "rarity": "rare",
+  "released_at": "2011-05-13",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Phyrexian Insect Horror",
+  "oracle_text": "Infect (This creature deals damage to creatures in the form of -1/-1 counters and to players in the form of poison counters.)\nAt the beginning of your upkeep, create a 1/1 green Phyrexian Insect creature token with infect for each poison counter your opponents have.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Infect"
+  ]
+}

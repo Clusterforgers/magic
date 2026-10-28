@@ -1,0 +1,23 @@
+{
+  "id": "ad840567-c3ac-4e14-b398-0d11c88931bc",
+  "oracle_id": "9ac57a10-3402-4656-9079-f713884cde35",
+  "name": "Pyrohemia",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "86",
+  "rarity": "uncommon",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of the end step, if no creatures are on the battlefield, sacrifice this enchantment.\n{R}: This enchantment deals 1 damage to each creature and each player.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

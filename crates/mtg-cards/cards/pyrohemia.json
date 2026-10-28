@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9ac57a10-3402-4656-9079-f713884cde35",
+  "name": "Pyrohemia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyrohemia",
+      "oracle_fingerprint": "593c0104739c20dcfa76456f2cb569e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Type": "Creature" }] }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 } },
+              { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

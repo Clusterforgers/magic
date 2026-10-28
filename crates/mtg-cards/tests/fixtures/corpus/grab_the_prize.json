@@ -1,0 +1,23 @@
+{
+  "id": "50895202-f1a1-4840-a11a-55b78b8b5929",
+  "oracle_id": "a37387f0-9d57-49ff-aa38-2c6b359e8916",
+  "name": "Grab the Prize",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsk",
+  "collector_number": "138",
+  "rarity": "common",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "As an additional cost to cast this spell, discard a card.\nDraw two cards. If the discarded card wasn't a land card, Grab the Prize deals 2 damage to each opponent.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

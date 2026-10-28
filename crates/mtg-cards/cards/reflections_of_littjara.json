@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c3fdfb94-2d10-4743-864c-a59fdd57d8b7",
+  "name": "Reflections of Littjara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reflections of Littjara",
+      "oracle_fingerprint": "7e10e90d2d37663015d71459374ab8b1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["ChosenSubtype"], "by": "You" } },
+            "effects": [{ "CopySpell": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

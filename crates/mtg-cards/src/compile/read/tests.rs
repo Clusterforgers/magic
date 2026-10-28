@@ -190,6 +190,7 @@ mod c6_sz_writers;
 mod c7_untap;
 mod c8_eg_cast_itself;
 mod c8_kwq_counters;
+mod c9_wr_writers;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;

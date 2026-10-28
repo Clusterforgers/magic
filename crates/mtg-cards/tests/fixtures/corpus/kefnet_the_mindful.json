@@ -1,0 +1,28 @@
+{
+  "id": "ca06ae1a-4080-450a-8ff0-ad6aafd8f04c",
+  "oracle_id": "caf626a8-7abc-496b-9d3a-23194ce70e01",
+  "name": "Kefnet the Mindful",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "118",
+  "rarity": "mythic",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — God",
+  "oracle_text": "Flying, indestructible\nKefnet can't attack or block unless you have seven or more cards in hand.\n{3}{U}: Draw a card, then you may return a land you control to its owner's hand.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Indestructible"
+  ]
+}

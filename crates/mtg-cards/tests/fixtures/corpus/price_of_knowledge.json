@@ -1,0 +1,23 @@
+{
+  "id": "97f536be-7836-4c9a-befc-94590e602f26",
+  "oracle_id": "1c586aa7-7a61-464f-abba-b33f9a525f0e",
+  "name": "Price of Knowledge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c13",
+  "collector_number": "89",
+  "rarity": "rare",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{6}{B}",
+  "cmc": 7.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Players have no maximum hand size.\nAt the beginning of each opponent's upkeep, this enchantment deals damage to that player equal to the number of cards in that player's hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "053dff47-25df-424b-8328-3ee00739b4fd",
+  "name": "Grey Host Reinforcements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grey Host Reinforcements",
+      "oracle_fingerprint": "8bcc4bc1e10a353d24d197a53c6858ae",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Is": { "Bound": "exiled" } }, { "Type": "Creature" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

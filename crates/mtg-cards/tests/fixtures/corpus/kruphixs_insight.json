@@ -1,0 +1,23 @@
+{
+  "id": "d5d7ab7a-fcb2-44c7-8e99-e627d3ced1ea",
+  "oracle_id": "fadfbceb-4392-4e7e-be29-cbf372135d16",
+  "name": "Kruphix's Insight",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "155",
+  "rarity": "common",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Reveal the top six cards of your library. Put up to three enchantment cards from among them into your hand and the rest of the revealed cards into your graveyard.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "daff70a4-a990-47c9-b6ef-2c379272c8a3",
+  "name": "Dragonlord Atarka",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonlord Atarka",
+      "oracle_fingerprint": "6ea06e8b7fba41cff543dcddbacfa827",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                },
+                "bounds": { "min": 1, "max": null },
+                "divide": 5
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

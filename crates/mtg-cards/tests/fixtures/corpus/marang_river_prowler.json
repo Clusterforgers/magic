@@ -1,0 +1,25 @@
+{
+  "id": "491a3dc5-d297-47e1-acf9-dda103136519",
+  "oracle_id": "002e767c-0b30-4ad1-a924-88da400a4cff",
+  "name": "Marang River Prowler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znc",
+  "collector_number": "29",
+  "rarity": "uncommon",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "This creature can't block and can't be blocked.\nYou may cast this card from your graveyard as long as you control a black or green permanent.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

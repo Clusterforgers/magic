@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e6bcd25d-39b6-4619-8a27-9f3d87f4a17b",
+  "name": "Hero's Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hero's Blade",
+      "oracle_fingerprint": "bf53c263fed317fc4c34d77be4f0562d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

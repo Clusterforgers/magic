@@ -1,0 +1,37 @@
+{
+  "oracle_id": "210940f1-3c11-4877-bbfc-2429c03f98ee",
+  "name": "Masked Vandal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Masked Vandal",
+      "oracle_fingerprint": "bca9cd7718df81f11166615185b887c3",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

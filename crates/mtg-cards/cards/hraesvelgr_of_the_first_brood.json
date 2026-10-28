@@ -1,0 +1,36 @@
+{
+  "oracle_id": "44cbf70c-61cf-473e-901d-039956ced642",
+  "name": "Hraesvelgr of the First Brood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hraesvelgr of the First Brood",
+      "oracle_fingerprint": "b2b36446f20655614ebd6ff180f07065",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, "CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

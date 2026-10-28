@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f4aa0f64-d202-42a1-af62-0e53bbe87782",
+  "name": "Commune with Lava",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commune with Lava",
+      "oracle_fingerprint": "90d576c6a31f6b29759e5c8b4d3ce47b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": "X", "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

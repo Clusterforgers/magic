@@ -1,0 +1,48 @@
+{
+  "oracle_id": "164f3f85-21fc-40b7-9871-4f303ba98428",
+  "name": "Scrap Trawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrap Trawler",
+      "oracle_fingerprint": "771f0773c72106127d600660868cf6ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }, "Other"],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

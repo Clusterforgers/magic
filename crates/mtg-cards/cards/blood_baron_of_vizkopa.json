@@ -1,0 +1,28 @@
+{
+  "oracle_id": "326adf88-3f6d-4bc2-aafa-dd55c6c95784",
+  "name": "Blood Baron of Vizkopa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Baron of Vizkopa",
+      "oracle_fingerprint": "27c32ce1442131054d3ca8fb97854785",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Protection": [{ "Color": "White" }] } },
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 6, "toughness": 6 } }, { "AddKeyword": "Flying" }],
+            "condition": {
+              "All": [
+                { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 30 } },
+                { "Compare": { "left": { "LowestLife": "Opponents" }, "op": "Le", "right": 10 } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

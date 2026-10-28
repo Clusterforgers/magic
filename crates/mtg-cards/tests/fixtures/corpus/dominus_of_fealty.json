@@ -1,0 +1,29 @@
+{
+  "id": "91433559-ad01-4bde-b0c0-f9cbb3589e89",
+  "oracle_id": "f5e18b27-c5cc-4f5e-b767-4b1b43e00fd0",
+  "name": "Dominus of Fealty",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmd",
+  "collector_number": "194",
+  "rarity": "rare",
+  "released_at": "2011-06-17",
+  "digital": false,
+  "mana_cost": "{U/R}{U/R}{U/R}{U/R}{U/R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Spirit Avatar",
+  "oracle_text": "Flying\nAt the beginning of your upkeep, you may gain control of target permanent until end of turn. If you do, untap it and it gains haste until end of turn.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "52e1546a-63eb-48d7-acc4-81b912aabc90",
+  "name": "Malfegor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malfegor",
+      "oracle_fingerprint": "3a2f99e172a7983aab535f0803c51319",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "Count": [{ "Is": { "Bound": "discarded" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

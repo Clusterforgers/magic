@@ -1,0 +1,25 @@
+{
+  "id": "b3ec586d-14c7-4d3a-9bb5-f6afdf87657c",
+  "oracle_id": "2fb7f844-edaf-43ef-9121-318baf9ec9ce",
+  "name": "Brooding Saurian",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c13",
+  "collector_number": "138",
+  "rarity": "rare",
+  "released_at": "2013-11-01",
+  "digital": false,
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Lizard",
+  "oracle_text": "At the beginning of each end step, each player gains control of all nontoken permanents they own.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fa0a4765-5799-4464-88b6-6d1b15889eb5",
+  "name": "Bellowing Mauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bellowing Mauler",
+      "oracle_fingerprint": "34533e2932368542f2c741a1e5b22c4d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": [
+                          {
+                            "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Not": "Token" }] }
+                          }
+                        ],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "player" }, "amount": 4 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

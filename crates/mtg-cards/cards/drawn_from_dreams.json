@@ -1,0 +1,35 @@
+{
+  "oracle_id": "77acdc13-e1b5-4a6c-9be1-b987e8256f10",
+  "name": "Drawn from Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drawn from Dreams",
+      "oracle_fingerprint": "e3f7de1403f2d4575c4c6c0c3231341f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "seen" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "seen" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "65a193bb-22f3-4732-93cd-877cd8c8417c",
+  "oracle_id": "b2d19232-9a80-4ea2-9aa7-c47b4719106c",
+  "name": "Greater Tanuki",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "181",
+  "rarity": "common",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Enchantment Creature — Dog",
+  "oracle_text": "Trample\nChannel — {2}{G}, Discard this card: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Channel"
+  ]
+}

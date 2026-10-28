@@ -1,0 +1,25 @@
+{
+  "id": "f6236b1e-2e3e-4088-87e0-9cdf1fc8db66",
+  "oracle_id": "8b388331-eaa7-41aa-99de-4451e51cb221",
+  "name": "Merchant Raiders",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "163",
+  "rarity": "uncommon",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Pirate",
+  "oracle_text": "Whenever this creature or another Pirate you control enters, tap up to one target creature. That creature doesn't untap during its controller's untap step for as long as you control this creature.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}
