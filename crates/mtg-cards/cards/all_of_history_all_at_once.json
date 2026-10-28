@@ -1,0 +1,12 @@
+{
+  "oracle_id": "48f80047-a4f9-4ebb-a97a-cad157b9bb64",
+  "name": "All of History, All at Once",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All of History, All at Once",
+      "oracle_fingerprint": "09675c1c9412906e684ab03aa08e608a",
+      "abilities": [{ "Spell": { "effects": [{ "TimeTravel": {} }] } }, { "Keyword": "Storm" }]
+    }
+  ]
+}

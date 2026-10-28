@@ -484,11 +484,11 @@ pub(crate) fn activation(
 }
 
 #[cfg(test)]
+mod c8_time_counted;
+#[cfg(test)]
 mod combos;
 #[cfg(test)]
 mod counted;
-#[cfg(test)]
-mod c8_time_counted;
 #[cfg(test)]
 mod replaced;
 

@@ -54,7 +54,10 @@ fn the_counter_goes_on_first_and_the_mana_counts_it(#[case] seats: usize, #[case
         panic!("the counter goes on after the tap: {events:?}");
     };
     assert!(matches!(events[0], Event::PermanentTapped { .. }));
-    assert_eq!((first.counter.clone(), first.delta), (CounterKind::Charge, 1));
+    assert_eq!(
+        (first.counter.clone(), first.delta),
+        (CounterKind::Charge, 1)
+    );
     let added = events
         .iter()
         .filter(|e| matches!(e, Event::ManaAdded { .. }))

@@ -802,6 +802,13 @@ pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyar
 pub(crate) const PROLIFERATE: &str =
     "Choose any number of permanents with counters to proliferate.";
 
+/// What a time travel asks first: the suspended cards and permanents with time counters to give one more.
+pub(crate) const C8_TIME_ADD: &str = "Time travel: choose any number to add a time counter to.";
+
+/// What a time travel asks then: the rest to take a time counter from.
+pub(crate) const C8_TIME_REMOVE: &str =
+    "Time travel: choose any number to remove a time counter from.";
+
 /// What a proliferate asks about a player who holds counters: `holder` is one of them, `proliferating` the one who chooses.
 pub(crate) fn proliferate_player(proliferating: PlayerId, holder: PlayerId) -> String {
     if proliferating == holder {

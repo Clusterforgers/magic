@@ -408,6 +408,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             count: points(r)?,
         },
         "proliferate" => Effect::Proliferate { who },
+        "time" if r.words("travel") => Effect::TimeTravel { who },
         "learn" => Effect::Learn { who },
         "monstrosity" => Effect::Monstrosity { count: points(r)? },
         "adapt" => Effect::Adapt { count: points(r)? },

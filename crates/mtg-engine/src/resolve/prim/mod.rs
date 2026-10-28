@@ -340,6 +340,7 @@ mod tests {
         "Effect.Manifest",
         "Effect.Cloak",
         "Effect.CastFromZone",
+        "Effect.TimeTravel",
         "Effect.ExtraTurn",
         "Effect.CopySpell",
         "Effect.CopyAbility",
