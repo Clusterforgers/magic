@@ -1,0 +1,55 @@
+{
+  "oracle_id": "bf89bd6d-aa6c-4fd8-9278-151529ab0e62",
+  "name": "Hourglass of the Lost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hourglass of the Lost",
+      "oracle_fingerprint": "44b61258b35f8058683ef508d7d92509",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "time" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "time" }, "count": "X" } },
+              "ExileSelf"
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

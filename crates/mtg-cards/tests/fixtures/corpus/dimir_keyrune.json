@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "69d1dd6c-21d3-4fe8-af1b-7088dcceef08",
+  "oracle_id": "7685ff3f-6d61-4b1d-a381-49bc6274aa01",
+  "multiverse_ids": [
+    567673
+  ],
+  "tcgplayer_id": 273495,
+  "cardmarket_id": 662051,
+  "name": "Dimir Keyrune",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/69d1dd6c-21d3-4fe8-af1b-7088dcceef08",
+  "scryfall_uri": "https://scryfall.com/card/clb/856/dimir-keyrune?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:59:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.jpg?1783922392",
+    "normal": "https://cards.scryfall.io/normal/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.jpg?1783922392",
+    "large": "https://cards.scryfall.io/large/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.jpg?1783922392",
+    "png": "https://cards.scryfall.io/png/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.png?1783922392",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.jpg?1783922392",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.jpg?1783922392",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.webp?1783922392",
+    "grid": "https://cards.scryfall.io/grid/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.webp?1783922392",
+    "display": "https://cards.scryfall.io/display/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.webp?1783922392",
+    "art": "https://cards.scryfall.io/art/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.webp?1783922392",
+    "crop": "https://cards.scryfall.io/crop/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.webp?1783922392",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/9/69d1dd6c-21d3-4fe8-af1b-7088dcceef08.jpg?1783922392"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {U} or {B}.\n{U}{B}: This artifact becomes a 2/2 blue and black Horror artifact creature until end of turn and can't be blocked this turn.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/69d1dd6c-21d3-4fe8-af1b-7088dcceef08/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7685ff3f-6d61-4b1d-a381-49bc6274aa01&unique=prints",
+  "collector_number": "856",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "A key that slips through every lock.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Ljunggren",
+  "artist_ids": [
+    "0fbd4798-76eb-46d5-a5d4-1e3a25870e34"
+  ],
+  "illustration_id": "1d80d4a1-d3b0-436c-a650-4d2a19984c8b",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7160,
+  "penny_rank": 9081,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=567673&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDimir%2BKeyrune",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDimir%2BKeyrune",
+    "edhrec": "https://edhrec.com/route/?cc=Dimir+Keyrune"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273495%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=662051&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Dimir+Keyrune&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

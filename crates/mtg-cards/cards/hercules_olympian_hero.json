@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ee3dfdb2-07ef-4ce2-9806-0a5b7f19aa67",
+  "name": "Hercules, Olympian Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hercules, Olympian Hero",
+      "oracle_fingerprint": "1f3d7912938b560be82ca738f2c79cc4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": { "event": { "DealsDamage": { "source": [], "to": "This" } }, "nth": 1 }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

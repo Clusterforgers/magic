@@ -1,0 +1,27 @@
+{
+  "oracle_id": "75f5d372-4ff9-430c-8302-72472439e0d2",
+  "name": "Blood Money",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Money",
+      "oracle_fingerprint": "2a4fb7b4488c6ddeec7caa2bfa41afe0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Destroyed": [{ "Type": "Creature" }, { "Not": "Token" }] },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

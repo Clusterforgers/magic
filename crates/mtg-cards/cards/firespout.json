@@ -1,0 +1,47 @@
+{
+  "oracle_id": "eb2524ae-899a-4f91-9feb-0716cf689db3",
+  "name": "Firespout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firespout",
+      "oracle_fingerprint": "8165a476c57274b2a8784d2a51f3667a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Red" },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                        },
+                        "amount": 3
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Green" },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                        "amount": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9d73a51a-1c8e-40cd-8124-aeff406a0884",
+  "name": "Brave the Elements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brave the Elements",
+      "oracle_fingerprint": "ac7eed0ffcd9233d9c6d2b7dde0aa255",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Color": "White" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

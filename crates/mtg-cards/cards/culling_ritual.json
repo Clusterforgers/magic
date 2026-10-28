@@ -1,0 +1,36 @@
+{
+  "oracle_id": "15e5136e-ed15-49a8-b027-e09436673fb4",
+  "name": "Culling Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Culling Ritual",
+      "oracle_fingerprint": "146dd78e51906902c7a3d557369793e1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                    ]
+                  }
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyCombination": { "count": { "Destroyed": [] }, "among": ["Black", "Green"] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
