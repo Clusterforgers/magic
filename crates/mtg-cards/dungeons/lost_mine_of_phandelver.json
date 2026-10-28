@@ -1,0 +1,56 @@
+{
+  "name": "Lost Mine of Phandelver",
+  "rooms": [
+    {
+      "name": "Cave Entrance",
+      "text": "Scry 1.",
+      "leads_to": [
+        "Goblin Lair",
+        "Mine Tunnels"
+      ]
+    },
+    {
+      "name": "Goblin Lair",
+      "text": "Create a 1/1 red Goblin creature token.",
+      "leads_to": [
+        "Storeroom",
+        "Dark Pool"
+      ]
+    },
+    {
+      "name": "Mine Tunnels",
+      "text": "Create a Treasure token.",
+      "leads_to": [
+        "Dark Pool",
+        "Fungi Cavern"
+      ]
+    },
+    {
+      "name": "Storeroom",
+      "text": "Put a +1/+1 counter on target creature.",
+      "leads_to": [
+        "Temple of Dumathoin"
+      ]
+    },
+    {
+      "name": "Dark Pool",
+      "text": "Each opponent loses 1 life and you gain 1 life.",
+      "leads_to": [
+        "Temple of Dumathoin"
+      ]
+    },
+    {
+      "name": "Fungi Cavern",
+      "text": "Target creature gets -4/-0 until your next turn.",
+      "ability": { "Spell": { "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }], "effects": [{ "Continuous": { "affected": { "Target": 0 }, "mods": [{ "ModifyPT": { "power": -4, "toughness": 0 } }], "duration": "UntilYourNextTurn" } }] } },
+      "leads_to": [
+        "Temple of Dumathoin"
+      ]
+    },
+    {
+      "name": "Temple of Dumathoin",
+      "text": "Draw a card.",
+      "leads_to": []
+    }
+  ]
+}

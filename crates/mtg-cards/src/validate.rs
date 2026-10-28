@@ -3246,6 +3246,13 @@ pub(crate) fn check_card(card: &Card, tokens: &BTreeSet<String>) -> Vec<Problem>
     walk(card, tokens).problems
 }
 
+/// The problems of a dungeon room's ability, with `tokens` the ids of the predefined tokens.
+pub(crate) fn w11d_check_room(ability: &Ability, tokens: &BTreeSet<String>) -> Vec<Problem> {
+    let mut walker = Walker::new(tokens);
+    walker.ability(ability);
+    walker.problems
+}
+
 /// The problems of a predefined token by itself.
 pub(crate) fn check_token(id: &str, spec: &TokenSpec, tokens: &BTreeSet<String>) -> Vec<Problem> {
     let mut walker = Walker::new(tokens);

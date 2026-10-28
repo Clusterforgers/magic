@@ -1,0 +1,69 @@
+{
+  "name": "Dungeon of the Mad Mage",
+  "rooms": [
+    {
+      "name": "Yawning Portal",
+      "text": "You gain 1 life.",
+      "leads_to": [
+        "Dungeon Level"
+      ]
+    },
+    {
+      "name": "Dungeon Level",
+      "text": "Scry 1.",
+      "leads_to": [
+        "Goblin Bazaar",
+        "Twisted Caverns"
+      ]
+    },
+    {
+      "name": "Goblin Bazaar",
+      "text": "Create a Treasure token.",
+      "leads_to": [
+        "Lost Level"
+      ]
+    },
+    {
+      "name": "Twisted Caverns",
+      "text": "Target creature can't attack until your next turn.",
+      "ability": { "Spell": { "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }], "effects": [{ "Continuous": { "affected": { "Target": 0 }, "mods": ["CantAttack"], "duration": "UntilYourNextTurn" } }] } },
+      "leads_to": [
+        "Lost Level"
+      ]
+    },
+    {
+      "name": "Lost Level",
+      "text": "Scry 2.",
+      "leads_to": [
+        "Runestone Caverns",
+        "Muiral's Graveyard"
+      ]
+    },
+    {
+      "name": "Runestone Caverns",
+      "text": "Exile the top two cards of your library. You may play them.",
+      "leads_to": [
+        "Deep Mines"
+      ]
+    },
+    {
+      "name": "Muiral's Graveyard",
+      "text": "Create two 1/1 black Skeleton creature tokens.",
+      "leads_to": [
+        "Deep Mines"
+      ]
+    },
+    {
+      "name": "Deep Mines",
+      "text": "Scry 3.",
+      "leads_to": [
+        "Mad Wizard's Lair"
+      ]
+    },
+    {
+      "name": "Mad Wizard's Lair",
+      "text": "Draw three cards and reveal them. You may cast one of them without paying its mana cost.",
+      "leads_to": []
+    }
+  ]
+}
