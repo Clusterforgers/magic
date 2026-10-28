@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a498ca5f-7743-47b7-a57a-471efa1a99e8",
+  "name": "Dual Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dual Strike",
+      "oracle_fingerprint": "a5fb1136b89b8632af434fec1b910ac7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                      ],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{R}" } }
+      ]
+    }
+  ]
+}

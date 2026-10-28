@@ -440,6 +440,16 @@ fn spell_cast(r: &mut Reader<'_>, by: Ref, third: bool) -> Option<TriggerPattern
     })
 }
 
+/// The kind of spell after "you next cast" ("an instant or sorcery spell", "a creature spell"), without `Spell`.
+pub(super) fn w2g_next_spell(r: &mut Reader<'_>) -> Option<Selector> {
+    let mut spell = subject(r)?.0;
+    if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
+        return None;
+    }
+    spell.remove(0);
+    Some(Selector(spell))
+}
+
 /// "you cast a creature spell", "an opponent casts a spell", "you sacrifice a Clue".
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;

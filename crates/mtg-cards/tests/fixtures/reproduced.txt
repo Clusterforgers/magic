@@ -363,6 +363,7 @@ Dokuchi Shadow-Walker
 Domesticated Hydra
 Doom Blade
 Doom Whisperer
+Doublecast
 Draconic Lore
 Dragonlord Ojutai
 Dragonspeaker Shaman
@@ -384,6 +385,7 @@ Drownyard Temple
 Drudge Beetle
 Drudge Skeletons
 Dual Casting
+Dual Strike
 Dualcaster Mage
 Duchess, Wayward Tavernkeep
 Dungeon Geists
@@ -517,6 +519,7 @@ Fury Storm
 Gadwick, the Wizened
 Gaea's Cradle
 Galadhrim Brigade
+Galvanic Iteration
 Galvanizing Sawship
 Game-Trail Changeling
 Garruk Wildspeaker
@@ -1247,6 +1250,7 @@ Stonecoil Serpent
 Stonewood Invocation
 Stonybrook Banneret
 Storm Fleet Swashbuckler
+Storm King's Thunder
 Stormchaser's Talent
 Stormscape Battlemage
 Stormsurge Kraken
@@ -1302,6 +1306,7 @@ Tanuki Transplanter
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Tavern Scoundrel
+Teach by Example
 Teacher's Pest
 Team Pennant
 Tectonic Reformation
@@ -1351,6 +1356,7 @@ Thriving Isle
 Thriving Moor
 Throne of the High City
 Thunder-Thrash Elder
+Thunderclap Drake
 Thunderfoot Baloth
 Thunderherd Migration
 Thunderous Wrath

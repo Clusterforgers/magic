@@ -123,6 +123,7 @@ mod tests {
                         ..
                     },
                     once: true,
+                    this_turn: false,
                     effects,
                 }
             ] if matches!(effects.as_slice(), [Effect::Sacrifice { .. }])

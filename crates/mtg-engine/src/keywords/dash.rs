@@ -80,6 +80,7 @@ pub(super) fn at_next_end_step(way: CastWay, name: &str, effect: Effect) -> Abil
                     whose: Ref::EachPlayer,
                 },
                 once: true,
+                this_turn: false,
                 effects: vec![effect],
             },
         ],

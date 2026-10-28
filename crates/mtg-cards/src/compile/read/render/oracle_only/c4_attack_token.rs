@@ -30,6 +30,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                     whose: Ref::EachPlayer,
                 },
             once: true,
+            this_turn: false,
             effects: later,
         },
     ] = effects.as_slice()

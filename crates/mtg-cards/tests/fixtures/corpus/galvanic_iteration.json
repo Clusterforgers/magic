@@ -1,0 +1,27 @@
+{
+  "id": "4e148c83-09d1-4055-b1a6-5c624c67810d",
+  "oracle_id": "c51ed6e3-813b-49c4-b1de-7f92a77f8f6e",
+  "name": "Galvanic Iteration",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "184",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{U}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "When you next cast an instant or sorcery spell this turn, copy that spell. You may choose new targets for the copy.\nFlashback {1}{U}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ]
+}

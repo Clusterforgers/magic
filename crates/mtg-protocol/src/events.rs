@@ -1059,6 +1059,7 @@ mod tests {
                 ability: 0,
                 when: TriggerPattern::AnyOf(Vec::new()),
                 once: true,
+                this_turn: false,
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
             }))

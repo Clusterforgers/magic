@@ -1,0 +1,27 @@
+{
+  "id": "313fed71-cfbe-4c83-9437-ac14b2cb159b",
+  "oracle_id": "88d0a394-79e2-42ac-9a37-1a7b78231941",
+  "name": "Thunderclap Drake",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "204",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Drake",
+  "oracle_text": "Flying\nInstant and sorcery spells you cast cost {1} less to cast.\n{2}{U}, Sacrifice this creature: When you next cast an instant or sorcery spell this turn, copy it for each time you've cast your commander from the command zone this game. You may choose new targets for the copies.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

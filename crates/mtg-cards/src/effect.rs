@@ -978,6 +978,9 @@ pub enum Effect {
         /// It triggers once and is gone (the usual case).
         #[serde(default = "yes", skip_serializing_if = "is_true")]
         once: bool,
+        /// It waits only until the end of the turn it was set up in ("when you next cast a spell this turn").
+        #[serde(default, skip_serializing_if = "is_false")]
+        this_turn: bool,
         /// What it does.
         effects: Vec<Effect>,
     },

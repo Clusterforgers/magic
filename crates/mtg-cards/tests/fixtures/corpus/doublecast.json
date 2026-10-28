@@ -1,0 +1,23 @@
+{
+  "id": "55a3153e-4259-4e03-bf79-8979d3c0db36",
+  "oracle_id": "946675f5-8998-4f1b-934b-85ffe6e2f002",
+  "name": "Doublecast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "jmp",
+  "collector_number": "307",
+  "rarity": "uncommon",
+  "released_at": "2020-07-17",
+  "digital": false,
+  "mana_cost": "{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "When you next cast an instant or sorcery spell this turn, copy that spell. You may choose new targets for the copy.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

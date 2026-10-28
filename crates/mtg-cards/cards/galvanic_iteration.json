@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c51ed6e3-813b-49c4-b1de-7f92a77f8f6e",
+  "name": "Galvanic Iteration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanic Iteration",
+      "oracle_fingerprint": "ba00e0fe5a419ce873d2b3cb3886496f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{U}{R}" } }
+      ]
+    }
+  ]
+}

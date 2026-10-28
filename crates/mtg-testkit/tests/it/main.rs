@@ -456,6 +456,7 @@ mod vehicle_shapes;
 mod vehicles;
 mod vote_fuzz;
 mod votes;
+mod w2g_next_cast;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;

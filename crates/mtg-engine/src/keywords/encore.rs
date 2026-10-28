@@ -59,6 +59,7 @@ impl KeywordRules for Encore {
                         whose: Ref::EachPlayer,
                     },
                     once: true,
+                    this_turn: false,
                     effects: vec![sacrifice_them()],
                 },
             ],

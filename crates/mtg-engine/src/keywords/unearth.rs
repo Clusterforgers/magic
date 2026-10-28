@@ -86,6 +86,7 @@ fn activation(cost: &Cost) -> Ability {
                             whose: Ref::EachPlayer,
                         },
                         once: true,
+                        this_turn: false,
                         effects: vec![Effect::Exile {
                             what: unearthed(),
                             bind: None,

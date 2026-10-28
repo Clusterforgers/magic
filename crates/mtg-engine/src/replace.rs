@@ -2090,6 +2090,7 @@ impl Pass<'_> {
                     whose: Ref::You,
                 },
                 once: true,
+                this_turn: false,
                 effects: vec![mtg_cards::effect::Effect::CastFromZone {
                     who: Ref::You,
                     what: Ref::This,

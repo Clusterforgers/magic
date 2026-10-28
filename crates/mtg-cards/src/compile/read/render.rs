@@ -1984,6 +1984,9 @@ impl Writer<'_> {
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
+            Effect::DelayedTrigger {
+                this_turn: true, ..
+            } => super::w2g_next_cast::w2g_next_cast_text(effect)?,
             Effect::Scry { who: Ref::You, .. }
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
