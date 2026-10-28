@@ -20,6 +20,8 @@ use mtg_core::mana::{ManaCost, ManaType};
 use thiserror::Error;
 
 use super::share::{OUTSIDE_A_DIVISION, Share};
+
+mod w6d_shares;
 use crate::abilities::Cause;
 use crate::announce::{kicked_with, payments};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
@@ -972,6 +974,12 @@ impl<'a> Scope<'a> {
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
+            Pred::SharesName(named) => self.w6d_shares_name(named, seen)?,
+            Pred::SharesType(named) => self.w6d_shares_type(named, seen)?,
+            Pred::SharesColor(named) => self.w6d_shares_color(named, seen)?,
+            Pred::XInCost => Self::w6d_x_in_cost(seen),
+            Pred::Goaded => self.w6d_goaded(seen),
+            Pred::HasAttached(attached) => self.w6d_has_attached(attached, seen)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,

@@ -128,6 +128,7 @@ mod w2b_you_and;
 mod w2c_counts;
 mod w2d_villainous;
 mod w2e_copied;
+mod w6d_shares;
 mod w2f_any_counters;
 mod w2g_next_cast;
 mod w5d_replaced;

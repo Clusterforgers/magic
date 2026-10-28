@@ -137,6 +137,20 @@ pub enum Pred {
     Is(Ref),
     /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
     SharesSubtype(Ref),
+    /// Has the same name as one of the objects the reference names ("with the same name as that creature"); a nameless
+    /// object (a face-down one) shares no name.
+    SharesName(Ref),
+    /// Shares a card type with one of the objects the reference names ("that shares a card type with it").
+    SharesType(Ref),
+    /// Shares a color with one of the objects the reference names ("that shares a color with it").
+    SharesColor(Ref),
+    /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
+    XInCost,
+    /// Is a creature on the battlefield that some player goads (CR 701.15).
+    Goaded,
+    /// Has a permanent attached to it that matches the selector ("enchanted": `[{"Subtype":"Aura"}]`, "enchanted by an
+    /// Aura you control", "equipped").
+    HasAttached(Selector),
     /// Is a card exiled face down by one of the permanents the reference names, which has not left since (hideaway, CR 702.75a).
     ExiledWith(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).

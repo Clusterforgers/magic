@@ -13,6 +13,7 @@ use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
 use super::counters;
+use super::w6d_shares;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use crate::compile::keywords;
@@ -109,7 +110,7 @@ pub enum Form {
 }
 
 impl Form {
-    const fn plural(self) -> bool {
+    pub(super) const fn plural(self) -> bool {
         matches!(self, Form::Targets | Form::All)
     }
 
@@ -267,6 +268,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
         "attacking" => Pred::Attacking,
         "blocking" => Pred::Blocking,
         "unblocked" => Pred::Unblocked,
+        "goaded" => Pred::Goaded,
         "legendary" => Pred::Supertype(Supertype::Legendary),
         "basic" => Pred::Supertype(Supertype::Basic),
         "other" => Pred::Other,
@@ -302,6 +304,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Attacking => "attacking".to_owned(),
         Pred::Blocking => "blocking".to_owned(),
         Pred::Unblocked => "unblocked".to_owned(),
+        Pred::Goaded => "goaded".to_owned(),
         Pred::Other if form == Form::Subject => "another".to_owned(),
         Pred::Other => "other".to_owned(),
         Pred::Supertype(Supertype::Legendary) => "legendary".to_owned(),
@@ -585,6 +588,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.that_player && r.words("that player controls") {
         return Some(Pred::ControlledBy(Ref::Triggering));
     }
+    if let Some(pred) = r.attempt(|r| w6d_shares::w6d_suffix(r, form)) {
+        return Some(pred);
+    }
     if let Some(keyword) = r.attempt(|r| {
         r.need("without")?;
         keyword(r)
@@ -705,6 +711,12 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             let words = counters::trigger_kind_text(Some(kind))?;
             format!("with {words} on it")
         }
+        pred @ (Pred::XInCost
+        | Pred::SharesName(_)
+        | Pred::SharesType(_)
+        | Pred::SharesColor(_)
+        | Pred::HasAttached(_)
+        | Pred::AnyOf(_)) => w6d_shares::w6d_suffix_text(pred, form)?,
         Pred::HasAnyCounter if form.plural() => "with counters on them".to_owned(),
         Pred::HasAnyCounter => "with a counter on it".to_owned(),
         Pred::Not(inner) => match &**inner {
