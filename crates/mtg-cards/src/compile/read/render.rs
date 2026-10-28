@@ -2331,6 +2331,10 @@ impl Writer<'_> {
             } if super::day_night::effect_text(effect).is_some() => {
                 super::day_night::effect_text(effect)?
             }
+            Effect::CreateEmblem { who, abilities } => {
+                let subject = self.player(who)?;
+                super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
+            }
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",
                 self.player(who)?,
