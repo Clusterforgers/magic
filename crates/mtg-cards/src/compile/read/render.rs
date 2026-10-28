@@ -381,7 +381,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = joined::wordings(&texts);
     texts.extend(more);
-    let counted = where_x::wordings(ability);
+    let mut counted = where_x::wordings(ability);
+    counted.extend(super::c10_pa_pay_x::c10_pa_wordings(ability));
+    counted.extend(super::c10_pa_monstrous::c10_pa_wordings(ability));
     let pronouns = create::pronoun_wordings(&counted);
     texts.extend(counted);
     texts.extend(pronouns);

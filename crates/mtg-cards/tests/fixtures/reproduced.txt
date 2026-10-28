@@ -611,6 +611,7 @@ Hulking Raptor
 Hungry Lynx
 Hunt the Weak
 Huntmaster Liger
+Hydra Broodmaster
 Icefeather Aven
 Idyllic Beachfront
 Igneous Inspiration
@@ -760,6 +761,7 @@ Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Marwyn, the Nurturer
+Mask of Griselbrand
 Mask of Riddles
 Mass Diminish
 Master of Dark Rites
@@ -1289,6 +1291,7 @@ Titania, Nature's Force
 Titania, Proud Pummeler
 Tithe Drinker
 Tithebearer Giant
+Tivash, Gloom Summoner
 Tomb Tyrant
 Towering Titan
 Toxic Deluge

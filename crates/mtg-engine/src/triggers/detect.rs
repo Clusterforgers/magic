@@ -155,7 +155,11 @@ enum Happened {
     /// A player amassed.
     Amassed { player: PlayerId },
     /// A creature became monstrous.
-    Monstrous { object: ObjectId, player: PlayerId },
+    Monstrous {
+        object: ObjectId,
+        player: PlayerId,
+        x: u32,
+    },
     /// A creature became renowned.
     Renowned { object: ObjectId, player: PlayerId },
     /// A creature exploited a creature; judged against the battlefield before the sacrifice.
@@ -210,6 +214,7 @@ impl Happened {
             | Happened::LifeGained { amount, .. }
             | Happened::LifeLost { amount, .. } => *amount,
             Happened::Counters { delta, .. } => delta.unsigned_abs(),
+            Happened::Monstrous { x, .. } => *x,
             Happened::Cast { before, .. } => *before,
             _ => 0,
         }
@@ -778,9 +783,10 @@ fn about_players_and_permanents(
         }
         Event::Amassed { player, .. } => found.push(Happened::Amassed { player: *player }),
         Event::Bolstered { player, .. } => found.push(Happened::Bolstered { player: *player }),
-        Event::Monstrous { object, player } => found.push(Happened::Monstrous {
+        Event::Monstrous { object, player, x } => found.push(Happened::Monstrous {
             object: *object,
             player: *player,
+            x: *x,
         }),
         Event::Renowned { object, player } => found.push(Happened::Renowned {
             object: *object,
@@ -1171,6 +1177,7 @@ fn matching_permanents(
             Happened::Monstrous {
                 object: actor,
                 player,
+                ..
             },
         )
         | (
@@ -1225,8 +1232,13 @@ fn matching_permanents(
             },
         ) => {
             let actor = object(*actor)?;
-            picks(what, actor)?
-                .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
+            picks(what, actor)?.then(|| {
+                counted(
+                    state,
+                    vec![Target::Player(*player), Target::Object(actor)],
+                    happened.amount(),
+                )
+            })
         }
         (
             TriggerPattern::BecomesLevel { what, level },

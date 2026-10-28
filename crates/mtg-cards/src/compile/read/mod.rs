@@ -29,6 +29,8 @@ mod aura_forms;
 mod batches;
 mod becomes;
 mod c10_pa_attacks;
+mod c10_pa_monstrous;
+mod c10_pa_pay_x;
 mod c4_cast_hand;
 mod c4_chosen_pairs;
 mod c4_hands;

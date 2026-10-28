@@ -164,6 +164,8 @@ mod batch_writers;
 mod becomes;
 mod block_limits;
 mod c10_pa_attacks;
+mod c10_pa_monstrous;
+mod c10_pa_pay_x;
 mod c4_af_writers;
 mod c4_conditions;
 mod c4_gl_writers;

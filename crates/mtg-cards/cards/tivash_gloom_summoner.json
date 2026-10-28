@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b5641fcf-135e-43e7-a547-344fac61e279",
+  "name": "Tivash, Gloom Summoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tivash, Gloom Summoner",
+      "oracle_fingerprint": "4d7a77d15f88d8f086e98747f5bb2453",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": { "Tallied": { "who": "You", "what": "LifeGained" } } }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                            "token": {
+                              "name": "Demon",
+                              "colors": ["Black"],
+                              "types": ["Creature"],
+                              "subtypes": ["Demon"],
+                              "abilities": [{ "Keyword": "Flying" }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

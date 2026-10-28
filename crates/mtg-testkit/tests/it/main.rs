@@ -33,6 +33,7 @@ mod block_limits_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
 mod c10_pa_attacks;
+mod c10_pa_monstrous;
 mod c4_attacked_untap;
 mod c4_combat;
 mod c4_control;

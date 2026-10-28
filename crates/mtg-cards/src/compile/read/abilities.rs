@@ -151,10 +151,12 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         (true, None) => Some(triggers::saddled()),
         (true, Some(_)) => return None,
     };
+    let monstrous = super::c10_pa_monstrous::c10_pa_x_of(r, &when);
     let effects = match r.attempt(|r| mana_trigger::effects(r, &when)) {
         Some(mana) => mana,
         None => sentences(r, true)?,
     };
+    let effects = super::c10_pa_monstrous::c10_pa_put_in(r, effects, monstrous);
     let limit = once_each_turn(r);
     // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
     // graveyard has its ability there.

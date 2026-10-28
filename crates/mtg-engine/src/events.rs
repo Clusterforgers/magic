@@ -686,6 +686,9 @@ pub enum Event {
         object: ObjectId,
         /// Its controller.
         player: PlayerId,
+        /// The X of the monstrosity, which a trigger on becoming monstrous reads (CR 701.37c).
+        #[serde(default, skip_serializing_if = "is_zero")]
+        x: u32,
     },
     /// A creature became renowned (CR 702.112): the permanent keeps the designation while it stays on the battlefield;
     /// the counters are the event before it.
