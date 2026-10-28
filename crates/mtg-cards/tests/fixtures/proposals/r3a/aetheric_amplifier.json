@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}},{"Activated":{"cost":[{"Mana":"{4}"},"Tap"],"timing":"Sorcery","effects":[{"Modal":{"modes":[{"targets":[{"what":{"Object":[]}}],"effects":[{"MultiplyCounters":{"on":{"Target":0}}}]},{"effects":[{"MultiplyCounters":{"on":"You"}}]}]}}]}}]}]}

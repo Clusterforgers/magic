@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantBeBlocked"],"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"Defending"}]},"op":"Ge","right":{"Largest":{"who":"EachPlayer","of":[{"Type":"Creature"}]}}}}}}]}]}

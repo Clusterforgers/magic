@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":3}},{"LoseLife":{"amount":3}},{"RepeatEach":{"over":"Opponents","as":"opponent","effects":[{"If":{"condition":{"Compare":{"left":{"Counters":{"on":{"Bound":"opponent"},"counter":"poison"}},"op":"Ge","right":3}},"then":[{"LoseLife":{"who":{"Bound":"opponent"},"amount":3}}]}}]}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[]},"bounds":{"min":0,"max":8}}],"effects":[{"Pay":{"cost":"{8}","paid":[{"Tap":{"what":{"Target":0}}},{"Continuous":{"affected":{"Target":0},"mods":["DoesntUntap"],"duration":"NextUntapStep"}}]}}]}}]}]}

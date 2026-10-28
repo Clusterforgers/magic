@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AttacksPlayerOrPlaneswalker":{"what":[{"Type":"Creature"}],"at":"Opponents"}},"effects":[{"Continuous":{"affected":"Triggering","mods":[{"ModifyPT":{"power":2,"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}]}

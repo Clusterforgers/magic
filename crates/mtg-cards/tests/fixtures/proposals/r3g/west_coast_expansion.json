@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":"X"}},{"If":{"condition":{"Compare":{"left":"X","op":"Ge","right":5}},"then":[{"CastFromZone":{"what":{"Each":[{"Subtype":"Hero"},{"In":"Hand"},{"OwnedBy":"You"}]},"free":true}}]}}]}}]}]}

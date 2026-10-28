@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Not":{"Type":"Land"}},{"Compare":{"stat":"ManaValue","op":"Le","to":2}}]}}},{"AddMana":{"mana":{"AnyCombination":{"count":{"Destroyed":[]},"among":["Black","Green"]}}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Replacement":{"when":{"Draw":{"who":"Opponents","except_draw_step":1}},"by":{"Instead":[{"Draw":{}}]}}}]}]}

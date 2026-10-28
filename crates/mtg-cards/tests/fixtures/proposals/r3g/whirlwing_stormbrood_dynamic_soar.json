@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"},{"Rule":{"rule":{"MayCast":{"what":["Spell",{"AnyOf":[{"Type":"Sorcery"},{"Subtype":"Dragon"}]}],"flash":true}}}}]},{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":3}}]}}]}]}

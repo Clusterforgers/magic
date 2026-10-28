@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Keyword":"Menace"},{"Keyword":"Trample"},{"Keyword":"Haste"},{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"AnyOf":[{"Subtype":"Mutant"},{"Subtype":"Ninja"},{"Subtype":"Turtle"}]},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}},"effects":[{"PutCounters":{"on":"Dealer","counter":"+1/+1"}},{"Draw":{}}]}}]}]}

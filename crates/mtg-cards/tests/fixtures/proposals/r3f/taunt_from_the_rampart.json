@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Goad":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}},{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"mods":["CantBlock"],"duration":"UntilYourNextTurn"}}]}}]}]}

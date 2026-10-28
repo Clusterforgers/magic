@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"If":{"condition":{"ManaSpent":"Red"},"then":[{"DealDamage":{"to":{"Each":[{"Type":"Creature"},{"Not":{"HasKeyword":"Flying"}}]},"amount":3}}]}},{"If":{"condition":{"ManaSpent":"Green"},"then":[{"DealDamage":{"to":{"Each":[{"Type":"Creature"},{"HasKeyword":"Flying"}]},"amount":3}}]}}]}}]}]}

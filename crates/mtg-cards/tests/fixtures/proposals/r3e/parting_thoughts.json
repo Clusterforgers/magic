@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"Draw":{"who":"You","count":{"AnyCounters":{"Target":0}}}},{"LoseLife":{"who":"You","amount":{"AnyCounters":{"Target":0}}}}]}}]}]}

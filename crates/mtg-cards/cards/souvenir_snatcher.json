@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ee8fb1d0-db86-489f-8d23-4238b2e8eba4",
+  "name": "Souvenir Snatcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Souvenir Snatcher",
+      "oracle_fingerprint": "b91ce9e2eb811c5f66ca6bdf5218382d",
+      "abilities": [
+        { "Keyword": { "Mutate": "{5}{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

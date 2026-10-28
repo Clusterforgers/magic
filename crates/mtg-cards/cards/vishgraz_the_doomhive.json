@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7b1599c0-bb4f-48f8-a358-dc60166b13e7",
+  "name": "Vishgraz, the Doomhive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vishgraz, the Doomhive",
+      "oracle_fingerprint": "f5642126d444747e68ec7f4730871ce3",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Mite",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Mite"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": { "Toxic": 1 } },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "Opponents", "counter": "poison" } },
+                  "toughness": { "Counters": { "on": "Opponents", "counter": "poison" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

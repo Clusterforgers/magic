@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Discarded":{"what":[{"Type":"Creature"}],"by":"You"}},"effects":[{"Pay":{"cost":"{2}{U}","paid":[{"CreateToken":{"token":{"CopyOf":{"of":"Triggering","except":[{"SetPT":{"power":4,"toughness":4}},{"SetColors":["Black"]},{"SetCreatureTypes":["Zombie"]}]}},"tapped":true}}]}}]}}]}]}

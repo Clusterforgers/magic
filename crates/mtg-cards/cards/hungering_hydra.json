@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d1dde190-8124-4590-9507-801ea4c8cde3",
+  "name": "Hungering Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungering Hydra",
+      "oracle_fingerprint": "55a2260e99c30f10ab2e533e8b1a0a81",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        { "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

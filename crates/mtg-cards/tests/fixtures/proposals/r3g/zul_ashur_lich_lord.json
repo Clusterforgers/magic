@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Ward":[{"PayLife":2}]}},{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"Subtype":"Zombie"},{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Rule":{"rule":{"MayCast":{"from":"Graveyard","only":{"Target":0}}},"duration":"UntilEndOfTurn"}}]}}]}]}

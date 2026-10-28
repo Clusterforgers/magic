@@ -1,0 +1,90 @@
+{
+  "oracle_id": "d6c7d7a6-2d38-4c06-ab83-bee9cc18de52",
+  "name": "Guardian Scalelord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Scalelord",
+      "oracle_fingerprint": "f0564b14bf6cf4c7fa61eaf199551051",
+      "abilities": [
+        {
+          "Keyword": {
+            "Backup": {
+              "count": 1,
+              "abilities": [
+                { "Keyword": "Flying" },
+                {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Planeswalker" },
+                                { "Type": "Battle" }
+                              ]
+                            },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Le",
+                                "to": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

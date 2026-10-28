@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Color"}}},{"Static":{"affected":"Attached","mods":[{"AddKeyword":{"Protection":["ChosenColor"]}}]}},{"Activated":{"cost":"{W}","effects":[{"Move":{"what":"This","to":"Hand"}}]}}]}]}

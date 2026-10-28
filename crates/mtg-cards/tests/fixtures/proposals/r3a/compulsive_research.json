@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Draw":{"who":{"Target":0},"count":3}},{"Pay":{"who":{"Target":0},"cost":[{"Discard":{"filter":[{"Type":"Land"}]}}],"unpaid":[{"Discard":{"who":{"Target":0},"count":2}}]}}]}}]}]}

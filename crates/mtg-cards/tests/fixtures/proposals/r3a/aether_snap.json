@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"RemoveCounters":{"from":{"Each":[]},"count":{"AnyCounters":{"Each":[]}}}},{"Exile":{"what":{"Each":["Token"]}}}]}}]}]}

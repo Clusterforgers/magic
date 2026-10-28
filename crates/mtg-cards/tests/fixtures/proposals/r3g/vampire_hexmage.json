@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"FirstStrike"},{"Activated":{"cost":["SacrificeSelf"],"targets":[{"what":{"Object":[]}}],"effects":[{"RemoveCounters":{"from":{"Target":0},"count":{"AnyCounters":{"Target":0}}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},"Other",{"ControlledBy":"You"},{"AnyOf":[{"Subtype":"Zombie"},{"Subtype":"Mutant"}]}]},"mods":[{"ModifyPT":{"power":{"AnyCounters":"This"},"toughness":{"AnyCounters":"This"}}}]}},{"Keyword":"Undying"}]}]}

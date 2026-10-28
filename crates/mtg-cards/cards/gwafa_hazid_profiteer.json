@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7ba31f45-c178-4bac-ab7b-5ba4d050133c",
+  "name": "Gwafa Hazid, Profiteer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gwafa Hazid, Profiteer",
+      "oracle_fingerprint": "b3a99b87ba1a6b6f1df4087901f99281",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "bribery" } } },
+              { "Draw": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "HasCounter": { "Other": "bribery" } }]
+            },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

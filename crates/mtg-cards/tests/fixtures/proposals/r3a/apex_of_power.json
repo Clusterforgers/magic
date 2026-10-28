@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"ExileTop":{"count":7,"as":"apex"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"apex"}}},"duration":"UntilEndOfTurn"}},{"If":{"condition":{"Matches":{"subject":"This","selector":[{"CastFrom":"Hand"}]}},"then":[{"AddMana":{"mana":{"AnyColor":10}}}]}}]}}]}]}

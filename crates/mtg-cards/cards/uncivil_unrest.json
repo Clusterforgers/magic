@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bd655e8b-f192-4635-9e23-357b6f89ef8f",
+  "name": "Uncivil Unrest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncivil Unrest",
+      "oracle_fingerprint": "7c523511d459efd0682ab01a87f97492",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Riot" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ]
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

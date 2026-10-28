@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Choose":{"who":{"Target":0},"from":{"Each":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]},"as":"creature"}},{"Sacrifice":{"who":{"Target":0},"filter":[{"Is":{"Bound":"creature"}}]}},{"GainLife":{"amount":{"Stat":{"of":{"Bound":"creature"},"stat":"Toughness"}}}}]}},{"Keyword":"Rebound"}]}]}

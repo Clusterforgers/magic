@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"}]}}},{"CreateToken":{"token":{"Custom":{"name":"Spirit","colors":["Red","White"],"types":["Creature"],"subtypes":["Spirit"],"power":3,"toughness":2}},"count":{"Destroyed":[{"Type":"Creature"},{"Not":"Token"},{"ControlledBy":"You"}]}}}]}}]}]}

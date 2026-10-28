@@ -1,0 +1,47 @@
+{
+  "oracle_id": "03c1e376-1410-4321-90fe-a6997e8db85a",
+  "name": "Terisiare's Devastation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terisiare's Devastation",
+      "oracle_fingerprint": "717c786e58efba2a6cd36e87fc33c296",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LoseLife": { "amount": "X" } },
+              {
+                "CreateToken": { "token": { "Named": "powerstone" }, "count": "X", "tapped": true }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

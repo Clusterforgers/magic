@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Counter":{"what":{"Target":0}}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"Main1","whose":"You"}},"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}}}}}]}}]}}]}]}

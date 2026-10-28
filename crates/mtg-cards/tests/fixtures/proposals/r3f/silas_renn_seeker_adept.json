@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Deathtouch"},{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"targets":[{"what":{"Object":[{"Type":"Artifact"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Rule":{"rule":{"MayCast":{"what":[{"Is":{"Target":0}}],"from":"Graveyard"}},"duration":"UntilEndOfTurn"}}]}},{"Keyword":"Partner"}]}]}
