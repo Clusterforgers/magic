@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a0be9bb2-3234-4c6c-b8ce-0879b1f43003",
+  "name": "Laelia, the Blade Reforged",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laelia, the Blade Reforged",
+      "oracle_fingerprint": "37ed2ff54a10548d57223717c104c374",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "AnyOf": [
+                  {
+                    "ZoneChange": {
+                      "what": [{ "OwnedBy": "You" }],
+                      "from": "Library",
+                      "to": "Exile"
+                    }
+                  },
+                  {
+                    "ZoneChange": {
+                      "what": [{ "OwnedBy": "You" }],
+                      "from": "Graveyard",
+                      "to": "Exile"
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

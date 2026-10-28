@@ -1256,6 +1256,12 @@ impl<'a> Walker<'a> {
 
     /// A batch is of one event that can happen to several things at once.
     fn batch(&mut self, inner: &TriggerPattern) {
+        if let TriggerPattern::AnyOf(members) = inner
+            && c6_gap_batch_of_moves(members)
+        {
+            self.at("Batch", |w| w.trigger_pattern(inner));
+            return;
+        }
         if matches!(
             inner,
             TriggerPattern::Batch(_)
@@ -1288,6 +1294,21 @@ impl<'a> Walker<'a> {
         self.at("Batch", |w| w.trigger_pattern(inner));
     }
 
+}
+
+/// Whether a batch of several patterns is of moves that each name the zone left, none of them the battlefield: the
+/// engine judges those events together against the state after them, so one batch holds them all ("cards are put into
+/// exile from your library and/or your graveyard").
+fn c6_gap_batch_of_moves(members: &[TriggerPattern]) -> bool {
+    members.iter().all(|member| {
+        matches!(
+            member,
+            TriggerPattern::ZoneChange { from: Some(from), .. } if *from != ZoneKind::Battlefield
+        )
+    })
+}
+
+impl Walker<'_> {
     /// The nth time in a turn is counted for cards drawn, spells cast and life gained by a player, and for attacks,
     /// targets (of what anyone controls or the controller of the ability) and damage dealt to an object.
     fn nth(&mut self, event: &TriggerPattern, nth: u32) {

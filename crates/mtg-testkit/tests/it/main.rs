@@ -44,6 +44,7 @@ mod c4_party_fuzz;
 mod c4_prepare_triggers;
 mod c4_skipped_turns;
 mod c5_dice_piles;
+mod c6_gap_batches;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;

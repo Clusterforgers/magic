@@ -48,6 +48,7 @@ mod c5_gl_twins;
 mod c5_mr_writers;
 mod c5_sz_sentences;
 mod c5_sz_wholes;
+mod c6_gap_wholes;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -280,6 +281,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c5_mr(ability, texts);
     add_c5_gl(ability, texts);
     add_c5_sz(ability, texts);
+    add_c6_gap(ability, texts);
 }
 
 /// The wordings of the dice, coins, votes and piles of the (r1at) pass.
@@ -507,4 +509,9 @@ fn add_c5_mr(ability: &Ability, texts: &mut Vec<String>) {
 fn add_c5_sz(ability: &Ability, texts: &mut Vec<String>) {
     c5_sz_sentences::add(ability, texts);
     c5_sz_wholes::add(ability, texts);
+}
+
+/// Adds the wordings of the gap constructs.
+fn add_c6_gap(ability: &Ability, texts: &mut Vec<String>) {
+    c6_gap_wholes::add(ability, texts);
 }
