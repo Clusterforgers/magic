@@ -130,7 +130,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c1l) Mana abilities still unread: Domain counts, X mana by a where clause, counted sacrifices, a cost's mana value, mana not for generic costs; frees about 8 cards (Springjack Pasture, Illuminor Szeras, Neheb)
 - [ ] (c12f) Effects after the additional costs of a spell: divided X damage, two targets from X and what a cost took; frees about 12 cards (Fire Covenant, Disaster Radius, Momentous Fall)
 - [ ] (r2d) Costs in the engine: `PayLife.Counted`, `PayEnergy.Counted`, `Discard.Counted`, `Untap`, `OneOf`, `ReturnToHand`, `Pay.ExileSelf`; frees about 12 cards (G'raha Tia, Confiscation Coup, Order of Whiteclay)
-- [ ] (r1v) Cost reductions left: activated-ability costs by a count, the first or next spell of a kind each turn, counts of the turn; frees about 65 cards (Pteramander, Loreseeker's Stone, Kaza, Spellbinding Soprano)
+- [~] (r1v) (r1v-cost-reductions) Cost reductions left: activated-ability costs by a count, the first or next spell of a kind each turn, counts of the turn; frees about 65 cards (Pteramander, Loreseeker's Stone, Kaza, Spellbinding Soprano)
 - [ ] (c14a) The rest of the top coverage blockers: Multiclass Baldric, Yavimaya Bloomsage, a secretly chosen opponent, six spell lines and rules for the 61 other prepare cards; frees about 70 cards (Stalking Leonin, Ponder)
 - [ ] (c13b) The rest of the commander free casts and strive spells; frees about 10 cards (Deflecting Swat, Twinflame, Reinterpret)
 
@@ -146,7 +146,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c4e) Cards that read the crew record and crew events and wait on a wording, and a Reconfigure corpus card; frees about 10 cards (Smogbelcher Chariot, Mindlink Mech, The Fantasticar)
 - [ ] (c5e) The rest of the cipher and hideaway cards; frees about 7 cards (Hidden Strings, Arcane Heist, Shelldock Isle)
 - [ ] (c6d) Devour counts, the Phasing keyword and phase-out sentences, gift "instead" spells and entered-this-turn wordings; frees about 20 cards (Thromok, Oubliette, Out of Time)
-- [ ] (r2de-b) Cast and play permissions left: once each turn, from its own graveyard or exile, exiled cards in a trigger, and the exile of such a spell; frees about 25 cards (Karador, Squee, the Immortal, Torrential Gearhulk)
+- [~] (r2de-b) (r2de-b-cast-permissions) Cast and play permissions left: once each turn, from its own graveyard or exile, exiled cards in a trigger, and the exile of such a spell; frees about 25 cards (Karador, Squee, the Immortal, Torrential Gearhulk)
 - [ ] (r2r) Alternative costs left: life or energy instead of mana, fixed mana, impending, X in madness, a paid madness cost as a condition; frees about 8 cards (Xander's Pact, Nashi, Fist of Suns)
 - [ ] (r1aug) Extra turns and phases: a loss at the extra turn's end step, its restrictions, attacks alone, combats with chosen attackers, extra-turn costs; frees about 20 cards (Final Fortune, Medomai, Moraug)
 
@@ -157,7 +157,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c7q) Block requirements: "must be blocked if able", "by exactly one creature", "all creatures able to block it do so"; frees about 8 cards (Madame Vastra, Predatory Impetus, Nacatl War-Pride)
 - [ ] (c7s) "If the creature an opponent controls would die this turn, exile it instead" after a fight of two targets (Unnatural Aggression)
 - [ ] (c7e) The rest of mutate: exile until X permanent cards, a merged permanent that returns, commander replacements of a merge, a token or face-down top (Auspicious Starrix)
-- [ ] (c8j) Statics left: Slivers' quoted triggers, group prevention, riot's companions, conditions on attachments or the turn, life-gain replacements; frees about 30 cards (Harmonic Sliver, Crystal Barricade, Rhythm of the Wild)
+- [~] (c8j) (c8j-statics-left) Statics left: Slivers' quoted triggers, group prevention, riot's companions, conditions on attachments or the turn, life-gain replacements; frees about 30 cards (Harmonic Sliver, Crystal Barricade, Rhythm of the Wild)
 - [ ] (r1ab) The rest of the `Continuous` statics: types for spells and cards, every land type, a color added, group unions, "modified", attachment conditions; frees about 25 cards (Arcane Adaptation, Death Baron, Song of the Dryads)
 - [ ] (r2az) Attacks on you or your planeswalkers: "can't attack you or planeswalkers", attack taxes in life or by count, one attacker each combat; frees about 15 cards (Vow of Lightning, Collective Restraint, Silent Arbiter)
 - [ ] (r2bhd) Untaps in other players' untap steps and groups held through their next untap step; frees about 8 cards (Seedborn Muse, Unwinding Clock, Lorthos, the Tidemaker)
@@ -167,7 +167,7 @@ The server is settled first, then the web is built once against the final types.
 ### Compiler wordings
 - [ ] (c10) Unread spell, trigger and activated wordings ranked by `mtg-cli coverage`: one piece per family left (quoted tokens, goad, counters, pump, manlands, graveyard, flicker, damage, draw and discard)
 - [ ] (c10s) Counted amounts left: counts of another player, distinct values, mana spent, things destroyed this way, differences and "whichever is greater"; frees about 30 cards (Celebrate the Harvest, Wurmquake, Kaya's Wrath)
-- [ ] (r2de-a) Counters of any kind and counter moves: "had counters on it", removals from targets or any number, counter costs on other permanents; frees about 25 cards (Glissa Sunslayer, Ghave, Power Conduit)
+- [~] (r2de-a) (r2de-a-counters-any) Counters of any kind and counter moves: "had counters on it", removals from targets or any number, counter costs on other permanents; frees about 25 cards (Glissa Sunslayer, Ghave, Power Conduit)
 - [ ] (c10d) Top-of-library wordings left: reveals with a follow-up, each player's top cards, a land put from a look, places beneath the top X; frees about 20 cards (Risen Reef, Explorer's Scope, Unexpectedly Absent)
 - [ ] (c10e) Subtype and type nouns, legendary names without a comma as `~`, and the events "enters from your graveyard", "is turned face up" and "modified creature"
 - [ ] (c10r) The flicker with a delayed return, the exile that returns when the source leaves for an Aura with several hosts, and "until your next turn" durations
@@ -175,7 +175,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2j) Trigger events left: an opponent's activation, energy, a token or a spell copied, an unblocked attacker, "first time" variants, several events in one trigger; frees about 20 cards (Harsh Mentor, Valgavoth, Kalamax)
 - [ ] (r2ad) Delayed triggers left: "until end of turn, whenever", with a target of their own, on the next spell, on every block, repeating this turn; frees about 7 cards (Infested Thrinax, Jailbreak, Ride the Avalanche)
 - [ ] (r2dgb) Effects "unless that player sacrifices or pays", a sentence for each player, and a token copy after a payment; frees about 12 cards (Demanding Dragon, All Is Dust, Bramble Sovereign)
-- [ ] (r2dgc) Charm and modal wordings: charm modes, "choose three" with repeats, Spree costs, a used-mode tally for activations, the commander pairs; frees about 20 cards (Prismari Charm, Fiery Confluence, Will of the Abzan)
+- [~] (r2dgc) (r2dgc-charm-modes) Charm and modal wordings: charm modes, "choose three" with repeats, Spree costs, a used-mode tally for activations, the commander pairs; frees about 20 cards (Prismari Charm, Fiery Confluence, Will of the Abzan)
 - [ ] (r2dgd) Intervening "if" with a may-pay, a removed counter or a cast from the hand, and "you win the game" under a count; frees about 8 cards (Ingenious Prodigy, Reiver Demon, Helix Pinnacle)
 - [ ] (r2cxe) X paid in a trigger without X in the cost, half X on cast and the X of a cycling cost in its trigger; frees about 6 cards (Elenda and Azor, Flameblast Dragon, Shark Typhoon)
 - [ ] (r2aa) Control changes left: by a type, of all artifacts, exchanges, a gift of a permanent, and with untap and haste; frees about 8 cards (Djinn of Infinite Deceits, Hellkite Tyrant, Zedruu the Greathearted)
@@ -188,7 +188,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1ac) Token wordings left: tokens for other players, counts of mana spent or damage dealt, keywords with a parameter beside a quote; frees about 20 cards (Death by Dragons, Skrelv's Hive, Brass's Bounty)
 - [ ] (r1aufb) Targets for each opponent or player left: without "up to one", a chosen creature each, the pass's player named again; frees about 15 cards (Hideous Taskmaster, Windgrace's Judgment, Guff Rewrites History)
 - [ ] (r1auk) Reveal or dig until X cards or in another player's library, with free casts and the rest on the bottom; frees about 6 cards (Dazzling Sphinx, Gríma, Old Stickfingers)
-- [ ] (r1aueb) Die results: "the result" as an amount, several dice with a choice of result, table rows after an amount or a trigger, roll triggers; frees about 25 cards (Clay Golem, Wild Endeavor, Chaos Dragon)
+- [~] (r1aueb) (r1aueb-dice-results) Die results: "the result" as an amount, several dice with a choice of result, table rows after an amount or a trigger, roll triggers; frees about 25 cards (Clay Golem, Wild Endeavor, Chaos Dragon)
 - [ ] (r1aui) Coins left: lose triggers, stop flipping, counted flips and heads, "Otherwise" after a flip; frees about 11 cards (Krark, the Thumbless, Fiery Gambit, Ral Zarek)
 - [ ] (r1auh) Votes left: tallies as amounts, more than two choices, extra votes, voting triggers, objects and secret or villainous choices; frees about 22 cards (Orchard Elemental, Council Guardian, Tivit)
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
@@ -196,7 +196,7 @@ The server is settled first, then the web is built once against the final types.
 ### Model-assisted reading
 - [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (r2ea) `mtg-cli propose --promote` copies accepted proposals into `crates/mtg-cards/cards/` with their fixtures, and the yield of a live run is recorded in `docs/cards-dsl.md`
-- [ ] (r2dge) The single-wording tail of the stored proposals: 136 unchecked, 16 invalid, 18 `Partial` and 42 mismatched (`mtg-cli check-rules --verbose` names each)
+- [~] (r2dge) (r2dge-a-proposals-al, r2dge-b-proposals-mz) The single-wording tail of the stored proposals: 136 unchecked, 16 invalid, 18 `Partial` and 42 mismatched (`mtg-cli check-rules --verbose` names each)
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 - [ ] (r1a) `mtg-cli forge-check` compares a Forge clause with the ability that stands for it and reads `Count$` amounts, `Valid*` filters and conditions (`docs/reference-engines.md`)
 - [ ] (r1b) The prompt of `mtg-cli propose` takes examples from Forge clause-script pairs fetched at run time; examples kept in the repository come from XMage with its MIT notice
