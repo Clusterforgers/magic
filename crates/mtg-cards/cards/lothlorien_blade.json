@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a2a39123-8b70-4678-8675-ba79f37a5db8",
+  "name": "Lothlórien Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lothlórien Blade",
+      "oracle_fingerprint": "42f5d70b5bb66e805e70ca1050118437",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Attached",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Attached", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Elf" }], "cost": "{2}" } } },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

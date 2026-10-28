@@ -1,0 +1,21 @@
+{
+  "id": "3f7f1d3b-d6bb-4ddb-81d8-12f7aaaec49e",
+  "oracle_id": "a2a39123-8b70-4678-8675-ba79f37a5db8",
+  "name": "Lothlórien Blade",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ltc",
+  "collector_number": "77",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Whenever equipped creature attacks, it deals damage equal to its power to target creature defending player controls.\nEquip Elf {2}\nEquip {5}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

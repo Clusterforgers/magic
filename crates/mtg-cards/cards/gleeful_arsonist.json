@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9025b3ce-f6ae-431d-9eb5-02d713b8c9b8",
+  "name": "Gleeful Arsonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gleeful Arsonist",
+      "oracle_fingerprint": "24c249a743317d960373812f5aec5a9d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "ControllerOf": "Triggering" },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Undying" }
+      ]
+    }
+  ]
+}

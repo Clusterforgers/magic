@@ -300,9 +300,9 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             // The clause shows the face's own names as `~`, also inside a token name or a type.
             let names = printed.faces.get(face).map(own_names).unwrap_or_default();
             let shown = |variant: &str| {
-                names
-                    .iter()
-                    .fold(variant.to_owned(), |text, name| text.replace(name.as_str(), "~"))
+                names.iter().fold(variant.to_owned(), |text, name| {
+                    text.replace(name.as_str(), "~")
+                })
             };
             assert!(
                 wanted.iter().any(|text| written.iter().any(|variant| {

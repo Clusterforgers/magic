@@ -1,0 +1,27 @@
+{
+  "id": "e3226808-493e-4df2-9446-cb7cb47aaf2c",
+  "oracle_id": "db444262-c40f-4c80-9d14-265c32f77cf1",
+  "name": "Mage Slayer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "140",
+  "rarity": "uncommon",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Whenever equipped creature attacks, it deals damage equal to its power to the player or planeswalker it's attacking.\nEquip {3}",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2d21dc80-2900-4dc3-9657-f17b50716481",
+  "name": "Fiendlash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiendlash",
+      "oracle_fingerprint": "b83aad69062df8de9ad5662555b209ba",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Reach" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "Attached" } },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Attached",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Attached", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}{R}" } }
+      ]
+    }
+  ]
+}

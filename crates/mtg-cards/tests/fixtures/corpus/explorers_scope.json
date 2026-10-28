@@ -1,0 +1,21 @@
+{
+  "id": "be120499-fe2f-4c21-982c-566d0dbbddff",
+  "oracle_id": "a563ede9-b92f-4285-88f8-abcbdd017742",
+  "name": "Explorer's Scope",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "380",
+  "rarity": "common",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Whenever equipped creature attacks, look at the top card of your library. If it's a land card, you may put it onto the battlefield tapped.\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}
