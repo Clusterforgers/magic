@@ -559,6 +559,32 @@ impl Driver {
 
     /// The deciding player attacks: each pair is (attacker name, defending player index).
     pub fn attack(&mut self, attacks: &[(&str, usize)]) -> Result<Vec<Event>, ScriptError> {
+        let chosen = self.w11a_attackers(attacks)?;
+        self.answer(Answer::DeclareAttackers(chosen))
+    }
+
+    /// The deciding player attacks as [`Driver::attack`] does and exerts the attackers named in `exert` (CR 701.43).
+    pub fn w11a_attack_exerting(
+        &mut self,
+        attacks: &[(&str, usize)],
+        exert: &[&str],
+    ) -> Result<Vec<Event>, ScriptError> {
+        let attackers = self.w11a_attackers(attacks)?;
+        let exert = exert
+            .iter()
+            .map(|name| {
+                let named = attackers.iter().map(|(object, _)| *object);
+                self.find(named, name, "attackers")
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        self.answer(Answer::DeclareExerting { attackers, exert })
+    }
+
+    /// The attackers and defenders `attacks` names among the legal attackers of the pending declaration.
+    fn w11a_attackers(
+        &self,
+        attacks: &[(&str, usize)],
+    ) -> Result<Vec<(ObjectId, AttackTarget)>, ScriptError> {
         let DecisionKind::DeclareAttackers(options) = &self.decision()?.kind else {
             return Err(self.unexpected("declare-attackers"));
         };
@@ -575,7 +601,7 @@ impl Driver {
                 AttackTarget::Player(PlayerId::from_index(*defender)),
             ));
         }
-        self.answer(Answer::DeclareAttackers(chosen))
+        Ok(chosen)
     }
 
     /// The deciding player blocks: each pair is (blocker name, attacker name).

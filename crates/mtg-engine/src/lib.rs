@@ -49,9 +49,9 @@ mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;
 mod steps;
+mod w11a_exert;
 mod w7b_rad;
 mod w8a_declaration_limits;
-mod w11a_exert;
 mod ways;
 mod wording;
 #[cfg(test)]

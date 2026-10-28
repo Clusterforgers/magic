@@ -103,10 +103,7 @@ pub(crate) fn handle(
             check_attackers(options, &attackers)?;
             attack_tax::declare(state, player, attackers, Vec::new())
         }
-        (
-            DecisionKind::DeclareAttackers(options),
-            Answer::DeclareExerting { attackers, exert },
-        ) => {
+        (DecisionKind::DeclareAttackers(options), Answer::DeclareExerting { attackers, exert }) => {
             check_attackers(options, &attackers)?;
             crate::w11a_exert::w11a_check_exert(options, &attackers, &exert)?;
             attack_tax::declare(state, player, attackers, exert)

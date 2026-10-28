@@ -1,0 +1,29 @@
+{
+  "id": "06f90d62-6d21-47b1-a427-eb25a42f4dcb",
+  "oracle_id": "b75c3902-633e-4d24-acde-d7a9cc8f466e",
+  "name": "Glorybringer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "215",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying, haste\nYou may exert this creature as it attacks. When you do, it deals 4 damage to target non-Dragon creature an opponent controls. (An exerted creature won't untap during your next untap step.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste",
+    "Exert"
+  ]
+}

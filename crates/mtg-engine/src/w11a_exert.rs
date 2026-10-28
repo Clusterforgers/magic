@@ -58,7 +58,9 @@ pub(crate) fn w11a_check_exert(
             return Err(IllegalAnswer::Duplicate("exerted creature"));
         }
         if !attackers.iter().any(|(attacker, _)| attacker == object) {
-            return Err(IllegalAnswer::NotOffered("exert of a creature not attacking"));
+            return Err(IllegalAnswer::NotOffered(
+                "exert of a creature not attacking",
+            ));
         }
         if !options
             .attackers
