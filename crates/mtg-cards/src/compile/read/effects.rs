@@ -723,10 +723,14 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         {
             super::w6b_emblem::w6b_read(r, who)?
         }
-        "get" | "gets" => Effect::PutCounters {
-            on: who,
-            counter: CounterKind::Other("energy".to_owned()),
-            count: costs::energy(r)?,
+        "get" | "gets" => match r.attempt(costs::energy) {
+            Some(count) => Effect::PutCounters {
+                on: who,
+                counter: CounterKind::Other("energy".to_owned()),
+                count,
+            },
+            // "you get two rad counters", "each opponent gets a poison counter".
+            None => super::w7b_player_counters::w7b_read(r, who)?,
         },
         _ => return None,
     })

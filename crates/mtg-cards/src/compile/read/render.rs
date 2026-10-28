@@ -2056,6 +2056,9 @@ impl Writer<'_> {
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
             }
+            Effect::PutCounters { on: Ref::You, .. } => {
+                super::w7b_player_counters::w7b_you_get(effect)?
+            }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. }
