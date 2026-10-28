@@ -1,0 +1,53 @@
+{
+  "oracle_id": "cb8d80c9-ed58-4f2d-aa8c-c383370c7f1a",
+  "name": "Kaalia of the Vast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaalia of the Vast",
+      "oracle_fingerprint": "98cb490a597260107f75a2e9819179f5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": ["This"], "at": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Subtype": "Angel" },
+                                { "Subtype": "Demon" },
+                                { "Subtype": "Dragon" }
+                              ]
+                            },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "as": "c"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "c" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "c" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

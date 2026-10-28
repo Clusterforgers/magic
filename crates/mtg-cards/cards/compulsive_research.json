@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f947808c-a1cc-41ea-9d06-e1279a0da527",
+  "name": "Compulsive Research",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Compulsive Research",
+      "oracle_fingerprint": "8fc3d36726f5374375a276d9a7ca9d4d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
