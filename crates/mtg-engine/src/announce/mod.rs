@@ -7,6 +7,7 @@
 //! (`docs/engine.md`, Casting).
 
 mod alternative;
+mod c9_emerge_reduce;
 pub(crate) mod companion;
 mod division;
 mod face;

@@ -1,0 +1,26 @@
+{
+  "id": "10532d06-94e3-47bc-a036-7535be05be98",
+  "oracle_id": "4eafe717-4ba4-4901-8c67-11757230eb54",
+  "name": "Elder Deep-Fiend",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "4",
+  "rarity": "rare",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{8}",
+  "cmc": 8.0,
+  "type_line": "Creature — Eldrazi Octopus",
+  "oracle_text": "Flash\nEmerge {5}{U}{U} (You may cast this spell by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.)\nWhen you cast this spell, tap up to four target permanents.",
+  "power": "5",
+  "toughness": "6",
+  "colors": [],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Emerge",
+    "Flash"
+  ]
+}

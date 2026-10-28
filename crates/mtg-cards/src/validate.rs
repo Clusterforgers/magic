@@ -972,6 +972,8 @@ impl<'a> Walker<'a> {
             | Keyword::Blitz(cost)
             | Keyword::Prowl(cost)
             | Keyword::Mayhem(cost)
+            | Keyword::Emerge(cost)
+            | Keyword::Harmonize(cost)
             | Keyword::Spectacle(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);

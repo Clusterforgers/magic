@@ -1,0 +1,25 @@
+{
+  "id": "abc8c6f5-6135-428e-8476-1751f82623f9",
+  "oracle_id": "61978202-538b-4f92-acfc-e95f4a6ce466",
+  "name": "Wild Ride",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdm",
+  "collector_number": "132",
+  "rarity": "common",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target creature gets +3/+0 and gains haste until end of turn.\nHarmonize {4}{R} (You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by {X}, where X is its power. Then exile this spell.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Harmonize"
+  ]
+}

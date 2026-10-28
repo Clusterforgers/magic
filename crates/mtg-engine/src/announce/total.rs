@@ -8,7 +8,7 @@ use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
 use super::payment::spend;
-use super::{Ctx, Next, What, Work, alternative, modifiers, optional, x};
+use super::{Ctx, Next, What, Work, alternative, c9_emerge_reduce, modifiers, optional, x};
 use crate::choose::Choices;
 use crate::help::{self, Offered};
 use crate::mana::{ManaOption, can_afford_with, reserve_energy};
@@ -49,6 +49,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = optional::add(ctx, choices, mana);
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
+    let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
         _ => Offered::default(),

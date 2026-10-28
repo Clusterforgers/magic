@@ -207,7 +207,7 @@ fn joined(cost: ManaCost, more: &ManaCost) -> ManaCost {
 
 /// `cost` less `less`: generic mana comes off the generic part, down to nothing, and a colored or colorless symbol
 /// takes one such symbol from the cost, if it has one. Whatever finds nothing to reduce is lost.
-fn reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
+pub(super) fn reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
     let mut generic = cost.generic();
     let mut rest: Vec<ManaSymbol> = cost
         .symbols()

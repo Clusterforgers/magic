@@ -322,6 +322,10 @@ pub enum Keyword {
     Renown(u32),
     /// Exploit (CR 702.110): when the creature enters, its controller may sacrifice a creature; the creature exploits the one sacrificed.
     Exploit,
+    /// Emerge with its cost (CR 702.119): an alternative cost to cast the card from a hand by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.
+    Emerge(Cost),
+    /// Harmonize with its cost (CR 702.180): an alternative cost to cast the card from its owner's graveyard, reduced by the power of a creature its caster may tap; the spell is exiled when it leaves the stack.
+    Harmonize(Cost),
 }
 
 /// What a promised gift is (CR 702.174).
@@ -484,6 +488,8 @@ impl Keyword {
         "Replicate",
         "Renown",
         "Exploit",
+        "Emerge",
+        "Harmonize",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -638,6 +644,8 @@ impl Keyword {
             Keyword::Replicate(_) => "Replicate",
             Keyword::Renown(_) => "Renown",
             Keyword::Exploit => "Exploit",
+            Keyword::Emerge(_) => "Emerge",
+            Keyword::Harmonize(_) => "Harmonize",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -833,6 +841,8 @@ mod tests {
             Keyword::Replicate(Cost::default()),
             Keyword::Renown(2),
             Keyword::Exploit,
+            Keyword::Emerge(Cost::default()),
+            Keyword::Harmonize(Cost::default()),
         ]
     }
 

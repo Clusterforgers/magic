@@ -132,7 +132,8 @@ pub(crate) fn add_to(ways: Vec<Way>, card: &CardDefinition) -> Vec<Way> {
             if !variant.words.is_empty() {
                 chosen.label = format!("{}, {}", way.label, variant.words.join(", "));
             }
-            chosen.variant = at;
+            // A way that is a variant of its own (harmonize with a creature tapped) keeps that mark.
+            chosen.variant = way.variant | at;
             made.push(chosen);
         }
     }
