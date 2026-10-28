@@ -1,0 +1,17 @@
+{
+  "oracle_id": "cb752313-dc7f-47fc-9077-9e3298e8f5fb",
+  "name": "Root Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Root Sliver",
+      "oracle_fingerprint": "0b0a2ff636e4229ccaf7d1e4a1859251",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Rule": { "rule": { "CantBeCountered": { "Each": ["Spell", { "Subtype": "Sliver" }] } } }
+        }
+      ]
+    }
+  ]
+}

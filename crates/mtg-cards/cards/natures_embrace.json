@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9ab101c2-215b-4736-873a-4a1ef6666b6d",
+  "name": "Nature's Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Embrace",
+      "oracle_fingerprint": "192e35e51148873d807c65635b771227",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5cc5be7a-cbe6-4853-bb95-0390e25b4f2b",
+  "name": "Butcher's Cleaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Butcher's Cleaver",
+      "oracle_fingerprint": "0f17349059e2a22c8ef510a4582145d1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Human" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

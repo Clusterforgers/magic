@@ -1,0 +1,19 @@
+{
+  "oracle_id": "50261dca-bfeb-40b3-95b6-9057491ef3ad",
+  "name": "Bubble Matrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bubble Matrix",
+      "oracle_fingerprint": "f40739e9477b4ecfc92fcc1ec0eed2d7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": { "Each": [{ "Type": "Creature" }] } } },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

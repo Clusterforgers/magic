@@ -1,0 +1,19 @@
+{
+  "cmc": 4.0,
+  "collector_number": "146",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "0ca9c239-84ff-4527-aa23-bdb11856744c",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}",
+  "name": "Bubble Matrix",
+  "oracle_id": "50261dca-bfeb-40b3-95b6-9057491ef3ad",
+  "oracle_text": "Prevent all damage that would be dealt to creatures.",
+  "rarity": "rare",
+  "released_at": "1997-06-09",
+  "set": "wth",
+  "type_line": "Artifact"
+}

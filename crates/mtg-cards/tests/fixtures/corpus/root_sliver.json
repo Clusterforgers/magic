@@ -1,0 +1,25 @@
+{
+  "cmc": 4.0,
+  "collector_number": "137",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "fdf5a106-5fb7-40e4-82a7-db559302a923",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}{G}",
+  "name": "Root Sliver",
+  "oracle_id": "cb752313-dc7f-47fc-9077-9e3298e8f5fb",
+  "oracle_text": "This spell can't be countered.\nSliver spells can't be countered.",
+  "power": "2",
+  "rarity": "uncommon",
+  "released_at": "2003-02-03",
+  "set": "lgn",
+  "toughness": "2",
+  "type_line": "Creature — Sliver"
+}

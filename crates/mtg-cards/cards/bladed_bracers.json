@@ -1,0 +1,32 @@
+{
+  "oracle_id": "24d373cd-245a-4051-b187-ba8cc83b0c48",
+  "name": "Bladed Bracers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bladed Bracers",
+      "oracle_fingerprint": "b516d7d7e27dbe203c46f994c3e5dd71",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "AnyOf": [{ "Subtype": "Human" }, { "Subtype": "Angel" }] }]
+              }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

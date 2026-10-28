@@ -169,6 +169,10 @@ pub fn reminder_mentions_counter(text: &str) -> bool {
         if reminder.contains("deal damage to creatures in the form of -1/-1 counters") {
             return false;
         }
+        // The reminder of riot given to a group names its counter, and the keyword is read whole.
+        if reminder.contains("your choice of a +1/+1 counter or haste") {
+            return false;
+        }
         // The reminder of time travel (CR 701.56) says what the action does, and the action is read whole.
         if reminder.contains("you may add or remove a time counter") {
             return false;

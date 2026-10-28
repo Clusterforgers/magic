@@ -11,7 +11,7 @@
           "Rule": {
             "rule": {
               "CantBeCountered": {
-                "Each": [{ "Type": "Creature" }, "Spell", { "ControlledBy": "You" }]
+                "Each": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }]
               }
             }
           }

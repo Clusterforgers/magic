@@ -483,7 +483,7 @@ fn your_commander() -> Selector {
 }
 
 /// One thing after "a": "planeswalker", "basic land", "Forest or a Plains", "Mount or Vehicle".
-fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
+pub(super) fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
     let first = phrase(r, Form::Subject)?;
     let [Pred::Subtype(_)] = first.0.as_slice() else {
         return Some(first);
@@ -523,6 +523,8 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         } else {
             return None;
         }
+    } else if let Some(spells) = r.attempt(super::c11h_rules::c11h_cant_be_countered) {
+        return Some(spells);
     } else {
         let who = plural(r)?;
         if r.words("attack each combat if able") {
@@ -1127,7 +1129,9 @@ pub(super) fn statics(
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
+    let group = super::c11h_prevent::c11h_texts(ability);
     let sentences = match ability {
+        _ if !group.is_empty() => group,
         Ability::Replacement {
             when: ReplaceWhen::Enters { what },
             by,
@@ -1413,7 +1417,7 @@ pub(super) fn control_texts(condition: &Condition) -> Vec<String> {
 }
 
 /// "a planeswalker", "a Forest or a Plains" and "a Forest or Plains".
-fn single_texts(selector: &Selector) -> Vec<String> {
+pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
     if let [Pred::AnyOf(kinds)] = selector.0.as_slice() {
         let names: Option<Vec<&str>> = kinds
             .iter()
@@ -1458,6 +1462,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
     match (rule, from) {
         (GameRule::CantBeCountered(Ref::This), ZoneKind::Stack) => {
             vec!["~ can't be countered".to_owned()]
+        }
+        (GameRule::CantBeCountered(Ref::Each(_)), ZoneKind::Battlefield) => {
+            super::c11h_rules::c11h_cant_be_countered_texts(rule)
         }
         (GameRule::RevealTop(Ref::You), ZoneKind::Battlefield) => {
             vec!["Play with the top card of your library revealed".to_owned()]
@@ -1648,9 +1655,15 @@ fn static_texts(
             let pronoun = helds
                 .iter()
                 .filter(|held| {
-                    ["~ ", "equipped creature ", "enchanted creature "]
-                        .iter()
-                        .any(|start| held.starts_with(start))
+                    [
+                        "~ ",
+                        "equipped creature ",
+                        "enchanted creature ",
+                        "enchanted permanent ",
+                        "enchanted land ",
+                    ]
+                    .iter()
+                    .any(|start| held.starts_with(start))
                 })
                 .map(|held| match predicate.strip_prefix("is ") {
                     Some(rest) => format!("as long as {held}, it's {rest}"),

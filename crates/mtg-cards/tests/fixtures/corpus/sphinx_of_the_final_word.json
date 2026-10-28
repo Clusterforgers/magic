@@ -1,0 +1,28 @@
+{
+  "cmc": 7.0,
+  "collector_number": "747",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "6071239e-0b85-4c54-bef8-d9456eb8d8fc",
+  "keywords": [
+    "Flying",
+    "Hexproof"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{5}{U}{U}",
+  "name": "Sphinx of the Final Word",
+  "oracle_id": "d4246e4d-390d-4925-a5a8-89cd096a237c",
+  "oracle_text": "This spell can't be countered.\nFlying\nHexproof (This creature can't be the target of spells or abilities your opponents control.)\nInstant and sorcery spells you control can't be countered.",
+  "power": "5",
+  "rarity": "mythic",
+  "released_at": "2026-04-24",
+  "set": "fdn",
+  "toughness": "5",
+  "type_line": "Creature — Sphinx"
+}
