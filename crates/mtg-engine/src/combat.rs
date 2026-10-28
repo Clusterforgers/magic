@@ -313,13 +313,17 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .copied()
         .filter(|id| can_attack(state, *id, player))
         .filter_map(|object| {
-            // "Can't attack you" takes the defender away before the requirements choose among the rest (CR 508.1c-d).
-            let defenders = allowed_defenders(state, object, &defenders);
-            let defenders = paired_defender(state, object, &defenders)
+            // "Can't attack you" takes the defender away before the requirements choose among the rest (CR 508.1c-d);
+            // a creature it leaves nothing to attack is not offered.
+            let allowed = allowed_defenders(state, object, &defenders);
+            if allowed.is_empty() && !defenders.is_empty() {
+                return None;
+            }
+            let defenders = paired_defender(state, object, &allowed)
                 .map(|only| vec![only])
-                .or_else(|| goaded_defenders(state, object, &defenders))
-                .unwrap_or(defenders);
-            (!defenders.is_empty()).then(|| AttackerOption::free(object, defenders))
+                .or_else(|| goaded_defenders(state, object, &allowed))
+                .unwrap_or(allowed);
+            Some(AttackerOption::free(object, defenders))
         })
         .collect::<Vec<_>>();
     let mut options = AttackOptions {
