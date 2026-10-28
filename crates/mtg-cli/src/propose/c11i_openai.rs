@@ -31,7 +31,7 @@ pub const C11I_DEFAULT_ANSWER_TOKENS: u32 = 16_384;
 pub struct OpenAi {
     /// Ask for a JSON object only (`response_format`); some servers reject the field.
     pub json_mode: bool,
-    /// Send the schema of a rules file (`response_format` json_schema) in place of the JSON-object mode.
+    /// Send the schema of a rules file (`response_format` `json_schema`) in place of the JSON-object mode.
     pub schema: bool,
     /// The most tokens an answer may have, the reasoning of a reasoning model included.
     pub max_answer_tokens: u32,

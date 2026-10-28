@@ -1,5 +1,8 @@
-//! Goal: `propose --schema` sends the rules schema as a strict json_schema `response_format` to an OpenAI-style server in
-//! place of the JSON-object mode, the plain switch still works without it, and the Anthropic provider says it ignores it.
+//! Goal: `propose --schema` sends the rules schema as a strict `json_schema` `response_format` to an OpenAI-style server
+//! in place of the JSON-object mode, the plain switch still works without it, and the Anthropic provider says it ignores
+//! it.
+
+#![allow(clippy::unwrap_used)]
 
 use crate::common;
 use crate::propose_http::args;

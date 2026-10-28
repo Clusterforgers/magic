@@ -186,6 +186,8 @@ pub enum Provider {
 
 /// Options of `propose`.
 #[derive(Debug, Args)]
+// Each flag is one independent command-line switch.
+#[allow(clippy::struct_excessive_bools)]
 pub struct ProposeArgs {
     /// The cards to ask about, by name (any case; the name of a face also selects its card): `--cards "Wind Drake" "Opt"`.
     #[arg(long, value_name = "NAME", num_args = 1.., conflicts_with = "sample", value_parser = clap::builder::NonEmptyStringValueParser::new())]
@@ -224,7 +226,7 @@ pub struct ProposeArgs {
     #[arg(long)]
     pub no_json_mode: bool,
 
-    /// Send the JSON schema of a rules file (`response_format` json_schema) so an OpenAI-style server limits the answer
+    /// Send the JSON schema of a rules file (`response_format` `json_schema`) so an OpenAI-style server limits the answer
     /// to valid shapes; replaces the plain JSON-object mode (`mtg-cli dsl-schema` prints it).
     #[arg(long, conflicts_with = "no_json_mode")]
     pub schema: bool,
