@@ -145,6 +145,8 @@ enum Happened {
     },
     /// A player proliferated.
     Proliferated { player: PlayerId },
+    /// A player won a coin flip.
+    CoinFlipWon { player: PlayerId },
     /// A creature explored.
     Explored { object: ObjectId, player: PlayerId },
     /// A creature connived.
@@ -753,6 +755,9 @@ fn about_players_and_permanents(
             to: *to,
         }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
+        Event::CoinFlipped { player, won: true } => {
+            found.push(Happened::CoinFlipWon { player: *player });
+        }
         Event::Amassed { player, .. } => found.push(Happened::Amassed { player: *player }),
         Event::Bolstered { player, .. } => found.push(Happened::Bolstered { player: *player }),
         Event::Monstrous { object, player } => found.push(Happened::Monstrous {
@@ -1067,6 +1072,7 @@ fn matching_event(
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
+        | (TriggerPattern::CoinFlipWon { who }, Happened::CoinFlipWon { player })
         | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)

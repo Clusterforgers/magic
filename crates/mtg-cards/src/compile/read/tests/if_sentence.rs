@@ -72,7 +72,7 @@ fn the_count_of_counters_condition_reads_in_the_shape_of_the_hand_written_files(
 )]
 #[case::no_comma("Whenever ~ attacks, if there are five or more charge counters on ~ draw a card.")]
 #[case::an_unread_step(
-    "Whenever ~ attacks, if there are five or more charge counters on ~, flip a coin."
+    "Whenever ~ attacks, if there are five or more charge counters on ~, wish for a card."
 )]
 #[case::remove_all_of_them_without_a_count("Whenever ~ attacks, remove all of them.")]
 #[case::an_otherwise(

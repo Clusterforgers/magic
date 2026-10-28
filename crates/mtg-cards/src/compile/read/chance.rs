@@ -22,6 +22,7 @@ pub fn flip(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     } else {
         return None;
     };
+    let until = !they && r.words("until you lose a flip");
     let (mut win, mut lose) = (Vec::new(), Vec::new());
     let mut seen = (false, false);
     while let Some((won, effects)) = r.attempt(|r| branch(r, they)) {
@@ -35,9 +36,14 @@ pub fn flip(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             lose = effects;
         }
     }
-    // A flip whose result does nothing is no effect of a card (its "wins a coin flip" triggers are other constructs).
-    (!win.is_empty() || !lose.is_empty()).then_some(())?;
-    Some(vec![Effect::FlipCoin { who, win, lose }])
+    // A flip with no branch still counts for "whenever you win a coin flip"; a flip until a loss takes no branch.
+    (!until || (win.is_empty() && lose.is_empty())).then_some(())?;
+    Some(vec![Effect::FlipCoin {
+        who,
+        win,
+        lose,
+        until,
+    }])
 }
 
 /// ". If you win the flip, S" or ". If you lose the flip, S" (a player other than you: "If they lose the flip, S").

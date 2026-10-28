@@ -409,6 +409,26 @@ fn day_and_night_changing_triggers_for_a_change_between_the_two_and_not_for_the_
 }
 
 #[rstest]
+#[case::i_win(r#"{"CoinFlipWon":{"who":"You"}}"#, ME, true, 1)]
+#[case::i_lose(r#"{"CoinFlipWon":{"who":"You"}}"#, ME, false, 0)]
+#[case::they_win_not_me(r#"{"CoinFlipWon":{"who":"You"}}"#, FOE, true, 0)]
+#[case::anyone_wins(r#"{"CoinFlipWon":{}}"#, FOE, true, 1)]
+#[case::anyone_loses(r#"{"CoinFlipWon":{}}"#, FOE, false, 0)]
+fn c8_vote_a_won_flip_triggers_for_the_players_the_pattern_names(
+    #[case] when: &str,
+    #[case] player: PlayerId,
+    #[case] won: bool,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let found = fires(&pre, &[Event::CoinFlipped { player, won }]);
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);
+    }
+}
+
+#[rstest]
 #[case::i_proliferate(r#"{"Proliferated":{"who":"You"}}"#, ME, 1)]
 #[case::they_proliferate_not_me(r#"{"Proliferated":{"who":"You"}}"#, FOE, 0)]
 #[case::an_opponent_proliferates(r#"{"Proliferated":{"who":"Opponents"}}"#, FOE, 1)]

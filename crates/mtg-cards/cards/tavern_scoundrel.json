@@ -1,0 +1,25 @@
+{
+  "oracle_id": "68c4f86f-ff12-44a6-8f18-f2ee9753b2cd",
+  "name": "Tavern Scoundrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tavern Scoundrel",
+      "oracle_fingerprint": "b24887bc056ba13222fd2d48ff15fec9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "CoinFlipWon": { "who": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "Sacrifice": { "filter": ["Other"] } }],
+            "effects": [{ "FlipCoin": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

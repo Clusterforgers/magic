@@ -265,7 +265,7 @@ mod tests {
         let texts = [
             "When this creature enters, draw a card.",
             "Flying\nVigilance",
-            "Whenever you cast a spell, flip a coin.",
+            "Whenever you cast a spell, wish for a card.",
             "",
         ];
         (0..60).map(|n| card(n, texts[n % 4])).collect()
@@ -367,11 +367,11 @@ mod tests {
     #[test]
     fn an_unread_clause_is_listed_with_its_text_and_the_status_is_partial() {
         let text = block(
-            "When this creature enters, draw a card.\nWhenever you cast a spell, flip a coin.",
+            "When this creature enters, draw a card.\nWhenever you cast a spell, wish for a card.",
         );
         assert!(text.contains("[Partial 1/2] "), "{text}");
         assert!(
-            text.ends_with("  unread  Whenever you cast a spell, flip a coin."),
+            text.ends_with("  unread  Whenever you cast a spell, wish for a card."),
             "{text}"
         );
     }

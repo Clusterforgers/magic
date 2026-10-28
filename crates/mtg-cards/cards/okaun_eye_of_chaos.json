@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7dec219b-96d1-4d4c-b3ac-15eda9d2ccc6",
+  "name": "Okaun, Eye of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Okaun, Eye of Chaos",
+      "oracle_fingerprint": "28d48a7935247f605fc8e4a97e3df59d",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Zndrsplt, Eye of Wisdom" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "FlipCoin": { "until": true } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CoinFlipWon": {} },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

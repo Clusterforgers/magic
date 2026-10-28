@@ -429,6 +429,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
         }
+        TriggerPattern::CoinFlipWon { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} win{s} a coin flip"), false)
+        }
         TriggerPattern::Amassed { who: by } => {
             let (name, s) = who(by);
             (
@@ -1382,6 +1386,8 @@ mod tests {
         "Whenever day becomes night"
     )]
     #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
+    #[case::you_win_a_flip(r#"{"CoinFlipWon":{"who":"You"}}"#, "Whenever you win a coin flip")]
+    #[case::a_player_wins_a_flip(r#"{"CoinFlipWon":{}}"#, "Whenever a player wins a coin flip")]
     #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
     #[case::you_bolster(r#"{"Bolstered":{"who":"You"}}"#, "Whenever you bolster")]
     #[case::an_opponent_bolsters(

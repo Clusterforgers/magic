@@ -9,8 +9,12 @@ use crate::rng::GameRng;
 
 /// The first player the effect names who is still in the game flips: even odds from the next substream of the game's
 /// random stream, logged as `CoinFlipped`, and the step goes on into `win` or `lose`. Nobody in the game to flip is no flip.
+/// A flip until a loss flips again after a win: after the `win` list (the tree comes back to the flip), or at once.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::FlipCoin { who, .. } = effect else {
+    let Effect::FlipCoin {
+        who, win, until, ..
+    } = effect
+    else {
         return Err(wrong_effect("FlipCoin"));
     };
     let state = cx.state();
@@ -27,13 +31,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         events: vec![Event::CoinFlipped { player, won }],
         bound: Vec::new(),
         snapshots: Vec::new(),
-        next: Next::Enter(usize::from(!won)),
+        next: if won && *until && win.is_empty() {
+            Next::Again
+        } else {
+            Next::Enter(usize::from(!won))
+        },
     })
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a flip is won or lost from the game's random stream (the same seed gives the same flip, the seeds give both results), logged for the player who flipped and entering the list for the result; a player who has left the game flips nothing, and another effect is refused by name.
+    //! Goal: a flip is won or lost from the game's random stream (the same seed gives the same flip, the seeds give both results), logged for the player who flipped and entering the list for the result, a won flip until a loss flipping again; a player who has left the game flips nothing, and another effect is refused by name.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -110,6 +118,29 @@ mod tests {
         };
         assert_eq!(events.len(), 0);
         assert_eq!(next, Next::Sibling);
+    }
+
+    #[rstest]
+    #[case::no_list(r#"{"FlipCoin":{"until":true}}"#, true)]
+    #[case::a_win_list(r#"{"FlipCoin":{"until":true,"win":[{"Draw":{}}]}}"#, false)]
+    fn c8_vote_a_won_flip_until_a_loss_flips_again_or_enters_the_win_list(
+        #[case] json: &str,
+        #[case] again: bool,
+    ) {
+        for seed in 0..16 {
+            let Run::Done { events, next, .. } = flip(&game(seed), json).unwrap() else {
+                panic!("a flip asks nothing");
+            };
+            let [Event::CoinFlipped { won, .. }] = events.as_slice() else {
+                panic!("one flip is logged: {events:?}");
+            };
+            let expected = match (*won, again) {
+                (true, true) => Next::Again,
+                (true, false) => Next::Enter(0),
+                (false, _) => Next::Enter(1),
+            };
+            assert_eq!(next, expected, "seed {seed}");
+        }
     }
 
     #[test]

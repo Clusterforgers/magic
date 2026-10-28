@@ -20,6 +20,14 @@ pub(crate) const fn is_next_pass(position: &[usize]) -> bool {
     position.len().is_multiple_of(2)
 }
 
+/// Whether the effect runs again after its body: a `RepeatEach`, or a `FlipCoin` until a loss after its `win` list.
+const fn loops(effect: &Effect) -> bool {
+    matches!(
+        effect,
+        Effect::RepeatEach { .. } | Effect::FlipCoin { until: true, .. }
+    )
+}
+
 /// The lists of effects inside an effect, in branch order; `chosen` are the modes chosen for a `Modal`.
 fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
     match effect {
@@ -56,7 +64,7 @@ pub(crate) fn effect_at<'a>(
             return Some(effect);
         }
         let (&branch, deeper) = rest.split_first()?;
-        if deeper.is_empty() && branch == NEXT_PASS && matches!(effect, Effect::RepeatEach { .. }) {
+        if deeper.is_empty() && branch == NEXT_PASS && loops(effect) {
             return Some(effect);
         }
         list = branches(effect, chosen).get(branch).copied()?;
@@ -136,11 +144,9 @@ fn sibling(root: &[Effect], chosen: &[usize], position: &[usize]) -> Vec<usize> 
         return next;
     }
     let holder = &position[..position.len().saturating_sub(2)];
-    // The body of a repeat is done: the repeat begins its next pass.
-    if matches!(
-        effect_at(root, chosen, holder),
-        Some(Effect::RepeatEach { .. })
-    ) {
+    // The body of a repeat (the `win` list of a flip until a loss) is done: the repeat begins its next pass.
+    if position.get(holder.len()) == Some(&0) && effect_at(root, chosen, holder).is_some_and(loops)
+    {
         return [holder, &[NEXT_PASS]].concat();
     }
     // The list is done: on to the next mode chosen if the effect that holds it is a `Modal`, else past that effect.
@@ -387,6 +393,35 @@ mod tests {
         #[case] expected: &[usize],
     ) {
         assert_eq!(after(&chances(), &[], position, next), expected);
+    }
+
+    /// A flip until a loss with a list for each result, between two effects.
+    fn c8_vote_until_flip() -> Vec<Effect> {
+        effects(
+            r#"[
+                {"Draw":{}},
+                {"FlipCoin":{"until":true,"win":[{"Shuffle":{}},{"Draw":{}}],"lose":[{"Mill":{}}]}},
+                {"GainLife":{"amount":2}}
+            ]"#,
+        )
+    }
+
+    #[rstest]
+    #[case::a_won_flip_enters_the_win_list(&[1], Next::Enter(0), &[1, 0, 0])]
+    #[case::the_win_list_ends_with_the_flip_again(&[1, 0, 1], Next::Sibling, &[1, 1])]
+    #[case::the_flip_again_is_the_flip(&[1, 1], Next::Again, &[1, 1])]
+    #[case::a_won_flip_again_enters_the_win_list(&[1, 1], Next::Enter(0), &[1, 0, 0])]
+    #[case::a_lost_flip_again_enters_the_lose_list(&[1, 1], Next::Enter(1), &[1, 1, 0])]
+    #[case::the_lose_list_ends_past_the_flip(&[1, 1, 0], Next::Sibling, &[2])]
+    #[case::a_first_lost_flip(&[1], Next::Enter(1), &[1, 1, 0])]
+    fn c8_vote_a_flip_until_a_loss_comes_back_after_each_win(
+        #[case] position: &[usize],
+        #[case] next: Next,
+        #[case] expected: &[usize],
+    ) {
+        let root = c8_vote_until_flip();
+        assert_eq!(after(&root, &[], position, next), expected);
+        assert_eq!(name(effect_at(&root, &[], &[1, 1])), "FlipCoin");
     }
 
     #[test]
