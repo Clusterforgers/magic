@@ -64,6 +64,7 @@ Archway Commons
 Armguard Familiar
 Arrogant Wurm
 Artful Maneuver
+Artistic Refusal
 Arvad the Cursed
 Ash Barrens
 Assassin's Trophy
@@ -75,6 +76,7 @@ Augury Raven
 Auntie's Hovel
 Aura Gnarlid
 Auriok Champion
+Austere Command
 Authority of the Consuls
 Auton Soldier
 Avatar of Woe
@@ -164,6 +166,7 @@ Breath of Life
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
+Brigid's Command
 Brimstone Vandal
 Brion Stoutarm
 Bronzeplate Boar
@@ -263,6 +266,7 @@ Crop Rotation
 Crown of Skemfar
 Crucible of Worlds
 Crucible of the Spirit Dragon
+Crush Contraband
 Crypt Ghast
 Crystal Quarry
 Cultivate
@@ -296,6 +300,7 @@ Darksteel Mutation
 Darksteel Splicer
 Dauthi Horror
 Dauthi Marauder
+Dawn to Dusk
 Dawn's Reflection
 Dawnglade Regent
 Deadbridge Goliath
@@ -350,6 +355,7 @@ Dreg Mangler
 Dregscape Zombie
 Drift of Phantasms
 Dromoka Captain
+Dromoka's Command
 Dromoka's Gift
 Dromoka, the Eternal
 Drove of Elves
@@ -393,7 +399,9 @@ Enraged Revolutionary
 Enthusiastic Study
 Entreat the Angels
 Entreat the Dead
+Ephara's Dispersal
 Epic Confrontation
+Epic Fight
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
@@ -446,6 +454,7 @@ Finch Formation
 Fire-Lit Thicket
 Firestorm Hellkite
 Firmament Sage
+Fissure Vent
 Fists of Flame
 Flame Jab
 Flamebraider
@@ -673,6 +682,7 @@ Knights of the Black Rose
 Knowledge Is Power
 Kodama's Reach
 Kolaghan Skirmisher
+Kolaghan's Command
 Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
 Kor Firewalker
@@ -835,6 +845,7 @@ Norn's Annex
 Norwood Riders
 Notion Rain
 Novijen, Heart of Progress
+Nylea's Colossus
 Nyxborn Behemoth
 Oath of Gideon
 Oath of Jace
@@ -905,6 +916,7 @@ Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
 Prey Upon
+Price of Fame
 Pridemalkin
 Priest of the Crossing
 Primal Beyond
@@ -1008,6 +1020,7 @@ Safehold Elite
 Sage of the Beyond
 Sage of the Maze
 Sagu Mauler
+Saheeli's Artistry
 Saiba Cryptomancer
 Saltcrusted Steppe
 Samurai's Katana
@@ -1021,6 +1034,7 @@ Sanitarium Skeleton
 Sarah Jane Smith
 Satyr Wayfinder
 Sauroform Hybrid
+Savage Stomp
 Savage Ventmaw
 Savor the Moment
 Saw It Coming
@@ -1067,6 +1081,7 @@ Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
 Silhana Ledgewalker
+Silumgar's Command
 Silvar, Devourer of the Free
 Silver Shroud Costume
 Silversmote Ghoul
@@ -1107,6 +1122,7 @@ Sol Ring
 Solstice Zealot
 Soltari Foot Soldier
 Songs of the Damned
+Soul Manipulation
 Soul Shepherd
 Soul of New Phyrexia
 Soul of Zendikar
@@ -1154,6 +1170,7 @@ Storm Fleet Swashbuckler
 Stormchaser's Talent
 Stormscape Battlemage
 Stormsurge Kraken
+Storvald, Frost Giant Jarl
 Strangleroot Geist
 Stratus Dancer
 Stratus Walk

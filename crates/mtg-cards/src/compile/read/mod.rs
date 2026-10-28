@@ -40,6 +40,7 @@ mod c6_blk_draws;
 mod c7_untap;
 mod c8_eg_cast_itself;
 mod c8_kwq_abilities;
+mod c9_fight_double;
 mod card_grants;
 mod cast;
 mod chance;

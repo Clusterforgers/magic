@@ -230,3 +230,26 @@ pub(super) fn shared_subject_text(applies_to: &Selector) -> Option<String> {
         .collect();
     Some(format!("{} spells{who}", names?.join(" and ")))
 }
+
+/// " if it targets a Dinosaur you control" after the cost of the spell itself: what one of its targets must be, for
+/// `Pred::Targeting` beside `This`.
+pub(super) fn c9_fight_targets(r: &mut Reader<'_>) -> Option<Selector> {
+    r.need("if it targets")?;
+    (r.word("a") || r.word("an")).then_some(())?;
+    phrase(r, Form::Subject)
+}
+
+/// The words " if it targets a ..." of the spells `applies_to` names when it is the spell itself with a target it must
+/// have, and `None` for any other spells.
+pub(super) fn c9_fight_targets_text(applies_to: &Selector) -> Option<String> {
+    let [Pred::This, Pred::Targeting(wanted)] = applies_to.0.as_slice() else {
+        return None;
+    };
+    let text = phrase_text(wanted, Form::Subject)?;
+    let article = if text.starts_with(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']) {
+        "an"
+    } else {
+        "a"
+    };
+    Some(format!(" if it targets {article} {text}"))
+}

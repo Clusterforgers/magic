@@ -1,4 +1,4 @@
-//! Goal: "Choose one —" and its bullets read as one `Modal` whose modes are read by the effect templates and keep targets of their own; other choices ("choose two", "one or both", "up to"), one mode alone, a mode the templates do not read and a modal beside other sentences stay with the table.
+//! Goal: "Choose one —" and its bullets read as one `Modal` whose modes are read by the effect templates and keep targets of their own; other choices ("up to", "one or more", "three"; `c9_fight_modes.rs` reads "choose two" and "one or both"), one mode alone, a mode the templates do not read and a modal beside other sentences stay with the table.
 use super::*;
 
 /// A header, a dash and a bullet line for each mode.
@@ -117,8 +117,6 @@ fn more_oracle_wordings_of_modes_in_a_trigger_read_and_write_back(
 }
 
 #[rstest]
-#[case::choose_two(lines("Choose two", &["Draw a card.", "You gain 2 life.", "Scry 1."]))]
-#[case::both(lines("Choose one or both", &["Draw a card.", "You gain 2 life."]))]
 #[case::one_or_more(lines("Choose one or more", &["Draw a card.", "You gain 2 life."]))]
 #[case::up_to(lines("Choose up to two", &["Draw a card.", "You gain 2 life.", "Scry 1."]))]
 #[case::three(lines("Choose three", &["Draw a card.", "You gain 2 life.", "Scry 1.", "Each opponent loses 1 life."]))]

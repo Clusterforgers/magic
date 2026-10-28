@@ -148,6 +148,10 @@ pub struct DamageShield {
     /// The sources of the damage it prevents, judged when the damage would be dealt; any source when empty.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub source: Selector,
+    /// The sources it prevents damage from, fixed when it was made (a target spell or object); any when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub from: Option<Vec<Target>>,
     /// Only combat damage (`true`) or only other damage (`false`); both when absent.
     pub combat: Option<bool>,
     /// What it still prevents; all damage when absent.
@@ -155,9 +159,17 @@ pub struct DamageShield {
 }
 
 impl DamageShield {
-    /// Whether it can never prevent anything again: it is used up, or every object it protects is a new object or gone.
+    /// Whether it can never prevent anything again: it is used up, or every object it protects, or every source it
+    /// names, is a new object or gone.
     fn spent(&self, state: &GameState) -> bool {
-        self.left == Some(0)
+        let gone = |named: &Target| match named {
+            Target::Player(_) => false,
+            Target::Object(named) => state
+                .object(named.id)
+                .is_none_or(|o| o.counter() != named.counter),
+        };
+        self.from.as_ref().is_some_and(|from| from.iter().all(gone))
+            || self.left == Some(0)
             || self.to.as_ref().is_some_and(|to| {
                 !to.is_empty()
                     && to.iter().all(|target| match target {
@@ -548,7 +560,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         }
         Rule::PlayersHave { who, .. } => who.is_empty(),
         Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
-        Rule::PreventDamage(shield) => shield.to.as_ref().is_some_and(Vec::is_empty),
+        Rule::PreventDamage(shield) => {
+            shield.to.as_ref().is_some_and(Vec::is_empty)
+                || shield.from.as_ref().is_some_and(Vec::is_empty)
+        }
         Rule::DiesInstead { objects, .. } => objects.is_empty(),
     }
 }

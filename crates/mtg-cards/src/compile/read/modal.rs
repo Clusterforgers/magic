@@ -5,7 +5,7 @@ use super::tokens::Reader;
 use super::{effects, statics};
 use crate::effect::{Effect, Mode};
 use crate::refs::Bounds;
-use crate::value::Condition;
+use crate::value::{Amount, Condition};
 
 /// The bullet that opens a mode.
 pub const BULLET: char = '\u{2022}';
@@ -13,14 +13,17 @@ pub const BULLET: char = '\u{2022}';
 /// The dash that ends the choice: "Choose one —".
 pub const DASH: char = '\u{2014}';
 
-/// "Choose one —" and the bullets after it, as one effect; at least two modes. "Choose one at random —" and "choose one
-/// that hasn't been chosen this turn —" (or that sentence ended by a period) set a flag of the `Modal`; "Choose one. If
-/// you control a commander as you cast this spell, you may choose both instead." sets the condition `all_if` of a pair.
+/// "Choose one —" and the bullets after it, as one effect; at least two modes. "Choose two —" asks for two of three or
+/// more modes and "Choose one or both —" for one or two of a pair. "Choose one at random —" and "choose one that hasn't
+/// been chosen this turn —" (or that sentence ended by a period) set a flag of the `Modal`; "Choose one. If you control
+/// a commander as you cast this spell, you may choose both instead." sets the condition `all_if` of a pair.
 pub fn modal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.need("choose one")?;
-    let at_random = r.words("at random");
-    let once_each_turn = !at_random && r.words("that hasn't been chosen this turn");
-    let all_if = if at_random || once_each_turn {
+    r.need("choose")?;
+    let choose = c9_fight_choose(r)?;
+    let single = choose == Bounds::default();
+    let at_random = single && r.words("at random");
+    let once_each_turn = single && !at_random && r.words("that hasn't been chosen this turn");
+    let all_if = if !single || at_random || once_each_turn {
         None
     } else {
         r.attempt(both_instead)
@@ -31,15 +34,38 @@ pub fn modal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     while r.punct(BULLET) {
         modes.push(mode(r)?);
     }
-    (modes.len() >= 2 && (all_if.is_none() || modes.len() == 2)).then(|| {
+    // "one or both" names a pair, and "two" of a pair would be both of them, which no card words so.
+    let fits = match (&choose.min, &choose.max) {
+        (Amount::Fixed(1), Some(Amount::Fixed(2))) => modes.len() == 2,
+        (_, Some(Amount::Fixed(2))) => modes.len() >= 3,
+        _ => modes.len() >= 2,
+    };
+    (fits && (all_if.is_none() || modes.len() == 2)).then(|| {
         vec![Effect::Modal {
-            choose: Bounds::default(),
+            choose,
             repeat: false,
             at_random,
             once_each_turn,
             all_if,
             modes,
         }]
+    })
+}
+
+/// How many modes the header asks for: "one or both" (one or two), "one" or "two".
+fn c9_fight_choose(r: &mut Reader<'_>) -> Option<Bounds> {
+    let (min, max) = if r.words("one or both") {
+        (1, 2)
+    } else if r.words("one") {
+        (1, 1)
+    } else if r.words("two") {
+        (2, 2)
+    } else {
+        return None;
+    };
+    Some(Bounds {
+        min: Amount::Fixed(min),
+        max: Some(Amount::Fixed(max)),
     })
 }
 

@@ -112,12 +112,14 @@ impl Board {
                 Shield::ToDefender(left) => Rule::PreventDamage(DamageShield {
                     to: Some(vec![Target::Player(pid(1))]),
                     source: Selector::default(),
+                    from: None,
                     combat: None,
                     left: Some(left),
                 }),
                 Shield::Fog => Rule::PreventDamage(DamageShield {
                     to: None,
                     source: Selector::default(),
+                    from: None,
                     combat: Some(true),
                     left: None,
                 }),

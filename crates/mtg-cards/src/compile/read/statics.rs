@@ -957,7 +957,7 @@ fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Amount> {
 /// where X is the total power of creatures you control."
 fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
     let leading = r.attempt(cost_conditions::leading);
-    let (applies_to, itself) = cost_subject(r)?;
+    let (mut applies_to, itself) = cost_subject(r)?;
     r.need(if itself { "costs" } else { "cost" })?;
     let (mana, x) = cost_mana(r)?;
     let change = if r.word("more") {
@@ -969,9 +969,16 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
     };
     r.need("to cast")?;
     let per = cost_times(r, itself, x)?;
-    let condition = match leading {
-        Some(held) => Some(held),
-        None => r.attempt(cost_conditions::trailing),
+    let wanted = (itself && leading.is_none())
+        .then(|| r.attempt(cost_conditions::c9_fight_targets))
+        .flatten();
+    let condition = match (leading, wanted) {
+        (Some(held), _) => Some(held),
+        (None, Some(wanted)) => {
+            applies_to.0.push(Pred::Targeting(wanted));
+            None
+        }
+        (None, None) => r.attempt(cost_conditions::trailing),
     };
     Some(Ability::CostModifier {
         applies_to,
@@ -1032,6 +1039,15 @@ fn cost_modifier_texts(
     per: &Amount,
     condition: Option<&Condition>,
 ) -> Vec<String> {
+    if let Some(wanted) = cost_conditions::c9_fight_targets_text(applies_to) {
+        if condition.is_some() {
+            return Vec::new();
+        }
+        return cost_sentences("~", &Selector::this(), change, mana, per, None)
+            .into_iter()
+            .map(|sentence| format!("{sentence}{wanted}"))
+            .collect();
+    }
     let Some(subject) = cost_subject_text(applies_to) else {
         return Vec::new();
     };

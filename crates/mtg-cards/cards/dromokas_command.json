@@ -1,0 +1,75 @@
+{
+  "oracle_id": "3bd8ea71-cbcc-4659-b9a8-88cf27ee12d8",
+  "name": "Dromoka's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dromoka's Command",
+      "oracle_fingerprint": "fb5085fa5770c689e35bbf47c1cca86f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }] } },
+                            "by": "Prevent",
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "Type": "Enchantment" }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,10 @@ to: Array<Target> | null,
  */
 source: unknown, 
 /**
+ * The sources it prevents damage from, fixed when it was made (a target spell or object); any when absent.
+ */
+from?: Array<Target>, 
+/**
  * Only combat damage (`true`) or only other damage (`false`); both when absent.
  */
 combat: boolean | null, 
