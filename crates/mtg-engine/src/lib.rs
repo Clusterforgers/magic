@@ -53,10 +53,10 @@ mod zone_abilities;
 
 pub mod abilities;
 pub mod ability_reader;
+mod c9_emerge_ways;
 pub mod caps;
 pub mod characteristics;
 pub mod choose;
-mod c9_emerge_ways;
 mod citys_blessing;
 pub mod combat;
 pub mod companions;

@@ -52,6 +52,7 @@ mod c6_gap_batches;
 mod c6_kw_renown_exploit;
 mod c8_eg_cards;
 mod c8_kwq_counters;
+mod c9_emerge;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;

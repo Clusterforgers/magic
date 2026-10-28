@@ -257,7 +257,9 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         ways.push(free_way(instant));
     }
     for keyword in keywords_of(state, id) {
-        ways.extend(crate::c9_emerge_ways::c9_emerge_ways(state, id, keyword, instant));
+        ways.extend(crate::c9_emerge_ways::c9_emerge_ways(
+            state, id, keyword, instant,
+        ));
         if let Some(way) = keyword_way(state, player, id, keyword, instant)
             && !ways.iter().any(|w| w.alternative == way.alternative)
         {
@@ -743,6 +745,7 @@ pub(crate) fn grantable_as_is(
             && parts_payable(state, player, id, &way.parts)
             && way
                 .cost(card.card().mana_cost.as_ref())
+                .map(|cost| crate::c9_emerge_ways::c9_emerge_offered(state, player, id, way, cost))
                 .is_some_and(|cost| {
                     announce::payable(
                         state,
@@ -826,6 +829,7 @@ pub(crate) fn castable_as_is(
             && parts_payable(state, player, id, &way.parts)
             && way
                 .cost(card.card().mana_cost.as_ref())
+                .map(|cost| crate::c9_emerge_ways::c9_emerge_offered(state, player, id, way, cost))
                 .is_some_and(|cost| {
                     announce::payable(
                         state,
