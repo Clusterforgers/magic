@@ -19,6 +19,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaType};
 use thiserror::Error;
 
+use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod w6d_shares;
@@ -547,6 +548,38 @@ impl<'a> Scope<'a> {
     /// ignored (CR 608.2b).
     fn chosen(&self, index: usize) -> Vec<Target> {
         let index = self.target_base + index;
+        let Some(at_start) = self.bindings.get(&format!("{W7D_LEGAL}{index}")) else {
+            return self.w7d_legal_now(index);
+        };
+        at_start
+            .iter()
+            .copied()
+            .filter(|target| self.departed(*target) || self.w7d_unmoved(*target))
+            .collect()
+    }
+
+    /// Whether the target is still the object it was (it has not changed zones), or is a player.
+    fn w7d_unmoved(&self, target: Target) -> bool {
+        target.object().is_none_or(|object| {
+            self.state
+                .object(object.id)
+                .is_some_and(|now| now.reference() == object)
+        })
+    }
+
+    /// The bound names that record, for each specification, its targets that are legal now; none unless `starting`.
+    pub(crate) fn w7d_legal_at_start(&self, starting: bool) -> Vec<(String, Vec<Target>)> {
+        if !starting {
+            return Vec::new();
+        }
+        (0..self.choices.targets.len())
+            .map(|index| (format!("{W7D_LEGAL}{index}"), self.w7d_legal_now(index)))
+            .collect()
+    }
+
+    /// The targets chosen for the specification `index` (counted from the first) that are legal now, or that an earlier
+    /// step of this resolution moved away.
+    fn w7d_legal_now(&self, index: usize) -> Vec<Target> {
         let (Some(set), Some(spec)) = (self.choices.targets.get(index), self.specs.get(index))
         else {
             return Vec::new();

@@ -43,6 +43,11 @@ pub(crate) const CLEAR: &str = "~clear:";
 /// The prefix of a bound name in a finished step that records the X its payment announced (`~x:3`) instead.
 pub(crate) const W6C_PAID_X: &str = "~x:";
 
+/// The prefix of the bound name (`~legal:<index>`) under which the first step records the targets of a specification
+/// that are legal as the resolution begins: the later steps act on them even after an earlier step made them illegal
+/// (CR 608.2b).
+pub(crate) const W7D_LEGAL: &str = "~legal:";
+
 /// The position of the first effect: a path of indices into the effect tree.
 const START: [usize; 1] = [0];
 
@@ -369,6 +374,7 @@ fn step_with(
     let Some(effect) = tree::effect_at(effects, chosen, &resolving.position) else {
         return Ok(Progress::Done(finish(state, object)));
     };
+    let legal = scope.w7d_legal_at_start(resolving.position == START);
     let cx = Cx { scope, resolving };
     match run(&cx, effect)? {
         Run::Ask(decision) => Ok(Progress::Ask(decision)),
@@ -380,7 +386,7 @@ fn step_with(
             next,
         } => {
             let mut events = events;
-            let mut bound = bound;
+            let mut bound = [bound, legal].concat();
             let position = tree::after(effects, chosen, &resolving.position, next);
             // CR 700.2d: a mode chosen again runs again; the names it binds are cleared for the new run.
             if let Some(mode) = tree::later_mode_begun(effects, chosen, &position) {
