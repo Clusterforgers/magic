@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes; the commit that finishes it deletes i
 ## Status
 
 - Built: foundations, card data, the engine core, protocol and server, game flow, the web client and the deck builder (M0 to M2), and Commander in the engine, server and lobby (M4).
-- In progress: the card system and its coverage tail (M3, M6): 3,810 of the 6,429 stored precon cards (59.3%) and 77.7% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
+- In progress: the card system and its coverage tail (M3, M6): 3,939 of the 6,429 stored precon cards (61.3%) and 78.9% of the copies are Verified; the open pieces are a flat long tail that frees a few cards each.
 - Not started: the web for the final card-system types (M5), the product pages (M7), polish and deploy (M8).
 
 ## Order of work
@@ -230,7 +230,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (3,810 of the 6,429 stored precon cards, 59.3%, and 77.7% of the copies are Verified)
+- [ ] Target: every stored card Verified, or as near as the rules allow; `mtg-cli coverage` (compile first) ranks the blockers, each piece below states the cards it frees, and after each round `compile` and `coverage` are re-run and the numbers recorded here (3,939 of the 6,429 stored precon cards, 61.3%, and 78.9% of the copies are Verified)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
