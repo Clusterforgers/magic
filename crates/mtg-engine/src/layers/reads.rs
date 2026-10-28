@@ -312,6 +312,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
+        | Condition::CompletedDungeon(who)
         | Condition::CitysBlessing(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }

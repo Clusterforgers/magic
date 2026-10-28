@@ -1613,6 +1613,10 @@ impl<'a> Scope<'a> {
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
+            Condition::CompletedDungeon(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.w11d_completed(*player) > 0),
             Condition::Monarch(who) => {
                 let players = self.players(who)?;
                 // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.

@@ -32,6 +32,8 @@ pub enum ObjectKind {
     Ability,
     /// An emblem in its owner's command zone (CR 114).
     Emblem,
+    /// A dungeon in its owner's command zone (CR 309).
+    Dungeon,
 }
 
 impl ObjectKind {

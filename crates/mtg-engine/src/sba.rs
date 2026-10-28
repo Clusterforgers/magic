@@ -98,6 +98,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     events.extend(refilled);
     events.extend(crate::day_night::sync(state));
     events.extend(crate::citys_blessing::sync(state));
+    events.extend(crate::w11d_dungeon::w11d_sba(state));
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id) else {
             continue;

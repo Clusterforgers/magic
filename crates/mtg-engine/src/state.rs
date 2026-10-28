@@ -239,6 +239,8 @@ pub struct GameState {
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
+    /// The dungeons (CR 309): each player's venture marker and the dungeons they completed.
+    pub(crate) w11d: crate::w11d_dungeon::W11dDungeons,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
     /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
@@ -713,6 +715,10 @@ impl Hash for GameState {
         // Likewise a game where nobody has the city's blessing.
         if !self.citys_blessing.is_empty() {
             self.citys_blessing.hash(state);
+        }
+        // Likewise a game where nobody ventured.
+        if !self.w11d.is_empty() {
+            self.w11d.hash(state);
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);

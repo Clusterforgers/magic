@@ -592,6 +592,10 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         Event::Renowned { object, .. } => c6_kw_set_renowned(state, *object),
         Event::Exploited { .. } => Ok(()),
         Event::EmblemCreated(emblem) => crate::w6b_emblems::fold(state, emblem),
+        Event::Ventured(ventured) => crate::w11d_dungeon::w11d_fold_ventured(state, ventured),
+        Event::DungeonCompleted { player, object } => {
+            crate::w11d_dungeon::w11d_fold_completed(state, *player, *object)
+        }
         other => Err(invalid(format!("unhandled event {other:?}"))),
     }
 }

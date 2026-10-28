@@ -710,6 +710,10 @@ impl<'a> Walker<'a> {
                     self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
                 }
             }
+            Condition::CompletedDungeon(who) => {
+                self.uses("Condition", "CompletedDungeon");
+                self.at("CompletedDungeon", |w| w.reference(who, Kind::Player));
+            }
             Condition::Monarch(who) => {
                 self.uses("Condition", "Monarch");
                 self.at("Monarch", |w| w.reference(who, Kind::Player));
@@ -1302,6 +1306,8 @@ impl<'a> Walker<'a> {
             TriggerPattern::LifeGained { who }
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
+            | TriggerPattern::Ventured { who, .. }
+            | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::CoinFlipWon { who }
             | TriggerPattern::DiceRolled { who, .. }
@@ -1400,6 +1406,8 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
+                | TriggerPattern::Ventured { .. }
+                | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::CoinFlipWon { .. }
@@ -2077,6 +2085,7 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
+            | Effect::Venture { who, .. }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
             | Effect::Exploit { who } => {

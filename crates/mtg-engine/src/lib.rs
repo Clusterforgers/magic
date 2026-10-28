@@ -63,6 +63,7 @@ pub mod caps;
 pub mod characteristics;
 pub mod choose;
 mod citys_blessing;
+pub mod w11d_dungeon;
 pub mod combat;
 pub mod companions;
 pub mod copies;

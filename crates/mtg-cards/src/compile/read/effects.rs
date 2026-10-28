@@ -427,6 +427,15 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The name the cards put back are bound to.
 pub const BACK: &str = "back";
 
+/// The rest of "venture into the dungeon" (CR 701.49) after the verb.
+fn w11d_venture(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    r.need("into the dungeon")?;
+    Some(Effect::Venture {
+        who,
+        undercity: false,
+    })
+}
+
 /// One step of "you" that begins with its verb: "scry 1", "draw a card", "mill three cards".
 pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
     let who = Ref::You;
@@ -440,6 +449,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             count: points(r)?,
         },
         "proliferate" => Effect::Proliferate { who },
+        "venture" => w11d_venture(r, who)?,
         "time" if r.words("travel") => Effect::TimeTravel { who },
         "learn" => Effect::Learn { who },
         "planeswalk" => Effect::Planechase {
@@ -721,6 +731,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             r.need("the monarch")?;
             Effect::BecomeMonarch { who }
         }
+        "venture" | "ventures" => w11d_venture(r, who)?,
         "shuffle" | "shuffles" => {
             r.need(if who == Ref::You {
                 "your library"

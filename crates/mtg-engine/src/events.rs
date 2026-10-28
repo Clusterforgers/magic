@@ -647,6 +647,15 @@ pub enum Event {
         /// Who got it.
         player: PlayerId,
     },
+    /// A player ventured into the dungeon (CR 701.49).
+    Ventured(Box<crate::w11d_dungeon::W11dVentured>),
+    /// A player completed a dungeon, which leaves the game (CR 309.7).
+    DungeonCompleted {
+        /// Who completed it.
+        player: PlayerId,
+        /// The dungeon.
+        object: ObjectId,
+    },
     /// A player learned (CR 701.48): the discard and the draw are the events that follow it.
     Learned {
         /// Who learned.
@@ -956,6 +965,7 @@ impl Event {
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
+            | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
@@ -1011,6 +1021,7 @@ impl Event {
                 .collect(),
             Event::TokenCreated(token) => vec![token.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
+            Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
