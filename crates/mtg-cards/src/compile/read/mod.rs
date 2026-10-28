@@ -121,6 +121,7 @@ mod token_binds;
 mod tokens;
 mod transform;
 mod triggers;
+mod w2e_copied;
 mod turns;
 mod untap_rules;
 mod vote;

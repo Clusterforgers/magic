@@ -1,0 +1,72 @@
+{
+  "oracle_id": "6b071146-2f83-4fda-a55a-46fcb74e6f28",
+  "name": "Deekah, Fractal Theorist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deekah, Fractal Theorist",
+      "oracle_fingerprint": "8fde69b386de54299f2387734e27155c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "tokens"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "tokens" },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Token"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

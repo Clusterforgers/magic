@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dadae60e-b91e-435f-85e0-518dfa419530",
+  "name": "Stinkdrinker Bandit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stinkdrinker Bandit",
+      "oracle_fingerprint": "9a136d01e98d12179a1ee0d45e91894e",
+      "abilities": [
+        { "Keyword": { "Prowl": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": [{ "Subtype": "Rogue" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

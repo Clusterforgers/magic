@@ -64,6 +64,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     let (what, named_by_the_cause) = match pattern {
         TriggerPattern::Attacks { what }
         | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::Unblocked { what }
         | TriggerPattern::Mutates { what }
         | TriggerPattern::Tapped { what }
         | TriggerPattern::Untapped { what }
@@ -128,6 +129,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
 pub fn event_subject(pattern: &TriggerPattern) -> Option<Ref> {
     let (TriggerPattern::Attacks { what }
     | TriggerPattern::BecomesBlocked { what }
+    | TriggerPattern::Unblocked { what }
     | TriggerPattern::Blocks { what }
     | TriggerPattern::ZoneChange { what, .. }) = pattern
     else {
@@ -425,12 +427,18 @@ fn spell_cast(r: &mut Reader<'_>, by: Ref, third: bool) -> Option<TriggerPattern
             by,
         });
     }
-    let mut spell = subject(r)?.0;
-    // The pattern is about a spell already; the selector keeps what the spell must be.
-    if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
-        return None;
+    let copied = r.words(if third { "or copies" } else { "or copy" });
+    let mut spell = w2e_spell(r)?;
+    if copied {
+        let what = Selector(spell);
+        return Some(TriggerPattern::AnyOf(vec![
+            TriggerPattern::SpellCast {
+                what: what.clone(),
+                by: by.clone(),
+            },
+            TriggerPattern::SpellCopied { what, by },
+        ]));
     }
-    spell.remove(0);
     if !third {
         super::c4_cast_hand::from_hand(&mut spell, r);
     }
@@ -440,6 +448,16 @@ fn spell_cast(r: &mut Reader<'_>, by: Ref, third: bool) -> Option<TriggerPattern
     })
 }
 
+/// The spell of a cast or a copy, "an instant or sorcery spell", without the noun: the pattern is about a spell already.
+fn w2e_spell(r: &mut Reader<'_>) -> Option<Vec<Pred>> {
+    let mut spell = subject(r)?.0;
+    if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
+        return None;
+    }
+    spell.remove(0);
+    Some(spell)
+}
+
 /// "you cast a creature spell", "an opponent casts a spell", "you sacrifice a Clue".
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
@@ -447,6 +465,11 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let whose = if third { "their" } else { "your" };
     if verb == if third { "casts" } else { "cast" } {
         spell_cast(r, by, third)
+    } else if verb == if third { "copies" } else { "copy" } {
+        Some(TriggerPattern::SpellCopied {
+            what: Selector(w2e_spell(r)?),
+            by,
+        })
     } else if verb == if third { "sacrifices" } else { "sacrifice" } {
         Some(TriggerPattern::Sacrificed {
             what: subject(r)?,
@@ -674,6 +697,9 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("leaves the battlefield") {
         (Some(ZoneKind::Battlefield), None)
     } else if r.word("attacks") {
+        if r.words("and isn't blocked") {
+            return Some(TriggerPattern::Unblocked { what: what.clone() });
+        }
         if let Some(attacked) = super::c10_pa_attacks::c10_pa_attacked(r, what) {
             return Some(attacked);
         }
@@ -1154,6 +1180,7 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         }
         TriggerPattern::Blocks { what } => said(what, "blocks"),
         TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
+        TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
         TriggerPattern::Explored { what } => said(what, "explores"),
@@ -1262,6 +1289,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             Some("When you cast ~".to_owned())
         }
         TriggerPattern::SpellCast { what, by } => super::c4_cast_hand::cast_text(what, by),
+        TriggerPattern::SpellCopied { what, by } => super::w2e_copied::w2e_copy_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(
             "Whenever {} {}",
             player_verb(by, "sacrifice")?,
@@ -1344,7 +1372,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 phrase_text(what, Form::All)?
             ))
         }
-        TriggerPattern::AnyOf(patterns) => any_of_text(patterns),
+        TriggerPattern::AnyOf(patterns) => {
+            super::w2e_copied::w2e_cast_or_copy_text(patterns).or_else(|| any_of_text(patterns))
+        }
         _ => {
             let (what, verb) = happening(pattern)?;
             about(&what, &[verb])

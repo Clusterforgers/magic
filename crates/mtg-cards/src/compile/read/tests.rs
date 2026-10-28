@@ -256,6 +256,7 @@ mod enters_tapped;
 mod evasion;
 mod event_batches;
 mod events;
+mod w2e_trigger_events;
 mod exile_bounce_shrink;
 mod exile_while;
 mod exiled_kind;

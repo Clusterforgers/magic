@@ -61,6 +61,7 @@ Arcane Signet
 Arch of Orazca
 Archipelagore
 Archivist of Gondor
+Archmage Emeritus
 Archmage of Echoes
 Archon of Absolution
 Archon of Coronation
@@ -237,6 +238,7 @@ Citadel Gate
 Citanul Hierophants
 Clan Defiance
 Clash of Titans
+Clever Lumimancer
 Cliffgate
 Clifftop Lookout
 Clive's Hideaway
@@ -329,6 +331,7 @@ Deathcap Cultivator
 Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
+Deekah, Fractal Theorist
 Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
@@ -433,6 +436,7 @@ Erebos, Bleak-Hearted
 Etched Oracle
 Eternal Dragon
 Eternal Witness
+Eternal of Harsh Truths
 Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
@@ -786,6 +790,7 @@ Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
 Machine God's Effigy
+Mage Hunter
 Magistrate's Scepter
 Magmatic Insight
 Make Disappear
@@ -1239,6 +1244,7 @@ Steelburr Champion
 Steelclaw Lance
 Stensia Masquerade
 Sticky Fingers
+Stinkdrinker Bandit
 Stitch in Time
 Stitched Drake
 Stoke the Flames
@@ -1247,6 +1253,7 @@ Stonecoil Serpent
 Stonewood Invocation
 Stonybrook Banneret
 Storm Fleet Swashbuckler
+Storm-Kiln Artist
 Stormchaser's Talent
 Stormscape Battlemage
 Stormsurge Kraken

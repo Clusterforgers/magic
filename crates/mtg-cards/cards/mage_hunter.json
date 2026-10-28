@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e3d2df4d-8c79-4391-bc4e-69325958a5be",
+  "name": "Mage Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mage Hunter",
+      "oracle_fingerprint": "2a6ff5f1791db1534de2275babdbb9bc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "Opponents"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "Opponents"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

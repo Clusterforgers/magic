@@ -1,0 +1,42 @@
+{
+  "oracle_id": "901eb916-f318-4a30-a43e-8e7f9eef358b",
+  "name": "Clever Lumimancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clever Lumimancer",
+      "oracle_fingerprint": "b562d0f6d2cce42193439d0666bbaf3b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
