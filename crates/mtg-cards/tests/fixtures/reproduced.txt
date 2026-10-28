@@ -381,6 +381,7 @@ Eliminate the Competition
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
+Empowered Autogenerator
 Empyrial Plate
 Empyrial Storm
 Enraged Revolutionary

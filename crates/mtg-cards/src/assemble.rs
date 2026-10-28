@@ -477,6 +477,8 @@ pub struct ManaShape<'a> {
     pub once: bool,
     /// The parts of its cost that take other permanents the payer controls: tapping or sacrificing some number of them.
     pub picks: Vec<&'a CostItem>,
+    /// What it does before adding mana: a counter put on the source, which the amount of mana may count.
+    pub before: &'a [Effect],
     /// What it does besides adding mana.
     pub then: &'a [Effect],
     /// What the mana may be spent on; none listed means anything.
@@ -491,6 +493,7 @@ impl ManaShape<'_> {
             || matches!(self.produces, ManaProduced::AnyColor(count) if count.is_one()))
             && self.times.is_one()
             && self.then.is_empty()
+            && self.before.is_empty()
             && self.pays.is_empty()
             && self.mana.symbols().is_empty()
             && self.condition.is_none()
@@ -601,6 +604,13 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             return None;
         }
     }
+    // "Put a charge counter on this artifact. Add X mana ..., where X is the number of charge counters on this
+    // artifact.": one counter put on the source comes first and the mana counts it.
+    let first = usize::from(matches!(
+        effects.first(),
+        Some(Effect::PutCounters { on: Ref::This, .. })
+    ));
+    let (before, effects) = effects.split_at(first);
     let [
         Effect::AddMana {
             who: Ref::You,
@@ -610,7 +620,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             lasts,
         },
         then @ ..,
-    ] = effects.as_slice()
+    ] = effects
     else {
         return None;
     };
@@ -659,6 +669,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             condition: condition.as_ref(),
             once: *limit == Some(Limit::OncePerTurn),
             picks,
+            before,
             then,
             only,
         })
@@ -1412,6 +1423,18 @@ mod tests {
     #[case::a_mana_cost(
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::c8_time_a_counter_before_the_mana(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"PutCounters":{"on":"This","counter":"charge"}},{"AddMana":{"mana":{"AnyColor":{"Counters":{"on":"This","counter":"charge"}}}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::c8_time_two_counters_before_the_mana(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"PutCounters":{"on":"This","counter":"charge"}},{"PutCounters":{"on":"This","counter":"charge"}},{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::c8_time_a_counter_on_another_before_the_mana(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"PutCounters":{"on":"You","counter":"charge"}},{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
     )]
     #[case::a_mana_cost_with_an_x(
         r#"{"Activated":{"cost":[{"Mana":"{X}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,

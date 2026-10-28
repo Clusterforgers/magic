@@ -143,6 +143,12 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let Some(shape) = mana_shape(&rules) else {
             continue;
         };
+        // The mana is counted after what the ability does first (a counter put on the source).
+        let ahead = c8_time_ahead(state, player, object, shape.before);
+        let ahead_scope = ahead
+            .as_ref()
+            .map(|after| Scope::announcing(after, player, object.reference()));
+        let counting = ahead_scope.as_ref().unwrap_or(&scope);
         if let Some(condition) = shape.condition
             && !scope.holds(condition).unwrap_or(false)
         {
@@ -177,7 +183,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let (life, energy) = paid_by(&pays);
         // A cost that removes X counters pays any number up to what the source holds; each is a way of its own.
         let x_most = pays.iter().filter_map(|part| part.most(&owner)).min();
-        let times = scope
+        let times = counting
             .amount(shape.times)
             .ok()
             .and_then(|times| u32::try_from(times).ok())
@@ -210,7 +216,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 let counts: Vec<usize> = match x_most {
                     Some(most) => (1..=usize::try_from(most).unwrap_or(0).min(VARIANTS)).collect(),
                     None => vec![
-                        scope
+                        counting
                             .amount(count)
                             .ok()
                             .and_then(|count| usize::try_from(count).ok())
@@ -231,7 +237,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                         (1..=most.min(u32::try_from(VARIANTS).unwrap_or(u32::MAX))).collect()
                     }
                     None => vec![
-                        scope
+                        counting
                             .amount(count)
                             .ok()
                             .and_then(|count| u32::try_from(count).ok())
@@ -273,7 +279,11 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let (tap, sacrifice, extra) = (
             shape.tap,
             shape.sacrifice,
-            !shape.then.is_empty() || !pays.is_empty() || shape.once || !takes.is_empty(),
+            !shape.then.is_empty()
+                || !shape.before.is_empty()
+                || !pays.is_empty()
+                || shape.once
+                || !takes.is_empty(),
         );
         // "of the chosen type" is the type the source chose; without one the mana could pay for nothing.
         let chosen = match object.permanent().and_then(PermanentState::chosen) {
@@ -376,6 +386,24 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
     mana_bonus::fold(state, player, found)
 }
 
+/// The state after the effects a mana ability runs before its mana (CR 605.3b: in the order written), or `None` when
+/// it runs none or they cannot run now.
+fn c8_time_ahead(
+    state: &GameState,
+    player: PlayerId,
+    object: &crate::object::GameObject,
+    before: &[mtg_cards::effect::Effect],
+) -> Option<GameState> {
+    if before.is_empty() {
+        return None;
+    }
+    let mut after = state.clone();
+    for event in run_inline(state, player, object, before).ok()? {
+        crate::fold::apply_event(&mut after, &event).ok()?;
+    }
+    Some(after)
+}
+
 /// The events of `player` using the mana ability `option` stands for: the payment of its cost (life, energy, counters,
 /// the tap and the sacrifice), the mana added to their pool, and what it does besides (a painland's damage, an egg's
 /// draw), all at once (CR 605.3b).
@@ -439,6 +467,9 @@ pub(crate) fn activation(
             cause: ZoneCause::Sacrificed,
         });
     }
+    if let Some(shape) = &shape {
+        events.extend(run_inline(state, player, object, shape.before)?);
+    }
     events.extend(option.made().into_iter().map(|mana| Event::ManaAdded {
         player,
         mana,
@@ -456,6 +487,8 @@ pub(crate) fn activation(
 mod combos;
 #[cfg(test)]
 mod counted;
+#[cfg(test)]
+mod c8_time_counted;
 #[cfg(test)]
 mod replaced;
 

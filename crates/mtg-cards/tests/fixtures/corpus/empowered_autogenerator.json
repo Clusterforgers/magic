@@ -1,0 +1,19 @@
+{
+  "id": "1b6abe5b-9bd3-43a0-b1bb-e6ebb64b443c",
+  "oracle_id": "6832f9e2-294a-44a2-8af9-eb16ccfdfc36",
+  "name": "Empowered Autogenerator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "135",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "This artifact enters tapped.\n{T}: Put a charge counter on this artifact. Add X mana of any one color, where X is the number of charge counters on this artifact.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}
