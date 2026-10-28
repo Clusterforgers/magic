@@ -2383,6 +2383,10 @@ impl Writer<'_> {
             let subject = self.player(who)?;
             return super::turns::effect_text(effect, Some(&subject));
         }
+        if let Some(named) = prevention::c9_fight_named_source(effect) {
+            let source = self.object(named)?;
+            return Some(format!("prevent all damage {source} would deal this turn"));
+        }
         prevention::effect_text(effect)
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
@@ -2665,6 +2669,12 @@ impl Writer<'_> {
             && let Some(sentence) = becomes::text(affected, mods)
         {
             return Some(sentence);
+        }
+        if duration == Duration::UntilEndOfTurn
+            && let Some(doubled) = super::c9_fight_double::c9_fight_doubled(affected, mods)
+        {
+            let subject = self.object(affected)?;
+            return Some(format!("double {subject}'s {doubled} until end of turn"));
         }
         let (subject, plural) = match affected {
             Ref::This => ("~".to_owned(), false),

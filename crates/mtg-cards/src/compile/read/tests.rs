@@ -187,6 +187,7 @@ mod c6_kw_renown_exploit;
 mod c6_sz_writers;
 mod c8_eg_cast_itself;
 mod c8_kwq_counters;
+mod c9_fight_modes;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;

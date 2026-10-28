@@ -38,9 +38,7 @@
                     },
                     {
                       "targets": [{ "what": "AnyTarget" }],
-                      "effects": [
-                        { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 2 } }
-                      ]
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
                     }
                   ]
                 }

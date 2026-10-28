@@ -2,7 +2,7 @@
 //! control can't be prevented.") and as an effect ("Damage can't be prevented this turn."), and the shield that
 //! prevents all damage, or all combat damage, that would be dealt this turn. Read from the wording and written back.
 
-use super::selectors::{Form, phrase, phrase_text};
+use super::selectors::{Form, phrase, phrase_text, target};
 use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
@@ -123,12 +123,22 @@ impl Combat {
 }
 
 /// "Prevent all damage that would be dealt this turn.", "Prevent all combat damage that would be dealt this turn.",
-/// "Prevent all damage that would be dealt this turn by creatures your opponents control."
+/// "Prevent all damage that would be dealt this turn by creatures your opponents control.", and "Prevent all damage
+/// target instant or sorcery spell would deal this turn." (the source is the target).
 pub fn shield(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("prevent all")?;
     let combat = kind(r)?.flag();
-    r.need("that would be dealt this turn")?;
-    let source = if r.word("by") {
+    let named = r.attempt(|r| {
+        let named = target(r)?;
+        r.need("would deal this turn")?;
+        Some(named)
+    });
+    if named.is_none() {
+        r.need("that would be dealt this turn")?;
+    }
+    let source = if let Some(named) = named {
+        Selector(vec![Pred::Is(named)])
+    } else if r.word("by") {
         phrase(r, Form::All)?
     } else {
         Selector::default()
@@ -216,6 +226,27 @@ pub fn effect_text(effect: &Effect) -> Option<String> {
             "prevent all {} that would be dealt to you this turn",
             damage_text(*combat)
         )),
+        _ => None,
+    }
+}
+
+/// The source a shield of all damage this turn names as one object ("prevent all damage target instant or sorcery
+/// spell would deal this turn"), for the writer to word.
+pub fn c9_fight_named_source(effect: &Effect) -> Option<&Ref> {
+    match effect {
+        Effect::Shield {
+            when:
+                ReplaceWhen::Damage {
+                    to: None,
+                    source,
+                    combat: None,
+                },
+            by: ReplaceBy::Prevent,
+            duration: Duration::UntilEndOfTurn,
+        } => match source.0.as_slice() {
+            [Pred::Is(named)] => Some(named),
+            _ => None,
+        },
         _ => None,
     }
 }

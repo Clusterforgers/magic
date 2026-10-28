@@ -113,6 +113,7 @@ fn shield_for(
     Rule::PreventDamage(DamageShield {
         to: (!to.is_empty()).then(|| to.iter().map(|name| target(game, name)).collect()),
         source: serde_json::from_str(from).unwrap(),
+        from: None,
         combat,
         left,
     })

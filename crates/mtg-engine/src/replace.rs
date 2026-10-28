@@ -1305,6 +1305,20 @@ impl Pass<'_> {
         })
     }
 
+    /// Whether `dealer` is one of the fixed sources of a shield, as the same object it was then.
+    fn c9_fight_from(&self, from: &[Target], dealer: ObjectId) -> bool {
+        from.iter().any(|named| match named {
+            Target::Object(named) => {
+                named.id == dealer
+                    && self
+                        .state
+                        .object(dealer)
+                        .is_some_and(|o| o.counter() == named.counter)
+            }
+            Target::Player(_) => false,
+        })
+    }
+
     /// Whether the shield covers the damage `dealer` would deal to `target`.
     fn shield_covers(
         &self,
@@ -1334,6 +1348,9 @@ impl Pass<'_> {
             if !hit {
                 return Ok(false);
             }
+        }
+        if shield.from.as_ref().is_some_and(|from| !self.c9_fight_from(from, dealer)) {
+            return Ok(false);
         }
         if shield.source.is_empty() {
             return Ok(true);
