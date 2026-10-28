@@ -924,7 +924,7 @@ fn not_cast_from_hand() -> Pred {
 }
 
 /// The mana of a cost change and whether it is `{X}` (then one mana is changed as many times as "where X is" counts).
-fn cost_mana(r: &mut Reader<'_>) -> Option<(ManaCostX, bool)> {
+pub(super) fn cost_mana(r: &mut Reader<'_>) -> Option<(ManaCostX, bool)> {
     let mut text = String::new();
     while let Some(symbol) = r.symbol() {
         text.extend(["{", symbol, "}"]);
@@ -938,7 +938,7 @@ fn cost_mana(r: &mut Reader<'_>) -> Option<(ManaCostX, bool)> {
 
 /// How many times the mana changes the cost: once, for each target beyond the first, for each thing counted, or as
 /// many times as the number "where X is" gives.
-fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Amount> {
+pub(super) fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Amount> {
     if x {
         r.punct(',').then_some(())?;
         r.need("where x is")?;
@@ -1062,7 +1062,7 @@ fn cost_modifier_texts(
 }
 
 /// The sentences of a cost modifier whose spells are worded as `subject`.
-fn cost_sentences(
+pub(super) fn cost_sentences(
     subject: &str,
     applies_to: &Selector,
     change: CostChange,

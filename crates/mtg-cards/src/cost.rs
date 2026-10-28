@@ -8,7 +8,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::mana::ManaCostX;
 use crate::refs::Selector;
-use crate::value::{Amount, CounterKind};
+use crate::value::{Amount, Condition, CounterKind};
 
 /// One part of a cost.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -109,6 +109,18 @@ pub enum CostItem {
     /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
     /// the required additional cost of a spell.
     OneOf(Vec<Cost>),
+    /// Not paid: an activated ability costs `mana` less as many times as `per` counts, while `condition` holds ("This
+    /// ability costs {1} less to activate for each artifact you control."); generic mana goes down to nothing.
+    LessToActivate {
+        /// The mana taken off each time.
+        mana: ManaCostX,
+        /// How many times.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        per: Amount,
+        /// The fact the reduction needs; always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
+    },
 }
 
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.

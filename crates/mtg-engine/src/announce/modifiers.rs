@@ -193,6 +193,11 @@ pub(crate) fn modified(
     }
 }
 
+/// `cost` less `less`, as a spell's reductions take it (an activated ability's own reductions, `c11a_less`).
+pub(crate) fn c11a_reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
+    reduced(cost, less)
+}
+
 /// The mana of `unit` `times` over; an `{X}` in it has no value here and is left out.
 fn repeated(unit: &ManaCostX, times: u32) -> ManaCost {
     (0..times).fold(ManaCost::ZERO, |all, _| joined(all, unit.rest()))

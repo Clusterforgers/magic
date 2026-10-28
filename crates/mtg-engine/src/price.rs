@@ -39,6 +39,8 @@ pub(crate) struct Price {
     pub(crate) parts: Vec<Part>,
     /// The parts are paid for a spell being cast: the card itself is never picked for them.
     pub(crate) casting: bool,
+    /// The reductions the ability prints for itself (`CostItem::LessToActivate`), applied to the mana as it is activated.
+    pub(crate) less: Vec<CostItem>,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -63,6 +65,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::ExileFromHand { .. } => "Cost.ExileFromHand",
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand",
         CostItem::OneOf(_) => "Cost.OneOf",
+        CostItem::LessToActivate { .. } => "Cost.LessToActivate",
     }
 }
 
@@ -78,6 +81,9 @@ impl Price {
         if price.x > 0 {
             return Err("Cost.Mana.X");
         }
+        if !price.less.is_empty() {
+            return Err("Cost.LessToActivate");
+        }
         Ok(price)
     }
 
@@ -90,6 +96,7 @@ impl Price {
         let mut mana = false;
         let mut x = 0u32;
         let mut parts = Vec::new();
+        let mut less = Vec::new();
         for item in &cost.0 {
             let moves = match item {
                 CostItem::SacrificeSelf => Some(Leaves::Sacrificed),
@@ -106,6 +113,7 @@ impl Price {
             }
             match item {
                 CostItem::Tap => tap = true,
+                CostItem::LessToActivate { .. } => less.push(item.clone()),
                 CostItem::Mana(part) => {
                     mana = true;
                     x = x.saturating_add(u32::from(part.x()));
@@ -124,6 +132,7 @@ impl Price {
             x,
             parts,
             casting: false,
+            less,
         })
     }
 
@@ -316,6 +325,7 @@ mod tests {
                 x: 0,
                 parts: Vec::new(),
                 casting: false,
+                less: Vec::new(),
             })
         );
     }

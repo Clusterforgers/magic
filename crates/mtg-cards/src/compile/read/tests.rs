@@ -221,6 +221,7 @@ mod copy_counts;
 mod copy_groups;
 mod copy_leftovers;
 mod copy_supertypes;
+mod c11a_ability_less;
 mod cost_conditions;
 mod cost_counts;
 mod cost_wordings;
