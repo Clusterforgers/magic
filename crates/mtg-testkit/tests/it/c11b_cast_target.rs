@@ -57,7 +57,13 @@ fn c11b_settle(driver: &mut Driver, yes: bool) -> Result<(), ScriptError> {
 /// Seat 0 has the card in hand and seven lands; Brew lies in the graveyard of seat `owner` and nowhere else.
 fn c11b_table(seats: usize, name: &str, owner: usize) -> Scenario {
     let lands: Vec<_> = (0..7)
-        .map(|_| ready(if name == "Impulsivity" { mountain() } else { island() }))
+        .map(|_| {
+            ready(if name == "Impulsivity" {
+                mountain()
+            } else {
+                island()
+            })
+        })
         .collect();
     let mut scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)

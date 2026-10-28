@@ -46,7 +46,10 @@ fn c11b_cast_target_reads_and_writes_back(
 ) {
     let read = golden(text, kind, false);
     let json = serde_json::to_string(&read).unwrap();
-    assert!(json.contains(r#""CastFromZone":{"what":{"Target":0}"#), "{json}");
+    assert!(
+        json.contains(r#""CastFromZone":{"what":{"Target":0}"#),
+        "{json}"
+    );
     assert_eq!(json.contains(r#""MoveTo":"Exile""#), exiled, "{json}");
 }
 

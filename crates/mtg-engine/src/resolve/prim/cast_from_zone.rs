@@ -85,7 +85,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 },
             ))
         }
-        (Some((who, Choice::YesNo(false))), None) if *who == player => Ok(c11b_cast_done(cx, effect, false)),
+        (Some((who, Choice::YesNo(false))), None) if *who == player => {
+            Ok(c11b_cast_done(cx, effect, false))
+        }
         (Some((who, Choice::YesNo(true))), None) if *who == player => {
             let card = cx
                 .scope
@@ -165,7 +167,9 @@ fn c11b_cast_done(cx: &Cx<'_>, effect: &Effect, cast: bool) -> Run {
             .iter()
             .rev()
             .filter_map(|id| state.object(*id))
-            .find(|object| object.kind() == ObjectKind::Card && object.id() != cx.resolving.object())
+            .find(|object| {
+                object.kind() == ObjectKind::Card && object.id() != cx.resolving.object()
+            })
             .filter(|_| cast)
             .map(|spell| Target::Object(spell.reference()));
         bound.push((name.clone(), spell.into_iter().collect()));
