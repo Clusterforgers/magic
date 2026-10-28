@@ -229,6 +229,8 @@ mod untap_lands;
 mod untapped_cost;
 mod wheres;
 mod while_control;
+mod w4g_amounts;
+mod w4g_texts;
 mod without_counter;
 mod you_create;
 
@@ -306,6 +308,13 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c10_cen(ability, texts);
     add_c11g(ability, texts);
     add_c11f(ability, texts);
+    add_w4g(ability, texts);
+}
+
+/// Adds the other printed wordings of the Mismatch proposals of the names M to Z (r3w7): amounts, then texts.
+fn add_w4g(ability: &Ability, texts: &mut Vec<String>) {
+    w4g_amounts::w4g_add_amounts(ability, texts);
+    w4g_texts::w4g_add_texts(ability, texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.
