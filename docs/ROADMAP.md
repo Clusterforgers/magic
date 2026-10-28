@@ -216,7 +216,8 @@ The server is settled first, then the web is built once against the final types.
 - [~] (r3w2) (r3w2-continuous-writers) Writers for `Continuous` effects (+X/+X until end of turn, gains a keyword, can't block, becomes) and the `AddKeyword` and `GrantAbility` modifications (28 abilities)
 - [~] (r3w3) (r3w3-may-pay-writers) Writers for "you may", "you may pay" and the reflexive "When you do" (18 abilities)
 - [~] (r3w4) (r3w4-delayed-repeat-writers) Writers for delayed triggers and "for each player or opponent" (`RepeatEach`) (19 abilities)
-- [~] (r3w5) (r3w5-move-counters-writers) Writers for `Move`, `PutCounters`, `RemoveCounters` and the "combination or shape" spells (about 40 abilities)
+- [ ] (r3w5a) Writers for the rules and costs of the r3 samples: "triggers an additional time" (Felix Five-Boots, Veyran), cost increases for spells and abilities that target (Kopala), a draw replaced after the first in a draw step (Notion Thief), a graveyard cast under a count (The Indomitable), a type and a granted ability during your turn (Gourmand's Talent)
+- [ ] (r3w5b) "deals 5 or more damage to a player" and "a source you control" (Dragonborn Champion), "any other target" in a mode (Special Move); re-propose Augury Adept, whose trigger leaves out "to a player"; re-check Éowyn, Shieldmaiden once (r3w1) lands
 - [~] (r3w6) (r3w6-mismatch-al) Renderer variants for the Mismatch proposals of names A to L (proliferate twice, the order of a token's name and ability, an activation limit before modes)
 - [~] (r3w7) (r3w7-mismatch-mz) The same for names M to Z
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
