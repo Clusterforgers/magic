@@ -1273,7 +1273,8 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::SpellCast { what, by }
             | TriggerPattern::SpellCopied { what, by }
-            | TriggerPattern::Sacrificed { what, by } => {
+            | TriggerPattern::Sacrificed { what, by }
+            | TriggerPattern::Milled { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
             }

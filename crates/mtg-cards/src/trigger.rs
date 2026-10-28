@@ -166,6 +166,18 @@ pub enum TriggerPattern {
         )]
         by: Ref,
     },
+    /// A card matching the selector is milled (CR 701.17): put from its owner's library into their graveyard by a mill,
+    /// never by a surveil or another move. The card is the one subject, so a batch of them triggers once.
+    Milled {
+        /// The card milled.
+        what: Selector,
+        /// Who mills it (its owner).
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        by: Ref,
+    },
     /// A source deals damage to a player or a permanent.
     DealsDamage {
         /// The source of the damage.

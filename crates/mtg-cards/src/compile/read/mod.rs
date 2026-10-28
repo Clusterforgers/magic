@@ -136,6 +136,8 @@ mod w6b_emblem;
 mod w6d_shares;
 mod w6e_control;
 mod w7b_player_counters;
+mod w8b_milled;
+mod w8b_then;
 mod where_x;
 mod zone_moves;
 

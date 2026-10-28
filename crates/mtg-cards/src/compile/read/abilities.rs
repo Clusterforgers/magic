@@ -148,6 +148,12 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         None
     };
     r.punct(',').then_some(())?;
+    // "if this creature is in your graveyard": the ability works from the graveyard, where the card returns itself from.
+    let in_graveyard = r.attempt(super::w8b_milled::w8b_in_graveyard).is_some();
+    if in_graveyard {
+        r.it = Some(Ref::This);
+        r.from_graveyard = true;
+    }
     let intervening_if = r.attempt(|r| {
         r.word("if").then_some(())?;
         let condition = triggers::condition(r)?;
@@ -163,6 +169,9 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let monstrous = super::c10_pa_monstrous::c10_pa_x_of(r, &when);
     let effects = match r.attempt(|r| mana_trigger::effects(r, &when)) {
         Some(mana) => mana,
+        None if in_graveyard => r
+            .attempt(super::w8b_milled::w8b_return_it)
+            .map_or_else(|| sentences(r, true), Some)?,
         None => sentences(r, true)?,
     };
     let effects = super::c10_pa_monstrous::c10_pa_put_in(r, effects, monstrous);
@@ -171,7 +180,8 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     // graveyard has its ability there.
     let from = if triggers::cast_itself(&when) {
         ZoneKind::Stack
-    } else if triggers::cycled_itself(&when)
+    } else if in_graveyard
+        || triggers::cycled_itself(&when)
         || triggers::graveyard_itself(&when)
         || effects::returns_itself(&effects)
     {
