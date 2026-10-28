@@ -54,6 +54,7 @@ mod token_attach;
 mod twins;
 mod two_targets;
 mod untapped;
+mod w11c_clash;
 mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
@@ -986,6 +987,7 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
+            .or_else(|| writer.w11c_clash(&effects[start..]))
             .or_else(|| writer.w9b_clash(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
