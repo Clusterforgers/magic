@@ -48,6 +48,7 @@ mod c5_gl_twins;
 mod c5_mr_writers;
 mod c5_sz_sentences;
 mod c5_sz_wholes;
+mod c6_af;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -280,6 +281,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c5_mr(ability, texts);
     add_c5_gl(ability, texts);
     add_c5_sz(ability, texts);
+    add_c6_af(ability, texts);
+}
+
+/// The wordings of the sixth sample of the names A to F; it runs last because it rewrites the texts of the others.
+fn add_c6_af(ability: &Ability, texts: &mut Vec<String>) {
+    c6_af::c6_af_add(ability, texts);
 }
 
 /// The wordings of the dice, coins, votes and piles of the (r1at) pass.
