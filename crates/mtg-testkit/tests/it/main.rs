@@ -309,6 +309,7 @@ mod mode_picks;
 mod mode_picks_fuzz;
 mod modes_both;
 mod monarch;
+mod w11d_venture;
 mod monarch_followups;
 mod monarch_wordings;
 mod morph;

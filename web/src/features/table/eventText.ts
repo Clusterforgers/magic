@@ -533,6 +533,13 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const { player, won } = event.CoinFlipped
     return line(`${n.seat(player)} ${won ? 'wins' : 'loses'} a coin flip`)
   }
+  if ('Ventured' in event) {
+    const v = event.Ventured
+    return line(`${n.seat(v.player)} ventures into ${v.room_name} (${v.dungeon})`)
+  }
+  if ('DungeonCompleted' in event) {
+    return line(`${n.seat(event.DungeonCompleted.player)} completes a dungeon`)
+  }
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)
   }

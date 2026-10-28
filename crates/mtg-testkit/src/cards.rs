@@ -448,6 +448,22 @@ pub fn monarcher(name: &str) -> Arc<CardDefinition> {
     )
 }
 
+/// An instant for `{0}` with "Venture into the dungeon."
+pub fn w11d_venturer(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::Venture {
+                    who: Ref::You,
+                    undercity: false,
+                }],
+            }),
+    )
+}
+
 /// A sorcery for `{generic}{U}` with "Surveil `count`."
 pub fn surveiler(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
     Arc::new(

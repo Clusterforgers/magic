@@ -893,6 +893,12 @@ impl InvariantChecker {
         ) {
             self.expected_objects += 1;
         }
+        // A new dungeon is made in the command zone; a completed one leaves the game.
+        match event {
+            Event::Ventured(ventured) if ventured.definition.is_some() => self.expected_objects += 1,
+            Event::DungeonCompleted { .. } => self.expected_objects -= 1,
+            _ => {}
+        }
         // The spell's card is part of the permanent, no object of its own.
         if matches!(event, Event::Mutated { .. }) {
             self.expected_objects -= 1;
