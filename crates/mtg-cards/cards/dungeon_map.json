@@ -5,43 +5,22 @@
   "faces": [
     {
       "name": "Dungeon Map",
+      "oracle_fingerprint": "31a01e127c0c5021f96416753fcf4d57",
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
-            "effects": [
-              {
-                "AddMana": {
-                  "mana": {
-                    "Fixed": [
-                      "Colorless"
-                    ]
-                  }
-                }
-              }
-            ]
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{3}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{3}" }, "Tap"],
             "timing": "Sorcery",
-            "effects": [
-              {
-                "Venture": {}
-              }
-            ]
+            "effects": [{ "Venture": {} }]
           }
         }
-      ],
-      "oracle_fingerprint": "31a01e127c0c5021f96416753fcf4d57"
+      ]
     }
   ]
 }
