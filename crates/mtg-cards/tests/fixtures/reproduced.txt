@@ -26,6 +26,7 @@ Akrasan Squire
 Akroma's Vengeance
 Akroma's Will
 Akroma, Angel of Wrath
+Alhammarret's Archive
 All That Glitters
 Alpha Deathclaw
 Alphinaud Leveilleur
@@ -1180,6 +1181,7 @@ Tavern Ruffian // Tavern Smasher
 Teacher's Pest
 Team Pennant
 Tectonic Reformation
+Teferi's Ageless Insight
 Tempestra, Dame of Games
 Temporal Manipulation
 Temur Devotee
@@ -1214,6 +1216,7 @@ Thinking Cap
 Thopter Fabricator
 Thorn-Thrash Viashino
 Thought Monitor
+Thought Reflection
 Thoughtcast
 Thrashing Mossdog
 Thrill of Possibility

@@ -348,6 +348,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             move_object(state, *object, Zone::Hand(*player), Placement::Top)?;
             state.tally(*player, Tally::Drawn);
+            if state.turn.step == crate::turn::Step::Draw && state.active_player() == Some(*player)
+            {
+                state.tally(*player, Tally::C6BlkDrawStepDrawn);
+            }
         }
         Event::CardDiscarded { player, object } => {
             expect_in(state, *object, Zone::Hand(*player))?;

@@ -2583,6 +2583,9 @@ impl<'a> Walker<'a> {
 
     fn replace_when(&mut self, when: &ReplaceWhen) {
         self.uses("ReplaceWhen", &tag_of(when));
+        if matches!(when, ReplaceWhen::Draw { except_draw_step, .. } if *except_draw_step > 0) {
+            self.uses("ReplaceWhen", "Draw.ExceptDrawStep");
+        }
         match when {
             ReplaceWhen::TokenCreation { controller } => {
                 self.at("controller", |w| w.reference(controller, Kind::Player));
@@ -2604,7 +2607,7 @@ impl<'a> Walker<'a> {
                     self.at("on", |w| w.reference(on, Kind::Either));
                 }
             }
-            ReplaceWhen::LifeGain { who } | ReplaceWhen::Draw { who } => {
+            ReplaceWhen::LifeGain { who } | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
         }

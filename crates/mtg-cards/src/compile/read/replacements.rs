@@ -26,7 +26,10 @@ pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
         ReplaceWhen::Damage { to, source, combat } => damage(to.as_ref(), source, *combat, by),
         ReplaceWhen::TokenCreation { controller } => tokens(controller, by),
         ReplaceWhen::CountersPut { on, counter } => counters(on.as_ref(), counter.as_ref(), by),
-        ReplaceWhen::Draw { who: Ref::You } => draw(by),
+        ReplaceWhen::Draw {
+            who: Ref::You,
+            except_draw_step,
+        } => draw(*except_draw_step, by),
         ReplaceWhen::ZoneChange { what, from, to } => zone_change(what, *from, *to, by),
         _ => Vec::new(),
     }
@@ -245,14 +248,22 @@ fn anaphors(place: &str) -> Vec<String> {
     vec!["it".to_owned(), format!("that {noun}")]
 }
 
-/// "If you would draw a card, draw two cards instead."
-fn draw(by: &ReplaceBy) -> Vec<String> {
-    match by {
-        ReplaceBy::Multiply(2) => {
-            vec!["if you would draw a card, draw two cards instead".to_owned()]
-        }
-        _ => Vec::new(),
-    }
+/// "If you would draw a card, draw two cards instead.", also "except the first one you draw in each of your draw steps".
+fn draw(except: u32, by: &ReplaceBy) -> Vec<String> {
+    let ReplaceBy::Multiply(2) = by else {
+        return Vec::new();
+    };
+    let exception = match except {
+        0 => String::new(),
+        1 => " except the first one you draw in each of your draw steps".to_owned(),
+        n => match count_word(n) {
+            Some(word) => format!(" except the first {word} you draw in each of your draw steps"),
+            None => return Vec::new(),
+        },
+    };
+    vec![format!(
+        "if you would draw a card{exception}, draw two cards instead"
+    )]
 }
 
 /// What happens to the object instead of the move.

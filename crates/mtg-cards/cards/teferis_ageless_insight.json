@@ -1,0 +1,16 @@
+{
+  "oracle_id": "1c9e1f75-73f0-4846-b53f-458a0984b1bb",
+  "name": "Teferi's Ageless Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Ageless Insight",
+      "oracle_fingerprint": "861ebdf62e0c9fd7d5f2581fd6ed02e0",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Draw": { "except_draw_step": 1 } }, "by": { "Multiply": 2 } }
+        }
+      ]
+    }
+  ]
+}

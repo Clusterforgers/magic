@@ -1,0 +1,17 @@
+{
+  "oracle_id": "d5c4d36c-54b3-4149-906b-a57a670260fc",
+  "name": "Alhammarret's Archive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alhammarret's Archive",
+      "oracle_fingerprint": "08617e6709c5c54822dbbc1c1840e0ab",
+      "abilities": [
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Multiply": 2 } } },
+        {
+          "Replacement": { "when": { "Draw": { "except_draw_step": 1 } }, "by": { "Multiply": 2 } }
+        }
+      ]
+    }
+  ]
+}

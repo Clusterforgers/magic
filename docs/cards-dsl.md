@@ -151,7 +151,7 @@ TriggerPattern
   TappedForMana{what,by} Blocks{what} BecomesBlocked{what} GroupAttacks{what,at_least} CountersPut{what,counter?}
   CountersRemoved{what,counter?} Chapter{number} Attached{what,to} BecomesMonarch{who} DayNightChanges{to?} Proliferated{who} Amassed{who} BecomesMonstrous{what} BecomesCrewed{what} BecomesSaddled{what} BecomesLevel{what,level} TurnedFaceUp{what} Mutates{what} Adapted{what} Bolstered{who} Surveilled{who} Explored{what} Connived{what} Batch(TriggerPattern) Nth{event,nth}
 ReplaceWhen = TokenCreation{controller} | Damage{to?,source?,combat?} | ZoneChange{what,from?,to?} | Destroyed{what} | Discarded{what}
-            | CountersPut{on?,counter?} | LifeGain{who} | Draw{who} | Enters{what}
+            | CountersPut{on?,counter?} | LifeGain{who} | Draw{who,except_draw_step?} | Enters{what}
 ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | PreventRemovingCounter(kind) | Instead([Effect]) | Dredge(n) | MoveTo(zone)
             | Tapped | WithCounters{counter,count,tapped?} | Choose(Color|ColorOtherThan(c)|CreatureType|Player|Opponent) | PayLifeOrTapped(n) | RevealOrTapped(Selector)
             | AsCopy{of: Selector, except: [Modification]} | UmbraArmor | DayIfNeither | EntersPrepared

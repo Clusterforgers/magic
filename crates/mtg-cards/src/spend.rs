@@ -60,7 +60,8 @@ const fn is_false(flag: &bool) -> bool {
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
-const fn is_zero(number: &u32) -> bool {
+/// Whether a count is zero, for `skip_serializing_if`.
+pub(crate) const fn is_zero(number: &u32) -> bool {
     *number == 0
 }
 

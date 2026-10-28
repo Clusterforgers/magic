@@ -174,6 +174,7 @@ mod c4_prepare_writers;
 mod c4_sz_writers;
 mod c4_writers;
 mod c6_blk_aura;
+mod c6_blk_draws;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;

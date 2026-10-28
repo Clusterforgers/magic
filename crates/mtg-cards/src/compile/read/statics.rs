@@ -41,7 +41,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 28] = [
+const TEMPLATES: [Template; 29] = [
+    super::c6_blk_draws::c6_blk_draw_replacement,
     entering,
     entering_tapped_if,
     group_enters_tapped,

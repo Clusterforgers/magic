@@ -35,6 +35,7 @@ mod c4_joined_events;
 mod c4_phase;
 mod c4_rules;
 mod c6_blk_aura;
+mod c6_blk_draws;
 mod card_grants;
 mod cast;
 mod chance;

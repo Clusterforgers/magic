@@ -348,6 +348,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.Draw",
+    "ReplaceWhen.Draw.ExceptDrawStep",
     "ReplaceWhen.Enters",
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",

@@ -1,0 +1,23 @@
+{
+  "id": "b1a32b7c-9f26-4504-9f8d-379164d69346",
+  "oracle_id": "1c9e1f75-73f0-4846-b53f-458a0984b1bb",
+  "name": "Teferi's Ageless Insight",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "119",
+  "rarity": "rare",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Enchantment",
+  "oracle_text": "If you would draw a card except the first one you draw in each of your draw steps, draw two cards instead.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

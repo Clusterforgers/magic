@@ -1,0 +1,19 @@
+{
+  "id": "4f4187f1-05bd-4db6-a2e7-d677eff588ee",
+  "oracle_id": "d5c4d36c-54b3-4149-906b-a57a670260fc",
+  "name": "Alhammarret's Archive",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c21",
+  "collector_number": "233",
+  "rarity": "mythic",
+  "released_at": "2021-04-23",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "If you would gain life, you gain twice that much life instead.\nIf you would draw a card except the first one you draw in each of your draw steps, draw two cards instead.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

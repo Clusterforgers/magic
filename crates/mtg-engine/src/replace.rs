@@ -848,7 +848,7 @@ impl Pass<'_> {
                     }
             }
             (ReplaceWhen::LifeGain { who }, Unit::Life { player })
-            | (ReplaceWhen::Draw { who }, Unit::Draw { player }) => {
+            | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
             }
             (
@@ -923,6 +923,7 @@ impl Pass<'_> {
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.matches(source, when, &unit)?
+                || step.c6_blk_spared_draw(at, when, &unit)
             {
                 return Ok(());
             }
@@ -2569,6 +2570,8 @@ mod dredge;
 mod reveal;
 
 mod riot;
+
+mod c6_blk_draw_step;
 
 #[cfg(test)]
 mod shields;
