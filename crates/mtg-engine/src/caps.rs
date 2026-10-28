@@ -256,6 +256,7 @@ const RUNS: &[&str] = &[
     "Mod.LoseAbilities",
     "Mod.SetController",
     "Mod.CantAttack",
+    "Mod.CantAttackYou",
     "Mod.CantBlock",
     "Mod.DoesntUntap",
     "Mod.CantBeBlocked",
@@ -636,6 +637,7 @@ mod tests {
     #[case::lost_abilities("Mod.LoseAbilities", true)]
     #[case::changes_of_control("Mod.SetController", true)]
     #[case::attack_restrictions("Mod.CantAttack", true)]
+    #[case::attack_restrictions_on_you("Mod.CantAttackYou", true)]
     #[case::block_restrictions("Mod.CantBlock", true)]
     #[case::static_abilities("Ability.Static", true)]
     #[case::characteristic_defining_abilities("Ability.Static.Defining", true)]

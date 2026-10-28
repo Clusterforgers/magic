@@ -71,7 +71,7 @@ function cardTypeNames(types: number): string[] {
   return CARD_TYPE_ORDER.filter((_, bit) => (types >> bit) & 1)
 }
 
-function modificationWords(modification: Modification, group: boolean): string {
+function modificationWords(modification: Modification, group: boolean, n: EventNames): string {
   const becomes = group ? 'become' : 'becomes'
   const gains = group ? 'gain' : 'gains'
   const loses = group ? 'lose' : 'loses'
@@ -116,6 +116,16 @@ function modificationWords(modification: Modification, group: boolean): string {
     return `${becomes} ${power}/${toughness}`
   }
   if ('Goaded' in modification) return `${group ? 'are' : 'is'} goaded`
+  if ('CantAttackYou' in modification) {
+    const { you, attacked } = modification.CantAttackYou
+    const seat = n.seat(you)
+    const whom = {
+      Player: seat,
+      Planeswalkers: `planeswalkers ${seat} controls`,
+      Both: `${seat} or planeswalkers ${seat} controls`,
+    }[attacked]
+    return `can't attack ${whom}`
+  }
   const { power, toughness } = modification.ModifyPowerToughness
   return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
 }
@@ -132,7 +142,7 @@ function describeEffect(effect: ContinuousEffect, n: EventNames): string {
   // One card "becomes" and "gets"; a group of creatures "become" and "get".
   const group =
     typeof selector === 'string' || 'CreaturesControlledBy' in selector || selector.Objects.length !== 1
-  const what = modificationWords(modification, group)
+  const what = modificationWords(modification, group, n)
   return `${who} ${what}${durationWords(duration, source, n)}`
 }
 

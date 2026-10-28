@@ -19,4 +19,9 @@ defenders: Array<AttackTarget>,
  * What it costs to attack each defender that an effect taxes (CR 508.1h): the attack is declared with the payment.
  * Left out while it costs nothing to attack any of them.
  */
-tax?: Array<[AttackTarget, ManaCost]>, };
+tax?: Array<[AttackTarget, ManaCost]>, 
+/**
+ * The life it costs to attack each defender that an effect taxes in life ("pays 2 life for each of those
+ * creatures"), paid as the attack is declared. Left out while no defender costs life.
+ */
+life?: Array<[AttackTarget, number]>, };

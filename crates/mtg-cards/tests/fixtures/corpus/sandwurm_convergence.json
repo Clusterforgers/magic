@@ -1,0 +1,23 @@
+{
+  "id": "3ad9cb61-4072-449b-9b32-83e2192cb292",
+  "oracle_id": "429eff2b-635b-43f6-b20f-82e25992c0b9",
+  "name": "Sandwurm Convergence",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "195",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{6}{G}{G}",
+  "cmc": 8.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures with flying can't attack you or planeswalkers you control.\nAt the beginning of your end step, create a 5/5 green Wurm creature token.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

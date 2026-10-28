@@ -462,6 +462,7 @@ mod w2c_distinct;
 mod w2f_counter_cards;
 mod w2g_next_cast;
 mod w5d_replaced_event;
+mod w6a_attacks_on_you;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;

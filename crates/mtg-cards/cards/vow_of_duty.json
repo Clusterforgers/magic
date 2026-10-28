@@ -1,0 +1,24 @@
+{
+  "oracle_id": "1e7bddbd-e448-4aea-9d18-b44bd45837c5",
+  "name": "Vow of Duty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vow of Duty",
+      "oracle_fingerprint": "da2108eb62a5b21dee5d4d2fc18f67ef",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Vigilance" },
+              { "CantAttackYou": "Both" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

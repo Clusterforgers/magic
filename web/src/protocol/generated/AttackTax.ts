@@ -21,4 +21,8 @@ creatures: unknown,
 /**
  * What each taxed creature costs, counted when the rule began or the state last changed.
  */
-mana: ManaCost, };
+mana: ManaCost, 
+/**
+ * The life each taxed creature costs, counted the same way.
+ */
+life: number, };

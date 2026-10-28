@@ -1,0 +1,25 @@
+{
+  "id": "a0742d43-8a67-4485-b0ce-5a4e057fa915",
+  "oracle_id": "bfed67f3-70d2-49c2-8f25-16e4d10fa5be",
+  "name": "Vow of Lightning",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "164",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2, has first strike, and can't attack you or planeswalkers you control.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

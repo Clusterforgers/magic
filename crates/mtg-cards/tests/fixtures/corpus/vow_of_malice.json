@@ -1,0 +1,25 @@
+{
+  "id": "c58a738c-3f39-4556-ae9a-90f240e3062b",
+  "oracle_id": "894bc28a-6627-43dd-9650-86300b6fe5e6",
+  "name": "Vow of Malice",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "82",
+  "rarity": "uncommon",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2, has intimidate, and can't attack you or planeswalkers you control. (A creature with intimidate can't be blocked except by artifact creatures and/or creatures that share a color with it.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

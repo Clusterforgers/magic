@@ -1,0 +1,23 @@
+{
+  "id": "4d5e65e1-be52-4023-81cc-ee4948444195",
+  "oracle_id": "60963292-2dee-4b1c-9c1c-c35cf8ea3496",
+  "name": "Reverence",
+  "lang": "en",
+  "layout": "normal",
+  "set": "sok",
+  "collector_number": "26",
+  "rarity": "rare",
+  "released_at": "2005-06-03",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures with power 2 or less can't attack you.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

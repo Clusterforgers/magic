@@ -1,0 +1,24 @@
+{
+  "oracle_id": "60963292-2dee-4b1c-9c1c-c35cf8ea3496",
+  "name": "Reverence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverence",
+      "oracle_fingerprint": "131971727e12ce0f14a1e2119757db05",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+              ]
+            },
+            "mods": [{ "CantAttackYou": "Player" }]
+          }
+        }
+      ]
+    }
+  ]
+}

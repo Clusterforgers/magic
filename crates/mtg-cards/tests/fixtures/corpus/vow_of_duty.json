@@ -1,0 +1,25 @@
+{
+  "id": "210920ef-917b-4e2c-a5da-1180baa37959",
+  "oracle_id": "1e7bddbd-e448-4aea-9d18-b44bd45837c5",
+  "name": "Vow of Duty",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "89",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2, has vigilance, and can't attack you or planeswalkers you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

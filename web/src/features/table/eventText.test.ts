@@ -716,6 +716,14 @@ describe('events with more than one shape', () => {
       "Hill Giant can't be blocked by more than 1 creature until end of turn",
     ],
     [
+      effect(objects(2), { CantAttackYou: { you: 1, attacked: 'Both' } }, 'UntilEndOfTurn'),
+      "Hill Giant can't attack Bo or planeswalkers Bo controls until end of turn",
+    ],
+    [
+      effect(objects(2), { CantAttackYou: { you: 0, attacked: 'Player' } }, 'UntilEndOfTurn'),
+      "Hill Giant can't attack Ana until end of turn",
+    ],
+    [
       effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
       'Hill Giant becomes Elf too until end of turn',
     ],

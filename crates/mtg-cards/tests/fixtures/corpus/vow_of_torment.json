@@ -1,0 +1,25 @@
+{
+  "id": "ae74624e-3850-4153-b682-d044272269c1",
+  "oracle_id": "237b87f4-783b-40ac-9fcf-4ae76a33229d",
+  "name": "Vow of Torment",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "159",
+  "rarity": "uncommon",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2, has menace, and can't attack you or planeswalkers you control. (It can't be blocked except by two or more creatures.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}
