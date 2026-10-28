@@ -53,7 +53,7 @@ fn settle(driver: &mut Driver, target: Option<&Target>, option: usize) -> Result
             }
             Some(DecisionKind::ChooseTargets(_)) if target.is_some() => {
                 driver
-                    .choose_targets(target.into_iter().cloned().collect::<Vec<_>>().as_slice())?;
+                    .choose_targets(target.into_iter().copied().collect::<Vec<_>>().as_slice())?;
             }
             Some(DecisionKind::YesNo(_)) => {
                 driver.answer(Answer::YesNo(YesNoChoice(true)))?;

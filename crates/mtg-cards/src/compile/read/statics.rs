@@ -1147,11 +1147,10 @@ pub(super) fn statics(
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
-    let group = super::c11h_prevent::c11h_texts(ability);
-    let replaced = super::w5d_replaced::w5d_sentences(ability);
+    let group =
+        super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
     let sentences = match ability {
         _ if !group.is_empty() => group,
-        _ if !replaced.is_empty() => replaced,
         Ability::Replacement {
             when: ReplaceWhen::Enters { what },
             by,

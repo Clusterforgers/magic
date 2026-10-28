@@ -173,7 +173,7 @@ mod tests {
                 target: DamageTarget::Player(PlayerId(0)),
                 amount,
                 deathtouch: false,
-                form: Default::default(),
+                form: crate::combat::DamageForm::default(),
                 toxic: 0,
             }],
         );

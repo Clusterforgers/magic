@@ -191,6 +191,15 @@ fn w5d_step_texts(effect: &Effect) -> Vec<String> {
     .collect()
 }
 
+/// `texts` when another writer wrote the ability, else what `w5d_replaced` reads, written back.
+pub(super) fn w5d_or_sentences(texts: Vec<String>, ability: &Ability) -> Vec<String> {
+    if texts.is_empty() {
+        w5d_sentences(ability)
+    } else {
+        texts
+    }
+}
+
 /// What `w5d_replaced` reads, written back; empty for any other ability.
 pub(super) fn w5d_sentences(ability: &Ability) -> Vec<String> {
     let Ability::Replacement {

@@ -128,7 +128,7 @@ mod tests {
     fn nothing_on_the_battlefield_asks_nothing() {
         let made =
             events(play(&game(false), Vec::new(), r#"{"TapOrUntap":{"what":"You"}}"#).unwrap());
-        assert!(made.is_empty());
+        assert_eq!(made, Vec::<Event>::new());
     }
 
     #[test]
