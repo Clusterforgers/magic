@@ -7,11 +7,11 @@
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
+use mtg_engine::PresetPermanent;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{bear, creature, forest, mountain, swamp};
 use mtg_testkit::corpus::card;
-use mtg_engine::PresetPermanent;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -71,7 +71,11 @@ fn w6d_maelstrom_pulse_destroys_every_permanent_with_the_name(
     let target = driver.target_named("Hill Giant")?;
     driver.cast_at("Maelstrom Pulse", &[target])?;
     w6d_settle(&mut driver)?;
-    assert_eq!(w6d_creatures(&driver, 0), 0, "every Hill Giant is destroyed");
+    assert_eq!(
+        w6d_creatures(&driver, 0),
+        0,
+        "every Hill Giant is destroyed"
+    );
     for seat in 1..seats {
         assert_eq!(w6d_creatures(&driver, seat), 1, "the bear has another name");
     }
@@ -90,7 +94,11 @@ fn w6d_cleansing_beam_hurts_the_creatures_that_share_a_color(
     for seat in 1..seats {
         scenario = scenario.battlefield(
             seat,
-            [ready(red.clone()), ready(green.clone()), ready(gold.clone())],
+            [
+                ready(red.clone()),
+                ready(green.clone()),
+                ready(gold.clone()),
+            ],
         );
     }
     let setup = scenario.clone().setup().unwrap();
@@ -99,7 +107,11 @@ fn w6d_cleansing_beam_hurts_the_creatures_that_share_a_color(
     driver.cast_at("Cleansing Beam", &[target])?;
     w6d_settle(&mut driver)?;
     for seat in 1..seats {
-        assert_eq!(w6d_creatures(&driver, seat), 1, "only the green creature stays");
+        assert_eq!(
+            w6d_creatures(&driver, seat),
+            1,
+            "only the green creature stays"
+        );
     }
     replays(&driver, &setup);
     Ok(())
@@ -128,7 +140,11 @@ fn w6d_martyrs_bond_takes_a_permanent_of_a_shared_type(
                     && object.card().types.contains(&CardType::Land)
             })
         });
-        assert_eq!(lands.count(), 1, "the land shares no type with the creature");
+        assert_eq!(
+            lands.count(),
+            1,
+            "the land shares no type with the creature"
+        );
     }
     replays(&driver, &setup);
     Ok(())

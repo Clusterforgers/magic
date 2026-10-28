@@ -13,9 +13,9 @@ use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
 use super::counters;
-use super::w6d_shares;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
+use super::w6d_shares;
 use crate::compile::keywords;
 use crate::cost::{Cost, CostItem};
 use crate::keyword::Keyword;

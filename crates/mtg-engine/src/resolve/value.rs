@@ -974,12 +974,12 @@ impl<'a> Scope<'a> {
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
-            Pred::SharesName(named) => self.w6d_shares_name(named, seen)?,
-            Pred::SharesType(named) => self.w6d_shares_type(named, seen)?,
-            Pred::SharesColor(named) => self.w6d_shares_color(named, seen)?,
-            Pred::XInCost => Self::w6d_x_in_cost(seen),
-            Pred::Goaded => self.w6d_goaded(seen),
-            Pred::HasAttached(attached) => self.w6d_has_attached(attached, seen)?,
+            Pred::SharesName(_)
+            | Pred::SharesType(_)
+            | Pred::SharesColor(_)
+            | Pred::XInCost
+            | Pred::Goaded
+            | Pred::HasAttached(_) => self.w6d_pred(pred, seen)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
@@ -1061,17 +1061,23 @@ impl<'a> Scope<'a> {
                 None => false,
             },
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
-            Pred::AnyOf(any) => {
-                let mut holds = false;
-                for inner in any {
-                    if self.pred(inner, reference, seen)? {
-                        holds = true;
-                        break;
-                    }
-                }
-                holds
-            }
+            Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
         })
+    }
+
+    /// Whether at least one of the predicates holds for the object.
+    fn w6d_any_of(
+        &self,
+        any: &[Pred],
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        for inner in any {
+            if self.pred(inner, reference, seen)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
     }
 
     /// What the source of the scope chose as it entered, if it is on the battlefield and asked for a choice.
