@@ -1,0 +1,23 @@
+{
+  "cmc": 4.0,
+  "collector_number": "74",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "e0c53e64-69cf-4296-8a1e-f8817f25c0b4",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{U}{U}",
+  "name": "Sleep",
+  "oracle_id": "9b93ff69-f195-4d72-8e1d-574c3e53bca8",
+  "oracle_text": "Tap all creatures target player controls. Those creatures don't untap during that player's next untap step.",
+  "rarity": "uncommon",
+  "released_at": "2018-07-13",
+  "set": "m19",
+  "type_line": "Sorcery"
+}

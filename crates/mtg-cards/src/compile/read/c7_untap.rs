@@ -13,7 +13,7 @@ use crate::refs::{Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen};
 
 /// The ways a card names the one permanent the sentence before tapped: `(as the writer says it, as a card may)`.
-const C7_UNTAP_ONE: [(&str, &str); 2] = [
+const C7_UNTAP_ONE: [(&str, &str); 3] = [
     (
         ". It doesn't untap during its controller's next untap step",
         ". That creature doesn't untap during its controller's next untap step",
@@ -21,6 +21,10 @@ const C7_UNTAP_ONE: [(&str, &str); 2] = [
     (
         ". It doesn't untap during its controller's next untap step",
         ". That permanent doesn't untap during its controller's next untap step",
+    ),
+    (
+        ". They don't untap during their controller's next untap step",
+        ". Those creatures don't untap during their controller's next untap step",
     ),
 ];
 
@@ -41,7 +45,8 @@ pub(super) fn c7_untap_held(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         (r.word("it") || r.words("that creature") || r.words("that permanent")).then_some(())?;
         r.need("doesn't untap during its controller's next untap step")?;
     } else {
-        r.need("they don't untap during their controller's next untap step")?;
+        (r.word("they") || r.words("those creatures")).then_some(())?;
+        r.need("don't untap during their controller's next untap step")?;
     }
     Some(vec![
         Effect::Tap { what: what.clone() },

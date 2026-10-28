@@ -718,15 +718,16 @@ const HELD_CLAUSE: &str = "When this creature enters, tap target creature an opp
 #[test]
 fn a_creature_that_stays_tapped_while_the_source_stays_reads() {
     assert!(written(
-        &held(r#""DoesntUntap""#, "WhileSourceOnBattlefield", "Tap"),
+        &held(r#""DoesntUntap""#, "WhileYouControlSource", "Tap"),
         HELD_CLAUSE
     ));
 }
 
 #[rstest]
-#[case::another_rule(r#""CantAttack""#, "WhileSourceOnBattlefield", "Tap")]
+#[case::another_rule(r#""CantAttack""#, "WhileYouControlSource", "Tap")]
+#[case::while_on_the_battlefield(r#""DoesntUntap""#, "WhileSourceOnBattlefield", "Tap")]
 #[case::until_end_of_turn(r#""DoesntUntap""#, "UntilEndOfTurn", "Tap")]
-#[case::an_untap_for_the_tap(r#""DoesntUntap""#, "WhileSourceOnBattlefield", "Untap")]
+#[case::an_untap_for_the_tap(r#""DoesntUntap""#, "WhileYouControlSource", "Untap")]
 fn a_creature_that_stays_tapped_does_not_read_for_another_rule_duration_or_step(
     #[case] mods: &str,
     #[case] duration: &str,

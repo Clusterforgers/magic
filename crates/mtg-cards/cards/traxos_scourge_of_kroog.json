@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c1c78144-b335-4d22-a668-9173ab6a0d04",
+  "name": "Traxos, Scourge of Kroog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traxos, Scourge of Kroog",
+      "oracle_fingerprint": "06ef882c4ae8a096353b3b50b4067e29",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
