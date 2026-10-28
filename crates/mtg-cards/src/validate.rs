@@ -439,6 +439,7 @@ impl<'a> Walker<'a> {
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::HasCounter(_)
+            | Pred::HasAnyCounter
             | Pred::ChosenColor
             | Pred::ChosenSubtype
             | Pred::In(_) => {}
@@ -501,12 +502,12 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::Count(selector) => self.selector(selector),
-            Amount::Stat { of, .. } => {
-                self.at("of", |w| w.reference(of, Kind::Object));
-            }
+            Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
-            Amount::Counters { on, .. } => self.at("on", |w| w.reference(on, Kind::Either)),
+            Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
+                self.at("on", |w| w.reference(on, Kind::Either));
+            }
             Amount::Sum(parts) => {
                 for (i, part) in parts.iter().enumerate() {
                     self.amounting = Amounting::of(sharing);

@@ -32,6 +32,7 @@ mod block_limits;
 mod block_limits_fuzz;
 mod block_restrictions;
 mod block_restrictions_fuzz;
+mod c10_any_cards;
 mod c10_vp_planar_votes;
 mod c10_xp_copy_until;
 mod c4_attacked_untap;

@@ -102,7 +102,7 @@ fn the_draw_step_is_skipped() {
 #[case::ward_with_x("Creatures you control have ward {X}.")]
 #[case::skip_another_players("Skip target player's draw step.")]
 #[case::skip_another_step("Skip your untap step.")]
-#[case::a_counter_of_any_kind("Each creature you control with a counter on it has trample.")]
+#[case::a_counter_of_any_kind("Each creature you control with two counters on it has trample.")]
 #[case::counters_it_does_not_have("Each creature you control with a +1/+1 counter has trample.")]
 fn near_misses_stay_with_the_table(#[case] text: &str) {
     assert_eq!(stat(text), None, "{text}");

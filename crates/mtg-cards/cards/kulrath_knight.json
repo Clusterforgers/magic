@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f3d1b2e9-6ede-416d-937b-2063ea278d2f",
+  "name": "Kulrath Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kulrath Knight",
+      "oracle_fingerprint": "ca326fe79059bec87a0537ac3d51eaa9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Wither" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }, "HasAnyCounter"]
+            },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        }
+      ]
+    }
+  ]
+}

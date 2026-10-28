@@ -1,0 +1,27 @@
+{
+  "oracle_id": "206913aa-4d73-4465-8311-8054a22c0743",
+  "name": "Ray Fillet, Wave Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ray Fillet, Wave Warrior",
+      "oracle_fingerprint": "434cef3e91dff8b64ff2ee7cc8e5e45d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Evolve" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

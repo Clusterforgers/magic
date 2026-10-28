@@ -1,0 +1,39 @@
+{
+  "oracle_id": "064a2f4a-ff3f-4622-8727-24b22965416d",
+  "name": "H.E.R.B.I.E., Lovable Robot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "H.E.R.B.I.E., Lovable Robot",
+      "oracle_fingerprint": "e69c3373558583b8ed3299b1d6d64172",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "NoncreatureSpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

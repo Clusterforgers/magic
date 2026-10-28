@@ -190,6 +190,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::In(_)
         | Pred::CastFrom(_)
         | Pred::HasCounter(_)
+        | Pred::HasAnyCounter
         | Pred::Named(_) => Traits::NONE,
         Pred::Is(who)
         | Pred::OwnedBy(who)
@@ -243,6 +244,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Life(who)
         | Amount::CommanderCasts(who)
         | Amount::Counters { on: who, .. }
+        | Amount::AnyCounters(who)
         | Amount::Mutations(who)
         | Amount::Players(who)
         | Amount::Tallied { who, .. }

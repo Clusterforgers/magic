@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "4e785abe-ae43-4e6b-9d6d-56e39ea348ef",
+  "oracle_id": "560e6fd6-c061-44ba-b5c5-814d6a14e469",
+  "multiverse_ids": [
+    580925
+  ],
+  "mtgo_id": 108678,
+  "tcgplayer_id": 285924,
+  "cardmarket_id": 674747,
+  "name": "Tyrant Guard",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/4e785abe-ae43-4e6b-9d6d-56e39ea348ef",
+  "scryfall_uri": "https://scryfall.com/card/40k/103/tyrant-guard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:34:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.jpg?1783920867",
+    "normal": "https://cards.scryfall.io/normal/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.jpg?1783920867",
+    "large": "https://cards.scryfall.io/large/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.jpg?1783920867",
+    "png": "https://cards.scryfall.io/png/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.png?1783920867",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.jpg?1783920867",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.jpg?1783920867",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.webp?1783920867",
+    "grid": "https://cards.scryfall.io/grid/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.webp?1783920867",
+    "display": "https://cards.scryfall.io/display/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.webp?1783920867",
+    "art": "https://cards.scryfall.io/art/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.webp?1783920867",
+    "crop": "https://cards.scryfall.io/crop/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.webp?1783920867",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/e/4e785abe-ae43-4e6b-9d6d-56e39ea348ef.jpg?1783920867"
+  },
+  "mana_cost": "{X}{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Tyranid",
+  "oracle_text": "Ravenous (This creature enters with X +1/+1 counters on it. If X is 5 or more, draw a card when it enters.)\nShieldwall — Sacrifice this creature: Creatures you control with counters on them gain hexproof and indestructible until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Ravenous",
+    "Shieldwall"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4e785abe-ae43-4e6b-9d6d-56e39ea348ef/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A560e6fd6-c061-44ba-b5c5-814d6a14e469&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Xavier Ribeiro",
+  "artist_ids": [
+    "e17c2662-0491-47b2-bf1d-8c111a8ad3f8"
+  ],
+  "illustration_id": "7b219d2e-ca5e-4393-8ff4-5ad4e4b0af72",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5895,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=wTvU04n4dVo",
+    "previewed_at": "2022-09-13"
+  },
+  "prices": {
+    "usd": "4.77",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.61",
+    "eur_foil": null,
+    "tix": "1.51"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580925&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTyrant%2BGuard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTyrant%2BGuard",
+    "edhrec": "https://edhrec.com/route/?cc=Tyrant+Guard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F285924%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=674747&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108678?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

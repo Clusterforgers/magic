@@ -99,6 +99,7 @@ fn phrase(selector: &Selector) -> (String, String) {
                 tail.push(format!("with {}", keyword.name().to_lowercase()));
             }
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
+            Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),
             Pred::Compare {
                 stat,
                 op,

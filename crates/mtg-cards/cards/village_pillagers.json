@@ -1,0 +1,39 @@
+{
+  "oracle_id": "54b44499-398b-47ad-b790-bd5b5994d1a6",
+  "name": "Village Pillagers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Village Pillagers",
+      "oracle_fingerprint": "fe48d3df304b7beda59511836f4ec7b1",
+      "abilities": [
+        { "Keyword": "Wither" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }, "HasAnyCounter"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

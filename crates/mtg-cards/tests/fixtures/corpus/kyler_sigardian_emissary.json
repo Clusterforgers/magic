@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "62a78aae-598e-4f2b-a7bc-c3afc1d0d191",
+  "oracle_id": "726cd041-5d0b-436c-bced-9335f56c0b0d",
+  "multiverse_ids": [
+    540709
+  ],
+  "mtgo_id": 93846,
+  "tcgplayer_id": 248579,
+  "cardmarket_id": 575449,
+  "name": "Kyler, Sigardian Emissary",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/62a78aae-598e-4f2b-a7bc-c3afc1d0d191",
+  "scryfall_uri": "https://scryfall.com/card/mic/4/kyler-sigardian-emissary?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:49:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.jpg?1783925382",
+    "normal": "https://cards.scryfall.io/normal/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.jpg?1783925382",
+    "large": "https://cards.scryfall.io/large/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.jpg?1783925382",
+    "png": "https://cards.scryfall.io/png/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.png?1783925382",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.jpg?1783925382",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.jpg?1783925382",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.webp?1783925382",
+    "grid": "https://cards.scryfall.io/grid/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.webp?1783925382",
+    "display": "https://cards.scryfall.io/display/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.webp?1783925382",
+    "art": "https://cards.scryfall.io/art/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.webp?1783925382",
+    "crop": "https://cards.scryfall.io/crop/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.webp?1783925382",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/2/62a78aae-598e-4f2b-a7bc-c3afc1d0d191.jpg?1783925382"
+  },
+  "mana_cost": "{3}{G}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Cleric",
+  "oracle_text": "Whenever another Human you control enters, put a +1/+1 counter on Kyler.\nOther Humans you control get +1/+1 for each counter on Kyler.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set": "mic",
+  "set_name": "Midnight Hunt Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/62a78aae-598e-4f2b-a7bc-c3afc1d0d191/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A726cd041-5d0b-436c-bced-9335f56c0b0d&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Even when the angels succumbed to madness, Sigarda stood strong. She is hope.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dmitry Burmak",
+  "artist_ids": [
+    "9872f5c0-274a-48ce-a9ad-6f0d5654e29c"
+  ],
+  "illustration_id": "0778d401-21cc-4944-b1aa-91ee7816ee11",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6607,
+  "prices": {
+    "usd": "0.62",
+    "usd_foil": "0.48",
+    "usd_etched": null,
+    "eur": "0.59",
+    "eur_foil": "0.70",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540709&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKyler%252C%2BSigardian%2BEmissary",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKyler%252C%2BSigardian%2BEmissary",
+    "edhrec": "https://edhrec.com/route/?cc=Kyler%2C+Sigardian+Emissary"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248579%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=575449&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93846?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

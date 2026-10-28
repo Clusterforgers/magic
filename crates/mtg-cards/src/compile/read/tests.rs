@@ -163,6 +163,7 @@ mod base_stats;
 mod batch_writers;
 mod becomes;
 mod block_limits;
+mod c10_any_counters;
 mod c10_cen_writers;
 mod c10_xp_copy_until;
 mod c4_af_writers;

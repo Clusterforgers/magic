@@ -223,6 +223,8 @@ pub enum TurnTally {
     /// The instant and sorcery spells the player cast this turn ("the number of instant and sorcery spells you've cast
     /// this turn").
     InstantsAndSorceriesCast,
+    /// The noncreature spells the player cast this turn ("if you've cast a noncreature spell this turn").
+    NoncreatureSpellsCast,
     /// The cards the player discarded this turn, once for each discard ("for each card you've discarded this turn").
     Discarded,
     /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):
@@ -275,6 +277,8 @@ pub enum Amount {
         /// The kind of counter.
         counter: CounterKind,
     },
+    /// How many counters of any kind are on the object or player, all kinds together (CR 122.1).
+    AnyCounters(Ref),
     /// The sum of the amounts (negative numbers subtract).
     Sum(Vec<Amount>),
     /// The amount times a fixed factor, which may be negative: "gain 2 life for each creature you control" is the
@@ -414,6 +418,7 @@ enum Tagged {
     Life(Ref),
     CommanderCasts(Ref),
     Counters { on: Ref, counter: CounterKind },
+    AnyCounters(Ref),
     Sum(Vec<Amount>),
     Times { by: i32, of: Box<Amount> },
     Half { of: Box<Amount>, up: bool },
@@ -457,6 +462,7 @@ enum TaggedRef<'a> {
         on: &'a Ref,
         counter: &'a CounterKind,
     },
+    AnyCounters(&'a Ref),
     Sum(&'a [Amount]),
     Times {
         by: i32,
@@ -512,6 +518,7 @@ impl From<Tagged> for Amount {
             Tagged::Life(who) => Amount::Life(who),
             Tagged::CommanderCasts(who) => Amount::CommanderCasts(who),
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
+            Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
             Tagged::Times { by, of } => Amount::Times { by, of },
             Tagged::Half { of, up } => Amount::Half { of, up },
@@ -554,6 +561,7 @@ impl Serialize for Amount {
             Amount::Counters { on, counter } => {
                 TaggedRef::Counters { on, counter }.serialize(serializer)
             }
+            Amount::AnyCounters(on) => TaggedRef::AnyCounters(on).serialize(serializer),
             Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
             Amount::Times { by, of } => TaggedRef::Times { by: *by, of }.serialize(serializer),
             Amount::Half { of, up } => TaggedRef::Half { of, up: *up }.serialize(serializer),

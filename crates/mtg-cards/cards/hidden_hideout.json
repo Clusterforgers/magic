@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b639e1fe-d099-4cab-a0d0-a1b33c7f31dd",
+  "name": "Hidden Hideout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Hideout",
+      "oracle_fingerprint": "442c9bde582b8975d05953a825c244f9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "CommanderIdentity": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

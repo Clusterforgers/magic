@@ -271,6 +271,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             on: Ref::This,
             counter,
         } => format!("{} counter on ~", counters::kind_text(counter)?),
+        Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
         _ => return None,
     })

@@ -120,8 +120,22 @@ fn at_least(left: Amount, number: u32) -> Option<Condition> {
     })
 }
 
+/// The words of a noncreature spell cast this turn.
+const C10_ANY_NONCREATURE_CAST: &str = "you've cast a noncreature spell this turn";
+
+/// The noncreature spells you cast this turn.
+const fn c10_any_noncreature_cast() -> Amount {
+    Amount::Tallied {
+        who: Ref::You,
+        what: TurnTally::NoncreatureSpellsCast,
+    }
+}
+
 /// "you attacked with three or more creatures this turn", "an opponent was dealt 7 or more damage this turn".
 fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
+    if r.words(C10_ANY_NONCREATURE_CAST) {
+        return at_least(c10_any_noncreature_cast(), 1);
+    }
     if r.words("you gained life this turn") {
         return at_least(
             Amount::Tallied {
@@ -245,6 +259,9 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     let Ok(number) = u32::try_from(*number) else {
         return Vec::new();
     };
+    if *left == c10_any_noncreature_cast() && *op == Cmp::Ge && number == 1 {
+        return vec![C10_ANY_NONCREATURE_CAST.to_owned()];
+    }
     let counted = |pattern: &dyn Fn(&str) -> String| -> Vec<String> {
         quantity_texts(number)
             .iter()
