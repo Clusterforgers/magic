@@ -58,6 +58,7 @@ impl KeywordRules for Cipher {
                     free: true,
                     play: false,
                     way: None,
+                    bind: None,
                     otherwise: Vec::new(),
                 },
             ],

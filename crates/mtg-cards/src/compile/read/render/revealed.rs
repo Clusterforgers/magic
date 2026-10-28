@@ -55,6 +55,7 @@ fn steps(effects: &[Effect], held: &Ref) -> Option<String> {
                 free: true,
                 play: false,
                 way: None,
+                bind: None,
                 otherwise,
             },
         ] if what == held => {

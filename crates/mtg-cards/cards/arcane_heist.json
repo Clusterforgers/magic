@@ -1,0 +1,45 @@
+{
+  "oracle_id": "839748e7-ccb4-421e-9626-b6d8be9390ab",
+  "name": "Arcane Heist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Heist",
+      "oracle_fingerprint": "8ad42aa56a696dd186863ef5b167528a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

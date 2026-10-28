@@ -1,0 +1,47 @@
+{
+  "oracle_id": "fd36cc16-d3d9-4c9d-9d28-bbe7e5459d75",
+  "name": "Wrexial, the Risen Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrexial, the Risen Deep",
+      "oracle_fingerprint": "110b32bc0d17e1947faa301c7ed7cc75",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        { "Keyword": { "Landwalk": [{ "Subtype": "Swamp" }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

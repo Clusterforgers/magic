@@ -50,6 +50,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             free: true,
             play: false,
             way: None,
+            bind: None,
             otherwise,
         },
     ] = effects.as_slice()

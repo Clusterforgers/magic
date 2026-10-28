@@ -1,0 +1,45 @@
+{
+  "oracle_id": "02b6900b-219f-4832-8f93-6ef27ee76c0c",
+  "name": "Impulsivity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impulsivity",
+      "oracle_fingerprint": "c9ab0ac123470dad24adc6cd0856ce1f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{7}{R}{R}" } }
+      ]
+    }
+  ]
+}

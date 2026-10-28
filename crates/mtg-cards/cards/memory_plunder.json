@@ -13,9 +13,9 @@
               {
                 "what": {
                   "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
                     { "In": "Graveyard" },
-                    { "OwnedBy": "Opponents" },
-                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    { "OwnedBy": "Opponents" }
                   ]
                 }
               }

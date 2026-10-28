@@ -8,47 +8,64 @@ use crate::modify::Duration;
 use crate::refs::{Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen};
 
+/// The name the spell cast from the target is bound to: "that spell".
+pub const C11B_CAST: &str = "cast";
+
 /// "You may cast target instant card from your graveyard[ without paying its mana cost]": the target card is cast during
 /// the resolution, for nothing or for its mana cost.
 pub fn c11b_cast_target(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("you may cast")?;
     let what = target(r)?;
     let free = r.words("without paying its mana cost");
-    Some(vec![Effect::CastFromZone {
+    Some(vec![c11b_cast(what, free, None)])
+}
+
+/// The cast of the card `what` names, bound as `bind` when it is cast.
+fn c11b_cast(what: Ref, free: bool, bind: Option<String>) -> Effect {
+    Effect::CastFromZone {
         who: Ref::You,
         what,
         free,
         play: false,
         way: None,
+        bind,
         otherwise: Vec::new(),
-    }])
+    }
 }
 
-/// "If that spell would be put into your graveyard, exile it instead.", after the cast of the target: a shield that sends
-/// the spell to exile when it would go from the stack to a graveyard, for as long as it is that spell.
+/// "If that spell would be put into your graveyard, exile it instead.", after the cast of the target: the cast binds the
+/// spell, and a shield sends that spell to exile when it would go from the stack to a graveyard.
 pub fn c11b_exile_instead(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()> {
-    let Some(Effect::CastFromZone {
-        what: what @ Ref::Target(0),
-        play: false,
+    let Some(&Effect::CastFromZone {
+        what: Ref::Target(0),
+        free,
         ..
     }) = effects.last()
     else {
         return None;
     };
-    let shield = c11b_shield(what.clone());
+    let cast = c11b_cast(Ref::Target(0), free, None);
+    (effects.last() == Some(&cast)).then_some(())?;
     r.need("if that spell would be put into")?;
     (r.word("your") || r.word("a") || r.word("their")).then_some(())?;
     r.need("graveyard")?;
     r.punct(',').then_some(())?;
     r.need("exile it instead")?;
-    r.sentence_end().then(|| effects.push(shield))
+    r.sentence_end().then_some(())?;
+    effects.pop();
+    effects.push(c11b_cast(Ref::Target(0), free, Some(C11B_CAST.to_owned())));
+    effects.push(c11b_shield());
+    Some(())
 }
 
-/// The shield over the spell cast from the card `cast` names: it is exiled instead of going to a graveyard.
-pub fn c11b_shield(cast: Ref) -> Effect {
+/// The shield over the spell bound as [`C11B_CAST`]: it is exiled instead of going from the stack to a graveyard.
+pub fn c11b_shield() -> Effect {
     Effect::Shield {
         when: ReplaceWhen::ZoneChange {
-            what: Selector(vec![Pred::In(ZoneKind::Stack), Pred::SameCard(cast)]),
+            what: Selector(vec![
+                Pred::In(ZoneKind::Stack),
+                Pred::Is(Ref::Bound(C11B_CAST.to_owned())),
+            ]),
             from: Some(ZoneKind::Stack),
             to: Some(ZoneKind::Graveyard),
         },
@@ -61,17 +78,16 @@ pub fn c11b_shield(cast: Ref) -> Effect {
 /// graveyard without paying its mana cost".
 pub fn c11b_cast_text(effect: &Effect, named: impl FnOnce() -> Option<String>) -> Option<String> {
     let Effect::CastFromZone {
-        who: Ref::You,
         what: Ref::Target(0),
         free,
-        play: false,
-        way: None,
-        otherwise,
+        bind,
+        ..
     } = effect
     else {
         return None;
     };
-    otherwise.is_empty().then_some(())?;
+    let bound = bind.as_ref().filter(|name| *name == C11B_CAST).cloned();
+    (*effect == c11b_cast(Ref::Target(0), *free, bound)).then_some(())?;
     let free = if *free {
         " without paying its mana cost"
     } else {
@@ -83,7 +99,7 @@ pub fn c11b_cast_text(effect: &Effect, named: impl FnOnce() -> Option<String>) -
 /// The wording of the shield over the spell cast from the target, whose graveyard the target phrase names: "if that
 /// spell would be put into your graveyard, exile it instead".
 pub fn c11b_exile_text(effect: &Effect, target: Option<&Targetable>) -> Option<String> {
-    (*effect == c11b_shield(Ref::Target(0))).then_some(())?;
+    (*effect == c11b_shield()).then_some(())?;
     let Some(Targetable::Object(selector)) = target else {
         return None;
     };

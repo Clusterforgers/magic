@@ -1010,6 +1010,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                         free,
                         play,
                         way,
+                        bind: None,
                         otherwise,
                     }
                 }),

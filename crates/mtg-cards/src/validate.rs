@@ -1874,6 +1874,7 @@ impl Walker<'_> {
                 who,
                 what,
                 way,
+                bind,
                 otherwise,
                 ..
             } => {
@@ -1888,6 +1889,9 @@ impl Walker<'_> {
                     w.problem("only madness, miracle and suspend are cast for a way of their own");
                 }
                 w.effect_list("otherwise", otherwise, false);
+                if let Some(name) = bind {
+                    w.bind(name, Kind::Object);
+                }
             }
             Effect::Choose {
                 who,

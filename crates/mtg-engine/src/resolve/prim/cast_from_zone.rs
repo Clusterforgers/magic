@@ -49,7 +49,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .find(|player| state.is_alive(*player))
     else {
-        return Ok(finished(cx, false));
+        return Ok(c11b_cast_done(cx, effect, false));
     };
     let mut answers = cx.journal().iter();
     let next = answers.next();
@@ -69,7 +69,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (None, _) => {
             let card = cx.scope.live_objects(what)?.into_iter().find(offered);
             Ok(card.map_or_else(
-                || finished(cx, false),
+                || c11b_cast_done(cx, effect, false),
                 |card| {
                     let alternative = ways::alternative_cost(state, card.id(), *way);
                     Run::Ask(question(
@@ -85,7 +85,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 },
             ))
         }
-        (Some((who, Choice::YesNo(false))), None) if *who == player => Ok(finished(cx, false)),
+        (Some((who, Choice::YesNo(false))), None) if *who == player => Ok(c11b_cast_done(cx, effect, false)),
         (Some((who, Choice::YesNo(true))), None) if *who == player => {
             let card = cx
                 .scope
@@ -115,7 +115,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (Some((first, Choice::YesNo(true))), Some((second, Choice::YesNo(cast))))
             if *first == player && *second == player =>
         {
-            Ok(finished(cx, *cast))
+            Ok(c11b_cast_done(cx, effect, *cast))
         }
         _ => Err(unexpected("an answer that was not asked")),
     }
@@ -145,6 +145,32 @@ fn finished(cx: &Cx<'_>, cast: bool) -> Run {
         snapshots: Vec::new(),
         next: if cast { Next::Sibling } else { Next::Enter(0) },
     }
+}
+
+/// The step after the announcement: [`finished`], and when the effect names the spell (`as`), the spell bound under that
+/// name as the object it is on the stack (the topmost card there, cast above the resolving object), or nothing when it was
+/// not cast.
+fn c11b_cast_done(cx: &Cx<'_>, effect: &Effect, cast: bool) -> Run {
+    let mut run = finished(cx, cast);
+    let state = cx.state();
+    if let (
+        Effect::CastFromZone {
+            bind: Some(name), ..
+        },
+        Run::Done { bound, .. },
+    ) = (effect, &mut run)
+    {
+        let spell = state
+            .stack()
+            .iter()
+            .rev()
+            .filter_map(|id| state.object(*id))
+            .find(|object| object.kind() == ObjectKind::Card && object.id() != cx.resolving.object())
+            .filter(|_| cast)
+            .map(|spell| Target::Object(spell.reference()));
+        bound.push((name.clone(), spell.into_iter().collect()));
+    }
+    run
 }
 
 fn unexpected(what: &str) -> ResolveError {

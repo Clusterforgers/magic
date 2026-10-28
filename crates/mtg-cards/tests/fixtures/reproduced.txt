@@ -53,6 +53,7 @@ Apex Altisaur
 Aquastrand Spider
 Arbor Colossus
 Arboreal Grazer
+Arcane Heist
 Arcane Signet
 Arch of Orazca
 Archipelagore
@@ -321,6 +322,7 @@ Deepfathom Skulker
 Deeproot Waters
 Defacing Duskmage // Vandal's Edit
 Defile
+Deluxe Dragster
 Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
@@ -533,6 +535,7 @@ Gnarled Professor
 Gnarlwood Dryad
 Goblin Archaeologist
 Goblin Chieftain
+Goblin Dark-Dwellers
 Goblin Glasswright // Craft with Pride
 Goblin Sharpshooter
 Goblin Spy
@@ -636,6 +639,7 @@ Imperious Oligarch
 Imposter Mech
 Impostor of the Sixth Pride
 Impulsive Pilferer
+Impulsivity
 Indulging Patrician
 Inferno Project
 Inkwell Leviathan
@@ -790,6 +794,7 @@ Mawloc
 Mayhem Patrol
 Megrim
 Memory Guardian
+Memory Plunder
 Mer-Ek Nightblade
 Merchant of Truth
 Mercurial Chemister
@@ -1317,6 +1322,7 @@ Tithe Drinker
 Tithebearer Giant
 Tivash, Gloom Summoner
 Tomb Tyrant
+Torrential Gearhulk
 Towering Titan
 Toxic Deluge
 Trace of Abundance
@@ -1440,6 +1446,7 @@ Wooded Bastion
 Woodripper
 Worldspine Wurm
 Wrath of God
+Wrexial, the Risen Deep
 Writ of Return
 Wurmwall Sweeper
 Wyrm's Crossing Patrol
