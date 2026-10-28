@@ -1,4 +1,4 @@
-//! Goal: "creatures can't attack you unless their controller pays {N} for each ..." reads as `AttackTax` for the player, for the player and the planeswalkers they control or for the planeswalkers alone, in each wording of "for each", with an amount counted by "{X} ... where X is the number of ..." and with a group of creatures, as a static ability and after "until your next turn,"; each writes back as the same text, and a cost that is not mana, a free attack, another subject or a duration of another kind stays with the table.
+//! Goal: "creatures can't attack you unless their controller pays {N} (or N life) for each ..." reads as `AttackTax` for the player, for the player and the planeswalkers they control or for the planeswalkers alone, in each wording of "for each", with an amount counted by "{X} ... where X is the number of ..." and with a group of creatures, as a static ability and after "until your next turn,"; each writes back as the same text, and a cost that is neither mana nor life, no life, a free attack, another subject or a duration of another kind stays with the table.
 use super::*;
 
 fn stat(text: &str) -> Option<Ability> {
@@ -42,6 +42,14 @@ fn stat(text: &str) -> Option<Ability> {
     "Nonblack creatures can't attack you unless their controller pays {2} for each creature they control that's attacking you.",
     r#"{"Rule":{"rule":{"AttackTax":{"attacked":"Player","attackers":[{"Type":"Creature"},{"Not":{"Color":"Black"}}],"mana":"{2}"}}}}"#
 )]
+#[case::life(
+    "Creatures can't attack you unless their controller pays 2 life for each of those creatures.",
+    r#"{"Rule":{"rule":{"AttackTax":{"attacked":"Player","life":2}}}}"#
+)]
+#[case::life_for_a_player_and_walkers(
+    "Creatures can't attack you or planeswalkers you control unless their controller pays 3 life for each of those creatures.",
+    r#"{"Rule":{"rule":{"AttackTax":{"attacked":"Both","life":3}}}}"#
+)]
 fn an_attack_tax_reads_as_a_static_ability(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Static, false, json);
 }
@@ -51,13 +59,17 @@ fn an_attack_tax_reads_as_a_static_ability(#[case] text: &str, #[case] json: &st
     "Until your next turn, creatures can't attack you or planeswalkers you control unless their controller pays {2} for each of those creatures.",
     r#"{"Spell":{"effects":[{"Rule":{"rule":{"AttackTax":{"attacked":"Both","mana":"{2}"}},"duration":"UntilYourNextTurn"}}]}}"#
 )]
+#[case::sivitri_life(
+    "Until your next turn, creatures can't attack you or planeswalkers you control unless their controller pays 2 life for each of those creatures.",
+    r#"{"Spell":{"effects":[{"Rule":{"rule":{"AttackTax":{"attacked":"Both","life":2}},"duration":"UntilYourNextTurn"}}]}}"#
+)]
 fn an_attack_tax_reads_as_an_effect_for_a_while(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Spell, false, json);
 }
 
 #[rstest]
-#[case::life(
-    "Creatures can't attack you unless their controller pays 2 life for each of those creatures."
+#[case::no_life(
+    "Creatures can't attack you unless their controller pays 0 life for each of those creatures."
 )]
 #[case::no_cost(
     "Creatures can't attack you unless their controller pays for each of those creatures."

@@ -1,0 +1,25 @@
+{
+  "id": "764fa7f1-b92b-42cc-983e-e0b5457369a7",
+  "oracle_id": "569a65fb-e35f-4388-ab49-f57be46b4889",
+  "name": "Vow of Wildness",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "262",
+  "rarity": "uncommon",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +3/+3, has trample, and can't attack you or planeswalkers you control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "c9887121-6206-44bb-a1b4-520f28a61a17",
+  "oracle_id": "81fe554a-5257-446c-ad53-ee45bf5edb40",
+  "name": "Vow of Flight",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "105",
+  "rarity": "uncommon",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +2/+2, has flying, and can't attack you or planeswalkers you control.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ]
+}

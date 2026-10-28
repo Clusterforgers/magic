@@ -1,0 +1,24 @@
+{
+  "oracle_id": "894bc28a-6627-43dd-9650-86300b6fe5e6",
+  "name": "Vow of Malice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vow of Malice",
+      "oracle_fingerprint": "576c096496b86164d5b3a954a5d4d06e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Intimidate" },
+              { "CantAttackYou": "Both" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

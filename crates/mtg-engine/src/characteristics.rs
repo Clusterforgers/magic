@@ -1,6 +1,7 @@
 //! Derived characteristics: base values from the card plus continuous effects, layer by layer.
 
 use mtg_cards::AbilityDef;
+use mtg_cards::modify::Attacked;
 use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -156,6 +157,28 @@ pub(crate) fn controller_of_object(state: &GameState, object: &GameObject) -> Pl
 pub(crate) fn cant_attack(state: &GameState, id: ObjectId) -> bool {
     restricted(state, id, |modification| {
         matches!(modification, Modification::CantAttack)
+    })
+}
+
+/// Whether an effect that applies to `id` says it can't attack `defender`, the player attacked or the controller of the
+/// planeswalker attacked (`walker`): the one place the attack rules read "can't attack you or planeswalkers you
+/// control".
+pub(crate) fn cant_attack_defender(
+    state: &GameState,
+    id: ObjectId,
+    defender: PlayerId,
+    walker: bool,
+) -> bool {
+    restricted(state, id, |modification| match modification {
+        Modification::CantAttackYou { you, attacked } => {
+            *you == defender
+                && match attacked {
+                    Attacked::Both => true,
+                    Attacked::Player => !walker,
+                    Attacked::Planeswalkers => walker,
+                }
+        }
+        _ => false,
     })
 }
 

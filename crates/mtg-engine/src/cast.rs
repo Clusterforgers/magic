@@ -482,7 +482,7 @@ fn announcement(
         Some(Pending {
             what: What::Attack(attackers),
             ..
-        }) => Ok(crate::combat::attack_events(state, player, attackers)),
+        }) => Ok(crate::attack_tax::made(state, player, attackers)),
         Some(Pending {
             what: What::Trigger(_),
             ..

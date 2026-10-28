@@ -268,6 +268,11 @@ pub struct AttackerOption {
         ts(as = "Option<Vec<(AttackTarget, ManaCost)>>", optional)
     )]
     pub tax: Vec<(AttackTarget, ManaCost)>,
+    /// The life it costs to attack each defender that an effect taxes in life ("pays 2 life for each of those
+    /// creatures"), paid as the attack is declared. Left out while no defender costs life.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(AttackTarget, u32)>>", optional))]
+    pub life: Vec<(AttackTarget, u32)>,
 }
 
 impl AttackerOption {
@@ -277,15 +282,16 @@ impl AttackerOption {
             object,
             defenders,
             tax: Vec::new(),
+            life: Vec::new(),
         }
     }
 
     /// The first defender it may attack for nothing.
     pub fn free_defender(&self) -> Option<AttackTarget> {
-        self.defenders
-            .iter()
-            .copied()
-            .find(|target| !self.tax.iter().any(|(taxed, _)| taxed == target))
+        self.defenders.iter().copied().find(|target| {
+            !self.tax.iter().any(|(taxed, _)| taxed == target)
+                && !self.life.iter().any(|(taxed, _)| taxed == target)
+        })
     }
 }
 

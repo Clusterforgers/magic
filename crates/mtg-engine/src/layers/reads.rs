@@ -58,6 +58,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
         Modification::GrantAbility(_)
         | Modification::CantAttack
+        | Modification::CantAttackYou { .. }
         | Modification::CantBlock
         | Modification::DoesntUntap
         | Modification::CantBeBlocked
@@ -90,6 +91,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::GrantAbility(_)
         | Wanted::RemoveSupertype(_)
         | Wanted::CantAttack
+        | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeBlocked
@@ -126,6 +128,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
         | Wanted::CantAttack
+        | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeBlocked

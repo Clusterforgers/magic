@@ -1,0 +1,40 @@
+{
+  "oracle_id": "429eff2b-635b-43f6-b20f-82e25992c0b9",
+  "name": "Sandwurm Convergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sandwurm Convergence",
+      "oracle_fingerprint": "e973d052576dc01c03c69b9c30d607d0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": [{ "CantAttackYou": "Both" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wurm",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wurm"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

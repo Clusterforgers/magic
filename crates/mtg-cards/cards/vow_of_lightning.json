@@ -1,0 +1,24 @@
+{
+  "oracle_id": "bfed67f3-70d2-49c2-8f25-16e4d10fa5be",
+  "name": "Vow of Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vow of Lightning",
+      "oracle_fingerprint": "9232d517dd906c86d3b16a1b5e52f4a7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "FirstStrike" },
+              { "CantAttackYou": "Both" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

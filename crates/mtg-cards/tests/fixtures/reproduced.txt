@@ -147,6 +147,7 @@ Bladed Bracers
 Blasphemous Act
 Blastoderm
 Blaze
+Blazing Archon
 Blazing Sunsteel
 Blight Mamba
 Blight Pile
@@ -1092,6 +1093,7 @@ Retreat to Coralhelm
 Revel Ruiner
 Revenge of Ravens
 Reverberate
+Reverence
 Reverse Engineer
 Rhet-Tomb Mystic
 Rhox Charger
@@ -1145,6 +1147,7 @@ Sanctum Weaver
 Sandcrafter Mage
 Sandsteppe Mastodon
 Sandsteppe Scavenger
+Sandwurm Convergence
 Sangromancer
 Sanguine Bond
 Sanitarium Skeleton
@@ -1508,6 +1511,12 @@ Voice of the Blessed
 Vona, Butcher of Magan
 Vorel of the Hull Clade
 Vorrac Battlehorns
+Vow of Duty
+Vow of Flight
+Vow of Lightning
+Vow of Malice
+Vow of Torment
+Vow of Wildness
 Vulshok Splitter
 Walking Ballista
 Wanderbrine Preacher

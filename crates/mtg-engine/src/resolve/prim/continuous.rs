@@ -159,6 +159,10 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             ));
         }
         Wanted::CantAttack => Modification::CantAttack,
+        Wanted::CantAttackYou(attacked) => Modification::CantAttackYou {
+            you: scope.controller,
+            attacked: *attacked,
+        },
         Wanted::CantBlock => Modification::CantBlock,
         Wanted::DoesntUntap => Modification::DoesntUntap,
         Wanted::CantBeBlocked => Modification::CantBeBlocked,

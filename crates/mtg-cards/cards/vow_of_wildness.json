@@ -1,0 +1,24 @@
+{
+  "oracle_id": "569a65fb-e35f-4388-ab49-f57be46b4889",
+  "name": "Vow of Wildness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vow of Wildness",
+      "oracle_fingerprint": "e8b37ca534c3cc6368f5350fea1d1bae",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 3 } },
+              { "AddKeyword": "Trample" },
+              { "CantAttackYou": "Both" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

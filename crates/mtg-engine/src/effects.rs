@@ -162,6 +162,15 @@ pub enum Modification {
     /// The object can't be blocked by more than this many creatures together: a restriction with no layer that the
     /// block rules read.
     MaxBlockers(u32),
+    /// The object can't attack `you`, the planeswalkers `you` controls or both: a restriction with no layer that the
+    /// attack declaration reads.
+    CantAttackYou {
+        /// The player it protects: the controller of the effect or ability.
+        you: PlayerId,
+        /// Whether it protects the player, their planeswalkers or both.
+        #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
+        attacked: mtg_cards::modify::Attacked,
+    },
     /// The object is goaded by `by` (CR 701.15): a restriction with no layer that the attack declaration reads; it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded {
@@ -190,6 +199,7 @@ impl Modification {
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
+            | Modification::CantAttackYou { .. }
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeBlocked
@@ -252,6 +262,7 @@ impl Modification {
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::CantAttack
+            | Modification::CantAttackYou { .. }
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeBlocked

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "237b87f4-783b-40ac-9fcf-4ae76a33229d",
+  "name": "Vow of Torment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vow of Torment",
+      "oracle_fingerprint": "ae9bc1e2d47512ee8a1829805df6494f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Menace" },
+              { "CantAttackYou": "Both" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "82a70e4c-01ed-4280-80e4-86cb2bf6e63d",
+  "name": "Blazing Archon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazing Archon",
+      "oracle_fingerprint": "111e0a38dc76d65216e75f5f658c1f5a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "CantAttackYou": "Player" }]
+          }
+        }
+      ]
+    }
+  ]
+}

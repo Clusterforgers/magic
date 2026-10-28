@@ -33,26 +33,68 @@ use crate::state::GameState;
 /// What `object` costs to attack `target`: the mana of every tax in force that protects the player attacked, or the
 /// player who controls the planeswalker attacked, and taxes the creature.
 pub(crate) fn cost_of(state: &GameState, object: ObjectId, target: AttackTarget) -> ManaCost {
-    let taxes = attack_taxes(state);
-    if taxes.is_empty() {
-        return ManaCost::ZERO;
-    }
-    let Some(defender) = defending_player(state, target) else {
-        return ManaCost::ZERO;
-    };
+    in_force(state, object, target).fold(ManaCost::ZERO, |sum, taxing| plus(&sum, &taxing.tax.mana))
+}
+
+/// What `object` costs to attack `target` in life: the life of the same taxes as `cost_of`.
+pub(crate) fn life_of(state: &GameState, object: ObjectId, target: AttackTarget) -> u32 {
+    in_force(state, object, target).fold(0, |sum, taxing| sum.saturating_add(taxing.tax.life))
+}
+
+/// The taxes in force that protect the player attacked, or the player who controls the planeswalker attacked, and tax
+/// the creature `object`.
+fn in_force(
+    state: &GameState,
+    object: ObjectId,
+    target: AttackTarget,
+) -> impl Iterator<Item = &Taxing> {
+    let defender = defending_player(state, target);
     let walker = matches!(target, AttackTarget::Planeswalker(_));
-    taxes
-        .iter()
-        .filter(|taxing| {
-            let tax = &taxing.tax;
-            let protects = match tax.attacked {
-                Attacked::Both => true,
-                Attacked::Player => !walker,
-                Attacked::Planeswalkers => walker,
-            };
-            protects && tax.players.contains(&defender) && taxes_creature(state, taxing, object)
-        })
-        .fold(ManaCost::ZERO, |sum, taxing| plus(&sum, &taxing.tax.mana))
+    attack_taxes(state).iter().filter(move |taxing| {
+        let tax = &taxing.tax;
+        let protects = match tax.attacked {
+            Attacked::Both => true,
+            Attacked::Player => !walker,
+            Attacked::Planeswalkers => walker,
+        };
+        protects
+            && defender.is_some_and(|defender| tax.players.contains(&defender))
+            && taxes_creature(state, taxing, object)
+    })
+}
+
+/// The life an attack costs: what each of its attackers costs in life, added up (CR 508.1h).
+pub(crate) fn life_total(state: &GameState, attackers: &[(ObjectId, AttackTarget)]) -> u32 {
+    attackers.iter().fold(0, |sum, (object, target)| {
+        sum.saturating_add(life_of(state, *object, *target))
+    })
+}
+
+/// Whether `player` can pay `life` (CR 119.4, 119.8): any total for nothing, else a life total of at least that much
+/// that can change.
+fn can_pay_life(state: &GameState, player: PlayerId, life: u32) -> bool {
+    life == 0
+        || (!crate::rules::life_total_cant_change(state, player)
+            && state
+                .player(player)
+                .is_some_and(|seat| i64::from(seat.life()) >= i64::from(life)))
+}
+
+/// The events of an attack declared and paid for: the declaration, then the life it costs.
+pub(crate) fn made(
+    state: &GameState,
+    player: PlayerId,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> Vec<Event> {
+    let mut events = attack_events(state, player, attackers);
+    let life = life_total(state, attackers);
+    if life > 0 {
+        events.push(Event::LifePaid {
+            player,
+            amount: life,
+        });
+    }
+    events
 }
 
 /// Whether the tax reaches the creature `object`: any creature for a tax that names none, else those its selector picks.
@@ -133,6 +175,7 @@ fn payment(
     attackers: &[(ObjectId, AttackTarget)],
 ) -> Option<PayOptions> {
     let owed = total(state, attackers);
+    can_pay_life(state, player, life_total(state, attackers)).then_some(())?;
     let after = tapped(state, player, attackers)?;
     let options = payment_decision(
         &after,
@@ -156,8 +199,12 @@ pub(crate) fn declare(
     attackers: Vec<(ObjectId, AttackTarget)>,
 ) -> Result<Outcome, EngineError> {
     let owed = total(state, &attackers);
+    let life = life_total(state, &attackers);
+    if !can_pay_life(state, player, life) {
+        return Err(IllegalAnswer::AttackUnaffordable(format!("{life} life")).into());
+    }
     if owed.symbols().is_empty() {
-        return Ok(Outcome::Events(attack_events(state, player, &attackers)));
+        return Ok(Outcome::Events(made(state, player, &attackers)));
     }
     if payment(state, player, &attackers).is_none() {
         return Err(IllegalAnswer::AttackUnaffordable(owed.to_string()).into());
@@ -192,6 +239,12 @@ pub(crate) fn describe(state: &GameState, player: PlayerId, options: &mut Attack
             .iter()
             .map(|target| (*target, cost_of(state, option.object, *target)))
             .filter(|(_, cost)| !cost.symbols().is_empty())
+            .collect();
+        option.life = option
+            .defenders
+            .iter()
+            .map(|target| (*target, life_of(state, option.object, *target)))
+            .filter(|(_, life)| *life > 0)
             .collect();
     }
     if options

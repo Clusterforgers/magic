@@ -1,0 +1,24 @@
+{
+  "oracle_id": "81fe554a-5257-446c-ad53-ee45bf5edb40",
+  "name": "Vow of Flight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vow of Flight",
+      "oracle_fingerprint": "c3b19c66a5d7981164239793876efeb3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "CantAttackYou": "Both" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

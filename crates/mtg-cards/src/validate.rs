@@ -1136,6 +1136,7 @@ impl<'a> Walker<'a> {
             | Modification::AddProtectionFromChosenColor
             | Modification::LoseAbilities
             | Modification::CantAttack
+            | Modification::CantAttackYou(_)
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeBlocked
@@ -2722,12 +2723,16 @@ impl Walker<'_> {
                 who,
                 attackers,
                 mana,
+                life,
                 per,
                 ..
             } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("attackers", |w| w.selector(attackers));
                 w.at("per", |w| w.amount(per));
+                if mana.rest().symbols().is_empty() && !mana.has_x() && *life == 0 {
+                    w.problem("an attack tax costs mana, life or both");
+                }
                 if mana.has_x() {
                     w.at("mana", |w| {
                         w.problem("an attack tax is fixed mana, repeated by `per`, not an {X}");

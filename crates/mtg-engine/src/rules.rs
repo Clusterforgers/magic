@@ -142,6 +142,9 @@ pub struct AttackTax {
     pub creatures: Selector,
     /// What each taxed creature costs, counted when the rule began or the state last changed.
     pub mana: ManaCost,
+    /// The life each taxed creature costs, counted the same way.
+    #[serde(default)]
+    pub life: u32,
 }
 
 /// What a prevention shield protects and how much it prevents.
@@ -490,6 +493,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             attacked,
             attackers,
             mana,
+            life,
             per,
         } => {
             let times = usize::try_from(scope.amount(per)?.max(0)).unwrap_or(usize::MAX);
@@ -498,6 +502,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 attacked: *attacked,
                 creatures: attackers.clone(),
                 mana: repeated(mana.rest(), times),
+                life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
             })
         }
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
@@ -560,7 +565,9 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 /// Whether a rule names no player and no object, so putting it in force changes nothing.
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
-        Rule::AttackTax(tax) => tax.players.is_empty() || tax.mana.symbols().is_empty(),
+        Rule::AttackTax(tax) => {
+            tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
+        }
         Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
             named.is_empty()
         }
