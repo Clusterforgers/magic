@@ -543,7 +543,7 @@ impl Picks<'_> {
                     return None;
                 }
                 let count = o.min as usize + self.below((o.max - o.min) as usize + 1);
-                let mut left = o.legal.clone();
+                let mut left = o.c10_dice_choosable().to_vec();
                 let mut chosen = Vec::new();
                 for _ in 0..count.min(left.len()) {
                     chosen.push(left.remove(self.below(left.len())));

@@ -137,6 +137,18 @@ pub struct TargetOptions {
     pub apart: Vec<PlayerId>,
 }
 
+impl TargetOptions {
+    /// The targets a chooser may take any of together: the first legal target of each player when no two may belong to
+    /// one player, else every legal target.
+    pub fn c10_dice_choosable(&self) -> &[Target] {
+        if self.apart.is_empty() {
+            return &self.legal;
+        }
+        let each = usize::try_from(self.max).unwrap_or(usize::MAX);
+        self.legal.get(..each).unwrap_or(&self.legal)
+    }
+}
+
 /// The answer to a target decision.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -293,7 +305,7 @@ pub(crate) fn options_for(
 ) -> Option<TargetOptions> {
     let legal = legal_for(state, spec, source, controller, cause, x);
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
-    let apart = c10_dice_apart(state, spec, &legal);
+    let (legal, apart) = c10_dice_first_of_each(&legal, c10_dice_apart(state, spec, &legal));
     let amount_of = |amount: &Amount| -> Option<u32> {
         if let Amount::Fixed(n) = amount {
             return Some(u32::try_from(*n).unwrap_or(0));
@@ -433,6 +445,26 @@ fn c10_dice_apart(state: &GameState, spec: &TargetSpec, legal: &[Target]) -> Vec
             }),
         })
         .collect()
+}
+
+/// The legal targets with the first one of each player in front, in their order, and whose each is; unchanged when no
+/// player is named. A chooser that takes the first `max` of them takes one of each player.
+fn c10_dice_first_of_each(legal: &[Target], apart: Vec<PlayerId>) -> (Vec<Target>, Vec<PlayerId>) {
+    if apart.is_empty() {
+        return (legal.to_vec(), apart);
+    }
+    let mut seen = Vec::new();
+    let (mut front, mut back) = (Vec::new(), Vec::new());
+    for (target, player) in legal.iter().zip(&apart) {
+        if seen.contains(player) {
+            back.push((*target, *player));
+        } else {
+            seen.push(*player);
+            front.push((*target, *player));
+        }
+    }
+    front.extend(back);
+    front.into_iter().unzip()
 }
 
 /// The bounds of a specification chosen for each of several players: at most one target of each player who has one,

@@ -119,9 +119,19 @@ fn c10_dice_two_targets_of_one_opponent_are_refused(
     ];
     let refused = driver.answer(Answer::ChooseTargets(TargetChoice::Targets(both)));
     assert!(refused.is_err(), "two artifacts of one opponent");
-    assert!(matches!(
-        driver.decision()?.kind,
-        DecisionKind::ChooseTargets(_)
-    ));
+    let DecisionKind::ChooseTargets(options) = &driver.decision()?.kind else {
+        panic!("the targets are asked again");
+    };
+    // What a chooser may take together is one target of each opponent, and the first `max` legal ones are those.
+    let mut owners = options
+        .c10_dice_choosable()
+        .iter()
+        .map(|target| options.apart[options.legal.iter().position(|l| l == target).unwrap()])
+        .collect::<Vec<_>>();
+    assert_eq!(options.c10_dice_choosable().len(), seats - 1);
+    owners.dedup();
+    assert_eq!(owners.len(), seats - 1, "one of each opponent");
+    let firsts = options.c10_dice_choosable().to_vec();
+    driver.choose_targets(&firsts)?;
     Ok(())
 }
