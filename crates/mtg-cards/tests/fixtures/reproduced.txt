@@ -245,6 +245,7 @@ Citadel Gate
 Citanul Hierophants
 Clan Defiance
 Clash of Titans
+Clever Concealment
 Clever Lumimancer
 Cliffgate
 Clifftop Lookout
@@ -1372,6 +1373,7 @@ Teacher's Pest
 Team Pennant
 Tectonic Reformation
 Teferi's Ageless Insight
+Teferi's Protection
 Tempestra, Dame of Games
 Temporal Manipulation
 Temur Devotee
@@ -1474,6 +1476,7 @@ Unbreakable Bond
 Unclaimed Territory
 Underworld Dreams
 Underworld Rage-Hound
+Unite the Coalition
 Universal Automaton
 Universal Surveillance
 Unstable Molecule Suit

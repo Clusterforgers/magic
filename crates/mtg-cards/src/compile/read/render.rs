@@ -2239,6 +2239,17 @@ impl Writer<'_> {
     }
 
     /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".
+    /// "target creature phases out", "all permanents you control phase out": the verb agrees with its subject.
+    fn w7e_phase_out_text(&mut self, what: &Ref) -> Option<String> {
+        matches!(what, Ref::This | Ref::Target(0) | Ref::Each(_)).then_some(())?;
+        let verb = if *what == Ref::This || self.single(what) {
+            "phases out"
+        } else {
+            "phase out"
+        };
+        Some(format!("{} {verb}", self.object(what)?))
+    }
+
     fn consequence(&mut self, condition: &Condition, then: &[Effect]) -> Option<String> {
         // "if the gift was promised, all permanents you control phase out, and until your next turn, ...".
         if let Some((text, taken)) = super::w7e_phase::w7e_phased_and_protected_text(then)
@@ -2311,16 +2322,7 @@ impl Writer<'_> {
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
-            Effect::PhaseOut {
-                what: what @ (Ref::This | Ref::Target(0) | Ref::Each(_)),
-            } => {
-                let verb = if *what == Ref::This || self.single(what) {
-                    "phases out"
-                } else {
-                    "phase out"
-                };
-                format!("{} {verb}", self.object(what)?)
-            }
+            Effect::PhaseOut { what } => self.w7e_phase_out_text(what)?,
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),

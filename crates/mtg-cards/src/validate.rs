@@ -485,7 +485,12 @@ impl<'a> Walker<'a> {
 
     /// The amounts that read the optional costs paid: the kicks and the gift promised.
     fn paid_amount(&mut self, amount: &Amount) {
-        if *amount == Amount::Kicks {
+        if *amount == Amount::Devoured {
+            self.uses("Amount", "Devoured");
+            if !self.w7e_has_devour {
+                self.problem("`Devoured` needs a Devour keyword on the card");
+            }
+        } else if *amount == Amount::Kicks {
             self.uses("Amount", "Kicks");
             if !self.has_kicker {
                 self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
@@ -608,13 +613,7 @@ impl<'a> Walker<'a> {
             Amount::LowestHand(_) | Amount::LifeLostThisWay | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
             }
-            Amount::Kicks | Amount::Promised => self.paid_amount(amount),
-            Amount::Devoured => {
-                self.uses("Amount", "Devoured");
-                if !self.w7e_has_devour {
-                    self.problem("`Devoured` needs a Devour keyword on the card");
-                }
-            }
+            Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
             Amount::Mutations(of) => {
                 self.uses("Amount", "Mutations");
                 self.at("of", |w| w.reference(of, Kind::Either));

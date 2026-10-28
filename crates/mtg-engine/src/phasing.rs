@@ -293,7 +293,10 @@ mod tests {
             assert_eq!(*object, id(&game, &format!("Phaser {seat}")));
             apply(&mut game, &out);
             // Out, it is no longer found, so the next untap step only phases it in.
-            assert!(w7e_keyword_out_events(&game, PlayerId(seat as u64)).is_empty());
+            assert_eq!(
+                w7e_keyword_out_events(&game, PlayerId(seat as u64)).len(),
+                0
+            );
             assert_eq!(in_events(&game, PlayerId(seat as u64)).len(), 1);
         }
     }

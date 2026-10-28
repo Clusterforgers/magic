@@ -465,7 +465,6 @@ const RUNS: &[&str] = &[
     "Keyword.Horsemanship",
     "Keyword.Phasing",
     "Amount.Devoured",
-    "Amount.Devoured",
     "Keyword.Spectacle",
     "Keyword.UmbraArmor",
     "Keyword.Cipher",
