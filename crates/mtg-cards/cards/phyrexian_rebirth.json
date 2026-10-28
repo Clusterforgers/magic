@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6ef3c75d-6af2-4ea0-b98d-96c5d7d3af58",
+  "name": "Phyrexian Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Rebirth",
+      "oracle_fingerprint": "a28162b5047d3d4ca416f84ae7d8dbfe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Destroyed": [{ "Type": "Creature" }] },
+                      "token": {
+                        "name": "Phyrexian Horror",
+                        "types": ["Artifact", "Creature"],
+                        "subtypes": ["Phyrexian", "Horror"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

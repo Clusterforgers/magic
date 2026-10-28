@@ -1,0 +1,58 @@
+{
+  "oracle_id": "a933f443-dd53-4805-8446-72693a27cb56",
+  "name": "Path to the World Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path to the World Tree",
+      "oracle_fingerprint": "8138fa881a26c74f2667cf5606b0c62c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{U}{B}{R}{G}" }, "SacrificeSelf"],
+            "targets": [
+              { "what": "Opponent" },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              { "Draw": { "count": 2 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bear",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bear"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
