@@ -236,7 +236,7 @@ fn near_misses_of_the_counter_batch_stay_unread(#[case] text: &str) {
 #[case::plural_agreement("Each creature you control with a +1/+1 counter on it have trample.")]
 #[case::without_on_it("Each creature you control with a +1/+1 counter has trample.")]
 #[case::two_counters("Each creature you control with two +1/+1 counters on it has trample.")]
-#[case::a_chosen_kind("Each creature you control with a counter on it has trample.")]
+#[case::a_chosen_kind("Each creature you control with two counters on it has trample.")]
 #[case::no_counter_kind("Each creature you control with a stun counter on it has trample.")]
 fn near_misses_of_a_noun_with_a_counter_stay_unread(#[case] text: &str) {
     assert_eq!(static_ability(text), None, "{text}");

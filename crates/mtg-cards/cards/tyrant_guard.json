@@ -1,0 +1,30 @@
+{
+  "oracle_id": "560e6fd6-c061-44ba-b5c5-814d6a14e469",
+  "name": "Tyrant Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyrant Guard",
+      "oracle_fingerprint": "ed7ee7f48ea3d70400d1017809b9d46c",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                  },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

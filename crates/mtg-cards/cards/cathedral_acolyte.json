@@ -1,0 +1,28 @@
+{
+  "oracle_id": "85fa4ed3-14e3-4eb0-b31b-62e2088321d0",
+  "name": "Cathedral Acolyte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathedral Acolyte",
+      "oracle_fingerprint": "bd40cd8e8f8b433bbea6f107a9e8ef79",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+            },
+            "mods": [{ "AddKeyword": { "Ward": "{1}" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "EnteredThisTurn"] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

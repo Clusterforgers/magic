@@ -1,0 +1,37 @@
+{
+  "oracle_id": "726cd041-5d0b-436c-bced-9335f56c0b0d",
+  "name": "Kyler, Sigardian Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyler, Sigardian Emissary",
+      "oracle_fingerprint": "bd37899e0e3109aaf0d6c753dc5fbd83",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Human" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Human" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "AnyCounters": "This" },
+                  "toughness": { "AnyCounters": "This" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

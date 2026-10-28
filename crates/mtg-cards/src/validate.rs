@@ -439,6 +439,7 @@ impl<'a> Walker<'a> {
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::HasCounter(_)
+            | Pred::HasAnyCounter
             | Pred::ChosenColor
             | Pred::ChosenSubtype
             | Pred::In(_) => {}
@@ -507,6 +508,7 @@ impl<'a> Walker<'a> {
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
             Amount::Counters { on, .. } => self.at("on", |w| w.reference(on, Kind::Either)),
+            Amount::AnyCounters(on) => self.at("AnyCounters", |w| w.reference(on, Kind::Either)),
             Amount::Sum(parts) => {
                 for (i, part) in parts.iter().enumerate() {
                     self.amounting = Amounting::of(sharing);

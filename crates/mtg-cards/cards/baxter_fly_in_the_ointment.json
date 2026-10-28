@@ -1,0 +1,40 @@
+{
+  "oracle_id": "94551fbd-a72c-4a1f-be01-7ba1c7c03eed",
+  "name": "Baxter, Fly in the Ointment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baxter, Fly in the Ointment",
+      "oracle_fingerprint": "c9138008abd1f9e917f6e990cc9e1a5f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                  },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

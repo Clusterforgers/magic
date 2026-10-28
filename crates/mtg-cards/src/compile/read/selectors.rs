@@ -596,6 +596,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         if let Some(kind) = r.attempt(counter_on_it) {
             return Some(Pred::HasCounter(kind));
         }
+        if r.words("a counter on it") || r.words("counters on them") || r.words("counters on it") {
+            return Some(Pred::HasAnyCounter);
+        }
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
         }
@@ -702,6 +705,8 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             let words = counters::trigger_kind_text(Some(kind))?;
             format!("with {words} on it")
         }
+        Pred::HasAnyCounter if form.plural() => "with counters on them".to_owned(),
+        Pred::HasAnyCounter => "with a counter on it".to_owned(),
         Pred::Not(inner) => match &**inner {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
             Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),

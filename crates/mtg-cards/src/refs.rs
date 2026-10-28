@@ -193,6 +193,8 @@ pub enum Pred {
     HasKeyword(Keyword),
     /// Has at least one counter of the kind on it.
     HasCounter(CounterKind),
+    /// Has at least one counter of any kind on it (CR 122.1).
+    HasAnyCounter,
     /// Has exactly this card name.
     Named(String),
     /// Is the colour the controller of the source chose as the source entered the battlefield.

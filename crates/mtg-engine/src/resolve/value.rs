@@ -142,6 +142,15 @@ impl Counted<'_> {
             Counted::Card(held) => held.get(kind).copied().unwrap_or(0),
         }
     }
+
+    /// How many counters there are of every kind together (CR 122.1).
+    fn c10_any_total(self) -> u32 {
+        match self {
+            Counted::Live(permanent) => permanent.counters().map(|(_, count)| count).sum(),
+            Counted::Shot(held) => held.iter().map(|(_, count)| *count).sum(),
+            Counted::Card(held) => held.values().sum(),
+        }
+    }
 }
 
 /// The X a spell on the stack was cast with; 0 for anything else (CR 202.3e).
@@ -1005,6 +1014,7 @@ impl<'a> Scope<'a> {
                     .is_some_and(|card| keywords::has_keyword(state, card.id(), keyword)),
             },
             Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
+            Pred::HasAnyCounter => seen.counters.c10_any_total() > 0,
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
             Pred::ChosenColor => {
                 matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
@@ -1107,6 +1117,20 @@ impl<'a> Scope<'a> {
                         Target::Object(object) => self
                             .seen(object)
                             .map_or(0, |seen| i64::from(seen.counters.of(counter))),
+                    };
+                }
+                total
+            }
+            Amount::AnyCounters(on) => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    total += match named {
+                        Target::Player(player) => self.state.player(player).map_or(0, |held| {
+                            i64::from(held.counters().map(|(_, count)| count).sum::<u32>())
+                        }),
+                        Target::Object(object) => self
+                            .seen(object)
+                            .map_or(0, |seen| i64::from(seen.counters.c10_any_total())),
                     };
                 }
                 total
@@ -2140,6 +2164,18 @@ mod tests {
     }
 
     #[rstest]
+    #[case::c10_any_two_kinds(MY_BEAR, 3)]
+    #[case::c10_any_one_kind(r#"{"Each":[{"Named":"Ogre"}]}"#, 1)]
+    #[case::c10_any_none_on_the_source("\"This\"", 0)]
+    #[case::c10_any_all_objects(r#"{"Each":[{"Type":"Creature"}]}"#, 4)]
+    #[case::c10_any_a_player(r#""You""#, 3)]
+    #[case::c10_any_each_player(r#""EachPlayer""#, 7)]
+    fn c10_any_counters_add_up_every_kind(#[case] on: &str, #[case] expected: i64) {
+        let amount: Amount = serde_json::from_str(&format!(r#"{{"AnyCounters":{on}}}"#)).unwrap();
+        assert_eq!(scope(&counted()).amount(&amount), Ok(expected));
+    }
+
+    #[rstest]
     #[case::a_plus_counter(r#"[{"HasCounter":"+1/+1"}]"#, &["Bear 0"])]
     #[case::a_charge_counter(r#"[{"HasCounter":"charge"}]"#, &["Bear 0"])]
     #[case::a_minus_counter(r#"[{"HasCounter":"-1/-1"}]"#, &["Ogre 1"])]
@@ -2147,6 +2183,9 @@ mod tests {
     #[case::no_plus_counter(r#"[{"Type":"Creature"},{"Not":{"HasCounter":"+1/+1"}}]"#, &["Ogre 1", "Bear 1"])]
     #[case::either_kind(r#"[{"AnyOf":[{"HasCounter":"+1/+1"},{"HasCounter":"-1/-1"}]}]"#, &["Bear 0", "Ogre 1"])]
     #[case::with_the_rest_of_the_selector(r#"[{"ControlledBy":"Opponents"},{"HasCounter":"+1/+1"}]"#, &[])]
+    #[case::c10_any_kind(r#"["HasAnyCounter"]"#, &["Bear 0", "Ogre 1"])]
+    #[case::c10_any_none(r#"[{"Type":"Creature"},{"Not":"HasAnyCounter"}]"#, &["Bear 1"])]
+    #[case::c10_any_of_yours(r#"[{"ControlledBy":"You"},"HasAnyCounter"]"#, &["Bear 0"])]
     fn a_selector_over_counters_matches_the_permanents_that_hold_some(
         #[case] json: &str,
         #[case] expected: &[&str],

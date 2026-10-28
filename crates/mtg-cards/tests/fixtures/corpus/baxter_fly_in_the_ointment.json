@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4",
+  "oracle_id": "94551fbd-a72c-4a1f-be01-7ba1c7c03eed",
+  "multiverse_ids": [],
+  "resource_id": "DD4FB7B3A84EC801D2D44730DC7FCD03AC7789581892A5F37EAE825923D7DE7A",
+  "mtgo_id": 147349,
+  "arena_id": 100692,
+  "tcgplayer_id": 679089,
+  "cardmarket_id": 873451,
+  "name": "Baxter, Fly in the Ointment",
+  "lang": "en",
+  "released_at": "2026-03-06",
+  "uri": "https://api.scryfall.com/cards/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4",
+  "scryfall_uri": "https://scryfall.com/card/tmc/10/baxter-fly-in-the-ointment?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:56:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.jpg?1783904171",
+    "normal": "https://cards.scryfall.io/normal/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.jpg?1783904171",
+    "large": "https://cards.scryfall.io/large/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.jpg?1783904171",
+    "png": "https://cards.scryfall.io/png/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.png?1783904171",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.jpg?1783904171",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.jpg?1783904171",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.webp?1783904171",
+    "grid": "https://cards.scryfall.io/grid/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.webp?1783904171",
+    "display": "https://cards.scryfall.io/display/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.webp?1783904171",
+    "art": "https://cards.scryfall.io/art/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.webp?1783904171",
+    "crop": "https://cards.scryfall.io/crop/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.webp?1783904171",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/5/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4.jpg?1783904171"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Insect Mutant Scientist",
+  "oracle_text": "Whenever Baxter enters or attacks, each creature you control with a counter on it gains flying until end of turn.\nWhenever you draw a card, put a +1/+1 counter on Baxter.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "178a07bb-cd54-4443-8b62-675e0c52cfe3",
+  "set": "tmc",
+  "set_name": "Teenage Mutant Ninja Turtles Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/178a07bb-cd54-4443-8b62-675e0c52cfe3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f5ee290f-03cd-48a8-ba6e-d934cb3f4ff4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A94551fbd-a72c-4a1f-be01-7ba1c7c03eed&unique=prints",
+  "collector_number": "10",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"What am I? I am nothing anymore! A FREAK! I'll never be taken seriously as a scientist again!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michele Giorgi",
+  "artist_ids": [
+    "60ff7459-c81d-41e6-bec1-4264c2161014"
+  ],
+  "illustration_id": "3cb20301-517d-4058-b5e2-d3eb2ed72a7c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7512,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "1.73",
+    "tix": "1.64"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBaxter%252C%2BFly%2Bin%2Bthe%2BOintment",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBaxter%252C%2BFly%2Bin%2Bthe%2BOintment",
+    "edhrec": "https://edhrec.com/route/?cc=Baxter%2C+Fly+in+the+Ointment"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F679089%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=873451&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/147349?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

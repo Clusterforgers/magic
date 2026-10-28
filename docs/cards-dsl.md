@@ -177,11 +177,11 @@ Keyword     = Flying | Reach | FirstStrike | ... | Shroud | Protection(Selector)
 Ref       = You | Opponents | EachPlayer | This | Target(i) | Triggering | Dealer | Attached | AttachedPlayer | Monarch | Defending | Attacked | MostLife | Paid | Bound(name)
           | ControllerOf(Ref) | OwnerOf(Ref) | Each(Selector)
 Selector  = [Pred]                       all must hold; the zone is Battlefield unless In(zone) says otherwise (Spell means the stack); [] matches everything there
-Pred      = This | Other | Is(Ref) | SharesSubtype(Ref) | ExiledWith(Ref) | EncodedWith(Ref) | Type | Supertype | Subtype | Color | Colorless | Token | Commander | Spell | Ability(Activated|Triggered) | Tapped | Untapped | Monstrous
+Pred      = This | Other | Is(Ref) | SharesSubtype(Ref) | ExiledWith(Ref) | EncodedWith(Ref) | Type | Supertype | Subtype | Color | Colorless | Token | Commander | Spell | Ability(Activated|Triggered) | Tapped | Untapped | Monstrous | HasAnyCounter
           | Crewed(Ref) | Saddled(Ref) | DamagedBy(Ref) | SameCard(Ref) | EnteredThisTurn | AttackedThisTurn | Attacking | Blocking | ControlledBy(Ref) | OwnedBy(Ref) | In(zone) | CastFrom(zone) | HasKeyword | HasCounter(kind) | Named
           | Compare{stat,op,to} | Not(Pred) | AnyOf([Pred])
 TargetSpec{ what: AnyTarget | Player | Opponent | Object(Selector) | Either([..]), bounds = 1..1, divide?: Amount }  // min and max are amounts: "X target creatures" is min X, max X
-Amount    = n | X | Kicks | Count(Selector) | Stat{of,stat} | Life(Ref) | CommanderCasts(Ref) | Counters{on,counter} | Sum([Amount]) | Times{by,of} | Half{of,up}
+Amount    = n | X | Kicks | Count(Selector) | Stat{of,stat} | Life(Ref) | CommanderCasts(Ref) | Counters{on,counter} | AnyCounters(Ref) | Sum([Amount]) | Times{by,of} | Half{of,up}
           | Divided | EvenShare(Amount) | TargetCount(i) | Devotion([Color]) | Greatest{of,stat} | Total{of,stat}
           | CardTypes(Selector) | Players(Ref) | LowestLife(Ref) | HighestLife(Ref) | LowestHand(Ref) | LifeLostThisWay | Party(Ref) | Triggering
 Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | KickedWith(Cost) | AdditionalCostPaid | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Foretold|Escape|Dash|Bestow|Blitz|Prowl|Awaken|Free) | ManaSpent(ManaType) | YourTurn | Performed

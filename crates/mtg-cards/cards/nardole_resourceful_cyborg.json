@@ -1,0 +1,29 @@
+{
+  "oracle_id": "81c515b7-9174-4b34-ad07-4144e3dbaaac",
+  "name": "Nardole, Resourceful Cyborg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nardole, Resourceful Cyborg",
+      "oracle_fingerprint": "af8293728f6e021f427989c0e26be9bf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "times": { "AnyCounters": "This" },
+                  "only": [{ "Spell": { "without": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Undying" },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

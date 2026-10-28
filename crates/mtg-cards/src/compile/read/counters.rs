@@ -68,6 +68,9 @@ pub(super) fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
 
 /// "charge counter on ~", "+1/+1 counter on it": the counters on the card, as "for each" counts them.
 pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
+    if let Some(any) = r.attempt(|r| c10_any_on_source(r, "counter on")) {
+        return Some(any);
+    }
     let counter = kind(r)?;
     r.need("counter on")?;
     (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(Amount::Counters {
@@ -76,8 +79,18 @@ pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
     })
 }
 
+/// "counter on ~", "counters on it": the counters of every kind on the card (CR 122.1).
+fn c10_any_on_source(r: &mut Reader<'_>, words: &str) -> Option<Amount> {
+    r.need(words)?;
+    (r.source() || (r.it == Some(Ref::This) && r.word("it")))
+        .then_some(Amount::AnyCounters(Ref::This))
+}
+
 /// "charge counters on ~", "+1/+1 counters on this creature": the counters on the card, as "the number of" counts them.
 pub(super) fn counted_plural(r: &mut Reader<'_>) -> Option<Amount> {
+    if let Some(any) = r.attempt(|r| c10_any_on_source(r, "counters on")) {
+        return Some(any);
+    }
     let counter = kind(r)?;
     r.need("counters on")?;
     (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(Amount::Counters {

@@ -114,6 +114,7 @@ Batterskull
 Battle Sliver
 Battlefield Forge
 Baxter Building
+Baxter, Fly in the Ointment
 Bear Umbra
 Beast Within
 Beastmaster Ascension
@@ -194,6 +195,7 @@ Cascading Cataracts
 Cast Out
 Cathars' Crusade
 Cathartic Reunion
+Cathedral Acolyte
 Cavern Whisperer
 Cayth, Famed Mechanist
 Celestial Archon
@@ -596,6 +598,7 @@ Hero of Precinct One
 Hero's Heirloom
 Heronblade Elite
 Hidden Dragonslayer
+Hidden Hideout
 Highspire Artisan
 History of Benalia
 Holdout Settlement
@@ -694,7 +697,9 @@ Krosan Cloudscraper
 Krosan Colossus
 Krosan Grip
 Krosan Verge
+Kulrath Knight
 Kydele, Chosen of Kruphix
+Kyler, Sigardian Emissary
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
@@ -825,6 +830,7 @@ Nameless Inversion
 Nanogene Conversion
 Nantuko Husk
 Nantuko Vigilante
+Nardole, Resourceful Cyborg
 Necropolis Regent
 Necroskitter
 Nessian Asp
@@ -955,6 +961,7 @@ Rampant Growth
 Rancor
 Ransom Note
 Ravenous Leucrocota
+Ray Fillet, Wave Warrior
 Reality Shift
 Realm Seekers
 Reap the Past
@@ -1306,6 +1313,7 @@ Twilight Mire
 Twincast
 Twinflame
 Tyranid Prime
+Tyrant Guard
 Tyrant's Familiar
 Uktabi Efreet
 Ulamog's Crusher
@@ -1346,6 +1354,7 @@ Vestige of Emrakul
 Vesuva
 Veteran's Powerblade
 Vibranium Strike Gauntlets
+Village Pillagers
 Village Rites
 Viridian Corrupter
 Visionary Augmenter
