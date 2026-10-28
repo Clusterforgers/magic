@@ -42,7 +42,6 @@ const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
 
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
-
 fn tag_of<T: Serialize>(value: &T) -> String {
     match serde_json::to_value(value) {
         Ok(serde_json::Value::String(name)) => name,
