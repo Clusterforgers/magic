@@ -56,6 +56,14 @@ fn the_wordings_read_into_the_dsl_and_write_back(
     "Whenever enchanted creature attacks, you create a Treasure token.",
     ClauseKind::Triggered
 )]
+#[case::goaded_creatures_cant_block(
+    "Goaded creatures your opponents control can't block.",
+    ClauseKind::Static
+)]
+#[case::w6d_x_in_cost(
+    "Whenever you cast a spell with {X} in its mana cost, draw a card.",
+    ClauseKind::Triggered
+)]
 fn goad_reads_and_writes_back(#[case] text: &str, #[case] kind: ClauseKind) {
     golden(text, kind, false);
 }
@@ -95,10 +103,6 @@ fn a_goaded_creature_of_a_static_reads_the_goaded_modification(
 #[case::goaded_before_the_pump("Enchanted creature is goaded and gets +2/+2.", ClauseKind::Static)]
 #[case::no_and("Enchanted creature gets +2/+2, is goaded.", ClauseKind::Static)]
 #[case::the_card_itself("This creature gets +2/+2 and is goaded.", ClauseKind::Static)]
-#[case::goaded_creatures_cant_block(
-    "Goaded creatures your opponents control can't block.",
-    ClauseKind::Static
-)]
 fn near_misses_stay_with_the_table(#[case] text: &str, #[case] kind: ClauseKind) {
     assert_eq!(clause(text, kind, false), None, "{text}");
 }
