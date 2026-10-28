@@ -1,0 +1,47 @@
+{
+  "oracle_id": "17a59d3d-9e01-48cd-bb4a-3eaaa077751c",
+  "name": "Marchesa, the Black Rose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marchesa, the Black Rose",
+      "oracle_fingerprint": "c6813ffd0f6e5425c49f2051870355d2",
+      "abilities": [
+        { "Keyword": "Dethrone" },
+        {
+          "Static": {
+            "affected": { "Each": ["Other", { "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Dethrone" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

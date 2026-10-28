@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "ad79ee29-dd86-484f-bd70-8ecd9d90ef75",
+  "oracle_id": "9138a768-d01d-4603-9bae-d3bff6cd2f61",
+  "multiverse_ids": [],
+  "resource_id": "01C4625B38B65F4798E0D4BA05B39040534034959FC9840889BDCC7A77B89120",
+  "mtgo_id": 150845,
+  "tcgplayer_id": 697632,
+  "cardmarket_id": 891860,
+  "name": "Taunt from the Rampart",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/ad79ee29-dd86-484f-bd70-8ecd9d90ef75",
+  "scryfall_uri": "https://scryfall.com/card/msc/188/taunt-from-the-rampart?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:40:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.jpg?1783903223",
+    "normal": "https://cards.scryfall.io/normal/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.jpg?1783903223",
+    "large": "https://cards.scryfall.io/large/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.jpg?1783903223",
+    "png": "https://cards.scryfall.io/png/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.png?1783903223",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.jpg?1783903223",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.jpg?1783903223",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.webp?1783903223",
+    "grid": "https://cards.scryfall.io/grid/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.webp?1783903223",
+    "display": "https://cards.scryfall.io/display/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.webp?1783903223",
+    "art": "https://cards.scryfall.io/art/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.webp?1783903223",
+    "crop": "https://cards.scryfall.io/crop/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.webp?1783903223",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/d/ad79ee29-dd86-484f-bd70-8ecd9d90ef75.jpg?1783903223"
+  },
+  "mana_cost": "{3}{R}{W}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Goad all creatures your opponents control. Until your next turn, those creatures can't block. (Until your next turn, those creatures attack each combat if able and attack a player other than you if able.)",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Goad"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ad79ee29-dd86-484f-bd70-8ecd9d90ef75/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9138a768-d01d-4603-9bae-d3bff6cd2f61&unique=prints",
+  "collector_number": "188",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Wotta revoltin' development.\"\n—The Thing, Ben Grimm",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Thomas Chamberlain-Keen",
+  "artist_ids": [
+    "0ff7b311-8dc5-4151-9ef0-143557dfd8fd"
+  ],
+  "illustration_id": "9fe65a61-f380-465c-82af-cd814a2335cd",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 1956,
+  "prices": {
+    "usd": "1.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.26",
+    "eur_foil": null,
+    "tix": "0.19"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTaunt%2Bfrom%2Bthe%2BRampart",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTaunt%2Bfrom%2Bthe%2BRampart",
+    "edhrec": "https://edhrec.com/route/?cc=Taunt+from+the+Rampart"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697632%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891860&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150845?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
