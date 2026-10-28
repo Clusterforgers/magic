@@ -428,6 +428,39 @@ fn c8_vote_a_won_flip_triggers_for_the_players_the_pattern_names(
     }
 }
 
+/// Dice rolled in one step by the players of `rolls` as (player, result) on d6.
+fn c11e_rolls(rolls: &[(PlayerId, u32)]) -> Vec<Event> {
+    rolls
+        .iter()
+        .map(|(player, result)| Event::DieRolled {
+            player: *player,
+            sides: 6,
+            result: *result,
+        })
+        .collect()
+}
+
+#[rstest]
+#[case::my_one_die(r#"{"DiceRolled":{"who":"You"}}"#, &[(ME, 3)], 1)]
+#[case::my_two_dice_once(r#"{"DiceRolled":{"who":"You"}}"#, &[(ME, 3), (ME, 5)], 1)]
+#[case::their_die_not_mine(r#"{"DiceRolled":{"who":"You"}}"#, &[(FOE, 3)], 0)]
+#[case::each_player_rolls(r#"{"DiceRolled":{}}"#, &[(ME, 3), (FOE, 4)], 2)]
+#[case::a_highest_result(r#"{"DiceRolled":{"who":"You","highest":true}}"#, &[(ME, 6)], 1)]
+#[case::each_highest_die(r#"{"DiceRolled":{"who":"You","highest":true}}"#, &[(ME, 6), (ME, 6)], 2)]
+#[case::not_the_highest(r#"{"DiceRolled":{"who":"You","highest":true}}"#, &[(ME, 5), (ME, 1)], 0)]
+#[case::their_highest(r#"{"DiceRolled":{"who":"You","highest":true}}"#, &[(FOE, 6)], 0)]
+fn c11e_a_roll_triggers_once_for_each_roll_or_each_highest_die(
+    #[case] when: &str,
+    #[case] rolls: &[(PlayerId, u32)],
+    #[case] expected: usize,
+) {
+    let found = fires(&board(when), &c11e_rolls(rolls));
+    assert_eq!(found.len(), expected);
+    if let Some(first) = found.first() {
+        assert_eq!(first.cause.subjects, vec![Target::Player(rolls[0].0)]);
+    }
+}
+
 #[rstest]
 #[case::i_proliferate(r#"{"Proliferated":{"who":"You"}}"#, ME, 1)]
 #[case::they_proliferate_not_me(r#"{"Proliferated":{"who":"You"}}"#, FOE, 0)]

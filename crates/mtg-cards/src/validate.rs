@@ -467,10 +467,12 @@ impl<'a> Walker<'a> {
         self.at(name, |w| w.reference(who, Kind::Player));
     }
 
-    /// The fewest cards in a hand of the players a reference names, and the life lost by the resolving ability.
+    /// The fewest cards in a hand of the players a reference names, and the life lost or the dice rolled by the resolving
+    /// ability.
     fn hand_or_life_lost(&mut self, amount: &Amount) {
         match amount {
             Amount::LowestHand(who) => self.player_amount("LowestHand", who),
+            Amount::DieResult(_) => self.uses("Amount", "DieResult"),
             _ => self.uses("Amount", "LifeLostThisWay"),
         }
     }
@@ -567,8 +569,9 @@ impl<'a> Walker<'a> {
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
-            Amount::LowestHand(_) | Amount::LifeLostThisWay => self.hand_or_life_lost(amount),
-            Amount::DieResult(_) => self.uses("Amount", "DieResult"),
+            Amount::LowestHand(_) | Amount::LifeLostThisWay | Amount::DieResult(_) => {
+                self.hand_or_life_lost(amount);
+            }
             Amount::Kicks | Amount::Promised => self.paid_amount(amount),
             Amount::Mutations(of) => {
                 self.uses("Amount", "Mutations");
@@ -584,12 +587,15 @@ impl<'a> Walker<'a> {
             }
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::Party(who) => self.player_amount("Party", who),
-            Amount::Triggering => {
-                self.uses("Amount", "Triggering");
-                if !self.scope.in_trigger {
-                    self.problem("`Triggering` is only valid in a triggered ability");
-                }
-            }
+            Amount::Triggering => self.c11e_triggering(),
+        }
+    }
+
+    /// The amount of the event, which only a triggered ability has.
+    fn c11e_triggering(&mut self) {
+        self.uses("Amount", "Triggering");
+        if !self.scope.in_trigger {
+            self.problem("`Triggering` is only valid in a triggered ability");
         }
     }
 
@@ -1555,13 +1561,22 @@ impl Walker<'_> {
 
     /// `RollDice`: a die of at least two faces and rows that each hold a range of totals; several dice only for a choice
     /// of one result, which has no table and adds nothing.
-    fn roll_dice(&mut self, who: &Ref, sides: u32, (dice, choose): (u32, bool), plus: &Amount, results: &[DieRow]) {
+    fn roll_dice(
+        &mut self,
+        who: &Ref,
+        sides: u32,
+        (dice, choose): (u32, bool),
+        plus: &Amount,
+        results: &[DieRow],
+    ) {
         self.at("who", |w| w.reference(who, Kind::Player));
         if sides < 2 {
             self.problem("a die has at least two sides");
         }
         if choose != (dice > 1) {
-            self.problem("a choice of one result is among two or more dice, and only a choice rolls several");
+            self.problem(
+                "a choice of one result is among two or more dice, and only a choice rolls several",
+            );
         }
         if choose && (!results.is_empty() || !plus.is_zero()) {
             self.problem("a chosen result has no table and adds nothing");
@@ -3261,6 +3276,25 @@ mod tests {
             .into_iter()
             .map(|p| format!("{}: {}", p.path, p.message))
             .collect()
+    }
+
+    #[rstest]
+    #[case::a_choice_of_two(r#""dice":2,"choose":true,"results":[]"#, 0)]
+    #[case::one_die_with_no_table(r#""results":[]"#, 0)]
+    #[case::two_dice_without_a_choice(r#""dice":2,"results":[]"#, 1)]
+    #[case::a_choice_of_one_die(r#""choose":true,"results":[]"#, 1)]
+    #[case::a_choice_with_a_table(
+        r#""dice":2,"choose":true,"results":[{"from":1,"effects":[{"Draw":{}}]}]"#,
+        1
+    )]
+    fn c11e_several_dice_are_only_a_choice_of_one_result_with_no_table(
+        #[case] fields: &str,
+        #[case] expected: usize,
+    ) {
+        let json = format!(
+            r#"{{"Spell":{{"effects":[{{"RollDice":{{"sides":6,{fields}}}}},{{"Draw":{{"count":{{"DieResult":"Chosen"}}}}}}]}}}}"#
+        );
+        assert_eq!(problems(&json).len(), expected, "{json}");
     }
 
     #[test]

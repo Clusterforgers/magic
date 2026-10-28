@@ -481,13 +481,21 @@ fn c11e_named_in_turn(text: &str, saids: &[Vec<String>]) -> Vec<String> {
                     .collect();
                 // The other result of a roll is said in a sentence that opens with "Then".
                 if said.iter().any(|said| said == "the other result") {
-                    let opened: Vec<String> = forms.iter().filter_map(|form| c11e_then(form)).collect();
+                    let opened: Vec<String> =
+                        forms.iter().filter_map(|form| c11e_then(form)).collect();
                     forms.extend(opened);
                 }
                 forms.dedup();
                 forms
                     .into_iter()
-                    .map(|form| format!("{}{}{}", &text[..*start], form.trim_end_matches('.'), &text[*end..]))
+                    .map(|form| {
+                        format!(
+                            "{}{}{}",
+                            &text[..*start],
+                            form.trim_end_matches('.'),
+                            &text[*end..]
+                        )
+                    })
                     .collect::<Vec<_>>()
             })
             .collect();
@@ -500,7 +508,11 @@ fn c11e_then(sentence: &str) -> Option<String> {
     let body = sentence.strip_prefix(' ')?;
     let mut letters = body.chars();
     let first = letters.next()?;
-    Some(format!(" Then {}{}", first.to_lowercase(), letters.as_str()))
+    Some(format!(
+        " Then {}{}",
+        first.to_lowercase(),
+        letters.as_str()
+    ))
 }
 
 /// The wordings of an ability with one characteristic of an object or one count as its amount, in the sentence that

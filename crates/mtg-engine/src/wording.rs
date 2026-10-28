@@ -446,7 +446,11 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         }
         TriggerPattern::DiceRolled { who: by, highest } => {
             let (name, s) = who(by);
-            let what = if *highest { "a die's highest natural result" } else { "one or more dice" };
+            let what = if *highest {
+                "a die's highest natural result"
+            } else {
+                "one or more dice"
+            };
             (format!("{name} roll{s} {what}"), false)
         }
         TriggerPattern::Amassed { who: by } => {

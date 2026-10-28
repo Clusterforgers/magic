@@ -27,7 +27,11 @@ fn c11e_distinct(rolled: &[u32]) -> Vec<u32> {
 }
 
 /// The roller chooses one of the numbers rolled ("choose one result"); dice that all rolled the same ask nothing.
-fn c11e_chosen_last(cx: &Cx<'_>, player: PlayerId, rolled: &[u32]) -> Result<Optioned, ResolveError> {
+fn c11e_chosen_last(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    rolled: &[u32],
+) -> Result<Optioned, ResolveError> {
     let options = c11e_distinct(rolled)
         .into_iter()
         .map(|result| ChoiceOption::Label(result.to_string()))
@@ -112,7 +116,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a roll is a number from 1 to the sides from the game's random stream (the same seed gives the same number and the seeds give every face), logged for the player who rolled, and the step enters the first row of the table that holds the number plus the amount added, none when no row does; a player who has left the game rolls nothing, and another effect is refused by name.
+    //! Goal: a roll is a number from 1 to the sides from the game's random stream (the same seed gives the same number and the seeds give every face), logged for the player who rolled, and the step enters the first row of the table that holds the number plus the amount added, none when no row does; two dice with a choice ask between the different numbers and log the chosen one last; a player who has left the game rolls nothing, and another effect is refused by name.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -223,6 +227,66 @@ mod tests {
         };
         assert_eq!(events.len(), 0);
         assert_eq!(next, Next::Sibling);
+    }
+
+    const C11E_TWO_D6: &str = r#"{"RollDice":{"sides":6,"dice":2,"choose":true,"results":[]}}"#;
+
+    /// Two d6 with a choice in the game of `seed`, with the answers given so far.
+    fn c11e_choose(seed: u64, journal: Vec<(PlayerId, crate::choose::Choice)>) -> Run {
+        let game = game(seed);
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving {
+            journal,
+            ..Resolving::begin(source.id())
+        };
+        let cx = Cx {
+            scope: Scope::announcing(&game, ME, source.reference()),
+            resolving: &resolving,
+        };
+        run(&cx, &serde_json::from_str(C11E_TWO_D6).unwrap()).unwrap()
+    }
+
+    fn c11e_results(run: &Run) -> Vec<u32> {
+        let Run::Done { events, .. } = run else {
+            panic!("the roll asks: {run:?}");
+        };
+        events
+            .iter()
+            .map(|event| match event {
+                Event::DieRolled { result, .. } => *result,
+                other => panic!("{other:?}"),
+            })
+            .collect()
+    }
+
+    #[rstest]
+    #[case::the_first_option(0)]
+    #[case::the_second_option(1)]
+    fn a_choice_of_one_result_asks_between_different_numbers_and_logs_the_chosen_last(
+        #[case] answer: usize,
+    ) {
+        for seed in 0..32 {
+            let Run::Ask(decision) = c11e_choose(seed, Vec::new()) else {
+                // Both dice rolled the same: nothing to choose, and both are logged.
+                let rolled = c11e_results(&c11e_choose(seed, Vec::new()));
+                assert_eq!((rolled.len(), rolled[0]), (2, rolled[1]), "seed {seed}");
+                continue;
+            };
+            let crate::decision::DecisionKind::ChooseOption(options) = decision.kind else {
+                panic!("a choice of option: {decision:?}");
+            };
+            assert_eq!(options.options.len(), 2, "seed {seed}");
+            let rolled = c11e_results(&c11e_choose(
+                seed,
+                vec![(ME, crate::choose::Choice::Option(answer))],
+            ));
+            assert_eq!(
+                options.options[answer],
+                ChoiceOption::Label(rolled[1].to_string()),
+                "seed {seed}: the chosen result is logged last"
+            );
+            assert_ne!(rolled[0], rolled[1]);
+        }
     }
 
     #[test]

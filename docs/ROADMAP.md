@@ -29,7 +29,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Cast ways and zones: (c5e), (c2l3), (r2de-b), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8j), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
-- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc), (r1aueb).
+- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2ea), (r2dge).
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
@@ -188,7 +188,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1ac) Token wordings left: tokens for other players, counts of mana spent or damage dealt, keywords with a parameter beside a quote; frees about 20 cards (Death by Dragons, Skrelv's Hive, Brass's Bounty)
 - [ ] (r1aufb) Targets for each opponent or player left: without "up to one", a chosen creature each, the pass's player named again; frees about 15 cards (Hideous Taskmaster, Windgrace's Judgment, Guff Rewrites History)
 - [ ] (r1auk) Reveal or dig until X cards or in another player's library, with free casts and the rest on the bottom; frees about 6 cards (Dazzling Sphinx, Gríma, Old Stickfingers)
-- [~] (r1aueb) (r1aueb-dice-results) Die results: "the result" as an amount, several dice with a choice of result, table rows after an amount or a trigger, roll triggers; frees about 25 cards (Clay Golem, Wild Endeavor, Chaos Dragon)
+- [ ] (r1auec) Die results left: a roll in a cost (Clay Golem), "if the result is" conditions (Arden Angel, Sword of Hours), each player rolls and the highest result (Chaos Dragon), X dice and their total (Neverwinter Hydra, Luck Bobblehead), dice ignored or added (Berserker's Frenzy, Barbarian Class), "roll a 4 or higher" triggers (Mr. House) and table rows after an amount; frees about 15 cards
+- [ ] (r1aued) Endeavors left: a search for a number of lands, power at least an amount, a return with that many counters, a free cast up to a mana value, "have ~ deal damage to itself"; frees 5 cards (Wild, Valiant, Grave and Arcane Endeavor, Vrondiss)
 - [ ] (r1aui) Coins left: lose triggers, stop flipping, counted flips and heads, "Otherwise" after a flip; frees about 11 cards (Krark, the Thumbless, Fiery Gambit, Ral Zarek)
 - [ ] (r1auh) Votes left: tallies as amounts, more than two choices, extra votes, voting triggers, objects and secret or villainous choices; frees about 22 cards (Orchard Elemental, Council Guardian, Tivit)
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)

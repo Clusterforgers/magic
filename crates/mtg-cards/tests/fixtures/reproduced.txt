@@ -846,6 +846,7 @@ Nardole, Resourceful Cyborg
 Necropolis Regent
 Necroskitter
 Nessian Asp
+Netherese Puzzle-Ward
 Nettlecyst
 New Horizons
 Niblis of Frost
@@ -982,6 +983,7 @@ Realm Seekers
 Reap the Past
 Reassembling Skeleton
 Reaver Titan
+Reckless Endeavor
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit

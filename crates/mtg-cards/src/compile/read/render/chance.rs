@@ -57,10 +57,7 @@ impl Writer<'_> {
                 dice: 2,
                 choose: true,
                 ..
-            } => Some((
-                vec![format!("roll two d{sides} and choose one result")],
-                1,
-            )),
+            } => Some((vec![format!("roll two d{sides} and choose one result")], 1)),
             Effect::Vote {
                 options: VoteFor::Named(names),
                 secret,

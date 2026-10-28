@@ -321,15 +321,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Bolstered { .. }
         | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
-        // Each random pick, roll and flip spends a substream of the generator, as a shuffle does.
-        Event::ChosenAtRandom { .. } | Event::CoinFlipped { .. } => {
-            state.rng_index += 1;
-        }
-        Event::DieRolled { result, .. } => {
-            state.rng_index += 1;
-            if let Some(resolving) = state.resolving.as_mut() {
-                resolving.rolled.push(*result);
-            }
+        Event::ChosenAtRandom { .. } | Event::DieRolled { .. } | Event::CoinFlipped { .. } => {
+            c11e_draw_random(state, event);
         }
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
         Event::PriorityGranted { player } => {
@@ -504,6 +497,15 @@ fn change_life(
             Ok(())
         }
         _ => Err(invalid(format!("{id:?} cannot change life by {amount}"))),
+    }
+}
+
+/// A random pick, roll or flip spends a substream of the generator, as a shuffle does; a die rolled while a spell or
+/// ability resolves is kept for "the result".
+fn c11e_draw_random(state: &mut GameState, event: &Event) {
+    state.rng_index += 1;
+    if let (Event::DieRolled { result, .. }, Some(resolving)) = (event, state.resolving.as_mut()) {
+        resolving.rolled.push(*result);
     }
 }
 

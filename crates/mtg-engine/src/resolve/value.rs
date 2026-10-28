@@ -10,7 +10,9 @@ use std::collections::BTreeMap;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TurnTally};
+use mtg_cards::value::{
+    Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TurnTally,
+};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -1839,6 +1841,36 @@ mod tests {
         let game = game();
         let amount: Amount = serde_json::from_str(json).unwrap();
         assert_eq!(scope(&game).amount(&amount), Ok(expected));
+    }
+
+    #[rstest]
+    #[case::no_roll_yet(&[], [0, 0, 0])]
+    #[case::one_die(&[4], [4, 4, 0])]
+    #[case::the_chosen_die_last(&[2, 5], [5, 5, 2])]
+    #[case::a_later_roll(&[2, 5, 6], [6, 6, 5])]
+    fn c11e_a_die_result_reads_the_dice_the_resolution_logged(
+        #[case] rolls: &[u32],
+        #[case] expected: [i64; 3],
+    ) {
+        let mut game = game();
+        let source = game.zone(Zone::Battlefield)[0];
+        game.resolving = Some(crate::resolve::Resolving::begin(source));
+        for result in rolls {
+            let rolled = Event::DieRolled {
+                player: PlayerId(0),
+                sides: 6,
+                result: *result,
+            };
+            apply_event(&mut game, &rolled).unwrap();
+        }
+        let read = |which: &str| {
+            scope(&game)
+                .amount(&serde_json::from_str(&format!(r#"{{"DieResult":"{which}"}}"#)).unwrap())
+        };
+        assert_eq!(
+            [read("Only"), read("Chosen"), read("Other")],
+            expected.map(Ok)
+        );
     }
 
     #[test]

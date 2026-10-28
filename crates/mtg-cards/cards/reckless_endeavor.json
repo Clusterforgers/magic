@@ -1,0 +1,32 @@
+{
+  "oracle_id": "928bf0d9-89be-462d-aeb7-74a65e95535c",
+  "name": "Reckless Endeavor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Endeavor",
+      "oracle_fingerprint": "9a3934c5ea7fe51290cf78589f16f59b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RollDice": { "sides": 12, "dice": 2, "choose": true, "results": [] } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": { "DieResult": "Chosen" }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "DieResult": "Other" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
