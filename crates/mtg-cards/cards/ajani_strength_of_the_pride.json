@@ -1,0 +1,90 @@
+{
+  "oracle_id": "c3974ec7-7af0-4b65-baf6-4c1c4fe8a5c4",
+  "name": "Ajani, Strength of the Pride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani, Strength of the Pride",
+      "oracle_fingerprint": "f57a13b88349d03d534d930f21790f17",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Sum": [
+                      { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ajani's Pridemate",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat", "Soldier"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "LifeGained": { "who": "You" } },
+                            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Ge",
+                      "right": { "Sum": [{ "StartingLife": "You" }, 15] }
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": "This" } },
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                            { "ControlledBy": "Opponents" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

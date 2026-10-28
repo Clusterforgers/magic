@@ -1,0 +1,32 @@
+{
+  "oracle_id": "aedcde3b-3ed5-443c-a81c-03d785153e55",
+  "name": "Agent Frank Horrigan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agent Frank Horrigan",
+      "oracle_fingerprint": "b56d16441dffd734165d8735fe88fc29",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Proliferate": {} }, { "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

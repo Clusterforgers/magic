@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "91193a0b-9087-404f-b397-815e29d0fe12",
+  "oracle_id": "aedcde3b-3ed5-443c-a81c-03d785153e55",
+  "multiverse_ids": [
+    652176
+  ],
+  "mtgo_id": 132427,
+  "tcgplayer_id": 539459,
+  "cardmarket_id": 757669,
+  "name": "Agent Frank Horrigan",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/91193a0b-9087-404f-b397-815e29d0fe12",
+  "scryfall_uri": "https://scryfall.com/card/pip/89/agent-frank-horrigan?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.jpg?1783912393",
+    "normal": "https://cards.scryfall.io/normal/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.jpg?1783912393",
+    "large": "https://cards.scryfall.io/large/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.jpg?1783912393",
+    "png": "https://cards.scryfall.io/png/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.png?1783912393",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.jpg?1783912393",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.jpg?1783912393",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.webp?1783912393",
+    "grid": "https://cards.scryfall.io/grid/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.webp?1783912393",
+    "display": "https://cards.scryfall.io/display/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.webp?1783912393",
+    "art": "https://cards.scryfall.io/art/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.webp?1783912393",
+    "crop": "https://cards.scryfall.io/crop/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.webp?1783912393",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/1/91193a0b-9087-404f-b397-815e29d0fe12.jpg?1783912393"
+  },
+  "mana_cost": "{5}{B}{G}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Mutant Warrior",
+  "oracle_text": "Trample\nAgent Frank Horrigan has indestructible as long as it attacked this turn.\nWhenever Agent Frank Horrigan enters or attacks, proliferate twice. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "8",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Trample",
+    "Proliferate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/91193a0b-9087-404f-b397-815e29d0fe12/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaedcde3b-3ed5-443c-a81c-03d785153e55&unique=prints",
+  "collector_number": "89",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wisnu Tan",
+  "artist_ids": [
+    "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4"
+  ],
+  "illustration_id": "11f7bd0c-b901-48b6-bdad-ed08352dccce",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3559,
+  "preview": {
+    "source": "Bethesda",
+    "source_uri": "https://twitter.com/Fallout/status/1759593689343492561/photo/1",
+    "previewed_at": "2024-02-19"
+  },
+  "prices": {
+    "usd": "3.49",
+    "usd_foil": "9.88",
+    "usd_etched": null,
+    "eur": "5.54",
+    "eur_foil": "10.66",
+    "tix": "1.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652176&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAgent%2BFrank%2BHorrigan",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAgent%2BFrank%2BHorrigan",
+    "edhrec": "https://edhrec.com/route/?cc=Agent+Frank+Horrigan"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539459%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757669&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132427?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
