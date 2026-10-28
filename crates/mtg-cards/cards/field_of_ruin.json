@@ -1,0 +1,55 @@
+{
+  "oracle_id": "f825c98f-a327-440b-8c0d-ebe02e23bfb7",
+  "name": "Field of Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Field of Ruin",
+      "oracle_fingerprint": "a5a0ebb715791eac20233c25b368acee",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "Bound": "player" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ce6a85b5-e249-4582-a6be-ce200da5fd53",
+  "name": "Kwain, Itinerant Meddler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kwain, Itinerant Meddler",
+      "oracle_fingerprint": "838cef9653e1a708eb284d9909fcf6bd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [{ "Draw": { "who": { "Bound": "player" } } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [{ "GainLife": { "who": { "Bound": "player" }, "amount": 1 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

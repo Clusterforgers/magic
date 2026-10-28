@@ -1,0 +1,56 @@
+{
+  "oracle_id": "cd9031e4-9f6f-4dd8-908e-dcf7b79438e5",
+  "name": "Great Unclean One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Unclean One",
+      "oracle_fingerprint": "fc5316db37b6edf3e26404a98144fdfa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Life": { "Bound": "opponent" } },
+                            "op": "Lt",
+                            "right": { "Life": "You" }
+                          }
+                        },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Plaguebearer of Nurgle",
+                                  "colors": ["Black"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Demon"],
+                                  "power": 1,
+                                  "toughness": 3
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

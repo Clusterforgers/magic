@@ -1,0 +1,43 @@
+{
+  "oracle_id": "405a2cf9-62a0-460c-bf2a-ce4c351b61ce",
+  "name": "Feed the Infection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feed the Infection",
+      "oracle_fingerprint": "74e669c5fa69ab4292101f34a0f99bb9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              { "LoseLife": { "amount": 3 } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Counters": { "on": { "Bound": "opponent" }, "counter": "poison" }
+                            },
+                            "op": "Ge",
+                            "right": 3
+                          }
+                        },
+                        "then": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
