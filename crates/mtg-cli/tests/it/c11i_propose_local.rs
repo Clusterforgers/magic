@@ -68,7 +68,10 @@ async fn send(
 ) -> Result<Response, ModelError> {
     let key = key.and_then(|key| ApiKey::c11i_from_variable(|_| Some(key.to_owned()), "ANY"));
     let client = OpenAiClient::new(
-        OpenAi { json_mode },
+        OpenAi {
+            json_mode,
+            max_answer_tokens: 16_384,
+        },
         key,
         &config(base),
         tokio::runtime::Handle::current(),
@@ -102,7 +105,7 @@ async fn a_request_leads_with_the_system_prompt_and_has_no_key_header_without_a_
     assert_eq!(seen[0].header("content-type"), Some("application/json"));
     let body: Value = serde_json::from_str(&seen[0].body_text()).unwrap();
     assert_eq!(body["model"], "gpt-oss:20b");
-    assert_eq!(body["max_tokens"], 100);
+    assert_eq!(body["max_tokens"], 16_384);
     assert_eq!(body["cache_prompt"], true);
     assert_eq!(body["response_format"]["type"], "json_object");
     assert_eq!(body["messages"][0]["role"], "system");

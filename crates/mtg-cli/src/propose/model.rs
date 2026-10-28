@@ -131,6 +131,14 @@ pub enum ModelError {
         /// The upper estimate of the tokens sent.
         sent: u64,
     },
+    /// The model spent every answer token, its reasoning included, before it wrote an answer.
+    #[error(
+        "the model used all {limit} answer tokens, its reasoning included, before it answered; raise --max-answer-tokens"
+    )]
+    AnswerCut {
+        /// The answer tokens the request allowed.
+        limit: u32,
+    },
     /// The answer is not what the API documents.
     #[error("unexpected answer from the API: {0}")]
     Answer(String),

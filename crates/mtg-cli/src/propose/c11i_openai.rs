@@ -20,11 +20,16 @@ pub const C11I_DEFAULT_BASE: &str = "http://localhost:11434/v1";
 /// upper one (3 bytes a token where tokenizers take about 4), so a whole prompt reads as three quarters of it.
 const C11I_TRUNCATION_FACTOR: u64 = 2;
 
+/// The default of `--max-answer-tokens`: a reasoning model's thinking counts against it, and the rules can be long.
+pub const C11I_DEFAULT_ANSWER_TOKENS: u32 = 16_384;
+
 /// The chat completions API.
 #[derive(Debug, Clone, Copy)]
 pub struct OpenAi {
     /// Ask for a JSON object only (`response_format`); some servers reject the field.
     pub json_mode: bool,
+    /// The most tokens an answer may have, the reasoning of a reasoning model included.
+    pub max_answer_tokens: u32,
 }
 
 /// The HTTP client of the chat completions API.
@@ -62,17 +67,17 @@ impl Dialect for OpenAi {
     }
 
     fn body(&self, request: &Request) -> Value {
-        c11i_request_body(request, self.json_mode)
+        c11i_request_body(request, self.json_mode, self.max_answer_tokens)
     }
 
     fn parse(&self, request: &Request, body: &str) -> Result<Response, ModelError> {
-        c11i_parse_response(body, request.estimated_tokens())
+        c11i_parse_response(body, request.estimated_tokens(), self.max_answer_tokens)
     }
 }
 
 /// The JSON body of a chat completions request: the system prompt is the first message, `cache_prompt` asks llama.cpp to
 /// keep the shared prefix, and `json_mode` asks for a JSON object.
-pub fn c11i_request_body(request: &Request, json_mode: bool) -> Value {
+pub fn c11i_request_body(request: &Request, json_mode: bool, max_tokens: u32) -> Value {
     let mut messages = vec![json!({"role": "system", "content": request.system})];
     messages.extend(request.messages.iter().map(|message| {
         json!({
@@ -85,7 +90,7 @@ pub fn c11i_request_body(request: &Request, json_mode: bool) -> Value {
     }));
     let mut body = json!({
         "model": request.model,
-        "max_tokens": request.max_tokens,
+        "max_tokens": max_tokens,
         "stream": false,
         "cache_prompt": true,
         "messages": messages,
@@ -98,7 +103,7 @@ pub fn c11i_request_body(request: &Request, json_mode: bool) -> Value {
 
 /// Reads a successful answer: the first choice's text and the tokens used. `sent` is the estimate of the prompt tokens;
 /// a server that reports far fewer cut the prompt, which is an error.
-pub fn c11i_parse_response(body: &str, sent: u64) -> Result<Response, ModelError> {
+pub fn c11i_parse_response(body: &str, sent: u64, limit: u32) -> Result<Response, ModelError> {
     let value: Value =
         serde_json::from_str(body).map_err(|error| ModelError::Answer(error.to_string()))?;
     let message = value
@@ -122,6 +127,14 @@ pub fn c11i_parse_response(body: &str, sent: u64) -> Result<Response, ModelError
         return Err(ModelError::Truncated { read, sent });
     }
     if text.trim().is_empty() {
+        // A reasoning model writes its thinking to `message.reasoning` and may spend the whole limit there.
+        if value
+            .pointer("/choices/0/finish_reason")
+            .and_then(Value::as_str)
+            == Some("length")
+        {
+            return Err(ModelError::AnswerCut { limit });
+        }
         return Err(ModelError::Answer("the answer holds no text".into()));
     }
     let input_tokens = read.unwrap_or(sent);
@@ -163,9 +176,9 @@ mod tests {
     #[case::json(true)]
     #[case::plain(false)]
     fn the_body_leads_with_the_system_prompt_and_carries_the_flags(#[case] json_mode: bool) {
-        let body = c11i_request_body(&request("card"), json_mode);
+        let body = c11i_request_body(&request("card"), json_mode, 16_000);
         assert_eq!(body["model"], "gpt-oss:20b");
-        assert_eq!(body["max_tokens"], 1000);
+        assert_eq!(body["max_tokens"], 16_000);
         assert_eq!(body["cache_prompt"], true);
         assert_eq!(body["stream"], false);
         let roles: Vec<&str> = body["messages"]
@@ -182,9 +195,9 @@ mod tests {
 
     #[test]
     fn two_cards_share_the_same_leading_bytes() {
-        let first = c11i_request_body(&request("Opt"), true).to_string();
-        let second = c11i_request_body(&request("Wind Drake"), true).to_string();
-        let system = c11i_request_body(&request(""), true)["messages"][0].to_string();
+        let first = c11i_request_body(&request("Opt"), true, 16_000).to_string();
+        let second = c11i_request_body(&request("Wind Drake"), true, 16_000).to_string();
+        let system = c11i_request_body(&request(""), true, 16_000)["messages"][0].to_string();
         let shared = first
             .bytes()
             .zip(second.bytes())
@@ -199,7 +212,7 @@ mod tests {
         let body = r#"{"id":"c1","object":"chat.completion","choices":[{"index":0,"finish_reason":"stop",
             "message":{"role":"assistant","content":"{\"faces\":[]}"}}],
             "usage":{"prompt_tokens":3000,"completion_tokens":42,"prompt_tokens_details":{"cached_tokens":2800}}}"#;
-        let response = c11i_parse_response(body, 4000).unwrap();
+        let response = c11i_parse_response(body, 4000, 100).unwrap();
         assert_eq!(response.text, r#"{"faces":[]}"#);
         assert_eq!(
             response.usage,
@@ -214,7 +227,7 @@ mod tests {
     #[test]
     fn an_answer_without_usage_counts_the_estimate_against_the_budget() {
         let body = r#"{"choices":[{"message":{"content":"{}"}}]}"#;
-        let response = c11i_parse_response(body, 500).unwrap();
+        let response = c11i_parse_response(body, 500, 100).unwrap();
         assert_eq!(response.usage.input_tokens, 500);
     }
 
@@ -234,7 +247,7 @@ mod tests {
             "usage": {"prompt_tokens": read, "completion_tokens": 1},
         })
         .to_string();
-        let result = c11i_parse_response(&body, sent);
+        let result = c11i_parse_response(&body, sent, 100);
         assert_eq!(
             matches!(result, Err(ModelError::Truncated { .. })),
             cut,
@@ -253,9 +266,36 @@ mod tests {
     #[case::null_text(r#"{"choices":[{"message":{"content":null}}]}"#)]
     fn an_answer_without_text_is_an_error(#[case] body: &str) {
         assert!(matches!(
-            c11i_parse_response(body, 1),
+            c11i_parse_response(body, 1, 100),
             Err(ModelError::Answer(_))
         ));
+    }
+
+    #[rstest]
+    #[case::thinking_ran_out("", "length", Some(true))]
+    #[case::empty_but_stopped("", "stop", Some(false))]
+    #[case::answered_beside_its_thinking("{}", "stop", None)]
+    fn a_reasoning_answer_is_read_from_its_content_only(
+        #[case] content: &str,
+        #[case] finish: &str,
+        #[case] cut: Option<bool>,
+    ) {
+        let body = json!({
+            "choices": [{"finish_reason": finish,
+                "message": {"role": "assistant", "content": content, "reasoning": "Let me think about {\"faces\""}}],
+            "usage": {"prompt_tokens": 81, "completion_tokens": 100},
+        })
+        .to_string();
+        let result = c11i_parse_response(&body, 100, 16_384);
+        match (cut, result) {
+            (None, Ok(response)) => assert_eq!(response.text, "{}"),
+            (Some(true), Err(error @ ModelError::AnswerCut { limit: 16_384 })) => {
+                assert!(!error.is_fatal() && !error.is_retryable());
+                assert!(error.to_string().contains("--max-answer-tokens"));
+            }
+            (Some(false), Err(ModelError::Answer(_))) => {}
+            (_, other) => panic!("{other:?}"),
+        }
     }
 
     #[test]

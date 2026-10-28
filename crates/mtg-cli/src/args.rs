@@ -220,6 +220,10 @@ pub struct ProposeArgs {
     #[arg(long)]
     pub no_json_mode: bool,
 
+    /// The most tokens an answer of an OpenAI-style server may have, a reasoning model's thinking included.
+    #[arg(long, value_name = "N", default_value_t = crate::propose::c11i_openai::C11I_DEFAULT_ANSWER_TOKENS)]
+    pub max_answer_tokens: u32,
+
     /// The most requests to send (a repair round is a request).
     #[arg(long, value_name = "N", default_value_t = 100)]
     pub max_requests: u32,
@@ -511,6 +515,7 @@ mod tests {
         );
         assert!(!args.resume && !args.dry_run && args.out.is_none());
         assert!(args.base_url.is_none() && !args.no_json_mode);
+        assert_eq!(args.max_answer_tokens, 16_384);
     }
 
     #[test]

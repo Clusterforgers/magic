@@ -165,6 +165,7 @@ pub fn c11i_client_of(
                 .unwrap_or_else(|| c11i_openai::C11I_DEFAULT_BASE.to_owned());
             let dialect = OpenAi {
                 json_mode: !args.no_json_mode,
+                max_answer_tokens: args.max_answer_tokens,
             };
             let key = c11i_openai::c11i_key_from_env(env);
             Box::new(OpenAiClient::new(dialect, key, &config, handle, progress)?)
