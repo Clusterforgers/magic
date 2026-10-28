@@ -1,0 +1,30 @@
+{
+  "oracle_id": "304c194f-fa0b-42e5-93ca-8c587181d33c",
+  "name": "Karador, Ghost Chieftain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karador, Ghost Chieftain",
+      "oracle_fingerprint": "903600aa92dc63b108adb55cf21130a5",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Creature" }], "from": "Graveyard", "once": true }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

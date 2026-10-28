@@ -28,7 +28,7 @@ use crate::error::EngineError;
 use crate::fold::invalid;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{ResolveError, Scope};
-use crate::state::{GameState, Stage};
+use crate::state::{GameState, Stage, Tally};
 use crate::zones::Zone;
 
 /// A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
@@ -96,6 +96,10 @@ pub enum Rule {
         only: Option<Vec<ObjectRef>>,
         /// A land among the cards may be played too.
         play: bool,
+        /// Only once during each of the rule controller's turns, and only on their turns.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        once: bool,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
@@ -288,6 +292,8 @@ pub(crate) struct Taxing {
 
 /// A permission to cast cards, with whose it is.
 #[derive(Debug, Clone)]
+// The flags mirror those of `CastPermission`.
+#[allow(clippy::struct_excessive_bools)]
 pub(crate) struct Cast {
     /// The controller of the effect or permanent that gives it, for the selector's "you".
     pub(crate) controller: PlayerId,
@@ -307,12 +313,15 @@ pub(crate) struct Cast {
     pub(crate) only: Option<Vec<ObjectRef>>,
     /// A land among the cards may be played too.
     pub(crate) play: bool,
+    /// Only once during each of the controller's turns, and only on their turns.
+    pub(crate) once: bool,
 }
 
 impl Cast {
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
-        self.who.contains(&player)
+        self.c11b_open(state)
+            && self.who.contains(&player)
             && self
                 .only
                 .as_ref()
@@ -324,6 +333,14 @@ impl Cast {
                 || Scope::announcing(state, self.controller, self.source)
                     .selects(&self.what, card.reference())
                     .unwrap_or(false))
+    }
+
+    /// Whether a permission that works once each turn is open: it is its controller's turn and no spell was cast through
+    /// it this turn (`Tally::C11bOnceUsed` of its source). Any other permission is always open.
+    fn c11b_open(&self, state: &GameState) -> bool {
+        !self.once
+            || (state.turn().active() == self.controller
+                && state.object_tallied(self.source, None, Tally::C11bOnceUsed) == 0)
     }
 
     /// Whether the permission lets `player` play the land `card` from the zone it is in.
@@ -406,6 +423,7 @@ impl RulesInForce {
                 flash,
                 only,
                 play,
+                once,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
@@ -418,6 +436,7 @@ impl RulesInForce {
                         flash: *flash,
                         only: only.clone(),
                         play: *play,
+                        once: *once,
                     });
                 }
             }
@@ -505,6 +524,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .map(|named| scope.objects(named))
                 .transpose()?,
             play: permission.play,
+            once: permission.once,
         },
         GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
@@ -909,6 +929,31 @@ pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
 }
 
+/// The source of the permission that works once each turn which a cast of `card` by `player` from `from` for `way` uses
+/// up: a cast for the mana cost from a zone other than a hand or the command zone that no other permission for that zone
+/// covers, through the first such permission that covers it. None for any other cast.
+pub(crate) fn c11b_once_source(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    from: Zone,
+    way: Option<mtg_cards::value::CastWay>,
+) -> Option<ObjectRef> {
+    if way.is_some() || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
+        return None;
+    }
+    let card = state.object(card)?;
+    let zone = crate::resolve::zone_kind(from);
+    let covering: Vec<&Cast> = cast_permissions(state)
+        .iter()
+        .filter(|cast| !cast.free && cast.from == Some(zone) && cast.covers(state, player, card))
+        .collect();
+    if covering.iter().any(|cast| !cast.once) {
+        return None;
+    }
+    covering.first().map(|cast| cast.source)
+}
+
 /// The taxes on attacking in force: the one place the attack declaration reads this rule (`attack_tax`).
 pub(crate) fn attack_taxes(state: &GameState) -> &[Taxing] {
     &state.rules().taxes
@@ -1222,6 +1267,7 @@ mod tests {
             flash: false,
             only,
             play,
+            once: false,
         }
     }
 

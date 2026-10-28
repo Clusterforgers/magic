@@ -44,7 +44,11 @@ only: Array<ObjectRef> | null,
 /**
  * A land among the cards may be played too.
  */
-play: boolean, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
+play: boolean, 
+/**
+ * Only once during each of the rule controller's turns, and only on their turns.
+ */
+once?: boolean, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */
@@ -54,7 +58,7 @@ source: unknown,
  */
 combat: boolean | null, } } | { "PreventDamage": DamageShield } | { "Regenerate": ObjectRef } | { "DiesInstead": { 
 /**
- * The permanents it covers.
+ * The permanents and spells it covers.
  */
 objects: Array<ObjectRef>, 
 /**

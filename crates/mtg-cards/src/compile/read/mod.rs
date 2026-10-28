@@ -34,6 +34,7 @@ mod c10_pa_monstrous;
 mod c10_pa_pay_x;
 mod c10_uc;
 mod c11b_cast_target;
+mod c11b_once;
 mod c4_cast_hand;
 mod c4_chosen_pairs;
 mod c4_hands;

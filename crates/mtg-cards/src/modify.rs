@@ -158,6 +158,8 @@ pub enum Duration {
 /// A permission to cast cards (CR 601.3): which cards, from where, and what is waived.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
+// Each flag is one independent printed waiver or limit, written as a plain JSON field.
+#[allow(clippy::struct_excessive_bools)]
 pub struct CastPermission {
     /// The players who may cast; the controller of the rule when absent.
     #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
@@ -181,6 +183,10 @@ pub struct CastPermission {
     /// A land among the cards may be played too (CR 305.1), with a land play and at the timing of any land.
     #[serde(default, skip_serializing_if = "crate::effect::is_false")]
     pub play: bool,
+    /// Only once during each of the controller's turns, and only on their turns: a spell cast through it uses it up for the
+    /// turn ("Once during each of your turns, you may cast a creature spell from your graveyard").
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub once: bool,
 }
 
 /// What a rule that taxes attackers protects: the players, the planeswalkers they control, or both.

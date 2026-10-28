@@ -233,6 +233,9 @@ fn spell_cast(
         )));
     }
     expect_in(state, object, from)?;
+    if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
+        state.tally_object(source, None, Tally::C11bOnceUsed);
+    }
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
     move_object(state, object, Zone::Stack, Placement::Top)?;

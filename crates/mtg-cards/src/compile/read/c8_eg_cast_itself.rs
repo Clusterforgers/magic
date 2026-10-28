@@ -36,6 +36,7 @@ fn c8_eg_permission() -> CastPermission {
         flash: false,
         only: None,
         play: false,
+        once: false,
     }
 }
 
