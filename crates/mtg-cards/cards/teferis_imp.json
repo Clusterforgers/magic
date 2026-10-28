@@ -1,0 +1,24 @@
+{
+  "oracle_id": "e4826967-b2f9-4f32-8411-d243edf41082",
+  "name": "Teferi's Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Imp",
+      "oracle_fingerprint": "8d52caab64d738151616f6a9e18430de",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Phasing" },
+        {
+          "Triggered": {
+            "when": { "PhasedOut": { "what": ["This"] } },
+            "effects": [{ "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": { "when": { "PhasedIn": { "what": ["This"] } }, "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

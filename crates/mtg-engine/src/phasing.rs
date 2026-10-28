@@ -9,7 +9,7 @@ use crate::characteristics::controller_of;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::fold::invalid;
-use crate::object::{GameObject, PermanentState, PhasedState, Phasing};
+use crate::object::{GameObject, ObjectRef, PermanentState, PhasedState, Phasing};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
 
@@ -45,6 +45,22 @@ fn attached_in(state: &GameState, zone: Zone, host: ObjectId) -> Vec<ObjectId> {
 /// it the Auras, Equipment and Fortifications attached to it, which phase out with it (CR 702.26g). An object `named`
 /// that is gone, not a permanent or phased out already is passed over.
 pub fn out_events(state: &GameState, named: &[ObjectId]) -> Vec<Event> {
+    w11b_out_events(state, named, W11bHold::default())
+}
+
+/// How long the permanents named by a phase-out stay out: until `until` leaves the battlefield (none: until the next
+/// untap step of their controller), and whether they phase in tapped.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct W11bHold {
+    /// The permanent whose leaving the battlefield phases them in.
+    pub until: Option<ObjectRef>,
+    /// They phase in tapped.
+    pub tapped: bool,
+}
+
+/// `out_events` with a hold: the permanents named stay out until `hold.until` leaves the battlefield; what is attached
+/// to them goes with them as usual and comes back with them.
+pub fn w11b_out_events(state: &GameState, named: &[ObjectId], hold: W11bHold) -> Vec<Event> {
     let direct: BTreeSet<ObjectId> = named
         .iter()
         .copied()
@@ -65,10 +81,13 @@ pub fn out_events(state: &GameState, named: &[ObjectId]) -> Vec<Event> {
             let Some(controller) = controller_of(state, id) else {
                 continue;
             };
+            let hold = if indirect { W11bHold::default() } else { hold };
             events.push(Event::PermanentPhasedOut {
                 object: id,
                 controller,
                 indirect,
+                until: hold.until,
+                tapped: hold.tapped,
             });
             for attached in attached_in(state, Zone::Battlefield, id).into_iter().rev() {
                 // One named too phases out on its own and comes back on its own.
@@ -105,24 +124,59 @@ pub fn in_events(state: &GameState, player: PlayerId) -> Vec<Event> {
     };
     let mut events = Vec::new();
     for id in phased {
-        let Some(own) = phasing(*id).filter(|own| own.controller == player) else {
+        // One held until a permanent leaves phases in then, not in an untap step.
+        let Some(own) = phasing(*id).filter(|own| own.controller == player && own.until.is_none())
+        else {
             continue;
         };
         if own.indirect && hosts_waiting(*id) {
             continue;
         }
-        let mut work = vec![*id];
-        while let Some(id) = work.pop() {
-            events.push(Event::PermanentPhasedIn { object: id });
-            work.extend(
-                attached_in(state, Zone::PhasedOut, id)
-                    .into_iter()
-                    .rev()
-                    .filter(|attached| phasing(*attached).is_some_and(|own| own.indirect)),
-            );
-        }
+        events.extend(w11b_with_attachments(state, *id));
     }
     events
+}
+
+/// The events that phase in `id` and, after it, what phased out with it.
+fn w11b_with_attachments(state: &GameState, id: ObjectId) -> Vec<Event> {
+    let indirect = |id: ObjectId| {
+        state
+            .object(id)
+            .and_then(GameObject::permanent)
+            .and_then(PermanentState::phasing)
+            .is_some_and(|own| own.indirect)
+    };
+    let mut events = Vec::new();
+    let mut work = vec![id];
+    while let Some(id) = work.pop() {
+        events.push(Event::PermanentPhasedIn { object: id });
+        work.extend(
+            attached_in(state, Zone::PhasedOut, id)
+                .into_iter()
+                .rev()
+                .filter(|attached| indirect(*attached)),
+        );
+    }
+    events
+}
+
+/// The events that phase in every permanent held out until a permanent that has left the battlefield, with what phased
+/// out with it. Like a card exiled until a permanent leaves (CR 610.3a), this is no triggered ability: the control loop
+/// runs it before anything else is checked. A permanent the source phased out is still the source, so it holds on.
+pub(crate) fn w11b_releases(state: &GameState) -> Vec<Event> {
+    state
+        .zone(Zone::PhasedOut)
+        .iter()
+        .filter(|id| {
+            state
+                .object(**id)
+                .and_then(GameObject::permanent)
+                .and_then(PermanentState::phasing)
+                .and_then(|own| own.until)
+                .is_some_and(|by| !crate::exile_return::holds(state, by))
+        })
+        .flat_map(|id| w11b_with_attachments(state, *id))
+        .collect()
 }
 
 /// The events that phase out the permanents with phasing that `player` controls as their untap step begins (CR 502.1,
@@ -144,8 +198,7 @@ pub fn w7e_keyword_out_events(state: &GameState, player: PlayerId) -> Vec<Event>
 pub(crate) fn fold_out(
     state: &mut GameState,
     id: ObjectId,
-    controller: PlayerId,
-    indirect: bool,
+    phasing: Phasing,
 ) -> Result<(), EngineError> {
     let object = state
         .objects
@@ -156,15 +209,17 @@ pub(crate) fn fold_out(
         .permanent
         .as_mut()
         .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
-    permanent.phased = PhasedState(Some(Phasing {
-        controller,
-        indirect,
-    }));
+    permanent.phased = PhasedState(Some(phasing));
     object.zone = Zone::PhasedOut;
     state.zones.remove(Zone::Battlefield, id);
     state.zones.insert(Zone::PhasedOut, id, Placement::Top);
     state.combat.remove_object(id);
     state.combat.planeswalker_left(id);
+    // "For each creature that phased out this way" reads what the resolving spell or ability phased out.
+    let reference = object.reference();
+    if let Some(resolving) = state.resolving.as_mut() {
+        resolving.w11b_phased.push(reference);
+    }
     Ok(())
 }
 
@@ -182,6 +237,9 @@ pub(crate) fn fold_in(state: &mut GameState, id: ObjectId) -> Result<(), EngineE
         .as_mut()
         .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
     let phasing = permanent.phased.0.take();
+    if phasing.is_some_and(|phasing| phasing.tapped) {
+        permanent.tapped = true;
+    }
     if phasing.is_some_and(|phasing| phasing.controller == active) {
         permanent.new_to = permanent.sick_for(active).then_some(active);
         permanent.summoning_sick = false;
@@ -350,7 +408,9 @@ mod tests {
             [Event::PermanentPhasedOut {
                 object: bear,
                 controller: PlayerId(0),
-                indirect: false
+                indirect: false,
+                until: None,
+                tapped: false,
             }]
         );
         let mut game = game;
@@ -360,6 +420,8 @@ mod tests {
             object: bear,
             controller: PlayerId(0),
             indirect: false,
+            until: None,
+            tapped: false,
         };
         assert!(apply_event(&mut game, &again).is_err(), "it is out already");
         assert_eq!(out_events(&game, &[bear]), Vec::<Event>::new());

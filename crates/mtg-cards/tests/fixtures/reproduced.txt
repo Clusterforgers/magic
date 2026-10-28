@@ -991,6 +991,7 @@ Orochi Hatchery
 Orzhov Enforcer
 Orzhov Racketeers
 Otherworldly Gaze
+Oubliette
 Overcharged Amalgam
 Overgrown Arch
 Overgrowth
@@ -1409,6 +1410,7 @@ Team Pennant
 Teapot Slinger
 Tectonic Reformation
 Teferi's Ageless Insight
+Teferi's Imp
 Teferi's Protection
 Tempestra, Dame of Games
 Temporal Manipulation

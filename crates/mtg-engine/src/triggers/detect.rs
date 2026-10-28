@@ -113,6 +113,10 @@ enum Happened {
     Tapped { object: ObjectId },
     /// A permanent became untapped.
     Untapped { object: ObjectId },
+    /// A permanent phased out; judged as it was before (CR 702.26).
+    PhasedOut { object: ObjectId },
+    /// A permanent phased in.
+    PhasedIn { object: ObjectId },
     /// A player tapped a permanent for mana: once for the tap, whatever mana it made.
     TappedForMana { object: ObjectId, player: PlayerId },
     /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0), which held `before`
@@ -222,6 +226,7 @@ impl Happened {
                 from: Zone::Battlefield,
                 ..
             } | Happened::Exploited { .. }
+                | Happened::PhasedOut { .. }
         )
     }
 
@@ -801,6 +806,10 @@ fn about_players_and_permanents(
             found.push(Happened::Tapped { object: *object });
         }
         Event::PermanentUntapped { object } => found.push(Happened::Untapped { object: *object }),
+        Event::PermanentPhasedOut { object, .. } => {
+            found.push(Happened::PhasedOut { object: *object });
+        }
+        Event::PermanentPhasedIn { object } => found.push(Happened::PhasedIn { object: *object }),
         Event::ManaAdded {
             player,
             source: Some(source),
@@ -1375,7 +1384,9 @@ fn matching_permanents(
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
         }
         (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
-        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped }) => {
+        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped })
+        | (TriggerPattern::PhasedOut { what }, Happened::PhasedOut { object: tapped })
+        | (TriggerPattern::PhasedIn { what }, Happened::PhasedIn { object: tapped }) => {
             let tapped = object(*tapped)?;
             picks(what, tapped)?.then(|| cause(state, vec![Target::Object(tapped)]))
         }
@@ -1800,7 +1811,8 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
         Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
-        | Event::DayNightChanged { .. } => true,
+        | Event::DayNightChanged { .. }
+        | Event::PermanentPhasedOut { .. } => true,
         Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,

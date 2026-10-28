@@ -210,6 +210,14 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         indirect: bool,
+        /// It phases out until this permanent leaves the battlefield, and phases in then and not in an untap step.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        until: Option<ObjectRef>,
+        /// It phases in tapped ("Tap that creature as it phases in this way").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        tapped: bool,
     },
     /// A permanent phased in (CR 702.26): it exists again, as the same object, with everything it had.
     PermanentPhasedIn {

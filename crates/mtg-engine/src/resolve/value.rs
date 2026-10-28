@@ -1264,6 +1264,7 @@ impl<'a> Scope<'a> {
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
+            Amount::PhasedOut(of) => self.w11b_phased(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::Devoured => self.w7e_devoured(),
@@ -1451,6 +1452,20 @@ impl<'a> Scope<'a> {
         let mut found = 0i64;
         for destroyed in &resolving.destroyed {
             if self.selects(of, *destroyed)? {
+                found += 1;
+            }
+        }
+        Ok(found)
+    }
+
+    /// "for each creature that phased out this way": the permanents the resolution phased out that match the selector.
+    fn w11b_phased(&self, of: &Selector) -> Result<i64, ResolveError> {
+        let Some(resolving) = self.state.resolving.as_ref() else {
+            return Ok(0);
+        };
+        let mut found = 0i64;
+        for phased in &resolving.w11b_phased {
+            if self.selects(of, *phased)? {
                 found += 1;
             }
         }

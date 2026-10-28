@@ -131,6 +131,10 @@ pub struct Phasing {
     pub controller: PlayerId,
     /// It phased out because the permanent it is attached to did (CR 702.26g), so it phases in with that permanent.
     pub indirect: bool,
+    /// It phases in when this permanent leaves the battlefield (CR 610.3 by analogy), and not in an untap step.
+    pub until: Option<ObjectRef>,
+    /// It phases in tapped.
+    pub tapped: bool,
 }
 
 /// Whether a permanent is phased out. A phased-in permanent adds nothing to the hash of the game.
