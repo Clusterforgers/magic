@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0f786c99-d245-4b11-bcce-6e13fb1255cc",
+  "name": "Verdant Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Confluence",
+      "oracle_fingerprint": "35ef79987788fe57310edc52d785d065",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                            "as": "land"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "land" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

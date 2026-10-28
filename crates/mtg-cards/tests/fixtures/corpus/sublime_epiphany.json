@@ -1,0 +1,23 @@
+{
+  "id": "0f7d3839-0bc3-402b-b9ea-c903f82d39da",
+  "oracle_id": "56148ae7-a9df-4771-8d53-d9ffb815c884",
+  "name": "Sublime Epiphany",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "layout": "normal",
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one or more —\n• Counter target spell.\n• Counter target activated or triggered ability.\n• Return target nonland permanent to its owner's hand.\n• Create a token that's a copy of target creature you control.\n• Target player draws a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "set": "tdc",
+  "collector_number": "167",
+  "digital": false,
+  "rarity": "rare"
+}

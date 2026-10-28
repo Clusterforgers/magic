@@ -133,6 +133,7 @@ Bird Admirer // Wing Shredder
 Bitter Triumph
 Black Dragon Gate
 Black Knight
+Black Market Connections
 Blackblade Reforged
 Blade of Selves
 Blasphemous Act
@@ -180,6 +181,7 @@ Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
 Buried Alive
+Cabaretti Confluence
 Cached Defenses
 Cackling Counterpart
 Cadaverous Bloom
@@ -197,6 +199,7 @@ Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
 Cast Out
+Casualties of War
 Cathars' Crusade
 Cathartic Reunion
 Cathedral Acolyte
@@ -226,6 +229,7 @@ Circle of Dreams Druid
 Circuitous Route
 Citadel Gate
 Citanul Hierophants
+Clan Defiance
 Clash of Titans
 Cliffgate
 Clifftop Lookout
@@ -449,6 +453,7 @@ Famine
 Fanatic of Rhonas
 Far Wanderings
 Faramir, Steward of Gondor
+Farewell
 Favorable Winds
 Fear of Failed Tests
 Fearless Skald
@@ -460,6 +465,7 @@ Fertile Ground
 Fetid Heath
 Field Trip
 Fierce Guardianship
+Fiery Confluence
 Fiery Fall
 Fiery Temper
 Fight Rigging
@@ -690,6 +696,8 @@ Keep Watch
 Kemba's Banner
 Kenrith's Transformation
 Kessig Wolf Run
+Kill! Maim! Burn!
+Kimoyo Beads
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
@@ -805,6 +813,7 @@ Mercurial Chemister
 Merfolk Branchwalker
 Merfolk Mistbinder
 Mesmeric Orb
+Methods of the Mighty
 Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
@@ -845,6 +854,7 @@ Mutavault
 Mycoloth
 Myr Retriever
 Myriad Landscape
+Mystic Confluence
 Mystic Gate
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
@@ -977,6 +987,7 @@ Radical Idea
 Raffine's Informant
 Rafter Demon
 Raging Goblinoids
+Rain of Thorns
 Rakdos Headliner
 Rakish Heir
 Rally the Ranks
@@ -1027,6 +1038,7 @@ Riders of Gavony
 Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
+Righteous Confluence
 Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
@@ -1038,6 +1050,7 @@ Rob the Archives
 Rocksteady, Mutant Marauder
 Rogue Refiner
 Rootborn Defenses
+Rootcast Apprenticeship
 Rope
 Rosheen Meanderer
 Rousing Refrain
@@ -1222,6 +1235,7 @@ Stroke of Genius
 Stubborn Burrowfiend
 Student of Warfare
 Study Break
+Sublime Epiphany
 Sublime Exhalation
 Subterranean Schooner
 Sudden Death
@@ -1389,6 +1403,7 @@ Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
+Verdant Confluence
 Vestige of Emrakul
 Vesuva
 Veteran's Powerblade
@@ -1438,6 +1453,7 @@ Wild Growth
 Wild Ride
 Wild Wasteland
 Wilderness Elemental
+Will of the Sultai
 Windborn Muse
 Windbrisk Heights
 Windfall
@@ -1453,6 +1469,7 @@ Wooded Bastion
 Woodripper
 Worldspine Wurm
 Wrath of God
+Wretched Confluence
 Writ of Return
 Wurmwall Sweeper
 Wyrm's Crossing Patrol

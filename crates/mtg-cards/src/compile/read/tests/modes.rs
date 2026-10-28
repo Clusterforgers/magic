@@ -117,9 +117,8 @@ fn more_oracle_wordings_of_modes_in_a_trigger_read_and_write_back(
 }
 
 #[rstest]
-#[case::one_or_more(lines("Choose one or more", &["Draw a card.", "You gain 2 life."]))]
 #[case::up_to(lines("Choose up to two", &["Draw a card.", "You gain 2 life.", "Scry 1."]))]
-#[case::three(lines("Choose three", &["Draw a card.", "You gain 2 life.", "Scry 1.", "Each opponent loses 1 life."]))]
+#[case::three_of_three(lines("Choose three", &["Draw a card.", "You gain 2 life.", "Scry 1."]))]
 #[case::any_number(lines("Choose any number", &["Draw a card.", "You gain 2 life."]))]
 #[case::lowercase(lines("choose one", &["Draw a card.", "You gain 2 life."]))]
 #[case::one_mode(choose(&["Draw a card."]))]
@@ -187,8 +186,8 @@ fn a_mode_picked_at_random_or_not_chosen_this_turn_reads_and_writes_back(
 #[case::both_at_once(
     "Whenever ~ attacks, choose one at random that hasn't been chosen this turn \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
 )]
-#[case::without_this_turn(
-    "Whenever ~ attacks, choose one that hasn't been chosen \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
+#[case::not_chosen_ever_with_a_period(
+    "Whenever ~ attacks, choose one that hasn't been chosen.\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
 )]
 #[case::one_mode("Whenever ~ attacks, choose one at random \u{2014}\n\u{2022} Draw a card.")]
 #[case::an_unread_mode(

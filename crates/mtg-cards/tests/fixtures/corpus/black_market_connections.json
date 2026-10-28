@@ -1,0 +1,28 @@
+{
+  "id": "9d9ca869-e68a-4f53-9f52-85c714dac6f3",
+  "oracle_id": "d2664f28-49e1-46f8-a863-b217e961a57c",
+  "name": "Black Market Connections",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "layout": "normal",
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your first main phase, choose one or more —\n• Sell Contraband — Create a Treasure token. You lose 1 life.\n• Buy Information — Draw a card. You lose 2 life.\n• Hire a Mercenary — Create a 3/2 colorless Shapeshifter creature token with changeling. You lose 3 life. (It is every creature type.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Hire a Mercenary",
+    "Treasure",
+    "Sell Contraband",
+    "Buy Information"
+  ],
+  "set": "msc",
+  "collector_number": "155",
+  "digital": false,
+  "rarity": "rare"
+}

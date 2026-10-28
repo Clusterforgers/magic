@@ -709,10 +709,11 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     if let [
         Effect::Modal {
             choose,
-            repeat: false,
+            repeat,
             modes,
             at_random,
             once_each_turn,
+            once_ever,
             all_if,
         },
     ] = effects
@@ -720,16 +721,16 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
         if !targets.is_empty() || modes.len() < 2 {
             return Vec::new();
         }
-        return choices::texts(
-            choose,
-            modes,
-            (*at_random, *once_each_turn),
-            all_if.as_ref(),
-        )
-        .into_iter()
-        .chain(either::texts(choose, modes))
-        .map(|text| vec![text])
-        .collect();
+        let flags = choices::C11dFlags {
+            repeat: *repeat,
+            at_random: *at_random,
+            once: (*once_each_turn, *once_ever),
+        };
+        return choices::texts(choose, modes, flags, all_if.as_ref())
+            .into_iter()
+            .chain(either::texts(choose, modes).into_iter().filter(|_| !repeat))
+            .map(|text| vec![text])
+            .collect();
     }
     // Bit `at` of a mask joins the effect after the one at `at` to it; a long list is tried whole
     // and apart only.

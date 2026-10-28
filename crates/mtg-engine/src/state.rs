@@ -211,6 +211,9 @@ pub struct GameState {
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
     pub(crate) loyalty_used: BTreeSet<ObjectRef>,
+    /// The modes the abilities that choose a mode not yet chosen chose, in any turn, as (source, where the ability comes
+    /// from, its index, the mode); a source that changed zones is a new object with none.
+    pub(crate) modes_ever: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
     /// What the game has counted this turn, from zero at the turn's start.
     pub(crate) tallies: Tallies,
     /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
@@ -668,6 +671,9 @@ impl Hash for GameState {
         // A game with no planeswalker hashes as it did before they existed.
         if !self.loyalty_used.is_empty() {
             self.loyalty_used.hash(state);
+        }
+        if !self.modes_ever.is_empty() {
+            self.modes_ever.hash(state);
         }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {

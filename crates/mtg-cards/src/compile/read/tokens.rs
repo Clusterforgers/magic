@@ -252,7 +252,9 @@ fn word_or_number(run: &str, opens: bool) -> Token {
         run,
         "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove" | "Mill"
     );
-    if capital && !opens && !cost_verb && run.chars().count() > 1 {
+    // A run of capitals ("AV Bead") is a name even where it opens a sentence.
+    let capitals = run.chars().all(|c| c.is_ascii_uppercase());
+    if capital && (!opens || capitals) && !cost_verb && run.chars().count() > 1 {
         return Token::Name(run.replace('\u{2019}', "'"));
     }
     Token::Word(run.replace('\u{2019}', "'").to_lowercase())

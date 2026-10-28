@@ -1010,6 +1010,10 @@ pub enum Effect {
         /// turn'); a spell has no earlier choice to keep.
         #[serde(default, skip_serializing_if = "is_false")]
         once_each_turn: bool,
+        /// A mode this ability chose earlier, in any turn, is not offered ('choose one that hasn't been chosen'); the
+        /// object a permanent becomes after a zone change has chosen nothing.
+        #[serde(default, skip_serializing_if = "is_false")]
+        once_ever: bool,
         /// Every mode may be chosen instead when this holds as the ability is announced ("If you control a commander as
         /// you cast this spell, you may choose both instead"); the fewest to choose stays.
         #[serde(default, skip_serializing_if = "Option::is_none")]

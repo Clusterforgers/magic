@@ -1,0 +1,23 @@
+{
+  "id": "512f3b28-ea20-4bad-8fab-5996e0fc1b62",
+  "oracle_id": "0f786c99-d245-4b11-bcce-6e13fb1255cc",
+  "name": "Verdant Confluence",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "layout": "normal",
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose three. You may choose the same mode more than once.\n• Put two +1/+1 counters on target creature.\n• Return target permanent card from your graveyard to your hand.\n• Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "set": "cmm",
+  "collector_number": "329",
+  "digital": false,
+  "rarity": "rare"
+}

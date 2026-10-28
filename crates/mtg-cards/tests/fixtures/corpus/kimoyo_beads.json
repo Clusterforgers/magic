@@ -1,0 +1,23 @@
+{
+  "id": "1138096a-0d7c-461b-af83-3c90f681722d",
+  "oracle_id": "c7bdbf7a-8054-4e91-bb32-84f47e98553c",
+  "name": "Kimoyo Beads",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "layout": "normal",
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "At the beginning of your end step, choose one that hasn't been chosen —\n• AV Bead — Draw a card.\n• Communication Bead — Create two 1/1 white Soldier creature tokens.\n• Prime Bead — You gain 3 life. Exile this artifact, then return it to the battlefield under its owner's control.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "AV Bead",
+    "Prime Bead",
+    "Communication Bead"
+  ],
+  "set": "msc",
+  "collector_number": "109",
+  "digital": false,
+  "rarity": "rare"
+}

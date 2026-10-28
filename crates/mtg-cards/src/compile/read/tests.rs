@@ -175,6 +175,7 @@ mod c11a_ability_less;
 mod c11a_turn_costs;
 mod c11c_counter_costs;
 mod c11c_had_counters;
+mod c11d_modes;
 mod c11f_writers;
 mod c11g_writers;
 mod c4_af_writers;

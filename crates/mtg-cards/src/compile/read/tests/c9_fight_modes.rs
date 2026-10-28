@@ -54,7 +54,7 @@ fn c9_fight_mode_sentences_read_into_the_dsl(#[case] text: &str, #[case] json: &
 #[case::two_of_a_pair(c9_fight_lines("Choose two", &["Draw a card.", "You gain 2 life."]))]
 #[case::both_of_three(c9_fight_lines("Choose one or both", &["Draw a card.", "You gain 2 life.", "Scry 1."]))]
 #[case::two_at_random(c9_fight_lines("Choose two at random", &["Draw a card.", "You gain 2 life.", "Scry 1."]))]
-#[case::three(c9_fight_lines("Choose three", &["Draw a card.", "You gain 2 life.", "Scry 1.", "Scry 2."]))]
+#[case::three_of_three(c9_fight_lines("Choose three", &["Draw a card.", "You gain 2 life.", "Scry 1."]))]
 #[case::two_with_an_unread_mode(c9_fight_lines("Choose two", &["Draw a card.", "You gain 2 life.", "Wish for a card."]))]
 #[case::two_for_a_commander("Choose two. If you control a commander as you cast this spell, you may choose both instead.\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.\n\u{2022} Scry 1.".to_owned())]
 #[case::shield_next_turn("Prevent all damage target instant or sorcery spell would deal next turn.".to_owned())]

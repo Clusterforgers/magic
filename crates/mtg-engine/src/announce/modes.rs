@@ -4,7 +4,7 @@
 //! the fewest to choose, the announcement is rewound. A spell with entwine asks its optional costs first, and when the
 //! entwine cost is paid every mode is chosen without a question (CR 702.42). An ability that picks its modes at random
 //! chooses among the modes that could be chosen with the next substream of the game's random source, and no player is
-//! asked; one that chooses a mode not yet chosen this turn leaves out the modes its tally holds.
+//! asked; one that chooses a mode not yet chosen this turn, or ever, leaves out the modes its tally holds.
 
 use super::{Ctx, Next, What, Work, optional};
 use crate::choose::{Modal, modal_of, mode_options};
@@ -26,7 +26,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                 return None;
             }
         }
-        modal.used = chosen_this_turn(ctx);
+        modal.used = chosen_before(ctx, modal.once == crate::choose::C11dOnce::Ever);
         let Some(options) = mode_options(
             ctx.state,
             ctx.source,
@@ -49,8 +49,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     None
 }
 
-/// The modes this ability chose earlier in the turn; none for a spell.
-fn chosen_this_turn(ctx: &Ctx<'_>) -> Vec<usize> {
+/// The modes this ability chose earlier in the turn, or in any turn for one that chooses a mode not yet chosen; none
+/// for a spell.
+fn chosen_before(ctx: &Ctx<'_>, ever: bool) -> Vec<usize> {
     let key = match ctx.what {
         What::Trigger(waiting) => {
             let t = &waiting.trigger;
@@ -65,9 +66,12 @@ fn chosen_this_turn(ctx: &Ctx<'_>) -> Vec<usize> {
     let Some((source, origin, ability)) = key else {
         return Vec::new();
     };
-    ctx.state
-        .tallies
-        .modes
+    let tally = if ever {
+        &ctx.state.modes_ever
+    } else {
+        &ctx.state.tallies.modes
+    };
+    tally
         .iter()
         .filter(|(from, via, at, _)| (*from, *via, *at) == (source, origin, ability))
         .map(|(_, _, _, mode)| *mode)

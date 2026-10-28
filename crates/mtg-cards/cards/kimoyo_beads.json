@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c7bdbf7a-8054-4e91-bb32-84f47e98553c",
+  "name": "Kimoyo Beads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kimoyo Beads",
+      "oracle_fingerprint": "04c1540082d45033c11a907351e39ecf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    { "label": "AV Bead", "effects": [{ "Draw": {} }] },
+                    {
+                      "label": "Communication Bead",
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Soldier",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Soldier"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Prime Bead",
+                      "effects": [
+                        { "GainLife": { "amount": 3 } },
+                        { "Exile": { "what": "This", "as": "exiled" } },
+                        { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

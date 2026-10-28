@@ -5,20 +5,21 @@
 use super::amounts::count_word;
 use super::modal::{BULLET, DASH};
 use super::render::{alternatives, capitalize};
-use super::statics;
+use super::{statics, where_x};
+use crate::ability::Ability;
 use crate::effect::Mode;
 use crate::refs::Bounds;
 use crate::value::{Amount, Condition};
 
 /// How many modes are chosen, as the line before the bullets says it; `None` for a choice no card words.
-fn header(choose: &Bounds, modes: usize) -> Option<String> {
+fn header(choose: &Bounds, modes: usize, repeat: bool) -> Option<String> {
     let most = match &choose.max {
         Some(Amount::Fixed(most)) => Some(u32::try_from(*most).ok()?),
         Some(_) => return None,
         None => None,
     };
-    // A card never asks for more modes than it has.
-    if most.is_some_and(|most| usize::try_from(most).map_or(true, |most| most > modes)) {
+    // A card never asks for more modes than it has, unless a mode may repeat.
+    if !repeat && most.is_some_and(|most| usize::try_from(most).map_or(true, |most| most > modes)) {
         return None;
     }
     let word = |number: u32| count_word(number);
@@ -50,6 +51,19 @@ fn both_instead(condition: &Condition) -> Vec<String> {
         .collect()
 }
 
+/// The lines of a mode with one count or characteristic as its X, named at the end of its sentence ("Put X +1/+1
+/// counters on target creature, where X is the number of lands you control."), without the last period.
+fn c11d_where_x(mode: &Mode) -> Vec<String> {
+    let spell = Ability::Spell {
+        targets: mode.targets.clone(),
+        effects: mode.effects.clone(),
+    };
+    where_x::wordings(&spell)
+        .into_iter()
+        .map(|text| capitalize(text.strip_suffix('.').unwrap_or(&text)))
+        .collect()
+}
+
 /// The lines of one mode: its sentences capitalized, in each wording, and with its name in front when it has one. A name
 /// is a prompt for the player, so the card may print the mode with or without it.
 fn bullets(mode: &Mode) -> Vec<String> {
@@ -63,14 +77,78 @@ fn bullets(mode: &Mode) -> Vec<String> {
         }
         found.push(text);
     }
+    found.extend(c11d_where_x(mode));
     if let Some(label) = &mode.label {
-        let named: Vec<String> = found
+        let mut named: Vec<String> = found
             .iter()
             .map(|text| format!("{label} {DASH} {text}"))
             .collect();
-        found.extend(named);
+        // The lines with the name come first: the product of every mode's lines is cut short, and a card that names its
+        // modes prints the names.
+        named.extend(found);
+        return named;
     }
     found
+}
+
+/// The flags of a `Modal` that change its header.
+#[derive(Clone, Copy)]
+pub(super) struct C11dFlags {
+    /// A mode may be chosen more than once.
+    pub(super) repeat: bool,
+    /// The modes are picked at random.
+    pub(super) at_random: bool,
+    /// A mode is chosen once each turn, and once ever.
+    pub(super) once: (bool, bool),
+}
+
+/// The header lines a `Modal` may start with, or `None` for flags no card words; an empty line when the condition of
+/// `all_if` words the header instead (its wordings come back second).
+fn c11d_headers(
+    header: String,
+    one: bool,
+    flags: C11dFlags,
+    all_if: Option<&Condition>,
+) -> Option<(Vec<String>, Vec<String>)> {
+    let C11dFlags {
+        repeat,
+        at_random,
+        once: (once_each_turn, once_ever),
+    } = flags;
+    if repeat {
+        // "choose three. You may choose the same mode more than once.": a fixed number of two or more.
+        let head = header.strip_suffix(&format!(" {DASH}"))?;
+        let plain = all_if.is_none() && !at_random && !once_each_turn && !once_ever;
+        return (plain && !one && !head.contains(" or ")).then(|| {
+            (
+                vec![format!(
+                    "{head}. You may choose the same mode more than once."
+                )],
+                Vec::new(),
+            )
+        });
+    }
+    match (all_if, at_random, once_each_turn, once_ever) {
+        (Some(condition), false, false, false) if one => {
+            Some((vec![String::new()], both_instead(condition)))
+        }
+        (None, false, false, false) => Some((vec![header], Vec::new())),
+        (None, true, false, false) if one => {
+            Some((vec![format!("choose one at random {DASH}")], Vec::new()))
+        }
+        (None, false, true, false) if one => Some((
+            vec![
+                format!("choose one that hasn't been chosen this turn {DASH}"),
+                "choose one that hasn't been chosen this turn.".to_owned(),
+            ],
+            Vec::new(),
+        )),
+        (None, false, false, true) if one => Some((
+            vec![format!("choose one that hasn't been chosen {DASH}")],
+            Vec::new(),
+        )),
+        _ => None,
+    }
 }
 
 /// "choose one —" and a bullet line for each mode, in every wording of each mode; the last bullet has no period, which the
@@ -78,31 +156,21 @@ fn bullets(mode: &Mode) -> Vec<String> {
 pub(super) fn texts(
     choose: &Bounds,
     modes: &[Mode],
-    flags: (bool, bool),
+    flags: C11dFlags,
     all_if: Option<&Condition>,
 ) -> Vec<String> {
-    let (at_random, once_each_turn) = flags;
-    let Some(header) = header(choose, modes.len()) else {
+    let Some(header) = header(choose, modes.len(), flags.repeat) else {
         return Vec::new();
     };
     // "choose one at random —" and "choose one that hasn't been chosen this turn —", which a card may end with a period.
     let one = header.starts_with("choose one ") && choose.is_one();
+    if all_if.is_some() && modes.len() != 2 {
+        return Vec::new();
+    }
     // The wordings of a header that comes in several are put in front once the bullets are written, so they do not
     // use up the room for the wordings of the modes.
-    let (mut texts, headers) = match (all_if, at_random, once_each_turn) {
-        (Some(condition), false, false) if one && modes.len() == 2 => {
-            (vec![String::new()], both_instead(condition))
-        }
-        (None, false, false) => (vec![header], Vec::new()),
-        (None, true, false) if one => (vec![format!("choose one at random {DASH}")], Vec::new()),
-        (None, false, true) if one => (
-            vec![
-                format!("choose one that hasn't been chosen this turn {DASH}"),
-                "choose one that hasn't been chosen this turn.".to_owned(),
-            ],
-            Vec::new(),
-        ),
-        _ => return Vec::new(),
+    let Some((mut texts, headers)) = c11d_headers(header, one, flags, all_if) else {
+        return Vec::new();
     };
     for (at, mode) in modes.iter().enumerate() {
         let lines = bullets(mode);

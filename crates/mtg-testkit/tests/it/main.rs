@@ -42,6 +42,7 @@ mod c10_xp_copy_until;
 mod c11a_ability_costs;
 mod c11a_first_spells;
 mod c11c_counter_cards;
+mod c11d_modes;
 mod c4_attacked_untap;
 mod c4_combat;
 mod c4_control;

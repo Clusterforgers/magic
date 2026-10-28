@@ -40,7 +40,7 @@ pub(crate) use ask::{Questions, Stop};
 pub(crate) use cards::check as check_cards;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{
-    Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
+    C11dOnce, Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
     mode_options, targets_before,
 };
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
