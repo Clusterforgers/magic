@@ -1,0 +1,39 @@
+{
+  "oracle_id": "27a9e0af-76f0-4910-9f93-2a3617b4e79a",
+  "name": "Spore Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spore Burst",
+      "oracle_fingerprint": "780d2d8d9963385f39a23cb2f9106743",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

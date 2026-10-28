@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c82eda61-d195-49c9-8ff0-a78dfa650689",
+  "name": "Tribal Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribal Flames",
+      "oracle_fingerprint": "c3aeaf545035193525147a1117d0a740",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

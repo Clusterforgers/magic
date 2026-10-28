@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e54d4ecf-ebcc-4374-98e7-c682f83c82a9",
+  "name": "Path to the Festival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path to the Festival",
+      "oracle_fingerprint": "75dd93ef27b8f68b1d9b5000baab0772",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Scry": {} }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{G}" } }
+      ]
+    }
+  ]
+}

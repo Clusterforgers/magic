@@ -26,6 +26,8 @@ pub enum StatKind {
     Loyalty,
     /// How many colors it has (CR 105.4): none for a colorless object.
     Colors,
+    /// Its basic land types (CR 305.6): how many as a number, each type once among objects (`Amount::Distinct`, domain).
+    BasicLandTypes,
 }
 
 /// A comparison between two numbers.
@@ -335,7 +337,8 @@ pub enum Amount {
         stat: StatKind,
     },
     /// How many different values of the characteristic there are among the objects that match the selector ("the number
-    /// of different powers among creatures you control", "three or more creatures with different powers").
+    /// of different powers among creatures you control", "three or more creatures with different powers"); with
+    /// `BasicLandTypes`, the basic land types among them, a land of several types counting each (domain).
     Distinct {
         /// The objects compared.
         of: Selector,

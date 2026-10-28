@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9480e142-289a-439d-b6a5-2666fb0e5be3",
+  "name": "Exotic Disease",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exotic Disease",
+      "oracle_fingerprint": "d834eec6cbadd779598ae05bbf1e4a72",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

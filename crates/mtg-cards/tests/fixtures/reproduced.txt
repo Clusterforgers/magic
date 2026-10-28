@@ -94,6 +94,7 @@ Aven Initiate
 Aven Riftwatcher
 Aven Squire
 Aven Tactician
+Aven Trailblazer
 Avenging Huntbonder
 Azorius Chancery
 Azorius Guildmage
@@ -260,6 +261,7 @@ Clutch of the Undercity
 Coastal Breach
 Coastal Discovery
 Cold-Eyed Selkie
+Collective Restraint
 Collective Unconscious
 Colonel Autumn
 Colossal Plow
@@ -381,6 +383,7 @@ Doom Blade
 Doom Whisperer
 Doublecast
 Draconic Lore
+Drag to the Bottom
 Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
@@ -464,6 +467,7 @@ Evercoat Ursine
 Evolutionary Leap
 Exalted Angel
 Excavation Technique
+Exotic Disease
 Exotic Orchard
 Exploding Barrel
 Exploration
@@ -541,6 +545,7 @@ Furtive Homunculus
 Fury Storm
 Gadwick, the Wizened
 Gaea's Cradle
+Gaea's Might
 Galadhrim Brigade
 Galvanic Iteration
 Galvanizing Sawship
@@ -724,6 +729,7 @@ Jaspera Sentinel
 Jazal Goldmane
 Jeska's Will
 Jo Grant
+Jodah's Codex
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
@@ -783,6 +789,7 @@ Leafkin Druid
 Legion Loyalty
 Legolas Greenleaf
 Levitation
+Leyline Binding
 Lhurgoyf
 Licia, Sanguine Tribune
 Life of Toshiro Umezawa // Memory of Toshiro
@@ -852,6 +859,7 @@ Master of Etherium
 Master of Pearls
 Master of the Pearl Trident
 Mastery of the Unseen
+Matca Rioters
 Maul of the Skyclaves
 Maulfist Squad
 Mausoleum Harpy
@@ -866,6 +874,7 @@ Merchant of Truth
 Mercurial Chemister
 Merfolk Branchwalker
 Merfolk Mistbinder
+Meria's Outrider
 Merrow Reejerey
 Mesmeric Orb
 Methods of the Mighty
@@ -959,6 +968,7 @@ Opt
 Oran-Rief, the Vastwood
 Orazca Relic
 Orchard Strider
+Ordered Migration
 Organic Extinction
 Origin of the Hulk
 Orochi Hatchery
@@ -983,6 +993,7 @@ Path of the Animist
 Path of the Enigma
 Path of the Ghosthunter
 Path to Exile
+Path to the Festival
 Patron of the Vein
 Peacewalker Colossus
 Peema Outrider
@@ -1030,6 +1041,7 @@ Primal Might
 Primaris Eliminator
 Primeval Protector
 Primordial Hydra
+Prismatic Geoscope
 Prismatic Lens
 Prizefight
 Profane Command
@@ -1279,6 +1291,7 @@ Spire Golem
 Spire Winder
 Spirit of the Hearth
 Spoils of Adventure
+Spore Burst
 Spreading Insurrection
 Spring // Mind
 Springleaf Drum
@@ -1382,6 +1395,7 @@ Tendrils of Agony
 Tergrid's Shadow
 Termagant Swarm
 Terminus
+Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
 Teval's Judgment
@@ -1448,6 +1462,7 @@ Traverse the Outlands
 Traxos, Scourge of Kroog
 Treasure Cruise
 Treasure Hunt
+Tribal Flames
 Trove Tracker
 Troyan, Gutsy Explorer
 True Identity

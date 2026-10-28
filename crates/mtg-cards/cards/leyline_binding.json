@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b49642f6-20bd-468d-9dac-e578f9ac3091",
+  "name": "Leyline Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline Binding",
+      "oracle_fingerprint": "efcd08f7ea1f3e336af7601d313d9669",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Distinct": {
+                "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "stat": "BasicLandTypes"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

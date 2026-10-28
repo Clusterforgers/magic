@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6ae9aa10-38f5-4b10-8b44-1164b85acd7f",
+  "name": "Meria's Outrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meria's Outrider",
+      "oracle_fingerprint": "67d90610a38c5d1cc1db7f853ad2aafd",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

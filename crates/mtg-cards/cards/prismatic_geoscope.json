@@ -1,0 +1,35 @@
+{
+  "oracle_id": "be838f57-4e74-44ad-aee1-506e63b0ff37",
+  "name": "Prismatic Geoscope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismatic Geoscope",
+      "oracle_fingerprint": "e9abfb1e55ad74e05436b5ef5587a058",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyCombination": {
+                      "count": {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
