@@ -133,12 +133,29 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
     }
 }
 
+/// Whether a step asks its controller or another player something as it runs.
+fn w5d_asks(effect: &Effect) -> bool {
+    matches!(
+        effect,
+        Effect::May { .. }
+            | Effect::Modal { .. }
+            | Effect::Choose { .. }
+            | Effect::Pay { .. }
+            | Effect::Search { .. }
+            | Effect::Sacrifice { .. }
+            | Effect::Discard { .. }
+            | Effect::TapOrUntap { .. }
+    )
+}
+
 /// The target specifications and bound names an ability body can see.
 #[derive(Default)]
 struct Scope {
     targets: Vec<(Kind, bool, bool)>,
     used: BTreeSet<usize>,
     in_trigger: bool,
+    /// `Dealer` names something: a triggered ability, or a replacement of damage.
+    dealer: bool,
     names: Vec<BTreeMap<String, Kind>>,
 }
 
@@ -157,6 +174,7 @@ impl Scope {
                 .collect(),
             used: BTreeSet::new(),
             in_trigger,
+            dealer: in_trigger,
             names: vec![BTreeMap::new()],
         }
     }
@@ -356,6 +374,10 @@ impl<'a> Walker<'a> {
             Ref::Dealer => {
                 if !self.scope.in_trigger {
                     self.problem("`Dealer` is only valid in a triggered ability");
+                } else if !self.scope.dealer {
+                    self.problem(
+                        "`Dealer` is the source of damage: only a `Damage` replacement has one",
+                    );
                 }
                 self.expect(Kind::Object, want);
             }
@@ -1860,6 +1882,7 @@ impl Walker<'_> {
             | Effect::Counter { what }
             | Effect::Tap { what }
             | Effect::Untap { what }
+            | Effect::TapOrUntap { what }
             | Effect::PhaseOut { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
@@ -2776,6 +2799,23 @@ impl Walker<'_> {
         }
     }
 
+    /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object
+    /// the event is about, `Amount::Triggering` its amount and `Dealer` the source of damage. A step that asks a question
+    /// is named apart (`ReplaceBy.Instead.Asks`): a replacement asks nothing in the middle of an event.
+    fn w5d_instead(&mut self, when: &ReplaceWhen, effects: &[Effect]) {
+        if effects.is_empty() {
+            self.problem("needs at least one effect");
+        }
+        if effects.iter().any(w5d_asks) {
+            self.uses("ReplaceBy", "Instead.Asks");
+        }
+        let saved = (self.scope.in_trigger, self.scope.dealer);
+        self.scope.in_trigger = true;
+        self.scope.dealer = matches!(when, ReplaceWhen::Damage { .. });
+        self.effect_list("Instead", effects, false);
+        (self.scope.in_trigger, self.scope.dealer) = saved;
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         let enters = matches!(when, ReplaceWhen::Enters { .. });
@@ -2811,12 +2851,7 @@ impl Walker<'_> {
             ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
                 self.problem("only damage is prevented with a counter removed");
             }
-            ReplaceBy::Instead(effects) => {
-                if effects.is_empty() {
-                    self.problem("needs at least one effect");
-                }
-                self.effect_list("Instead", effects, false);
-            }
+            ReplaceBy::Instead(effects) => self.w5d_instead(when, effects),
             ReplaceBy::Dredge(cards) => {
                 if !matches!(when, ReplaceWhen::Draw { .. }) {
                     self.problem("`Dredge` replaces a `Draw`");

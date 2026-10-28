@@ -1087,6 +1087,10 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     ) {
         return None;
     }
+    // "Tap or untap target permanent.": the controller chooses which as it resolves.
+    let either = verb == "tap"
+        && r.attempt(|r| (r.word("or") && r.word("untap")).then_some(()))
+            .is_some();
     let turns = matches!(verb, "tap" | "untap" | "regenerate");
     // "Exile ~" is the card itself leaving, "Untap ~" the card turning over; nothing else of the card is destroyed or
     // countered this way.
@@ -1139,6 +1143,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             bind: None,
             duration,
         },
+        "tap" if either => Effect::TapOrUntap { what },
         "tap" => Effect::Tap { what },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },
