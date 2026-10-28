@@ -18,11 +18,11 @@ fn w8a_cut<T: Copy>(
     let Some(most) = most.filter(|most| named.len() > *most) else {
         return named.to_vec();
     };
-    let must = |object: &ObjectId| required.contains(object);
+    let is_required = |object: &ObjectId| required.contains(object);
     let kept: Vec<ObjectId> = named
         .iter()
-        .filter(|(object, _)| must(object))
-        .chain(named.iter().filter(|(object, _)| !must(object)))
+        .filter(|(object, _)| is_required(object))
+        .chain(named.iter().filter(|(object, _)| !is_required(object)))
         .map(|(object, _)| *object)
         .take(most)
         .collect();

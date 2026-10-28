@@ -468,6 +468,7 @@ mod w6c_x_triggers;
 mod w6d_shared_selectors;
 mod w7d_control_scenarios;
 mod w7d_selector_scenarios;
+mod w8a_declaration_limits;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;
