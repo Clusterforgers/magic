@@ -57,6 +57,7 @@ mod untapped;
 mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
+mod w9b_clash;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -985,6 +986,7 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
+            .or_else(|| writer.w9b_clash(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;

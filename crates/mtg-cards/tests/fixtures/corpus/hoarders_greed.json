@@ -1,0 +1,25 @@
+{
+  "id": "1293ed24-781c-465f-8561-39b01e7ba388",
+  "oracle_id": "60040023-7bf0-42e0-ab30-46a730675564",
+  "name": "Hoarder's Greed",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecc",
+  "collector_number": "47",
+  "rarity": "uncommon",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "You lose 2 life and draw two cards, then clash with an opponent. If you win, repeat this process. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Clash"
+  ]
+}

@@ -405,6 +405,7 @@ mod w8a_declaration_limits;
 mod w8b_milled;
 mod w8c_writers;
 mod w9a_expend;
+mod w9b_clash;
 mod where_x;
 mod written_effects;
 mod x_after;

@@ -140,6 +140,7 @@ mod w7e_phase;
 mod w8a_declaration_limits;
 mod w8b_milled;
 mod w8b_then;
+mod w9b_clash;
 mod where_x;
 mod zone_moves;
 

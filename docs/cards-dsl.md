@@ -134,7 +134,7 @@ Effect (one variant per engine primitive)
   Tap{what} Untap{what} PhaseOut{what} Attach{what,to} Unattach{what} Transform{what} Flip{what} Prepare{what} WinGame{who}
   Surveil{who,count} Proliferate{who} Goad{what} Fight{what,with} BecomeMonarch{who} CreateEmblem{who,abilities} BecomeDayNight{to} Amass{subtype,count} Incubate{who,count}
   Monstrosity{count} BecomeLevel{level} Adapt{count} Bolster{count} Explore{what} Connive{what} Fabricate{count} Learn{who} Crewed{saddle} TimeTravel{who}
-  RepeatEach{over,as,effects} RollDice{who,sides,plus?,results: [{from,to?,effects}]} FlipCoin{who,win,lose} Vote{options: Named([name]) | Of(ref),secret?,as?} VillainousChoice{who,first,second,they?} Planechase{act: Planeswalk | ChaosEnsues}
+  RepeatEach{over,as,effects} RollDice{who,sides,plus?,results: [{from,to?,effects}]} FlipCoin{who,win,lose} Clash{who,win,lose,until?} Vote{options: Named([name]) | Of(ref),secret?,as?} VillainousChoice{who,first,second,they?} Planechase{act: Planeswalk | ChaosEnsues}
   ExtraTurn{who,count,skip_untap} AddPhase{phases: [Beginning|Combat|Main]} ExileUntil{who,filter,as,exiled_as} RevealUntil{who,filter,count,as,revealed_as} ExileTop{who,count,as} CastFromZone{who,what,free,way?,as?,otherwise}
   CreateToken{who,token: Named(id) | Custom(TokenSpec) | CopyOf{of,except,no_mana_cost?},count,tapped,attacking,as?}
   CopySpell{who,what,count,new_targets,except} CopyAbility{what,count,new_targets} CopyCard{who,what,as} Encode{what,on} BecomeCopy{what,of,except,duration}
@@ -554,6 +554,7 @@ Errors name the file and the path inside it; all are collected.
 **Incubate.** The compiler reads "Incubate N." and "incubate X, where X is ..." of "you" (`Effect::Incubate`), also after a step joined by ", then" ("mill two cards, then incubate X"); the Incubator is the predefined token `incubator`, whose file has the Phyrexian back face. The reminder text of incubate names counters but does not keep the clause from being read (`normalize::COUNTER_ACTIONS`). "Its controller incubates" and an X of the cards "exiled this way" stay with the table.
 
 **Expend.** The compiler reads "Whenever you expend N" with N in digits (`Trigger::Expend`), and "an opponent expends" and "a player expends" too; the reminder text is dropped. A word for N stays with the table.
+**Clash.** The compiler reads "Clash with an opponent." with an optional "If you win, S." (`Effect::Clash`, `compile/read/w9b_clash.rs`, written back by `render/w9b_clash.rs`), "~ deals N damage to that creature's controller" as the win branch for the one target of the sentences before, and "You S, then clash with an opponent. If you win, repeat this process." as the steps and a clash until a loss whose win branch repeats them. A lose branch, "repeat this process" with no steps and another player who clashes stay with the table.
 
 ## Model-assisted reading
 

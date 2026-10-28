@@ -1,0 +1,27 @@
+{
+  "oracle_id": "60040023-7bf0-42e0-ab30-46a730675564",
+  "name": "Hoarder's Greed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoarder's Greed",
+      "oracle_fingerprint": "1e748b5b93ffe2640060403e43ce7c62",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LoseLife": { "amount": 2 } },
+              { "Draw": { "count": 2 } },
+              {
+                "Clash": {
+                  "win": [{ "LoseLife": { "amount": 2 } }, { "Draw": { "count": 2 } }],
+                  "until": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

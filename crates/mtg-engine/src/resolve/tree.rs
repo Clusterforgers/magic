@@ -24,7 +24,9 @@ pub(crate) const fn is_next_pass(position: &[usize]) -> bool {
 const fn loops(effect: &Effect) -> bool {
     matches!(
         effect,
-        Effect::RepeatEach { .. } | Effect::FlipCoin { until: true, .. }
+        Effect::RepeatEach { .. }
+            | Effect::FlipCoin { until: true, .. }
+            | Effect::Clash { until: true, .. }
     )
 }
 
@@ -34,7 +36,7 @@ fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
         Effect::RollDice { results, .. } => {
             results.iter().map(|row| row.effects.as_slice()).collect()
         }
-        Effect::FlipCoin { win, lose, .. } => vec![win, lose],
+        Effect::FlipCoin { win, lose, .. } | Effect::Clash { win, lose, .. } => vec![win, lose],
         Effect::VillainousChoice { first, second, .. } => vec![first, second],
         Effect::If {
             then, otherwise, ..
