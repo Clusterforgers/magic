@@ -306,6 +306,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
+    CoinFlipWon {
+        /// Who wins the flip.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player amasses ("whenever you amass"); `Triggering` is that player.
     Amassed {
         /// Who amasses.

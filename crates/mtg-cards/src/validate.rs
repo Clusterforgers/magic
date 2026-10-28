@@ -1214,6 +1214,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Proliferated { who }
+            | TriggerPattern::CoinFlipWon { who }
             | TriggerPattern::Amassed { who }
             | TriggerPattern::Surveilled { who }
             | TriggerPattern::Bolstered { who } => {
@@ -1295,6 +1296,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
+                | TriggerPattern::CoinFlipWon { .. }
                 | TriggerPattern::Amassed { .. }
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
@@ -1564,12 +1566,9 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// `FlipCoin`: a flip whose result does something.
+    /// `FlipCoin`: the player and both lists; a flip with no list still counts for "whenever you win a coin flip".
     fn flip_coin(&mut self, who: &Ref, win: &[Effect], lose: &[Effect]) {
         self.at("who", |w| w.reference(who, Kind::Player));
-        if win.is_empty() && lose.is_empty() {
-            self.problem("a flip whose result does nothing");
-        }
         self.effect_list("win", win, false);
         self.effect_list("lose", lose, false);
     }
@@ -1975,7 +1974,7 @@ impl<'a> Walker<'a> {
                 plus,
                 results,
             } => w.roll_dice(who, *sides, plus, results),
-            Effect::FlipCoin { who, win, lose } => w.flip_coin(who, win, lose),
+            Effect::FlipCoin { who, win, lose, .. } => w.flip_coin(who, win, lose),
             Effect::Vote {
                 options,
                 secret,

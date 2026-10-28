@@ -12,12 +12,22 @@ impl Writer<'_> {
     /// of effects they cover.
     pub(super) fn chance(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         match effects.first()? {
-            Effect::FlipCoin { who, win, lose } => {
-                let (opening, subject) = match who {
-                    Ref::You => ("flip a coin", "you"),
-                    Ref::Triggering => ("that player flips a coin", "they"),
+            Effect::FlipCoin {
+                who,
+                win,
+                lose,
+                until,
+            } => {
+                let (opening, subject) = match (who, until) {
+                    (Ref::You, false) => ("flip a coin", "you"),
+                    (Ref::You, true) => ("flip a coin until you lose a flip", "you"),
+                    (Ref::Triggering, false) => ("that player flips a coin", "they"),
                     _ => return None,
                 };
+                // A flip until a loss is read with no branch.
+                if *until && !(win.is_empty() && lose.is_empty()) {
+                    return None;
+                }
                 let mut sentences = vec![opening.to_owned()];
                 let neutral = Condition::All(Vec::new());
                 for (branch, result) in [(win, "win"), (lose, "lose")] {

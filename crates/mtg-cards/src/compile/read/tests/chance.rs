@@ -1,4 +1,4 @@
-//! Goal: a coin flip reads with a branch for each result, alone or after a cost or an event, and a die roll reads as a roll whose table the compiler fills from the rows after it; both write back as the same text, and a near-miss (a branch twice, the lose branch first, a die with another name or a body that does not read) stays with the table.
+//! Goal: a coin flip reads with a branch for each result, alone or after a cost or an event, and a flip with no branch, a flip until a loss and "whenever you win a coin flip" read too, and a die roll reads as a roll whose table the compiler fills from the rows after it; both write back as the same text, and a near-miss (a branch twice, the lose branch first, a die with another name or a body that does not read) stays with the table.
 use super::*;
 
 #[rstest]
@@ -16,6 +16,26 @@ use super::*;
     "When this creature enters, flip a coin. If you lose the flip, return this creature to its owner's hand.",
     ClauseKind::Triggered,
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"FlipCoin":{"lose":[{"Move":{"what":"This","to":"Hand"}}]}}]}}"#
+)]
+#[case::c8_vote_a_bare_flip(
+    "{1}, {T}, Sacrifice another permanent: Flip a coin.",
+    ClauseKind::Activated,
+    r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap",{"Sacrifice":{"filter":["Other"]}}],"effects":[{"FlipCoin":{}}]}}"#
+)]
+#[case::c8_vote_until_a_loss(
+    "At the beginning of combat on your turn, flip a coin until you lose a flip.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat","whose":"You"}},"effects":[{"FlipCoin":{"until":true}}]}}"#
+)]
+#[case::c8_vote_you_win_a_flip(
+    "Whenever you win a coin flip, draw a card.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"CoinFlipWon":{"who":"You"}},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::c8_vote_a_player_wins_a_flip(
+    "Whenever a player wins a coin flip, draw a card.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"CoinFlipWon":{}},"effects":[{"Draw":{}}]}}"#
 )]
 fn a_coin_flip_reads_with_the_branch_of_each_result(
     #[case] text: &str,
@@ -42,7 +62,14 @@ fn a_coin_flip_reads_with_the_branch_of_each_result(
     "{T}: Flip a coin. If you win the flip, draw a card. If you lose, gain 1 life.",
     ClauseKind::Activated
 )]
-#[case::a_flip_that_does_nothing("{T}: Flip a coin.", ClauseKind::Activated)]
+#[case::a_flip_until_a_loss_with_a_branch(
+    "{T}: Flip a coin until you lose a flip. If you win the flip, draw a card.",
+    ClauseKind::Activated
+)]
+#[case::another_player_until_a_loss(
+    "Whenever a player casts a spell, that player flips a coin until they lose a flip.",
+    ClauseKind::Triggered
+)]
 #[case::two_coins(
     "{T}: Flip two coins. If you win the flip, draw a card.",
     ClauseKind::Activated

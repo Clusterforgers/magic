@@ -53,7 +53,7 @@ fn a_choice_without_the_sentence_has_no_condition() {
     "Choose one. You may choose both instead.\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
 )]
 #[case::an_unread_mode(
-    "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n\u{2022} Draw a card.\n\u{2022} Flip a coin."
+    "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n\u{2022} Draw a card.\n\u{2022} Wish for a card."
 )]
 #[case::at_random(
     "Choose one at random. If you control a commander as you cast this spell, you may choose both instead.\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."

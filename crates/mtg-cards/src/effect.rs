@@ -824,6 +824,9 @@ pub enum Effect {
         /// Done when the flip is lost.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         lose: Vec<Effect>,
+        /// Flips again after each won flip, `win` done after each, until a flip is lost ("flip a coin until you lose a flip").
+        #[serde(default, skip_serializing_if = "is_false")]
+        until: bool,
     },
     /// Each player votes (CR 701.38), the controller first and the others in turn order. A vote on named choices binds
     /// each name to the players who voted for it; a vote on players or objects binds `bind` to those with the most votes,
@@ -1249,8 +1252,12 @@ mod tests {
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new() },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: false },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
+    )]
+    #[case::flip_until_a_loss(
+        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), until: true },
+        r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::vote_on_two_names(
         Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
