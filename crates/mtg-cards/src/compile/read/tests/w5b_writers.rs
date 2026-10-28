@@ -191,16 +191,3 @@ fn damage_at_least(
 ) {
     assert_eq!(written(&champion(source, least), clause), reads, "{clause}");
 }
-
-#[test]
-#[ignore = "probe"]
-fn w5b_probe() {
-    let path = std::env::var("W5B_PROBE").unwrap_or_default();
-    let text = std::fs::read_to_string(path).unwrap_or_default();
-    for line in text.lines().filter(|line| line.starts_with('{')) {
-        println!("### {line}");
-        for wording in written_variants(&ability(line)) {
-            println!("  {wording}");
-        }
-    }
-}

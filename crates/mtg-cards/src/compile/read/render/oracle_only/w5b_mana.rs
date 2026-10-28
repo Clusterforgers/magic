@@ -24,7 +24,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 }
 
 /// The ability with `step` as its one effect, worded.
-fn with_step(value: &Value, step: Value) -> Vec<String> {
+fn with_step(value: &Value, step: &Value) -> Vec<String> {
     let mut value = value.clone();
     let Some(inner) = inner_mut(&mut value).and_then(Value::as_object_mut) else {
         return Vec::new();
@@ -42,9 +42,9 @@ fn times(value: &Value, mana: &Value) -> Vec<String> {
     if let Some(map) = once.as_object_mut() {
         map.remove("times");
     }
-    let gains = with_step(value, json!({"GainLife": {"amount": amount}}));
+    let gains = with_step(value, &json!({"GainLife": {"amount": amount}}));
     let mut found = Vec::new();
-    for added in with_step(value, json!({"AddMana": once})) {
+    for added in with_step(value, &json!({"AddMana": once})) {
         let Some((head, symbols)) = added.rsplit_once("Add ") else {
             continue;
         };
@@ -91,7 +91,7 @@ fn produced_by(value: &Value, mana: &Value) -> Vec<String> {
     let land = format!("a land {who} could produce");
     let mut found = Vec::new();
     for noun in w5b_noun(&Value::Array(among.clone())) {
-        for text in with_step(value, json!({"AddMana": lands})) {
+        for text in with_step(value, &json!({"AddMana": lands})) {
             if text.contains(&land) {
                 found
                     .push(text.replace(&land, &format!("{} {noun} could produce", article(&noun))));
