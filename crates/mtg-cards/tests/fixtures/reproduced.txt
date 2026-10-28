@@ -452,6 +452,7 @@ Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
 Ezzaroot Channeler
+Fain, the Broker
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
@@ -548,6 +549,7 @@ Girder Goons
 Gisa and Geralf
 Glimpse of Freedom
 Glint-Sleeve Artisan
+Glissa Sunslayer
 Glorious Anthem
 Glowstone Recluse
 Gluttonous Cyclops
@@ -631,6 +633,7 @@ Hero of Bladehold
 Hero of Precinct One
 Hero's Heirloom
 Heronblade Elite
+Hexavus
 Hidden Dragonslayer
 Hidden Hideout
 Highspire Artisan
@@ -903,6 +906,7 @@ Notion Rain
 Novijen, Heart of Progress
 Nylea's Colossus
 Nyxborn Behemoth
+O'aka, Traveling Merchant
 Oath of Gideon
 Oath of Jace
 Oathsworn Vampire
@@ -972,6 +976,7 @@ Porcuparrot
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
+Power Conduit
 Prava of the Steel Legion
 Predator Dragon
 Predator Ooze

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8859a692-d107-4de2-9110-4681fc2761c7",
+  "name": "Glissa Sunslayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glissa Sunslayer",
+      "oracle_fingerprint": "2aa36d9459a2a554aa8e462cd565ea61",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [
+                        { "RemoveCounters": { "from": { "Target": 0 }, "count": 3, "up_to": true } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

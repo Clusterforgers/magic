@@ -1286,6 +1286,10 @@ mod tests {
         Effect::RemoveCounters { from: Ref::This, counter: Some(CounterKind::Other("energy".into())), count: Amount::Counters { on: Ref::This, counter: CounterKind::Other("energy".into()) }, up_to: false },
         r#"{"RemoveCounters":{"from":"This","counter":{"Other":"energy"},"count":{"Counters":{"on":"This","counter":{"Other":"energy"}}}}}"#
     )]
+    #[case::w2f_up_to_three_of_any_kind(
+        Effect::RemoveCounters { from: Ref::Target(0), counter: None, count: Amount::Fixed(3), up_to: true },
+        r#"{"RemoveCounters":{"from":{"Target":0},"count":3,"up_to":true}}"#
+    )]
     #[case::double_the_counters_of_a_kind(
         Effect::MultiplyCounters { on: Ref::This, counter: Some(CounterKind::PlusOnePlusOne), factor: 2 },
         r#"{"MultiplyCounters":{"on":"This","counter":"+1/+1"}}"#

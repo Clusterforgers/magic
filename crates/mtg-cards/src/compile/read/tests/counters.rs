@@ -207,8 +207,6 @@ fn capitalize(text: &str) -> String {
 #[rstest]
 #[case::all_of_them("Remove all +1/+1 counters from ~.")]
 #[case::a_variable("Remove X +1/+1 counters from ~.")]
-#[case::any_kind("Remove a counter from ~.")]
-#[case::up_to("Remove up to two +1/+1 counters from ~.")]
 #[case::one_for_a("Remove one +1/+1 counter from ~.")]
 #[case::a_plural_for_one("Remove a +1/+1 counters from ~.")]
 #[case::a_singular_for_many("Remove two +1/+1 counter from ~.")]
