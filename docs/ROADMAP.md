@@ -25,7 +25,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1v), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a).
+- Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1va), (r1vb), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a).
 - Cast ways and zones: (c5e), (c2l3), (r2de-b), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8j), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
@@ -50,7 +50,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Counters and planeswalkers: counters on permanents and players, keyword counters, counters of any kind, counter costs on other permanents, "if it had counters on it", multiplied counters, loyalty abilities and the legend rule.
 - Attachments: Auras on permanents and players, Equipment, Reconfigure, living weapon, umbra armor and Aura grants.
 - Replacement and prevention: enters tapped or with counters, damage shields, regeneration, protection, death shields and conditional "instead" replacements.
-- Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, free casts and Strive.
+- Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive.
 - Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge and Harmonize (`docs/engine.md`).
@@ -130,7 +130,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c1l) Mana abilities still unread: Domain counts, X mana by a where clause, counted sacrifices, a cost's mana value, mana not for generic costs; frees about 8 cards (Springjack Pasture, Illuminor Szeras, Neheb)
 - [ ] (c12f) Effects after the additional costs of a spell: divided X damage, two targets from X and what a cost took; frees about 12 cards (Fire Covenant, Disaster Radius, Momentous Fall)
 - [ ] (r2d) Costs in the engine: `PayLife.Counted`, `PayEnergy.Counted`, `Discard.Counted`, `Untap`, `OneOf`, `ReturnToHand`, `Pay.ExileSelf`; frees about 12 cards (G'raha Tia, Confiscation Coup, Order of Whiteclay)
-- [~] (r1v) (r1v-cost-reductions) Cost reductions left: activated-ability costs by a count, the first or next spell of a kind each turn, counts of the turn; frees about 65 cards (Pteramander, Loreseeker's Stone, Kaza, Spellbinding Soprano)
+- [ ] (r1va) Reductions of other activated abilities: Equip lines with a reduction, "Equip, Cycling, Boast abilities you activate", "abilities of Foods", "the first activated ability each turn"; frees about 12 cards (Arm-Mounted Anchor, Fluctuator, Sam, Loyal Attendant, Tezzeret, Betrayer of Flesh)
+- [ ] (r1vb) Reductions granted for later spells: "the next spell you cast this turn costs less", "spells you cast this turn" after a trigger, counts of opponents attacked and energy paid, the first face-down or X spell; frees about 12 cards (Kaza, Roil Chaser, Spellbinding Soprano, Fast Forward, Kadena)
 - [ ] (c14a) The rest of the top coverage blockers: Multiclass Baldric, Yavimaya Bloomsage, a secretly chosen opponent, six spell lines and rules for the 61 other prepare cards; frees about 70 cards (Stalking Leonin, Ponder)
 - [ ] (c13b) The rest of the commander free casts and strive spells; frees about 10 cards (Deflecting Swat, Twinflame, Reinterpret)
 

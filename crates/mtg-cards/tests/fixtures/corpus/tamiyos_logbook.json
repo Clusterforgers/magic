@@ -1,0 +1,23 @@
+{
+  "cmc": 3.0,
+  "collector_number": "70",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "0edb2d01-9a94-410c-8ab7-ca1b404ab5f0",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{U}",
+  "name": "Tamiyo's Logbook",
+  "oracle_id": "d9356199-4ce3-44fa-9463-90fc134088f9",
+  "oracle_text": "{5}{U}, {T}: Draw a card. This ability costs {1} less to activate for each other artifact you control.",
+  "rarity": "uncommon",
+  "released_at": "2023-02-10",
+  "set": "one",
+  "type_line": "Artifact — Book"
+}

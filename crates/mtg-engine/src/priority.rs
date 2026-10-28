@@ -184,7 +184,8 @@ fn can_activate(
             return false;
         }
     }
-    if let Some(mana) = &price.mana {
+    if let Some(mana) = crate::c11a_less::c11a_mana(state, player, object.id(), &price) {
+        let mana = &mana;
         let Some(seat) = state.player(player) else {
             return false;
         };

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "28a21e56-b97f-487d-9a89-61c248192cec",
+  "name": "Loreseeker's Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loreseeker's Stone",
+      "oracle_fingerprint": "9b8394546e4cb7cc064588c1769c912a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Increase",
+                  "mana": "{1}",
+                  "per": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

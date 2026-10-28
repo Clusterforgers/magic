@@ -46,7 +46,7 @@ use crate::state::GameState;
 use crate::triggers::PendingTrigger;
 use crate::ways::Way;
 
-pub(crate) use modifiers::cheapest;
+pub(crate) use modifiers::{c11a_reduced, cheapest};
 pub(crate) use optional::{Optional, kicked_with, payments};
 pub(crate) use x::{XCost, payable, some_x_has_targets};
 

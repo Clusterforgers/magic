@@ -1,0 +1,19 @@
+{
+  "cmc": 6.0,
+  "collector_number": "320",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "e95365a8-514a-4212-9d65-b0cdf2cd06e5",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{6}",
+  "name": "Loreseeker's Stone",
+  "oracle_id": "28a21e56-b97f-487d-9a89-61c248192cec",
+  "oracle_text": "{3}, {T}: Draw three cards. This ability costs {1} more to activate for each card in your hand.",
+  "rarity": "uncommon",
+  "released_at": "2020-11-20",
+  "set": "cmr",
+  "type_line": "Artifact"
+}

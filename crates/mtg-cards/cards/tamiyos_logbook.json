@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d9356199-4ce3-44fa-9463-90fc134088f9",
+  "name": "Tamiyo's Logbook",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tamiyo's Logbook",
+      "oracle_fingerprint": "e0410cdec4921ae7ed2f50d2921a8016",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{U}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": { "Count": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -151,6 +151,9 @@ pub fn ability(ability: &Ability) -> Option<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::c11a_ability_less::c11a_variants(ability) {
+        return texts;
+    }
     if let Some(texts) = c10_dice_per_player::c10_dice_variants(ability) {
         return texts;
     }

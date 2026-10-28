@@ -1,0 +1,28 @@
+{
+  "cmc": 1.0,
+  "collector_number": "109",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "0072bbbf-a695-47dd-9615-db2659f357db",
+  "keywords": [
+    "Flying",
+    "Adapt"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{U}",
+  "name": "Pteramander",
+  "oracle_id": "00187de2-bc48-4137-97d8-a9a0fafc76c1",
+  "oracle_text": "Flying\n{7}{U}: Adapt 4. This ability costs {1} less to activate for each instant and sorcery card in your graveyard. (If this creature has no +1/+1 counters on it, put four +1/+1 counters on it.)",
+  "power": "1",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "set": "otc",
+  "toughness": "1",
+  "type_line": "Creature — Salamander Drake"
+}

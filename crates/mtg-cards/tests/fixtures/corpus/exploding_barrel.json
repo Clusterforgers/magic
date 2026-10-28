@@ -1,0 +1,26 @@
+{
+  "cmc": 3.0,
+  "collector_number": "39",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "dee26c1c-f890-46ca-81bb-2bd63fa691c9",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}",
+  "name": "Exploding Barrel",
+  "oracle_id": "82800275-1edf-4aa0-af9e-59dea82d7c6a",
+  "oracle_text": "{T}: Add one mana of any color. Put a pressure counter on this artifact.\n{8}, {T}, Sacrifice this artifact: It deals 20 damage to target creature. This ability costs {1} less to activate for each pressure counter on this artifact. Activate only as a sorcery.",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "rarity": "rare",
+  "released_at": "2026-03-06",
+  "set": "tmc",
+  "type_line": "Artifact"
+}

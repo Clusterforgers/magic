@@ -294,6 +294,8 @@ impl<'a> Scope<'a> {
             TurnTally::SpellsCast => Tally::Cast,
             TurnTally::InstantsAndSorceriesCast => Tally::CastInstantOrSorcery,
             TurnTally::NoncreatureSpellsCast => Tally::C10AnyNoncreatureCast,
+            TurnTally::CreatureSpellsCast => Tally::C11aCreatureCast,
+            TurnTally::ArtifactSpellsCast => Tally::C11aArtifactCast,
             TurnTally::Discarded => Tally::Discarded,
             TurnTally::Drawn => Tally::Drawn,
             TurnTally::LandsPlayed => Tally::LandsPlayed,

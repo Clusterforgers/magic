@@ -171,6 +171,8 @@ mod c10_pa_monstrous;
 mod c10_pa_pay_x;
 mod c10_uc;
 mod c10_xp_copy_until;
+mod c11a_ability_less;
+mod c11a_turn_costs;
 mod c11c_counter_costs;
 mod c11c_had_counters;
 mod c11f_writers;

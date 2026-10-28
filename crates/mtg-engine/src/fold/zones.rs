@@ -250,6 +250,7 @@ fn spell_cast(
     {
         state.tally(player, Tally::C10AnyNoncreatureCast);
     }
+    crate::c11a_less::c11a_tally_kinds(state, player, object);
     // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
     if let Some(spell) = state.objects.get_mut(&object) {
         spell.choices.clone_from(choices);

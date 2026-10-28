@@ -15,6 +15,7 @@ use crate::trigger::TriggerPattern;
 /// once each turn."
 fn at_restriction(r: &mut Reader<'_>) -> bool {
     r.peek_word() == Some("activate")
+        || super::c11a_ability_less::c11a_at_less(r)
         || r.lookahead(|r| r.words(ONCE_EACH_TURN).then_some(()))
             .is_some()
 }
@@ -268,7 +269,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
 /// An activated ability: a cost, a colon, sentences and the restrictions on when it may be
 /// activated: `{T}: Add {G}.`, `{2}, {T}, Sacrifice ~: Draw a card.`
 pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
-    let cost = costs::cost(r)?;
+    let mut cost = costs::cost(r)?;
     r.punct(':').then_some(())?;
     // An X in the cost is the payer's to choose, so the effects may use it.
     r.x_free |= cost.has_x();
@@ -278,6 +279,9 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     let in_graveyard = r.from_graveyard || effects::returns_from_graveyard(r);
     r.from_graveyard = in_graveyard;
     let effects = sentences(r, true)?;
+    if let Some(less) = r.attempt(super::c11a_ability_less::c11a_less) {
+        cost.0.push(less);
+    }
     let (timing, limit, condition) = restrictions::read(r)?;
     let targets = std::mem::take(&mut r.targets);
     // An ability without targets that adds mana is a mana ability (CR 605.1a) whatever else it does and plays

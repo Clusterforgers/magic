@@ -1,0 +1,41 @@
+{
+  "oracle_id": "82800275-1edf-4aa0-af9e-59dea82d7c6a",
+  "name": "Exploding Barrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exploding Barrel",
+      "oracle_fingerprint": "da6f5034655dd623da684c6ffbb44919",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "pressure" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{8}" },
+              "Tap",
+              "SacrificeSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": { "Counters": { "on": "This", "counter": { "Other": "pressure" } } }
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 20 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
