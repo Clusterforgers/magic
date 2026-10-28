@@ -1,0 +1,33 @@
+{
+  "oracle_id": "518115c9-0f0f-4249-81ff-e79b27dda1be",
+  "name": "Aven Trailblazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Trailblazer",
+      "oracle_fingerprint": "79576bd44357bfe8033a121e46848cf3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": 2,
+                  "toughness": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -131,6 +131,9 @@ pub struct TokenFile {
     pub id: String,
     /// The token.
     pub token: TokenSpec,
+    /// The back face of a transforming token (the Incubator's Phyrexian), none for a token with one face.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub back: Option<TokenSpec>,
 }
 
 #[cfg(test)]

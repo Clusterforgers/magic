@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},"Commander",{"OwnedBy":"You"}]},"mods":[{"GrantAbility":{"Activated":{"cost":[{"Mana":"{2}{U}"}],"effects":[{"BecomeCopy":{"duration":"WhileSourceOnBattlefield","of":{"Target":0},"what":"This"}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}}]}}]}] }

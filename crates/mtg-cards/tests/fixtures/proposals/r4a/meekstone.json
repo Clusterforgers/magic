@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},{"Compare":{"op":"Ge","stat":"Power","to":{"Greatest":{"of": [{"Type":"Creature"}],"stat":"Power"}}} } ]},"mods":["DoesntUntap"]} } ]} ]}

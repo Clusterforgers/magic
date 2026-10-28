@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2e1d5873-50e6-432a-b7a9-9f8d2632a0b9",
+  "name": "Skinbrand Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skinbrand Goblin",
+      "oracle_fingerprint": "781ebb534764d88f1ff24b29fe5990e5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

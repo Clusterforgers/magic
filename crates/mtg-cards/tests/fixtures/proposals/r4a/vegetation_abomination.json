@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Deathtouch"},{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"RollDice":{"results":[{"effects":[{"GainLife":{"amount":{"DieResult":"Only"}}}],"from":1,"to":6}],"sides":6}}]} }]} ]}

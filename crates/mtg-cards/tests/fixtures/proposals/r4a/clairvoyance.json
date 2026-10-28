@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DelayedTrigger":{"effects":[{"Draw":{}}],"when":{"StepBegins":{"step":"Upkeep"}}}}]}}] } ]}

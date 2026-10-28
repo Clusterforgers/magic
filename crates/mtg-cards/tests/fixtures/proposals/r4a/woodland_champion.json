@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"PutCounters":{"counter":"+1/+1","on":"This","count":{"Count":[{"Is":"Triggering"}]}}}],"when":{"Batch":{"ZoneChange":{"what":["Token",{"ControlledBy":"You"}],"to":"Battlefield"}}}}}]}]}

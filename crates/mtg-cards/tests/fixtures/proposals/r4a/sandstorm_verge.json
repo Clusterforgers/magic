@@ -1,0 +1,25 @@
+{
+  "oracle_id": "de417a82-8f03-4d7e-aee7-48f7d7eba61a",
+  "name": "Sandstorm Verge",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sandstorm Verge",
+      "oracle_fingerprint": "9be92893255e59b140bbed105e800bbf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 14, "end": 90 }
+          }
+        }
+      ]
+    }
+  ]
+}

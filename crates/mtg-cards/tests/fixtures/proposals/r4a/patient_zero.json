@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d53ce3fd-5929-448b-90b4-ed90b3a9ca75",
+  "name": "Patient Zero",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Patient Zero",
+      "oracle_fingerprint": "d5ab1ced7c8f4efa6c61fd4aa4ba752a",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 9, "end": 89 }
+          }
+        }
+      ]
+    }
+  ]
+}

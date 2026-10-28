@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"PutCounters":{"counter":"+1/+1","on":{"Target":0},"count":"Divided"}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":1},"divide":2}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Untap":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasCounter":"+1/+1"}]}}}],"when":{"StepBegins":{"step":"Untap","whose":"Opponents"}}}}]}]}

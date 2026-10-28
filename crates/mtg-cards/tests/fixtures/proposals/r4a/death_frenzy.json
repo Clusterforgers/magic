@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"}]},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":-2,"toughness":-2}}]}}],"targets":[]}},{"Triggered":{"effects":[{"GainLife":{"amount":1}}],"when":{"DiceRolled":{"who":"You"}}}}] } ]}

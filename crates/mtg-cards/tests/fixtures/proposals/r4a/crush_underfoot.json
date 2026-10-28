@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Choose":{"as":"creature","from":{"Each":[{"ControlledBy":"You"},{"Subtype":"Giant"},{"Type":"Creature"}]},"who":"You"}},{"DealDamage":{"amount":{"Stat":{"of":{"Bound":"creature"},"stat":"Power"}},"to":{"Target":0},"source":{"Bound":"creature"}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}]}] }

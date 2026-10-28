@@ -1,9 +1,9 @@
 //! The condition after "as long as" in a static ability: what the permanent itself is ("it's untapped", "~ is
 //! monstrous"), the counters on it, a count of cards in a graveyard or a hand ("there are seven or more cards in your
-//! graveyard", "there are four or more card types among cards in your graveyard", "you have no cards in hand"), the
+//! graveyard", "there are four or more card types among cards in your graveyard", "you have no cards in hand", domain), the
 //! devotion of its controller, and what they control. Read from the wording and written back the same way.
 
-use mtg_core::card::Supertype;
+use mtg_core::card::{CardType, Supertype};
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word};
@@ -15,7 +15,7 @@ use super::statics::{holds, holds_texts};
 use super::tokens::Reader;
 use super::triggers;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::value::{Amount, Cmp, Condition, CounterKind};
+use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 
 /// What a permanent can be that a condition names: "untapped", "tapped", "attacking", "blocking", "monstrous",
 /// "legendary" (a color is another).
@@ -161,7 +161,18 @@ fn hand() -> Selector {
     Selector(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)])
 }
 
-/// How many cards there are, or how many types among them: "there are seven or more cards in your graveyard", "there
+/// Domain: the basic land types among the lands you control.
+fn w7a_domain() -> Amount {
+    Amount::Distinct {
+        of: Selector(vec![
+            Pred::Type(CardType::Land),
+            Pred::ControlledBy(Ref::You),
+        ]),
+        stat: StatKind::BasicLandTypes,
+    }
+}
+
+/// How many cards there are, or how many types among them:"there are seven or more cards in your graveyard", "there
 /// are fewer than eight cards in your graveyard", "there are four or more card types among cards in your graveyard",
 /// "you have no cards in hand", "you have one or fewer cards in hand".
 fn cards_counted(r: &mut Reader<'_>) -> Option<Condition> {
@@ -180,6 +191,9 @@ fn cards_counted(r: &mut Reader<'_>) -> Option<Condition> {
     }
     if r.words("card types among") {
         return Some(compare(Amount::CardTypes(graveyard(r)?), Cmp::Ge, number));
+    }
+    if r.words("basic land types among lands you control") {
+        return Some(compare(w7a_domain(), Cmp::Ge, number));
     }
     Some(compare(Amount::Count(graveyard_kind(r)?), Cmp::Ge, number))
 }
@@ -397,6 +411,9 @@ fn counted_text(condition: &Condition, number: u32, words: &str) -> Vec<String> 
     match (left, op) {
         (Amount::CardTypes(of), Cmp::Ge) if *of == graveyard_cards() => vec![format!(
             "there are {words} or more card types among cards in your graveyard"
+        )],
+        (left, Cmp::Ge) if *left == w7a_domain() => vec![format!(
+            "there are {words} or more basic land types among lands you control"
         )],
         (Amount::Count(of), Cmp::Ge) if *of == graveyard_cards() => {
             vec![format!("there are {words} or more cards in your graveyard")]

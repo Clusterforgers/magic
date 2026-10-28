@@ -1,0 +1,25 @@
+{
+  "oracle_id": "15c6837c-775b-4b4a-a2f7-9fd79215fa05",
+  "name": "Gravkill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravkill",
+      "oracle_fingerprint": "1939786832d0ba1e2a88c383aa4d70c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

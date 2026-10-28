@@ -1,0 +1,20 @@
+{
+  "oracle_id": "43990801-ed4a-49ff-a96e-03faa302214f",
+  "name": "Iron Golem",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Iron Golem",
+      "oracle_fingerprint": "a0e2477be8b88aa941b4e7a75bc9a356",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 10, "end": 62 }
+          }
+        }
+      ]
+    }
+  ]
+}

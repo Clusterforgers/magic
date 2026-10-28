@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Land"}]}},{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Triggered":{"effects":[{"Untap":{"what":"Attached"}}],"when":{"StepBegins":{"step":"Untap","whose":"Opponents"}}}}}]} }]}] }

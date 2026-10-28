@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1ba5b108-59cb-4af1-88cb-d3ceaaf00784",
+  "name": "Jodah's Codex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jodah's Codex",
+      "oracle_fingerprint": "087f7c0a032fc0f3c006f39355bbd697",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -229,6 +229,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Power => Traits::POWER,
         StatKind::Toughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
+        StatKind::BasicLandTypes => Traits::SUBTYPES,
         StatKind::ManaValue | StatKind::Loyalty => Traits::NONE,
     }
 }

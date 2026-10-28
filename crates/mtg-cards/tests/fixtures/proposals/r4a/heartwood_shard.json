@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"OneOf":[[{"Mana":"{3}"},"Tap"],[{"Mana":"{G}"},"Tap"]]}],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"AddKeyword":"Trample"}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}]}]}

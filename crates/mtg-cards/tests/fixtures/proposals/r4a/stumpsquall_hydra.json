@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"PutCounters":{"counter":"+1/+1","on":{"Target":0},"count":"Divided"}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Is":"This"},{"Is":"This"},{"Is":"This"}]},"bounds":{"min":1},"divide":"X"}]}}]}] }

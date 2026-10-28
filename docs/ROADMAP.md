@@ -28,7 +28,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1va), (r1vb), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a), (r2dgc-a).
 - Cast ways and zones: (c5e), (c2l3a) to (c2l3c), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
-- Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
+- Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-c).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
@@ -45,7 +45,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank and leak tests (`docs/arena-flow.md`).
 - Web: the game UI with prompts for all eight decision kinds, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
-- Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts and stored `card_rules` (`docs/cards-dsl.md`).
+- Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
 - Changes of control: targets, groups, the enchanted permanent, one target for each opponent with the untap and keywords after it, and exchanges of control (`docs/engine.md`, `docs/cards-dsl.md`).
 - Abilities and characteristics: one ability reader, CR 613 in one pass, `GameRule` effects, state triggers and abilities that work from hands, graveyards, exile and the stack.
 - Counters and planeswalkers: counters on permanents and players, keyword counters, counters of any kind, counter costs on other permanents, counters of any kind removed by a cost or an effect, "if it had counters on it", multiplied counters, rad counters with their mill as the precombat main phase begins, loyalty abilities and the legend rule.
@@ -54,6 +54,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
 "- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Emblems: objects in the command zone with abilities of their own that work from there, read and written by the compiler.
+- Incubate: the Incubator token with its Phyrexian back face, read and written by the compiler.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge, Harmonize and Read ahead (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
@@ -150,7 +151,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-e) Mill triggers ("whenever one or more nonland cards are milled", "whenever a player mills a nonland card": a pattern on `ZoneCause::Milled`, not surveil) and the rest of the rad cards ("you gain life rather than lose life from radiation", "loses all rad counters", "costs {1} less for each rad counter"); frees about 10 cards (Mirelurk Queen, Glowing One, Strong, the Brutish Thespian)
-- [~] (r2da-c) (r2da-c-keyword-actions) Keyword actions not built: exert, expend, crimes, incubate, clash, forecast and venture; frees about 30 cards (Combat Celebrant, Sunfall)
+- [ ] (r2da-c-a) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
+- [~] (r2da-c-b) (w9a-expend-exert) Expend N: the trigger as a player spends their Nth total mana on spells in a turn (Wandertale Mentor, Teapot Slinger, Trailtracker Scout, Pyreswipe Hawk)
+- [~] (r2da-c-c) (w9a-expend-exert) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
+- [~] (r2da-c-d) (w9b-crimes-clash-forecast) Crimes, clash and forecast (Bandit's Haul, Patrolling Peacemaker, Lash Out, Hoarder's Greed, Skyscribing)
+- [ ] (r2da-c-e) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
 - [ ] (r2da-f) Mill leftovers: target bounds from the trigger's count ("each of up to X target creatures, where X is the number of nonland cards milled this way"), "Do this only once each turn" after a may, a batch per player ("whenever a player mills one or more creature cards") and "a card that was milled this turn"; frees about 5 cards (The Wise Mothman, Screeching Scorchbeast, Zellix, Sanity Flayer, Tato Farmer)
 - [ ] (r2da-g) Rad leftovers: "costs {1} less to activate for each rad counter you have", "you may have this land enter tapped. If you do, you get two rad counters", "loses all rad counters" and "Choose one that hasn't been chosen"; frees about 2 cards (Mariposa Military Base, Survivor's Med Kit)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
@@ -175,8 +180,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c8ja) Life gain replaced by another effect (`ReplaceBy::Instead` in the engine): a loss instead, cards drawn instead, no life gained; frees about 6 cards (Tainted Remedy, Plague Drone, Nefarious Lich)
 - [ ] (c8jb) Prevention for "you and" a group, quoted static abilities given under a condition, and the Slivers' quoted abilities left (flip, becomes a type, top of library); frees about 20 cards (Rune of Flight, The Wanderer, Pulmonic Sliver)
 - [ ] (r1ab) The rest of the `Continuous` statics: types for spells and cards, every land type, a color added, group unions, "modified", attachment conditions; frees about 25 cards (Arcane Adaptation, Death Baron, Song of the Dryads)
+- [ ] (r2az-a) "No more than one creature can attack each combat" and "... can block each combat": a limit on the whole declaration; frees about 3 cards (Silent Arbiter, Dueling Grounds, Caverns of Despair)
+- [ ] (r2az-c) Domain of another player and the effects around domain the compiler does not read: "lands they control", "lands that player controls", "discards a card for each", "unless its controller pays {1} for each", "look at the top X ... put up to two into your hand", "prevent the next X damage"; frees about 10 cards (Allied Strategies, Mask of Intolerance, Evasive Action, Shadow Prophecy)
 - [~] (r2az-a) (r2az-a-attack-limit) "No more than one creature can attack each combat" and "... can block each combat": a limit on the whole declaration; frees about 3 cards (Silent Arbiter, Dueling Grounds, Caverns of Despair)
-- [~] (r2az-b) (r2az-b-domain-amount) Domain: "the number of basic land types among lands you control" as an amount; frees about 20 cards (Collective Restraint, Tribal Flames, Territorial Kavu)
 - [ ] (r2bhd) Untaps in other players' untap steps and groups held through their next untap step; frees about 8 cards (Seedborn Muse, Unwinding Clock, Lorthos, the Tidemaker)
 - [ ] (r2u) Attached Auras and Equipment as a count, and attachments made by effects (any number, onto tokens, onto returned cards); frees about 15 cards (Kor Spiritdancer, Kemba, Goldwardens' Gambit)
 - [ ] (r2db-a) Several statics, or a player rule and statics, in one sentence, and hexproof from the Aura controller's opponents; frees about 6 cards (Tenza, Godo's Maul, Nighthowler, Sigarda, Heron's Grace)
@@ -203,11 +209,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2dgc-c) Charm and commander-pair mode sentences: "each of one or two targets", counters distributed among targets, "each creature deals 1 damage to its controller", "counter target spell that targets you", a power-limited "can't block", phasing and goad by a target player; frees about 15 cards (Prismari Charm, Abzan Charm, Will of the Abzan)
 - [ ] (r2dgd) Intervening "if" with a may-pay, a removed counter or a cast from the hand, and "you win the game" under a count; frees about 8 cards (Ingenious Prodigy, Reiver Demon, Helix Pinnacle)
 - [ ] (r2aa-a) Control changes left: a gift of the card to a player other than its owner (Crown of Doom), each player taking back what they own (Homeward Path, Alicia Masters), "untap target permanent and gain control of it" (Word of Seizing)
-- [~] (r2aa-b) (r2aa-b-control-scenarios) Testkit scenarios with replay at 2 to 4 seats for the changes of control the compiler reads and for an exchange of control, mid-combat and with Auras and Equipment attached (Djinn of Infinite Deceits, Mass Mutiny, Frenzied Fugue)
+- [ ] (r2aa-c) A static selector that reads `Goaded` (Bothersome Quasit) matches nothing, since goading is read from the layers while they are computed (`w7d_a_goaded_creature_cannot_block`)
 - [ ] (r2cxe-a) The X of a morph cost in "when it is turned face up" and of a madness cost under "if its madness cost was paid"; frees about 2 cards (Bane of the Living, From Under the Floorboards)
 - [ ] (r2cxe-b) Half X on cast and a part of a payment in an effect that counts X ("you may pay X life", `Effect.Pay.X.Parts`)
 - [ ] (r2ab) A color, creature type or card type chosen as a spell resolves or by each player; frees about 10 cards (Sudden Demise, Wash Out, Kindred Charge)
-- [ ] (r2aca) Selectors left: the X of the spell a trigger names (Zaxara), what was exiled this way (Declaration in Stone), "if it was enchanted" from the last known information, and "first spell with {X} each turn" (Nev, Owlin Spiralmancer, Zimone); testkit scenarios with replay at 2 to 4 seats for `Goaded`, `XInCost` and `HasAttached`
+- [ ] (r2aca) Selectors left: the X of the spell a trigger names (Zaxara), what was exiled this way (Declaration in Stone), "if it was enchanted" from the last known information, and "first spell with {X} each turn" (Nev, Owlin Spiralmancer, Zimone)
 - [ ] (r2bgd) Damage left: divided among any number of targets, redirected, replaced by the event's amount, "prevent half" and to battles; frees about 12 cards (Magma Opus, Heroic Sacrifice, Plague Drone)
 - [ ] (r1ap) Zone moves left: "instead" branches that name targets or counts, returned permanents with counters, haste or attachments, and cards of a chosen type; frees about 15 cards (Tear Asunder, Unholy Heat, Admiral Brass)
 - [ ] (r2q) Picks at random from a hand, library, graveyard or among players and targets, with a per-seat projection for hidden zones; frees about 15 cards (Tariel, Gamble, Territorial Hellkite)
@@ -240,8 +246,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r3w5b) "any other target" in a mode (Special Move); re-propose Augury Adept, whose trigger leaves out "to a player"; re-check Éowyn, Shieldmaiden once (r3w1) lands
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each
-- [ ] (r2dgh) A prevention that names its event: "prevent that damage and put that many +1/+1 counters on it" (Panther Habit, the shield of Gatta and Luzzu) and "prevent all but 1 of that damage" (Temple Altisaur)
-- [ ] (r2dgi) A token-creation replacement for one kind of token, "that many 4/4 white Angel creature tokens ... are created instead" (Divine Visitation), and the cost "Sacrifice another Vampire or Zombie" (Kalitas, Traitor of Ghet)
+- [~] (r2dgh) (w9c-replacement-pieces) A prevention that names its event: "prevent that damage and put that many +1/+1 counters on it" (Panther Habit, the shield of Gatta and Luzzu) and "prevent all but 1 of that damage" (Temple Altisaur)
+- [~] (r2dgi) (w9c-replacement-pieces) A token-creation replacement for one kind of token, "that many 4/4 white Angel creature tokens ... are created instead" (Divine Visitation), and the cost "Sacrifice another Vampire or Zombie" (Kalitas, Traitor of Ghet)
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 - [ ] (r1a) `mtg-cli forge-check` compares a Forge clause with the ability that stands for it and reads `Count$` amounts, `Valid*` filters and conditions (`docs/reference-engines.md`)
 - [ ] (r1b) The prompt of `mtg-cli propose` takes examples from Forge clause-script pairs fetched at run time; examples kept in the repository come from XMage with its MIT notice

@@ -1,0 +1,18 @@
+{
+  "id": "incubator",
+  "token": {
+    "name": "Incubator",
+    "types": ["Artifact"],
+    "subtypes": ["Incubator"],
+    "abilities": [
+      { "Activated": { "cost": "{2}", "effects": [{ "Transform": { "what": "This" } }] } }
+    ]
+  },
+  "back": {
+    "name": "Phyrexian Token",
+    "types": ["Artifact", "Creature"],
+    "subtypes": ["Phyrexian"],
+    "power": 0,
+    "toughness": 0
+  }
+}

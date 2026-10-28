@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b26cfeb0-7bbe-4d93-8eed-e832f175a80c",
+  "name": "Crossroads Village",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crossroads Village",
+      "oracle_fingerprint": "eb329db35373566f96a6c61e13580950",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

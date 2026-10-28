@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c7e42151-ca0a-4079-a1bd-4ce9f764665c",
+  "name": "Priority Avenger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Priority Avenger",
+      "oracle_fingerprint": "f7185c114d65639fdccffc77b1f2496a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 7, "end": 83 }
+          }
+        }
+      ]
+    }
+  ]
+}

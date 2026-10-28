@@ -4,7 +4,8 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::assemble::token_definition;
-use mtg_cards::card::TokenSpec;
+use mtg_cards::card::{TokenFile, TokenSpec};
+use mtg_cards::definition::Layout;
 use mtg_cards::effect::{Effect, TokenRef};
 use mtg_cards::modify::Modification;
 use mtg_cards::refs::Ref;
@@ -22,12 +23,24 @@ use crate::state::GameState;
 use crate::tokens::TokenCreated;
 
 /// What a predefined token is: the description in its file (`cards/tokens/<id>.json`).
-fn predefined(id: &str) -> Result<&'static TokenSpec, ResolveError> {
+fn predefined(id: &str) -> Result<&'static TokenFile, ResolveError> {
     mtg_cards::builtin::library()
         .ok()
         .and_then(|library| library.token(id))
-        .map(|file| &file.token)
         .ok_or_else(|| ResolveError::Invalid(format!("there is no predefined token `{id}`")))
+}
+
+/// The definition of a predefined token: a transforming token (the Incubator) has its back face as a second face.
+pub(super) fn w7c_predefined_definition(id: &str) -> Result<CardDefinition, ResolveError> {
+    let file = predefined(id)?;
+    let front = token_definition(&file.token, &caps());
+    Ok(match &file.back {
+        Some(back) => front.clone().with_faces(
+            Layout::Transform,
+            vec![front, token_definition(back, &caps())],
+        ),
+        None => front,
+    })
 }
 
 /// What a token is made from: its definition, and the object it copies when it is a copy.
@@ -99,7 +112,7 @@ fn attackable(state: &GameState, player: PlayerId) -> Vec<(AttackTarget, ChoiceO
 /// now (never below zero), or the copies of the objects a reference names.
 fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveError> {
     Ok(match token {
-        TokenRef::Named(id) => vec![(Arc::new(token_definition(predefined(id)?, &caps())), None)],
+        TokenRef::Named(id) => vec![(Arc::new(w7c_predefined_definition(id)?), None)],
         TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
         TokenRef::Sized { size, token } => {
             let size = i32::try_from(cx.scope.amount(size)?.max(0)).unwrap_or(i32::MAX);

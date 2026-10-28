@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Draw":{}}],"when":{"ZoneChange":{"what":["This"],"to":"Graveyard"}},"if":{"Matches":{"selector":[{"HasCounter":"+1/+1"}],"subject":"This"}}} }]}] }

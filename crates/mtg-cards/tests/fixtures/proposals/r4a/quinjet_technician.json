@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e8025c63-80b4-4cce-bf2d-df294450070d",
+  "name": "Quinjet Technician",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quinjet Technician",
+      "oracle_fingerprint": "2e05442dc6c782a7e0c090e6d6ec6c9a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 14, "end": 83 }
+          }
+        }
+      ]
+    }
+  ]
+}

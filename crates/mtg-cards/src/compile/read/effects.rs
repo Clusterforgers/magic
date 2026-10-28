@@ -446,6 +446,10 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             act: PlanarAct::ChaosEnsues,
         },
         "monstrosity" => Effect::Monstrosity { count: points(r)? },
+        "incubate" => Effect::Incubate {
+            who,
+            count: points(r)?,
+        },
         "adapt" => Effect::Adapt { count: points(r)? },
         "bolster" => Effect::Bolster { count: points(r)? },
         "amass" => Effect::Amass {
@@ -670,6 +674,10 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "mill" | "mills" => Effect::Mill {
             who,
             count: cards_counted(r)?,
+        },
+        "incubate" | "incubates" => Effect::Incubate {
+            who,
+            count: points(r)?,
         },
         "discard" | "discards" => {
             let count = draws::discarded(r, &who)?;
