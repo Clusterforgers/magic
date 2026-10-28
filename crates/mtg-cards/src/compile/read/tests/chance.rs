@@ -12,6 +12,11 @@ use super::*;
     ClauseKind::Activated,
     r#"{"Activated":{"cost":[{"Mana":"{R}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Artifact"}]}}],"effects":[{"FlipCoin":{"win":[{"Destroy":{"what":{"Target":0}}}],"lose":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#
 )]
+#[case::c10_vp_the_lose_branch_first(
+    "{T}: Flip a coin. If you lose the flip, sacrifice this creature. If you win the flip, draw a card.",
+    ClauseKind::Activated,
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"FlipCoin":{"win":[{"Draw":{}}],"lose":[{"Sacrifice":{"filter":["This"]}}],"lose_first":true}}]}}"#
+)]
 #[case::lose_only_in_a_trigger(
     "When this creature enters, flip a coin. If you lose the flip, return this creature to its owner's hand.",
     ClauseKind::Triggered,
@@ -46,10 +51,6 @@ fn a_coin_flip_reads_with_the_branch_of_each_result(
 }
 
 #[rstest]
-#[case::the_lose_branch_first(
-    "{T}: Flip a coin. If you lose the flip, sacrifice this creature. If you win the flip, draw a card.",
-    ClauseKind::Activated
-)]
 #[case::a_branch_twice(
     "{T}: Flip a coin. If you win the flip, draw a card. If you win the flip, gain 1 life.",
     ClauseKind::Activated

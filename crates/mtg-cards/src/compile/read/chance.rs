@@ -13,7 +13,7 @@ use crate::value::Amount;
 const MOST_SIDES: u32 = 1000;
 
 /// "Flip a coin." with the branches after it: "If you win the flip, destroy all nonland permanents. If you lose the flip,
-/// sacrifice ~." The win branch stands before the lose branch, each at most once; either may be left out.
+/// sacrifice ~." Each branch stands at most once and either may be left out; the lose branch may come first.
 pub fn flip(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let (who, they) = if r.words("flip a coin") {
         (Ref::You, false)
@@ -25,10 +25,13 @@ pub fn flip(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let until = !they && r.words("until you lose a flip");
     let (mut win, mut lose) = (Vec::new(), Vec::new());
     let mut seen = (false, false);
+    // "If you lose the flip, S. If you win the flip, S." (Krark, the Thumbless): the same flip, written back that way.
+    let mut lose_first = false;
     while let Some((won, effects)) = r.attempt(|r| branch(r, they)) {
-        let clear = if won { !seen.0 && !seen.1 } else { !seen.1 };
+        let clear = if won { !seen.0 } else { !seen.1 };
         clear.then_some(())?;
         if won {
+            lose_first = seen.1;
             seen.0 = true;
             win = effects;
         } else {
@@ -41,6 +44,7 @@ pub fn flip(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::FlipCoin {
         who,
         win,
+        lose_first,
         lose,
         until,
     }])

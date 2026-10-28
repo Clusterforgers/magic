@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "0a33b3de-a666-4ae0-9c82-c12d7887d7a1",
+  "oracle_id": "b79c3ae8-ac25-4a16-a981-a41721040fad",
+  "multiverse_ids": [
+    612131
+  ],
+  "mtgo_id": 111388,
+  "tcgplayer_id": 491543,
+  "cardmarket_id": 705454,
+  "name": "Path of the Ghosthunter",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/0a33b3de-a666-4ae0-9c82-c12d7887d7a1",
+  "scryfall_uri": "https://scryfall.com/card/moc/18/path-of-the-ghosthunter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:34:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.jpg?1783917288",
+    "normal": "https://cards.scryfall.io/normal/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.jpg?1783917288",
+    "large": "https://cards.scryfall.io/large/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.jpg?1783917288",
+    "png": "https://cards.scryfall.io/png/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.png?1783917288",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.jpg?1783917288",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.jpg?1783917288",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.webp?1783917288",
+    "grid": "https://cards.scryfall.io/grid/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.webp?1783917288",
+    "display": "https://cards.scryfall.io/display/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.webp?1783917288",
+    "art": "https://cards.scryfall.io/art/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.webp?1783917288",
+    "crop": "https://cards.scryfall.io/crop/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.webp?1783917288",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/a/0a33b3de-a666-4ae0-9c82-c12d7887d7a1.jpg?1783917288"
+  },
+  "mana_cost": "{X}{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Create X 1/1 white Spirit creature tokens with flying.\nWill of the Planeswalkers — Starting with you, each player votes for planeswalk or chaos. If planeswalk gets more votes, planeswalk. If chaos gets more votes or the vote is tied, chaos ensues.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Will of the Planeswalkers"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "97c4288f-7d22-4a5f-9b2e-d67734d9a6e7",
+      "component": "combo_piece",
+      "name": "Path of the Ghosthunter",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/97c4288f-7d22-4a5f-9b2e-d67734d9a6e7"
+    },
+    {
+      "object": "related_card",
+      "id": "476261b8-635c-4228-b5bf-ddc27157876e",
+      "component": "token",
+      "name": "Spirit",
+      "type_line": "Token Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/476261b8-635c-4228-b5bf-ddc27157876e"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set": "moc",
+  "set_name": "March of the Machine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/moc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0a33b3de-a666-4ae0-9c82-c12d7887d7a1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab79c3ae8-ac25-4a16-a981-a41721040fad&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eli Minaya",
+  "artist_ids": [
+    "fee369ac-08b5-4a69-8ef8-f2b42b81e807"
+  ],
+  "illustration_id": "241e6a55-3d3a-405b-b80f-ed5325fe5be6",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16012,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=ztAt03EG140",
+    "previewed_at": "2023-04-04"
+  },
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=612131&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPath%2Bof%2Bthe%2BGhosthunter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPath%2Bof%2Bthe%2BGhosthunter",
+    "edhrec": "https://edhrec.com/route/?cc=Path+of+the+Ghosthunter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491543%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=705454&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/111388?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

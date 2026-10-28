@@ -24,6 +24,11 @@ const MAGISTER: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"t
     ClauseKind::Triggered,
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Vote":{"options":{"Named":["truth","consequences"]},"secret":true}}]}}"#
 )]
+#[case::c10_vp_will_of_the_planeswalkers(
+    "Starting with you, each player votes for planeswalk or chaos. If planeswalk gets more votes, planeswalk. If chaos gets more votes or the vote is tied, chaos ensues.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["planeswalk","chaos"]}}},{"If":{"condition":{"Compare":{"left":{"Players":{"Bound":"planeswalk"}},"op":"Gt","right":{"Players":{"Bound":"chaos"}}}},"then":[{"Planechase":{"act":"Planeswalk"}}],"otherwise":[{"Planechase":{"act":"ChaosEnsues"}}]}}]}}"#
+)]
 fn a_vote_on_named_choices_reads_with_what_it_does_with_the_votes(
     #[case] text: &str,
     #[case] kind: ClauseKind,

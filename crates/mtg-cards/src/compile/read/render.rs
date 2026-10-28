@@ -1188,6 +1188,20 @@ fn gets_energy(effect: &Effect) -> bool {
     )
 }
 
+/// "planeswalk" and "chaos ensues".
+fn c10_vp_planar_text(effect: &Effect) -> Option<String> {
+    let Effect::Planechase { act } = effect else {
+        return None;
+    };
+    Some(
+        match act {
+            crate::effect::PlanarAct::Planeswalk => "planeswalk",
+            crate::effect::PlanarAct::ChaosEnsues => "chaos ensues",
+        }
+        .to_owned(),
+    )
+}
+
 /// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
 fn is_imperative(effect: &Effect) -> bool {
     !gets_energy(effect)
@@ -2398,6 +2412,7 @@ impl Writer<'_> {
             .or_else(|| super::attack_tax::effect_text(effect))
             .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))
+            .or_else(|| c10_vp_planar_text(effect))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

@@ -200,6 +200,15 @@ pub struct DieRow {
     pub effects: Vec<Effect>,
 }
 
+/// What a `Planechase` effect does.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PlanarAct {
+    /// "planeswalk": the controller moves to the next plane.
+    Planeswalk,
+    /// "chaos ensues": the chaos abilities of the face-up plane trigger.
+    ChaosEnsues,
+}
+
 /// What the players of a `Vote` vote for.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -824,6 +833,9 @@ pub enum Effect {
         /// Done when the flip is lost.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         lose: Vec<Effect>,
+        /// The card states `lose` before `win` ("If you lose the flip, S. If you win the flip, S."); the flip is the same.
+        #[serde(default, skip_serializing_if = "is_false")]
+        lose_first: bool,
         /// Flips again after each won flip, `win` done after each, until a flip is lost ("flip a coin until you lose a flip").
         #[serde(default, skip_serializing_if = "is_false")]
         until: bool,
@@ -840,6 +852,12 @@ pub enum Effect {
         /// Names the players or objects with the most votes when `options` is `Of`.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+    },
+    /// A step of a Planechase game (CR 901): the controller planeswalks, or chaos ensues. A game without a planar deck,
+    /// which every game the engine plays is, does nothing for it.
+    Planechase {
+        /// What happens.
+        act: PlanarAct,
     },
     /// Creates tokens.
     CreateToken {
@@ -1252,16 +1270,20 @@ mod tests {
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: false },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
     )]
     #[case::flip_until_a_loss(
-        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), until: true },
+        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true },
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::vote_on_two_names(
         Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
         r#"{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}"#
+    )]
+    #[case::c10_vp_chaos_ensues(
+        Effect::Planechase { act: PlanarAct::ChaosEnsues },
+        r#"{"Planechase":{"act":"ChaosEnsues"}}"#
     )]
     #[case::vote_on_objects(
         Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },

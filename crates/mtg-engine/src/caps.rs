@@ -269,6 +269,7 @@ const RUNS: &[&str] = &[
     "Effect.Modal.OnceEachTurn",
     "Effect.Modal.AllIf",
     "Effect.Vote",
+    "Effect.Planechase",
     "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
@@ -672,6 +673,7 @@ mod tests {
     #[case::modes_not_chosen_twice_in_a_turn("Effect.Modal.OnceEachTurn", true)]
     #[case::every_mode_under_a_condition("Effect.Modal.AllIf", true)]
     #[case::voting("Effect.Vote", true)]
+    #[case::c10_vp_planechase("Effect.Planechase", true)]
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]

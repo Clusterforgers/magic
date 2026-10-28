@@ -15,6 +15,7 @@ mod become_day_night;
 mod become_level;
 mod become_monarch;
 mod bolster;
+mod c10_vp_planechase;
 mod cast_from_zone;
 mod choose;
 mod choose_at_random;
@@ -191,6 +192,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RollDice { .. } => roll_dice::run(cx, effect),
         Effect::FlipCoin { .. } => flip_coin::run(cx, effect),
         Effect::Vote { .. } => vote::run(cx, effect),
+        Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
     }
 }
 
@@ -231,7 +233,7 @@ mod tests {
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}},
-        {"Vote":{"options":{"Named":["time","knowledge"]}}}
+        {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -245,7 +247,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 80, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 81, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -360,5 +362,6 @@ mod tests {
         "Effect.RollDice",
         "Effect.FlipCoin",
         "Effect.Vote",
+        "Effect.Planechase",
     ];
 }

@@ -882,6 +882,9 @@ Panther Robot
 Paradise Druid
 Parhelion Patrol
 Patagia Viper
+Path of the Animist
+Path of the Enigma
+Path of the Ghosthunter
 Path to Exile
 Patron of the Vein
 Peacewalker Colossus
