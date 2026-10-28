@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a7c6c9b3-91f2-4ecf-b2b0-b0edd96974d9",
+  "name": "Zul Ashur, Lich Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zul Ashur, Lich Lord",
+      "oracle_fingerprint": "7d5eab8a5b244602f2beb7ec6d781576",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 2 }] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Zombie" },
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Graveyard", "only": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

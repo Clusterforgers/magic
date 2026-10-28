@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a3b8690e-ac47-444f-924e-ab2a12a85431",
+  "name": "Ramirez DePietro, Pillager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ramirez DePietro, Pillager",
+      "oracle_fingerprint": "3c3a734583a2198795bcabe993805e37",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LoseLife": { "amount": 2 } },
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Pirate" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "card" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "what": [{ "Is": { "Bound": "card" } }], "from": "Exile" }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

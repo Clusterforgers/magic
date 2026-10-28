@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d06eedb4-bd5a-4864-9505-a570a745d165",
+  "name": "Apex of Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apex of Power",
+      "oracle_fingerprint": "df5c8c0e1951fcabd9696e63c7db0149",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 7, "as": "apex" } },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "apex" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] }
+                  },
+                  "then": [{ "AddMana": { "mana": { "AnyColor": 10 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

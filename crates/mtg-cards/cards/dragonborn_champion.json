@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9e51ccf9-d55d-4231-8ff5-ef3ca1485c8d",
+  "name": "Dragonborn Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonborn Champion",
+      "oracle_fingerprint": "ad965c04ede6a680c95128ba138b45e5",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "EachPlayer" } },
+            "if": { "Compare": { "left": "Triggering", "op": "Ge", "right": 5 } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

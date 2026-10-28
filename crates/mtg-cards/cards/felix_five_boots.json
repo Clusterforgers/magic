@@ -1,0 +1,30 @@
+{
+  "oracle_id": "95175d35-c815-47bd-8e69-427972b567b6",
+  "name": "Felix Five-Boots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felix Five-Boots",
+      "oracle_fingerprint": "34bd971f7d13eb96314dccc01e7761b1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "DealsDamage": {
+                    "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "to": "EachPlayer",
+                    "combat": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

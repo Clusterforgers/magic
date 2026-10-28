@@ -1,0 +1,28 @@
+{
+  "oracle_id": "504cc26d-3fd5-4391-9d30-f0614e5c8bbc",
+  "name": "Dream Pillager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Pillager",
+      "oracle_fingerprint": "ef44e55bb2379216f5ddc0283274f04a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "count": "Triggering", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "exiled" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

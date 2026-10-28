@@ -1,0 +1,50 @@
+{
+  "oracle_id": "5ff1d6d8-8cea-4a25-90d9-b575f4c99bc8",
+  "name": "Plaza of Harmony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plaza of Harmony",
+      "oracle_fingerprint": "4417fc8b2f676647c117280fd03f0bc3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": {
+                      "among": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }],
+                      "count": 1,
+                      "colorless": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
