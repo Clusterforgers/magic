@@ -365,7 +365,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 what.0 == [Pred::This],
             )
         }
-        TriggerPattern::SpellCast { what, by } => {
+        TriggerPattern::SpellCast { what, by } | TriggerPattern::SpellCopied { what, by } => {
             let (who, s) = who(by);
             let spell = if what.is_empty() {
                 "a spell".to_owned()
@@ -373,7 +373,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 let noun = noun(what);
                 format!("{} {noun} spell", article(&noun))
             };
-            (format!("{who} cast{s} {spell}"), false)
+            let verb = if matches!(pattern, TriggerPattern::SpellCast { .. }) {
+                "cast"
+            } else if s.is_empty() {
+                "copy"
+            } else {
+                "copie"
+            };
+            (format!("{who} {verb}{s} {spell}"), false)
         }
         TriggerPattern::Sacrificed { what, by } => {
             let (who, s) = who(by);
@@ -605,6 +612,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         }
         TriggerPattern::BecomesBlocked { what } => (
             format!("{} becomes blocked", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::Unblocked { what } => (
+            format!("{} attacks and isn't blocked", subject(what)),
             what.0 == [Pred::This],
         ),
         TriggerPattern::GroupAttacks { what, at_least } => {
@@ -1352,6 +1363,12 @@ mod tests {
     )]
     #[case::blocking(r#"{"Blocks":{"what":["This"]}}"#, "When it blocks")]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":["This"]}}"#, "When it becomes blocked")]
+    #[case::w2e_unblocked(r#"{"Unblocked":{"what":["This"]}}"#, "When it attacks and isn't blocked")]
+    #[case::w2e_copied(r#"{"SpellCopied":{"by":"Opponents"}}"#, "Whenever an opponent copies a spell")]
+    #[case::w2e_copy_instant(
+        r#"{"SpellCopied":{"what":[{"Type":"Instant"}],"by":"You"}}"#,
+        "Whenever you copy an instant spell"
+    )]
     #[case::attacking_together(
         r#"{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"at_least":2}}"#,
         "Whenever 2 or more creatures you control attack"

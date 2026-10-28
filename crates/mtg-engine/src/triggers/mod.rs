@@ -18,6 +18,8 @@ mod detect_except;
 mod detect_nth;
 #[cfg(test)]
 mod detect_turn_nth;
+#[cfg(test)]
+mod w2e_detect;
 mod queue;
 mod reads_x;
 mod state;

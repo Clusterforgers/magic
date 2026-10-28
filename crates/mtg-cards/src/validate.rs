@@ -1226,7 +1226,9 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.selector(by));
             }
-            TriggerPattern::SpellCast { what, by } | TriggerPattern::Sacrificed { what, by } => {
+            TriggerPattern::SpellCast { what, by }
+            | TriggerPattern::SpellCopied { what, by }
+            | TriggerPattern::Sacrificed { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
@@ -1276,6 +1278,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
+            | TriggerPattern::Unblocked { what }
             | TriggerPattern::CountersPut { what, .. }
             | TriggerPattern::CountersRemoved { what, .. } => {
                 self.at("what", |w| w.selector(what));
