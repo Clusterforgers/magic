@@ -1,0 +1,27 @@
+{
+  "oracle_id": "09ff28b1-b6c9-48e6-b12e-2f0e644f709f",
+  "name": "Gravecrawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravecrawler",
+      "oracle_fingerprint": "3d9bbbc6f080b63067335db047bd58f7",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

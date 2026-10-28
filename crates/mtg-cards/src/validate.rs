@@ -2602,12 +2602,19 @@ impl<'a> Walker<'a> {
         self.rule_zone(rule, from);
     }
 
-    /// A rule works from the battlefield, and "this spell can't be countered" from the stack (CR 113.6b).
+    /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
+    /// permission to cast itself from its graveyard from there (CR 113.6).
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
         let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
+        let c8_eg_itself = matches!(
+            rule,
+            GameRule::MayCast(permission)
+                if permission.what.0 == [Pred::This] && permission.from == Some(ZoneKind::Graveyard)
+        );
         match from {
             ZoneKind::Battlefield => {}
             ZoneKind::Stack if spell => {}
+            ZoneKind::Graveyard if c8_eg_itself => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),

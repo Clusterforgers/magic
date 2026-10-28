@@ -576,11 +576,19 @@ fn gather(state: &GameState) -> RulesInForce {
     if !state.rules_possible {
         return found;
     }
-    // A rule that a permanent has works from the battlefield, and one a spell has for itself from the stack.
+    // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
+    // permission to cast itself from its owner's graveyard (CR 601.2a, 113.6) from there.
+    let graveyards = state
+        .players()
+        .iter()
+        .map(|player| (Zone::Graveyard(player.id()), ZoneKind::Graveyard));
     for (zone, from) in [
         (Zone::Battlefield, ZoneKind::Battlefield),
         (Zone::Stack, ZoneKind::Stack),
-    ] {
+    ]
+    .into_iter()
+    .chain(graveyards)
+    {
         for &id in state.zone(zone) {
             let Some(object) = state.object(id).filter(|o| o.kind() != ObjectKind::Ability) else {
                 continue;

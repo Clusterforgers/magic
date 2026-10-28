@@ -14,7 +14,12 @@
           }
         },
         { "Keyword": "Flying" },
-        { "Rule": { "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } } } }
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "from": "Graveyard"
+          }
+        }
       ]
     }
   ]

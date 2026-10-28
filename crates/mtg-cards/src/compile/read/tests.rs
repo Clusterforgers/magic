@@ -183,6 +183,7 @@ mod c6_blk_aura;
 mod c6_blk_draws;
 mod c6_eg_writers;
 mod c6_kw_renown_exploit;
+mod c8_eg_cast_itself;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;
