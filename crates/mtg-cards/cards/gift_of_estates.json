@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1bd70be6-752c-4ecb-a3e8-2bacec4b94fc",
+  "name": "Gift of Estates",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of Estates",
+      "oracle_fingerprint": "68381697d37feae706da74ea159e28d5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Plains" }],
+                        "count": { "min": 0, "max": 3 },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

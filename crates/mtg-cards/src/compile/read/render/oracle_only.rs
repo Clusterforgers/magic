@@ -227,6 +227,10 @@ mod uncounterable_group;
 mod unless;
 mod untap_lands;
 mod untapped_cost;
+mod w4a_if;
+mod w4a_if_conditions;
+mod w4a_if_instead;
+mod w4a_if_steps;
 mod w4b_becomes;
 mod w4b_conditions;
 mod w4b_control;
@@ -326,6 +330,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c11g(ability, texts);
     add_c11f(ability, texts);
     add_w4c(ability, texts);
+    add_w4a(ability, texts);
     add_w4g(ability, texts);
     add_w4f(texts);
     add_w4d(ability, texts);
@@ -368,6 +373,11 @@ fn add_w4f(texts: &mut Vec<String>) {
 fn add_w4g(ability: &Ability, texts: &mut Vec<String>) {
     w4g_amounts::w4g_add_amounts(ability, texts);
     w4g_texts::w4g_add_texts(ability, texts);
+}
+
+/// Adds the wordings of the conditional steps (r3w1): "If X, Y.", "Y if X.", "Otherwise, Z.", "If you can't, Z.".
+fn add_w4a(ability: &Ability, texts: &mut Vec<String>) {
+    w4a_if::add(ability, texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.

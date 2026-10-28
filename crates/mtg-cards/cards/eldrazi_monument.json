@@ -1,0 +1,37 @@
+{
+  "oracle_id": "c7ee1b21-d02e-49ef-95d6-d6dbf2f886ae",
+  "name": "Eldrazi Monument",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Monument",
+      "oracle_fingerprint": "2ffa5067f5b0cba67a86ee4f97a60ec2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Indestructible" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "7a5ff4d4-27b7-47d4-ba88-970c63c4e3fb",
+  "name": "Increasing Devotion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Increasing Devotion",
+      "oracle_fingerprint": "5caea835e9dc214dd405ad581ed9c50a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Graveyard" }] }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 10
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 5
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{7}{W}{W}" } }
+      ]
+    }
+  ]
+}

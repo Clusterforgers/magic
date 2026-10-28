@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54",
+  "name": "Fabled Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fabled Passage",
+      "oracle_fingerprint": "15665157865df6ac130e447ecf9d2111",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Untap": { "what": { "Bound": "land" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

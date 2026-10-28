@@ -381,6 +381,7 @@ mod w2d_villainous;
 mod w2e_trigger_events;
 mod w2f_any_counters;
 mod w2g_next_cast;
+mod w4a_if_writers;
 mod w4b_writers;
 mod w4c_writers;
 mod w4d_writers;

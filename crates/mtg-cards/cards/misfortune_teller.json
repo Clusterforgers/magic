@@ -1,0 +1,65 @@
+{
+  "oracle_id": "bd1ccc6f-d281-413e-889e-1e022c3f2a99",
+  "name": "Misfortune Teller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misfortune Teller",
+      "oracle_fingerprint": "876eb19467c8eba2ce065542d8277e21",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Creature" }] }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Rogue",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Rogue"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Target": 0 },
+                            "selector": [{ "Type": "Land" }]
+                          }
+                        },
+                        "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }],
+                        "otherwise": [{ "GainLife": { "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
