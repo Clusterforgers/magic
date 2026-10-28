@@ -176,6 +176,7 @@ mod c11a_turn_costs;
 mod c11c_counter_costs;
 mod c11c_had_counters;
 mod c11d_modes;
+mod c11e_dice_results;
 mod c11f_writers;
 mod c11g_writers;
 mod c11h_statics;

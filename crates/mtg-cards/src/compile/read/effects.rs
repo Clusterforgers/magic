@@ -179,6 +179,14 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
             }
             sentence_shapes(r, effects).then_some(())
         })
+        // "Then create a number of Treasure tokens equal to the other result.": a sentence of a sequence opened by
+        // "Then", which only the writer of the other result of a roll says.
+        .or_else(|| {
+            r.attempt(|r| {
+                r.word("then").then_some(())?;
+                sentence_shapes(r, effects).then_some(())
+            })
+        })
         .is_some();
     r.where_x = outer;
     read

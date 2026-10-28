@@ -251,6 +251,17 @@ pub enum TurnTally {
     NontokenCreaturesDiedUnder,
 }
 
+/// Which result of the latest die roll an amount reads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum DieResult {
+    /// The number a single die rolled ("the result").
+    Only,
+    /// The result the roller chose among several dice ("that result").
+    Chosen,
+    /// The result they did not choose ("the other result").
+    Other,
+}
+
 /// A number, fixed or worked out when the effect runs.
 ///
 /// A fixed amount is a bare JSON number; the other forms are serde's usual tagged shape.
@@ -380,6 +391,8 @@ pub enum Amount {
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found, and for a batch of damage the damage dealt in all.
     Triggering,
+    /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
+    DieResult(DieResult),
 }
 
 impl Amount {
@@ -449,6 +462,7 @@ enum Tagged {
     StartingLife(Ref),
     Party(Ref),
     Triggering,
+    DieResult(DieResult),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -511,6 +525,7 @@ enum TaggedRef<'a> {
     StartingLife(&'a Ref),
     Party(&'a Ref),
     Triggering,
+    DieResult(DieResult),
 }
 
 impl From<Tagged> for Amount {
@@ -549,6 +564,7 @@ impl From<Tagged> for Amount {
             Tagged::StartingLife(who) => Amount::StartingLife(who),
             Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
+            Tagged::DieResult(which) => Amount::DieResult(which),
         }
     }
 }
@@ -598,6 +614,7 @@ impl Serialize for Amount {
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
+            Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),
         }
     }
 }
@@ -785,6 +802,7 @@ mod tests {
     #[case::highest_life(Amount::HighestLife(Ref::Opponents), r#"{"HighestLife":"Opponents"}"#)]
     #[case::lowest_hand(Amount::LowestHand(Ref::EachPlayer), r#"{"LowestHand":"EachPlayer"}"#)]
     #[case::life_lost_this_way(Amount::LifeLostThisWay, r#""LifeLostThisWay""#)]
+    #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },
         r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#

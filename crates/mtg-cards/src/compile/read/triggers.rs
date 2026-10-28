@@ -523,6 +523,14 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "wins" } else { "win" } {
         r.need("a coin flip")?;
         Some(TriggerPattern::CoinFlipWon { who: by })
+    } else if verb == if third { "rolls" } else { "roll" } {
+        let highest = if r.words("one or more dice") {
+            false
+        } else {
+            r.need("a die's highest natural result")?;
+            true
+        };
+        Some(TriggerPattern::DiceRolled { who: by, highest })
     } else if verb == if third { "bolsters" } else { "bolster" } {
         Some(TriggerPattern::Bolstered { who: by })
     } else if verb == if third { "amasses" } else { "amass" } {
@@ -1073,6 +1081,16 @@ fn own_commander(what: &Selector) -> bool {
 }
 
 /// "you cast", "an opponent casts", "a player casts" for the verb ("cast" or "sacrifice").
+/// "Whenever you roll one or more dice" or "Whenever you roll a die's highest natural result".
+fn c11e_rolled_text(who: &Ref, highest: bool) -> Option<String> {
+    let what = if highest {
+        "a die's highest natural result"
+    } else {
+        "one or more dice"
+    };
+    Some(format!("Whenever {} {what}", player_verb(who, "roll")?))
+}
+
 pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
     Some(match by {
         Ref::You => format!("you {verb}"),
@@ -1260,6 +1278,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::CoinFlipWon { who } => {
             Some(format!("Whenever {} a coin flip", player_verb(who, "win")?))
         }
+        TriggerPattern::DiceRolled { who, highest } => c11e_rolled_text(who, *highest),
         TriggerPattern::Amassed { who } => Some(format!("Whenever {}", player_verb(who, "amass")?)),
         TriggerPattern::Bolstered { who } => {
             Some(format!("Whenever {}", player_verb(who, "bolster")?))

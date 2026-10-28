@@ -10,7 +10,9 @@ use std::collections::BTreeMap;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, DayNight, StatKind, TurnTally};
+use mtg_cards::value::{
+    Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TurnTally,
+};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -1182,6 +1184,7 @@ impl<'a> Scope<'a> {
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
+            Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
@@ -1311,6 +1314,22 @@ impl<'a> Scope<'a> {
             .map(|player| i64::try_from(self.state.zone(Zone::Hand(player)).len()).unwrap_or(0))
             .min()
             .unwrap_or(i64::from(i32::MAX)))
+    }
+
+    /// A result of the latest roll of the resolution: the last die logged (a single die, or the one chosen, which a choice
+    /// logs last) or the one before it (the other result); zero outside a resolution or before a roll.
+    fn c11e_die_result(&self, which: DieResult) -> i64 {
+        let rolled = self
+            .state
+            .resolving
+            .as_ref()
+            .map_or(&[][..], |resolving| &resolving.rolled[..]);
+        let back = usize::from(which == DieResult::Other);
+        rolled
+            .len()
+            .checked_sub(1 + back)
+            .and_then(|at| rolled.get(at))
+            .map_or(0, |result| i64::from(*result))
     }
 
     /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.
@@ -1824,6 +1843,36 @@ mod tests {
         let game = game();
         let amount: Amount = serde_json::from_str(json).unwrap();
         assert_eq!(scope(&game).amount(&amount), Ok(expected));
+    }
+
+    #[rstest]
+    #[case::no_roll_yet(&[], [0, 0, 0])]
+    #[case::one_die(&[4], [4, 4, 0])]
+    #[case::the_chosen_die_last(&[2, 5], [5, 5, 2])]
+    #[case::a_later_roll(&[2, 5, 6], [6, 6, 5])]
+    fn c11e_a_die_result_reads_the_dice_the_resolution_logged(
+        #[case] rolls: &[u32],
+        #[case] expected: [i64; 3],
+    ) {
+        let mut game = game();
+        let source = game.zone(Zone::Battlefield)[0];
+        game.resolving = Some(crate::resolve::Resolving::begin(source));
+        for result in rolls {
+            let rolled = Event::DieRolled {
+                player: PlayerId(0),
+                sides: 6,
+                result: *result,
+            };
+            apply_event(&mut game, &rolled).unwrap();
+        }
+        let read = |which: &str| {
+            scope(&game)
+                .amount(&serde_json::from_str(&format!(r#"{{"DieResult":"{which}"}}"#)).unwrap())
+        };
+        assert_eq!(
+            [read("Only"), read("Chosen"), read("Other")],
+            expected.map(Ok)
+        );
     }
 
     #[test]

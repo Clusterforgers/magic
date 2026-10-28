@@ -100,6 +100,9 @@ fn part(r: &mut Reader<'_>) -> Option<Amount> {
 /// What is counted: "the number of ...", "the number of card types among ...", "your life total", "your devotion to
 /// black", "the greatest mana value among ...", "the total power of ...".
 pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
+    if let Some(result) = r.attempt(super::chance::c11e_result) {
+        return Some(result);
+    }
     if let Some(stat) = where_x::paid_stat(r) {
         return Some(Amount::Stat {
             of: Ref::Paid,
@@ -312,6 +315,7 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
     match amount {
+        Amount::DieResult(which) => Some(super::chance::c11e_result_text(*which).to_owned()),
         Amount::Tallied {
             who: Ref::You,
             what: TurnTally::LifeGained,
