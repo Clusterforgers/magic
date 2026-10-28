@@ -569,7 +569,10 @@ fn is_self(when: &ReplaceWhen) -> bool {
 /// Whether the engine can apply `by` to this kind of event.
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
-        ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventRemovingCounter(_) => {
+        ReplaceBy::PreventUpTo(_)
+        | ReplaceBy::PreventRemovingCounter(_)
+        | ReplaceBy::PreventAnd(_)
+        | ReplaceBy::PreventAllBut(_) => {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
@@ -623,6 +626,8 @@ impl Action {
                 ReplaceBy::Prevent
                     | ReplaceBy::PreventUpTo(_)
                     | ReplaceBy::PreventRemovingCounter(_)
+                    | ReplaceBy::PreventAnd(_)
+                    | ReplaceBy::PreventAllBut(_)
             )
         )
     }
@@ -784,7 +789,7 @@ impl Pass<'_> {
     ) -> Result<bool, EngineError> {
         let scope = Scope::announcing(self.state, source.controller, source.object);
         Ok(match (when, unit) {
-            (ReplaceWhen::TokenCreation { controller }, Unit::Tokens { controller: made }) => {
+            (ReplaceWhen::TokenCreation { controller, .. }, Unit::Tokens { controller: made }) => {
                 scope.players(controller)?.contains(made)
             }
             (
@@ -1285,7 +1290,8 @@ impl Pass<'_> {
             let by = match self.left.get(&effect.id) {
                 Some(0) => continue,
                 Some(left) => ReplaceBy::PreventUpTo(*left),
-                None => ReplaceBy::Prevent,
+                None if shield.then.is_empty() => ReplaceBy::Prevent,
+                None => ReplaceBy::PreventAnd(shield.then.clone()),
             };
             found.push(Candidate {
                 origin,
@@ -1445,6 +1451,7 @@ impl Pass<'_> {
                     "replacement effects went on without end".into(),
                 ));
             }
+            self.w9c_split_tokens(at);
             let candidates = self.candidates(at)?;
             let chosen = if candidates.is_empty() {
                 at += 1;
@@ -1710,6 +1717,12 @@ impl Pass<'_> {
                     self.draws_changed = true;
                 }
                 self.slots.remove(at);
+            }
+            (ReplaceBy::PreventAnd(effects), Unit::Damage { .. }) => {
+                self.w9c_prevent_and(at, candidate, effects, &unit, applied);
+            }
+            (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
+                self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
             (ReplaceBy::Instead(effects), _) => {
                 self.w5d_instead(at, candidate, effects, &unit, applied);
@@ -2804,6 +2817,8 @@ mod shields;
 mod umbra;
 
 mod w5d_instead;
+
+mod w9c_prevent;
 
 #[cfg(test)]
 mod tests {

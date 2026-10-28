@@ -116,6 +116,7 @@ fn shield_for(
         from: None,
         combat,
         left,
+        then: Vec::new(),
     })
 }
 

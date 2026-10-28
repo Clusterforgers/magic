@@ -115,6 +115,7 @@ impl Board {
                     from: None,
                     combat: None,
                     left: Some(left),
+                    then: Vec::new(),
                 }),
                 Shield::Fog => Rule::PreventDamage(DamageShield {
                     to: None,
@@ -122,6 +123,7 @@ impl Board {
                     from: None,
                     combat: Some(true),
                     left: None,
+                    then: Vec::new(),
                 }),
                 Shield::Regenerate(name) => {
                     let id = driver.id_of(name)?;

@@ -164,6 +164,10 @@ pub struct DamageShield {
     pub combat: Option<bool>,
     /// What it still prevents; all damage when absent.
     pub left: Option<u32>,
+    /// What happens as it prevents damage, reading the damage as `ReplaceBy::PreventAnd` does; nothing when empty.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub then: Vec<mtg_cards::effect::Effect>,
 }
 
 impl DamageShield {
