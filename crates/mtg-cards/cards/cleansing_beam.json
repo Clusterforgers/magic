@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5c208258-f987-4d41-8eee-62e188d47ffb",
+  "name": "Cleansing Beam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleansing Beam",
+      "oracle_fingerprint": "059a007475fd9607416152b92177d4ec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] }
+                    ]
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

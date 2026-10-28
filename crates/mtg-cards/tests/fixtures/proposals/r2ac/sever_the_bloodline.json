@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"},{"AnyOf":[{"Is":{"Target":0}},{"SharesName":{"Target":0}}]}]}}}]}},{"Keyword":{"Flashback":[{"Mana":"{5}{B}{B}"}]}}]}]}

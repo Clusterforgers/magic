@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0dd95516-893d-477e-a38c-3cc37c6e7ae0",
+  "name": "Bile Blight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bile Blight",
+      "oracle_fingerprint": "5b18c56881b6b6bdce25e0e00fe92923",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesName": { "Target": 0 } }] }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
