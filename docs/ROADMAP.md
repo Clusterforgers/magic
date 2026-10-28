@@ -60,6 +60,8 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Incubate: the Incubator token with its Phyrexian back face, read and written by the compiler.
 - Expend: the trigger on the turn's Nth mana spent on spells, read and written by the compiler.
 - Clash: the clash with an opponent, its win branch and "repeat this process", read and written by the compiler.
+- Crimes: "whenever you commit a crime" and "whenever an opponent commits a crime" on targeting another player, what they control or their graveyard.
+- Clash wordings: a won clash that may put the returned creature on top instead, and the clashed player's creatures held through their next untap step.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge, Harmonize and Read ahead (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
@@ -156,9 +158,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-c-a) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
 - [~] (r2da-c-c) (w9d-exert) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
-- [~] (r2da-c-f) (w11c-crimes-forecast-clash) Crimes: a turn tally of targeting an opponent, their permanents, spells or graveyard cards, "whenever you commit a crime" and "whenever an opponent commits a crime" (Bandit's Haul, Patrolling Peacemaker)
-- [~] (r2da-c-g) (w11c-crimes-forecast-clash) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
-- [~] (r2da-c-h) (w11c-crimes-forecast-clash) Clash wordings not read: "clash, then return ... If you win, ... instead", "that player's next untap step", a delayed mana of the countered spell, "whenever you win a clash" (Whirlpool Whelm, Pollen Lullaby, Scattering Stroke, Marvo, Deep Operative)
+- [ ] (r2da-c-g) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
+- [ ] (r2da-c-i) Clash leftovers: "at the beginning of your next main phase, you may add {C} equal to that spell's mana value", "clash with defending player" and "whenever you win a clash" (Scattering Stroke, Marvo, Deep Operative)
 - [~] (r2da-c-e) (w11d-venture) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
 - [ ] (r2da-f) Mill leftovers: target bounds from the trigger's count ("each of up to X target creatures, where X is the number of nonland cards milled this way"), "Do this only once each turn" after a may, a batch per player ("whenever a player mills one or more creature cards") and "a card that was milled this turn"; frees about 5 cards (The Wise Mothman, Screeching Scorchbeast, Zellix, Sanity Flayer, Tato Farmer)
 - [ ] (r2da-g) Rad leftovers: "costs {1} less to activate for each rad counter you have", "you may have this land enter tapped. If you do, you get two rad counters", "loses all rad counters" and "Choose one that hasn't been chosen"; frees about 2 cards (Mariposa Military Base, Survivor's Med Kit)

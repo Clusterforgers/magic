@@ -556,6 +556,10 @@ Errors name the file and the path inside it; all are collected.
 **Expend.** The compiler reads "Whenever you expend N" with N in digits (`Trigger::Expend`), and "an opponent expends" and "a player expends" too; the reminder text is dropped. A word for N stays with the table.
 **Clash.** The compiler reads "Clash with an opponent." with an optional "If you win, S." (`Effect::Clash`, `compile/read/w9b_clash.rs`, written back by `render/w9b_clash.rs`), "~ deals N damage to that creature's controller" as the win branch for the one target of the sentences before, and "You S, then clash with an opponent. If you win, repeat this process." as the steps and a clash until a loss whose win branch repeats them. A lose branch, "repeat this process" with no steps and another player who clashes stay with the table.
 
+**Clash wordings.** `compile/read/w11c_clash.rs` (written back by `render/w11c_clash.rs`) reads "Clash with an opponent, then return target creature to its owner's hand. If you win, you may put that creature on top of its owner's library instead." as a clash whose win branch may put the one target on top of its owner's library, then the return, which finds the moved creature gone (CR 400.7); and "If you win, creatures that player controls don't untap during the player's next untap step." as a `Continuous` `DoesntUntap` over the creatures `ControlledBy(Bound("clashed"))` until `NextUntapStep`.
+
+**Crimes.** "Whenever you commit a crime" and "whenever an opponent commits a crime" read as `Trigger::W11cCrime { who }` (`Trigger.W11cCrime`), with "This ability triggers only once each turn." as its limit.
+
 ## Model-assisted reading
 
 A language model writes the rules of a card and a deterministic checker accepts them only when they are valid, read back as the printed text and have a support state. The text of the card is the only ground truth; the checker never trusts the rules.
