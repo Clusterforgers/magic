@@ -21,5 +21,12 @@
   "set": "blc",
   "collector_number": "35",
   "rarity": "rare",
-  "digital": false
+  "digital": false,
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
 }

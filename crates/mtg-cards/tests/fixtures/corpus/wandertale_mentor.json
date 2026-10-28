@@ -23,5 +23,9 @@
   "set": "blb",
   "collector_number": "240",
   "rarity": "uncommon",
-  "digital": false
+  "digital": false,
+  "produced_mana": [
+    "G",
+    "R"
+  ]
 }
