@@ -397,7 +397,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::PlayerLost { player, reason } => player_lost(state, *player, reason)?,
         Event::GameEnded { result } => end_game(state, *result),
-        other => return Err(invalid(format!("unhandled event {other:?}"))),
+        other => return c6_kw_fold_rest(state, other),
     }
     Ok(())
 }
@@ -545,6 +545,30 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
     perm.designations.monstrous = true;
+    Ok(())
+}
+
+/// The events no other fold names: becoming renowned, and `Exploited`, information in the log whose sacrifice is its own
+/// `ZoneChanged`; any other is a bug.
+fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    match event {
+        Event::Renowned { object, .. } => c6_kw_set_renowned(state, *object),
+        Event::Exploited { .. } => Ok(()),
+        other => Err(invalid(format!("unhandled event {other:?}"))),
+    }
+}
+
+/// A permanent becomes renowned (CR 702.112): it was not, and it is a permanent.
+fn c6_kw_set_renowned(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    if perm.designations.renowned {
+        return Err(invalid(format!("{id:?} is already renowned")));
+    }
+    perm.designations.renowned = true;
     Ok(())
 }
 

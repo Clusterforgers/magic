@@ -171,6 +171,8 @@ pub enum Pred {
     Untapped,
     /// Is monstrous (CR 701.37): a permanent on the battlefield that has become monstrous since it entered.
     Monstrous,
+    /// Is renowned (CR 702.112): a permanent on the battlefield that has become renowned since it entered.
+    Renowned,
     /// Is attacking.
     Attacking,
     /// Is attacking the player, not a planeswalker of theirs ("attacking that player").

@@ -16,6 +16,8 @@ mod battle_cry;
 mod bestow;
 mod blitz;
 mod buyback;
+mod c6_kw_exploit;
+mod c6_kw_renown;
 mod cascade;
 mod casualty;
 mod changeling;
@@ -526,6 +528,8 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Graft(_) => &graft::Graft,
         Keyword::Afflict(_) => &afflict::Afflict,
         Keyword::Replicate(_) => &replicate::Replicate,
+        Keyword::Renown(_) => &c6_kw_renown::Renown,
+        Keyword::Exploit => &c6_kw_exploit::Exploit,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -891,6 +895,8 @@ mod tests {
             Keyword::Graft(2),
             Keyword::Afflict(2),
             Keyword::Replicate(cost()),
+            Keyword::Renown(2),
+            Keyword::Exploit,
         ]
     }
 
@@ -1027,6 +1033,8 @@ mod tests {
         "Keyword.Graft",
         "Keyword.Afflict",
         "Keyword.Replicate",
+        "Keyword.Renown",
+        "Keyword.Exploit",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1169,6 +1177,8 @@ mod tests {
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::renown(Keyword::Renown(2), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::exploit(Keyword::Exploit, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]

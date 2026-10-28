@@ -427,6 +427,7 @@ impl<'a> Walker<'a> {
             | Pred::Tapped
             | Pred::Untapped
             | Pred::Monstrous
+            | Pred::Renowned
             | Pred::EnteredThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
@@ -1206,6 +1207,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Explored { what }
             | TriggerPattern::Connived { what }
             | TriggerPattern::BecomesMonstrous { what }
+            | TriggerPattern::BecomesRenowned { what }
+            | TriggerPattern::Exploits { what }
             | TriggerPattern::BecomesCrewed { what }
             | TriggerPattern::BecomesSaddled { what }
             | TriggerPattern::BecomesLevel { what, .. }
@@ -1270,6 +1273,8 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Explored { .. }
                 | TriggerPattern::Connived { .. }
                 | TriggerPattern::BecomesMonstrous { .. }
+                | TriggerPattern::BecomesRenowned { .. }
+                | TriggerPattern::Exploits { .. }
                 | TriggerPattern::BecomesCrewed { .. }
                 | TriggerPattern::BecomesSaddled { .. }
                 | TriggerPattern::BecomesLevel { .. }
@@ -1767,6 +1772,7 @@ impl<'a> Walker<'a> {
             }
             Effect::Amass { count, .. }
             | Effect::Monstrosity { count }
+            | Effect::Renown { count }
             | Effect::Adapt { count }
             | Effect::Fabricate { count }
             | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
@@ -1868,7 +1874,8 @@ impl<'a> Walker<'a> {
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
             | Effect::TimeTravel { who }
-            | Effect::Learn { who } => {
+            | Effect::Learn { who }
+            | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }
             Effect::ExtraTurn { who, count, .. } => {

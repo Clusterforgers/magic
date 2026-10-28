@@ -80,6 +80,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Monstrous => adjectives.push("monstrous".to_owned()),
+            Pred::Renowned => adjectives.push("renowned".to_owned()),
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {
@@ -499,6 +500,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         ),
         TriggerPattern::BecomesMonstrous { what } => (
             format!("{} becomes monstrous", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::BecomesRenowned { what } => (
+            format!("{} becomes renowned", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::Exploits { what } => (
+            format!("{} exploits a creature", subject(what)),
             what.0 == [Pred::This],
         ),
         TriggerPattern::BecomesCrewed { what } => (

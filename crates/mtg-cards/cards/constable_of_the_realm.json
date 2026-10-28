@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2a263e61-303f-449d-a431-c26cabdc68e0",
+  "name": "Constable of the Realm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Constable of the Realm",
+      "oracle_fingerprint": "5e2ac6f5737e5ca96fd67eab51dde0d4",
+      "abilities": [
+        { "Keyword": { "Renown": 2 } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

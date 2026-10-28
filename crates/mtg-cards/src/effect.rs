@@ -623,6 +623,18 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// The source creature becomes renowned (CR 702.112): it gets +1/+1 counters, unless it is renowned already.
+    Renown {
+        /// How many +1/+1 counters.
+        count: Amount,
+    },
+    /// The source creature exploits (CR 702.110): the player may sacrifice a creature they control, and the source
+    /// exploits that creature.
+    Exploit {
+        /// Who sacrifices.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The source Vehicle becomes crewed (CR 702.122) by the creatures tapped to pay the ability, or the source Mount
     /// becomes saddled (CR 702.171) by them when `saddle`: the event cards trigger on; the type change is its own effect.
     Crewed {

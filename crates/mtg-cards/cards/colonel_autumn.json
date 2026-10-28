@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5c6ce876-781b-437d-b20e-db0b6e2769f4",
+  "name": "Colonel Autumn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colonel Autumn",
+      "oracle_fingerprint": "acd742d17ccefa9823427179eef5eedd",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Exploit" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Supertype": "Legendary" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Exploit" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Exploits": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
