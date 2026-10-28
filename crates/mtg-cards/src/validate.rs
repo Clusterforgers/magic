@@ -4246,6 +4246,64 @@ mod tests {
         bad.impl_status = ImplStatus::Manual;
         assert_eq!(check_card(&bad, &BTreeSet::new()), Vec::<Problem>::new());
     }
+
+    /// A replacement whose steps read the event it replaces: `when`, `Instead` steps, the problems.
+    #[rstest]
+    #[case::that_player_loses_that_much(
+        r#"{"LifeGain":{"who":"Opponents"}}"#,
+        r#"[{"LoseLife":{"who":"Triggering","amount":"Triggering"}}]"#,
+        &[]
+    )]
+    #[case::the_source_deals_it_elsewhere(
+        r#"{"Damage":{"to":"You"}}"#,
+        r#"[{"DealDamage":{"source":"Dealer","to":"Attached","amount":"Triggering"}}]"#,
+        &[]
+    )]
+    #[case::that_card_is_exiled(
+        r#"{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}}"#,
+        r#"[{"Exile":{"what":"Triggering"}}]"#,
+        &[]
+    )]
+    #[case::no_source_but_of_damage(
+        r#"{"LifeGain":{"who":"Opponents"}}"#,
+        r#"[{"DealDamage":{"source":"Dealer","to":"Triggering","amount":"Triggering"}}]"#,
+        &["faces[0].abilities[0].Replacement.by.Instead[0].DealDamage.source: `Dealer` is the source of damage: only a `Damage` replacement has one"]
+    )]
+    fn w5d_a_replacement_reads_the_event_it_replaces(
+        #[case] when: &str,
+        #[case] steps: &str,
+        #[case] expected: &[&str],
+    ) {
+        let json = format!(r#"{{"Replacement":{{"when":{when},"by":{{"Instead":{steps}}}}}}}"#);
+        assert_eq!(problems(&json), expected, "{json}");
+    }
+
+    #[rstest]
+    #[case::a_draw(r#"[{"Draw":{}}]"#, false)]
+    #[case::a_choice(r#"[{"May":{"effects":[{"Draw":{}}]}}]"#, true)]
+    #[case::tap_or_untap(r#"[{"TapOrUntap":{"what":"Triggering"}}]"#, true)]
+    fn w5d_steps_that_ask_are_named_apart(#[case] steps: &str, #[case] asks: bool) {
+        let json = format!(
+            r#"{{"Replacement":{{"when":{{"LifeGain":{{}}}},"by":{{"Instead":{steps}}}}}}}"#
+        );
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        assert_eq!(
+            used_primitives(&ability).contains("ReplaceBy.Instead.Asks"),
+            asks
+        );
+    }
+
+    #[test]
+    fn w5d_outside_a_replacement_the_event_is_still_unnamed() {
+        let found =
+            problems(r#"{"Spell":{"effects":[{"LoseLife":{"who":"Triggering","amount":1}}]}}"#);
+        assert!(
+            found
+                .iter()
+                .any(|p| p.contains("`Triggering` is only valid in a triggered ability")),
+            "{found:?}"
+        );
+    }
 }
 
 #[cfg(test)]

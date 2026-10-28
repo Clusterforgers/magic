@@ -388,6 +388,7 @@ mod w4d_writers;
 mod w4e_writers;
 mod w4f_writers;
 mod w4g_variants;
+mod w5d_replaced;
 mod where_x;
 mod written_effects;
 mod x_after;

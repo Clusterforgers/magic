@@ -625,7 +625,7 @@ fn each_turn(r: &mut Reader<'_>, noun: &str, whose: &str) -> Option<u32> {
 const ORDINALS: [&str; 5] = ["first", "second", "third", "fourth", "fifth"];
 
 /// The card itself, or an object with its article: "a creature you control", "another creature".
-fn subject(r: &mut Reader<'_>) -> Option<Selector> {
+pub(super) fn subject(r: &mut Reader<'_>) -> Option<Selector> {
     if r.source() {
         return Some(Selector::this());
     }

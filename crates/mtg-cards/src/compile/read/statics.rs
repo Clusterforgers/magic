@@ -41,7 +41,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 32] = [
+const TEMPLATES: [Template; 33] = [
     super::c11b_once::c11b_once,
     super::c8_eg_cast_itself::c8_eg_cast_itself,
     super::c6_blk_draws::c6_blk_draw_replacement,
@@ -49,6 +49,7 @@ const TEMPLATES: [Template; 32] = [
     entering_tapped_if,
     group_enters_tapped,
     group_enters_with,
+    super::w5d_replaced::w5d_replaced,
     life_gain::replacement,
     no_life_loss,
     copies::enters_as_copy,
@@ -1147,8 +1148,10 @@ pub(super) fn statics(
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
     let group = super::c11h_prevent::c11h_texts(ability);
+    let replaced = super::w5d_replaced::w5d_sentences(ability);
     let sentences = match ability {
         _ if !group.is_empty() => group,
+        _ if !replaced.is_empty() => replaced,
         Ability::Replacement {
             when: ReplaceWhen::Enters { what },
             by,
