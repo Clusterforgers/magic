@@ -32,16 +32,31 @@ pub(super) fn w7b_read(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
     })
 }
 
-/// "you get two rad counters": the counters put on you, with the verb that agrees with "you".
-pub(super) fn w7b_you_get(effect: &Effect) -> Option<String> {
-    match effect {
-        Effect::PutCounters {
-            on: Ref::You,
-            counter,
-            count,
-        } if w7b_player_kind(counter) => {
-            Some(format!("you get {}", counters::text(counter, count)?))
-        }
-        _ => None,
-    }
+/// The wordings with "they get" for "that player gets" counters by word: "..., they get four rad counters."
+pub(super) fn w7b_they_wordings(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| {
+            W7B_PLAYER_KINDS
+                .iter()
+                .any(|kind| text.contains(&format!(" {kind} counter")))
+        })
+        .filter(|text| text.contains(", that player gets "))
+        .map(|text| text.replacen(", that player gets ", ", they get ", 1))
+        .collect()
+}
+
+/// "you get two rad counters", "that player gets four rad counters": the counters put on you or on the player of the
+/// trigger, with the verb that agrees with the subject.
+pub(super) fn w7b_player_gets(effect: &Effect) -> Option<String> {
+    let Effect::PutCounters { on, counter, count } = effect else {
+        return None;
+    };
+    let subject = match on {
+        Ref::You => "you get",
+        Ref::Triggering => "that player gets",
+        _ => return None,
+    };
+    w7b_player_kind(counter).then_some(())?;
+    Some(format!("{subject} {}", counters::text(counter, count)?))
 }

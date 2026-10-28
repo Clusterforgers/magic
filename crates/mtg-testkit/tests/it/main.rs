@@ -466,6 +466,7 @@ mod w6a_attacks_on_you;
 mod w6b_emblems;
 mod w6c_x_triggers;
 mod w6d_shared_selectors;
+mod w7b_rad;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;

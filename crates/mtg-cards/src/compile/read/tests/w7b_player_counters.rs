@@ -17,6 +17,16 @@ use super::*;
     ClauseKind::Triggered,
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Player"}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"rad"},"count":2}}]}}"#
 )]
+#[case::the_damaged_player(
+    "Whenever this creature deals combat damage to a player, they get four rad counters.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Triggering","counter":{"Other":"rad"},"count":4}}]}}"#
+)]
+#[case::that_many(
+    "Whenever this creature deals combat damage to a player, that player gets that many rad counters.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Triggering","counter":{"Other":"rad"},"count":"Triggering"}}]}}"#
+)]
 #[case::each_opponent_poison(
     "Each opponent gets a poison counter.",
     ClauseKind::Spell,
