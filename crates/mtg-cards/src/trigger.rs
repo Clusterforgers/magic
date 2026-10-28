@@ -143,6 +143,18 @@ pub enum TriggerPattern {
         )]
         by: Ref,
     },
+    /// A player copies a spell matching the selector (CR 707.10): the copy is put on the stack under their control.
+    SpellCopied {
+        /// The spell copied; any spell when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// Who copies it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        by: Ref,
+    },
     /// A permanent matching the selector is sacrificed.
     Sacrificed {
         /// The permanent.
@@ -235,6 +247,12 @@ pub enum TriggerPattern {
     },
     /// A creature matching the selector becomes blocked.
     BecomesBlocked {
+        /// The attacker.
+        what: Selector,
+    },
+    /// A creature matching the selector attacks and isn't blocked: it is unblocked once its defending player has
+    /// declared blockers (CR 509.1h).
+    Unblocked {
         /// The attacker.
         what: Selector,
     },

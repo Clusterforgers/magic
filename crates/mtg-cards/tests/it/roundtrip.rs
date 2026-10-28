@@ -564,6 +564,7 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         selector().prop_map(|what| TriggerPattern::Attacks { what }),
         (selector(), selector()).prop_map(|(what, by)| TriggerPattern::BecomesTarget { what, by }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::SpellCast { what, by }),
+        (selector(), reference()).prop_map(|(what, by)| TriggerPattern::SpellCopied { what, by }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Sacrificed { what, by }),
         (
             select(vec![
@@ -595,6 +596,7 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
         selector().prop_map(|what| TriggerPattern::Blocks { what }),
         selector().prop_map(|what| TriggerPattern::BecomesBlocked { what }),
+        selector().prop_map(|what| TriggerPattern::Unblocked { what }),
         (selector(), 1u32..5)
             .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),
         (selector(), proptest::option::of(counter()))

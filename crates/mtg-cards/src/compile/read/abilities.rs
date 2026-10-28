@@ -229,7 +229,10 @@ fn casts_a_spell(when: &TriggerPattern) -> bool {
     match when {
         TriggerPattern::AnyOf(events) => events.iter().all(casts_a_spell),
         TriggerPattern::Nth { event, .. } => casts_a_spell(event),
-        _ => matches!(when, TriggerPattern::SpellCast { .. }),
+        _ => matches!(
+            when,
+            TriggerPattern::SpellCast { .. } | TriggerPattern::SpellCopied { .. }
+        ),
     }
 }
 
@@ -242,6 +245,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
     matches!(
         when,
         TriggerPattern::SpellCast { .. }
+            | TriggerPattern::SpellCopied { .. }
             | TriggerPattern::Drew { .. }
             | TriggerPattern::Discarded { .. }
             | TriggerPattern::LifeGained { .. }

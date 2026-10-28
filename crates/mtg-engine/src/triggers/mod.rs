@@ -21,6 +21,8 @@ mod detect_turn_nth;
 mod queue;
 mod reads_x;
 mod state;
+#[cfg(test)]
+mod w2e_detect;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;

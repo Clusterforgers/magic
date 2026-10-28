@@ -37,6 +37,7 @@ const RUNS: &[&str] = &[
     "Trigger.PlayerAttacked",
     "Trigger.PlayerAttacks",
     "Trigger.SpellCast",
+    "Trigger.SpellCopied",
     "Trigger.Sacrificed",
     "Trigger.StepBegins",
     "Trigger.BecomesTarget",
@@ -51,6 +52,7 @@ const RUNS: &[&str] = &[
     "Trigger.TappedForMana",
     "Trigger.Blocks",
     "Trigger.BecomesBlocked",
+    "Trigger.Unblocked",
     "Trigger.GroupAttacks",
     "Trigger.CountersPut",
     "Trigger.CountersRemoved",
@@ -797,6 +799,8 @@ mod tests {
     #[case::mana_triggers("Trigger.TappedForMana", true)]
     #[case::block_triggers("Trigger.Blocks", true)]
     #[case::blocked_triggers("Trigger.BecomesBlocked", true)]
+    #[case::w2e_unblocked_triggers("Trigger.Unblocked", true)]
+    #[case::w2e_copy_triggers("Trigger.SpellCopied", true)]
     #[case::group_attack_triggers("Trigger.GroupAttacks", true)]
     #[case::counter_triggers("Trigger.CountersPut", true)]
     #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]

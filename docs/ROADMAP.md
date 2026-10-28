@@ -27,7 +27,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 
 - Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1va), (r1vb), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a), (r2dgc-a).
 - Cast ways and zones: (c5e), (c2l3), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
-- Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
+- Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2eba) a local run, (r2ec) a specialist model.
@@ -175,7 +175,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c10e) Subtype and type nouns, legendary names without a comma as `~`, and the events "enters from your graveyard", "is turned face up" and "modified creature"
 - [ ] (c10r) The flicker with a delayed return, the exile that returns when the source leaves for an Aura with several hosts, and "until your next turn" durations
 - [ ] (c13h) Draw replacements and triggers "except the first one they draw in each of their draw steps", and a token when N or more cards leave your graveyard (Notion Thief, Leela, Xyris)
-- [~] (r2j) (r2j-trigger-events) Trigger events left: an opponent's activation, energy, a token or a spell copied, an unblocked attacker, "first time" variants, several events in one trigger; frees about 20 cards (Harsh Mentor, Valgavoth, Kalamax)
+- [ ] (r2ja) An activated ability as a trigger event: "an opponent activates an ability" of a kind of permanent, "that isn't a mana ability", loyalty abilities and "becomes tapped or a player activates"; frees about 8 cards (Harsh Mentor, Immolation Shaman, Kurkesh)
+- [ ] (r2jb) Trigger events left: getting energy, "first time" variants (during each of your turns, investigate, nonland discards), "attacks a player and isn't blocked", "isn't blocked this combat", a token copied and several events in one trigger; frees about 15 cards (Valgavoth, Kalamax, Territorial Gorger)
 - [ ] (r2ad) Delayed triggers left: "until end of turn, whenever", with a target of their own, on the next spell, on every block, repeating this turn; frees about 7 cards (Infested Thrinax, Jailbreak, Ride the Avalanche)
 - [ ] (r2dgb) Effects "unless that player sacrifices or pays", a sentence for each player, and a token copy after a payment; frees about 12 cards (Demanding Dragon, All Is Dust, Bramble Sovereign)
 - [ ] (r2dgc-a) A cost for each mode chosen: Spree costs and escalate in the engine, the DSL and the compiler; frees about 4 cards (Requisition Raid, Great Train Heist, Collective Resistance)

@@ -125,6 +125,10 @@ enum Happened {
     },
     /// An attacker became blocked, once however many creatures block it.
     BecameBlocked { attacker: ObjectId },
+    /// An attacker of the player who declared blockers was not blocked (CR 509.1h).
+    Unblocked { attacker: ObjectId },
+    /// A player copied a spell: the copy, on the stack under their control.
+    Copied { player: PlayerId, spell: ObjectId },
     /// Attackers were declared together.
     AttackedTogether { attackers: Vec<ObjectId> },
     /// An Aura, Equipment or Fortification became attached to a permanent.
@@ -420,6 +424,10 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::SpellCopied(copy) => {
+                found.push(Happened::Copied {
+                    player: copy.controller,
+                    spell: copy.object,
+                });
                 found.extend(targeted(
                     look,
                     &copy.choices,
@@ -441,6 +449,19 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         }
     }
     found
+}
+
+/// The attackers of `defender` that no creature blocks once that player has declared blockers ("attacks and isn't
+/// blocked", CR 509.1h).
+fn w2e_unblocked(post: &GameState, defender: PlayerId) -> Vec<Happened> {
+    post.combat()
+        .attackers()
+        .iter()
+        .filter(|attacker| !attacker.blocked() && attacker.defender(post) == Some(defender))
+        .map(|attacker| Happened::Unblocked {
+            attacker: attacker.object(),
+        })
+        .collect()
 }
 
 /// How many spells every player cast this turn before the one the event casts: the count after the batch less that spell
@@ -669,7 +690,7 @@ fn about_players_and_permanents(
     found: &mut Vec<Happened>,
 ) {
     match event {
-        Event::BlockersDeclared { blocks, .. } => {
+        Event::BlockersDeclared { blocks, player } => {
             found.extend(blocks.iter().map(|(blocker, attacker)| Happened::Blocked {
                 blocker: *blocker,
                 attacker: *attacker,
@@ -683,6 +704,7 @@ fn about_players_and_permanents(
                     });
                 }
             }
+            found.extend(w2e_unblocked(look.post, *player));
         }
         Event::DamageDealt {
             source,
@@ -1012,6 +1034,12 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
         ) => (scope.players(by).ok()?.contains(attacking)
             && scope.players(at).ok()?.contains(defending))
         .then(|| cause(state, vec![Target::Player(*attacking)])),
+        (TriggerPattern::SpellCopied { what, by }, Happened::Copied { player, spell }) => {
+            let reference = object(*spell)?;
+            let subjects = vec![Target::Player(*player), Target::Object(reference)];
+            (scope.players(by).ok()?.contains(player) && scope.selects(what, reference).ok()?)
+                .then(|| cause(state, subjects))
+        }
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
@@ -1346,7 +1374,8 @@ fn matching_permanents(
                 )
             })
         }
-        (TriggerPattern::BecomesBlocked { what }, Happened::BecameBlocked { attacker }) => {
+        (TriggerPattern::BecomesBlocked { what }, Happened::BecameBlocked { attacker })
+        | (TriggerPattern::Unblocked { what }, Happened::Unblocked { attacker }) => {
             let attacker = object(*attacker)?;
             picks(what, attacker)?.then(|| cause(state, vec![Target::Object(attacker)]))
         }
