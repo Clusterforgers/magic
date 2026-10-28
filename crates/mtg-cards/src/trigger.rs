@@ -96,6 +96,14 @@ pub enum TriggerPattern {
         /// The player attacked.
         at: Ref,
     },
+    /// A creature matching the selector attacks a player or a planeswalker that player controls ("whenever a creature
+    /// attacks you or a planeswalker you control"); `Triggering` is the attacker.
+    AttacksPlayerOrPlaneswalker {
+        /// The attacker.
+        what: Selector,
+        /// The player attacked, or the controller of the planeswalker attacked.
+        at: Ref,
+    },
     /// A player is attacked ("whenever enchanted player is attacked"): creatures are declared as attackers of that
     /// player (an attack on only their planeswalkers is not one). It triggers once for the declaration, however many
     /// creatures attack; `Triggering` is the attacked player.

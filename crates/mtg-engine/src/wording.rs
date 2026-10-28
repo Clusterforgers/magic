@@ -317,6 +317,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{} attacks {whom}", subject(what)), false)
         }
+        TriggerPattern::AttacksPlayerOrPlaneswalker { what, at } => {
+            let whom = match at {
+                Ref::You => "you or a planeswalker you control",
+                _ => "a player or a planeswalker they control",
+            };
+            (format!("{} attacks {whom}", subject(what)), false)
+        }
         TriggerPattern::PlayerAttacked { who: attacked } => {
             let text = match attacked {
                 Ref::You => "you are attacked".to_owned(),

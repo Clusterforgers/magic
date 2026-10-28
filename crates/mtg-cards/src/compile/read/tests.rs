@@ -163,6 +163,7 @@ mod base_stats;
 mod batch_writers;
 mod becomes;
 mod block_limits;
+mod c10_pa_attacks;
 mod c4_af_writers;
 mod c4_conditions;
 mod c4_gl_writers;

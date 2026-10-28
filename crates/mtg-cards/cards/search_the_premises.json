@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0232418d-1c52-4573-b488-c62345ca1c8d",
+  "name": "Search the Premises",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Search the Premises",
+      "oracle_fingerprint": "3dbe08c1616f5a4da2f9bdf78ada132e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

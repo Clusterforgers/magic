@@ -639,6 +639,7 @@ Invisible Force Field
 Invisible Stalker
 Iridescent Vinelasher
 Iron League Steed
+Isperia, Supreme Judge
 It's Clobberin' Time!
 Ivory Mask
 Ixalli's Lorekeeper
@@ -751,6 +752,7 @@ Manor Gate
 Map the Frontier
 Map the Wastes
 March of Progress
+Marchesa's Decree
 Marchesa's Emissary
 Mardu Devotee
 Mardu Scout
@@ -982,6 +984,7 @@ Rescue Skiff
 Reshape
 Resplendent Angel
 Revel Ruiner
+Revenge of Ravens
 Reverberate
 Reverse Engineer
 Rhet-Tomb Mystic
@@ -989,6 +992,7 @@ Rhox Charger
 Rhox Faithmender
 Rhys the Redeemed
 Rhystic Study
+Riddlekeeper
 Riders of Gavony
 Rienne, Angel of Rebirth
 Rift Bolt
@@ -1049,6 +1053,7 @@ Scuzzback Marauders
 Scytheclaw
 Sea Gate
 Sea Gate Wreckage
+Search the Premises
 Secluded Courtyard
 Secluded Glen
 Second Harvest

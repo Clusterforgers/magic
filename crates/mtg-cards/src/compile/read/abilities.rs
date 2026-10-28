@@ -105,7 +105,10 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     }
     note_attacks_and_casts(r, &when);
     // The creature that attacks is "it" and "its controller" is the player attacking.
-    if matches!(when, TriggerPattern::AttacksPlayer { .. }) {
+    if matches!(
+        when,
+        TriggerPattern::AttacksPlayer { .. } | TriggerPattern::AttacksPlayerOrPlaneswalker { .. }
+    ) {
         r.it = Some(Ref::Triggering);
     }
     // The creature of the event is "it" in the effects.

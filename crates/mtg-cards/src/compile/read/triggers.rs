@@ -666,23 +666,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("leaves the battlefield") {
         (Some(ZoneKind::Battlefield), None)
     } else if r.word("attacks") {
-        if r.words("enchanted player") {
-            return Some(TriggerPattern::AttacksPlayer {
-                what: what.clone(),
-                at: Ref::AttachedPlayer,
-            });
-        }
-        if r.words("the monarch") {
-            return Some(TriggerPattern::AttacksPlayer {
-                what: what.clone(),
-                at: Ref::Monarch,
-            });
-        }
-        if r.words("one of your opponents") {
-            return Some(TriggerPattern::AttacksPlayer {
-                what: what.clone(),
-                at: Ref::Opponents,
-            });
+        if let Some(attacked) = super::c10_pa_attacks::c10_pa_attacked(r, what) {
+            return Some(attacked);
         }
         let attacks = TriggerPattern::Attacks { what: what.clone() };
         return Some(first_time(r, attacks));
@@ -1137,6 +1122,9 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             what,
             at: Ref::Opponents,
         } => said(what, "attacks one of your opponents"),
+        TriggerPattern::AttacksPlayerOrPlaneswalker { what, at: Ref::You } => {
+            said(what, "attacks you or a planeswalker you control")
+        }
         TriggerPattern::Blocks { what } => said(what, "blocks"),
         TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),

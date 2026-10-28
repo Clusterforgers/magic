@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c46718dc-24dc-4b77-b455-aa4c89570b8d",
+  "name": "Isperia, Supreme Judge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isperia, Supreme Judge",
+      "oracle_fingerprint": "6371df00e6d0075c42b17c07e28ae85a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

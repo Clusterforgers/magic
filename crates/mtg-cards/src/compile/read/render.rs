@@ -228,6 +228,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    let attacker = super::c10_pa_attacks::c10_pa_wordings(ability, &texts);
+    texts.extend(attacker);
     // The player attacked is "that player" in a trigger on an attack at the monarch.
     if matches!(
         ability,

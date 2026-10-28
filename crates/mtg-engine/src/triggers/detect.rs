@@ -50,10 +50,11 @@ enum Happened {
     Attacked { attacker: ObjectId, nth: u32 },
     /// A creature was declared as the only attacker.
     AttackedAlone { attacker: ObjectId },
-    /// A creature was declared as an attacker of a player.
+    /// A creature was declared as an attacker of a player, or of a planeswalker that player controls.
     AttackedPlayer {
         attacker: ObjectId,
         player: PlayerId,
+        planeswalker: bool,
     },
     /// Creatures were declared as attackers of a player, once for the declaration (not for a planeswalker).
     PlayerAttacked { at: PlayerId },
@@ -313,6 +314,29 @@ fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
 }
 
 /// What happened in `events`, in order. `pre` is the state before them and `post` the state after.
+/// Each attacker with the player it attacks, or the controller of the planeswalker it attacks (CR 508.3a).
+fn c10_pa_attacked_players(
+    pre: &GameState,
+    post: &GameState,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> Vec<Happened> {
+    attackers
+        .iter()
+        .filter_map(|(attacker, at)| match at {
+            AttackTarget::Player(player) => Some(Happened::AttackedPlayer {
+                attacker: *attacker,
+                player: *player,
+                planeswalker: false,
+            }),
+            AttackTarget::Planeswalker(walker) => Some(Happened::AttackedPlayer {
+                attacker: *attacker,
+                player: controller_of(pre, *walker).or_else(|| controller_of(post, *walker))?,
+                planeswalker: true,
+            }),
+        })
+        .collect()
+}
+
 fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happened> {
     let mut found = Vec::new();
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
@@ -340,13 +364,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         attacker: *attacker,
                     });
                 }
-                found.extend(attackers.iter().filter_map(|(attacker, at)| match at {
-                    AttackTarget::Player(player) => Some(Happened::AttackedPlayer {
-                        attacker: *attacker,
-                        player: *player,
-                    }),
-                    AttackTarget::Planeswalker(_) => None,
-                }));
+                found.extend(c10_pa_attacked_players(pre, post, attackers));
                 let mut pairs: Vec<(PlayerId, PlayerId)> = Vec::new();
                 for (attacker, at) in attackers {
                     if let AttackTarget::Player(at) = at
@@ -934,7 +952,17 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
         }
         (
             TriggerPattern::AttacksPlayer { what, at },
-            Happened::AttackedPlayer { attacker, player },
+            Happened::AttackedPlayer {
+                attacker,
+                player,
+                planeswalker: false,
+            },
+        )
+        | (
+            TriggerPattern::AttacksPlayerOrPlaneswalker { what, at },
+            Happened::AttackedPlayer {
+                attacker, player, ..
+            },
         ) => {
             let reference = object(*attacker)?;
             (scope.players(at).ok()?.contains(player) && scope.selects(what, reference).ok()?)
