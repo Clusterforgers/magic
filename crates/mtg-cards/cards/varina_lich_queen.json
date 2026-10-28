@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9859fbca-60c3-4a57-a377-51b56f03894f",
+  "name": "Varina, Lich Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Varina, Lich Queen",
+      "oracle_fingerprint": "39675a70a09979c68aa22c81969175b2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "Attacks": { "what": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              { "Draw": { "count": "Triggering" } },
+              { "Discard": { "count": "Triggering" } },
+              { "GainLife": { "amount": "Triggering" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "ExileFromGraveyard": { "filter": [], "count": 2 } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

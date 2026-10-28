@@ -1,0 +1,51 @@
+{
+  "oracle_id": "cc4bc5d7-ed37-4a80-a5e7-eb68c255cbef",
+  "name": "Bladewing, Deathless Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bladewing, Deathless Tyrant",
+      "oracle_fingerprint": "b83d1c8d37044e715c74328856be22b2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Knight",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

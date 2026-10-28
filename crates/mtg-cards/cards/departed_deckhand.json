@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a620a765-97ba-4687-acfd-4dec7da75d9f",
+  "name": "Departed Deckhand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Departed Deckhand",
+      "oracle_fingerprint": "98a77063c0f11143bd792c41fbba6b73",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Not": { "Subtype": "Spirit" } }] }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "CantBeBlockedBy": [{ "Not": { "Subtype": "Spirit" } }] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

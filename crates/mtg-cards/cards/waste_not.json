@@ -1,0 +1,51 @@
+{
+  "oracle_id": "00fdcc19-88ed-46c3-91f0-095806228105",
+  "name": "Waste Not",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waste Not",
+      "oracle_fingerprint": "11aec030b5acdaa3e0ade1134f5f5d97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Land" }], "by": "Opponents" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Black"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Discarded": {
+                "what": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }],
+                "by": "Opponents"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

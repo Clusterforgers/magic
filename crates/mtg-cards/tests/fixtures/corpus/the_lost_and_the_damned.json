@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "9a53cf96-b47f-48f0-b9cc-3330ae546a87",
+  "oracle_id": "22e70ad0-1a9c-4d9e-8cc1-ebea485282ca",
+  "multiverse_ids": [
+    580951
+  ],
+  "mtgo_id": 108730,
+  "tcgplayer_id": 286169,
+  "cardmarket_id": 675321,
+  "name": "The Lost and the Damned",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/9a53cf96-b47f-48f0-b9cc-3330ae546a87",
+  "scryfall_uri": "https://scryfall.com/card/40k/129/the-lost-and-the-damned?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:34:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.jpg?1783920844",
+    "normal": "https://cards.scryfall.io/normal/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.jpg?1783920844",
+    "large": "https://cards.scryfall.io/large/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.jpg?1783920844",
+    "png": "https://cards.scryfall.io/png/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.png?1783920844",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.jpg?1783920844",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.jpg?1783920844",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.webp?1783920844",
+    "grid": "https://cards.scryfall.io/grid/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.webp?1783920844",
+    "display": "https://cards.scryfall.io/display/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.webp?1783920844",
+    "art": "https://cards.scryfall.io/art/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.webp?1783920844",
+    "crop": "https://cards.scryfall.io/crop/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.webp?1783920844",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/a/9a53cf96-b47f-48f0-b9cc-3330ae546a87.jpg?1783920844"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a land you control enters from anywhere other than your hand or you cast a spell from anywhere other than your hand, create a 3/3 red Spawn creature token.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d3db07a7-cc44-443c-bd38-ed3be3f2d776",
+      "component": "combo_piece",
+      "name": "The Lost and the Damned",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/d3db07a7-cc44-443c-bd38-ed3be3f2d776"
+    },
+    {
+      "object": "related_card",
+      "id": "eea89316-1205-4a73-be33-ac2a433edb41",
+      "component": "token",
+      "name": "Spawn",
+      "type_line": "Token Creature — Spawn",
+      "uri": "https://api.scryfall.com/cards/eea89316-1205-4a73-be33-ac2a433edb41"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9a53cf96-b47f-48f0-b9cc-3330ae546a87/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A22e70ad0-1a9c-4d9e-8cc1-ebea485282ca&unique=prints",
+  "collector_number": "129",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The gods of Chaos bestow gifts of mutations upon their champions. Too many of these gifts transform their bearer into mindless, writhing chaos spawn.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Henry Peters",
+  "artist_ids": [
+    "2ffd9e06-94af-44f5-bec6-06f781941a6c"
+  ],
+  "illustration_id": "87f64682-38aa-4c60-a414-a1473fc259fc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5713,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=Dghfv1yptDI",
+    "previewed_at": "2022-09-14"
+  },
+  "prices": {
+    "usd": "3.47",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.66",
+    "eur_foil": null,
+    "tix": "0.32"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580951&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BLost%2Band%2Bthe%2BDamned",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BLost%2Band%2Bthe%2BDamned",
+    "edhrec": "https://edhrec.com/route/?cc=The+Lost+and+the+Damned"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286169%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675321&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108730?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

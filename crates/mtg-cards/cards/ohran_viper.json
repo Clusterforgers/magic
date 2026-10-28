@@ -1,0 +1,38 @@
+{
+  "oracle_id": "879fdcd8-62ea-4d39-abd4-44e6d82adf4d",
+  "name": "Ohran Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ohran Viper",
+      "oracle_fingerprint": "faf4100bcd3f3517a993cb99f89af4aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
