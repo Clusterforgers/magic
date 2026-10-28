@@ -16,10 +16,10 @@
                   "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
                   "count": { "min": 0, "max": 2 },
                   "reveal": true,
-                  "as": "plains"
+                  "as": "land"
                 }
               },
-              { "Move": { "what": { "Bound": "plains" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]
           }

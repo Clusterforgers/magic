@@ -47,9 +47,21 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let (Some(from), Some(to)) = (body(&from), body(&said)) else {
         return;
     };
-    let found = swapped(&standing, &[(&format!("{from},"), &format!("{to},"))]);
+    let mut found = swapped(&standing, &[(&format!("{from},"), &format!("{to},"))]);
+    if by_spell(when) {
+        // What triggered it is the spell that targets, not the permanent of the stand-in.
+        found = found
+            .iter()
+            .map(|text| text.replace("that permanent's", "that spell's"))
+            .collect();
+    }
     texts.extend(that_object(when, to, &found));
     texts.extend(found);
+}
+
+/// Whether the event is a spell targeting the object.
+fn by_spell(when: &TriggerPattern) -> bool {
+    matches!(when, TriggerPattern::BecomesTarget { by, .. } if by.0.first() == Some(&Pred::Spell))
 }
 
 /// The counters an intervening "if it had one or more +1/+1 counters on it" asks for are "that many" counters in the

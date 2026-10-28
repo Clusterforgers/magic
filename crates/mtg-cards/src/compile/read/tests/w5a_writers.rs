@@ -18,6 +18,7 @@ const W5A_REYHAN: &str = r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what"
 const W5A_LOST: &str = r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChangeExcept":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"except":"Hand","to":"Battlefield"}},{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}}]},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Spawn","colors":["Red"],"types":["Creature"],"subtypes":["Spawn"],"power":3,"toughness":3}}}}]}}"#;
 const W5A_VARINA: &str = r#"{"Triggered":{"when":{"Batch":{"Attacks":{"what":[{"Subtype":"Zombie"},{"ControlledBy":"You"}]}}},"effects":[{"Draw":{"count":"Triggering"}},{"Discard":{"count":"Triggering"}},{"GainLife":{"amount":"Triggering"}}]}}"#;
 const W5A_RESTORED: &str = r#"{"Triggered":{"when":{"Batch":{"CountersRemoved":{"what":["This"],"counter":{"Other":"time"}}}},"effects":[{"Scry":{}},{"GainLife":{"amount":1}}]}}"#;
+const W5A_BONECRUSHER: &str = r#"{"Triggered":{"when":{"BecomesTarget":{"what":["This"],"by":["Spell"]}},"effects":[{"DealDamage":{"to":{"ControllerOf":"Triggering"},"amount":2}}]}}"#;
 const W5A_DRAGONBORN: &str = r#"{"Triggered":{"when":{"DealsDamage":{"source":[{"ControlledBy":"You"}],"to":"EachPlayer"}},"if":{"Compare":{"left":"Triggering","op":"Ge","right":5}},"effects":[{"Draw":{}}]}}"#;
 
 const W5A_WASTE_CREATURE_TEXT: &str =
@@ -33,6 +34,7 @@ const W5A_REYHAN_TEXT: &str = "Whenever a creature you control dies or is put in
 const W5A_LOST_TEXT: &str = "Whenever a land you control enters from anywhere other than your hand or you cast a spell from anywhere other than your hand, create a 3/3 red Spawn creature token.";
 const W5A_VARINA_TEXT: &str = "Whenever you attack with one or more Zombies, draw that many cards, then discard that many cards. You gain that much life.";
 const W5A_RESTORED_TEXT: &str = "Whenever one or more time counters are removed from this enchantment, scry 1 and you gain 1 life.";
+const W5A_BONECRUSHER_TEXT: &str = "Whenever this creature becomes the target of a spell, this creature deals 2 damage to that spell's controller.";
 const W5A_DRAGONBORN_TEXT: &str =
     "Whenever a source you control deals 5 or more damage to a player, draw a card.";
 
@@ -64,6 +66,7 @@ const W5A_DRAGONBORN_TEXT: &str =
 #[case::lost(W5A_LOST, W5A_LOST_TEXT)]
 #[case::varina(W5A_VARINA, W5A_VARINA_TEXT)]
 #[case::restored(W5A_RESTORED, W5A_RESTORED_TEXT)]
+#[case::bonecrusher(W5A_BONECRUSHER, W5A_BONECRUSHER_TEXT)]
 #[case::dragonborn(W5A_DRAGONBORN, W5A_DRAGONBORN_TEXT)]
 #[case::dragonborn_at_seven(
     &W5A_DRAGONBORN.replace(r#""right":5"#, r#""right":7"#),
@@ -101,6 +104,8 @@ fn w5a_the_oracle_wording_reads_back(#[case] json: &str, #[case] clause: &str) {
 #[case::restored_one(&W5A_RESTORED.replace(r#"{"Batch":{"CountersRemoved":{"what":["This"],"counter":{"Other":"time"}}}}"#, r#"{"CountersRemoved":{"what":["This"],"counter":{"Other":"time"}}}"#), W5A_RESTORED_TEXT)]
 #[case::dragonborn_at_four(&W5A_DRAGONBORN.replace(r#""right":5"#, r#""right":4"#), W5A_DRAGONBORN_TEXT)]
 #[case::dragonborn_greater(&W5A_DRAGONBORN.replace(r#""op":"Ge""#, r#""op":"Gt""#), W5A_DRAGONBORN_TEXT)]
+#[case::bonecrusher_any(&W5A_BONECRUSHER.replace(r#","by":["Spell"]"#, ""), W5A_BONECRUSHER_TEXT)]
+#[case::bonecrusher_three(&W5A_BONECRUSHER.replace(r#""amount":2"#, r#""amount":3"#), W5A_BONECRUSHER_TEXT)]
 #[case::dragonborn_opponent(&W5A_DRAGONBORN.replace(r#""to":"EachPlayer""#, r#""to":"Opponents""#), W5A_DRAGONBORN_TEXT)]
 fn w5a_a_changed_head_does_not_read_back(#[case] json: &str, #[case] clause: &str) {
     assert!(!w5a_written(json, clause), "{json}");
