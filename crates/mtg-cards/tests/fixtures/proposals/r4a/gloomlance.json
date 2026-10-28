@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Target":0}}},{"If":{"condition":{"Any":[{"Matches":{"selector":[{"Color":"Green"}],"subject":{"Target":0}}},{"Matches":{"selector":[{"Color":"White"}],"subject":{"Target":0}}}]},"then":[{"Discard":{"who":{"ControllerOf":{"Target":0}}}}],"otherwise":[]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}]} ]}

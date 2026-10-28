@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"May":{"effects":[{"Draw":{}}]}}],"when":{"ZoneChange":{"what":[{"Type":"Artifact"},{"OwnedBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}}}}]}]}

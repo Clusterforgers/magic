@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6f8cc374-e76c-4bfa-bf20-28dea0bfefbe",
+  "name": "Cinder Marsh",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cinder Marsh",
+      "oracle_fingerprint": "1e7d994a29286aeefbfa12996ab4e94c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 14, "end": 87 }
+          }
+        }
+      ]
+    }
+  ]
+}

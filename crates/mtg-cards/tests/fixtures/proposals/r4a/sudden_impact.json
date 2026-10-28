@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"amount":{"Count":[{"In":"Hand"},{"OwnedBy":{"Target":0}}]},"to":{"Target":0}}}],"targets":[{"what":"Player"}]}}]}
+
+   ]}

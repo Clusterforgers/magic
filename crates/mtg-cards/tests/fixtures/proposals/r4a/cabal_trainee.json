@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Is":"This"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":-2,"toughness":0}}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]} }]}] }

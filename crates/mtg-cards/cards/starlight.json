@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6237896e-f033-41b2-9943-670f1becb582",
+  "name": "Starlight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starlight",
+      "oracle_fingerprint": "c5ef521b930220be038c8e065dfe71e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Color": "Black" },
+                          { "ControlledBy": { "Target": 0 } }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

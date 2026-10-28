@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"PutCounters":{"counter":{"Other":"lore"},"on":{"Target":0}}}],"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Sorcery"},{"ControlledBy":"You"}]}}]}}]}] }

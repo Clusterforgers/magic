@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b761f6d9-1063-40f8-a3f1-25b1f9b46963",
+  "name": "Auramancer's Guise",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Auramancer's Guise",
+      "oracle_fingerprint": "f0de1e704ae1d750905ab168865e94e5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 17, "end": 94 }
+          }
+        }
+      ]
+    }
+  ]
+}

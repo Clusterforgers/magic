@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"amount":4,"to":{"Target":0}}},{"DealDamage":{"amount":2,"to":"You"}}],"targets":[{"what":"AnyTarget"}]}}]}] }

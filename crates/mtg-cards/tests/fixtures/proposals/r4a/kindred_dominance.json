@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"by":{"Choose":"CreatureType"},"when":{"Enters":{"what":["This"]}}}},{ "Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Subtype":"ChosenSubtype"}}]}}}]} }]}] }

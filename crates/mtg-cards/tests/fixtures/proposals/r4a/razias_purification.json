@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"RepeatEach":{"as":"player","effects":[{"Choose":{"as":"kept","from":{"Each":[{"ControlledBy":{"Bound":"player"}}]},"count":{"max":3,"min":3},"rest_as":"rest","who":{"Bound":"player"}}},{"Sacrifice":{"filter":[{"Is":{"Bound":"rest"}}],"who":{"Bound":"player"} }}],"over":"EachPlayer"}}]}}] } ]}

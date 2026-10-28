@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantBlock"],"condition":{"Not":{"Compare":{"left":{"Count":[{"Subtype":"Minotaur"},{"ControlledBy":"You"},{"Not":{"Targeting":["This"]}}]},"op":"Ge","right":1}}}}}]}]}

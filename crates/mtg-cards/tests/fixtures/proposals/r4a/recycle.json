@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8cef3ce7-8fbc-4e68-93f9-d6adfc2c2cbf",
+  "name": "Recycle",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Recycle",
+      "oracle_fingerprint": "b590a618b550d1e3883c3b8c5d6f7a09",
+      "abilities": [
+        { "Rule": { "rule": { "SkipDrawStep": "You" } } },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 21, "end": 59 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 60, "end": 90 }
+          }
+        }
+      ]
+    }
+  ]
+}

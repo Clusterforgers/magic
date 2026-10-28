@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"effects":[{"LookAtTop":{"as":"hand","count":1,"who":{"Target":0}}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Player"}]}}]}] }

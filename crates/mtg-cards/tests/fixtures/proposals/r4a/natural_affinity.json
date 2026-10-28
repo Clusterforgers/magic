@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Land"}]},"duration":"UntilEndOfTurn","mods":[{"AddType":"Creature"},{"SetPT":{"power":2,"toughness":2}}]}}]}}]}] }

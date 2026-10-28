@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw": {"who":"You" } } ] }},{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":-3,"toughness":0}}]}}]} }]} ]}
