@@ -145,6 +145,26 @@ fn an_amount_that_is_not_a_fixed_number_is_named(#[case] json: &str, #[case] nam
     &[],
     &["Source", "Wolf"]
 )]
+#[case::c11c_a_permanent_with_the_counter(
+    r#"{"RemoveCounters":{"counter":"charge","from":[]}}"#,
+    &[],
+    &["Source"]
+)]
+#[case::c11c_a_creature_with_the_counter(
+    r#"{"RemoveCounters":{"counter":"charge","from":[{"Type":"Creature"}]}}"#,
+    &[],
+    &["Source"]
+)]
+#[case::c11c_not_the_barred(
+    r#"{"RemoveCounters":{"counter":"charge","from":[]}}"#,
+    &["Source"],
+    &[]
+)]
+#[case::c11c_no_artifact_with_the_counter(
+    r#"{"RemoveCounters":{"counter":"charge","from":[{"Type":"Artifact"}]}}"#,
+    &[],
+    &[]
+)]
 #[case::a_land_to_return(r#"{"ReturnToHand":{"filter":[{"Type":"Artifact"}]}}"#, &[], &["Relic"])]
 fn a_pick_offers_what_the_player_may_take(
     #[case] json: &str,
@@ -182,6 +202,18 @@ fn a_pick_offers_what_the_player_may_take(
 )]
 #[case::more_power_than_the_untapped_creatures_have(
     r#"{"TapPower":{"filter":[{"Type":"Creature"}],"power":4}}"#,
+    false
+)]
+#[case::c11c_a_permanent_with_the_counter(
+    r#"{"RemoveCounters":{"counter":"charge","from":[{"Type":"Creature"}]}}"#,
+    true
+)]
+#[case::c11c_two_permanents_with_the_counter(
+    r#"{"RemoveCounters":{"counter":"charge","count":2,"from":[{"Type":"Creature"}]}}"#,
+    false
+)]
+#[case::c11c_no_permanent_with_the_counter(
+    r#"{"RemoveCounters":{"counter":"poison","from":[]}}"#,
     false
 )]
 #[case::three_cards_to_discard(r#"{"Discard":{"count":3}}"#, false)]
@@ -240,6 +272,18 @@ fn the_parts_of_a_cost_are_paid_with_the_events_the_engine_logs() {
             counter: CounterKind::Charge,
             delta: -2,
         })]
+    );
+    assert_eq!(
+        events(
+            r#"{"RemoveCounters":{"counter":"charge","from":[{"Type":"Creature"}]}}"#,
+            &[wolf]
+        ),
+        [Event::CountersChanged(CountersChanged {
+            on: crate::choose::Target::Object(game.object(wolf).unwrap().reference()),
+            counter: CounterKind::Charge,
+            delta: -1,
+        })],
+        "a picked permanent loses one counter of the kind"
     );
     assert_eq!(
         events(r#"{"Sacrifice":{"filter":[]}}"#, &[relic]),

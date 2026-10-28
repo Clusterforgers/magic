@@ -395,6 +395,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = super::c6_au_dead::c6_au_wordings(&texts);
     texts.extend(more);
+    let more = super::c11c_had_counters::c11c_had_wordings(&texts);
+    texts.extend(more);
     graveyard_wordings(ability, &mut texts);
     texts
 }

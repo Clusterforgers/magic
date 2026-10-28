@@ -232,8 +232,34 @@ fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
     let (counter, count) = entering(r)?;
     r.need("from")?;
-    r.source().then_some(())?;
-    Some(CostItem::RemoveCounters { counter, count })
+    if r.source() {
+        return Some(CostItem::RemoveCounters {
+            counter,
+            count,
+            from: None,
+        });
+    }
+    // "Remove a +1/+1 counter from a creature you control": one counter from a permanent the payer picks.
+    (count == Amount::one()).then_some(())?;
+    let from = c11c_permanent(r)?;
+    Some(CostItem::RemoveCounters {
+        counter,
+        count,
+        from: Some(from),
+    })
+}
+
+/// "a creature you control", "another creature you control", "a permanent you control": a kind of permanent the payer
+/// controls, named without "you control".
+fn c11c_permanent(r: &mut Reader<'_>) -> Option<Selector> {
+    let another = r.peek_word() == Some("another");
+    if !another {
+        (r.word("a") || r.word("an")).then_some(())?;
+    }
+    let mut filter = phrase(r, Form::Subject)?;
+    without(&mut filter, &Pred::ControlledBy(Ref::You))?;
+    (another == filter.0.contains(&Pred::Other)).then_some(())?;
+    kinds_only(filter)
 }
 
 /// The energy symbols of an amount: "{E}{E}" for two, "X {E}" for the number announced.
@@ -370,8 +396,25 @@ fn item_text(item: &CostItem) -> Option<String> {
             said.0.push(Pred::ControlledBy(Ref::You));
             format!("Return {} to its owner's hand", taken_text(&said, count)?)
         }
-        CostItem::RemoveCounters { counter, count } => {
+        CostItem::RemoveCounters {
+            counter,
+            count,
+            from: None,
+        } => {
             format!("Remove {} from ~", counters_text(counter, count)?)
+        }
+        CostItem::RemoveCounters {
+            counter,
+            count,
+            from: Some(from),
+        } => {
+            let mut said = from.clone();
+            said.0.push(Pred::ControlledBy(Ref::You));
+            format!(
+                "Remove {} from {}",
+                counters_text(counter, count)?,
+                taken_text(&said, &Amount::one())?
+            )
         }
         _ => return None,
     })
