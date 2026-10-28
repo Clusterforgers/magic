@@ -8,8 +8,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::attack_tax;
 use crate::characteristics::{
-    blocker_limits, cant_attack, cant_be_blocked_by, cant_block, cant_block_attacker,
-    characteristics, controller_of, goaded_by,
+    blocker_limits, cant_attack, cant_attack_defender, cant_be_blocked_by, cant_block,
+    cant_block_attacker, characteristics, controller_of, goaded_by,
 };
 use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
@@ -282,6 +282,28 @@ fn goaded_defenders(
     })
 }
 
+/// The `defenders` the creature `object` is not kept from attacking by "can't attack you or planeswalkers you control".
+fn allowed_defenders(
+    state: &GameState,
+    object: ObjectId,
+    defenders: &[AttackTarget],
+) -> Vec<AttackTarget> {
+    defenders
+        .iter()
+        .copied()
+        .filter(|target| {
+            defending_player(state, *target).is_none_or(|defender| {
+                !cant_attack_defender(
+                    state,
+                    object,
+                    defender,
+                    matches!(target, AttackTarget::Planeswalker(_)),
+                )
+            })
+        })
+        .collect()
+}
+
 /// Every creature `player` may attack with and what each may attack.
 pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptions {
     let defenders = defenders_for(state, player);
@@ -290,14 +312,14 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .iter()
         .copied()
         .filter(|id| can_attack(state, *id, player))
-        .map(|object| {
-            AttackerOption::free(
-                object,
-                paired_defender(state, object, &defenders)
-                    .map(|only| vec![only])
-                    .or_else(|| goaded_defenders(state, object, &defenders))
-                    .unwrap_or_else(|| defenders.clone()),
-            )
+        .filter_map(|object| {
+            // "Can't attack you" takes the defender away before the requirements choose among the rest (CR 508.1c-d).
+            let defenders = allowed_defenders(state, object, &defenders);
+            let defenders = paired_defender(state, object, &defenders)
+                .map(|only| vec![only])
+                .or_else(|| goaded_defenders(state, object, &defenders))
+                .unwrap_or(defenders);
+            (!defenders.is_empty()).then(|| AttackerOption::free(object, defenders))
         })
         .collect::<Vec<_>>();
     let mut options = AttackOptions {

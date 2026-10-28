@@ -1,8 +1,8 @@
 //! The cost of attacking: "Creatures can't attack you unless their controller pays {2} for each creature they control
 //! that's attacking you.", "Creatures can't attack you or planeswalkers you control unless their controller pays {1}
 //! for each of those creatures." (a static ability) and the same sentence after "Until your next turn," (an effect), with
-//! "{X} ..., where X is the number of enchantments you control" for a count. Read into `GameRule::AttackTax` and
-//! written back.
+//! "{X} ..., where X is the number of enchantments you control" for a count and "pays 2 life" for life. Read into
+//! `GameRule::AttackTax` and written back.
 
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
@@ -42,6 +42,19 @@ fn tax(r: &mut Reader<'_>) -> Option<GameRule> {
     r.need("can't attack")?;
     let attacked = whom(r)?;
     r.need("unless their controller pays")?;
+    // "pays 2 life for each of those creatures"
+    if let Some(life) = r.attempt(|r| r.number().filter(|_| r.word("life"))) {
+        r.need("for each")?;
+        each(r, attacked)?;
+        return (life > 0).then_some(GameRule::AttackTax {
+            who: Ref::You,
+            attacked,
+            attackers,
+            mana: ManaCostX::default(),
+            life,
+            per: Amount::one(),
+        });
+    }
     let mut symbols = String::new();
     while let Some(symbol) = r.symbol() {
         symbols.push('{');
@@ -64,6 +77,7 @@ fn tax(r: &mut Reader<'_>) -> Option<GameRule> {
         attacked,
         attackers,
         mana,
+        life: 0,
         per,
     })
 }
@@ -116,11 +130,16 @@ fn sentences(rule: &GameRule) -> Vec<String> {
         attacked,
         attackers,
         mana,
+        life,
         per,
     } = rule
     else {
         return Vec::new();
     };
+    let no_mana = mana.rest().symbols().is_empty() && !mana.has_x();
+    if (*life > 0) == !no_mana {
+        return Vec::new();
+    }
     let Some(creatures) = (if attackers.is_empty() {
         Some("creatures".to_owned())
     } else {
@@ -129,6 +148,7 @@ fn sentences(rule: &GameRule) -> Vec<String> {
         return Vec::new();
     };
     let (price, tail) = match per {
+        Amount::Fixed(1) if *life > 0 => (format!("{life} life"), String::new()),
         Amount::Fixed(1) if !mana.has_x() => (mana.to_string(), String::new()),
         Amount::Count(counted) if mana.to_string() == "{1}" => {
             match phrase_text(counted, Form::All) {

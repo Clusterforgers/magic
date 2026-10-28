@@ -67,6 +67,9 @@ pub enum Modification {
     SetController(Ref),
     /// The object can't attack (a restriction, no layer).
     CantAttack,
+    /// The object can't attack the controller of the effect or ability ("you"), the planeswalkers they control or both
+    /// (a restriction, no layer).
+    CantAttackYou(Attacked),
     /// The object can't block (a restriction, no layer).
     CantBlock,
     /// The object does not untap during its controller's untap step (a restriction, no layer).
@@ -119,6 +122,7 @@ impl Modification {
             Modification::ModifyPT { .. } => Some("7c"),
             Modification::SwitchPT => Some("7d"),
             Modification::CantAttack
+            | Modification::CantAttackYou(_)
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeBlocked
@@ -189,7 +193,12 @@ pub struct CastPermission {
     pub once: bool,
 }
 
-/// What a rule that taxes attackers protects: the players, the planeswalkers they control, or both.
+/// Whether an attack tax names no mana.
+fn no_mana(mana: &ManaCostX) -> bool {
+    *mana == ManaCostX::default()
+}
+
+/// What a rule that taxes or restricts attackers protects: the players, the planeswalkers they control, or both.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Attacked {
     /// Creatures attacking the players.
@@ -238,7 +247,11 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         attackers: Selector,
         /// The mana each taxed creature costs, once for each of `per`; no `{X}`.
+        #[serde(default, skip_serializing_if = "no_mana")]
         mana: ManaCostX,
+        /// The life each taxed creature costs, once for each of `per` ("pays 2 life for each of those creatures").
+        #[serde(default, skip_serializing_if = "crate::spend::is_zero")]
+        life: u32,
         /// How many times the mana is paid for each creature, counted when the attack is declared.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         per: Amount,
@@ -332,6 +345,7 @@ mod tests {
     #[case(Modification::ModifyPT { power: Amount::Fixed(1), toughness: Amount::Fixed(1) }, Some("7c"))]
     #[case(Modification::SwitchPT, Some("7d"))]
     #[case(Modification::CantAttack, None)]
+    #[case(Modification::CantAttackYou(Attacked::Both), None)]
     #[case(Modification::CantBlock, None)]
     #[case(Modification::CantBeBlocked, None)]
     #[case(Modification::Goaded, None)]
@@ -355,9 +369,21 @@ mod tests {
             attacked: Attacked::Player,
             attackers: Selector::default(),
             mana: "{2}".parse().unwrap(),
+            life: 0,
             per: Amount::Fixed(1),
         },
         r#"{"AttackTax":{"attacked":"Player","mana":"{2}"}}"#
+    )]
+    #[case(
+        GameRule::AttackTax {
+            who: Ref::You,
+            attacked: Attacked::Both,
+            attackers: Selector::default(),
+            mana: ManaCostX::default(),
+            life: 2,
+            per: Amount::Fixed(1),
+        },
+        r#"{"AttackTax":{"attacked":"Both","life":2}}"#
     )]
     #[case(
         GameRule::AttackTax {
@@ -365,6 +391,7 @@ mod tests {
             attacked: Attacked::Both,
             attackers: Selector(vec![crate::refs::Pred::Type(CardType::Creature)]),
             mana: "{W/P}".parse().unwrap(),
+            life: 0,
             per: Amount::Fixed(2),
         },
         r#"{"AttackTax":{"who":"Opponents","attacked":"Both","attackers":[{"Type":"Creature"}],"mana":"{W/P}","per":2}}"#

@@ -224,6 +224,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::LoseAbilities
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack
+            | mtg_cards::modify::Modification::CantAttackYou(_)
             | mtg_cards::modify::Modification::CantBlock
             | mtg_cards::modify::Modification::DoesntUntap
             | mtg_cards::modify::Modification::CantBeBlocked

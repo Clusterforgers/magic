@@ -29,6 +29,7 @@ use super::selectors::{
 use super::static_parts;
 use super::tokens::Reader;
 use super::triggers::article;
+use super::w6a_attacks_you;
 use super::where_x;
 use crate::ability::{Ability, CostChange};
 use crate::keyword::Keyword;
@@ -639,6 +640,11 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
         }
     } else if r.words("be blocked") {
         vec![Modification::CantBeBlocked]
+    } else if let Some(restriction) = r.attempt(|r| {
+        r.word("attack").then_some(())?;
+        w6a_attacks_you::w6a_whom(r)
+    }) {
+        vec![restriction]
     } else if r.word("attack") {
         vec![Modification::CantAttack]
     } else if r.word("block") {
@@ -738,6 +744,11 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
             Some(Modification::Goaded)
         } else if r.words("and can't be blocked by more than one creature") {
             Some(Modification::MaxBlockers(1))
+        } else if let Some(restriction) = r.attempt(|r| {
+            r.word("and").then_some(())?;
+            w6a_attacks_you::w6a_restriction(r)
+        }) {
+            Some(restriction)
         } else if r.words(&format!("and {lose} all creature types")) {
             Some(Modification::SetCreatureTypes(Vec::new()))
         } else {
@@ -1631,6 +1642,14 @@ fn static_texts(
         vec![String::new()]
     };
     let mut subjects = subjects(affected, true);
+    // "Creatures can't attack you." says no "All".
+    if let [Modification::CantAttackYou(_)] = mods {
+        let plain: Vec<(String, bool)> = subjects
+            .iter()
+            .filter_map(|(text, plural)| Some((text.strip_prefix("all ")?.to_owned(), *plural)))
+            .collect();
+        subjects.extend(plain);
+    }
     // An Aura that gives a keyword or an ability may enchant a land, an artifact or any permanent.
     if *affected == Ref::Attached
         && !mods.is_empty()
@@ -1792,6 +1811,10 @@ fn last_part(mods: &[Modification], plural: bool) -> (&[Modification], Option<St
         Some((Modification::Goaded, rest)) if !rest.is_empty() => {
             (rest, Some(format!("{is} goaded")))
         }
+        Some((restriction @ Modification::CantAttackYou(_), rest)) if !rest.is_empty() => (
+            rest,
+            w6a_attacks_you::w6a_text(restriction).map(str::to_owned),
+        ),
         Some((Modification::MaxBlockers(1), rest)) if !rest.is_empty() => (
             rest,
             Some("can't be blocked by more than one creature".to_owned()),
@@ -1826,6 +1849,9 @@ pub(super) fn predicate(
             return Some("can't attack or block".to_owned());
         }
         [Modification::CantAttack] => return Some("can't attack".to_owned()),
+        [restriction @ Modification::CantAttackYou(_)] => {
+            return w6a_attacks_you::w6a_text(restriction).map(str::to_owned);
+        }
         [Modification::CantBlock] => return Some("can't block".to_owned()),
         [Modification::CantBeBlocked] => {
             return Some("can't be blocked".to_owned());
