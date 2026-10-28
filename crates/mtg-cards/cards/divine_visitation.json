@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5917216f-5b42-41fa-8976-401bdbeb782e",
+  "name": "Divine Visitation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Visitation",
+      "oracle_fingerprint": "e1a379dc1e299f245ad3dd2002c47fd8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "TokenCreation": { "what": [{ "Type": "Creature" }] } },
+            "by": {
+              "Instead": [
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Angel",
+                        "colors": ["White"],
+                        "types": ["Creature"],
+                        "subtypes": ["Angel"],
+                        "power": 4,
+                        "toughness": 4,
+                        "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+                      }
+                    },
+                    "count": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

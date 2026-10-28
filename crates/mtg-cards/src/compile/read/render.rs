@@ -2492,6 +2492,10 @@ impl Writer<'_> {
             let subject = self.player(who)?;
             return super::turns::effect_text(effect, Some(&subject));
         }
+        if super::w9c_replaced::w9c_is_shield(effect) {
+            let lead = self.name_target();
+            return Some(super::w9c_replaced::w9c_shield_text(lead));
+        }
         if let Some(named) = prevention::c9_fight_named_source(effect) {
             let source = self.object(named)?;
             return Some(format!("prevent all damage {source} would deal this turn"));

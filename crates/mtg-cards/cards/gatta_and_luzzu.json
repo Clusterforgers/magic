@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c01d6fde-1bd2-4412-932a-9bc97d4e5aef",
+  "name": "Gatta and Luzzu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatta and Luzzu",
+      "oracle_fingerprint": "1c017442a479e0e45d982183c8d35fc8",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "PutCounters": {
+                          "on": "Triggering",
+                          "counter": "+1/+1",
+                          "count": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

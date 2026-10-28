@@ -1,0 +1,24 @@
+{
+  "oracle_id": "75ec25b3-ae91-46be-af8b-2649727638f4",
+  "name": "Panther Habit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panther Habit",
+      "oracle_fingerprint": "b12156c429a6569b3cf3c3aac1c71656",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached" } },
+            "by": {
+              "PreventAnd": [
+                { "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "e1cfd1cb-44a5-429f-a5c1-e6d29bad1c71",
+  "name": "Kalitas, Traitor of Ghet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalitas, Traitor of Ghet",
+      "oracle_fingerprint": "f18a3bc96f74f4260ae2022a8605d6cc",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "Opponents" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering" } },
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Zombie",
+                        "colors": ["Black"],
+                        "types": ["Creature"],
+                        "subtypes": ["Zombie"],
+                        "power": 2,
+                        "toughness": 2
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "AnyOf": [{ "Subtype": "Vampire" }, { "Subtype": "Zombie" }] },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

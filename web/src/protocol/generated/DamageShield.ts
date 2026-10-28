@@ -24,4 +24,8 @@ combat: boolean | null,
 /**
  * What it still prevents; all damage when absent.
  */
-left: number | null, };
+left: number | null, 
+/**
+ * What happens as it prevents damage, reading the damage as `ReplaceBy::PreventAnd` does; nothing when empty.
+ */
+then?: unknown, };
