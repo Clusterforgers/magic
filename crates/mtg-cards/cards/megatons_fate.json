@@ -25,11 +25,7 @@
                       "label": "Detonate",
                       "effects": [
                         {
-                          "DealDamage": {
-                            "source": "This",
-                            "to": { "Each": [{ "Type": "Creature" }] },
-                            "amount": 8
-                          }
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 8 }
                         },
                         {
                           "PutCounters": {
