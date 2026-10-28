@@ -1679,11 +1679,24 @@ impl Pass<'_> {
         kind: &CounterKind,
         applied: Vec<Origin>,
     ) {
+        // Removals already queued in this batch (several damage events at once) take counters too, so a permanent
+        // with fewer counters than events loses only those it has and the rest of the damage is still prevented.
+        let queued = self
+            .slots
+            .iter()
+            .filter(|slot| {
+                matches!(
+                    &slot.item,
+                    Item::One(Event::CountersChanged(CountersChanged { on, counter, delta }))
+                        if *on == Target::Object(candidate.object) && counter == kind && *delta < 0
+                )
+            })
+            .count();
         let holds = self.state.object(candidate.object.id).is_some_and(|card| {
             card.counter() == candidate.object.counter
-                && card
-                    .permanent()
-                    .is_some_and(|held| held.counters_of(kind) > 0)
+                && card.permanent().is_some_and(|held| {
+                    usize::try_from(held.counters_of(kind)).unwrap_or(usize::MAX) > queued
+                })
         });
         if !holds {
             return;
