@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4c5a2443-a038-44d3-83a4-5e9a6db7b1a7",
+  "name": "Frost Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frost Titan",
+      "oracle_fingerprint": "857a1bd41c9debbf871daeb2938225c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "Opponents" }] }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

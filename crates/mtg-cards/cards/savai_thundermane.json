@@ -1,0 +1,30 @@
+{
+  "oracle_id": "620a2037-8bf5-48e0-af94-f4f7d3650c60",
+  "name": "Savai Thundermane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savai Thundermane",
+      "oracle_fingerprint": "b9a451cc6fa0900673df639e36e8a510",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Cycled": { "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 2 } },
+                    { "GainLife": { "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

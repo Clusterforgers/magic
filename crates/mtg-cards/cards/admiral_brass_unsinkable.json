@@ -1,0 +1,64 @@
+{
+  "oracle_id": "4df179b4-7c6b-4e63-9d7d-62f4df377989",
+  "name": "Admiral Brass, Unsinkable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Admiral Brass, Unsinkable",
+      "oracle_fingerprint": "e95eac909452278c4b27f28f9f78faba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Pirate" },
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

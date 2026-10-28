@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2fb0f2d2-ed1f-4181-91f2-684a71c34998",
+  "name": "Speed, Young Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Speed, Young Avenger",
+      "oracle_fingerprint": "2e9223e808b8ead5530ed58342810236",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Haste" }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "CantBeBlockedBy": [{ "Not": { "HasKeyword": "Haste" } }] }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "085016ee-4429-453f-b7f3-d61065f1214e",
+  "name": "Invisible Woman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invisible Woman",
+      "oracle_fingerprint": "8393f28143cf5eec71387b8e7d839b7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "NoncreatureSpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wall",
+                      "types": ["Creature"],
+                      "subtypes": ["Wall"],
+                      "power": 0,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Defender" }, { "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{W}{U}{R}{G}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "toughness": 0
+                            }
+                          },
+                          "CantBeBlocked"
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

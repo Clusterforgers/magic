@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "8d239a23-9575-4202-804a-cab7c08a546d",
+  "oracle_id": "085016ee-4429-453f-b7f3-d61065f1214e",
+  "multiverse_ids": [],
+  "name": "Invisible Woman",
+  "lang": "en",
+  "released_at": "2026-11-01",
+  "uri": "https://api.scryfall.com/cards/8d239a23-9575-4202-804a-cab7c08a546d",
+  "scryfall_uri": "https://scryfall.com/card/lmar/5/invisible-woman?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-05T12:06:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.jpg?1791201997",
+    "normal": "https://cards.scryfall.io/normal/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.jpg?1791201997",
+    "large": "https://cards.scryfall.io/large/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.jpg?1791201997",
+    "png": "https://cards.scryfall.io/png/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.png?1791201997",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.jpg?1791201997",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.jpg?1791201997",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.webp?1791201997",
+    "grid": "https://cards.scryfall.io/grid/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.webp?1791201997",
+    "display": "https://cards.scryfall.io/display/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.webp?1791201997",
+    "art": "https://cards.scryfall.io/art/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.webp?1791201997",
+    "crop": "https://cards.scryfall.io/crop/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.webp?1791201997",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/d/8d239a23-9575-4202-804a-cab7c08a546d.jpg?1791201997"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Hero",
+  "oracle_text": "At the beginning of combat on your turn, if you've cast a noncreature spell this turn, create a 0/3 colorless Wall creature token with defender and reach.\nWhenever you attack, you may pay {R}{G}{W}{U}. When you do, target creature gets +1/+0 until end of turn for each creature you control and can't be blocked this turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8d239a23-9575-4202-804a-cab7c08a546d",
+      "component": "combo_piece",
+      "name": "Invisible Woman",
+      "type_line": "Legendary Creature — Human Hero",
+      "uri": "https://api.scryfall.com/cards/8d239a23-9575-4202-804a-cab7c08a546d"
+    },
+    {
+      "object": "related_card",
+      "id": "a503235b-1213-4da5-967a-e8159dc313d9",
+      "component": "token",
+      "name": "Wall",
+      "type_line": "Token Creature — Wall",
+      "uri": "https://api.scryfall.com/cards/a503235b-1213-4da5-967a-e8159dc313d9"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": true,
+  "reprint": true,
+  "variation": false,
+  "set_id": "dd42508d-39e5-46f3-a5a9-eb7bd0002878",
+  "set": "lmar",
+  "set_name": "Marvel Legends Series Inserts",
+  "set_type": "promo",
+  "set_uri": "https://api.scryfall.com/sets/dd42508d-39e5-46f3-a5a9-eb7bd0002878",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Almar&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lmar?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8d239a23-9575-4202-804a-cab7c08a546d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A085016ee-4429-453f-b7f3-d61065f1214e&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lucio Parrillo",
+  "artist_ids": [
+    "1b452d3f-5c32-46dc-adc3-83eba53052d5"
+  ],
+  "illustration_id": "a2cf7510-5597-4db1-a8d3-0b2c9edb917a",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted",
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 15676,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInvisible%2BWoman",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInvisible%2BWoman",
+    "edhrec": "https://edhrec.com/route/?cc=Invisible+Woman"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DInvisible%2BWoman%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Invisible+Woman&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Invisible+Woman&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

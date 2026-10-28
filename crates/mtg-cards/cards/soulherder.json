@@ -1,0 +1,43 @@
+{
+  "oracle_id": "92019547-f6db-4ea6-8356-d0a90ace5662",
+  "name": "Soulherder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulherder",
+      "oracle_fingerprint": "60937b11d253a680187b84a7a72943c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Exile"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 } } },
+                    { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

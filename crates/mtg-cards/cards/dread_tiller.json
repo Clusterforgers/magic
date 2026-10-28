@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ffcffad7-6c33-4265-82c9-04045fdf371b",
+  "name": "Dread Tiller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Tiller",
+      "oracle_fingerprint": "091c61cac1df63916da81b6ca3204067",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "HasCounter": "-1/-1" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                          ]
+                        },
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

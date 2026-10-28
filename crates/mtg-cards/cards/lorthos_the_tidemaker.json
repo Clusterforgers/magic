@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d9fd4ff3-5ada-40f4-b949-6fe65624a0c4",
+  "name": "Lorthos, the Tidemaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lorthos, the Tidemaker",
+      "oracle_fingerprint": "99d6c8e238afbdadcf77f7a3dd7d74ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": 8 } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{8}",
+                  "paid": [
+                    { "Tap": { "what": { "Target": 0 } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

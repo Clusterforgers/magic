@@ -1,0 +1,53 @@
+{
+  "oracle_id": "73c44cf5-a601-4625-9550-e722fba2ec0b",
+  "name": "Tanazir Quandrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tanazir Quandrix",
+      "oracle_fingerprint": "137733e1ae1e209233468fea2f5ffd8d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                        },
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": { "Stat": { "of": "This", "stat": "Power" } },
+                              "toughness": { "Stat": { "of": "This", "stat": "Toughness" } }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
