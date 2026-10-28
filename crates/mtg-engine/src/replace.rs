@@ -2206,6 +2206,38 @@ impl Pass<'_> {
         })
     }
 
+    /// The choice made as the card enters, kept with its enter event. A Saga with read ahead enters with as many lore
+    /// counters as the chapter chosen (CR 702.155b): the lore counter it enters with (`saga::entering`) becomes that many.
+    fn w2b_remember(
+        &mut self,
+        at: usize,
+        object: ObjectId,
+        controller: PlayerId,
+        chosen: Option<Chosen>,
+    ) {
+        if let Some(Chosen::Chapter(chapter)) = chosen
+            && let Ok(count) = i32::try_from(chapter)
+        {
+            self.w2b_lore_to(object, count);
+        }
+        let entered = self.entered_at(at, object, controller);
+        if let Item::One(Event::Entered { chosen: slot, .. }) = &mut self.slots[entered].item {
+            *slot = chosen;
+        }
+    }
+
+    /// Sets the lore counters the Saga `object` enters with to `count`.
+    fn w2b_lore_to(&mut self, object: ObjectId, count: i32) {
+        for slot in &mut self.slots {
+            if let Item::One(Event::CountersChanged(change)) = &mut slot.item
+                && change.counter == CounterKind::lore()
+                && matches!(change.on, Target::Object(on) if on.id == object)
+            {
+                change.delta = count;
+            }
+        }
+    }
+
     /// Changes how the card enters: tapped, with counters, with a choice made, or with life paid.
     fn enter(
         &mut self,
@@ -2285,12 +2317,7 @@ impl Pass<'_> {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
                 };
-                let entered = self.entered_at(at, object, controller);
-                if let Item::One(Event::Entered { chosen: slot, .. }) =
-                    &mut self.slots[entered].item
-                {
-                    *slot = chosen;
-                }
+                self.w2b_remember(at, object, controller, chosen);
             }
             ReplaceBy::AsCopy {
                 of,
@@ -2635,10 +2662,10 @@ impl Pass<'_> {
         controller: PlayerId,
         kind: EntersChoice,
     ) -> Result<Asked<Option<Chosen>>, EngineError> {
-        let options = self.options_of(kind, controller);
+        let options = self.options_of(kind, controller, source);
         let picked = match options.as_slice() {
             [] => None,
-            [only] => Some(only.clone()),
+            [_] => Some(0),
             _ => match self.answer() {
                 None => {
                     let text = match kind {
@@ -2652,6 +2679,7 @@ impl Pass<'_> {
                         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
                         EntersChoice::Player => "Choose a player.".to_owned(),
                         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
+                        EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
                     };
                     return Ok(Asked::Ask(Decision {
                         player: controller,
@@ -2665,7 +2693,7 @@ impl Pass<'_> {
                 Some((who, Choice::Option(index)))
                     if *who == controller && *index < options.len() =>
                 {
-                    Some(options[*index].clone())
+                    Some(*index)
                 }
                 Some(other) => {
                     return Err(Self::invalid(format!(
@@ -2674,17 +2702,32 @@ impl Pass<'_> {
                 }
             },
         };
-        Ok(Asked::Got(picked.and_then(|option| match option {
-            ChoiceOption::Color(color) => Some(Chosen::Color(color)),
-            ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
-            ChoiceOption::Player(player) => Some(Chosen::Player(player)),
-            ChoiceOption::Secret(_) => None,
-        })))
+        if kind == EntersChoice::Chapter {
+            let chapter = picked.and_then(|index| u32::try_from(index + 1).ok());
+            return Ok(Asked::Got(chapter.map(Chosen::Chapter)));
+        }
+        Ok(Asked::Got(picked.and_then(
+            |index| match options[index].clone() {
+                ChoiceOption::Color(color) => Some(Chosen::Color(color)),
+                ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
+                ChoiceOption::Player(player) => Some(Chosen::Player(player)),
+                ChoiceOption::Secret(_) => None,
+            },
+        )))
     }
 
     /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), or the creature types of the cards in the game.
-    fn options_of(&self, kind: EntersChoice, controller: PlayerId) -> Vec<ChoiceOption> {
+    fn options_of(
+        &self,
+        kind: EntersChoice,
+        controller: PlayerId,
+        source: ObjectId,
+    ) -> Vec<ChoiceOption> {
         match kind {
+            EntersChoice::Chapter => (1..=crate::saga::final_chapter(self.state, source)
+                .unwrap_or(1))
+                .map(|number| ChoiceOption::Label(format!("Chapter {number}")))
+                .collect(),
             EntersChoice::Color => Color::ALL
                 .iter()
                 .copied()

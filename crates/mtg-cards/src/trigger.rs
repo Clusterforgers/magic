@@ -564,6 +564,8 @@ pub enum EntersChoice {
     Player,
     /// An opponent of the permanent's controller.
     Opponent,
+    /// A chapter number of the Saga, which it enters with as many lore counters (read ahead, CR 702.155).
+    Chapter,
 }
 
 /// What happens instead.

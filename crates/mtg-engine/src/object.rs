@@ -60,6 +60,8 @@ pub enum Chosen {
     CreatureType(mtg_core::card::Subtype),
     /// A player (public, like every choice made as a permanent enters).
     Player(PlayerId),
+    /// The chapter a Saga with read ahead entered at (CR 702.155): lower chapters don't trigger.
+    Chapter(u32),
 }
 
 /// Why an object lies face down (CR 708): the rules read that it does, who may look at it and what made it so. A zone
