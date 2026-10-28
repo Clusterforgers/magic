@@ -50,6 +50,7 @@ mod c6_blk_draws;
 mod c6_eg_cards;
 mod c6_gap_batches;
 mod c6_kw_renown_exploit;
+mod c8_eg_cards;
 mod c8_kwq_counters;
 mod card_grants;
 mod card_grants_fuzz;

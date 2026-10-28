@@ -526,6 +526,7 @@ Gorger Wurm
 Gorma, the Gullet
 Grapeshot
 Graveblade Marauder
+Gravecrawler
 Graven Cairns
 Graveshifter
 Gravitational Shift
@@ -830,6 +831,7 @@ Novijen, Heart of Progress
 Nyxborn Behemoth
 Oath of Gideon
 Oath of Jace
+Oathsworn Vampire
 Obscuring Haze
 Octomancer
 Octopus Umbra
@@ -1067,6 +1069,7 @@ Sinuous Vermin
 Siren Lookout
 Sister Repentia
 Skaab Goliath
+Skaab Ruinator
 Skeletal Changeling
 Skeletal Scrying
 Skewer the Critics

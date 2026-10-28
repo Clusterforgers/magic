@@ -41,7 +41,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 29] = [
+const TEMPLATES: [Template; 30] = [
+    super::c8_eg_cast_itself::c8_eg_cast_itself,
     super::c6_blk_draws::c6_blk_draw_replacement,
     entering,
     entering_tapped_if,
@@ -1144,9 +1145,9 @@ pub fn texts(ability: &Ability) -> Vec<String> {
         } => no_life_loss_texts(condition.as_ref()),
         Ability::Rule {
             rule,
-            condition: None,
+            condition,
             from,
-        } => rule_texts(rule, *from),
+        } => rule_texts(rule, condition.as_ref(), *from),
         Ability::Static {
             affected: affected @ Ref::Each(Selector(spells)),
             mods,
@@ -1430,7 +1431,14 @@ fn single_texts(selector: &Selector) -> Vec<String> {
         .collect()
 }
 
-fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
+fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
+    // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
+    if from == ZoneKind::Graveyard {
+        return super::c8_eg_cast_itself::c8_eg_texts(rule, condition);
+    }
+    if condition.is_some() {
+        return Vec::new();
+    }
     match (rule, from) {
         (GameRule::CantBeCountered(Ref::This), ZoneKind::Stack) => {
             vec!["~ can't be countered".to_owned()]

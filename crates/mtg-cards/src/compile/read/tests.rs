@@ -185,6 +185,7 @@ mod c6_blk_draws;
 mod c6_eg_writers;
 mod c6_kw_renown_exploit;
 mod c6_sz_writers;
+mod c8_eg_cast_itself;
 mod c8_kwq_counters;
 mod card_grants;
 mod cast;
