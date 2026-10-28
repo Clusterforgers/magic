@@ -171,6 +171,15 @@ pub struct CheckRulesArgs {
     pub files: Vec<PathBuf>,
 }
 
+/// The API `propose` asks.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+pub enum Provider {
+    /// The Anthropic Messages API; the key comes from `ANTHROPIC_API_KEY`.
+    Anthropic,
+    /// An OpenAI-style chat completions server; a key in `MTG_PROPOSE_API_KEY` is optional.
+    Openai,
+}
+
 /// Options of `propose`.
 #[derive(Debug, Args)]
 pub struct ProposeArgs {
@@ -195,9 +204,25 @@ pub struct ProposeArgs {
     )]
     pub letters: Option<String>,
 
-    /// The model id.
-    #[arg(long, value_name = "ID", default_value = crate::propose::DEFAULT_MODEL)]
-    pub model: String,
+    /// The API to ask: the Anthropic Messages API, or an OpenAI-style chat completions server such as Ollama or llama.cpp.
+    #[arg(long, value_enum, default_value_t = Provider::Anthropic)]
+    pub provider: Provider,
+
+    /// The address of the API (default: the Anthropic API, or `http://localhost:11434/v1` for `--provider openai`).
+    #[arg(long, value_name = "URL")]
+    pub base_url: Option<String>,
+
+    /// The model id (default `claude-sonnet-5-5` for Anthropic; required for `--provider openai`).
+    #[arg(long, value_name = "ID")]
+    pub model: Option<String>,
+
+    /// Do not ask an OpenAI-style server for a JSON object (`response_format`), for servers that reject the field.
+    #[arg(long)]
+    pub no_json_mode: bool,
+
+    /// The most tokens an answer of an OpenAI-style server may have, a reasoning model's thinking included.
+    #[arg(long, value_name = "N", default_value_t = crate::propose::c11i_openai::C11I_DEFAULT_ANSWER_TOKENS)]
+    pub max_answer_tokens: u32,
 
     /// The most requests to send (a repair round is a request).
     #[arg(long, value_name = "N", default_value_t = 100)]
@@ -480,14 +505,38 @@ mod tests {
         let args = propose(&["--cards", "Opt"]).unwrap();
         assert_eq!(
             (
-                args.model.as_str(),
+                args.provider,
+                args.model.as_deref(),
                 args.max_requests,
                 args.max_input_tokens,
                 args.examples
             ),
-            ("claude-sonnet-5-5", 100, 3_000_000, 4)
+            (Provider::Anthropic, None, 100, 3_000_000, 4)
         );
         assert!(!args.resume && !args.dry_run && args.out.is_none());
+        assert!(args.base_url.is_none() && !args.no_json_mode);
+        assert_eq!(args.max_answer_tokens, 16_384);
+    }
+
+    #[test]
+    fn propose_takes_a_local_provider_its_address_and_the_json_mode_switch() {
+        let args = propose(&[
+            "--cards",
+            "Opt",
+            "--provider",
+            "openai",
+            "--base-url",
+            "http://gpu:8080/v1",
+            "--model",
+            "gpt-oss:20b",
+            "--no-json-mode",
+        ])
+        .unwrap();
+        assert_eq!(args.provider, Provider::Openai);
+        assert_eq!(args.base_url.as_deref(), Some("http://gpu:8080/v1"));
+        assert_eq!(args.model.as_deref(), Some("gpt-oss:20b"));
+        assert!(args.no_json_mode);
+        assert!(propose(&["--cards", "Opt", "--provider", "ollama"]).is_err());
     }
 
     #[test]

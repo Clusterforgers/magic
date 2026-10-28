@@ -181,7 +181,7 @@ async fn a_broken_connection_is_retried_as_a_transport_failure() {
     assert_eq!(server.log().len(), 4);
 }
 
-async fn loaded(pool: PgPool, cache_dir: &Path) -> (Database, Cache) {
+pub(crate) async fn loaded(pool: PgPool, cache_dir: &Path) -> (Database, Cache) {
     let cache = fixture_cache(cache_dir);
     let db = Database::from_pool(pool);
     let (progress, _) = progress();
@@ -195,7 +195,7 @@ async fn loaded(pool: PgPool, cache_dir: &Path) -> (Database, Cache) {
     (db, cache)
 }
 
-fn args(extra: &[&str]) -> ProposeArgs {
+pub(crate) fn args(extra: &[&str]) -> ProposeArgs {
     let mut line = vec!["mtg-cli", "propose"];
     line.extend_from_slice(extra);
     match Cli::try_parse_from(line) {

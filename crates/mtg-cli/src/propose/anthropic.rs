@@ -1,99 +1,61 @@
-//! The Anthropic Messages API as a [`ModelClient`]: the key comes from the environment and goes into one header only,
-//! 429 and 5xx answers are retried with a growing wait, and the system prompt is marked for caching.
+//! The Anthropic Messages API as a [`Dialect`]: the key comes from `ANTHROPIC_API_KEY` and goes into one header only,
+//! and the system prompt is marked for caching.
 
-use std::time::Duration;
-
-use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderName, HeaderValue, RETRY_AFTER};
-use reqwest::{Client, StatusCode};
+use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use serde_json::{Value, json};
 use tokio::runtime::Handle;
 
-use super::model::{ModelClient, ModelError, Request, Response, Role, Usage};
+pub use super::c11i_http::{ApiKey, DEFAULT_BASE, status_error};
+use super::c11i_http::{Dialect, HttpClient, HttpConfig};
+use super::model::{ModelError, Request, Response, Role, Usage};
 use crate::progress::Progress;
 
 /// The environment variable that holds the API key; nothing else supplies it.
 pub const KEY_VARIABLE: &str = "ANTHROPIC_API_KEY";
 
-/// The address of the API.
-pub const DEFAULT_BASE: &str = "https://api.anthropic.com";
-
 /// The API version header value.
 const API_VERSION: &str = "2023-06-01";
 
-/// The longest wait between two tries.
-const MAX_WAIT: Duration = Duration::from_secs(60);
+/// How the client reaches the API; the default is the Anthropic API itself.
+pub type AnthropicConfig = HttpConfig;
 
-/// How much of an unparsed error body is kept in a message.
-const BODY_KEPT: usize = 300;
-
-/// The API key. It has no `Display`, its `Debug` hides it and the client scrubs it from every message it returns.
-#[derive(Clone, PartialEq, Eq)]
-pub struct ApiKey(String);
+/// The HTTP client of the Messages API.
+pub type AnthropicClient = HttpClient<Anthropic>;
 
 impl ApiKey {
     /// The key from `ANTHROPIC_API_KEY` as `lookup` sees the environment; empty counts as missing.
     pub fn from_env(lookup: impl Fn(&str) -> Option<String>) -> Result<Self, ModelError> {
-        lookup(KEY_VARIABLE)
-            .map(|value| value.trim().to_owned())
-            .filter(|value| !value.is_empty())
-            .map(ApiKey)
-            .ok_or(ModelError::MissingKey)
-    }
-
-    fn header(&self) -> Result<HeaderValue, ModelError> {
-        let mut value = HeaderValue::from_str(&self.0)
-            .map_err(|_| ModelError::Client("the API key is not a valid header value".into()))?;
-        value.set_sensitive(true);
-        Ok(value)
-    }
-
-    /// `text` with every occurrence of the key replaced.
-    fn scrub(&self, text: &str) -> String {
-        text.replace(&self.0, "[redacted]")
+        ApiKey::c11i_from_variable(lookup, KEY_VARIABLE).ok_or(ModelError::MissingKey)
     }
 }
 
-impl std::fmt::Debug for ApiKey {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("ApiKey([redacted])")
+/// The Messages API.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct Anthropic;
+
+impl Dialect for Anthropic {
+    fn path(&self) -> &'static str {
+        "/v1/messages"
     }
-}
 
-/// How the client reaches the API.
-#[derive(Debug, Clone)]
-pub struct AnthropicConfig {
-    /// The address without a path; tests point it at a local server.
-    pub base_url: String,
-    /// Tries per request, the first included.
-    pub attempts: u32,
-    /// The wait before the second try; it doubles for each further one.
-    pub backoff: Duration,
-    /// How long the API may take to answer.
-    pub timeout: Duration,
-}
-
-impl Default for AnthropicConfig {
-    fn default() -> Self {
-        Self {
-            base_url: DEFAULT_BASE.to_owned(),
-            attempts: 4,
-            backoff: Duration::from_secs(2),
-            timeout: Duration::from_secs(300),
-        }
+    fn headers(&self, key: Option<&ApiKey>) -> Result<HeaderMap, ModelError> {
+        let key = key.ok_or(ModelError::MissingKey)?;
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            HeaderName::from_static("anthropic-version"),
+            HeaderValue::from_static(API_VERSION),
+        );
+        headers.insert(HeaderName::from_static("x-api-key"), key.c11i_header("")?);
+        Ok(headers)
     }
-}
 
-/// The HTTP client of the Messages API. [`ModelClient::complete`] blocks, so call it from a blocking thread
-/// (`tokio::task::spawn_blocking`), not from async code.
-#[derive(Debug)]
-pub struct AnthropicClient {
-    client: Client,
-    handle: Handle,
-    endpoint: String,
-    key: ApiKey,
-    attempts: u32,
-    backoff: Duration,
-    progress: Progress,
+    fn body(&self, request: &Request) -> Value {
+        request_body(request)
+    }
+
+    fn parse(&self, _request: &Request, body: &str) -> Result<Response, ModelError> {
+        parse_response(body)
+    }
 }
 
 impl AnthropicClient {
@@ -104,95 +66,7 @@ impl AnthropicClient {
         handle: Handle,
         progress: Progress,
     ) -> Result<Self, ModelError> {
-        let mut headers = HeaderMap::new();
-        headers.insert(
-            HeaderName::from_static("anthropic-version"),
-            HeaderValue::from_static(API_VERSION),
-        );
-        headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
-        headers.insert(HeaderName::from_static("x-api-key"), key.header()?);
-        let client = Client::builder()
-            .user_agent(format!("mtg-cli/{}", env!("CARGO_PKG_VERSION")))
-            .default_headers(headers)
-            .timeout(config.timeout)
-            .connect_timeout(Duration::from_secs(15))
-            .pool_max_idle_per_host(0)
-            .build()
-            .map_err(|error| ModelError::Client(error.to_string()))?;
-        Ok(Self {
-            client,
-            handle,
-            endpoint: format!("{}/v1/messages", config.base_url.trim_end_matches('/')),
-            key,
-            attempts: config.attempts.max(1),
-            backoff: config.backoff,
-            progress,
-        })
-    }
-
-    async fn send_once(&self, request: &Request) -> Result<Response, ModelError> {
-        let body = request_body(request).to_string();
-        let response = self
-            .client
-            .post(&self.endpoint)
-            .body(body)
-            .send()
-            .await
-            .map_err(|error| ModelError::Transport(error.without_url().to_string()))?;
-        let status = response.status();
-        let retry_after = retry_after(response.headers());
-        let text = response
-            .text()
-            .await
-            .map_err(|error| ModelError::Transport(error.without_url().to_string()))?;
-        if status.is_success() {
-            parse_response(&text)
-        } else {
-            Err(status_error(status, &text, retry_after))
-        }
-    }
-
-    async fn send_with_retries(&self, request: &Request) -> Result<Response, ModelError> {
-        let mut attempt = 1;
-        loop {
-            match self.send_once(request).await {
-                Err(error) if attempt < self.attempts && error.is_retryable() => {
-                    let wait = error
-                        .retry_after()
-                        .unwrap_or_else(|| self.backoff.saturating_mul(1 << (attempt - 1).min(10)))
-                        .min(MAX_WAIT);
-                    self.progress.line(format_args!(
-                        "retrying in {:.1} s after attempt {attempt} of {}: {}",
-                        wait.as_secs_f64(),
-                        self.attempts,
-                        self.key.scrub(&error.to_string())
-                    ));
-                    tokio::time::sleep(wait).await;
-                    attempt += 1;
-                }
-                other => return other,
-            }
-        }
-    }
-}
-
-impl ModelClient for AnthropicClient {
-    fn complete(&self, request: &Request) -> Result<Response, ModelError> {
-        self.handle
-            .block_on(self.send_with_retries(request))
-            .map_err(|error| match error {
-                ModelError::Status {
-                    status,
-                    message,
-                    retry_after,
-                } => ModelError::Status {
-                    status,
-                    message: self.key.scrub(&message),
-                    retry_after,
-                },
-                ModelError::Transport(message) => ModelError::Transport(self.key.scrub(&message)),
-                other => other,
-            })
+        HttpClient::c11i_build(Anthropic, Some(key), config, handle, progress)
     }
 }
 
@@ -258,39 +132,20 @@ pub fn parse_response(body: &str) -> Result<Response, ModelError> {
     })
 }
 
-/// The error of a failed request: the API's own message when the body has one, else the start of the body.
-pub fn status_error(status: StatusCode, body: &str, retry_after: Option<Duration>) -> ModelError {
-    let message = serde_json::from_str::<Value>(body)
-        .ok()
-        .and_then(|value| {
-            let error = value.get("error")?;
-            let kind = error.get("type").and_then(Value::as_str).unwrap_or("error");
-            let message = error.get("message").and_then(Value::as_str)?;
-            Some(format!("{kind}: {message}"))
-        })
-        .unwrap_or_else(|| body.chars().take(BODY_KEPT).collect());
-    ModelError::Status {
-        status: status.as_u16(),
-        message,
-        retry_after,
-    }
-}
-
-fn retry_after(headers: &HeaderMap) -> Option<Duration> {
-    headers
-        .get(RETRY_AFTER)
-        .and_then(|value| value.to_str().ok())
-        .and_then(|value| value.trim().parse::<u64>().ok())
-        .map(Duration::from_secs)
-}
-
 #[cfg(test)]
 mod tests {
     //! Goal: the request body has the shape of the Messages API with a cached system block, an answer is read into its text
     //! and token counts, failures keep the API's words, and the key is read from the environment only and never shown.
+    use std::time::Duration;
+
+    use reqwest::StatusCode;
     use rstest::rstest;
 
     use super::*;
+
+    fn key(text: &str) -> ApiKey {
+        ApiKey::c11i_from_variable(|_| Some(text.to_owned()), "ANY").unwrap()
+    }
     use crate::propose::model::Message;
 
     fn request() -> Request {
@@ -390,7 +245,7 @@ mod tests {
     #[test]
     fn the_key_comes_from_the_environment_variable_only() {
         let key = ApiKey::from_env(|name| (name == KEY_VARIABLE).then(|| " sk-test \n".to_owned()));
-        assert_eq!(key.unwrap(), ApiKey("sk-test".into()));
+        assert_eq!(key.unwrap(), self::key("sk-test"));
         assert!(matches!(
             ApiKey::from_env(|_| None),
             Err(ModelError::MissingKey)
@@ -407,7 +262,7 @@ mod tests {
 
     #[test]
     fn the_key_is_hidden_from_debug_output_and_scrubbed_from_messages() {
-        let key = ApiKey("sk-ant-SECRET".into());
+        let key = self::key("sk-ant-SECRET");
         assert!(!format!("{key:?}").contains("SECRET"));
         assert_eq!(key.scrub("bad key sk-ant-SECRET."), "bad key [redacted].");
     }
