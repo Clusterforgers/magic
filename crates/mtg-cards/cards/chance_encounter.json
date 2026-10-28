@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8bd33b5c-0777-41ef-9e17-fb30ce69ec25",
+  "name": "Chance Encounter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chance Encounter",
+      "oracle_fingerprint": "73ee92620d8a0f2b88cf7ea900b95b9c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "CoinFlipWon": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "luck" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "luck" } } },
+                "op": "Ge",
+                "right": 10
+              }
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3a92b235-196b-4f46-9d20-06f4d3653d36",
+  "name": "Aberrant Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aberrant Return",
+      "oracle_fingerprint": "5501213f95aefc55a5500a7ddeee6b1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                "bounds": { "min": 1, "max": 3 }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You", "counters": [["-1/-1", 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

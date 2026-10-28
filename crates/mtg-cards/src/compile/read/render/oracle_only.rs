@@ -244,6 +244,12 @@ mod w4c_may_pay;
 mod w4d_each;
 mod w4d_later;
 mod w4d_parts;
+mod w4e_counters;
+mod w4e_flash;
+mod w4e_if;
+mod w4e_modes;
+mod w4e_moves;
+mod w4e_where_x;
 mod w4f_counts;
 mod w4f_pronouns;
 mod w4f_sentences;
@@ -330,6 +336,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c11g(ability, texts);
     add_c11f(ability, texts);
     add_w4c(ability, texts);
+    add_w4e(ability, texts);
     add_w4a(ability, texts);
     add_w4g(ability, texts);
     add_w4f(texts);
@@ -378,6 +385,81 @@ fn add_w4g(ability: &Ability, texts: &mut Vec<String>) {
 /// Adds the wordings of the conditional steps (r3w1): "If X, Y.", "Y if X.", "Otherwise, Z.", "If you can't, Z.".
 fn add_w4a(ability: &Ability, texts: &mut Vec<String>) {
     w4a_if::add(ability, texts);
+}
+
+/// Adds the wordings of the zone moves, counters and modes (r3w5) and of their intervening "if".
+fn add_w4e(ability: &Ability, texts: &mut Vec<String>) {
+    texts.extend(w4e_bodies(ability));
+    texts.extend(w4e_if::wordings(ability, |bare| {
+        let mut found = super::variants(bare);
+        found.extend(w4e_bodies(bare));
+        found
+    }));
+}
+
+/// The wordings of the steps, the counts of counters and the modes these writers word.
+fn w4e_bodies(ability: &Ability) -> Vec<String> {
+    let mut found = w4e_steps(ability);
+    found.extend(w4e_where_x::wordings(ability, |replaced| {
+        let mut found = super::variants(replaced);
+        found.extend(w4e_steps(replaced));
+        found
+    }));
+    found.extend(w4e_modes::wordings(ability));
+    found.extend(w4e_flash::wordings(ability));
+    found
+}
+
+/// The wordings of the counter and move steps, each sentence put in the place of the steps.
+fn w4e_steps(ability: &Ability) -> Vec<String> {
+    let (Ability::Spell { targets, effects }
+    | Ability::Activated {
+        targets, effects, ..
+    }
+    | Ability::Triggered {
+        targets, effects, ..
+    }) = ability
+    else {
+        return Vec::new();
+    };
+    let mut sentences = w4e_counters::sentences(targets, effects);
+    sentences.extend(w4e_moves::sentences(targets, effects));
+    let mut found: Vec<String> = sentences
+        .iter()
+        .flat_map(|sentence| w4e_with_effects(ability, sentence))
+        .collect();
+    found.extend(w4e_counters::subtype_choice(ability));
+    found.extend(w4e_moves::search_discard(ability));
+    found
+}
+
+/// The wordings of the ability with `sentence` for its effects, also when a restriction follows them ("Activate only as
+/// a sorcery.").
+fn w4e_with_effects(ability: &Ability, sentence: &str) -> Vec<String> {
+    let found = standin::with_effects(ability, sentence);
+    if !found.is_empty() {
+        return found;
+    }
+    let Ability::Activated { .. } = ability else {
+        return found;
+    };
+    let mut stand = ability.clone();
+    if let Ability::Activated {
+        targets, effects, ..
+    } = &mut stand
+    {
+        targets.clear();
+        *effects = vec![crate::effect::Effect::Draw {
+            who: crate::refs::Ref::You,
+            count: crate::value::Amount::one(),
+        }];
+    }
+    let said = format!("{}.", super::capitalize(sentence));
+    super::variants(&stand)
+        .iter()
+        .filter(|text| text.contains(": Draw a card. "))
+        .map(|text| text.replacen(": Draw a card. ", &format!(": {said} "), 1))
+        .collect()
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.

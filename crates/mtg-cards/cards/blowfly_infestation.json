@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3859873f-2a0f-463b-8ed9-7f2ab5ed393a",
+  "name": "Blowfly Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blowfly Infestation",
+      "oracle_fingerprint": "8aacb325f1f991aa8d8441827f32d371",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Matches": { "subject": "Triggering", "selector": [{ "HasCounter": "-1/-1" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3268251a-8292-44f9-9267-c961b182f739",
+  "name": "Y'shtola, Night's Blessed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Y'shtola, Night's Blessed",
+      "oracle_fingerprint": "766fbe06aa27e28fd04c71f7bc35dc4a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Not": { "Type": "Creature" } },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

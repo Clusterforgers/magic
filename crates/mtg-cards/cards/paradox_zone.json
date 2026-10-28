@@ -1,0 +1,49 @@
+{
+  "oracle_id": "2fff8441-1f5a-423b-ab98-93016266f5c5",
+  "name": "Paradox Zone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paradox Zone",
+      "oracle_fingerprint": "623adca3b79013f1e7ae9630f2542e40",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "growth" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "MultiplyCounters": { "on": "This", "counter": { "Other": "growth" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "growth" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

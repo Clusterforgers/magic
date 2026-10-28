@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "dddad2c2-bd19-42bd-aad6-bbf23ccef269",
+  "oracle_id": "3e2034ee-adc5-4a24-9605-c9722bf813c1",
+  "multiverse_ids": [],
+  "resource_id": "80E324231D9C3F4BA433A3CCBB46094E0241CB95CC0A1F28E1E09F18D9EBFC1E",
+  "mtgo_id": 140041,
+  "tcgplayer_id": 631161,
+  "cardmarket_id": 824513,
+  "name": "SOLDIER Military Program",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/dddad2c2-bd19-42bd-aad6-bbf23ccef269",
+  "scryfall_uri": "https://scryfall.com/card/fic/25/soldier-military-program?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.jpg?1783906364",
+    "normal": "https://cards.scryfall.io/normal/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.jpg?1783906364",
+    "large": "https://cards.scryfall.io/large/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.jpg?1783906364",
+    "png": "https://cards.scryfall.io/png/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.png?1783906364",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.jpg?1783906364",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.jpg?1783906364",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.webp?1783906364",
+    "grid": "https://cards.scryfall.io/grid/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.webp?1783906364",
+    "display": "https://cards.scryfall.io/display/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.webp?1783906364",
+    "art": "https://cards.scryfall.io/art/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.webp?1783906364",
+    "crop": "https://cards.scryfall.io/crop/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.webp?1783906364",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/d/dddad2c2-bd19-42bd-aad6-bbf23ccef269.jpg?1783906364"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of combat on your turn, choose one. If you control a commander, you may choose both instead.\n• Create a 1/1 white Soldier creature token.\n• Put a +1/+1 counter on each of up to two Soldiers you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "fda5e860-2d9c-4c7a-981a-86c58e59cd14",
+      "component": "combo_piece",
+      "name": "SOLDIER Military Program",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/fda5e860-2d9c-4c7a-981a-86c58e59cd14"
+    },
+    {
+      "object": "related_card",
+      "id": "c459f2ec-2aa3-44f6-999f-b1467dd4e27c",
+      "component": "token",
+      "name": "Soldier",
+      "type_line": "Token Creature — Soldier",
+      "uri": "https://api.scryfall.com/cards/c459f2ec-2aa3-44f6-999f-b1467dd4e27c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dddad2c2-bd19-42bd-aad6-bbf23ccef269/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3e2034ee-adc5-4a24-9605-c9722bf813c1&unique=prints",
+  "collector_number": "25",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yoshio Sugiura",
+  "artist_ids": [
+    "e8102751-d54f-4429-bd8c-15f3faa6feb1"
+  ],
+  "illustration_id": "e5cffb93-d5d5-4fe5-90ed-8526a48b9660",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond",
+    "ffvii"
+  ],
+  "edhrec_rank": 7008,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": "1.64"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSOLDIER%2BMilitary%2BProgram",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSOLDIER%2BMilitary%2BProgram",
+    "edhrec": "https://edhrec.com/route/?cc=SOLDIER+Military+Program"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631161%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824513&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140041?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

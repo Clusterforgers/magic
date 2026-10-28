@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "f990cd78-2165-446f-a116-ae55d7a0f00d",
+  "oracle_id": "b8501a37-23e4-4873-80cb-d1c0f6c95155",
+  "multiverse_ids": [
+    484716
+  ],
+  "mtgo_id": 80741,
+  "tcgplayer_id": 212035,
+  "cardmarket_id": 450933,
+  "name": "Kalamax, the Stormsire",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/f990cd78-2165-446f-a116-ae55d7a0f00d",
+  "scryfall_uri": "https://scryfall.com/card/c20/9/kalamax-the-stormsire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:27:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.jpg?1783931231",
+    "normal": "https://cards.scryfall.io/normal/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.jpg?1783931231",
+    "large": "https://cards.scryfall.io/large/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.jpg?1783931231",
+    "png": "https://cards.scryfall.io/png/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.png?1783931231",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.jpg?1783931231",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.jpg?1783931231",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.webp?1783931231",
+    "grid": "https://cards.scryfall.io/grid/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.webp?1783931231",
+    "display": "https://cards.scryfall.io/display/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.webp?1783931231",
+    "art": "https://cards.scryfall.io/art/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.webp?1783931231",
+    "crop": "https://cards.scryfall.io/crop/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.webp?1783931231",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/9/f990cd78-2165-446f-a116-ae55d7a0f00d.jpg?1783931231"
+  },
+  "mana_cost": "{1}{G}{U}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Elemental Dinosaur",
+  "oracle_text": "Whenever you cast your first instant spell each turn, if Kalamax is tapped, copy that spell. You may choose new targets for the copy.\nWhenever you copy an instant spell, put a +1/+1 counter on Kalamax.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f990cd78-2165-446f-a116-ae55d7a0f00d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab8501a37-23e4-4873-80cb-d1c0f6c95155&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "Its mood changes with the weather, and vice versa.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nicholas Gregory",
+  "artist_ids": [
+    "a1bba8ff-63b4-4786-b1c4-f1bfe5d3ab1c"
+  ],
+  "illustration_id": "560608af-f383-438e-95fa-0664e3004f72",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9875,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/581414695",
+    "previewed_at": "2020-04-02"
+  },
+  "prices": {
+    "usd": "0.68",
+    "usd_foil": "0.55",
+    "usd_etched": null,
+    "eur": "0.50",
+    "eur_foil": "0.59",
+    "tix": "0.59"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=484716&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKalamax%252C%2Bthe%2BStormsire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKalamax%252C%2Bthe%2BStormsire",
+    "edhrec": "https://edhrec.com/route/?cc=Kalamax%2C+the+Stormsire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212035%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=450933&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80741?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

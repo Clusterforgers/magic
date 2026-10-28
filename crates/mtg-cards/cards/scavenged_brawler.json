@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d895863e-a3c5-4e1f-bd28-e47a8717bbd0",
+  "name": "Scavenged Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scavenged Brawler",
+      "oracle_fingerprint": "216ec2bb0de86afd6651999bc8eca18b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 4 } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "vigilance" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "trample" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

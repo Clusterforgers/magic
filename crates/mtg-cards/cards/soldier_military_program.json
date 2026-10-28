@@ -1,0 +1,65 @@
+{
+  "oracle_id": "3e2034ee-adc5-4a24-9605-c9722bf813c1",
+  "name": "SOLDIER Military Program",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "SOLDIER Military Program",
+      "oracle_fingerprint": "bd911abb37b87ea2bcede359ce953d97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Soldier",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Soldier"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }]
+                            },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "soldiers"
+                          }
+                        },
+                        { "PutCounters": { "on": { "Bound": "soldiers" }, "counter": "+1/+1" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

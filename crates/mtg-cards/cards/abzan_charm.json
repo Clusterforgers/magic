@@ -1,0 +1,57 @@
+{
+  "oracle_id": "4137a22c-f793-4e27-a9b2-72740a6e2121",
+  "name": "Abzan Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Charm",
+      "oracle_fingerprint": "69571c3b88fcf572a0971aacf6174ad4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    { "effects": [{ "Draw": { "count": 2 } }, { "LoseLife": { "amount": 2 } }] },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }] },
+                          "bounds": { "min": 1, "max": 2 },
+                          "divide": 2
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Target": 0 },
+                            "counter": "+1/+1",
+                            "count": "Divided"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

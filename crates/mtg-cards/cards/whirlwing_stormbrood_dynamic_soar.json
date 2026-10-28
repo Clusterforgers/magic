@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4fbfc814-df10-4d61-ada9-c96cc8ee8d8c",
+  "name": "Whirlwing Stormbrood // Dynamic Soar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlwing Stormbrood",
+      "oracle_fingerprint": "98678c640d92e6d36d1fc7a5b7164d02",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["Spell", { "AnyOf": [{ "Type": "Sorcery" }, { "Subtype": "Dragon" }] }],
+                "flash": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dynamic Soar",
+      "oracle_fingerprint": "adef019b5c3d80ec1c9225ce557a0de9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
