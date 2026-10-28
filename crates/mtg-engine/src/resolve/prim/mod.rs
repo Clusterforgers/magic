@@ -28,6 +28,7 @@ mod crewed;
 mod join_attack;
 mod retarget;
 mod unattach;
+mod w2d_villainous;
 pub(crate) use continuous::lower;
 mod c6_kw_exploit;
 mod c6_kw_renown;
@@ -193,6 +194,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::FlipCoin { .. } => flip_coin::run(cx, effect),
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
+        Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
     }
 }
 
@@ -233,7 +235,8 @@ mod tests {
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}},
-        {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}}
+        {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
+        {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -247,7 +250,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 81, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 82, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -363,5 +366,6 @@ mod tests {
         "Effect.FlipCoin",
         "Effect.Vote",
         "Effect.Planechase",
+        "Effect.VillainousChoice",
     ];
 }

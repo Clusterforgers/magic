@@ -131,7 +131,7 @@ pub(super) fn body(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// Steps joined by "and" or in a list.
-fn steps(r: &mut Reader<'_>, condition: &Condition) -> Option<Vec<Effect>> {
+pub(super) fn steps(r: &mut Reader<'_>, condition: &Condition) -> Option<Vec<Effect>> {
     let mut found = step(r, condition)?;
     while let Some(more) = r.attempt(|r| {
         let listed = r.punct(',');

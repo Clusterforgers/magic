@@ -167,6 +167,9 @@ fn held(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("opponents you have") {
         return Some(Amount::Players(Ref::Opponents));
     }
+    if let Some(tally) = super::vote::w2d_tally(r, true) {
+        return Some(tally);
+    }
     if r.attempt(|r| {
         r.need("times")?;
         r.source().then_some(())?;
@@ -334,6 +337,9 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         }
         Amount::Count(of) => Some(format!("the number of {}", counted_text(of)?)),
         Amount::Players(Ref::Opponents) => Some("the number of opponents you have".to_owned()),
+        Amount::Players(Ref::Bound(_)) => {
+            super::vote::w2d_tally_text(amount, true).map(|votes| format!("the number of {votes}"))
+        }
         Amount::Party(Ref::You) => Some("the number of creatures in your party".to_owned()),
         Amount::Mutations(Ref::This) => {
             Some("the number of times this creature has mutated".to_owned())

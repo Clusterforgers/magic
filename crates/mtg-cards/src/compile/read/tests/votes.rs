@@ -71,3 +71,41 @@ fn a_vote_the_table_words_differently_stays_unread(#[case] text: &str) {
         "{text}"
     );
 }
+
+#[rstest]
+#[case::counters_and_life_for_each_vote(
+    "When this creature enters, starting with you, each player votes for sprout or harvest. Put two +1/+1 counters on this creature for each sprout vote. You gain 3 life for each harvest vote.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Vote":{"options":{"Named":["sprout","harvest"]}}},{"PutCounters":{"on":"This","counter":"+1/+1","count":{"Times":{"by":2,"of":{"Players":{"Bound":"sprout"}}}}}},{"GainLife":{"amount":{"Times":{"by":3,"of":{"Players":{"Bound":"harvest"}}}}}}]}}"#
+)]
+#[case::life_equal_to_the_votes(
+    "Each player secretly votes for truth or consequences, then those votes are revealed. You gain life equal to the number of truth votes.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["truth","consequences"]},"secret":true}},{"GainLife":{"amount":{"Players":{"Bound":"truth"}}}}]}}"#
+)]
+#[case::a_card_for_each_vote(
+    "Starting with you, each player votes for feather or quill. Draw a card for each quill vote.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["feather","quill"]}}},{"Draw":{"count":{"Players":{"Bound":"quill"}}}}]}}"#
+)]
+fn w2d_a_tally_of_votes_reads_as_an_amount(
+    #[case] text: &str,
+    #[case] kind: ClauseKind,
+    #[case] json: &str,
+) {
+    reads_as(text, kind, false, json);
+}
+
+#[rstest]
+#[case::a_name_the_vote_does_not_have(
+    "Starting with you, each player votes for feather or quill. Draw a card for each ink vote."
+)]
+#[case::votes_without_a_name(
+    "Starting with you, each player votes for feather or quill. Draw a card for each vote."
+)]
+#[case::the_voter_as_a_name(
+    "Starting with you, each player votes for feather or quill. Draw a card for each voter vote."
+)]
+fn w2d_a_tally_of_another_name_is_refused(#[case] text: &str) {
+    assert!(clause(text, ClauseKind::Spell, false).is_none(), "{text}");
+}

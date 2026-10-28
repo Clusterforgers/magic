@@ -39,6 +39,7 @@ pub fn named(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.punct(',').then_some(())?;
         r.need("then those votes are revealed")?;
     }
+    r.w2d_votes.extend([first.clone(), second.clone()]);
     let mut effects = vec![Effect::Vote {
         options: VoteFor::Named(vec![first.clone(), second.clone()]),
         secret,
@@ -98,4 +99,24 @@ fn each_vote(r: &mut Reader<'_>, first: &str, second: &str) -> Option<Vec<Effect
         });
     }
     Some(passes)
+}
+
+/// The votes for one name as an amount: "sprout vote" after "for each" (`plural` false) or "truth votes" after "the
+/// number of" (`plural` true) is the size of the name the vote bound.
+pub fn w2d_tally(r: &mut Reader<'_>, plural: bool) -> Option<Amount> {
+    r.attempt(|r| {
+        let name = choice(r)?;
+        r.w2d_votes.contains(&name).then_some(())?;
+        r.need(if plural { "votes" } else { "vote" })?;
+        Some(Amount::Players(Ref::Bound(name)))
+    })
+}
+
+/// The words of a tally after "for each" (`plural` false) or "the number of" (`plural` true).
+pub fn w2d_tally_text(amount: &Amount, plural: bool) -> Option<String> {
+    let Amount::Players(Ref::Bound(name)) = amount else {
+        return None;
+    };
+    let noun = if plural { "votes" } else { "vote" };
+    (name != VOTER && name.chars().all(char::is_alphabetic)).then(|| format!("{name} {noun}"))
 }
