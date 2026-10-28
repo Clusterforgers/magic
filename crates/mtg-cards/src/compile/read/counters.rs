@@ -5,12 +5,12 @@
 use super::amounts::{self, count_word, number_word};
 use super::defining;
 use super::effects::{attached, target_object};
-use super::selectors::each;
+use super::selectors::{each, target};
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::Ability;
 use crate::effect::Effect;
-use crate::refs::Ref;
+use crate::refs::{Ref, Targetable};
 use crate::value::{Amount, Cmp, Condition, CounterKind};
 
 /// The counters whose effect the rules of the game give and the engine does not play (CR 122.1: exalted and decayed
@@ -196,6 +196,15 @@ fn place(r: &mut Reader<'_>) -> Option<Ref> {
     }
 }
 
+/// "each of up to two target creatures", "each of two target creatures": several target objects that each get the
+/// counters.
+fn w2b_each_of_targets(r: &mut Reader<'_>) -> Option<Ref> {
+    r.need("each of")?;
+    let what = target(r)?;
+    let spec = r.targets.first()?;
+    (matches!(spec.what, Targetable::Object(_)) && !spec.bounds.is_one()).then_some(what)
+}
+
 /// "Put a +1/+1 counter on ~.", "Put two -1/-1 counters on target creature.", "Put a +1/+1 counter
 /// on each creature you control."
 pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
@@ -216,7 +225,7 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("on")?;
     let on = match each(r) {
         Some(objects) => objects,
-        None => place(r)?,
+        None => r.attempt(w2b_each_of_targets).or_else(|| place(r))?,
     };
     // The card the counters went on is what a later "it" means ("Then if there are five or more counters on it").
     if on == Ref::This {

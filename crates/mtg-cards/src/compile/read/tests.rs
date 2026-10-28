@@ -374,6 +374,8 @@ mod twin_writers;
 mod untap_rules;
 mod vocabulary;
 mod votes;
+mod w2b_each_of;
+mod w2b_you_and;
 mod where_x;
 mod written_effects;
 mod x_after;
