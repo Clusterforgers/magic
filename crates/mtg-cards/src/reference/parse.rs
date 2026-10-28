@@ -50,6 +50,8 @@ pub(super) struct Field {
     pub optional: bool,
     /// The value a left-out field has when it is not the type's own default.
     pub default: Option<String>,
+    /// The field is an `Option`, so `null` stands for none.
+    pub nullable: bool,
 }
 
 /// The public structs and enums of a source file, in order.
@@ -367,6 +369,7 @@ impl Parser {
                 ty,
                 optional: option || attrs.flag("default"),
                 default,
+                nullable: option,
             });
         }
         self.eat_punct('}');

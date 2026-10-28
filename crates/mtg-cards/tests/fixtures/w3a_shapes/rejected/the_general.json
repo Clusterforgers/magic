@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"ExileSelf":{}}],"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},{"Untap":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}]}}]}]}

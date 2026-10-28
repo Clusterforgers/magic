@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}},{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":3,"toughness":3}}],"condition":{"Not":{"Any":[{"Matches":{"subject":"Opponents","selector":[{"Type":"Creature"}]}}]}}} }]}]}

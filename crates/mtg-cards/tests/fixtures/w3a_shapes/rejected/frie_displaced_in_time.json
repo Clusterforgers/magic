@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"HasKeyword":"Warped"}],"to":"Exile"}},"effects":[{"PutCounters":{"on":"Triggering","counter":{"Other":"time"},"count":3}},{"Continuous":{"affected":"Triggering","mods":[{"AddKeyword":"Suspend"}],"duration":"Forever"}}]}}]}]}

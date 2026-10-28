@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantAttack"],"condition":{"Not":{"Matches":{"subject":"Defending","selector":[{"Type":"Land"},{"Subtype":"Island"}]}}}}}]}]}
