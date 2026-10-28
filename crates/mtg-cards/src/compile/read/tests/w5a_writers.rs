@@ -105,3 +105,39 @@ fn w5a_the_oracle_wording_reads_back(#[case] json: &str, #[case] clause: &str) {
 fn w5a_a_changed_head_does_not_read_back(#[case] json: &str, #[case] clause: &str) {
     assert!(!w5a_written(json, clause), "{json}");
 }
+
+const W5A_MAP: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"Opponents"}],"to":"Battlefield"}},"if":{"Compare":{"left":{"Count":[{"Type":"Land"},{"ControlledBy":{"ControllerOf":"Triggering"}}]},"op":"Gt","right":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]}}},"effects":[{"May":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Land"},{"In":"Hand"},{"OwnedBy":"You"}]},"as":"land"}},{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{}}}}]}}]}}"#;
+const W5A_EOWYN: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"Subtype":"Human"},"Other",{"ControlledBy":"You"},"EnteredThisTurn"]},"op":"Ge","right":1}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Human Knight","colors":["Red"],"types":["Creature"],"subtypes":["Human","Knight"],"power":2,"toughness":2,"abilities":[{"Keyword":"Trample"},{"Keyword":"Haste"}]}},"count":2}},{"If":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Human"},{"ControlledBy":"You"}]},"op":"Ge","right":6}},"then":[{"Draw":{}}]}}]}}"#;
+
+const W5A_MAP_TEXT: &str = "Whenever a land an opponent controls enters, if that player controls more lands than you, you may put a land card from your hand onto the battlefield.";
+const W5A_EOWYN_TEXT: &str = "At the beginning of combat on your turn, if another Human entered the battlefield under your control this turn, create two 2/2 red Human Knight creature tokens with trample and haste. Then if you control six or more Humans, draw a card.";
+
+#[rstest]
+#[case::map(W5A_MAP, W5A_MAP_TEXT)]
+#[case::map_fewer(
+    &W5A_MAP.replace(r#""op":"Gt""#, r#""op":"Lt""#),
+    &W5A_MAP_TEXT.replace("more", "fewer")
+)]
+#[case::eowyn(W5A_EOWYN, W5A_EOWYN_TEXT)]
+#[case::eowyn_any_human(
+    &W5A_EOWYN.replace(r#"{"Subtype":"Human"},"Other","#, r#"{"Subtype":"Human"},"#),
+    &W5A_EOWYN_TEXT.replace("if another Human", "if a Human")
+)]
+fn w5a_the_oracle_condition_reads_back(#[case] json: &str, #[case] clause: &str) {
+    assert!(
+        w5a_written(json, clause),
+        "{clause}\n{:#?}",
+        written_variants(&ability(json))
+    );
+}
+
+#[rstest]
+#[case::map_at_least(&W5A_MAP.replace(r#""op":"Gt""#, r#""op":"Ge""#), W5A_MAP_TEXT)]
+#[case::map_yours(&W5A_MAP.replace(r#"{"ControllerOf":"Triggering"}"#, r#""Opponents""#), W5A_MAP_TEXT)]
+#[case::map_creatures(&W5A_MAP.replace(r#"[{"Type":"Land"},{"ControlledBy":"You"}]"#, r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#), W5A_MAP_TEXT)]
+#[case::eowyn_elf(&W5A_EOWYN.replace(r#"[{"Subtype":"Human"},"Other","#, r#"[{"Subtype":"Elf"},"Other","#), W5A_EOWYN_TEXT)]
+#[case::eowyn_two(&W5A_EOWYN.replace(r#""EnteredThisTurn"]},"op":"Ge","right":1"#, r#""EnteredThisTurn"]},"op":"Ge","right":2"#), W5A_EOWYN_TEXT)]
+#[case::eowyn_opponents(&W5A_EOWYN.replace(r#""Other",{"ControlledBy":"You"}"#, r#""Other",{"ControlledBy":"Opponents"}"#), W5A_EOWYN_TEXT)]
+fn w5a_a_changed_condition_does_not_read_back(#[case] json: &str, #[case] clause: &str) {
+    assert!(!w5a_written(json, clause), "{json}");
+}

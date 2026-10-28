@@ -257,6 +257,7 @@ mod w4f_tokens;
 mod w4g_amounts;
 mod w4g_texts;
 mod w5a_combat;
+mod w5a_conditions;
 mod w5a_heads;
 mod wheres;
 mod while_control;
@@ -352,6 +353,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 fn add_w5a(ability: &Ability, texts: &mut Vec<String>) {
     w5a_heads::add(ability, texts);
     w5a_combat::add(ability, texts);
+    w5a_conditions::add(ability, texts);
 }
 
 /// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
