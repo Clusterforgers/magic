@@ -1,0 +1,27 @@
+{
+  "oracle_id": "678b3fb5-aa9f-4268-9433-2a89dd37b927",
+  "name": "Canoptek Tomb Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canoptek Tomb Sentinel",
+      "oracle_fingerprint": "f740a58aa5d5dd907ecd5d6104848089",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Graveyard", "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Unearth": "{7}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "51d7bd70-0874-41d4-94bc-c3e14c968668",
+  "name": "Altar of the Goyf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Altar of the Goyf",
+      "oracle_fingerprint": "b0c302a48ad636bc410a4823d775f578",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "CardTypes": [{ "In": "Graveyard" }] },
+                        "toughness": { "CardTypes": [{ "In": "Graveyard" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Lhurgoyf" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

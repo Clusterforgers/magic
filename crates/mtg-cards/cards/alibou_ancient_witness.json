@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e5e8e116-10fe-48b0-b3d8-6edb39bd5f90",
+  "name": "Alibou, Ancient Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alibou, Ancient Witness",
+      "oracle_fingerprint": "f1720545b644475068c3df4636c5fda1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [{ "Type": "Artifact" }, "Tapped", { "ControlledBy": "You" }]
+                  }
+                }
+              },
+              {
+                "Scry": {
+                  "count": {
+                    "Count": [{ "Type": "Artifact" }, "Tapped", { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

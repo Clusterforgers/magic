@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c8b4eba6-88ce-42d7-a235-5a4765a4a981",
+  "name": "Crackling Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackling Drake",
+      "oracle_fingerprint": "70302b9f8889fbac2ff75ca99b8a44eb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "AnyOf": [{ "In": "Exile" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "126a5d0b-e7d6-458e-87af-47d845678014",
+  "name": "Cyberdrive Awakener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyberdrive Awakener",
+      "oracle_fingerprint": "5ece9ef6666aba909e7a896cfef051c6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Not": { "Type": "Creature" } },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 4, "toughness": 4 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

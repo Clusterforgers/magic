@@ -1,0 +1,53 @@
+{
+  "oracle_id": "990b5e12-6e04-4832-9d64-87278f12cbda",
+  "name": "Betor, Ancestor's Voice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Betor, Ancestor's Voice",
+      "oracle_fingerprint": "9c5b1ebe325fb319da5e2c709f1ecbc9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Tallied": { "who": "You", "what": "LifeLost" } }
+                      }
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Tallied": { "who": "You", "what": "LifeGained" } }
+                }
+              },
+              { "Move": { "what": { "Target": 1 }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

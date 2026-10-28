@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ba9f3c5d-556f-48d1-8d87-723f7893cfcd",
+  "name": "Flayer of the Hatebound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flayer of the Hatebound",
+      "oracle_fingerprint": "f4033da166446b7d6d612893175f4823",
+      "abilities": [
+        { "Keyword": "Undying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Graveyard", "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "OwnedBy": "You" }],
+                    "from": "Graveyard",
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

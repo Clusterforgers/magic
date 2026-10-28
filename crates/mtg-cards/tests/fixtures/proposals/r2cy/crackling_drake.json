@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Static":{"affected":"This","mods":[{"SetPT":{"power":{"Count":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"AnyOf":[{"In":"Exile"},{"In":"Graveyard"}]},{"OwnedBy":"You"}]},"toughness":4}}],"defining":true}},{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"Draw":{}}]}}]}]}

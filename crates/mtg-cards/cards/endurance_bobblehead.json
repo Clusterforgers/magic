@@ -1,0 +1,46 @@
+{
+  "oracle_id": "6a69116b-3d2e-4eac-9d02-902373de3cb7",
+  "name": "Endurance Bobblehead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endurance Bobblehead",
+      "oracle_fingerprint": "703aef18a44db1dd18b6a98e7960284e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Subtype": "Bobblehead" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

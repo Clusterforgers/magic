@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9b6d3dcf-aa5a-4516-bd48-a0723e86bfd1",
+  "name": "Door of Destinies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Door of Destinies",
+      "oracle_fingerprint": "91aa2caed3d1a1970eda0daa0d97bab5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["ChosenSubtype"], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": "charge" } },
+                  "toughness": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

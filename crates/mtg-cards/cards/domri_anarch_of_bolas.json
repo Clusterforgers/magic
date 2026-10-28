@@ -1,0 +1,49 @@
+{
+  "oracle_id": "afc2269c-d3b5-487d-9445-800c7a8e526b",
+  "name": "Domri, Anarch of Bolas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domri, Anarch of Bolas",
+      "oracle_fingerprint": "f783de7cd500c819e8fce71c7973e297",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "CantBeCountered": {
+                      "Each": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
