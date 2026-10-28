@@ -142,8 +142,9 @@ fn reminder_ranges(chars: &[char]) -> Vec<Range<usize>> {
 }
 
 /// Parts of the reminder text of the keyword actions that put counters (proliferate, amass, explore, connive,
-/// monstrosity, adapt, bolster): they say what the action does, and the reading has it.
-const COUNTER_ACTIONS: [&str; 8] = [
+/// monstrosity, adapt, bolster, incubate): they say what the action does, and the reading has it.
+const COUNTER_ACTIONS: [&str; 9] = [
+    "create an incubator token with",
     "counter it unless that player pays",
     "another counter of each kind already there",
     "army creature token first",

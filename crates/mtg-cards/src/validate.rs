@@ -1944,6 +1944,10 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::Incubate { who, count } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::Amass { count, .. }
             | Effect::Monstrosity { count }
             | Effect::Renown { count }

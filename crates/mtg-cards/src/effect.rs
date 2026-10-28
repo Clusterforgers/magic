@@ -657,6 +657,14 @@ pub enum Effect {
         /// How many +1/+1 counters.
         count: Amount,
     },
+    /// Each player named incubates (CR 701.53): they create an Incubator token with that many +1/+1 counters on it.
+    Incubate {
+        /// Who incubates.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many +1/+1 counters.
+        count: Amount,
+    },
     /// The source creature becomes monstrous (CR 701.37): it gets +1/+1 counters.
     Monstrosity {
         /// How many +1/+1 counters.
