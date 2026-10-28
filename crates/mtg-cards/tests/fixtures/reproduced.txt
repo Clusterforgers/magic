@@ -1186,6 +1186,7 @@ Tangle Tumbler
 Tanuki Transplanter
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
+Tavern Scoundrel
 Teacher's Pest
 Team Pennant
 Tectonic Reformation
@@ -1379,6 +1380,7 @@ Zendikar Farguide
 Zendikar Resurgent
 Zhang Fei, Fierce Warrior
 Zimone, Quandrix Prodigy
+Zndrsplt, Eye of Wisdom
 Zodiac Goat
 Zoetic Cavern
 Zombie Master

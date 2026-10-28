@@ -1,0 +1,21 @@
+{
+  "oracle_id": "502849a6-8e65-40f3-b348-a41c4f939768",
+  "name": "Zndrsplt, Eye of Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zndrsplt, Eye of Wisdom",
+      "oracle_fingerprint": "f930dfb7e207a7dcbd9e815de363f6fd",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Okaun, Eye of Chaos" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "FlipCoin": { "until": true } }]
+          }
+        },
+        { "Triggered": { "when": { "CoinFlipWon": {} }, "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

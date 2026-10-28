@@ -49,6 +49,7 @@ mod c6_blk_aura;
 mod c6_blk_draws;
 mod c6_eg_cards;
 mod c6_kw_renown_exploit;
+mod c8_vote_coins;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;
