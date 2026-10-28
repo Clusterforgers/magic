@@ -1,0 +1,35 @@
+{
+  "oracle_id": "602f3203-91ae-423c-8a19-c6c1a5034f27",
+  "name": "Path of the Enigma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of the Enigma",
+      "oracle_fingerprint": "bb9f9b0f32025ecac1283d63d374fd15",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 4 } },
+              { "Vote": { "options": { "Named": ["planeswalk", "chaos"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "planeswalk" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "chaos" } }
+                    }
+                  },
+                  "then": [{ "Planechase": { "act": "Planeswalk" } }],
+                  "otherwise": [{ "Planechase": { "act": "ChaosEnsues" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

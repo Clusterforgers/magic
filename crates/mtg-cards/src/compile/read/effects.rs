@@ -28,7 +28,7 @@ use super::spend;
 use super::tokens::Reader;
 use super::where_x;
 use crate::cost::Cost;
-use crate::effect::{Destination, Effect, Order, Place, Produce};
+use crate::effect::{Destination, Effect, Order, Place, PlanarAct, Produce};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
@@ -413,6 +413,13 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "proliferate" => Effect::Proliferate { who },
         "time" if r.words("travel") => Effect::TimeTravel { who },
         "learn" => Effect::Learn { who },
+        "planeswalk" => Effect::Planechase {
+            act: PlanarAct::Planeswalk,
+        },
+        // "chaos ensues" has no player, and is read here with the steps that begin with their verb.
+        "chaos" if r.words("ensues") => Effect::Planechase {
+            act: PlanarAct::ChaosEnsues,
+        },
         "monstrosity" => Effect::Monstrosity { count: points(r)? },
         "adapt" => Effect::Adapt { count: points(r)? },
         "bolster" => Effect::Bolster { count: points(r)? },

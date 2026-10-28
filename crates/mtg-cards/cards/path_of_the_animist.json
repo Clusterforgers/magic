@@ -1,0 +1,44 @@
+{
+  "oracle_id": "85ccae95-92c4-41ff-96fd-dcb515dc568e",
+  "name": "Path of the Animist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of the Animist",
+      "oracle_fingerprint": "ed02c3edb0f346550fd99ed6bdea0bfa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              { "Vote": { "options": { "Named": ["planeswalk", "chaos"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "planeswalk" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "chaos" } }
+                    }
+                  },
+                  "then": [{ "Planechase": { "act": "Planeswalk" } }],
+                  "otherwise": [{ "Planechase": { "act": "ChaosEnsues" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

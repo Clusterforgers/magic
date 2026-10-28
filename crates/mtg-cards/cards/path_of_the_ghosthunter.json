@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b79c3ae8-ac25-4a16-a981-a41721040fad",
+  "name": "Path of the Ghosthunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of the Ghosthunter",
+      "oracle_fingerprint": "2d35b413dc17fb5557f50adeda775793",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              { "Vote": { "options": { "Named": ["planeswalk", "chaos"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "planeswalk" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "chaos" } }
+                    }
+                  },
+                  "then": [{ "Planechase": { "act": "Planeswalk" } }],
+                  "otherwise": [{ "Planechase": { "act": "ChaosEnsues" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

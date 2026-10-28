@@ -2093,7 +2093,8 @@ impl Walker<'_> {
                 }
             }),
             Effect::Crewed { .. }
-            | Effect::BecomeDayNight { .. } => {}
+            | Effect::BecomeDayNight { .. }
+            | Effect::Planechase { .. } => {}
             Effect::BecomeLevel { level } => {
                 if *level < 2 {
                     w.problem("a Class starts at level 1 and gains level 2 or more");

@@ -200,6 +200,15 @@ pub struct DieRow {
     pub effects: Vec<Effect>,
 }
 
+/// What a `Planechase` effect does.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PlanarAct {
+    /// "planeswalk": the controller moves to the next plane.
+    Planeswalk,
+    /// "chaos ensues": the chaos abilities of the face-up plane trigger.
+    ChaosEnsues,
+}
+
 /// What the players of a `Vote` vote for.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -841,6 +850,12 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// A step of a Planechase game (CR 901): the controller planeswalks, or chaos ensues. A game without a planar deck,
+    /// which every game the engine plays is, does nothing for it.
+    Planechase {
+        /// What happens.
+        act: PlanarAct,
+    },
     /// Creates tokens.
     CreateToken {
         /// Who controls them.
@@ -1262,6 +1277,10 @@ mod tests {
     #[case::vote_on_two_names(
         Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
         r#"{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}"#
+    )]
+    #[case::c10_vp_chaos_ensues(
+        Effect::Planechase { act: PlanarAct::ChaosEnsues },
+        r#"{"Planechase":{"act":"ChaosEnsues"}}"#
     )]
     #[case::vote_on_objects(
         Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },
