@@ -256,6 +256,10 @@ pub enum GameRule {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         per: Amount,
     },
+    /// No more than this many creatures can attack each combat: a restriction on the whole declaration (CR 508.1c).
+    AttackLimit(u32),
+    /// No more than this many creatures can block each combat: a restriction on the whole declaration (CR 509.1b).
+    BlockLimit(u32),
     /// The spells can't be countered.
     CantBeCountered(Ref),
     /// The players can't gain life.
@@ -411,6 +415,8 @@ mod tests {
     )]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
     #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
+    #[case(GameRule::AttackLimit(1), r#"{"AttackLimit":1}"#)]
+    #[case(GameRule::BlockLimit(2), r#"{"BlockLimit":2}"#)]
     #[case(
         GameRule::CantGainLife(Ref::EachPlayer),
         r#"{"CantGainLife":"EachPlayer"}"#

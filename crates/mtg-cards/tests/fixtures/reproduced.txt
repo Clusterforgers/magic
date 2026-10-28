@@ -216,6 +216,7 @@ Cathars' Crusade
 Cathartic Reunion
 Cathedral Acolyte
 Cavern Whisperer
+Caverns of Despair
 Cayth, Famed Mechanist
 Celebrate the Harvest
 Celestial Archon
@@ -404,6 +405,7 @@ Dual Casting
 Dual Strike
 Dualcaster Mage
 Duchess, Wayward Tavernkeep
+Dueling Grounds
 Dungeon Geists
 Dunland Crebain
 Durkwood Baloth
@@ -1212,6 +1214,7 @@ Siege Smash
 Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
+Silent Arbiter
 Silhana Ledgewalker
 Silumgar's Command
 Silvar, Devourer of the Free

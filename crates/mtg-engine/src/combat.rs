@@ -15,8 +15,9 @@ use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption
 use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords;
-use crate::rules::{must_attack, must_attack_players, must_block};
+use crate::rules::{attack_limit, block_limit, must_attack, must_attack_players, must_block};
 use crate::state::GameState;
+use crate::w8a_declaration_limits::w8a_check_limit;
 use crate::zones::Zone;
 
 /// What an attacking creature is attacking.
@@ -369,6 +370,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         attackers,
         required: Vec::new(),
         mana: 0,
+        most: attack_limit(state),
     };
     attack_tax::describe(state, player, &mut options);
     // A creature that can't attack any defender is not required to (it is "able" only with one to attack), nor is one
@@ -453,6 +455,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             *able.entry(*attacker).or_default() += 1;
         }
     }
+    let most = block_limit(state);
     let together: BTreeSet<ObjectId> = blockable
         .iter()
         .copied()
@@ -463,6 +466,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
                 && blocker_limits(state, *attacker)
                     .1
                     .is_none_or(|most| needed <= most)
+                && most.is_none_or(|most| needed <= most)
         })
         .collect();
     let blockable_together = |attacker: ObjectId| together.contains(&attacker);
@@ -503,6 +507,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         min_blockers,
         max_blockers,
         required,
+        most,
     }
 }
 
@@ -524,11 +529,15 @@ pub(crate) fn check_attackers(
             return Err(IllegalAnswer::NotOffered("defender"));
         }
     }
-    // CR 508.1d: every requirement that can be obeyed is; a creature that is able to attack must.
-    if options
-        .required
-        .iter()
-        .any(|required| !answer.iter().any(|(object, _)| object == required))
+    let declared: Vec<ObjectId> = answer.iter().map(|(object, _)| *object).collect();
+    let excused = w8a_check_limit(options.most, &options.required, &declared)?;
+    // CR 508.1d: every requirement that can be obeyed is; a creature that is able to attack must, unless the limit on
+    // the declaration is filled with creatures that must.
+    if !excused
+        && options
+            .required
+            .iter()
+            .any(|required| !declared.contains(required))
     {
         return Err(IllegalAnswer::Required("attacker"));
     }
@@ -565,12 +574,16 @@ pub(crate) fn check_blockers(
             return Err(IllegalAnswer::TooManyBlockers { allowed, got });
         }
     }
+    let declared: Vec<ObjectId> = answer.iter().map(|(blocker, _)| *blocker).collect();
+    let excused = w8a_check_limit(options.most, &options.required, &declared)?;
     // CR 509.1c: every requirement that can be obeyed is; a creature that must block does, unless every block it could
-    // make would break a restriction (menace) that no creature free to join could mend.
-    if options.required.iter().any(|required| {
-        !answer.iter().any(|(blocker, _)| blocker == required)
-            && options.could_join(*required, answer)
-    }) {
+    // make would break a restriction (menace, a full declaration) that no creature free to join could mend.
+    if !excused
+        && options.required.iter().any(|required| {
+            !answer.iter().any(|(blocker, _)| blocker == required)
+                && options.could_join(*required, answer)
+        })
+    {
         return Err(IllegalAnswer::Required("blocker"));
     }
     Ok(())

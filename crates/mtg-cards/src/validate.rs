@@ -2753,6 +2753,11 @@ impl Walker<'_> {
                     });
                 }
             }),
+            GameRule::AttackLimit(most) | GameRule::BlockLimit(most) => {
+                if *most == 0 {
+                    self.at(tag, |w| w.problem("a limit on a declaration lets at least one creature in"));
+                }
+            }
             GameRule::CantGainLife(who)
             | GameRule::NoLifeLossFromDamage(who)
             | GameRule::LifeTotalCantChange(who)

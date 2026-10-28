@@ -49,6 +49,7 @@ mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;
 mod steps;
+mod w8a_declaration_limits;
 mod ways;
 mod wording;
 #[cfg(test)]

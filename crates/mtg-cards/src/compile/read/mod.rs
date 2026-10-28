@@ -135,6 +135,7 @@ mod w6a_attacks_you;
 mod w6b_emblem;
 mod w6d_shares;
 mod w6e_control;
+mod w8a_declaration_limits;
 mod where_x;
 mod zone_moves;
 
