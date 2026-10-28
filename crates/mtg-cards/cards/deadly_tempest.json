@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b5516bc9-ec8d-4323-8748-96c49d7d0622",
+  "name": "Deadly Tempest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Tempest",
+      "oracle_fingerprint": "9b8a7125897bd6da076f32dd9fd6d18c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "player" },
+                        "amount": {
+                          "Destroyed": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

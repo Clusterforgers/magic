@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f19e7c5c-67fa-4ae4-89b8-afa0e08a6c48",
+  "name": "Vizkopa Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vizkopa Guildmage",
+      "oracle_fingerprint": "c50b996c3a5aa582388a8ddcd0423d06",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{W}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{B}",
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "LifeGained": { "who": "You" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "LoseLife": { "who": "Opponents", "amount": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

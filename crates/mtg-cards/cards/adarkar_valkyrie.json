@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2932baae-bdf1-455a-9ac4-23ba1f83e7e1",
+  "name": "Adarkar Valkyrie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adarkar Valkyrie",
+      "oracle_fingerprint": "31d78dbb222dc9a3e4803b9fc328cc99",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "039d25d4-ce26-4ecf-bbf5-42187cf0230a",
+  "oracle_id": "5b3326a5-18c5-4d45-90e1-f6d00ca2bced",
+  "multiverse_ids": [
+    484718
+  ],
+  "mtgo_id": 80745,
+  "tcgplayer_id": 212154,
+  "cardmarket_id": 452108,
+  "name": "Kelsien, the Plague",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/039d25d4-ce26-4ecf-bbf5-42187cf0230a",
+  "scryfall_uri": "https://scryfall.com/card/c20/11/kelsien-the-plague?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:27:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.jpg?1783931231",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.jpg?1783931231",
+    "large": "https://cards.scryfall.io/large/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.jpg?1783931231",
+    "png": "https://cards.scryfall.io/png/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.png?1783931231",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.jpg?1783931231",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.jpg?1783931231",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.webp?1783931231",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.webp?1783931231",
+    "display": "https://cards.scryfall.io/display/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.webp?1783931231",
+    "art": "https://cards.scryfall.io/art/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.webp?1783931231",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.webp?1783931231",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/039d25d4-ce26-4ecf-bbf5-42187cf0230a.jpg?1783931231"
+  },
+  "mana_cost": "{R}{W}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Assassin",
+  "oracle_text": "Vigilance, haste\nKelsien gets +1/+1 for each experience counter you have.\n{T}: Kelsien deals 1 damage to target creature you don't control. When that creature dies this turn, you get an experience counter.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Haste"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1374bfa2-9714-486d-90aa-7a9b8d8ef3a8",
+      "component": "combo_piece",
+      "name": "Experience",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/1374bfa2-9714-486d-90aa-7a9b8d8ef3a8"
+    },
+    {
+      "object": "related_card",
+      "id": "039d25d4-ce26-4ecf-bbf5-42187cf0230a",
+      "component": "combo_piece",
+      "name": "Kelsien, the Plague",
+      "type_line": "Legendary Creature — Human Assassin",
+      "uri": "https://api.scryfall.com/cards/039d25d4-ce26-4ecf-bbf5-42187cf0230a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/039d25d4-ce26-4ecf-bbf5-42187cf0230a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5b3326a5-18c5-4d45-90e1-f6d00ca2bced&unique=prints",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Aim for an eye. Better they never see you.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "5174eb91-6f36-4544-8b21-82dfca061ba9",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8652,
+  "preview": {
+    "source": "MTGGoldfish",
+    "source_uri": "https://www.mtggoldfish.com/articles/kelsien-the-plague-shiny-impetus-exclusive-commander-2020-preview",
+    "previewed_at": "2020-04-04"
+  },
+  "prices": {
+    "usd": "2.49",
+    "usd_foil": "0.98",
+    "usd_etched": null,
+    "eur": "1.31",
+    "eur_foil": "0.74",
+    "tix": "3.38"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=484718&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKelsien%252C%2Bthe%2BPlague",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKelsien%252C%2Bthe%2BPlague",
+    "edhrec": "https://edhrec.com/route/?cc=Kelsien%2C+the+Plague"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212154%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=452108&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80745?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

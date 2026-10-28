@@ -217,7 +217,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r3w2b) Writers for granted abilities in quotes whose trigger or effect is unwritten (The Reaver Cleaver, Unquenchable Fury), Clues that become Equipment (Armed with Proof), "creatures you control with toxic" (Skrelv's Hive) and an artifact type added without end (Phyrexian Scriptures)
 - [ ] (r3w2c) New proposals for Dungeon Geists and Merchant Raiders (the duration is "for as long as you control" the creature) and Unnatural Growth (each creature doubles its own power and toughness)
 - [ ] (r3w3b) Steps under "you may" left: a token copy with exceptions, "reveal that many cards", "the sacrificed permanent", "that player may ... if" and an exile of the card from the graveyard as a cost (Nightmare Shepherd, Glint Raker, Shadow, Ludevic, Kozilek's Return)
-- [~] (r3w4) (r3w4-delayed-repeat-writers) Writers for delayed triggers and "for each player or opponent" (`RepeatEach`) (19 abilities)
+- [~] (r3w2) (r3w2-continuous-writers) Writers for `Continuous` effects (+X/+X until end of turn, gains a keyword, can't block, becomes) and the `AddKeyword` and `GrantAbility` modifications (28 abilities)
+- [~] (r3w3) (r3w3-may-pay-writers) Writers for "you may", "you may pay" and the reflexive "When you do" (18 abilities)
+- [ ] (r3w4b) Delayed triggers and repeated steps left: "deals combat damage to a creature, destroy that creature at end of combat" (Ohran Viper), a loyalty ability's delayed return (Nahiri, the Harbinger), steps repeated for each object ("each Dragon you control", "each of those creatures", "for each of them") and a delayed trigger on its own line (Forth Eorlingas!, Theoretical Duplication)
 - [~] (r3w5) (r3w5-move-counters-writers) Writers for `Move`, `PutCounters`, `RemoveCounters` and the "combination or shape" spells (about 40 abilities)
 - [~] (r3w6) (r3w6-mismatch-al) Renderer variants for the Mismatch proposals of names A to L (proliferate twice, the order of a token's name and ability, an activation limit before modes)
 - [~] (r3w7) (r3w7-mismatch-mz) The same for names M to Z

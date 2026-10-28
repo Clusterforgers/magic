@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d1a6aa5f-2ad6-4bc7-82f0-4262f66af730",
+  "name": "Apprentice Necromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apprentice Necromancer",
+      "oracle_fingerprint": "136c0e9d8c0b35b8e70bc9fb60cc564b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Target": 0 } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

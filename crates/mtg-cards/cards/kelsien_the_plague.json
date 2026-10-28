@@ -1,0 +1,56 @@
+{
+  "oracle_id": "5b3326a5-18c5-4d45-90e1-f6d00ca2bced",
+  "name": "Kelsien, the Plague",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kelsien, the Plague",
+      "oracle_fingerprint": "39840becc8275fc25d9632fd2202734b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "You", "counter": { "Other": "experience" } } },
+                  "toughness": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    { "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

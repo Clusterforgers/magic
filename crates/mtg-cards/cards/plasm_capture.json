@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3673219d-d2b5-43ad-b0c8-58b583491158",
+  "name": "Plasm Capture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plasm Capture",
+      "oracle_fingerprint": "bb7e6f822da32a432412b8e1c94233de",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+                  "effects": [
+                    {
+                      "AddMana": {
+                        "mana": {
+                          "AnyCombination": {
+                            "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

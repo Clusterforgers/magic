@@ -1,0 +1,47 @@
+{
+  "oracle_id": "00e0b103-892c-49b3-836d-867fff197bbd",
+  "name": "Puppeteer Clique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puppeteer Clique",
+      "oracle_fingerprint": "4e804b652d139fbf986589ecc3a49a84",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}
