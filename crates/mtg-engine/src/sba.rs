@@ -136,14 +136,21 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
         };
         events.push(Event::CreatureDied { object: id, cause });
     }
-    let died: Vec<ObjectId> = events
-        .iter()
-        .filter_map(|event| match event {
-            Event::CreatureDied { object, .. } | Event::ZoneChanged { object, .. } => Some(*object),
-            _ => None,
-        })
-        .collect();
+    let leaving = |events: &[Event]| -> Vec<ObjectId> {
+        events
+            .iter()
+            .filter_map(|event| match event {
+                Event::CreatureDied { object, .. } | Event::ZoneChanged { object, .. } => {
+                    Some(*object)
+                }
+                _ => None,
+            })
+            .collect()
+    };
+    let died = leaving(&events);
     events.extend(crate::saga::sacrifices(state, &died));
+    // A Saga creature sacrificed in this pass leaves with its counters too: it has no counters to annihilate.
+    let died = leaving(&events);
     events.extend(annihilation(state, &died));
     events.extend(crate::attach::state_based(state, &died));
     events.extend(card_copies(state));
@@ -420,6 +427,35 @@ mod tests {
             "a game without such counters looks for none"
         );
         assert_eq!(check(&plain), []);
+    }
+
+    #[test]
+    fn a_saga_creature_sacrificed_in_the_pass_takes_its_pairs_with_it() {
+        let chapter: mtg_cards::ability::Ability = serde_json::from_str(
+            r#"{"Triggered":{"when":{"Chapter":{"number":1}},"effects":[{"Draw":{}}]}}"#,
+        )
+        .unwrap();
+        let saga = CardDefinition::new("Summon")
+            .with_type(CardType::Enchantment)
+            .with_type(CardType::Creature)
+            .with_subtype("Saga")
+            .with_power_toughness(3, 3)
+            .with_rules(chapter);
+        let mut game = setup(vec![vec![], vec![]], vec![vec![Arc::new(saga)], vec![]]);
+        game.players[0].battlefield[0].counters =
+            vec![(PLUS, 1), (MINUS, 1), (CounterKind::lore(), 1)];
+        let game = GameState::from_setup(&game).unwrap();
+        let events = check(&game);
+        assert!(
+            matches!(
+                events.as_slice(),
+                [Event::ZoneChanged {
+                    cause: ZoneCause::Sacrificed,
+                    ..
+                }]
+            ),
+            "{events:?}"
+        );
     }
 
     #[test]
