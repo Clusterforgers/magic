@@ -213,7 +213,8 @@ The server is settled first, then the web is built once against the final types.
 
 ### Model-assisted reading
 - [~] (r3) (the local bulk run of gpt-oss:20b with --schema, run by the orchestrator) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
-- [~] (r3w8) (r3w8-trigger-heads) Writers for the trigger heads still unwritten (a discard, a batch of events, "becomes the target", dies or goes to the command zone, "attacks one of your opponents or a planeswalker"): 58 of the 115 unwritten abilities of the stored proposals are triggered abilities
+- [ ] (r3w8a) New proposals for Myth Unbound ("your commander" is a commander you own) and Regenerations Restored (the extra turn is a reflexive "When you do"), whose data differ from the printed text
+- [ ] (r3w8b) Trigger writers left: a spell cast with mana value greater than a count (Mizzix of the Izmagnus), "if it isn't that player's turn" (Tataru Taru), a chapter whose target becomes an artifact (Phyrexian Scriptures)
 - [~] (r3w9) (r3w9-spell-shapes) Writers for the spells the checker reports as "the combination or its shape" (19 abilities) and for the `Draw`, `Choose`, `Rule` and `AddMana` steps
 - [~] (r3wa) (r3wa-leftover-steps) The step leftovers of the writer wave: (r3w1a), (r3w3b), (r3w4b), (r3w5a) and (r3w5b)
 - [ ] (r3w2a) Writers for gaining control of one target per opponent or of an enchanted permanent (Mass Mutiny, Blatant Thievery, Frenzied Fugue) and a group that becomes a creature "and gains flying" (Sarkhan the Masterless)
