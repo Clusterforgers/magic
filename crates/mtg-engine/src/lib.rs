@@ -49,6 +49,7 @@ mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;
 mod steps;
+mod w10a_attack_limits_at;
 mod w7b_rad;
 mod w8a_declaration_limits;
 mod ways;

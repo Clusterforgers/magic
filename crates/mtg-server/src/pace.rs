@@ -611,6 +611,7 @@ mod tests {
     fn attackers(required: &[u64]) -> DecisionKind {
         DecisionKind::DeclareAttackers(AttackOptions {
             most: None,
+            most_at: Vec::new(),
             attackers: (10..13)
                 .map(|n| AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))]))
                 .collect(),

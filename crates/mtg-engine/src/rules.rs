@@ -23,6 +23,7 @@ use serde::{Deserialize, Serialize};
 use crate::ability_reader::{abilities_of, definition_has_rule};
 use crate::characteristics::controller_of_object;
 use crate::choose::Target;
+use crate::combat::AttackTarget;
 use crate::effects::{Duration, lasts};
 use crate::error::EngineError;
 use crate::fold::invalid;
@@ -47,6 +48,13 @@ pub enum Rule {
     AttackTax(AttackTax),
     /// No more than this many creatures can attack each combat (CR 508.1c).
     AttackLimit(u32),
+    /// No more than `most` creatures can attack each of the players or planeswalkers each combat (CR 508.1c).
+    AttackLimitAt {
+        /// The most creatures that can attack each of them.
+        most: u32,
+        /// The players and planeswalkers it protects.
+        at: Vec<AttackTarget>,
+    },
     /// No more than this many creatures can block each combat (CR 509.1b).
     BlockLimit(u32),
     /// The spells can't be countered.
@@ -292,6 +300,7 @@ pub(crate) struct RulesInForce {
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
     attack_limit: Option<u32>,
+    attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
 }
 
@@ -392,6 +401,15 @@ impl RulesInForce {
             Rule::AttackLimit(most) => {
                 self.attack_limit = Some(self.attack_limit.map_or(*most, |was| was.min(*most)));
             }
+            Rule::AttackLimitAt { most, at } => {
+                for target in at {
+                    let least = self
+                        .attack_limit_at
+                        .get(target)
+                        .map_or(*most, |was| (*was).min(*most));
+                    self.attack_limit_at.insert(*target, least);
+                }
+            }
             Rule::BlockLimit(most) => {
                 self.block_limit = Some(self.block_limit.map_or(*most, |was| was.min(*most)));
             }
@@ -469,6 +487,26 @@ impl RulesInForce {
     }
 }
 
+/// The players and planeswalkers `at` names, as what creatures attack.
+fn w10a_defenders(scope: &Scope<'_>, at: &Ref) -> Result<Vec<AttackTarget>, ResolveError> {
+    Ok(scope
+        .refs(at)?
+        .into_iter()
+        .map(|named| match named {
+            Target::Player(player) => AttackTarget::Player(player),
+            Target::Object(object) => AttackTarget::Planeswalker(object.id),
+        })
+        .collect())
+}
+
+/// "No more than N creatures can attack you each combat": the limit and the defenders it names.
+fn attack_limit_at(scope: &Scope<'_>, most: u32, at: &Ref) -> Result<Rule, ResolveError> {
+    Ok(Rule::AttackLimitAt {
+        most,
+        at: w10a_defenders(scope, at)?,
+    })
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
@@ -526,6 +564,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             })
         }
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
+        GameRule::AttackLimitAt { most, at } => attack_limit_at(scope, *most, at)?,
         GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
@@ -606,6 +645,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
+        Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
@@ -734,6 +774,7 @@ static NONE: RulesInForce = RulesInForce {
     casts: Vec::new(),
     taxes: Vec::new(),
     attack_limit: None,
+    attack_limit_at: BTreeMap::new(),
     block_limit: None,
 };
 
@@ -857,6 +898,17 @@ pub fn attack_limit(state: &GameState) -> Option<usize> {
         .rules()
         .attack_limit
         .map(|most| usize::try_from(most).unwrap_or(usize::MAX))
+}
+
+/// The most creatures that may attack each limited player or planeswalker together this combat, the least of the
+/// limits on it in force (CR 508.1c); empty while no rule limits the attacks at one.
+pub fn w10a_attack_limits_at(state: &GameState) -> Vec<(AttackTarget, usize)> {
+    state
+        .rules()
+        .attack_limit_at
+        .iter()
+        .map(|(target, most)| (*target, usize::try_from(*most).unwrap_or(usize::MAX)))
+        .collect()
 }
 
 /// The most creatures that may block together this combat, the least of the limits in force (CR 509.1b); none while no

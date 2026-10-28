@@ -53,9 +53,14 @@ pub(crate) fn w8a_check_limit(
 }
 
 impl AttackOptions {
-    /// `attack` cut to the limit on the declaration, the creatures that must attack kept first; unchanged without one.
+    /// `attack` within the limits at the defenders (`w10a_within_limits_at`), then cut to the limit on the declaration,
+    /// the creatures that must attack kept first; unchanged without a limit.
     pub fn w8a_capped(&self, attack: &[(ObjectId, AttackTarget)]) -> Vec<(ObjectId, AttackTarget)> {
-        w8a_cut(attack, &self.required, self.most)
+        w8a_cut(
+            &self.w10a_within_limits_at(attack),
+            &self.required,
+            self.most,
+        )
     }
 }
 

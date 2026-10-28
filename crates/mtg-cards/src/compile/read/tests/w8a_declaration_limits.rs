@@ -1,4 +1,4 @@
-//! Goal: a limit on the whole attack or block declaration reads into `AttackLimit` or `BlockLimit` with its count, writes back as the card's own text, and the near-misses (a limit on attacks at a player, "this turn", a count that is not a word) stay with the table.
+//! Goal: a limit on the whole attack or block declaration reads into `AttackLimit` or `BlockLimit` with its count, writes back as the card's own text, and the near-misses ("this turn", a count that is not a word) stay with the table.
 use super::*;
 
 #[rstest]
@@ -23,8 +23,6 @@ fn w8a_the_limits_read_into_the_dsl_and_write_back(#[case] text: &str, #[case] j
 }
 
 #[rstest]
-#[case::at_you("No more than two creatures can attack you each combat.")]
-#[case::at_a_planeswalker("No more than one creature can attack ~ each combat.")]
 #[case::each_turn("No more than one creature can attack each turn.")]
 #[case::plural_of_one("No more than one creatures can attack each combat.")]
 #[case::singular_of_two("No more than two creature can block each combat.")]

@@ -1,0 +1,30 @@
+{
+  "id": "2ab1e87e-e778-46fb-9f6d-563463447159",
+  "oracle_id": "ca04089c-24b6-465e-9303-ea28c0d6f3c7",
+  "name": "Judoon Enforcers",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "138",
+  "rarity": "uncommon",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{5}{R}{W}",
+  "cmc": 7.0,
+  "type_line": "Creature — Alien Rhino Soldier",
+  "oracle_text": "Trample\nNo more than one creature can attack you each combat.\nSuspend 6—{1}{R}{W} (Rather than cast this card from your hand, you may pay {1}{R}{W} and exile it with six time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost. It has haste.)",
+  "power": "8",
+  "toughness": "8",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Suspend",
+    "Trample"
+  ]
+}

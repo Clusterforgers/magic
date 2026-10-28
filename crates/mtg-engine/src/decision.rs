@@ -317,18 +317,27 @@ pub struct AttackOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub most: Option<usize>,
+    /// The most creatures that may attack each limited player or planeswalker together (CR 508.1c: "no more than two
+    /// creatures can attack you each combat"). Left out while no rule limits the attacks at one.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<(AttackTarget, usize)>>", optional)
+    )]
+    pub most_at: Vec<(AttackTarget, usize)>,
 }
 
 impl AttackOptions {
     /// The declaration that does only what the rules require: each creature that must attack, at the first defender
-    /// it may attack for nothing; no more of them than the limit lets attack.
+    /// it may attack for nothing that has room; no more of them than the limits let attack.
     pub fn required_attack(&self) -> Vec<(ObjectId, AttackTarget)> {
-        self.attackers
+        let first: Vec<(ObjectId, AttackTarget)> = self
+            .attackers
             .iter()
             .filter(|option| self.required.contains(&option.object))
             .filter_map(|option| option.free_defender().map(|first| (option.object, first)))
-            .take(self.most.unwrap_or(usize::MAX))
-            .collect()
+            .collect();
+        self.w8a_capped(&first)
     }
 
     /// What the declaration costs, each attacker for the defender it attacks (CR 508.1h).
@@ -784,6 +793,7 @@ mod tests {
         };
         let options = AttackOptions {
             most: None,
+            most_at: Vec::new(),
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
             mana: 0,
@@ -799,6 +809,7 @@ mod tests {
     fn the_new_fields_are_left_out_of_the_json_while_empty() {
         let plain = AttackOptions {
             most: None,
+            most_at: Vec::new(),
             attackers: Vec::new(),
             required: Vec::new(),
             mana: 0,

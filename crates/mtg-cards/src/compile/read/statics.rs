@@ -1545,9 +1545,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::AttackTax { .. }, ZoneKind::Battlefield) => {
             super::attack_tax::static_texts(rule)
         }
-        (GameRule::AttackLimit(_) | GameRule::BlockLimit(_), ZoneKind::Battlefield) => {
-            super::w8a_declaration_limits::w8a_limit_texts(rule)
-        }
+        (
+            GameRule::AttackLimit(_) | GameRule::AttackLimitAt { .. } | GameRule::BlockLimit(_),
+            ZoneKind::Battlefield,
+        ) => super::w8a_declaration_limits::w8a_limit_texts(rule),
         _ => Vec::new(),
     }
 }

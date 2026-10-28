@@ -464,4 +464,11 @@ describe('a limit on the declaration', () => {
     attack(optionsOf(SPECS[2] as Spec))
     expect(screen.queryByText(/No more than/)).toBeNull()
   })
+
+  it.each([1, 2])('says the limit of %i at a defender', (most) => {
+    attack({ ...optionsOf(SPECS[2] as Spec), most_at: [[{ Player: 1 }, most]] })
+    expect(
+      screen.getByText(new RegExp(`No more than ${most} creatures? can attack .+ this combat`)),
+    ).toBeInTheDocument()
+  })
 })
