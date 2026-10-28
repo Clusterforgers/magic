@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "97fb9c9a-2278-42d0-9632-3a7e8faff74d",
+  "oracle_id": "44b90948-e85a-4f69-a9e2-aba63775ba40",
+  "multiverse_ids": [
+    612128
+  ],
+  "mtgo_id": 111382,
+  "tcgplayer_id": 491503,
+  "cardmarket_id": 705451,
+  "name": "Filigree Vector",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/97fb9c9a-2278-42d0-9632-3a7e8faff74d",
+  "scryfall_uri": "https://scryfall.com/card/moc/15/filigree-vector?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:34:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.jpg?1783917289",
+    "normal": "https://cards.scryfall.io/normal/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.jpg?1783917289",
+    "large": "https://cards.scryfall.io/large/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.jpg?1783917289",
+    "png": "https://cards.scryfall.io/png/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.png?1783917289",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.jpg?1783917289",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.jpg?1783917289",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.webp?1783917289",
+    "grid": "https://cards.scryfall.io/grid/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.webp?1783917289",
+    "display": "https://cards.scryfall.io/display/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.webp?1783917289",
+    "art": "https://cards.scryfall.io/art/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.webp?1783917289",
+    "crop": "https://cards.scryfall.io/crop/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.webp?1783917289",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/7/97fb9c9a-2278-42d0-9632-3a7e8faff74d.jpg?1783917289"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Artifact Creature — Phyrexian Construct",
+  "oracle_text": "When this creature enters, put a +1/+1 counter on each of any number of target creatures and a charge counter on each of any number of target artifacts.\n{1}, {T}, Sacrifice another artifact: Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Proliferate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set": "moc",
+  "set_name": "March of the Machine Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/6bba5de9-5afb-42af-a7eb-24ac854bf671",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/moc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/97fb9c9a-2278-42d0-9632-3a7e8faff74d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A44b90948-e85a-4f69-a9e2-aba63775ba40&unique=prints",
+  "collector_number": "15",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lorenzo Mastroianni",
+  "artist_ids": [
+    "70213e7d-47e0-4543-a1ae-451009053e2d"
+  ],
+  "illustration_id": "e290e4b6-3b2f-4bfc-8dee-ad5df9f7f41b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4851,
+  "preview": {
+    "source": "MTGGoldfish",
+    "source_uri": "https://www.youtube.com/watch?v=1b333PG4_KQ",
+    "previewed_at": "2023-04-04"
+  },
+  "prices": {
+    "usd": "11.71",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "12.53",
+    "eur_foil": null,
+    "tix": "2.73"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=612128&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFiligree%2BVector",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFiligree%2BVector",
+    "edhrec": "https://edhrec.com/route/?cc=Filigree+Vector"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F491503%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=705451&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/111382?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

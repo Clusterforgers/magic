@@ -1,0 +1,75 @@
+{
+  "oracle_id": "49b9a3ac-d245-431a-bf40-64d1b8dc2b91",
+  "name": "Keeper of the Accord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of the Accord",
+      "oracle_fingerprint": "00b3e51325deeacde63c44de4892cbf4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Triggering" }] },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
+                        "count": { "min": 0, "max": 1 },
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

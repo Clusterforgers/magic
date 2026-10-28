@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c8decfdf-1421-4649-acde-5215e7f08bb9",
+  "name": "Martial Impetus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martial Impetus",
+      "oracle_fingerprint": "e6e637a6113add6e6993ba6ae94fd411",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, "Goaded"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": "Triggering" } },
+                      { "AttackingPlayer": "Opponents" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

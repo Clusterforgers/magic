@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ceeeacbc-01b0-4421-aaca-2ce6cdbe45d7",
+  "name": "Tetsuko Umezawa, Fugitive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tetsuko Umezawa, Fugitive",
+      "oracle_fingerprint": "23d5dc9dec0cde9161419d06dde93cab",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 1 } },
+                    { "Compare": { "stat": "Toughness", "op": "Le", "to": 1 } }
+                  ]
+                }
+              ]
+            },
+            "mods": ["CantBeBlocked"]
+          }
+        }
+      ]
+    }
+  ]
+}

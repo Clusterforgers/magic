@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6f16c3ac-a9b8-47e6-b18b-ae37c74d44a0",
+  "name": "Nether Traitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nether Traitor",
+      "oracle_fingerprint": "1204807fcf8c9420911cbe57ca9a6cf9",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": "Shadow" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}",
+                  "paid": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

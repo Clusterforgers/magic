@@ -1,0 +1,30 @@
+{
+  "oracle_id": "37c3cd4d-8e9a-46d4-a9c2-55f70a321eb6",
+  "name": "Dulcet Sirens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dulcet Sirens",
+      "oracle_fingerprint": "45c927ad30b0035fcd0ccf2cd7c38877",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": { "who": { "Target": 0 }, "players": { "Target": 1 } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{U}" } }
+      ]
+    }
+  ]
+}

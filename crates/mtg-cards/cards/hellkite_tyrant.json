@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d9b066ff-9519-415c-ae17-bfea703c9889",
+  "name": "Hellkite Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellkite Tyrant",
+      "oracle_fingerprint": "f3390e9780902fc19adface7bec2c39f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 20
+              }
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

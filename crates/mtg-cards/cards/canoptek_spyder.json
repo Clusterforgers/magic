@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bcad5b83-5513-4455-a9c9-716281505eaa",
+  "name": "Canoptek Spyder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canoptek Spyder",
+      "oracle_fingerprint": "d45e805ef9708cfa07835d6276025fc1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "Not": "Token" },
+                  { "Type": "Artifact" },
+                  { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

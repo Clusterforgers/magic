@@ -1,0 +1,27 @@
+{
+  "oracle_id": "060deaff-44d6-4f03-9568-bcb7add80255",
+  "name": "Drakuseth, Maw of Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drakuseth, Maw of Flames",
+      "oracle_fingerprint": "dd014e4aa4b326e133bfe338c94b3324",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": "AnyTarget" },
+              { "what": "AnyTarget", "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "source": "This", "to": { "Target": 1 }, "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

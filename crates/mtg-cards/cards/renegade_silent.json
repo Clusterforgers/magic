@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6b5565a2-be5c-46b1-99df-8094e77446cc",
+  "name": "Renegade Silent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renegade Silent",
+      "oracle_fingerprint": "50c6367f67de05d4e52ccfe0d3df18d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Goad": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "PhaseOut": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

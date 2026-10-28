@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d9af0da0-5e10-40c5-afb2-3f44c016b927",
+  "name": "Gary Clone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gary Clone",
+      "oracle_fingerprint": "2e2e427935d18617ab2f6f84dcbf6fc6",
+      "abilities": [
+        { "Keyword": { "Squad": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Named": "Gary Clone" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

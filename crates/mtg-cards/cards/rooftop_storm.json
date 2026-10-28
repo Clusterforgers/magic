@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6835bf6d-7197-481b-ac26-276ce363b4ad",
+  "name": "Rooftop Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rooftop Storm",
+      "oracle_fingerprint": "103bbc3e4f0311dd276cca53266d3382",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Subtype": "Zombie" }, { "Type": "Creature" }], "free": true }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

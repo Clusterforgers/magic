@@ -1,0 +1,65 @@
+{
+  "oracle_id": "7d5149c6-0e7e-438c-a554-5235c85e2426",
+  "name": "Metallurgic Summonings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Metallurgic Summonings",
+      "oracle_fingerprint": "626f92795c12ae4322d7df666d968bcf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "token": {
+                        "name": "Construct",
+                        "types": ["Artifact", "Creature"],
+                        "subtypes": ["Construct"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{U}{U}" }, "ExileSelf"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 6
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

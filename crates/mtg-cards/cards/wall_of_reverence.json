@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0810983f-818a-43e6-a7b5-ebe0bc8b9f6a",
+  "name": "Wall of Reverence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Reverence",
+      "oracle_fingerprint": "8d248bf3c82ddf75360e5c9a0a799f71",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "GainLife": {
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

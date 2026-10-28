@@ -1,0 +1,51 @@
+{
+  "oracle_id": "7f5bebfd-faf3-485f-b906-aa96d621d499",
+  "name": "Family's Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Family's Favor",
+      "oracle_fingerprint": "5ea67b982239ad2dcb98dfc6cadf5851",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [
+                            {
+                              "RemoveCounters": { "from": "This", "counter": { "Other": "shield" } }
+                            },
+                            { "If": { "condition": "Performed", "then": [{ "Draw": {} }] } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

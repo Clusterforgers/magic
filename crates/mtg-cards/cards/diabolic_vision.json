@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6b7b1a71-812d-4ff5-b38b-94d1cf634143",
+  "name": "Diabolic Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diabolic Vision",
+      "oracle_fingerprint": "3fafdb2596ab134c2cc97fc248a4c8c8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "kept",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "85bf7c95-4534-435b-bb25-f39340ecf9be",
+  "oracle_id": "c5126d6e-969c-4034-98e3-f8653163346f",
+  "multiverse_ids": [],
+  "resource_id": "67D1631E5A0DB1E634AF4E8954BCC2132ED73ABF663D5F9A4565BEDEBCB5A773",
+  "mtgo_id": 150733,
+  "tcgplayer_id": 697106,
+  "cardmarket_id": 891657,
+  "name": "Folk Hero",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/85bf7c95-4534-435b-bb25-f39340ecf9be",
+  "scryfall_uri": "https://scryfall.com/card/msc/132/folk-hero?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:40:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.jpg?1783903247",
+    "normal": "https://cards.scryfall.io/normal/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.jpg?1783903247",
+    "large": "https://cards.scryfall.io/large/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.jpg?1783903247",
+    "png": "https://cards.scryfall.io/png/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.png?1783903247",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.jpg?1783903247",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.jpg?1783903247",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.webp?1783903247",
+    "grid": "https://cards.scryfall.io/grid/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.webp?1783903247",
+    "display": "https://cards.scryfall.io/display/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.webp?1783903247",
+    "art": "https://cards.scryfall.io/art/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.webp?1783903247",
+    "crop": "https://cards.scryfall.io/crop/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.webp?1783903247",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/5/85bf7c95-4534-435b-bb25-f39340ecf9be.jpg?1783903247"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Enchantment — Background",
+  "oracle_text": "Commander creatures you own have \"Whenever you cast a spell that shares a creature type with this creature, draw a card. This ability triggers only once each turn.\"",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/85bf7c95-4534-435b-bb25-f39340ecf9be/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac5126d6e-969c-4034-98e3-f8653163346f&unique=prints",
+  "collector_number": "132",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "When evil arises, heroes are born.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Tyler Christopher",
+  "artist_ids": [
+    "b029218f-baba-45aa-8f5a-24353077dcc9"
+  ],
+  "illustration_id": "5e5826d0-a08c-4012-a962-cbef466b060a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment",
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3746,
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.88",
+    "eur_foil": null,
+    "tix": "0.57"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFolk%2BHero",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFolk%2BHero",
+    "edhrec": "https://edhrec.com/route/?cc=Folk+Hero"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697106%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891657&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150733?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

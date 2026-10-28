@@ -1,0 +1,51 @@
+{
+  "oracle_id": "343460ea-7999-4d9e-b425-97fa1621f9d6",
+  "name": "Flameshadow Conjuring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flameshadow Conjuring",
+      "oracle_fingerprint": "b75dba2ca1799d2f63323d6e22b6a192",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": { "of": "Triggering", "except": [{ "AddKeyword": "Haste" }] }
+                        },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

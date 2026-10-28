@@ -1,0 +1,62 @@
+{
+  "oracle_id": "4f66d82a-492f-4638-9f77-190d4a33ad7f",
+  "name": "Kirtar's Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kirtar's Wrath",
+      "oracle_fingerprint": "7c5ac5c66b00e5afbe4763188a38ed95",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Creature" }] },
+                        "regenerate": false
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Creature" }] },
+                        "regenerate": false
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

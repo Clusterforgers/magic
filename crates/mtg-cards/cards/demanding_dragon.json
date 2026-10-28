@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c8f1e3bd-bbf0-4750-b054-03553fc61850",
+  "name": "Demanding Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demanding Dragon",
+      "oracle_fingerprint": "f3941404998a6e495fd7fca2af704994",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "unpaid": [
+                    { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 5 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

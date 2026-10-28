@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "4d8a5bab-813a-488a-ab65-3286582ef595",
+  "oracle_id": "c8f1e3bd-bbf0-4750-b054-03553fc61850",
+  "multiverse_ids": [
+    532507
+  ],
+  "tcgplayer_id": 243815,
+  "cardmarket_id": 572293,
+  "name": "Demanding Dragon",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/4d8a5bab-813a-488a-ab65-3286582ef595",
+  "scryfall_uri": "https://scryfall.com/card/afc/120/demanding-dragon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:03:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.jpg?1783926210",
+    "normal": "https://cards.scryfall.io/normal/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.jpg?1783926210",
+    "large": "https://cards.scryfall.io/large/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.jpg?1783926210",
+    "png": "https://cards.scryfall.io/png/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.png?1783926210",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.jpg?1783926210",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.jpg?1783926210",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.webp?1783926210",
+    "grid": "https://cards.scryfall.io/grid/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.webp?1783926210",
+    "display": "https://cards.scryfall.io/display/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.webp?1783926210",
+    "art": "https://cards.scryfall.io/art/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.webp?1783926210",
+    "crop": "https://cards.scryfall.io/crop/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.webp?1783926210",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/d/4d8a5bab-813a-488a-ab65-3286582ef595.jpg?1783926210"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nWhen this creature enters, it deals 5 damage to target opponent unless that player sacrifices a creature of their choice.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set": "afc",
+  "set_name": "Forgotten Realms Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4d8a5bab-813a-488a-ab65-3286582ef595/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8f1e3bd-bbf0-4750-b054-03553fc61850&unique=prints",
+  "collector_number": "120",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "A knight's devotion to their steed goes only so far.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rahn",
+  "artist_ids": [
+    "7742047e-0f80-4c0f-a530-d07460165e86"
+  ],
+  "illustration_id": "18890a94-bf1b-446c-9786-2cc240f1acf3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7893,
+  "penny_rank": 5147,
+  "prices": {
+    "usd": "0.43",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=532507&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDemanding%2BDragon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDemanding%2BDragon",
+    "edhrec": "https://edhrec.com/route/?cc=Demanding+Dragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243815%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=572293&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Demanding+Dragon&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

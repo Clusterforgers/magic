@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "69dda877-c176-456c-8cd8-5a1ea288e4c9",
+  "oracle_id": "adf731a1-fc4d-4260-bb85-535edb1d82e9",
+  "multiverse_ids": [],
+  "resource_id": "F7A261B1672F32DE9B931D8EAA1D47B62A12038D0FBF511C9D68D525CF4EE96C",
+  "mtgo_id": 148643,
+  "tcgplayer_id": 687369,
+  "cardmarket_id": 881297,
+  "name": "Feral Appetite",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/69dda877-c176-456c-8cd8-5a1ea288e4c9",
+  "scryfall_uri": "https://scryfall.com/card/soc/38/feral-appetite?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:50:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.jpg?1783903853",
+    "normal": "https://cards.scryfall.io/normal/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.jpg?1783903853",
+    "large": "https://cards.scryfall.io/large/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.jpg?1783903853",
+    "png": "https://cards.scryfall.io/png/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.png?1783903853",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.jpg?1783903853",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.jpg?1783903853",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.webp?1783903853",
+    "grid": "https://cards.scryfall.io/grid/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.webp?1783903853",
+    "display": "https://cards.scryfall.io/display/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.webp?1783903853",
+    "art": "https://cards.scryfall.io/art/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.webp?1783903853",
+    "crop": "https://cards.scryfall.io/crop/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.webp?1783903853",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/9/69dda877-c176-456c-8cd8-5a1ea288e4c9.jpg?1783903853"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Attacking Pests you control get +1/+0 and have deathtouch.\n{1}{G}: Exile target card from a graveyard. If a creature card is exiled this way, create a 1/1 black and green Pest creature token with \"When this token dies, you gain 1 life.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c72ceae7-72d6-41dc-82cc-b86e845d7aa6",
+      "component": "token",
+      "name": "Pest",
+      "type_line": "Token Creature — Pest",
+      "uri": "https://api.scryfall.com/cards/c72ceae7-72d6-41dc-82cc-b86e845d7aa6"
+    },
+    {
+      "object": "related_card",
+      "id": "c6c3172f-caff-443a-a024-8d5024c0dbf0",
+      "component": "combo_piece",
+      "name": "Feral Appetite",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/c6c3172f-caff-443a-a024-8d5024c0dbf0"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set": "soc",
+  "set_name": "Secrets of Strixhaven Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/69dda877-c176-456c-8cd8-5a1ea288e4c9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aadf731a1-fc4d-4260-bb85-535edb1d82e9&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "witherbloom",
+  "flavor_text": "Once they were given a taste of bone they wouldn't touch anything else.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michal Ivan",
+  "artist_ids": [
+    "89ba58cb-84a6-480b-a86c-d8ae57df2834"
+  ],
+  "illustration_id": "e707fdf5-2fad-4d4b-be03-0b52f1c09969",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8590,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.37",
+    "eur_foil": null,
+    "tix": "2.82"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFeral%2BAppetite",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFeral%2BAppetite",
+    "edhrec": "https://edhrec.com/route/?cc=Feral+Appetite"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F687369%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=881297&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/148643?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

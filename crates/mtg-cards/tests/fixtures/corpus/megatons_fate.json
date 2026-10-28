@@ -1,0 +1,165 @@
+{
+  "object": "card",
+  "id": "e8492127-888d-4da0-b49f-fba6a356b0a9",
+  "oracle_id": "09a688c1-21f6-4c7d-a6bd-aedc0d76a671",
+  "multiverse_ids": [
+    652148
+  ],
+  "mtgo_id": 132371,
+  "tcgplayer_id": 539640,
+  "cardmarket_id": 757900,
+  "name": "Megaton's Fate",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/e8492127-888d-4da0-b49f-fba6a356b0a9",
+  "scryfall_uri": "https://scryfall.com/card/pip/61/megatons-fate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.jpg?1783912403",
+    "normal": "https://cards.scryfall.io/normal/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.jpg?1783912403",
+    "large": "https://cards.scryfall.io/large/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.jpg?1783912403",
+    "png": "https://cards.scryfall.io/png/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.png?1783912403",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.jpg?1783912403",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.jpg?1783912403",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.webp?1783912403",
+    "grid": "https://cards.scryfall.io/grid/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.webp?1783912403",
+    "display": "https://cards.scryfall.io/display/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.webp?1783912403",
+    "art": "https://cards.scryfall.io/art/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.webp?1783912403",
+    "crop": "https://cards.scryfall.io/crop/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.webp?1783912403",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/8/e8492127-888d-4da0-b49f-fba6a356b0a9.jpg?1783912403"
+  },
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose one —\n• Disarm — Destroy target artifact. Create four Treasure tokens.\n• Detonate — Megaton's Fate deals 8 damage to each creature. Each player gets four rad counters.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure",
+    "Disarm",
+    "Detonate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "89241e80-3637-4ea0-afb4-14e5a22aa393",
+      "component": "combo_piece",
+      "name": "Megaton's Fate",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/89241e80-3637-4ea0-afb4-14e5a22aa393"
+    },
+    {
+      "object": "related_card",
+      "id": "1d74d012-66ca-4a0c-9e90-e31e96730d4d",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/1d74d012-66ca-4a0c-9e90-e31e96730d4d"
+    },
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e8492127-888d-4da0-b49f-fba6a356b0a9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A09a688c1-21f6-4c7d-a6bd-aedc0d76a671&unique=prints",
+  "collector_number": "61",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Do the right thing—or the wrong thing.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Cold",
+  "artist_ids": [
+    "2622d22b-3fd8-4831-9b2b-adc5fac01b85"
+  ],
+  "illustration_id": "5e8b0022-5067-41ad-aa0e-b66a1254b18b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9132,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.44",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.43",
+    "tix": "0.29"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652148&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMegaton%2527s%2BFate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMegaton%2527s%2BFate",
+    "edhrec": "https://edhrec.com/route/?cc=Megaton%27s+Fate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539640%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757900&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132371?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

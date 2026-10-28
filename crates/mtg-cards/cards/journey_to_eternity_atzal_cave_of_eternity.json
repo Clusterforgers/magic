@@ -1,0 +1,59 @@
+{
+  "oracle_id": "7d6ccd0b-df16-40b2-930b-bcde0b6ef73f",
+  "name": "Journey to Eternity // Atzal, Cave of Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Journey to Eternity",
+      "oracle_fingerprint": "ac16c6641d4396d5c678aae194303227",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } } },
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atzal, Cave of Eternity",
+      "oracle_fingerprint": "eda53bb20e619e836bccb1593bdda108",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

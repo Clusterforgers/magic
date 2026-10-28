@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b2d4ce3c-00b1-4a72-b652-4c129475080f",
+  "name": "Kasla, the Broken Halo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kasla, the Broken Halo",
+      "oracle_fingerprint": "b360aef00b9123e9735f3152ea477b0d",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Other", { "HasKeyword": "Convoke" }], "by": "You" } },
+            "effects": [{ "Scry": { "count": 2 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

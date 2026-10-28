@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ec08df88-3c13-4940-a090-0c502b9b12f1",
+  "name": "Goblin Spymaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Spymaster",
+      "oracle_fingerprint": "a702b2c04cfe73b79613db724abea272",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "Opponents" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MustAttack": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

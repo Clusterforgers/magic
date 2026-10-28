@@ -1,0 +1,54 @@
+{
+  "oracle_id": "860b5e4c-45bd-4ba1-930a-36a1450ebd37",
+  "name": "Infested Thrinax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infested Thrinax",
+      "oracle_fingerprint": "af6ca48a7c170ebe49448b5742056443",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "Not": "Token" },
+                        { "ControlledBy": "You" }
+                      ],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Saproling",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Saproling"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "oracle_id": "0acc9372-58b4-43bf-ab82-1f95831c81d4",
+  "name": "Nesting Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nesting Dragon",
+      "oracle_fingerprint": "a92eca25165a3c470f5fdd57ddfe8f57",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon Egg",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon", "Egg"],
+                      "power": 0,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": "Defender" },
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Dragon",
+                                      "colors": ["Red"],
+                                      "types": ["Creature"],
+                                      "subtypes": ["Dragon"],
+                                      "power": 2,
+                                      "toughness": 2,
+                                      "abilities": [
+                                        { "Keyword": "Flying" },
+                                        {
+                                          "Activated": {
+                                            "cost": "{R}",
+                                            "effects": [
+                                              {
+                                                "Continuous": {
+                                                  "affected": "This",
+                                                  "mods": [
+                                                    { "ModifyPT": { "power": 1, "toughness": 0 } }
+                                                  ],
+                                                  "duration": "UntilEndOfTurn"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

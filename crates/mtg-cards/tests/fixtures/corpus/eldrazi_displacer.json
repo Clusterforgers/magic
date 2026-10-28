@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "f0bb1a5c-0f59-4951-827f-fe9df968232d",
+  "oracle_id": "9b1f552a-bddc-4fcb-ac67-b4a65b2f48ba",
+  "multiverse_ids": [
+    407523
+  ],
+  "mtgo_id": 59473,
+  "mtgo_foil_id": 59474,
+  "tcgplayer_id": 110832,
+  "cardmarket_id": 287294,
+  "name": "Eldrazi Displacer",
+  "lang": "en",
+  "released_at": "2016-01-22",
+  "uri": "https://api.scryfall.com/cards/f0bb1a5c-0f59-4951-827f-fe9df968232d",
+  "scryfall_uri": "https://scryfall.com/card/ogw/13/eldrazi-displacer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:18:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.jpg?1783937928",
+    "normal": "https://cards.scryfall.io/normal/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.jpg?1783937928",
+    "large": "https://cards.scryfall.io/large/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.jpg?1783937928",
+    "png": "https://cards.scryfall.io/png/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.png?1783937928",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.jpg?1783937928",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.jpg?1783937928",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.webp?1783937928",
+    "grid": "https://cards.scryfall.io/grid/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.webp?1783937928",
+    "display": "https://cards.scryfall.io/display/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.webp?1783937928",
+    "art": "https://cards.scryfall.io/art/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.webp?1783937928",
+    "crop": "https://cards.scryfall.io/crop/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.webp?1783937928",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/0/f0bb1a5c-0f59-4951-827f-fe9df968232d.jpg?1783937928"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Eldrazi",
+  "oracle_text": "Devoid (This card has no color.)\n{2}{C}: Exile another target creature, then return it to the battlefield tapped under its owner's control. ({C} represents colorless mana.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Devoid"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cd51d245-8f95-45b0-ab5f-e2b3a3eb5dfe",
+  "set": "ogw",
+  "set_name": "Oath of the Gatewatch",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/cd51d245-8f95-45b0-ab5f-e2b3a3eb5dfe",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aogw&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ogw?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f0bb1a5c-0f59-4951-827f-fe9df968232d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9b1f552a-bddc-4fcb-ac67-b4a65b2f48ba&unique=prints",
+  "collector_number": "13",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "4b0389f2-14dc-46ec-91a4-9f4ffcb9130c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "devoid"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3065,
+  "penny_rank": 2270,
+  "prices": {
+    "usd": "1.39",
+    "usd_foil": "4.41",
+    "usd_etched": null,
+    "eur": "0.73",
+    "eur_foil": "2.31",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=407523&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEldrazi%2BDisplacer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEldrazi%2BDisplacer",
+    "edhrec": "https://edhrec.com/route/?cc=Eldrazi+Displacer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F110832%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=287294&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/59473?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

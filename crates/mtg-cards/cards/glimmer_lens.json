@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bb7cebb7-a979-4879-b834-deab13f2a22c",
+  "name": "Glimmer Lens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimmer Lens",
+      "oracle_fingerprint": "fcb2aa3e5742bc324882f7301bc7af5d",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "if": { "Matches": { "subject": "Attached", "selector": ["Attacking"] } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}{W}" } }
+      ]
+    }
+  ]
+}

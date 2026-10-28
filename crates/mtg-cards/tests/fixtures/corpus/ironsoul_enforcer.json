@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "c2c0dfeb-2af0-4c91-bdfe-5270f64dff03",
+  "oracle_id": "a613b00e-d6e8-4470-a7dc-5eab5e48dce0",
+  "multiverse_ids": [
+    553904
+  ],
+  "mtgo_id": 97762,
+  "tcgplayer_id": 263099,
+  "cardmarket_id": 608587,
+  "name": "Ironsoul Enforcer",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03",
+  "scryfall_uri": "https://scryfall.com/card/nec/7/ironsoul-enforcer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:26:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.jpg?1783923999",
+    "normal": "https://cards.scryfall.io/normal/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.jpg?1783923999",
+    "large": "https://cards.scryfall.io/large/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.jpg?1783923999",
+    "png": "https://cards.scryfall.io/png/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.png?1783923999",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.jpg?1783923999",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.jpg?1783923999",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.webp?1783923999",
+    "grid": "https://cards.scryfall.io/grid/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.webp?1783923999",
+    "display": "https://cards.scryfall.io/display/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.webp?1783923999",
+    "art": "https://cards.scryfall.io/art/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.webp?1783923999",
+    "crop": "https://cards.scryfall.io/crop/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.webp?1783923999",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/2/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03.jpg?1783923999"
+  },
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Artifact Creature — Human Samurai",
+  "oracle_text": "Whenever this creature or a commander you control attacks alone, return target artifact card from your graveyard to the battlefield.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set": "nec",
+  "set_name": "Neon Dynasty Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anec&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nec?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c2c0dfeb-2af0-4c91-bdfe-5270f64dff03/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa613b00e-d6e8-4470-a7dc-5eab5e48dce0&unique=prints",
+  "collector_number": "7",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You break it, you buy it. You steal it, I find it.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Antonio José Manzanedo",
+  "artist_ids": [
+    "74986d28-0001-4a78-827c-e490b325d0e3"
+  ],
+  "illustration_id": "a2fec951-0d17-440c-b2ae-f0cd1944f09e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6805,
+  "prices": {
+    "usd": "1.03",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.64",
+    "eur_foil": null,
+    "tix": "0.33"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=553904&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIronsoul%2BEnforcer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIronsoul%2BEnforcer",
+    "edhrec": "https://edhrec.com/route/?cc=Ironsoul+Enforcer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F263099%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608587&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97762?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

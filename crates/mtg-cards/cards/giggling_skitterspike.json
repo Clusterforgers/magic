@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ca02cb31-9850-48bf-bc8d-ed86a4d4d4f7",
+  "name": "Giggling Skitterspike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giggling Skitterspike",
+      "oracle_fingerprint": "7a9b7aa59653ff5387b78957d20b0532",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": ["This"] } },
+                { "Blocks": { "what": ["This"] } },
+                { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } }
+              ]
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{5}", "effects": [{ "Monstrosity": { "count": 5 } }] } }
+      ]
+    }
+  ]
+}

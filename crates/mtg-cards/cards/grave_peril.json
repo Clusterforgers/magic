@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f5a74cee-6b17-4ed4-bc05-94fac53f87d7",
+  "name": "Grave Peril",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Peril",
+      "oracle_fingerprint": "7cc30437b0c88962229cc236d5215ed0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Destroy": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

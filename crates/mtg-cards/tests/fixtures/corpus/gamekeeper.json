@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "1dba14c0-18c0-4ded-ae56-5a689106f1a1",
+  "oracle_id": "c6921cfe-48f9-4378-b145-d9b430c2aaf6",
+  "multiverse_ids": [
+    599036
+  ],
+  "mtgo_id": 107813,
+  "tcgplayer_id": 457948,
+  "cardmarket_id": 688740,
+  "name": "Gamekeeper",
+  "lang": "en",
+  "released_at": "2023-01-13",
+  "uri": "https://api.scryfall.com/cards/1dba14c0-18c0-4ded-ae56-5a689106f1a1",
+  "scryfall_uri": "https://scryfall.com/card/dmr/162/gamekeeper?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:54:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.jpg?1783918444",
+    "normal": "https://cards.scryfall.io/normal/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.jpg?1783918444",
+    "large": "https://cards.scryfall.io/large/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.jpg?1783918444",
+    "png": "https://cards.scryfall.io/png/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.png?1783918444",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.jpg?1783918444",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.jpg?1783918444",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.webp?1783918444",
+    "grid": "https://cards.scryfall.io/grid/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.webp?1783918444",
+    "display": "https://cards.scryfall.io/display/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.webp?1783918444",
+    "art": "https://cards.scryfall.io/art/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.webp?1783918444",
+    "crop": "https://cards.scryfall.io/crop/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.webp?1783918444",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/d/1dba14c0-18c0-4ded-ae56-5a689106f1a1.jpg?1783918444"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf",
+  "oracle_text": "When this creature dies, you may exile it. If you do, reveal cards from the top of your library until you reveal a creature card. Put that card onto the battlefield and put all other cards revealed this way into your graveyard.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set": "dmr",
+  "set_name": "Dominaria Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/ca4c2884-e539-4b7f-980d-5d6a50220f2a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1dba14c0-18c0-4ded-ae56-5a689106f1a1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac6921cfe-48f9-4378-b145-d9b430c2aaf6&unique=prints",
+  "collector_number": "162",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Scott Hampton",
+  "artist_ids": [
+    "1675947d-e663-4200-a6ce-5ad7bb3c83b1"
+  ],
+  "illustration_id": "40f8db4b-3fe7-4b7c-aaa7-cbfdc6a3c0ae",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14160,
+  "penny_rank": 6517,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.19",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.27",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=599036&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGamekeeper",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGamekeeper",
+    "edhrec": "https://edhrec.com/route/?cc=Gamekeeper"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F457948%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=688740&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/107813?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "133c99c0-3652-410f-8100-68015a47af9f",
+  "name": "Dispatch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dispatch",
+      "oracle_fingerprint": "5c11130c043d8e049a4a8528bf27d365",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

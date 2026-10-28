@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5e0bd136-e7e9-49f0-910b-a9fb0b9c481a",
+  "name": "Lotleth Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotleth Giant",
+      "oracle_fingerprint": "fd0a0e493baa8e90244c794cd3d6d6a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

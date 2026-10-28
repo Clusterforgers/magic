@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e3955573-3db5-490e-903e-65e0172a9202",
+  "name": "Hammer of Nazahn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hammer of Nazahn",
+      "oracle_fingerprint": "12a0658d6d341f9b0c36f1831df99c7e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Attach": { "what": "Triggering", "to": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": "Indestructible" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

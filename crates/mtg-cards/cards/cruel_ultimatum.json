@@ -1,0 +1,34 @@
+{
+  "oracle_id": "01294ac9-1a06-4ee8-b3b1-db1f07c9d94e",
+  "name": "Cruel Ultimatum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Ultimatum",
+      "oracle_fingerprint": "b36c2643039615a3c62fc8b1188d532a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } },
+              { "Discard": { "who": { "Target": 0 }, "count": 3 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 5 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Graveyard" }, { "Type": "Creature" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Draw": { "count": 3 } },
+              { "GainLife": { "amount": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

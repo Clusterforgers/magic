@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9b1f552a-bddc-4fcb-ac67-b4a65b2f48ba",
+  "name": "Eldrazi Displacer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Displacer",
+      "oracle_fingerprint": "b8c4e59fc4ee1b2274c003e461eaa99f",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Activated": {
+            "cost": "{2}{C}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

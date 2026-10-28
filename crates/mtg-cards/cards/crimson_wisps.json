@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e699d140-eb13-4f15-aecb-85c76e8b1b14",
+  "name": "Crimson Wisps",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crimson Wisps",
+      "oracle_fingerprint": "00d8457eb05ba07d14485d95c63766db",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["Red"] }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

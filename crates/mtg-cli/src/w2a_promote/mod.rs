@@ -37,6 +37,8 @@ pub enum W2aSkip {
     Rejected(Verdict),
     /// Accepted, but with a state that is not promoted (`Partial` is, with `--partial`).
     State(Support),
+    /// The rules name a card without a corpus file (a partner), so the corpus would not load.
+    NamesOutside,
     /// An earlier file of the run promotes the same card.
     Repeated,
     /// The cached Oracle Cards file has no record of the card.
@@ -52,6 +54,7 @@ impl W2aSkip {
             W2aSkip::Compiled => "the compiler makes it Verified".into(),
             W2aSkip::Rejected(verdict) => verdict.word().to_owned(),
             W2aSkip::State(state) => format!("accepted {state:?}"),
+            W2aSkip::NamesOutside => "names a card outside the corpus".into(),
             W2aSkip::Repeated => "an earlier file promotes it".into(),
             W2aSkip::NoRecord => "no record in the cached Oracle Cards file".into(),
         }
@@ -91,6 +94,8 @@ pub struct W2aBasis<'a> {
     pub library: &'a Library,
     /// The lowercase names a rule may name.
     pub names: &'a BTreeSet<String>,
+    /// The lowercase names of the corpus cards and their faces: the names a corpus card may name.
+    pub corpus: &'a BTreeSet<String>,
     /// What the engine runs.
     pub caps: &'a Caps,
     /// The `mtg-cards` crate directory the cards go to.
@@ -127,6 +132,13 @@ impl W2aBasis<'_> {
         if state != Support::Verified && !(self.partial && state == Support::Partial) {
             return Err(W2aSkip::State(state));
         }
+        if !self
+            .library
+            .check_generated(&rules, printed, self.corpus)
+            .is_empty()
+        {
+            return Err(W2aSkip::NamesOutside);
+        }
         Ok(W2aPromotion {
             slug,
             oracle_id: printed.oracle_id.clone(),
@@ -134,6 +146,15 @@ impl W2aBasis<'_> {
             rules,
         })
     }
+}
+
+/// The lowercase names of the cards of a library and of their faces.
+pub fn w2a_corpus_names(library: &Library) -> BTreeSet<String> {
+    library
+        .cards()
+        .flat_map(|card| std::iter::once(&card.name).chain(card.faces.iter().map(|f| &f.name)))
+        .map(|name| name.to_lowercase())
+        .collect()
 }
 
 /// The fixture directory below the `mtg-cards` crate.
@@ -317,10 +338,12 @@ pub async fn w2a_promote_against(
     let cards = stored_cards(db).await?;
     let names = names_of(&cards);
     let caps = mtg_engine::caps();
+    let corpus = w2a_corpus_names(library);
     let basis = W2aBasis {
         cards: &cards,
         library,
         names: &names,
+        corpus: &corpus,
         caps: &caps,
         out: &out,
         partial: args.partial,

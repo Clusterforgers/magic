@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "95452998-7196-4a9b-b8a3-93cb3ec24f93",
+  "oracle_id": "c95bedcc-911f-4c0f-a148-1cf5787e82bd",
+  "multiverse_ids": [
+    634849
+  ],
+  "tcgplayer_id": 518806,
+  "cardmarket_id": 738776,
+  "name": "Run for Your Life",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/95452998-7196-4a9b-b8a3-93cb3ec24f93",
+  "scryfall_uri": "https://scryfall.com/card/who/154/run-for-your-life?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.jpg?1783914626",
+    "normal": "https://cards.scryfall.io/normal/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.jpg?1783914626",
+    "large": "https://cards.scryfall.io/large/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.jpg?1783914626",
+    "png": "https://cards.scryfall.io/png/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.png?1783914626",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.jpg?1783914626",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.jpg?1783914626",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.webp?1783914626",
+    "grid": "https://cards.scryfall.io/grid/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.webp?1783914626",
+    "display": "https://cards.scryfall.io/display/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.webp?1783914626",
+    "art": "https://cards.scryfall.io/art/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.webp?1783914626",
+    "crop": "https://cards.scryfall.io/crop/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.webp?1783914626",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/5/95452998-7196-4a9b-b8a3-93cb3ec24f93.jpg?1783914626"
+  },
+  "mana_cost": "{U}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "One or two target creatures each gain haste until end of turn. They can't be blocked this turn except by creatures with haste.\nEscape—{2}{U}{R}, Exile four other cards from your graveyard. (You may cast this card from your graveyard for its escape cost.)",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Escape"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/95452998-7196-4a9b-b8a3-93cb3ec24f93/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac95bedcc-911f-4c0f-a148-1cf5787e82bd&unique=prints",
+  "collector_number": "154",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fang Xinyu",
+  "artist_ids": [
+    "83ef4d6d-7ca1-4ec9-98ce-437d34f8e464"
+  ],
+  "illustration_id": "db5dc10f-eff2-4aaa-bf47-414064b123cf",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 12907,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.44",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.34",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634849&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRun%2Bfor%2BYour%2BLife",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRun%2Bfor%2BYour%2BLife",
+    "edhrec": "https://edhrec.com/route/?cc=Run+for+Your+Life"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F518806%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738776&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Run+for+Your+Life&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

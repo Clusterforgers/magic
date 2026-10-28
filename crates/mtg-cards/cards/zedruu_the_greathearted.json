@@ -1,0 +1,48 @@
+{
+  "oracle_id": "514179c0-a50b-4565-8e71-9dad256edd85",
+  "name": "Zedruu the Greathearted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zedruu the Greathearted",
+      "oracle_fingerprint": "96f788c52a23f2ebbbc436b31db7a53e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "OwnedBy": "You" }, { "ControlledBy": "Opponents" }] }
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "ControlledBy": "Opponents" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}{R}",
+            "targets": [
+              { "what": "Opponent" },
+              { "what": { "Object": [{ "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

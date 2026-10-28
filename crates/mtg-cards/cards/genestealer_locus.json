@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2a64cee5-04e2-4cbf-8fa9-d55c854f9500",
+  "name": "Genestealer Locus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genestealer Locus",
+      "oracle_fingerprint": "b1655caf458ab964262e4dbd79a790ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

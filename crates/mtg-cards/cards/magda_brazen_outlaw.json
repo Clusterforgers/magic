@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3d268e48-3004-4384-bf52-e63243fb5e02",
+  "name": "Magda, Brazen Outlaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magda, Brazen Outlaw",
+      "oracle_fingerprint": "e6b1d3109003fcb08ff19b5b18ec64bd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dwarf" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Treasure" }], "count": 5 } }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Subtype": "Dragon" }] }],
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

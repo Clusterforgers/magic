@@ -1,0 +1,52 @@
+{
+  "oracle_id": "09a688c1-21f6-4c7d-a6bd-aedc0d76a671",
+  "name": "Megaton's Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Megaton's Fate",
+      "oracle_fingerprint": "426d962f67215fbcd80f1a8fc88d4992",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Disarm",
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        { "CreateToken": { "token": { "Named": "treasure" }, "count": 4 } }
+                      ]
+                    },
+                    {
+                      "label": "Detonate",
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "source": "This",
+                            "to": { "Each": [{ "Type": "Creature" }] },
+                            "amount": 8
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": "EachPlayer",
+                            "counter": { "Other": "rad" },
+                            "count": 4
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "1e080c7d-102c-4d28-bcb9-62b36d400d13",
+  "name": "Rundvelt Hordemaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rundvelt Hordemaster",
+      "oracle_fingerprint": "ba34df9549bb84e8f2d513c87f090704",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "ExileTop": { "as": "card" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Subtype": "Goblin" }, { "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "what": [{ "Is": { "Bound": "card" } }], "from": "Exile" }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

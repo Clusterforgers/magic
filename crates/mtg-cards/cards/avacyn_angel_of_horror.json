@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4af61d45-7114-4eb4-a905-9e03caf87454",
+  "name": "Avacyn, Angel of Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avacyn, Angel of Horror",
+      "oracle_fingerprint": "47fe2bdae5c357cdf03c548ee4efc58c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

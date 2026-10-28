@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ce00e0d0-c6f4-4fe8-97c3-7279b06d8fdb",
+  "name": "Crypt Incursion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypt Incursion",
+      "oracle_fingerprint": "19a8ead74496e73bb27a74079815d88a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": { "by": 3, "of": { "Count": [{ "Is": { "Bound": "exiled" } }] } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

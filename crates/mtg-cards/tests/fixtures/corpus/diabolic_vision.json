@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "c360753a-af32-4f1d-a1c7-c3f3c075ecc0",
+  "oracle_id": "6b7b1a71-812d-4ff5-b38b-94d1cf634143",
+  "multiverse_ids": [
+    675815
+  ],
+  "mtgo_id": 131319,
+  "tcgplayer_id": 579032,
+  "cardmarket_id": 787935,
+  "name": "Diabolic Vision",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/c360753a-af32-4f1d-a1c7-c3f3c075ecc0",
+  "scryfall_uri": "https://scryfall.com/card/dsc/87/diabolic-vision?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.jpg?1783909637",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.jpg?1783909637",
+    "large": "https://cards.scryfall.io/large/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.jpg?1783909637",
+    "png": "https://cards.scryfall.io/png/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.png?1783909637",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.jpg?1783909637",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.jpg?1783909637",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.webp?1783909637",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.webp?1783909637",
+    "display": "https://cards.scryfall.io/display/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.webp?1783909637",
+    "art": "https://cards.scryfall.io/art/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.webp?1783909637",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.webp?1783909637",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/3/c360753a-af32-4f1d-a1c7-c3f3c075ecc0.jpg?1783909637"
+  },
+  "mana_cost": "{U}{B}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top five cards of your library. Put one of them into your hand and the rest on top of your library in any order.",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c360753a-af32-4f1d-a1c7-c3f3c075ecc0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6b7b1a71-812d-4ff5-b38b-94d1cf634143&unique=prints",
+  "collector_number": "87",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The demon was long dead, but it still whispered of forbidden truths and exquisite deaths.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mirko Failoni",
+  "artist_ids": [
+    "e150bcca-fe5c-4fa7-b80b-ea37bc285bd4"
+  ],
+  "illustration_id": "13105c58-1532-4353-bc66-db5fc343acb6",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7701,
+  "penny_rank": 7990,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675815&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDiabolic%2BVision",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDiabolic%2BVision",
+    "edhrec": "https://edhrec.com/route/?cc=Diabolic+Vision"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F579032%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=787935&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131319?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

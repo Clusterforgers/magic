@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c792229b-4a0f-48d5-93e5-60bd4cae9c42",
+  "name": "Bretagard Stronghold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bretagard Stronghold",
+      "oracle_fingerprint": "c08ede54247afab9336ea47e4033799c",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{W}{G}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

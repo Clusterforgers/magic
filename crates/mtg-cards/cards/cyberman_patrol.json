@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1e51fab7-3ca5-4fbb-a1e9-b39c842895e8",
+  "name": "Cyberman Patrol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyberman Patrol",
+      "oracle_fingerprint": "0fb605059d8b0efc36be8818788f60b3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": { "Afflict": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

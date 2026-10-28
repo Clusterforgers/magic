@@ -1,0 +1,40 @@
+{
+  "oracle_id": "6f498ff7-38c9-44ea-9cb5-994a003825ee",
+  "name": "Ingenious Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ingenious Prodigy",
+      "oracle_fingerprint": "18b163951e0fc2dc3dbb9ef4189c4146",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

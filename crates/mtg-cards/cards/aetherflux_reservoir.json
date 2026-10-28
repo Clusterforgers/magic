@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5f15125e-ae89-471e-b055-226a783bc7c1",
+  "name": "Aetherflux Reservoir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherflux Reservoir",
+      "oracle_fingerprint": "a2084a492cd203941d6767aee73a70ca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              { "GainLife": { "amount": { "Tallied": { "who": "You", "what": "SpellsCast" } } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 50 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 50 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

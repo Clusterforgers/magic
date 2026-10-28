@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c0891157-f3dd-4866-866f-fd13e9be9633",
+  "name": "Arwen, Weaver of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arwen, Weaver of Hope",
+      "oracle_fingerprint": "1fe27fac1182269e836a8ddcc5876491",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Stat": { "of": "This", "stat": "Toughness" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

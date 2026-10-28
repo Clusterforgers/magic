@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7db22241-fe43-4071-9af9-de1cf394f7f5",
+  "name": "Refuse // Cooperate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Refuse",
+      "oracle_fingerprint": "b53297a09c6dc72d2c67fac67db75b6a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cooperate",
+      "oracle_fingerprint": "dc7a249506c304d156f1fd2e193cb4fe",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

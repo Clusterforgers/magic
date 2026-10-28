@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3765e8bb-e70d-4503-b8dc-1e684e434c18",
+  "name": "Verdurous Gearhulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdurous Gearhulk",
+      "oracle_fingerprint": "7d12142a988156af1db1ea222f8bc3e0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": null },
+                "divide": 4
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

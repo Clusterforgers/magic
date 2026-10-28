@@ -1,0 +1,54 @@
+{
+  "oracle_id": "55adf2f0-f023-4f41-ae9d-3c002e9e6e8d",
+  "name": "Knickknack Ouphe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knickknack Ouphe",
+      "oracle_fingerprint": "f3722e769487aab0140afc54015b2765",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Aura" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "auras",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "auras" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Is": { "Bound": "auras" } } }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

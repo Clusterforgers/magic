@@ -1,0 +1,44 @@
+{
+  "oracle_id": "198b6c6f-a480-4672-9d87-b0cb5d8ed1c0",
+  "name": "Kaseto, Orochi Archmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaseto, Orochi Archmage",
+      "oracle_fingerprint": "ead0f3861948cb9fec42d6226a1d5b9b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Subtype": "Snake" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
