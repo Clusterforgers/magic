@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fcd2142e-ba84-4693-9b29-ecc43feba2b8",
+  "name": "Sinister Gnarlbark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sinister Gnarlbark",
+      "oracle_fingerprint": "f4052b5f92e82d9bcfec762ef75236d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "blighted"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "blighted" }, "counter": "-1/-1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

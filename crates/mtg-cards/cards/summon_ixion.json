@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1ccb8122-9135-4b8d-b1d1-18997fd7e9d2",
+  "name": "Summon: Ixion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Ixion",
+      "oracle_fingerprint": "6bbac4b2b1f74e78ec2970d1aa4921b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": "FirstStrike" }
+      ]
+    }
+  ]
+}

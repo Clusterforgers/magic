@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"effects":[{"Draw":{}},{"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"as":"blighted"}},{"PutCounters":{"on":{"Bound":"blighted"},"counter":"-1/-1"}}]}}]}]}

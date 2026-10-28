@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e958144e-01bc-46ff-8f56-ddf2eb098630",
+  "name": "Thundermaw Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thundermaw Hellkite",
+      "oracle_fingerprint": "cba8f5702e384b75f1e41e833b3a8828",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "HasKeyword": "Flying" },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  },
+                  "amount": 1
+                }
+              },
+              {
+                "Tap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "HasKeyword": "Flying" },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

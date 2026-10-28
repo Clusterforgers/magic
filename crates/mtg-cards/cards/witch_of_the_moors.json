@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7ad97dd9-1342-4ed4-bea9-1bb21d748e04",
+  "name": "Witch of the Moors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch of the Moors",
+      "oracle_fingerprint": "04329a5930ab06416ef12f7f8eebd3b8",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

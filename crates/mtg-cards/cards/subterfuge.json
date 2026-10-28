@@ -1,0 +1,45 @@
+{
+  "oracle_id": "687cfdf7-8f35-464a-8d6e-9f2d769ed6b4",
+  "name": "Subterfuge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subterfuge",
+      "oracle_fingerprint": "53136aaa5437e1ede6086b53d11fcc5f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Flying" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Draw": { "count": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{7}{U}{U}" } }
+      ]
+    }
+  ]
+}

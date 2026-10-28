@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d04d2434-121e-4420-abfc-fa21ad5577c3",
+  "name": "Shard of the Void Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shard of the Void Dragon",
+      "oracle_fingerprint": "7365b71ae26410a2d1c16be35008c3ca",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Not": { "Type": "Land" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

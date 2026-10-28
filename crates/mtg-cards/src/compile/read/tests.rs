@@ -184,6 +184,7 @@ mod c6_blk_aura;
 mod c6_blk_draws;
 mod c6_eg_writers;
 mod c6_kw_renown_exploit;
+mod c6_sz_writers;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;

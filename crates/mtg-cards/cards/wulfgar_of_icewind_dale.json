@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b19d1459-eb08-4e75-95f4-402d86371a78",
+  "name": "Wulfgar of Icewind Dale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wulfgar of Icewind Dale",
+      "oracle_fingerprint": "a890e185e9e7cbcaba0e0c4ef8fef4c2",
+      "abilities": [
+        { "Keyword": "Melee" },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

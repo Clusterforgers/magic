@@ -1,0 +1,44 @@
+{
+  "oracle_id": "007c110d-4364-41e5-a8bc-6ac05ecbbd00",
+  "name": "Thopter Assembly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thopter Assembly",
+      "oracle_fingerprint": "cbae8c9d03f3a0dccae5b73cbfa4956d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Thopter" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 5
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "oracle_id": "796f1e1f-7fec-429d-82ae-125f541d6cc7",
+  "name": "Ulasht, the Hate Seed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulasht, the Hate Seed",
+      "oracle_fingerprint": "c4bde317a39035291f3451b2f28b98d5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Sum": [
+                    {
+                      "Count": [
+                        { "Type": "Creature" },
+                        "Other",
+                        { "Color": "Red" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    {
+                      "Count": [
+                        { "Type": "Creature" },
+                        "Other",
+                        { "Color": "Green" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Saproling",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Saproling"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

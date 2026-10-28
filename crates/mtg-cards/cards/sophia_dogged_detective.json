@@ -1,0 +1,67 @@
+{
+  "oracle_id": "eaf8027a-017a-4471-ae7b-a372fd8e0ff3",
+  "name": "Sophia, Dogged Detective",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sophia, Dogged Detective",
+      "oracle_fingerprint": "3e5098ff415d941e9caf1a56e2414f04",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tiny",
+                      "colors": ["Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dog", "Detective"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Token"] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Dog" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Dog" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "food" } } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

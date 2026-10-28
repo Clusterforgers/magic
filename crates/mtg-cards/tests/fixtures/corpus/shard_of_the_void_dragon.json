@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "41dd0b55-3dbb-4b65-a949-20c2a12f7edd",
+  "oracle_id": "d04d2434-121e-4420-abfc-fa21ad5577c3",
+  "multiverse_ids": [
+    580878
+  ],
+  "mtgo_id": 108584,
+  "tcgplayer_id": 286353,
+  "cardmarket_id": 675358,
+  "name": "Shard of the Void Dragon",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/41dd0b55-3dbb-4b65-a949-20c2a12f7edd",
+  "scryfall_uri": "https://scryfall.com/card/40k/56/shard-of-the-void-dragon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:35:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.jpg?1783920909",
+    "normal": "https://cards.scryfall.io/normal/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.jpg?1783920909",
+    "large": "https://cards.scryfall.io/large/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.jpg?1783920909",
+    "png": "https://cards.scryfall.io/png/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.png?1783920909",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.jpg?1783920909",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.jpg?1783920909",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.webp?1783920909",
+    "grid": "https://cards.scryfall.io/grid/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.webp?1783920909",
+    "display": "https://cards.scryfall.io/display/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.webp?1783920909",
+    "art": "https://cards.scryfall.io/art/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.webp?1783920909",
+    "crop": "https://cards.scryfall.io/crop/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.webp?1783920909",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/1/41dd0b55-3dbb-4b65-a949-20c2a12f7edd.jpg?1783920909"
+  },
+  "mana_cost": "{4}{B}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Creature — C'tan",
+  "oracle_text": "Flying\nSpear of the Void Dragon — Whenever this creature attacks, each opponent sacrifices a nonland permanent of their choice.\nMatter Absorption — Whenever an artifact is put into a graveyard from the battlefield or is put into exile from the battlefield, put two +1/+1 counters on this creature.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Matter Absorption",
+    "Spear of the Void Dragon"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/41dd0b55-3dbb-4b65-a949-20c2a12f7edd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad04d2434-121e-4420-abfc-fa21ad5577c3&unique=prints",
+  "collector_number": "56",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alex Konstad",
+  "artist_ids": [
+    "58b2a57c-50ca-4047-b4e7-efb28cb22851"
+  ],
+  "illustration_id": "ead4d140-436f-4397-9532-0f8220cedab4",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9948,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=g2UWu8lKU5k",
+    "previewed_at": "2022-09-15"
+  },
+  "prices": {
+    "usd": "2.11",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.57",
+    "eur_foil": null,
+    "tix": "0.26"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580878&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShard%2Bof%2Bthe%2BVoid%2BDragon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShard%2Bof%2Bthe%2BVoid%2BDragon",
+    "edhrec": "https://edhrec.com/route/?cc=Shard+of+the+Void+Dragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286353%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675358&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108584?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

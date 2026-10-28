@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b0871e12-b156-4fa6-b01c-acaae222b3a5",
+  "name": "Sprouting Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sprouting Goblin",
+      "oracle_fingerprint": "0f2693ee97103f4c1197e1d01e1854ed",
+      "abilities": [
+        { "Keyword": { "Kicker": "{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "Kicked",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Plains" },
+                        { "Subtype": "Island" },
+                        { "Subtype": "Swamp" },
+                        { "Subtype": "Mountain" },
+                        { "Subtype": "Forest" }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap", { "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

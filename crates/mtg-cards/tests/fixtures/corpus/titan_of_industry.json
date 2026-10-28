@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "432f2b57-4e7e-4717-8707-8cdbc1aae154",
+  "oracle_id": "5d8acafe-c13e-43ca-a89e-0cfd12d95662",
+  "multiverse_ids": [],
+  "resource_id": "1F09EE37FE6D78277B922B2D05DF4162A02DD7E6E34F7EEAAF0D269B0EBB8D40",
+  "mtgo_id": 146169,
+  "tcgplayer_id": 671247,
+  "cardmarket_id": 865049,
+  "name": "Titan of Industry",
+  "lang": "en",
+  "released_at": "2026-01-23",
+  "uri": "https://api.scryfall.com/cards/432f2b57-4e7e-4717-8707-8cdbc1aae154",
+  "scryfall_uri": "https://scryfall.com/card/ecc/117/titan-of-industry?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:02:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.jpg?1783904541",
+    "normal": "https://cards.scryfall.io/normal/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.jpg?1783904541",
+    "large": "https://cards.scryfall.io/large/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.jpg?1783904541",
+    "png": "https://cards.scryfall.io/png/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.png?1783904541",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.jpg?1783904541",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.jpg?1783904541",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.webp?1783904541",
+    "grid": "https://cards.scryfall.io/grid/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.webp?1783904541",
+    "display": "https://cards.scryfall.io/display/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.webp?1783904541",
+    "art": "https://cards.scryfall.io/art/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.webp?1783904541",
+    "crop": "https://cards.scryfall.io/crop/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.webp?1783904541",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/3/432f2b57-4e7e-4717-8707-8cdbc1aae154.jpg?1783904541"
+  },
+  "mana_cost": "{4}{G}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Reach, trample\nWhen this creature enters, choose two —\n• Destroy target artifact or enchantment.\n• Target player gains 5 life.\n• Create a 4/4 green Rhino Warrior creature token.\n• Put a shield counter on a creature you control.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Trample"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "432f2b57-4e7e-4717-8707-8cdbc1aae154",
+      "component": "combo_piece",
+      "name": "Titan of Industry",
+      "type_line": "Creature — Elemental",
+      "uri": "https://api.scryfall.com/cards/432f2b57-4e7e-4717-8707-8cdbc1aae154"
+    },
+    {
+      "object": "related_card",
+      "id": "8f4188d4-a371-49be-ad33-ad87801ba99d",
+      "component": "token",
+      "name": "Rhino Warrior",
+      "type_line": "Token Creature — Rhino Warrior",
+      "uri": "https://api.scryfall.com/cards/8f4188d4-a371-49be-ad33-ad87801ba99d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "805b5a0c-f8bb-4555-86ea-eb9ec36a011a",
+  "set": "ecc",
+  "set_name": "Lorwyn Eclipsed Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/805b5a0c-f8bb-4555-86ea-eb9ec36a011a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aecc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ecc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/432f2b57-4e7e-4717-8707-8cdbc1aae154/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5d8acafe-c13e-43ca-a89e-0cfd12d95662&unique=prints",
+  "collector_number": "117",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lucas Staniec",
+  "artist_ids": [
+    "b4344292-387b-4aa0-8225-13f1fbe77808"
+  ],
+  "illustration_id": "9d7e0841-6170-4a85-91c4-e9462ae0ea0f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2546,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.80",
+    "eur_foil": null,
+    "tix": "0.23"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTitan%2Bof%2BIndustry",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTitan%2Bof%2BIndustry",
+    "edhrec": "https://edhrec.com/route/?cc=Titan+of+Industry"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F671247%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=865049&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/146169?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

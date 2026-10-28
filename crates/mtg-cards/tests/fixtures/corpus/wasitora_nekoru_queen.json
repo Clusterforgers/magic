@@ -1,0 +1,168 @@
+{
+  "object": "card",
+  "id": "07790bd5-0d27-490e-b1ae-3b866882461e",
+  "oracle_id": "13fc4168-fcc2-4011-804f-211d5d86b7dd",
+  "multiverse_ids": [
+    571626
+  ],
+  "mtgo_id": 102070,
+  "tcgplayer_id": 276663,
+  "cardmarket_id": 665203,
+  "name": "Wasitora, Nekoru Queen",
+  "lang": "en",
+  "released_at": "2022-07-08",
+  "uri": "https://api.scryfall.com/cards/07790bd5-0d27-490e-b1ae-3b866882461e",
+  "scryfall_uri": "https://scryfall.com/card/2x2/293/wasitora-nekoru-queen?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:49:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.jpg?1783921797",
+    "normal": "https://cards.scryfall.io/normal/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.jpg?1783921797",
+    "large": "https://cards.scryfall.io/large/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.jpg?1783921797",
+    "png": "https://cards.scryfall.io/png/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.png?1783921797",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.jpg?1783921797",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.jpg?1783921797",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.webp?1783921797",
+    "grid": "https://cards.scryfall.io/grid/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.webp?1783921797",
+    "display": "https://cards.scryfall.io/display/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.webp?1783921797",
+    "art": "https://cards.scryfall.io/art/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.webp?1783921797",
+    "crop": "https://cards.scryfall.io/crop/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.webp?1783921797",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/7/07790bd5-0d27-490e-b1ae-3b866882461e.jpg?1783921797"
+  },
+  "mana_cost": "{2}{B}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Cat Dragon",
+  "oracle_text": "Flying, trample\nWhenever Wasitora deals combat damage to a player, that player sacrifices a creature of their choice. If the player can't, you create a 3/3 black, red, and green Cat Dragon creature token with flying.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Trample"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8d1605dc-7204-4684-ade3-66e727f4deb5",
+      "component": "combo_piece",
+      "name": "Wasitora, Nekoru Queen",
+      "type_line": "Legendary Creature — Cat Dragon",
+      "uri": "https://api.scryfall.com/cards/8d1605dc-7204-4684-ade3-66e727f4deb5"
+    },
+    {
+      "object": "related_card",
+      "id": "b1e883aa-5f73-4c45-9253-1350c24222e4",
+      "component": "token",
+      "name": "Cat Dragon",
+      "type_line": "Token Creature — Cat Dragon",
+      "uri": "https://api.scryfall.com/cards/b1e883aa-5f73-4c45-9253-1350c24222e4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set": "2x2",
+  "set_name": "Double Masters 2022",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2x2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2x2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/07790bd5-0d27-490e-b1ae-3b866882461e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A13fc4168-fcc2-4011-804f-211d5d86b7dd&unique=prints",
+  "collector_number": "293",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Once a fierce foe, she would become one of Madara's greatest protectors.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cynthia Sheppard",
+  "artist_ids": [
+    "9dfbdd58-65e6-40cf-951a-80e141061939"
+  ],
+  "illustration_id": "5db02864-2695-4dd2-9c68-5bd8d84785ef",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11310,
+  "penny_rank": 7343,
+  "preview": {
+    "source": "David González",
+    "source_uri": "https://twitter.com/DavidPlaymobil/status/1539259798591619072",
+    "previewed_at": "2022-06-22"
+  },
+  "prices": {
+    "usd": "0.70",
+    "usd_foil": "1.90",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "1.17",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=571626&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWasitora%252C%2BNekoru%2BQueen",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWasitora%252C%2BNekoru%2BQueen",
+    "edhrec": "https://edhrec.com/route/?cc=Wasitora%2C+Nekoru+Queen"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F276663%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=665203&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/102070?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

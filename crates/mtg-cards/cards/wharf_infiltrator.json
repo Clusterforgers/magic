@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ac88975c-fb2c-441a-bdd4-e7de6ba865e7",
+  "name": "Wharf Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wharf Infiltrator",
+      "oracle_fingerprint": "31c43d84e8acec2119d5e03dc837e021",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "May": { "effects": [{ "Draw": {} }] } },
+              { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Eldrazi Horror",
+                            "types": ["Creature"],
+                            "subtypes": ["Eldrazi", "Horror"],
+                            "power": 3,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

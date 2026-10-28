@@ -1,0 +1,45 @@
+{
+  "oracle_id": "13fc4168-fcc2-4011-804f-211d5d86b7dd",
+  "name": "Wasitora, Nekoru Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wasitora, Nekoru Queen",
+      "oracle_fingerprint": "57e1d69602877333fe6e8d52bd6b81aa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Sacrifice": { "who": "Triggering", "filter": [{ "Type": "Creature" }] } },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Cat Dragon",
+                            "colors": ["Black", "Red", "Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Cat", "Dragon"],
+                            "power": 3,
+                            "toughness": 3,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

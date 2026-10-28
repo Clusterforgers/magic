@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Ravenous"},{"Keyword":"Defender"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Search":{"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"count":{"min":0,"max":"X"},"as":"lands"}},{"Move":{"what":{"Bound":"lands"},"to":{"Battlefield":{"tapped":true}}}},{"Shuffle":{}}]}}]}]}

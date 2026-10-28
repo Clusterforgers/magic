@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"Draw":{"count":2}}]}},{"Triggered":{"when":{"StepBegins":{"step":"Draw","whose":"Opponents"}},"effects":[{"Draw":{"who":"Triggering"}}]}},{"Triggered":{"when":{"StepBegins":{"step":"Draw","whose":"You"}},"effects":[{"Draw":{"count":2}}]}}]}]}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1b9f9f5b-8712-4f00-90cb-1b7b9970eccc",
+  "name": "Sevinne's Reclamation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sevinne's Reclamation",
+      "oracle_fingerprint": "6729a0e74f8f3ff67ca5f555d5e6c9cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Graveyard" }] }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [{ "CopySpell": { "what": "This", "new_targets": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{W}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"Modal":{"modes":[{"effects":[{"CreateToken":{"token":{"Named":"food"}}}]},{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}]}}]}}]}]}

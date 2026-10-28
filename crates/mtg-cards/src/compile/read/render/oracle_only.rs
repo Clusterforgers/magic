@@ -51,6 +51,9 @@ mod c5_sz_wholes;
 mod c6_af;
 mod c6_eg;
 mod c6_gap_wholes;
+mod c6_sz_and_you;
+mod c6_sz_bodies;
+mod c6_sz_wholes;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -286,6 +289,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c6_eg(ability, texts);
     add_c6_gap(ability, texts);
     add_c6_af(ability, texts);
+    add_c6_sz(ability, texts);
 }
 
 /// The wordings of the sixth sample of the names A to F; it runs last because it rewrites the texts of the others.
@@ -528,4 +532,11 @@ fn add_c5_sz(ability: &Ability, texts: &mut Vec<String>) {
 /// Adds the wordings of the gap constructs.
 fn add_c6_gap(ability: &Ability, texts: &mut Vec<String>) {
     c6_gap_wholes::add(ability, texts);
+}
+
+/// Adds the wordings of the sixth sample of the names S to Z; the join runs last because it rewrites the others.
+fn add_c6_sz(ability: &Ability, texts: &mut Vec<String>) {
+    c6_sz_bodies::add(ability, texts);
+    c6_sz_wholes::add(ability, texts);
+    c6_sz_and_you::add(texts);
 }

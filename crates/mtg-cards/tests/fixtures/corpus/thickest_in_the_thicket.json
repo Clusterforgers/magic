@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "2534da93-ef25-4020-bea5-d3f75bfc44f8",
+  "oracle_id": "4d60dae0-7be4-4859-99ac-781a27bcfd93",
+  "multiverse_ids": [],
+  "mtgo_id": 155316,
+  "tcgplayer_id": 719165,
+  "cardmarket_id": 910688,
+  "name": "Thickest in the Thicket",
+  "lang": "en",
+  "released_at": "2026-10-02",
+  "uri": "https://api.scryfall.com/cards/2534da93-ef25-4020-bea5-d3f75bfc44f8",
+  "scryfall_uri": "https://scryfall.com/card/fdc/236/thickest-in-the-thicket?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-09-18T17:41:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.jpg?1789753300",
+    "normal": "https://cards.scryfall.io/normal/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.jpg?1789753300",
+    "large": "https://cards.scryfall.io/large/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.jpg?1789753300",
+    "png": "https://cards.scryfall.io/png/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.png?1789753300",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.jpg?1789753300",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.jpg?1789753300",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.webp?1789753300",
+    "grid": "https://cards.scryfall.io/grid/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.webp?1789753300",
+    "display": "https://cards.scryfall.io/display/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.webp?1789753300",
+    "art": "https://cards.scryfall.io/art/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.webp?1789753300",
+    "crop": "https://cards.scryfall.io/crop/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.webp?1789753300",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/5/2534da93-ef25-4020-bea5-d3f75bfc44f8.jpg?1789753300"
+  },
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, put X +1/+1 counters on target creature, where X is that creature's power.\nAt the beginning of your end step, draw two cards if you control the creature with the greatest power or tied for the greatest power.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2a0b24ac-7614-4a08-b58a-b64f7c173361",
+  "set": "fdc",
+  "set_name": "Foundations Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/2a0b24ac-7614-4a08-b58a-b64f7c173361",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2534da93-ef25-4020-bea5-d3f75bfc44f8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4d60dae0-7be4-4859-99ac-781a27bcfd93&unique=prints",
+  "collector_number": "236",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "No pain, no fame.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Michele Giorgi",
+  "artist_ids": [
+    "60ff7459-c81d-41e6-bec1-4264c2161014"
+  ],
+  "illustration_id": "b2e284a8-a6a9-4871-b244-2e25e2e7aaa9",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3038,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.38",
+    "eur_foil": null,
+    "tix": "1.50"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThickest%2Bin%2Bthe%2BThicket",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThickest%2Bin%2Bthe%2BThicket",
+    "edhrec": "https://edhrec.com/route/?cc=Thickest+in+the+Thicket"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F719165%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=910688&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/155316?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

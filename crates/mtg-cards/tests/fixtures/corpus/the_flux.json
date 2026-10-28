@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "026611f8-ae07-464f-afe5-6e94bcfac05e",
+  "oracle_id": "8beaaf55-e05d-49c3-9320-c222c4d8ad12",
+  "multiverse_ids": [
+    634781
+  ],
+  "tcgplayer_id": 509574,
+  "cardmarket_id": 738641,
+  "name": "The Flux",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/026611f8-ae07-464f-afe5-6e94bcfac05e",
+  "scryfall_uri": "https://scryfall.com/card/who/86/the-flux?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.jpg?1783914650",
+    "normal": "https://cards.scryfall.io/normal/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.jpg?1783914650",
+    "large": "https://cards.scryfall.io/large/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.jpg?1783914650",
+    "png": "https://cards.scryfall.io/png/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.png?1783914650",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.jpg?1783914650",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.jpg?1783914650",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.webp?1783914650",
+    "grid": "https://cards.scryfall.io/grid/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.webp?1783914650",
+    "display": "https://cards.scryfall.io/display/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.webp?1783914650",
+    "art": "https://cards.scryfall.io/art/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.webp?1783914650",
+    "crop": "https://cards.scryfall.io/crop/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.webp?1783914650",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/2/026611f8-ae07-464f-afe5-6e94bcfac05e.jpg?1783914650"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after VI.)\nI — This Saga deals 4 damage to target creature an opponent controls.\nII, III, IV, V — Exile the top card of your library. You may play that card this turn.\nVI — Add six {R}.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/026611f8-ae07-464f-afe5-6e94bcfac05e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8beaaf55-e05d-49c3-9320-c222c4d8ad12&unique=prints",
+  "collector_number": "86",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alexander Gering",
+  "artist_ids": [
+    "c6e77ba4-e891-4688-bca8-41b3f5f89dc6"
+  ],
+  "illustration_id": "b8bab66e-3830-4688-8375-e91775c1c4d0",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9090,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "1.25",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "1.13",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634781&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BFlux",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BFlux",
+    "edhrec": "https://edhrec.com/route/?cc=The+Flux"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F509574%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738641&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Flux&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

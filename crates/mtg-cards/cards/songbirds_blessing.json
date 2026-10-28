@@ -1,0 +1,47 @@
+{
+  "oracle_id": "2598294c-a9a7-4bef-a562-23f297a80536",
+  "name": "Songbirds' Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Songbirds' Blessing",
+      "oracle_fingerprint": "6db342b22f39037d40fa5b581a5e8f01",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Subtype": "Aura" }],
+                  "as": "aura",
+                  "revealed_as": "rest"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "aura" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Move": { "what": { "Bound": "aura" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

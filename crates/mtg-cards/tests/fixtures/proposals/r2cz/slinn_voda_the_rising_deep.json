@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Kicker":"{1}{U}"}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":"Kicked","effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Subtype":"Merfolk"}},{"Not":{"Subtype":"Kraken"}},{"Not":{"Subtype":"Leviathan"}},{"Not":{"Subtype":"Octopus"}},{"Not":{"Subtype":"Serpent"}}]},"to":"Hand"}}]}}]}]}
