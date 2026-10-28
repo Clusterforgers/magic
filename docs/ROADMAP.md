@@ -32,7 +32,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc), (r1aueb).
 - Model-assisted reading: (r3) the next sample, (r2ea), (r2dge), (r2eb) a local model provider, (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
-- Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
+- Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5) affected-only checks.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
 
@@ -211,6 +211,7 @@ The server is settled first, then the web is built once against the final types.
 
 ### Tooling
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
+- [~] (t5) (t5-affected-checks) `scripts/check.sh affected` runs only the phases a diff can break: web only for changes to `web/`, the protocol or the bindings, changed-file web tests, no rerun of a tree that already passed, and nextest where it is faster
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load
 - [ ] (t3c) DSL amounts for what an earlier effect did and for the mana value a cost took, and a partner by creature type (Foul-Tongue Shriek, Nahiri's Sacrifice, The Knight of Land Drops)
 - [ ] The expected X symbols in `x_cards.rs` of `mtg-testkit` are derived from the card list, so a new X card edits no test
