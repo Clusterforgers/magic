@@ -1275,9 +1275,6 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("at", |w| w.reference(at, Kind::Player));
             }
-            TriggerPattern::PlayerAttacked { who } => {
-                self.at("who", |w| w.reference(who, Kind::Player));
-            }
             TriggerPattern::PlayerAttacks { by, at } => {
                 self.at("by", |w| w.reference(by, Kind::Player));
                 self.at("at", |w| w.reference(at, Kind::Player));
@@ -1307,6 +1304,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::Ventured { who, .. }
+            | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::CoinFlipWon { who }

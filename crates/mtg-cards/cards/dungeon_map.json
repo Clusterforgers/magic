@@ -1,0 +1,47 @@
+{
+  "oracle_id": "20f1bba5-d398-4d6e-a76a-75e29df42aec",
+  "name": "Dungeon Map",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dungeon Map",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap"
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": [
+                      "Colorless"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{3}"
+              },
+              "Tap"
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Venture": {}
+              }
+            ]
+          }
+        }
+      ],
+      "oracle_fingerprint": "31a01e127c0c5021f96416753fcf4d57"
+    }
+  ]
+}

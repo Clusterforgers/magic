@@ -7,9 +7,9 @@ use std::sync::OnceLock;
 use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
-use crate::refs::TargetSpec;
 use crate::compile::ClauseKind;
 use crate::effect::Effect;
+use crate::refs::TargetSpec;
 
 /// The embedded dungeon files, by path.
 const W11D_FILES: &[(&str, &str)] = &[
@@ -25,7 +25,10 @@ const W11D_FILES: &[(&str, &str)] = &[
         "dungeons/tomb_of_annihilation.json",
         include_str!("../dungeons/tomb_of_annihilation.json"),
     ),
-    ("dungeons/undercity.json", include_str!("../dungeons/undercity.json")),
+    (
+        "dungeons/undercity.json",
+        include_str!("../dungeons/undercity.json"),
+    ),
 ];
 
 /// A dungeon file: its name and its rooms, the first room first.
@@ -106,7 +109,10 @@ pub fn w11d_dungeons() -> Result<&'static [W11dDungeon], &'static [String]> {
 
 /// The embedded dungeon of this name.
 pub fn w11d_dungeon(name: &str) -> Option<&'static W11dDungeon> {
-    w11d_dungeons().ok()?.iter().find(|dungeon| dungeon.name == name)
+    w11d_dungeons()
+        .ok()?
+        .iter()
+        .find(|dungeon| dungeon.name == name)
 }
 
 /// Reads and checks dungeon files given as `(path, text)`.
@@ -172,7 +178,11 @@ pub fn w11d_check(file: &W11dDungeonFile) -> Result<W11dDungeon, Vec<String>> {
     if let Some(unreached) = reached.iter().position(|seen| !seen) {
         problems.push(format!("no arrow leads to {}", names[unreached]));
     }
-    if file.rooms.last().is_some_and(|room| !room.leads_to.is_empty()) {
+    if file
+        .rooms
+        .last()
+        .is_some_and(|room| !room.leads_to.is_empty())
+    {
         problems.push("the last room has no arrow".to_owned());
     }
     if problems.is_empty() {
@@ -186,7 +196,12 @@ pub fn w11d_check(file: &W11dDungeonFile) -> Result<W11dDungeon, Vec<String>> {
     }
 }
 
-fn w11d_arrows(room: &W11dRoomFile, index: usize, names: &[&str], problems: &mut Vec<String>) -> Vec<u8> {
+fn w11d_arrows(
+    room: &W11dRoomFile,
+    index: usize,
+    names: &[&str],
+    problems: &mut Vec<String>,
+) -> Vec<u8> {
     let mut next = Vec::new();
     for to in &room.leads_to {
         match names.iter().position(|name| name == to) {
@@ -246,7 +261,10 @@ mod tests {
         );
         let mine = w11d_dungeon("Lost Mine of Phandelver").unwrap();
         let arrows: Vec<&[u8]> = mine.rooms.iter().map(|room| room.next.as_slice()).collect();
-        assert_eq!(arrows, [&[1, 2][..], &[3, 4], &[4, 5], &[6], &[6], &[6], &[]]);
+        assert_eq!(
+            arrows,
+            [&[1, 2][..], &[3, 4], &[4, 5], &[6], &[6], &[6], &[]]
+        );
     }
 
     fn room(name: &str, text: &str, leads_to: &[&str]) -> W11dRoomFile {
@@ -278,7 +296,8 @@ mod tests {
     #[test]
     fn a_written_ability_stands_for_a_text_the_compiler_does_not_read() {
         let mut only = room("A", "Frobnicate wildly.", &[]);
-        only.ability = Some(serde_json::from_str(r#"{"Spell":{"effects":[{"Draw":{}}]}}"#).unwrap());
+        only.ability =
+            Some(serde_json::from_str(r#"{"Spell":{"effects":[{"Draw":{}}]}}"#).unwrap());
         let file = W11dDungeonFile {
             name: "Test".to_owned(),
             undercity: false,

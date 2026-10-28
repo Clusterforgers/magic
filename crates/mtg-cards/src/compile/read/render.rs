@@ -2375,7 +2375,11 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::Venture { who, undercity } => {
-                let into = if *undercity { "Undercity" } else { "the dungeon" };
+                let into = if *undercity {
+                    "Undercity"
+                } else {
+                    "the dungeon"
+                };
                 if *who == Ref::You {
                     format!("venture into {into}")
                 } else {

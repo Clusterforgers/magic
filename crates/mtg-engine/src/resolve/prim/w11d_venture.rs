@@ -114,19 +114,37 @@ fn w11d_chooser(player: PlayerId, plan: &W11dPlan) -> OptionChooser {
 }
 
 fn w11d_room_name(dungeon: u8, room: u8) -> Option<&'static str> {
-    Some(w11d_dungeon_at(dungeon)?.rooms.get(usize::from(room))?.name.as_str())
+    Some(
+        w11d_dungeon_at(dungeon)?
+            .rooms
+            .get(usize::from(room))?
+            .name
+            .as_str(),
+    )
 }
 
-fn w11d_events(player: PlayerId, plan: &W11dPlan, picked: usize, next_object: &mut u64) -> Vec<Event> {
+fn w11d_events(
+    player: PlayerId,
+    plan: &W11dPlan,
+    picked: usize,
+    next_object: &mut u64,
+) -> Vec<Event> {
     match plan {
         W11dPlan::Down { marker, rooms } => {
-            let Some((room, dungeon)) = rooms.get(picked).zip(w11d_dungeon_at(marker.dungeon)) else {
+            let Some((room, dungeon)) = rooms.get(picked).zip(w11d_dungeon_at(marker.dungeon))
+            else {
                 return Vec::new();
             };
             vec![w11d_ventured(player, marker.object, dungeon, *room, None)]
         }
-        W11dPlan::Enter { completing, dungeons } => {
-            let Some(dungeon) = dungeons.get(picked).and_then(|index| w11d_dungeon_at(*index)) else {
+        W11dPlan::Enter {
+            completing,
+            dungeons,
+        } => {
+            let Some(dungeon) = dungeons
+                .get(picked)
+                .and_then(|index| w11d_dungeon_at(*index))
+            else {
                 return Vec::new();
             };
             let mut events: Vec<Event> = completing

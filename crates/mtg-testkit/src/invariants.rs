@@ -893,12 +893,7 @@ impl InvariantChecker {
         ) {
             self.expected_objects += 1;
         }
-        // A new dungeon is made in the command zone; a completed one leaves the game.
-        match event {
-            Event::Ventured(ventured) if ventured.definition.is_some() => self.expected_objects += 1,
-            Event::DungeonCompleted { .. } => self.expected_objects -= 1,
-            _ => {}
-        }
+        self.expected_objects = w11d_dungeon_count(self.expected_objects, event);
         // The spell's card is part of the permanent, no object of its own.
         if matches!(event, Event::Mutated { .. }) {
             self.expected_objects -= 1;
@@ -1492,5 +1487,14 @@ impl InvariantChecker {
             }
         }
         Ok(())
+    }
+}
+
+/// The objects expected after the event: a new dungeon is made in the command zone, a completed one leaves the game.
+fn w11d_dungeon_count(expected: usize, event: &Event) -> usize {
+    match event {
+        Event::Ventured(ventured) if ventured.definition.is_some() => expected + 1,
+        Event::DungeonCompleted { .. } => expected.saturating_sub(1),
+        _ => expected,
     }
 }

@@ -117,7 +117,10 @@ pub(crate) fn w11d_definition(dungeon: &W11dDungeon) -> CardDefinition {
 }
 
 /// Folds a venture: makes the dungeon object of a new dungeon and moves the player's marker.
-pub(crate) fn w11d_fold_ventured(state: &mut GameState, event: &W11dVentured) -> Result<(), EngineError> {
+pub(crate) fn w11d_fold_ventured(
+    state: &mut GameState,
+    event: &W11dVentured,
+) -> Result<(), EngineError> {
     let dungeon = w11d_dungeons()
         .ok()
         .and_then(|all| all.iter().position(|d| d.name == event.dungeon))
@@ -136,7 +139,10 @@ pub(crate) fn w11d_fold_ventured(state: &mut GameState, event: &W11dVentured) ->
         state.zones.insert(zone, id, Placement::Top);
         state.next_object = state.next_object.max(id.get() + 1);
     } else if state.w11d_marker(event.player).map(|m| m.object) != Some(event.object) {
-        return Err(invalid(format!("{:?} is not in {:?}", event.player, event.object)));
+        return Err(invalid(format!(
+            "{:?} is not in {:?}",
+            event.player, event.object
+        )));
     }
     state.w11d.at.insert(
         event.player,
@@ -151,7 +157,11 @@ pub(crate) fn w11d_fold_ventured(state: &mut GameState, event: &W11dVentured) ->
 }
 
 /// Folds a completed dungeon: the dungeon leaves the game and the player has completed one more.
-pub(crate) fn w11d_fold_completed(state: &mut GameState, player: PlayerId, object: ObjectId) -> Result<(), EngineError> {
+pub(crate) fn w11d_fold_completed(
+    state: &mut GameState,
+    player: PlayerId,
+    object: ObjectId,
+) -> Result<(), EngineError> {
     if state.w11d_marker(player).map(|m| m.object) != Some(object) {
         return Err(invalid(format!("{player:?} is not in {object:?}")));
     }

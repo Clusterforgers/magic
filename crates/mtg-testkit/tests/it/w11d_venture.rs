@@ -62,13 +62,23 @@ fn a_player_ventures_through_lost_mine_of_phandelver_and_completes_it(
     }
     assert_eq!(
         rooms(&driver),
-        ["Cave Entrance", "Goblin Lair", "Storeroom", "Temple of Dumathoin"]
+        [
+            "Cave Entrance",
+            "Goblin Lair",
+            "Storeroom",
+            "Temple of Dumathoin"
+        ]
     );
     let goblins = driver
         .state()
         .zone(Zone::Battlefield)
         .iter()
-        .filter(|id| driver.state().object(**id).is_some_and(|o| o.card().name == "Goblin"))
+        .filter(|id| {
+            driver
+                .state()
+                .object(**id)
+                .is_some_and(|o| o.card().name == "Goblin")
+        })
         .count();
     assert_eq!(goblins, 1, "the Goblin Lair made a Goblin");
     let completed: Vec<_> = driver

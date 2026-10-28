@@ -436,7 +436,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
         }
-        TriggerPattern::Ventured { who: by, room: None } => {
+        TriggerPattern::Ventured {
+            who: by,
+            room: None,
+        } => {
             let (name, s) = who(by);
             (format!("{name} venture{s} into the dungeon"), false)
         }

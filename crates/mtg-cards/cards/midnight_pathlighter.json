@@ -1,0 +1,63 @@
+{
+  "oracle_id": "e49228d6-6488-4cbc-aa53-303afd3a549b",
+  "name": "Midnight Pathlighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Pathlighter",
+      "abilities": [
+        {
+          "Static": {
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  {
+                    "Not": {
+                      "Supertype": "Legendary"
+                    }
+                  }
+                ]
+              }
+            ],
+            "affected": {
+              "Each": [
+                {
+                  "Type": "Creature"
+                },
+                {
+                  "ControlledBy": "You"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "to": "EachPlayer",
+                  "combat": true,
+                  "source": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "ControlledBy": "You"
+                    }
+                  ]
+                }
+              }
+            },
+            "effects": [
+              {
+                "Venture": {}
+              }
+            ]
+          }
+        }
+      ],
+      "oracle_fingerprint": "d1a30aa35e1268c560d212129b291363"
+    }
+  ]
+}
