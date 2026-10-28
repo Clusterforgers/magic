@@ -1,0 +1,29 @@
+{
+  "oracle_id": "55821968-baf2-4fa6-8376-9ec305e27b3b",
+  "name": "Boon of Erebos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boon of Erebos",
+      "oracle_fingerprint": "02676afe72ae2f6aeb6cac148b62bd29",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Regenerate": { "what": { "Target": 0 } } },
+              { "LoseLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

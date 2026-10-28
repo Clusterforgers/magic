@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fce68545-c31d-4dc2-9f1b-aadf924a07d1",
+  "name": "Cabal Trainee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cabal Trainee",
+      "oracle_fingerprint": "badbc692e359e1e43106927bb7dd570b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Is": "This" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

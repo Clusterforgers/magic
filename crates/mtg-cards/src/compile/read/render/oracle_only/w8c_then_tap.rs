@@ -42,7 +42,7 @@ fn w8c_tap_verb(effect: &Value) -> Option<(&'static str, &Value)> {
 }
 
 /// Whether the effect names the object somewhere: "it" then stands for it.
-fn w8c_names(effect: &Value, what: &Value) -> bool {
+pub(super) fn w8c_names(effect: &Value, what: &Value) -> bool {
     effect == what
         || match effect {
             Value::Object(map) => map.values().any(|inner| w8c_names(inner, what)),

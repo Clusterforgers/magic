@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2d30a634-43c6-4e78-ba10-7ef7ee17ac40",
+  "name": "Carrier Pigeons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrier Pigeons",
+      "oracle_fingerprint": "f7199a3aab981b46dc0372c5bfa2f93e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

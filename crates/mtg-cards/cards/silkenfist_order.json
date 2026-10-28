@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5cca974b-1a6c-485f-adc0-81d2b7dca286",
+  "name": "Silkenfist Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silkenfist Order",
+      "oracle_fingerprint": "7bdbcf4ae4e0cd6e6c0ba5fd76da414b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

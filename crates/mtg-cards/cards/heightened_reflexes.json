@@ -1,0 +1,28 @@
+{
+  "oracle_id": "513fd896-ab78-44fb-b136-f7c93288dc63",
+  "name": "Heightened Reflexes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heightened Reflexes",
+      "oracle_fingerprint": "164aec2b6928cf68c046d592ff5cc23d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "first strike" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

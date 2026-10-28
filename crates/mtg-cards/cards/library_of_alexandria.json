@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2111588d-9af5-4a33-989e-b074d83f0463",
+  "name": "Library of Alexandria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Library of Alexandria",
+      "oracle_fingerprint": "ec3d0b6cf6a911f52692e397f85566ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 7
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

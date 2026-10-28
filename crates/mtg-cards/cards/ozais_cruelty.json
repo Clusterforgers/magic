@@ -1,0 +1,22 @@
+{
+  "oracle_id": "aba5c046-2f8c-4749-b347-9a7d8cb1c865",
+  "name": "Ozai's Cruelty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ozai's Cruelty",
+      "oracle_fingerprint": "d5e3fb258eb2249ebce6e52cecc563cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

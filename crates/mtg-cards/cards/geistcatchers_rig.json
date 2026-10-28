@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1bfdbb96-cc18-4609-ba17-d169967df8d0",
+  "name": "Geistcatcher's Rig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geistcatcher's Rig",
+      "oracle_fingerprint": "e70d9c3d6edd24abcbd34afbcf1d68a3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 4 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b96ccc2f-88e5-4522-924e-76fc76dc3b39",
+  "name": "Abyssal Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abyssal Hunter",
+      "oracle_fingerprint": "997cb49f00b6338810d5a79c50caa541",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
