@@ -49,6 +49,7 @@ mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;
 mod steps;
+mod w7b_rad;
 mod ways;
 mod wording;
 #[cfg(test)]

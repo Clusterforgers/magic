@@ -176,6 +176,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(replaced);
     let hosts = w6e_control::w6e_wordings(&texts);
     texts.extend(hosts);
+    let they = super::w7b_player_counters::w7b_they_wordings(&texts);
+    texts.extend(they);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
     let regenerating = regeneration_wordings(&texts);
@@ -2055,6 +2057,13 @@ impl Writer<'_> {
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
+            }
+            Effect::PutCounters {
+                on: Ref::You | Ref::Triggering,
+                counter,
+                ..
+            } if super::w7b_player_counters::w7b_player_kind(counter) => {
+                super::w7b_player_counters::w7b_player_gets(effect)?
             }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
