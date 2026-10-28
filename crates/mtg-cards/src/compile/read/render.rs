@@ -406,6 +406,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = joined::wordings(&texts);
     texts.extend(more);
+    let more = super::w8b_then::w8b_then_wordings(&texts);
+    texts.extend(more);
     let mut counted = where_x::wordings(ability);
     counted.extend(super::c10_pa_pay_x::c10_pa_wordings(ability));
     counted.extend(super::c10_pa_monstrous::c10_pa_wordings(ability));
@@ -479,7 +481,11 @@ fn graveyard_wordings(ability: &Ability, texts: &mut Vec<String>) {
             from: ZoneKind::Graveyard,
             effects,
             ..
-        } if from_graveyard::returns_to_hand(effects) => from_graveyard::from_your_graveyard(texts),
+        } if from_graveyard::returns_to_hand(effects) => {
+            let in_graveyard = super::w8b_milled::w8b_in_graveyard_wordings(texts);
+            from_graveyard::from_your_graveyard(texts);
+            texts.extend(in_graveyard);
+        }
         Ability::Triggered {
             when:
                 TriggerPattern::ZoneChange {

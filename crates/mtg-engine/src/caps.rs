@@ -39,6 +39,7 @@ const RUNS: &[&str] = &[
     "Trigger.SpellCast",
     "Trigger.SpellCopied",
     "Trigger.Sacrificed",
+    "Trigger.Milled",
     "Trigger.StepBegins",
     "Trigger.BecomesTarget",
     "Trigger.AnyOf",
@@ -230,6 +231,7 @@ const RUNS: &[&str] = &[
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
     "Rule.NoLifeLossFromDamage",
+    "Rule.RadiationGainsLife",
     "Rule.LifeTotalCantChange",
     "Rule.PlayersHave",
     "Rule.CantDraw",
@@ -615,6 +617,7 @@ mod tests {
     #[case::attacks("Trigger.Attacks", true)]
     #[case::casting("Trigger.SpellCast", true)]
     #[case::sacrifices("Trigger.Sacrificed", true)]
+    #[case::mills("Trigger.Milled", true)]
     #[case::steps("Trigger.StepBegins", true)]
     #[case::becoming_a_target("Trigger.BecomesTarget", true)]
     #[case::either_of_two_events("Trigger.AnyOf", true)]
@@ -657,6 +660,7 @@ mod tests {
     #[case::spells_that_cant_be_countered("Rule.CantBeCountered", true)]
     #[case::no_life_gain("Rule.CantGainLife", true)]
     #[case::no_life_loss_from_damage("Rule.NoLifeLossFromDamage", true)]
+    #[case::radiation_gains_life("Rule.RadiationGainsLife", true)]
     #[case::no_drawing("Rule.CantDraw", true)]
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]

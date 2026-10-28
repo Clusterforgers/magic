@@ -23,6 +23,8 @@ mod reads_x;
 mod state;
 #[cfg(test)]
 mod w2e_detect;
+#[cfg(test)]
+mod w8b_detect_milled;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;

@@ -266,6 +266,8 @@ pub enum GameRule {
     CantGainLife(Ref),
     /// Damage dealt to the players causes no loss of life: it is still dealt, and every other effect of it happens.
     NoLifeLossFromDamage(Ref),
+    /// The players gain life rather than lose life from radiation (CR 725.2): the life the rad rule would make them lose.
+    RadiationGainsLife(Ref),
     /// The players' life totals can't change (CR 119.7, 119.8): they gain and lose no life, pay no life and have no life
     /// total set; damage is still dealt.
     LifeTotalCantChange(Ref),

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "064f371c-e4f2-423b-9f35-443191dfbb4c",
+  "name": "Infesting Radroach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infesting Radroach",
+      "oracle_fingerprint": "531c2f3a7439f9ebbe90dd8721ca10e5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "Triggering",
+                  "counter": { "Other": "rad" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Milled": { "what": [{ "Not": { "Type": "Land" } }], "by": "Opponents" } },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

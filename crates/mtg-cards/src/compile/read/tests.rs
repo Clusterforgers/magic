@@ -402,6 +402,7 @@ mod w7c_incubate;
 mod w7e_devoured;
 mod w7e_phase_out;
 mod w8a_declaration_limits;
+mod w8b_milled;
 mod w8c_writers;
 mod where_x;
 mod written_effects;

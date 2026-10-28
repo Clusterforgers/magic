@@ -783,6 +783,10 @@ describe('events with more than one shape', () => {
       "Lightning Bolt can't be countered",
     ],
     [
+      ruleEffect({ RadiationGainsLife: [0] }, 'Forever'),
+      'Radiation makes Ana gain life rather than lose life',
+    ],
+    [
       ruleEffect({ CantDraw: [1] }, 'UntilYourNextTurn'),
       "Bo can't draw cards until their controller's next turn",
     ],

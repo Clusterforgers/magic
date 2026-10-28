@@ -584,6 +584,7 @@ Glimpse of Freedom
 Glint-Sleeve Artisan
 Glissa Sunslayer
 Glorious Anthem
+Glowing One
 Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
@@ -705,6 +706,7 @@ Impulsivity
 Indulging Patrician
 Infectious Inquiry
 Inferno Project
+Infesting Radroach
 Inkwell Leviathan
 Insatiable Hemophage
 Inspired Skypainter // Maestro's Gift
@@ -778,6 +780,7 @@ Korozda Guildmage
 Korozda Monitor
 Kozilek's Translator
 Krenko's Enforcer
+Krenko, Tin Street Kingpin
 Krosan Cloudscraper
 Krosan Colossus
 Krosan Grip
@@ -895,6 +898,7 @@ Ministrant of Obligation
 Mirari
 Mirari's Wake
 Mire's Malice
+Mirelurk Queen
 Mirran Bardiche
 Mirror Image
 Mirrorweave
@@ -902,6 +906,7 @@ Mishra's Workshop
 Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
+Moldgraf Millipede
 Molecule Man
 Molten Slagheap
 Mona Lisa, Science Geek
@@ -1012,6 +1017,7 @@ Phantom Nantuko
 Phantom Nishoba
 Photon, Mighty Marvel
 Phyrexian Prowler
+Phyrexian Rebirth
 Phyrexian Soulgorger
 Pillar of Origins
 Pillar of the Paruns
@@ -1289,6 +1295,7 @@ Spectral Rider
 Spellbreaker Behemoth
 Sphere of Safety
 Sphinx of Jwar Isle
+Sphinx of Magosi
 Sphinx of the Final Word
 Sphinx of the Steel Wind
 Spider-Islanders
@@ -1340,6 +1347,7 @@ Stratus Walk
 Strength Bobblehead
 Strionic Resonator
 Stroke of Genius
+Strong, the Brutish Thespian
 Stubborn Burrowfiend
 Student of Warfare
 Study Break

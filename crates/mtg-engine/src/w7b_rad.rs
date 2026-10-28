@@ -14,7 +14,7 @@ use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::library::top_cards;
-use crate::rules::life_total_cant_change;
+use crate::rules::{cant_gain_life, life_total_cant_change, w8b_radiation_gains_life};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -60,7 +60,15 @@ fn w7b_rad_events(state: &GameState, player: PlayerId) -> Vec<Event> {
     if nonland == 0 {
         return events;
     }
-    if !life_total_cant_change(state, player) {
+    // "You gain life rather than lose life from radiation" (Strong, the Brutish Thespian).
+    if w8b_radiation_gains_life(state, player) {
+        if !cant_gain_life(state, player) {
+            events.push(Event::LifeGained {
+                player,
+                amount: nonland,
+            });
+        }
+    } else if !life_total_cant_change(state, player) {
         events.push(Event::LifeLost {
             player,
             amount: nonland,
@@ -76,7 +84,7 @@ fn w7b_rad_events(state: &GameState, player: PlayerId) -> Vec<Event> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: as the precombat main phase begins, the active player mills a card per rad counter, then loses 1 life and removes a rad counter per nonland card milled; lands milled cost nothing, a short library gives what it has, a player without rad counters does nothing, and only the active player's counters count.
+    //! Goal: as the precombat main phase begins, the active player mills a card per rad counter, then loses 1 life and removes a rad counter per nonland card milled; lands milled cost nothing, a short library gives what it has, a player without rad counters does nothing, and only the active player's counters count; a player with "you gain life rather than lose life from radiation" gains that life instead.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -168,6 +176,51 @@ mod tests {
         assert_eq!(
             moved,
             library.iter().rev().take(2).copied().collect::<Vec<_>>()
+        );
+    }
+
+    /// Seat 0 holds three rad counters over "CLC" and the permanent with "you gain life rather than lose life from
+    /// radiation" is on the battlefield of seat `holder`.
+    fn w8b_thespian_game(holder: usize) -> GameState {
+        use mtg_cards::ability::Ability;
+        use mtg_cards::modify::GameRule;
+        use mtg_cards::refs::{Ref, ZoneKind};
+        let thespian = Arc::new(creature("Thespian", 7, 7).as_ref().clone().with_rules(
+            Ability::Rule {
+                rule: GameRule::RadiationGainsLife(Ref::You),
+                condition: None,
+                from: ZoneKind::Battlefield,
+            },
+        ));
+        let mut battlefields = vec![Vec::new(); 2];
+        battlefields[holder] = vec![thespian];
+        let mut setup = setup(vec![Vec::new(); 2], battlefields);
+        setup.players[0].library =
+            vec![creature("Bear", 2, 2), land("Land"), creature("Cub", 1, 1)];
+        setup.players[0].counters = vec![(w7b_rad(), 3)];
+        GameState::from_setup(&setup).unwrap()
+    }
+
+    #[rstest]
+    #[case::my_thespian(0, 2, 0)]
+    #[case::an_opponents_thespian(1, 0, 2)]
+    fn w8b_radiation_gains_life_for_its_controller_alone(
+        #[case] holder: usize,
+        #[case] gained: u32,
+        #[case] lost: u32,
+    ) {
+        let events = w7b_precombat_rad(&w8b_thespian_game(holder));
+        let (milled, life_lost, removed) = outcome(&events);
+        let life_gained: u32 = events
+            .iter()
+            .map(|e| match e {
+                Event::LifeGained { player, amount } if *player == ME => *amount,
+                _ => 0,
+            })
+            .sum();
+        assert_eq!(
+            (milled, life_gained, life_lost, removed),
+            (3, gained, lost, 2)
         );
     }
 }

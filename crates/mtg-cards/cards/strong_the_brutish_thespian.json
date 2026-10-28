@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f0ef48e1-c3d7-4ce2-8f7c-653342778cae",
+  "name": "Strong, the Brutish Thespian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strong, the Brutish Thespian",
+      "oracle_fingerprint": "11ba6a78ba8ab620ceb07c5824cefbd6",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "rad" }, "count": 3 } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "RadiationGainsLife": "You" } } }
+      ]
+    }
+  ]
+}

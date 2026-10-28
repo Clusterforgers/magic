@@ -294,6 +294,11 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             },
         )));
     }
+    if at_least == 1
+        && let Some(found) = r.attempt(super::w8b_milled::w8b_batch)
+    {
+        return Some(found);
+    }
     if at_least == 1 && r.words("cards leave your graveyard") {
         return Some(TriggerPattern::Batch(Box::new(
             TriggerPattern::ZoneChange {
@@ -530,6 +535,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         })
     } else if verb == if third { "cycles" } else { "cycle" } {
         w2e_cycled(r, by)
+    } else if verb == if third { "mills" } else { "mill" } {
+        super::w8b_milled::w8b_mills(r, by)
     } else if verb == if third { "surveils" } else { "surveil" } {
         Some(first_time(r, TriggerPattern::Surveilled { who: by }))
     } else if verb == if third { "creates" } else { "create" } {
@@ -1314,6 +1321,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             player_verb(by, "sacrifice")?,
             subject_text(what)?
         )),
+        TriggerPattern::Milled { what, by } => super::w8b_milled::w8b_text(what, by),
         TriggerPattern::BecomesMonarch { who } => Some(format!(
             "Whenever {} the monarch",
             player_verb(who, "become")?
@@ -1528,6 +1536,7 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
             "Whenever one or more cards are put into your graveyard from your library".to_owned(),
         ),
         TriggerPattern::ZoneChange { what, from, to } => batches::zone_change(what, *from, *to),
+        TriggerPattern::Milled { what, by } => super::w8b_milled::w8b_batch_text(what, by),
         TriggerPattern::CountersPut { what, counter } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),

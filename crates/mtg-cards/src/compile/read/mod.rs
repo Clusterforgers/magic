@@ -138,6 +138,8 @@ mod w6e_control;
 mod w7b_player_counters;
 mod w7e_phase;
 mod w8a_declaration_limits;
+mod w8b_milled;
+mod w8b_then;
 mod where_x;
 mod zone_moves;
 
