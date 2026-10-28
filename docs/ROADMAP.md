@@ -29,7 +29,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Cast ways and zones: (c5e), (c2l3), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
-- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
+- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2ea), (r2dge), (r2eba) a local run, (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5) affected-only checks.
@@ -86,7 +86,10 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (n1d6) The day and night wordings left; frees about 10 corpus cards (Celestus Sanctifier, Angel of Eternal Dawn, Tovolar, Dire Overlord)
 - [ ] (n2b) Face-down remaining: manifest dread and of chosen cards, face-up and face-down predicates, turn-up conditions, morph costs beyond mana; frees about 14 cards (Write into Being, Whisperwood Elemental, Fathom Seer)
 - [ ] (o2c) A storm trigger or copy effect that resolves after its spell has left the stack copies it from last known information
-- [~] (o2f) (o2f-copy-wordings) Copy wordings left: storm riders, "when you next cast", exceptions that set a name or depend on the copy, copies attacking a player, Populate X times; frees about 30 cards (Skull Storm, Spark Double, The Scarab God)
+- [ ] (o2fa) "When you next cast" left: inside "If you do," a chapter with an ability word or a mana ability, "an additional time", a spell or ability, and effects other than a copy (counters, sunburst, rebound); frees about 12 cards (Najal, Mercurial Spelldancer, Ether, Magus Lucea Kane)
+- [ ] (o2fb) Copy exceptions that set a name or depend on the copy (Sakashima, Lazav, Spark Double's counter by type); frees about 9 cards
+- [ ] (o2fc) Token copies that attack a player ("for each opponent, create a token copy that attacks that opponent") and storm riders (Skull Storm's "each opponent who can't loses half their life", Storm of Forms' count of counter kinds); frees about 10 cards (Skull Storm, The Scarab God)
+- [ ] (o2fd) Populate X times and populate for each (Full Flowering)
 - [ ] (o1d) A transformed permanent that dies reads its trigger from the face it showed, and a copy-granted static reads it from the copy that left in the same batch
 
 ### Attachments
