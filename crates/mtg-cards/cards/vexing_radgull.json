@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2b632e67-ff80-4d52-9f44-3bc4bf083ab1",
+  "name": "Vexing Radgull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vexing Radgull",
+      "oracle_fingerprint": "6d1f0d03ba12c9c07cdf6ada87e7b48d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "Triggering", "counter": { "Other": "rad" } } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": "Triggering",
+                        "counter": { "Other": "rad" },
+                        "count": 2
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Proliferate": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

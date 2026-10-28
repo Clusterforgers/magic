@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0237cccc-3161-4d91-8e69-e3d315dcb246",
+  "name": "Kopala, Warden of Waves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kopala, Warden of Waves",
+      "oracle_fingerprint": "02a043f2652baf441e32952573734b6d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "Opponents" },
+              { "Targeting": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] }
+            ],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              { "Ability": "Activated" },
+              { "ControlledBy": "Opponents" },
+              { "Targeting": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] }
+            ],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

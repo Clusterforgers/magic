@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "2dd1d028-0c7c-450b-a1ae-812b1212fef6",
+  "oracle_id": "879fdcd8-62ea-4d39-abd4-44e6d82adf4d",
+  "multiverse_ids": [
+    405323
+  ],
+  "tcgplayer_id": 108002,
+  "cardmarket_id": 285957,
+  "name": "Ohran Viper",
+  "lang": "en",
+  "released_at": "2015-11-13",
+  "uri": "https://api.scryfall.com/cards/2dd1d028-0c7c-450b-a1ae-812b1212fef6",
+  "scryfall_uri": "https://scryfall.com/card/c15/194/ohran-viper?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:21:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.jpg?1783938067",
+    "normal": "https://cards.scryfall.io/normal/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.jpg?1783938067",
+    "large": "https://cards.scryfall.io/large/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.jpg?1783938067",
+    "png": "https://cards.scryfall.io/png/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.png?1783938067",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.jpg?1783938067",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.jpg?1783938067",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.webp?1783938067",
+    "grid": "https://cards.scryfall.io/grid/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.webp?1783938067",
+    "display": "https://cards.scryfall.io/display/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.webp?1783938067",
+    "art": "https://cards.scryfall.io/art/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.webp?1783938067",
+    "crop": "https://cards.scryfall.io/crop/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.webp?1783938067",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/d/2dd1d028-0c7c-450b-a1ae-812b1212fef6.jpg?1783938067"
+  },
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Snow Creature — Snake",
+  "oracle_text": "Whenever this creature deals combat damage to a creature, destroy that creature at end of combat.\nWhenever this creature deals combat damage to a player, you may draw a card.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "ea6c99f9-5489-4504-b30c-c819fa3b1fd3",
+  "set": "c15",
+  "set_name": "Commander 2015",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/ea6c99f9-5489-4504-b30c-c819fa3b1fd3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac15&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c15?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2dd1d028-0c7c-450b-a1ae-812b1212fef6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A879fdcd8-62ea-4d39-abd4-44e6d82adf4d&unique=prints",
+  "collector_number": "194",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The ohran viper is not cold-blooded. Its veins course with the same antigelid venom used to kill its prey.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kev Walker",
+  "artist_ids": [
+    "f366a0ee-a0cd-466d-ba6a-90058c7a31a6"
+  ],
+  "illustration_id": "97ea61e1-5eff-42f4-8dcd-7cb7929c23f2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7840,
+  "penny_rank": 7510,
+  "prices": {
+    "usd": "1.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.05",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=405323&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOhran%2BViper",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOhran%2BViper",
+    "edhrec": "https://edhrec.com/route/?cc=Ohran+Viper"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F108002%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=285957&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Ohran+Viper&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

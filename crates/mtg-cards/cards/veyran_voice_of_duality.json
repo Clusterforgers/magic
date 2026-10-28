@@ -1,0 +1,66 @@
+{
+  "oracle_id": "d57a6b19-bd06-4b07-8ee1-0b45612ba9e4",
+  "name": "Veyran, Voice of Duality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veyran, Voice of Duality",
+      "oracle_fingerprint": "dcdef1949b0a2a15424025782f8af0f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "AnyOf": [
+                    {
+                      "SpellCast": {
+                        "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                        "by": "You"
+                      }
+                    },
+                    {
+                      "SpellCopied": {
+                        "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                        "by": "You"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "276dc5c8-c8cf-4b9c-ad75-31876e6e040a",
+  "name": "The Indomitable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Indomitable",
+      "oracle_fingerprint": "915aad267384775d2893f11650c95f38",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Keyword": { "Crew": 3 } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Subtype": "Pirate" }, { "Subtype": "Vehicle" }] },
+                    "Tapped",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
