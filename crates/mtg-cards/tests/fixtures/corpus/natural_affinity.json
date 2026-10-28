@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "4847f8e8-9979-427e-999a-26711e542f82",
+  "oracle_id": "09a1ab1b-d9f0-4a2a-a448-3190f85006e4",
+  "multiverse_ids": [
+    83182
+  ],
+  "mtgo_id": 22483,
+  "mtgo_foil_id": 22484,
+  "tcgplayer_id": 12745,
+  "cardmarket_id": 12458,
+  "name": "Natural Affinity",
+  "lang": "en",
+  "released_at": "2005-07-29",
+  "uri": "https://api.scryfall.com/cards/4847f8e8-9979-427e-999a-26711e542f82",
+  "scryfall_uri": "https://scryfall.com/card/9ed/256/natural-affinity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:58:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.jpg?1783943924",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.jpg?1783943924",
+    "large": "https://cards.scryfall.io/large/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.jpg?1783943924",
+    "png": "https://cards.scryfall.io/png/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.png?1783943924",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.jpg?1783943924",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.jpg?1783943924",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.webp?1783943924",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.webp?1783943924",
+    "display": "https://cards.scryfall.io/display/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.webp?1783943924",
+    "art": "https://cards.scryfall.io/art/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.webp?1783943924",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.webp?1783943924",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/4847f8e8-9979-427e-999a-26711e542f82.jpg?1783943924"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "All lands become 2/2 creatures until end of turn. They're still lands.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "e70c8572-4732-4e92-a140-b4e3c1c84c93",
+  "set": "9ed",
+  "set_name": "Ninth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/e70c8572-4732-4e92-a140-b4e3c1c84c93",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A9ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/9ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4847f8e8-9979-427e-999a-26711e542f82/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A09a1ab1b-d9f0-4a2a-a448-3190f85006e4&unique=prints",
+  "collector_number": "256",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "As long as the dryads are a part of the forest, the forest is a part of the army.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pete Venters",
+  "artist_ids": [
+    "d54c4a1a-c0c5-4834-84db-125d341f3ad8"
+  ],
+  "illustration_id": "8eebd31b-397a-450f-93da-980a26233d09",
+  "border_color": "white",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12227,
+  "penny_rank": 6135,
+  "prices": {
+    "usd": "6.55",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.28",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=83182&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNatural%2BAffinity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNatural%2BAffinity",
+    "edhrec": "https://edhrec.com/route/?cc=Natural+Affinity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F12745%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=12458&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/22483?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

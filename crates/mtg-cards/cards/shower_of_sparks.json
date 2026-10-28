@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a43500ed-4aa6-49de-8a6e-a1781301b108",
+  "name": "Shower of Sparks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shower of Sparks",
+      "oracle_fingerprint": "3063ed0fc2ed6b56455ae972322b97e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

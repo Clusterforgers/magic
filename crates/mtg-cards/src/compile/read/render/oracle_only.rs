@@ -267,6 +267,18 @@ mod w5b_rules;
 mod w5c_later;
 mod w5c_player_counters;
 mod w6d_wholes;
+mod w8c_damage_and;
+mod w8c_kind_controller;
+mod w8c_on_top;
+mod w8c_opponent_graveyard;
+mod w8c_other_turns;
+mod w8c_prevent_next;
+mod w8c_return_both;
+mod w8c_snow;
+mod w8c_spell_colors;
+mod w8c_still_kind;
+mod w8c_then_discards;
+mod w8c_then_tap;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -356,6 +368,26 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_w5b(ability, texts);
     add_w5c(ability, texts);
     add_w5a(ability, texts);
+    add_w8c(ability, texts);
+}
+
+/// Adds the wordings of the shapes the stored local-model proposals hit (r4b): a tap after the effects on its target,
+/// the snow supertype, two amounts of damage in one sentence, a shield of the next damage, the controller of a target
+/// named by its type, a card put into an opponent's graveyard, the top of a library, a group that is still its type,
+/// two returns in one sentence, the turns of others, a discard by the owner and a spell of several colors.
+fn add_w8c(ability: &Ability, texts: &mut Vec<String>) {
+    w8c_then_tap::add(ability, texts);
+    w8c_snow::add(ability, texts);
+    w8c_damage_and::add(ability, texts);
+    w8c_prevent_next::add(ability, texts);
+    w8c_kind_controller::add(ability, texts);
+    w8c_opponent_graveyard::add(ability, texts);
+    w8c_on_top::add(ability, texts);
+    w8c_still_kind::add(ability, texts);
+    w8c_return_both::add(ability, texts);
+    w8c_other_turns::add(ability, texts);
+    w8c_then_discards::add(ability, texts);
+    w8c_spell_colors::add(ability, texts);
 }
 
 /// Adds the wordings of the spells built of several steps and of the draw, choice, rule and mana steps (r3w9).

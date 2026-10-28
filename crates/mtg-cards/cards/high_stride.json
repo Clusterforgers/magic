@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ab0aea13-1dbc-424a-ab7e-cdb303036a56",
+  "name": "High Stride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Stride",
+      "oracle_fingerprint": "378f8afed208d5c16b717eeae9a773f2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 3 } },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

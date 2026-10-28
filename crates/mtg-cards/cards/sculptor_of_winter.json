@@ -1,0 +1,20 @@
+{
+  "oracle_id": "73109353-51fa-43a1-93e0-b74536f372a5",
+  "name": "Sculptor of Winter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sculptor of Winter",
+      "oracle_fingerprint": "14a1b3ad16bb4236638deb513f35e30a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Supertype": "Snow" }, { "Type": "Land" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

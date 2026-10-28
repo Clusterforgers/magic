@@ -1,0 +1,23 @@
+{
+  "oracle_id": "0e5a5cee-d068-42cf-bf58-8e1360720be0",
+  "name": "Fireslinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fireslinger",
+      "oracle_fingerprint": "f2c0e85d2d6313c69c95aee4aeae0a5a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

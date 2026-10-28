@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c24b0c7d-1a4b-4eca-8d83-9e81ed3b3b27",
+  "name": "Viridian Revel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viridian Revel",
+      "oracle_fingerprint": "fc0765b374c6570f75f4eacfb29cbe31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "OwnedBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
