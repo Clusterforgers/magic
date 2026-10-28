@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4f8191e6-a6aa-4426-9014-eff4e0efee9e",
+  "name": "Éomer, King of Rohan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Éomer, King of Rohan",
+      "oracle_fingerprint": "8cef943e22cf2e6d7746ffc47dbcbfe6",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Subtype": "Human" }, "Other", { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }, { "what": "AnyTarget" }],
+            "effects": [
+              { "BecomeMonarch": { "who": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

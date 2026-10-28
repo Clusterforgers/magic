@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"PerPlayer":{"players":"Opponents","what":[{"Not":{"Type":"Land"}}]}},"bounds":{"min":0,"max":1}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

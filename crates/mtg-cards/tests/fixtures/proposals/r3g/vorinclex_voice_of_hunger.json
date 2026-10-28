@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"effects":[{"AddMana":{"mana":"OfTapped"}}]}},{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"Opponents"}},"effects":[{"Continuous":{"affected":"Triggering","mods":["DoesntUntap"],"duration":"NextUntapStep"}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Type":"Artifact"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"to":{"Battlefield":{}}}},{"Continuous":{"affected":{"Each":[{"Type":"Artifact"},{"ControlledBy":"You"},"EnteredThisTurn"]},"mods":[{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]}}]}]}
