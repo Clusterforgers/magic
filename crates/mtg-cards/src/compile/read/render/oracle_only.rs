@@ -227,6 +227,8 @@ mod uncounterable_group;
 mod unless;
 mod untap_lands;
 mod untapped_cost;
+mod w4c_bodies;
+mod w4c_may_pay;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -306,6 +308,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c10_cen(ability, texts);
     add_c11g(ability, texts);
     add_c11f(ability, texts);
+    add_w4c(ability, texts);
+}
+
+/// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
+fn add_w4c(ability: &Ability, texts: &mut Vec<String>) {
+    w4c_may_pay::add(ability, texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.
