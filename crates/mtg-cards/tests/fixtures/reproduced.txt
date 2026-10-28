@@ -670,6 +670,7 @@ Hidden Dragonslayer
 Hidden Hideout
 Highspire Artisan
 History of Benalia
+Hoarder's Greed
 Holdout Settlement
 Honor Troll
 Honor's Reward
@@ -782,6 +783,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Lash Out
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad

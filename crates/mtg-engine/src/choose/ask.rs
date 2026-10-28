@@ -7,7 +7,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::order::{self, OrderOptions};
-use super::{CardsOptions, Choice, YesNoOptions, cards};
+use super::{CardsOptions, Choice, ChoiceOption, OptionOptions, YesNoOptions, cards};
 use crate::decision::{Decision, DecisionKind};
 use crate::resolve::{Cx, ResolveError, Run};
 
@@ -124,6 +124,32 @@ impl<'a> Questions<'a> {
             }))),
             Some((who, Choice::YesNo(yes))) if *who == player => Ok(*yes),
             Some(other) => Err(Self::unfit(other, player, "yes-or-no question")),
+        }
+    }
+
+    /// The index of the option `player` chooses; one option is taken without asking.
+    pub(crate) fn w9b_option(
+        &mut self,
+        player: PlayerId,
+        options: Vec<ChoiceOption>,
+        text: String,
+    ) -> Result<usize, Stop> {
+        if options.len() < 2 {
+            return Ok(0);
+        }
+        match self.answers.next() {
+            None => Err(Stop::Ask(Box::new(Decision {
+                player,
+                kind: DecisionKind::ChooseOption(OptionOptions {
+                    source: self.source,
+                    options,
+                    text,
+                }),
+            }))),
+            Some((who, Choice::Option(index))) if *who == player && *index < options.len() => {
+                Ok(*index)
+            }
+            Some(other) => Err(Self::unfit(other, player, "choice of option")),
         }
     }
 

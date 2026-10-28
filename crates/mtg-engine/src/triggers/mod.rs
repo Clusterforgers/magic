@@ -88,6 +88,7 @@ fn effects_trigger(effects: &[Effect]) -> bool {
         }
         Effect::RollDice { results, .. } => results.iter().any(|row| effects_trigger(&row.effects)),
         Effect::FlipCoin { win, lose, .. }
+        | Effect::Clash { win, lose, .. }
         | Effect::VillainousChoice {
             first: win,
             second: lose,
@@ -162,6 +163,7 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
             .iter()
             .any(|row| effects_state_trigger(&row.effects)),
         Effect::FlipCoin { win, lose, .. }
+        | Effect::Clash { win, lose, .. }
         | Effect::VillainousChoice {
             first: win,
             second: lose,

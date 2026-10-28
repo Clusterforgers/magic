@@ -57,6 +57,7 @@ mod untapped;
 mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
+mod w9b_clash;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -940,6 +941,12 @@ fn written(
     while start < effects.len() {
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
+        if let Some((texts, used)) = writer.w9b_clash(&effects[start..]) {
+            unsplit(mask, start, used)?;
+            sentences.extend(texts);
+            start += used;
+            continue;
+        }
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.then_steps(&effects[start..]))

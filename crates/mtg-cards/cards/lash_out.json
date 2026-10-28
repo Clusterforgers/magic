@@ -1,0 +1,28 @@
+{
+  "oracle_id": "398d57bb-4653-4652-aa42-7cea4317be0a",
+  "name": "Lash Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lash Out",
+      "oracle_fingerprint": "65e613f809a12518dbcf912a9085e4aa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Clash": {
+                  "win": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

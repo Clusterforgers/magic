@@ -1721,6 +1721,14 @@ impl Walker<'_> {
         self.effect_list("lose", lose, false);
     }
 
+    /// `Clash`: the player and both lists, in which the opponent is bound.
+    fn w9b_clash(&mut self, who: &Ref, win: &[Effect], lose: &[Effect]) {
+        self.at("who", |w| w.reference(who, Kind::Player));
+        let clashed = Some((crate::effect::W9B_CLASHED, Kind::Player));
+        self.effect_list_with("win", win, false, clashed);
+        self.effect_list_with("lose", lose, false, clashed);
+    }
+
     /// An effect list in a scope of its own, with the name of a repeat pass bound when there is one.
     fn effect_list_with(
         &mut self,
@@ -2135,6 +2143,7 @@ impl Walker<'_> {
                 results,
             } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
             Effect::FlipCoin { who, win, lose, .. } => w.flip_coin(who, win, lose),
+            Effect::Clash { who, win, lose, .. } => w.w9b_clash(who, win, lose),
             Effect::VillainousChoice {
                 who, first, second, ..
             } => {

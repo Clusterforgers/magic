@@ -12,6 +12,9 @@ use crate::spend::{ManaLasts, SpendOn};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, DayNight, StatKind};
 
+/// The name a clash binds its opponent to.
+pub const W9B_CLASHED: &str = "clashed";
+
 // serde's `skip_serializing_if` hands out a reference, so these take one.
 #[allow(clippy::trivially_copy_pass_by_ref)]
 pub(crate) const fn is_false(value: &bool) -> bool {
@@ -889,6 +892,23 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         until: bool,
     },
+    /// The player clashes with an opponent they choose (CR 701.23): each reveals the top card of their library and puts it
+    /// on the top or the bottom; `win` is done when the player's card had the greater mana value, `lose` otherwise. Both
+    /// lists bind the opponent as [`W9B_CLASHED`] ("that player").
+    Clash {
+        /// Who clashes.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Done when the clash is won.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        win: Vec<Effect>,
+        /// Done when the clash is not won.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        lose: Vec<Effect>,
+        /// Clashes again after each won clash, `win` done before each ("If you win, repeat this process").
+        #[serde(default, skip_serializing_if = "is_false")]
+        until: bool,
+    },
     /// Each player votes (CR 701.38), the controller first and the others in turn order. A vote on named choices binds
     /// each name to the players who voted for it; a vote on players or objects binds `bind` to those with the most votes,
     /// all of them when tied. A secret vote is shown to the other seats only when every vote is cast.
@@ -1358,6 +1378,10 @@ mod tests {
     #[case::flip_until_a_loss(
         Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true },
         r#"{"FlipCoin":{"until":true}}"#
+    )]
+    #[case::clash_and_repeat(
+        Effect::Clash { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true },
+        r#"{"Clash":{"win":[{"Draw":{}}],"until":true}}"#
     )]
     #[case::vote_on_two_names(
         Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
