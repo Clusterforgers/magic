@@ -1,0 +1,65 @@
+{
+  "oracle_id": "3e7df01c-75af-440d-97fd-1b1b794281b9",
+  "name": "Reyhan, Last of the Abzan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reyhan, Last of the Abzan",
+      "oracle_fingerprint": "c0394ebb54ffef07dbc4dc2239f13ce4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Command"
+                  }
+                }
+              ]
+            },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "Triggering", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Target": 0 },
+                        "counter": "+1/+1",
+                        "count": { "Counters": { "on": "Triggering", "counter": "+1/+1" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

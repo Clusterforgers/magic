@@ -1,0 +1,29 @@
+{
+  "oracle_id": "110d5d45-7174-4d1b-9e9c-e1ccd950ee3b",
+  "name": "Gahiji, Honored One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gahiji, Honored One",
+      "oracle_fingerprint": "e41f75d7ef27042ce3873362ef1725d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "Opponents" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

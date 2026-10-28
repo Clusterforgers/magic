@@ -1,0 +1,45 @@
+{
+  "oracle_id": "22e70ad0-1a9c-4d9e-8cc1-ebea485282ca",
+  "name": "The Lost and the Damned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Lost and the Damned",
+      "oracle_fingerprint": "557bbd424d1641c43046e182c1247922",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChangeExcept": {
+                    "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                    "except": "Hand",
+                    "to": "Battlefield"
+                  }
+                },
+                { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spawn",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spawn"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

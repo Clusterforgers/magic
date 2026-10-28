@@ -1,0 +1,63 @@
+{
+  "oracle_id": "98a2a642-a30a-43e7-b47f-4776c22d1cb0",
+  "name": "Éowyn, Shieldmaiden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Éowyn, Shieldmaiden",
+      "oracle_fingerprint": "b4edf14a5ea05c22e64e28181bd7f4dd",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Human" },
+                    "Other",
+                    { "ControlledBy": "You" },
+                    "EnteredThisTurn"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Knight",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Human" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 6
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
