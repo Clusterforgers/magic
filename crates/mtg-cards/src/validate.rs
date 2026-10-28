@@ -138,6 +138,15 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
 }
 
 /// Whether a step asks its controller or another player something as it runs.
+/// Whether a token's card alone decides the predicate: a type, subtype, supertype or colour, or the negation of one.
+fn w9c_token_pred(pred: &Pred) -> bool {
+    match pred {
+        Pred::Type(_) | Pred::Subtype(_) | Pred::Supertype(_) | Pred::Color(_) => true,
+        Pred::Not(inner) => w9c_token_pred(inner),
+        _ => false,
+    }
+}
+
 fn w5d_asks(effect: &Effect) -> bool {
     matches!(
         effect,
@@ -2298,7 +2307,7 @@ impl Walker<'_> {
                 match (when, by) {
                     (
                         ReplaceWhen::Damage { .. },
-                        ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_),
+                        ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAnd(_),
                     )
                     | (
                         ReplaceWhen::ZoneChange {
@@ -2868,8 +2877,11 @@ impl Walker<'_> {
             self.uses("ReplaceWhen", "Draw.ExceptDrawStep");
         }
         match when {
-            ReplaceWhen::TokenCreation { controller } => {
+            ReplaceWhen::TokenCreation { controller, what } => {
                 self.at("controller", |w| w.reference(controller, Kind::Player));
+                if !what.is_empty() {
+                    self.at("what", |w| w.w9c_token_kind(what));
+                }
             }
             ReplaceWhen::Damage { to, source, .. } => {
                 if let Some(to) = to {
@@ -2911,6 +2923,23 @@ impl Walker<'_> {
         (self.scope.in_trigger, self.scope.dealer) = saved;
     }
 
+    /// "Prevent that damage and ...": a prevention of damage whose steps read the event as `Instead` reads it.
+    fn w9c_prevent_and(&mut self, when: &ReplaceWhen, effects: &[Effect]) {
+        if !matches!(when, ReplaceWhen::Damage { .. }) {
+            self.problem("only damage is prevented");
+        }
+        self.w5d_instead(when, effects);
+    }
+
+    /// The kind of token a token replacement covers is judged by the token's card: its types, subtypes, supertypes and
+    /// colours, or their negation.
+    fn w9c_token_kind(&mut self, what: &Selector) {
+        self.selector(what);
+        if !what.0.iter().all(w9c_token_pred) {
+            self.problem("a kind of token is named by its types, subtypes, supertypes or colours");
+        }
+    }
+
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         let enters = matches!(when, ReplaceWhen::Enters { .. });
@@ -2940,13 +2969,16 @@ impl Walker<'_> {
             {
                 self.problem("a zone change or an entering is not prevented");
             }
-            ReplaceBy::PreventUpTo(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+            ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAllBut(_)
+                if !matches!(when, ReplaceWhen::Damage { .. }) =>
+            {
                 self.problem("only damage is prevented in part");
             }
             ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
                 self.problem("only damage is prevented with a counter removed");
             }
             ReplaceBy::Instead(effects) => self.w5d_instead(when, effects),
+            ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::Dredge(cards) => {
                 if !matches!(when, ReplaceWhen::Draw { .. }) {
                     self.problem("`Dredge` replaces a `Draw`");

@@ -119,7 +119,7 @@ pub enum Rule {
         combat: Option<bool>,
     },
     /// A prevention shield (CR 615): it replaces damage with nothing, up to an amount, until it is used up or ends.
-    PreventDamage(DamageShield),
+    PreventDamage(Box<DamageShield>),
     /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
     Regenerate(ObjectRef),
     /// A shield over deaths (CR 614): each of the permanents or spells, fixed when it was made, that would go from the
@@ -170,6 +170,10 @@ pub struct DamageShield {
     pub combat: Option<bool>,
     /// What it still prevents; all damage when absent.
     pub left: Option<u32>,
+    /// What happens as it prevents damage, reading the damage as `ReplaceBy::PreventAnd` does; nothing when empty.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub then: Vec<mtg_cards::effect::Effect>,
 }
 
 impl DamageShield {

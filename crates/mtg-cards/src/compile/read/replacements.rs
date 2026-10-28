@@ -24,7 +24,9 @@ pub(super) fn handles(when: &ReplaceWhen) -> bool {
 pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
     match when {
         ReplaceWhen::Damage { to, source, combat } => damage(to.as_ref(), source, *combat, by),
-        ReplaceWhen::TokenCreation { controller } => tokens(controller, by),
+        ReplaceWhen::TokenCreation { controller, what } if what.is_empty() => {
+            tokens(controller, by)
+        }
         ReplaceWhen::CountersPut { on, counter } => counters(on.as_ref(), counter.as_ref(), by),
         ReplaceWhen::Draw {
             who: Ref::You,

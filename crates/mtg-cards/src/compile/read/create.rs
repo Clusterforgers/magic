@@ -660,3 +660,13 @@ fn quantity_text(count: &Amount, what: &str, per: bool) -> Option<(String, bool,
         _ => return None,
     })
 }
+
+/// "4/4 white Angel creature tokens with flying and vigilance": a kind of token in the plural, with its keywords.
+pub(super) fn w9c_plural_token(r: &mut Reader<'_>) -> Option<TokenRef> {
+    let mut found = token(r)?;
+    r.word("tokens").then_some(())?;
+    if let Some(abilities) = r.attempt(keyword_abilities) {
+        spec_of(&mut found)?.abilities = abilities;
+    }
+    Some(found)
+}

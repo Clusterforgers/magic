@@ -377,6 +377,7 @@ Dismantling Blow
 Dismantling Wave
 Disrupt Decorum
 Distorting Wake
+Divine Visitation
 Diviner Spirit
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -557,6 +558,7 @@ Galvanizing Sawship
 Game-Trail Changeling
 Garruk Wildspeaker
 Garruk, Primal Hunter
+Gatta and Luzzu
 Gavony Dawnguard
 Gemhide Sliver
 Gemrazer
@@ -746,6 +748,7 @@ Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
 Kalemne's Captain
+Kalitas, Traitor of Ghet
 Kalonian Hydra
 Kang, Temporal Tyrant
 Karador, Ghost Chieftain
@@ -1000,6 +1003,7 @@ Pacifism
 Palace Jailer
 Paladin's Arms
 Pale Bears
+Panther Habit
 Panther Robot
 Paradise Druid
 Parhelion Patrol
@@ -1411,6 +1415,7 @@ Tectonic Reformation
 Teferi's Ageless Insight
 Teferi's Protection
 Tempestra, Dame of Games
+Temple Altisaur
 Temporal Manipulation
 Temur Devotee
 Tender Wildguide

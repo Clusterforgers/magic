@@ -476,6 +476,7 @@ mod w8a_declaration_limits;
 mod w8b_mill_triggers;
 mod w9a_expend;
 mod w9b_clash;
+mod w9c_replacement_pieces;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;

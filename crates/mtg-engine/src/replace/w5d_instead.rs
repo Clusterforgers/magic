@@ -13,7 +13,7 @@ use crate::resolve::w5d_run_instead;
 
 impl Pass<'_> {
     /// What the effects of a replacement read of the event at `at`: who or what it is about, how much and its source.
-    fn w5d_cause(&self, at: usize, unit: &Unit) -> Cause {
+    pub(super) fn w5d_cause(&self, at: usize, unit: &Unit) -> Cause {
         let object = |id| self.reference(id).map(Target::Object);
         let (subject, source) = match unit {
             Unit::Tokens { controller } => (Some(Target::Player(*controller)), None),

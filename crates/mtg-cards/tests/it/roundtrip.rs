@@ -1146,7 +1146,10 @@ fn ability() -> impl Strategy<Value = Ability> {
             ),
         (
             prop_oneof![
-                reference().prop_map(|controller| ReplaceWhen::TokenCreation { controller }),
+                reference().prop_map(|controller| ReplaceWhen::TokenCreation {
+                    controller,
+                    what: Selector::default()
+                }),
                 (
                     proptest::option::of(reference()),
                     selector(),

@@ -524,6 +524,10 @@ pub enum ReplaceWhen {
         /// The player who would control them.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         controller: Ref,
+        /// Only tokens of this kind ("one or more creature tokens"), judged by their types, subtypes, supertypes and
+        /// colours; any token when empty. A run of tokens of several kinds is split by it.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
     },
     /// A source would deal damage to a player or a permanent.
     Damage {
@@ -625,6 +629,11 @@ pub enum ReplaceBy {
     PreventUpTo(u32),
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// All of the damage is prevented (CR 615) and these effects happen, reading the event as `Instead` does ("prevent
+    /// that damage and put that many +1/+1 counters on it").
+    PreventAnd(Vec<Effect>),
+    /// All but this much of the damage is prevented (CR 615): "prevent all but 1 of that damage".
+    PreventAllBut(u32),
     /// All of the damage is prevented and the permanent with the ability loses one counter of this kind, if it has one
     /// ("prevent that damage. Remove a +1/+1 counter from this creature").
     PreventRemovingCounter(CounterKind),
@@ -734,7 +743,8 @@ mod tests {
         assert_eq!(
             when,
             ReplaceWhen::TokenCreation {
-                controller: Ref::You
+                controller: Ref::You,
+                what: Selector::default(),
             }
         );
         assert_eq!(

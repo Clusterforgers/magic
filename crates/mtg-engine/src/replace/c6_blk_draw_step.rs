@@ -18,7 +18,9 @@ impl Pass<'_> {
         when: &ReplaceWhen,
         unit: &Unit,
     ) -> Result<bool, EngineError> {
-        Ok(self.matches(source, when, unit)? && !self.c6_blk_spared_draw(at, when, unit))
+        Ok(self.matches(source, when, unit)?
+            && !self.c6_blk_spared_draw(at, when, unit)
+            && self.w9c_kind_matches(at, when))
     }
 
     /// Whether the draw at slot `at` is one `when` leaves alone: one of the first `except_draw_step` cards the active

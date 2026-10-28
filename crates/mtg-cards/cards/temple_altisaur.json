@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1f499d39-b963-45c0-9604-d3cab98c9e05",
+  "name": "Temple Altisaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple Altisaur",
+      "oracle_fingerprint": "66917c5511bbfeeb600f6c88ba0ec212",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }] }
+              }
+            },
+            "by": { "PreventAllBut": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

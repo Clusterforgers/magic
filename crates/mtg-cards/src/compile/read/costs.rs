@@ -12,6 +12,7 @@ use crate::cost::{Cost, CostItem};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::Amount;
+use mtg_core::card::Subtype;
 
 /// The parts of a cost, separated by commas: `{T}`, `{Q}`, a run of mana symbols, "Pay 2 life",
 /// "Sacrifice ~", "Sacrifice another creature", "Discard a card".
@@ -292,6 +293,12 @@ pub(super) fn energy(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// What is sacrificed: "a creature", "another artifact", "two Goblins".
 fn sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
+    if let Some(filter) = r.attempt(w9c_either_subtype) {
+        return Some(CostItem::Sacrifice {
+            filter,
+            count: Amount::one(),
+        });
+    }
     let (filter, count) = if r.word("a") || r.word("an") || r.peek_word() == Some("another") {
         (phrase(r, Form::Subject)?, Amount::one())
     } else {
@@ -301,6 +308,25 @@ fn sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
     // The payer sacrifices what they control: a cost says nothing of who controls it or where it is.
     filter.0.iter().all(is_cost_filter).then_some(())?;
     Some(CostItem::Sacrifice { filter, count })
+}
+
+/// "another Vampire or Zombie", "a Vampire or Zombie": one permanent of either of two subtypes.
+fn w9c_either_subtype(r: &mut Reader<'_>) -> Option<Selector> {
+    let other = r.word("another");
+    if !other {
+        (r.word("a") || r.word("an")).then_some(())?;
+    }
+    let first = super::selectors::subtype(r)?;
+    r.word("or").then_some(())?;
+    let second = super::selectors::subtype(r)?;
+    let mut filter = vec![Pred::AnyOf(vec![
+        Pred::Subtype(Subtype(first)),
+        Pred::Subtype(Subtype(second)),
+    ])];
+    if other {
+        filter.push(Pred::Other);
+    }
+    Some(Selector(filter))
 }
 
 /// Whether a predicate of a sacrificed permanent says what kind it is, or that it is another one.
