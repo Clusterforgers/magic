@@ -212,7 +212,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
-- [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
+- [~] (r3) (the local bulk run of gpt-oss:20b with --schema, run by the orchestrator) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
+- [~] (r3w8) (r3w8-trigger-heads) Writers for the trigger heads still unwritten (a discard, a batch of events, "becomes the target", dies or goes to the command zone, "attacks one of your opponents or a planeswalker"): 58 of the 115 unwritten abilities of the stored proposals are triggered abilities
+- [~] (r3w9) (r3w9-spell-shapes) Writers for the spells the checker reports as "the combination or its shape" (19 abilities) and for the `Draw`, `Choose`, `Rule` and `AddMana` steps
+- [~] (r3wa) (r3wa-leftover-steps) The step leftovers of the writer wave: (r3w1a), (r3w3b), (r3w4b), (r3w5a) and (r3w5b)
 - [ ] (r3w2a) Writers for gaining control of one target per opponent or of an enchanted permanent (Mass Mutiny, Blatant Thievery, Frenzied Fugue) and a group that becomes a creature "and gains flying" (Sarkhan the Masterless)
 - [ ] (r3w2b) Writers for granted abilities in quotes whose trigger or effect is unwritten (The Reaver Cleaver, Unquenchable Fury), Clues that become Equipment (Armed with Proof), "creatures you control with toxic" (Skrelv's Hive) and an artifact type added without end (Phyrexian Scriptures)
 - [ ] (r3w2c) New proposals for Dungeon Geists and Merchant Raiders (the duration is "for as long as you control" the creature) and Unnatural Growth (each creature doubles its own power and toughness)
@@ -231,7 +234,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (r3w7) (r3w7-mismatch-mz) The same for names M to Z
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each
-- [ ] (r2dgf) Tap or untap one target, and a replacement that names the event it replaces; frees about 6 cards (Tidal Force, Merrow Reejerey, Pariah, Ravenous Slime)
+- [~] (r2dgf) (r2dgf-replacement-event) Tap or untap one target, and a replacement that names the event it replaces; frees about 6 cards (Tidal Force, Merrow Reejerey, Pariah, Ravenous Slime)
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 - [ ] (r1a) `mtg-cli forge-check` compares a Forge clause with the ability that stands for it and reads `Count$` amounts, `Valid*` filters and conditions (`docs/reference-engines.md`)
 - [ ] (r1b) The prompt of `mtg-cli propose` takes examples from Forge clause-script pairs fetched at run time; examples kept in the repository come from XMage with its MIT notice
