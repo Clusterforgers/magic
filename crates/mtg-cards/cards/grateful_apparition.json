@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f1b3e0fc-1dc3-4eba-bd54-557f036f5ea9",
+  "name": "Grateful Apparition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grateful Apparition",
+      "oracle_fingerprint": "218240294e2949cc57cee69ac94773ec",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": ["This"],
+                    "to": { "Each": [{ "Type": "Planeswalker" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

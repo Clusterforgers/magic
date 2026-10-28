@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Rule":{"rule":{"TriggerAgain":{"cause":{"Drew":{}}}}}},{"Triggered":{"when":{"Nth":{"nth":2,"event":{"Drew":{}}}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}]}]}

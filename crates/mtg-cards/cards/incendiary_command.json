@@ -1,0 +1,88 @@
+{
+  "oracle_id": "d45a4924-daa0-4ac3-afd7-b66f636ce870",
+  "name": "Incendiary Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incendiary Command",
+      "oracle_fingerprint": "6d4e00637d36dd925f91cda633718bc2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": "EachPlayer",
+                            "as": "player",
+                            "effects": [
+                              {
+                                "Discard": {
+                                  "who": { "Bound": "player" },
+                                  "count": {
+                                    "Count": [
+                                      { "In": "Hand" },
+                                      { "OwnedBy": { "Bound": "player" } }
+                                    ]
+                                  },
+                                  "as": "discarded"
+                                }
+                              },
+                              {
+                                "Draw": {
+                                  "who": { "Bound": "player" },
+                                  "count": {
+                                    "Count": [
+                                      { "In": "Graveyard" },
+                                      { "Is": { "Bound": "discarded" } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

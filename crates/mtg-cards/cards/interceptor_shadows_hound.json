@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8571bd94-66c0-4cca-b10f-2c34062d008e",
+  "name": "Interceptor, Shadow's Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Interceptor, Shadow's Hound",
+      "oracle_fingerprint": "56d826ffb01f3ac2dfafc7a042325038",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Assassin" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Supertype": "Legendary" },
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{B}",
+                  "paid": [
+                    { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } },
+                    { "JoinAttack": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

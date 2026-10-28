@@ -51,6 +51,9 @@ mod c5_sz_wholes;
 mod c6_af;
 mod c6_eg;
 mod c6_gap_wholes;
+mod c6_gl_causes;
+mod c6_gl_returns;
+mod c6_gl_wholes;
 mod c6_sz_and_you;
 mod c6_sz_bodies;
 mod c6_sz_wholes;
@@ -290,6 +293,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c6_gap(ability, texts);
     add_c6_af(ability, texts);
     add_c6_sz(ability, texts);
+    add_c6_gl(ability, texts);
 }
 
 /// The wordings of the sixth sample of the names A to F; it runs last because it rewrites the texts of the others.
@@ -305,6 +309,13 @@ fn add_c5_dice(ability: &Ability, texts: &mut Vec<String>) {
 /// The wordings of the fifth sample of the names A to F; it runs last because it rewrites the texts of the others.
 fn add_c5_af(ability: &Ability, texts: &mut Vec<String>) {
     c5_af::c5_af_add(ability, texts);
+}
+
+/// The wordings of the sixth sample of the names G to L (r2dc).
+fn add_c6_gl(ability: &Ability, texts: &mut Vec<String>) {
+    c6_gl_wholes::c6_gl_add_wholes(ability, texts);
+    c6_gl_returns::c6_gl_add_returns(ability, texts);
+    c6_gl_causes::c6_gl_add_causes(ability, texts);
 }
 
 /// The wordings of the engine-gap pass (r2bf, r2bg, r2bh).

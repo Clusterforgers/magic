@@ -1,0 +1,57 @@
+{
+  "oracle_id": "915aa871-4c5e-4799-9a07-d7b855df4e7a",
+  "name": "Ignite the Future",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ignite the Future",
+      "oracle_fingerprint": "1555fd5b10469b8146b439158780705e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "impulse" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Graveyard" }] }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "free": true,
+                            "only": { "Bound": "impulse" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "impulse" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{7}{R}" } }
+      ]
+    }
+  ]
+}

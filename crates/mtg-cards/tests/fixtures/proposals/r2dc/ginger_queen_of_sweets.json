@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"BecomeMonarch":{}}]}},{"Activated":{"cost":[{"Mana":"{2}"},"Tap","SacrificeSelf"],"effects":[{"GainLife":{"amount":6}}]}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"if":{"Monarch":"You"},"effects":[{"CreateToken":{"token":{"Named":"gingerbrute"}}}]}}]}]}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "9e6a3df4-67a3-452e-a6ef-f04dbadb21ef",
+  "name": "Living Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Death",
+      "oracle_fingerprint": "3ea6cf01ed27ce88b043674e7821ede9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "as": "dead"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Type": "Creature" }],
+                        "count": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "dead" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

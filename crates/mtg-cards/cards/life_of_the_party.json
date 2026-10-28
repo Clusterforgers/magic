@@ -1,0 +1,59 @@
+{
+  "oracle_id": "b2d1f87b-a11f-43eb-8b89-b48945320d73",
+  "name": "Life of the Party",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Life of the Party",
+      "oracle_fingerprint": "f9c337c706b52f29caa421fa34d642b7",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Not": { "Matches": { "subject": "This", "selector": ["Token"] } } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Opponents",
+                  "token": { "CopyOf": { "of": "This" } },
+                  "as": "copies"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copies" },
+                  "mods": ["Goaded"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

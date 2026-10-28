@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9d834f1b-a4b5-4676-bb6d-2ffc6b3bccd2",
+  "name": "Knollspine Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knollspine Dragon",
+      "oracle_fingerprint": "00b2c109c3707dec6dccf5b8dcbac202",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    },
+                    {
+                      "Draw": {
+                        "count": { "Tallied": { "who": { "Target": 0 }, "what": "DamageTaken" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

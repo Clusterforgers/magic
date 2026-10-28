@@ -1,0 +1,39 @@
+{
+  "oracle_id": "36041cf2-159f-4809-9377-930ac4db545f",
+  "name": "Iroas, God of Victory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iroas, God of Victory",
+      "oracle_fingerprint": "5e8845724d01facdd77b63ef51399c27",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Red", "White"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": ["Attacking", { "Type": "Creature" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}
