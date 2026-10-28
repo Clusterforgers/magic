@@ -56,6 +56,8 @@ pub enum Command {
     Promote(PromoteArgs),
     /// Print the reference of the rules DSL that `propose` sends to the model: the type tree and its vocabulary.
     DslReference,
+    /// Print the JSON schema of a rules file that `propose --schema` sends to an OpenAI-style server.
+    DslSchema,
 }
 
 /// What `fetch` downloads.
@@ -184,6 +186,8 @@ pub enum Provider {
 
 /// Options of `propose`.
 #[derive(Debug, Args)]
+// Each flag is one independent command-line switch.
+#[allow(clippy::struct_excessive_bools)]
 pub struct ProposeArgs {
     /// The cards to ask about, by name (any case; the name of a face also selects its card): `--cards "Wind Drake" "Opt"`.
     #[arg(long, value_name = "NAME", num_args = 1.., conflicts_with = "sample", value_parser = clap::builder::NonEmptyStringValueParser::new())]
@@ -221,6 +225,11 @@ pub struct ProposeArgs {
     /// Do not ask an OpenAI-style server for a JSON object (`response_format`), for servers that reject the field.
     #[arg(long)]
     pub no_json_mode: bool,
+
+    /// Send the JSON schema of a rules file (`response_format` `json_schema`) so an OpenAI-style server limits the answer
+    /// to valid shapes; replaces the plain JSON-object mode (`mtg-cli dsl-schema` prints it).
+    #[arg(long, conflicts_with = "no_json_mode")]
+    pub schema: bool,
 
     /// The most tokens an answer of an OpenAI-style server may have, a reasoning model's thinking included.
     #[arg(long, value_name = "N", default_value_t = crate::propose::c11i_openai::C11I_DEFAULT_ANSWER_TOKENS)]
@@ -541,7 +550,7 @@ mod tests {
             (Provider::Anthropic, None, 100, 3_000_000, 4)
         );
         assert!(!args.resume && !args.dry_run && args.out.is_none());
-        assert!(args.base_url.is_none() && !args.no_json_mode);
+        assert!(args.base_url.is_none() && !args.no_json_mode && !args.schema);
         assert_eq!(args.max_answer_tokens, 16_384);
     }
 
@@ -564,6 +573,20 @@ mod tests {
         assert_eq!(args.model.as_deref(), Some("gpt-oss:20b"));
         assert!(args.no_json_mode);
         assert!(propose(&["--cards", "Opt", "--provider", "ollama"]).is_err());
+    }
+
+    #[test]
+    fn w3a_the_schema_flag_replaces_json_mode_and_its_command_takes_no_arguments() {
+        let args = propose(&["--cards", "Opt", "--provider", "openai", "--schema"]).unwrap();
+        assert!(args.schema && !args.no_json_mode);
+        assert!(propose(&["--cards", "Opt", "--schema", "--no-json-mode"]).is_err());
+        assert!(matches!(
+            Cli::try_parse_from(["mtg-cli", "dsl-schema"])
+                .unwrap()
+                .command,
+            Command::DslSchema
+        ));
+        assert!(Cli::try_parse_from(["mtg-cli", "dsl-schema", "x"]).is_err());
     }
 
     #[test]

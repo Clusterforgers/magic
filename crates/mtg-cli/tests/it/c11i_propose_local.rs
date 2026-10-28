@@ -70,6 +70,7 @@ async fn send(
     let client = OpenAiClient::new(
         OpenAi {
             json_mode,
+            schema: false,
             max_answer_tokens: 16_384,
         },
         key,

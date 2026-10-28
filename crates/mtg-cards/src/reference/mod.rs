@@ -3,6 +3,9 @@
 
 mod lex;
 mod parse;
+mod w3a_schema;
+
+pub use w3a_schema::w3a_card_schema;
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::fmt::Write as _;
@@ -23,6 +26,7 @@ const SOURCES: &[&str] = &[
     include_str!("../mana_trigger.rs"),
     include_str!("../spend.rs"),
     include_str!("../keyword.rs"),
+    include_str!("../companion.rs"),
     include_str!("../../../mtg-core/src/card.rs"),
     include_str!("../../../mtg-core/src/color.rs"),
     include_str!("../../../mtg-core/src/mana.rs"),

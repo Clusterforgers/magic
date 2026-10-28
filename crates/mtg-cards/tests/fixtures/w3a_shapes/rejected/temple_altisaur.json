@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Damage":{"to":[{"ControlledBy":"You"},{"Type":"Dinosaur"}]},"by":{"Instead":[{"Prevent":{}},{"DealDamage":{"source":"This","to":"Target","amount":1}}]}}} } ]}]}
