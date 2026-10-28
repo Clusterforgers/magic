@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9357fc7f-c9d0-4ce2-a6dd-0ff1f24bfc56",
+  "name": "Spellscorn Coven // Take It Back",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellscorn Coven",
+      "oracle_fingerprint": "f5e95dd013293015592d3b34af7d511c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Take It Back",
+      "oracle_fingerprint": "1841dec9c65e02e7a1873c8a77691de2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
