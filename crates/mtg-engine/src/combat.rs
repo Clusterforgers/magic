@@ -180,6 +180,28 @@ impl CombatState {
         }
     }
 
+    /// The attackers and blockers whose controller changed since they were declared (CR 506.4): an attacker no longer
+    /// controlled by the active player, a blocker no longer controlled by the player its attacker attacks.
+    fn w7d_changed_sides(&self, state: &GameState) -> Vec<ObjectId> {
+        let active = state.turn().active();
+        let mut changed = Vec::new();
+        for attacker in &self.attackers {
+            if controller_of(state, attacker.object) != Some(active) {
+                changed.push(attacker.object);
+            }
+            let Some(defender) = attacker.defender(state) else {
+                continue;
+            };
+            changed.extend(
+                attacker
+                    .blockers
+                    .iter()
+                    .filter(|blocker| controller_of(state, **blocker) != Some(defender)),
+            );
+        }
+        changed
+    }
+
     /// Removes attackers aimed at a player that left the game.
     pub(crate) fn remove_attackers_targeting(&mut self, target: AttackTarget) {
         self.attackers.retain(|a| a.target != target);
@@ -226,6 +248,17 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
         && !keywords::summoning_sick(state, id)
         && !keywords::forbids_attacking(state, id)
         && is_untapped_creature(state, id)
+}
+
+/// Removes from combat each creature that changed controller since it was declared an attacker or a blocker
+/// (CR 506.4); the fold calls it after every event that can change control.
+pub(crate) fn w7d_leave_on_control_change(state: &mut GameState) {
+    if state.combat.attackers.is_empty() {
+        return;
+    }
+    for id in state.combat.w7d_changed_sides(state) {
+        state.combat.remove_object(id);
+    }
 }
 
 /// What `player` may attack: the players the table's attack range allows and the planeswalkers they control.
