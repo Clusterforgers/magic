@@ -1329,6 +1329,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Exploits { what }
             | TriggerPattern::BecomesCrewed { what }
             | TriggerPattern::BecomesSaddled { what }
+            | TriggerPattern::Exerted { what }
             | TriggerPattern::BecomesLevel { what, .. }
             | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Mutates { what }
@@ -1412,6 +1413,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Exploits { .. }
                 | TriggerPattern::BecomesCrewed { .. }
                 | TriggerPattern::BecomesSaddled { .. }
+                | TriggerPattern::Exerted { .. }
                 | TriggerPattern::BecomesLevel { .. }
                 | TriggerPattern::TurnedFaceUp { .. }
                 | TriggerPattern::Mutates { .. }

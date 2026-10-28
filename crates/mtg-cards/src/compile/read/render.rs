@@ -167,6 +167,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::c11a_ability_less::c11a_variants(ability) {
         return texts;
     }
+    if let Some(texts) = super::w9d_exert::w9d_variants(ability) {
+        return texts;
+    }
     if let Some(texts) = c10_dice_per_player::c10_dice_variants(ability) {
         return texts;
     }
