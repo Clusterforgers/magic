@@ -479,6 +479,18 @@ impl RulesInForce {
     }
 }
 
+/// The players and planeswalkers `at` names, as what creatures attack.
+fn w10a_defenders(scope: &Scope<'_>, at: &Ref) -> Result<Vec<AttackTarget>, ResolveError> {
+    Ok(scope
+        .refs(at)?
+        .into_iter()
+        .map(|named| match named {
+            Target::Player(player) => AttackTarget::Player(player),
+            Target::Object(object) => AttackTarget::Planeswalker(object.id),
+        })
+        .collect())
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
@@ -538,14 +550,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
         GameRule::AttackLimitAt { most, at } => Rule::AttackLimitAt {
             most: *most,
-            at: scope
-                .refs(at)?
-                .into_iter()
-                .map(|named| match named {
-                    Target::Player(player) => AttackTarget::Player(player),
-                    Target::Object(object) => AttackTarget::Planeswalker(object.id),
-                })
-                .collect(),
+            at: w10a_defenders(scope, at)?,
         },
         GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
