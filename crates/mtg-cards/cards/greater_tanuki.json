@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b2d19232-9a80-4ea2-9aa7-c47b4719106c",
+  "name": "Greater Tanuki",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greater Tanuki",
+      "oracle_fingerprint": "c57ea8df8d1c5c62a9bc92fdfa4a9c05",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

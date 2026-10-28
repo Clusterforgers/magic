@@ -1,0 +1,23 @@
+{
+  "id": "578a1846-8c1a-4013-b669-1d3f4ddbbaa3",
+  "oracle_id": "c3fdfb94-2d10-4743-864c-a59fdd57d8b7",
+  "name": "Reflections of Littjara",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "164",
+  "rarity": "rare",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "As this enchantment enters, choose a creature type.\nWhenever you cast a spell of the chosen type, copy that spell. (A copy of a permanent spell becomes a token.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}
