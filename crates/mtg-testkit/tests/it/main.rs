@@ -43,7 +43,7 @@ mod c4_party;
 mod c4_party_fuzz;
 mod c4_prepare_triggers;
 mod c4_skipped_turns;
-mod c6_eg_horde;
+mod c6_eg_cards;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;

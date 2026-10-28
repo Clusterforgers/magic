@@ -252,6 +252,7 @@ const RUNS: &[&str] = &[
     "Effect.If",
     "Effect.May",
     "Effect.Pay",
+    "Effect.Pay.Counted",
     "Effect.Choose",
     "Effect.ChooseAtRandom",
     "Effect.Modal",
@@ -690,6 +691,7 @@ mod tests {
         false
     )]
     #[case::paying_or_not("Effect.Pay", true)]
+    #[case::c6_eg_paying_counted_life_in_an_effect("Effect.Pay.Counted", true)]
     #[case::flash("Keyword.Flash", true)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]
