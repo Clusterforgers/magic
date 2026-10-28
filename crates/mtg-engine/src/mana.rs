@@ -825,7 +825,18 @@ fn parts_of(
             .iter()
             .find(|o| o.source == *tap)
             .ok_or(PaymentError::UnknownSource(*tap))?;
-        if payment.taps[..i].iter().any(|t| t.object == tap.object) {
+        // Only abilities that tap their source tap it: Relic of Legends taps itself or a legendary creature.
+        let taps_source = |source: &ManaSource| {
+            sources
+                .iter()
+                .find(|o| o.source == *source)
+                .is_some_and(|o| !o.tapless)
+        };
+        if taps_source(tap)
+            && payment.taps[..i]
+                .iter()
+                .any(|t| t.object == tap.object && taps_source(t))
+        {
             return Err(PaymentError::ObjectTappedTwice(tap.object));
         }
         parts.push(option.made());
@@ -2242,6 +2253,24 @@ mod tests {
             completed(cost_text, "", spec, &[], LIFE, &taps(partial)),
             Err(error)
         );
+    }
+
+    /// Relic of Legends: two abilities of one permanent pay together when one of them does not tap it.
+    #[rstest]
+    #[case::the_second_taps_another(&[false, true], Ok(()))]
+    #[case::both_tap_it(&[false, false], Err(PaymentError::ObjectTappedTwice(ObjectId(0))))]
+    fn c10_pa_a_tapless_ability_pays_beside_one_that_taps(
+        #[case] tapless: &[bool],
+        #[case] verdict: Result<(), PaymentError>,
+    ) {
+        let cost = cost("{G}{W}");
+        let mut sources = permanents(&["GW"]);
+        for source in &mut sources {
+            source.tapless = tapless[source.source.ability];
+        }
+        let payment = taps(&[(0, 0), (0, 1)]);
+        let checked = check_payment(&cost, &ManaPool::default(), &sources, &[], LIFE, &payment);
+        assert_eq!(checked.map(|_| ()), verdict);
     }
 
     #[test]

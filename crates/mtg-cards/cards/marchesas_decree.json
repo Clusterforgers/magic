@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e4ab5ee4-4683-4219-9e15-31975e69efbb",
+  "name": "Marchesa's Decree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marchesa's Decree",
+      "oracle_fingerprint": "0d2bdbbcd3d2d9e0a0ac40a3711ed14e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

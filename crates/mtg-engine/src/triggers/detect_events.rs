@@ -550,7 +550,11 @@ fn becoming_monstrous_and_adapting_trigger_for_the_creatures_the_pattern_names_a
         .map(crate::object::GameObject::id)
         .unwrap();
     let event = if monstrous {
-        Event::Monstrous { object, player }
+        Event::Monstrous {
+            object,
+            player,
+            x: 0,
+        }
     } else {
         Event::Adapted { object, player }
     };
@@ -558,7 +562,11 @@ fn becoming_monstrous_and_adapting_trigger_for_the_creatures_the_pattern_names_a
     let other = if monstrous {
         Event::Adapted { object, player }
     } else {
-        Event::Monstrous { object, player }
+        Event::Monstrous {
+            object,
+            player,
+            x: 0,
+        }
     };
     assert_eq!(fires(&pre, &[other]).len(), 0);
     let found = fires(&pre, &[event]);

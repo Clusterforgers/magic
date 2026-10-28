@@ -21,7 +21,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Monstrosity { count } = effect else {
         return Err(wrong_effect("Monstrosity"));
     };
-    let delta = whole(cx.scope.amount(count)?);
+    let x = cx.scope.amount(count)?;
+    let delta = whole(x);
     let mut events = Vec::new();
     for source in actors(cx, &Ref::This)? {
         let Some(holder) = source.permanent else {
@@ -45,6 +46,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         events.push(Event::Monstrous {
             object: source.object,
             player: source.player,
+            x: whole(x).unsigned_abs(),
         });
     }
     Ok(Run::events(events))
@@ -120,7 +122,15 @@ mod tests {
         let mut game = game(true);
         let source = game.objects().find(|o| o.card().name == "Source").unwrap();
         let (object, player) = (source.id(), ME);
-        apply_event(&mut game, &Event::Monstrous { object, player }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::Monstrous {
+                object,
+                player,
+                x: 0,
+            },
+        )
+        .unwrap();
         assert_eq!(
             events(run_with(&game, r#"{"Monstrosity":{"count":3}}"#)).len(),
             0

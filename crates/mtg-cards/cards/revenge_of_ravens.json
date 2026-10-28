@@ -1,0 +1,24 @@
+{
+  "oracle_id": "dd96f145-73eb-4a6d-bcfd-5d6313fac1f9",
+  "name": "Revenge of Ravens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revenge of Ravens",
+      "oracle_fingerprint": "2b90e0bce6ae13d7795ee1c263cc1ffd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -656,7 +656,11 @@ object: ObjectId,
 /**
  * Its controller.
  */
-player: PlayerId, } } | { "Renowned": { 
+player: PlayerId, 
+/**
+ * The X of the monstrosity, which a trigger on becoming monstrous reads (CR 701.37c).
+ */
+x?: number, } } | { "Renowned": { 
 /**
  * The creature that became renowned.
  */

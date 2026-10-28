@@ -37,8 +37,14 @@ pub fn after_may(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()> {
 pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.word("then");
     r.need("you may")?;
+    let mut counted = None;
     let cost = if r.word("pay") {
-        after_pay(r)?
+        if let Some((cost, amount)) = r.attempt(super::c10_pa_pay_x::c10_pa_x_life) {
+            counted = Some(amount);
+            cost
+        } else {
+            after_pay(r)?
+        }
     } else {
         let cost = costs::cost(r)?;
         // A payment the player announces (an X) is not asked in the middle of a resolution.
@@ -57,7 +63,10 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.sentence_end().then_some(())?;
     r.need("if you do")?;
     r.punct(',').then_some(())?;
-    let paid = one_sentence(r)?;
+    let mut paid = one_sentence(r)?;
+    if let Some(amount) = &counted {
+        paid = super::c10_pa_pay_x::c10_pa_put_in(r, paid, amount);
+    }
     Some(vec![Effect::Pay {
         who: Ref::You,
         cost,

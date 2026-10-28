@@ -1,0 +1,21 @@
+{
+  "oracle_id": "df23a4a5-eddd-4b0e-9f7e-a3733ce49c0d",
+  "name": "Riddlekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riddlekeeper",
+      "oracle_fingerprint": "8d429b55336cbecaf9cf0f4c3e102922",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [{ "Mill": { "who": { "ControllerOf": "Triggering" }, "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

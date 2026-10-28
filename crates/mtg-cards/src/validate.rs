@@ -1188,7 +1188,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::AttacksAlone { what } => {
                 self.at("what", |w| w.selector(what));
             }
-            TriggerPattern::AttacksPlayer { what, at } => {
+            TriggerPattern::AttacksPlayer { what, at }
+            | TriggerPattern::AttacksPlayerOrPlaneswalker { what, at } => {
                 self.at("what", |w| w.selector(what));
                 self.at("at", |w| w.reference(at, Kind::Player));
             }

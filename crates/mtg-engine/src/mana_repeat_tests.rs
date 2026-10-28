@@ -142,7 +142,7 @@ fn automatic_payment_uses_a_source_as_often_as_it_needs(
 #[case::the_other_order("{B}{B}{G}{G}", &[10, 11], &[(1, 1), (1, 0)], Ok(()))]
 #[case::beside_a_land("{B}{B}{B}", &[10], &[(1, 0), (LAND, 0)], Ok(()))]
 #[case::one_use("{B}{B}", &[10], &[(1, 0)], Ok(()))]
-#[case::one_card_two_lists("{B}{B}{G}{G}", &[10], &[(1, 0), (1, 1)], Err(PaymentError::ObjectTappedTwice(ObjectId(1))))]
+#[case::one_card_two_lists("{B}{B}{G}{G}", &[10], &[(1, 0), (1, 1)], Err(PaymentError::CannotTake))]
 #[case::one_card_one_list_twice("{B}{B}{B}{B}", &[10], &[(1, 0), (1, 0)], Err(PaymentError::DuplicateSource(source(1, 0))))]
 #[case::a_third_use("{B}{B}{B}{B}{B}{B}", &[10, 11], &[(1, 0), (1, 0), (1, 0)], Err(PaymentError::DuplicateSource(source(1, 0))))]
 #[case::more_than_the_cost_takes("{B}{B}", &[10, 11], &[(1, 0), (1, 0)], Err(PaymentError::WrongTotal { needed: 2, got: 4 }))]
