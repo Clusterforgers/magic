@@ -347,7 +347,7 @@ fn the_abilities_of_an_attachment_keyword_are_valid_rules_and_the_engine_runs_th
 #[case::sacrificing_a_permanent(r#"[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]"#, &[])]
 #[case::energy(r#"[{"PayEnergy":2}]"#, &[])]
 #[case::losing_the_source(r#"["SacrificeSelf"]"#, &["Effect.Pay.SacrificeSelf"])]
-#[case::an_x(r#"[{"PayLife":"X"}]"#, &["Amount.X.Elsewhere", "Effect.Pay.X"])]
+#[case::an_x(r#"[{"PayLife":"X"}]"#, &["Amount.X.Elsewhere", "Effect.Pay.X.Parts"])]
 fn a_ward_cost_the_engine_cannot_pay_keeps_the_card_from_being_verified(
     #[case] cost: &str,
     #[case] named: &[&str],

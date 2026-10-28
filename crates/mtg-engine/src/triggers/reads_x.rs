@@ -12,7 +12,8 @@ use crate::zones::Zone;
 /// was. A delayed trigger reads the X of the spell or ability that set it up; the trigger "when this enters" the X its
 /// spell was cast with (CR 107.3m); a trigger on a spell being cast the X that spell was cast with, whether it is a
 /// trigger of the spell itself ("when you cast this spell") or of another permanent ("whenever you cast a spell").
-/// Any other trigger reads 0, which is `None`.
+/// The trigger "when you cycle this card" or "when this creature becomes monstrous" reads the X of that cost, which the
+/// event carries as its amount. Any other trigger reads 0, which is `None`.
 pub(crate) fn read(
     when: &TriggerPattern,
     delayed: bool,
@@ -33,6 +34,12 @@ pub(crate) fn read(
             .iter()
             .find(|shot| shot.zone == Zone::Stack)
             .and_then(|shot| shot.x),
+        // The X of the cost of the action itself: a cycling cost or a monstrosity (CR 107.3, 701.37c).
+        TriggerPattern::Cycled { what, .. } | TriggerPattern::BecomesMonstrous { what }
+            if what.0.contains(&Pred::This) =>
+        {
+            Some(cause.amount)
+        }
         _ => None,
     }
 }

@@ -110,6 +110,7 @@ fn events(pre: &GameState, acts: &[Act]) -> Vec<Event> {
             Cycle(seat) => Event::Cycled {
                 player: player(seat),
                 object: id(pre, &format!("Card {seat}")),
+                x: 0,
             },
             Surveil(seat) => Event::Surveilled(Surveilled {
                 player: player(seat),

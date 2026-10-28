@@ -269,6 +269,7 @@ const RUNS: &[&str] = &[
     "Effect.May",
     "Effect.Pay",
     "Effect.Pay.Counted",
+    "Effect.Pay.X",
     "Effect.Choose",
     "Effect.ChooseAtRandom",
     "Effect.Modal",
@@ -964,7 +965,8 @@ mod tests {
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
-    #[case::paying_x_in_an_effect("Effect.Pay.X", false)]
+    #[case::paying_x_in_an_effect("Effect.Pay.X", true)]
+    #[case::paying_a_part_that_counts_x_in_an_effect("Effect.Pay.X.Parts", false)]
     #[case::faces(FACES, true)]
     #[case::the_prepared_cast(PREPARE, true)]
     #[case::variable_stats(VARIABLE_STATS, true)]

@@ -67,6 +67,7 @@ mod move_to;
 mod multiply_counters;
 mod myriad_copies;
 mod pay;
+mod w6c_pay_x;
 mod phase_out;
 mod prepare;
 mod proliferate;

@@ -69,6 +69,21 @@ const X_DAMAGE: &str = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[
     r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Pay":{"cost":"{2}{R}","paid":[{"Draw":{"count":"X"}}]}}]}}"#,
     &["faces[0].abilities[0].Triggered.effects[0].Pay.paid[0].Draw.count: uses X but the imported mana cost has none"]
 )]
+#[case::w6c_x_of_a_cycling_cost(
+    printed("Creature \u{2014} Elephant", "{5}{R}{R}", "Cycle X.", &["Cycling"]),
+    r#"{"Keyword":{"Cycling":"{X}{2}{R}"}},{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"targets":[{"what":{"Object":[{"Type":"Artifact"}]},"bounds":{"min":0,"max":"X"}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#,
+    &[]
+)]
+#[case::w6c_x_of_a_cycling_cost_without_an_x(
+    printed("Creature \u{2014} Elephant", "{5}{R}{R}", "Cycle X.", &["Cycling"]),
+    r#"{"Keyword":{"Cycling":"{2}{R}"}},{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#,
+    &["faces[0].abilities[1].Triggered.effects[0].Draw.count: uses X but the imported mana cost has none"]
+)]
+#[case::w6c_x_of_a_monstrosity(
+    printed("Creature \u{2014} Elephant", "{3}{W}", "Monstrous X.", &["Monstrosity"]),
+    r#"{"Activated":{"cost":"{X}{W}{W}","effects":[{"Monstrosity":{"count":"X"}}]}},{"Triggered":{"when":{"BecomesMonstrous":{"what":["This"]}},"effects":[{"GainLife":{"amount":"X"}}]}}"#,
+    &[]
+)]
 #[case::spell_on_a_creature(
     printed("Creature \u{2014} Elf", "{G}", "Deal 3.", &[]),
     DAMAGE,

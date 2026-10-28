@@ -96,6 +96,7 @@ pub(crate) fn activation_events(
                     events.push(Event::Cycled {
                         player,
                         object: ability.object,
+                        x: choices.x.unwrap_or(0),
                     });
                 }
             }

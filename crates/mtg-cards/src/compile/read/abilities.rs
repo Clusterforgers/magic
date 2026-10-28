@@ -91,6 +91,9 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
     r.triggered = true;
+    // "When you cycle this card": X is the X of the cycling cost (a monstrosity X is read by `c10_pa_monstrous`).
+    r.x_free |= r.w6c_cost_x
+        && matches!(&when, TriggerPattern::Cycled { what, .. } if what.0.contains(&Pred::This));
     let saddled = r.words("while saddled");
     if saddled && !matches!(when, TriggerPattern::Attacks { .. }) {
         return None;

@@ -38,9 +38,13 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.word("then");
     r.need("you may")?;
     let mut counted = None;
+    let mut x_paid = false;
     let cost = if r.word("pay") {
         if let Some((cost, amount)) = r.attempt(super::c10_pa_pay_x::c10_pa_x_life) {
             counted = Some(amount);
+            cost
+        } else if let Some(cost) = r.attempt(w6c_x_mana) {
+            x_paid = true;
             cost
         } else {
             after_pay(r)?
@@ -63,7 +67,12 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.sentence_end().then_some(())?;
     r.need("if you do")?;
     r.punct(',').then_some(())?;
-    let mut paid = one_sentence(r)?;
+    // The X the payer announces is the X of the sentence after "if you do".
+    let x_free = r.x_free;
+    r.x_free |= x_paid;
+    let paid = one_sentence(r);
+    r.x_free = x_free;
+    let mut paid = paid?;
     if let Some(amount) = &counted {
         paid = super::c10_pa_pay_x::c10_pa_put_in(r, paid, amount);
     }
@@ -74,6 +83,20 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         paid,
         unpaid: Vec::new(),
     }])
+}
+
+/// After "you may pay": mana with an `{X}` the payer announces once they say yes ("{X}{R}"), when the card's own X does
+/// not already stand for something.
+fn w6c_x_mana(r: &mut Reader<'_>) -> Option<Cost> {
+    (!r.x_free).then_some(())?;
+    let mut text = String::new();
+    while let Some(symbol) = r.symbol() {
+        text.push('{');
+        text.push_str(symbol);
+        text.push('}');
+    }
+    let cost: crate::mana::ManaCostX = text.parse().ok()?;
+    cost.has_x().then(|| Cost::mana(cost))
 }
 
 /// What follows "unless": who pays and what, for the sentence before it (`unpaid`).
@@ -138,7 +161,8 @@ fn phrase(cost: &Cost) -> Option<String> {
         return super::pay_phrases::phrase(cost);
     };
     match item {
-        CostItem::Mana(mana) if !mana.has_x() => Some(format!("pay {mana}")),
+        // An `{X}` is announced by the payer ("you may pay {X}{R}").
+        CostItem::Mana(mana) => Some(format!("pay {mana}")),
         CostItem::PayLife(amount @ (Amount::Fixed(_) | Amount::X)) => {
             Some(format!("pay {} life", points_text(amount)?))
         }

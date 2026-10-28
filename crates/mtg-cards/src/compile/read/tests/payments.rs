@@ -81,7 +81,6 @@ fn a_payment_by_the_player_of_an_event_reads_and_writes_back(#[case] text: &str)
 #[case::two_parts("You may pay {1} and 2 life. If you do, draw a card.")]
 #[case::two_parts_by_comma("You may pay {1}, discard a card. If you do, draw a card.")]
 #[case::x_life("You may pay X life. If you do, draw a card.")]
-#[case::x_mana("You may pay {X}. If you do, draw a card.")]
 #[case::x_discards("You may discard X cards. If you do, draw a card.")]
 #[case::no_if_you_do("You may pay {1}. Draw a card.")]
 #[case::if_you_dont("You may pay {1}. If you don't, draw a card.")]
