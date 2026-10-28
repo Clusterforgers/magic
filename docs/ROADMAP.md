@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - M0 to M2 (foundations, card data, engine core, protocol and server, game flow, web client, deck builder): done.
-- M3 card system and M6 coverage: in progress; 3,991 of the 6,429 stored precon cards (62.1%) and 79.4% of the copies are Verified.
+- M3 card system and M6 coverage: in progress; 4,022 of the 6,429 stored precon cards (62.6%) and 79.7% of the copies are Verified.
 - M4 Commander: done in the engine, server and lobby except the companion conditions that need more than the card (m4c).
 - M5 table and prompts, M7 product, M8 polish and deploy: not started.
 
@@ -121,7 +121,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (3,991 of 6,429 precon cards, 62.1%; 79.4% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,022 of 6,429 precon cards, 62.6%; 79.7% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
