@@ -679,6 +679,8 @@ NIXPKGS_ALLOW_UNFREE=1 nix shell --impure nixpkgs#ollama-cuda -c env OLLAMA_MODE
 mtg-cli propose --provider openai --model gpt-oss:20b --sample 20 --out proposals/local
 ```
 
+**Measured.** A run of 20 sampled cards (seed 20261028) on `gpt-oss:20b`, 91% of it in the VRAM of a 16 GB GPU: 1 accepted `Verified`, 7 `Unchecked`, 1 `Mismatch`, 1 accepted with nothing modelled and 10 `Invalid`, nearly all of them DSL shape errors (an object where a player is expected, an unknown variant, malformed JSON). It takes 23 minutes for 31 requests (11 repair rounds) and 61 thousand output tokens, about 45 tokens a second overall, and 95% of the input tokens come from the prompt cache. Qwen3.8 27B at 4 bits (19 GB) runs 54% on that GPU and times out, so it does not fit.
+
 `llama-cpp-cuda` from nixpkgs serves the same API: `llama-server -m MODEL.gguf -c 32768 --port 8080`, then `--base-url http://localhost:8080/v1`. With devenv the same server is a process (untested):
 
 ```nix
