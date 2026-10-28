@@ -1854,6 +1854,8 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
             elsewhere(state, &together, &mut found, &mut used);
         }
     }
+    // A player who lost with the same events triggers nothing, though the state looked back at has them alive (CR 800.4a).
+    found.retain(|triggered| post.is_alive(triggered.controller));
     found
 }
 
@@ -2103,6 +2105,28 @@ mod tests {
             before.counter,
             "it is a new object in the graveyard now"
         );
+    }
+
+    #[rstest]
+    #[case::the_watcher_s_controller_lost(ME, 0)]
+    #[case::another_player_lost(FOE, 1)]
+    fn w11b_a_player_who_loses_with_the_deaths_triggers_nothing(
+        #[case] loser: PlayerId,
+        #[case] want: usize,
+    ) {
+        let observer = with(
+            "Observer",
+            vec![triggered(
+                r#"{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}}"#,
+            )],
+        );
+        let pre = board(observer);
+        let lost = Event::PlayerLost {
+            player: loser,
+            reason: crate::player::LossReason::ZeroLife,
+        };
+        let (post, found) = fire(&pre, &[lost, died(&pre, "Ogre")]);
+        assert_eq!(found.len(), want, "{:?}", who(&post, &found));
     }
 
     #[test]
