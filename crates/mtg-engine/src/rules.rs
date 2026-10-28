@@ -117,7 +117,7 @@ pub enum Rule {
         combat: Option<bool>,
     },
     /// A prevention shield (CR 615): it replaces damage with nothing, up to an amount, until it is used up or ends.
-    PreventDamage(DamageShield),
+    PreventDamage(Box<DamageShield>),
     /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
     Regenerate(ObjectRef),
     /// A shield over deaths (CR 614): each of the permanents or spells, fixed when it was made, that would go from the

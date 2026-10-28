@@ -109,9 +109,7 @@ pub fn process(
     let left = shields
         .iter()
         .filter_map(|effect| match &effect.rule {
-            Rule::PreventDamage(DamageShield {
-                left: Some(left), ..
-            }) => Some((effect.id, *left)),
+            Rule::PreventDamage(shield) => shield.left.map(|left| (effect.id, left)),
             _ => None,
         })
         .collect();

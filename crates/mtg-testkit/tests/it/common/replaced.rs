@@ -109,22 +109,22 @@ impl Board {
         for shield in &self.shields {
             let source = driver.id_of(self.attack[0])?;
             let rule = match *shield {
-                Shield::ToDefender(left) => Rule::PreventDamage(DamageShield {
+                Shield::ToDefender(left) => Rule::PreventDamage(Box::new(DamageShield {
                     to: Some(vec![Target::Player(pid(1))]),
                     source: Selector::default(),
                     from: None,
                     combat: None,
                     left: Some(left),
                     then: Vec::new(),
-                }),
-                Shield::Fog => Rule::PreventDamage(DamageShield {
+                })),
+                Shield::Fog => Rule::PreventDamage(Box::new(DamageShield {
                     to: None,
                     source: Selector::default(),
                     from: None,
                     combat: Some(true),
                     left: None,
                     then: Vec::new(),
-                }),
+                })),
                 Shield::Regenerate(name) => {
                     let id = driver.id_of(name)?;
                     let object = driver.state().object(id).expect("the creature").reference();

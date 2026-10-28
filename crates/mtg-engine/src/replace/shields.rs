@@ -110,14 +110,14 @@ fn shield_for(
     combat: Option<bool>,
     left: Option<u32>,
 ) -> Rule {
-    Rule::PreventDamage(DamageShield {
+    Rule::PreventDamage(Box::new(DamageShield {
         to: (!to.is_empty()).then(|| to.iter().map(|name| target(game, name)).collect()),
         source: serde_json::from_str(from).unwrap(),
         from: None,
         combat,
         left,
         then: Vec::new(),
-    })
+    }))
 }
 
 fn anything(game: &GameState, left: Option<u32>) -> Rule {

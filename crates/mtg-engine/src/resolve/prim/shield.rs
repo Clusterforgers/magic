@@ -55,14 +55,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some(named) => Some(cx.scope.refs(named)?),
     };
     let (from, source) = c9_fight_fixed_sources(cx, source)?;
-    let rule = Rule::PreventDamage(DamageShield {
+    let rule = Rule::PreventDamage(Box::new(DamageShield {
         to,
         from,
         source,
         combat: *combat,
         left,
         then,
-    });
+    }));
     if left == Some(0) {
         return Ok(Run::events(Vec::new()));
     }
