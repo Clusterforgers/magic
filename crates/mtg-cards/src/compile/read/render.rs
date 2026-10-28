@@ -2240,6 +2240,13 @@ impl Writer<'_> {
 
     /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".
     fn consequence(&mut self, condition: &Condition, then: &[Effect]) -> Option<String> {
+        // "if the gift was promised, all permanents you control phase out, and until your next turn, ...".
+        if let Some((text, taken)) = super::w7e_phase::w7e_phased_and_protected_text(then)
+            .or_else(|| super::w7e_phase::w7e_protected_text(then))
+            && taken == then.len()
+        {
+            return Some(text);
+        }
         let mut steps = Vec::with_capacity(then.len());
         for effect in then {
             steps.push(match conditional::remove_all_text(condition, effect) {
@@ -2304,6 +2311,16 @@ impl Writer<'_> {
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
+            Effect::PhaseOut {
+                what: what @ (Ref::This | Ref::Target(0) | Ref::Each(_)),
+            } => {
+                let verb = if *what == Ref::This || self.single(what) {
+                    "phases out"
+                } else {
+                    "phase out"
+                };
+                format!("{} {verb}", self.object(what)?)
+            }
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),
@@ -2408,6 +2425,8 @@ impl Writer<'_> {
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
+            .or_else(|| super::w7e_phase::w7e_phased_and_protected_text(effects))
+            .or_else(|| super::w7e_phase::w7e_protected_text(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
     }

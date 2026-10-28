@@ -27,7 +27,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 
 - Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1va), (r1vb), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a), (r2dgc-a).
 - Cast ways and zones: (c5e), (c2l3a) to (c2l3c), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
-- Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
+- Triggers and keywords: (c6d-a), (c6d-b), (c6d-c), (c6d-d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
@@ -158,7 +158,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c3b) Time counters on suspended cards and permanents, in the views of exiled cards too, and the blessing badge on the table
 - [ ] (c4e) Cards that read the crew record and crew events and wait on a wording, and a Reconfigure corpus card; frees about 10 cards (Smogbelcher Chariot, Mindlink Mech, The Fantasticar)
 - [ ] (c5e) The rest of the cipher and hideaway cards; frees about 6 cards (Hidden Strings, Shelldock Isle)
-- [~] (c6d) (c6d-devour-phasing) Devour counts, the Phasing keyword and phase-out sentences, gift "instead" spells and entered-this-turn wordings; frees about 20 cards (Thromok, Oubliette, Out of Time)
+- [ ] (c6d-a) Corpus cards and 2 to 4 seat scenarios for phasing, devour counts and the phase-out readings (Breezekeeper, Skullmulcher, Marrow Chomper, Perch Protection, Gallifrey Falls // No More)
+- [ ] (c6d-b) Phase-out durations and counts: until the source leaves, tapped as it phases in, phased out this way, phases-out and phases-in triggers; frees about 8 cards (Oubliette, Out of Time, Teferi's Imp)
+- [ ] (c6d-c) Devour X, devoured kinds and conditions: Thromok, Voracious Dragon, Hellkite Hatchling, Kresh, and a discard for each devoured creature (Tar Fiend)
+- [ ] (c6d-d) Gift "instead" spells left (Wildfire Howl, Dewdrop Cure, Into the Flood Maw) and entered-under-your-control-this-turn conditions (Zimone, Gargoyle Flock, Galadriel)
 - [ ] (r2de-c) Cast permissions left: "Once each turn" on any turn, a spell cast through a permission exiled instead of a graveyard, a card cast from its own graveyard or exile, exiled cards cast in a trigger, spells chosen from a graveyard and cast free; frees about 20 cards (Kess, Dissident Mage, Squee, the Immortal, Dire Fleet Daredevil, Diviner of Mist)
 - [ ] (r2r) Alternative costs left: life or energy instead of mana, fixed mana, impending, X in madness, a paid madness cost as a condition; frees about 8 cards (Xander's Pact, Nashi, Fist of Suns)
 - [ ] (r1aug) Extra turns and phases: a loss at the extra turn's end step, its restrictions, attacks alone, combats with chosen attackers, extra-turn costs; frees about 20 cards (Final Fortune, Medomai, Moraug)

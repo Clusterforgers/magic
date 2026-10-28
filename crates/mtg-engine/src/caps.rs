@@ -463,6 +463,9 @@ const RUNS: &[&str] = &[
     "Keyword.Sunburst",
     "Keyword.Afterlife",
     "Keyword.Horsemanship",
+    "Keyword.Phasing",
+    "Amount.Devoured",
+    "Amount.Devoured",
     "Keyword.Spectacle",
     "Keyword.UmbraArmor",
     "Keyword.Cipher",
@@ -949,6 +952,7 @@ mod tests {
     #[case::sunburst("Keyword.Sunburst", true)]
     #[case::afterlife("Keyword.Afterlife", true)]
     #[case::horsemanship("Keyword.Horsemanship", true)]
+    #[case::phasing("Keyword.Phasing", true)]
     #[case::spectacle("Keyword.Spectacle", true)]
     #[case::umbra_armor("Keyword.UmbraArmor", true)]
     #[case::cipher("Keyword.Cipher", true)]

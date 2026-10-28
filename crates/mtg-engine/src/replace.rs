@@ -2436,6 +2436,17 @@ impl Pass<'_> {
             .and_then(|made| made.checked_mul(*counters))
             .and_then(|total| i32::try_from(total).ok())
             .filter(|total| *total > 0);
+        if let Some(count) = u32::try_from(made).ok().filter(|count| *count > 0) {
+            // The number it devoured, which its abilities read once it is on the battlefield.
+            self.slots.insert(
+                entering + 1,
+                Slot {
+                    item: Item::One(Event::Devoured { object, count }),
+                    applied: Vec::new(),
+                    frozen: true,
+                },
+            );
+        }
         if let (Some(card), Some(delta)) = (self.state.object(object), gained) {
             let mut inherited = applied;
             inherited.dedup();

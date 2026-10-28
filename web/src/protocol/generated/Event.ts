@@ -653,7 +653,15 @@ object: ObjectId,
 /**
  * Its controller, who amassed.
  */
-player: PlayerId, } } | { "Monstrous": { 
+player: PlayerId, } } | { "Devoured": { 
+/**
+ * The permanent that entered.
+ */
+object: ObjectId, 
+/**
+ * How many permanents it devoured.
+ */
+count: number, } } | { "Monstrous": { 
 /**
  * The creature that became monstrous.
  */

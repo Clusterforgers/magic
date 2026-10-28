@@ -348,6 +348,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         } => crate::phasing::fold_out(state, *object, *controller, *indirect)?,
         Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
+        Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::ManaAdded {
@@ -672,6 +673,17 @@ fn tally_crewed(state: &mut GameState, event: &Event) -> Result<(), EngineError>
 }
 
 /// A Class gains a level (CR 716.2): the level is higher than the one it has, and it is a permanent.
+/// A permanent that entered devouring keeps how many it devoured (CR 702.82).
+fn w7e_set_devoured(state: &mut GameState, id: ObjectId, count: u32) -> Result<(), EngineError> {
+    let perm = state
+        .objects
+        .get_mut(&id)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
+    perm.designations.devoured = count;
+    Ok(())
+}
+
 fn set_level(state: &mut GameState, id: ObjectId, level: u32) -> Result<(), EngineError> {
     let perm = state
         .objects

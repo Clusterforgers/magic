@@ -688,6 +688,14 @@ pub enum Event {
         /// Its controller, who amassed.
         player: PlayerId,
     },
+    /// A permanent devoured as it entered (CR 702.82): the sacrifices are the events before it, and its abilities read
+    /// the number while it stays on the battlefield.
+    Devoured {
+        /// The permanent that entered.
+        object: ObjectId,
+        /// How many permanents it devoured.
+        count: u32,
+    },
     /// A creature became monstrous (CR 701.37): the permanent keeps the designation while it stays on the battlefield;
     /// the counters are the event before it.
     Monstrous {
@@ -1033,6 +1041,7 @@ impl Event {
             | Event::Connived { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
+            | Event::Devoured { object, .. }
             | Event::Renowned { object, .. }
             | Event::Exploited { object, .. }
             | Event::Crewed { object, .. }

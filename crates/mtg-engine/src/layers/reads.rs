@@ -242,6 +242,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TargetCount(_)
         | Amount::Kicks
         | Amount::Promised
+        | Amount::Devoured
         | Amount::CastWith(_)
         | Amount::ColorsSpent
         | Amount::PermanentsGraved

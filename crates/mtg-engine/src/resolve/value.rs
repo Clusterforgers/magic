@@ -409,6 +409,15 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    /// How many permanents the source devoured as it entered (CR 702.82); zero once it is a new object.
+    fn w7e_devoured(&self) -> i64 {
+        self.state
+            .object(self.source.id)
+            .filter(|held| held.counter() == self.source.counter)
+            .and_then(GameObject::permanent)
+            .map_or(0, |permanent| i64::from(permanent.devoured()))
+    }
+
     /// How many times the permanents `of` names have mutated (CR 702.140): as they are, or as they were when they left.
     fn mutations(&self, of: &Ref) -> Result<i64, ResolveError> {
         let mut total = 0i64;
@@ -1202,6 +1211,7 @@ impl<'a> Scope<'a> {
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
+            Amount::Devoured => self.w7e_devoured(),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
