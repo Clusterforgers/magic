@@ -568,6 +568,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(TriggerPattern::Bolstered { who: by })
     } else if verb == if third { "amasses" } else { "amass" } {
         Some(TriggerPattern::Amassed { who: by })
+    } else if verb == if third { "expends" } else { "expend" } {
+        let n = r.number().filter(|n| *n > 0)?;
+        Some(TriggerPattern::Expend { who: by, n })
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
@@ -1298,6 +1301,19 @@ fn tapped_for_mana_text(what: &Selector, by: &Ref) -> Option<String> {
     ))
 }
 
+/// "Whenever you amass", "Whenever an opponent expends 4": a keyword action of a player, with its number.
+fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
+    let (who, verb, n) = match pattern {
+        TriggerPattern::Amassed { who } => (who, "amass", None),
+        TriggerPattern::Expend { who, n } => (who, "expend", Some(*n)),
+        TriggerPattern::Bolstered { who } => (who, "bolster", None),
+        TriggerPattern::Surveilled { who } => (who, "surveil", None),
+        _ => return None,
+    };
+    let n = n.map(|n| format!(" {n}")).unwrap_or_default();
+    Some(format!("Whenever {}{n}", player_verb(who, verb)?))
+}
+
 /// The event as the card words it, from "When" to the end of the event.
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
@@ -1326,13 +1342,10 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             Some(format!("Whenever {} a coin flip", player_verb(who, "win")?))
         }
         TriggerPattern::DiceRolled { who, highest } => c11e_rolled_text(who, *highest),
-        TriggerPattern::Amassed { who } => Some(format!("Whenever {}", player_verb(who, "amass")?)),
-        TriggerPattern::Bolstered { who } => {
-            Some(format!("Whenever {}", player_verb(who, "bolster")?))
-        }
-        TriggerPattern::Surveilled { who } => {
-            Some(format!("Whenever {}", player_verb(who, "surveil")?))
-        }
+        TriggerPattern::Amassed { .. }
+        | TriggerPattern::Expend { .. }
+        | TriggerPattern::Bolstered { .. }
+        | TriggerPattern::Surveilled { .. } => w9a_player_action_text(pattern),
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
         }

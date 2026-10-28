@@ -1248,6 +1248,9 @@ impl<'a> Walker<'a> {
 
     fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
         self.uses("Trigger", &tag_of(pattern));
+        if let TriggerPattern::Expend { n: 0, .. } = pattern {
+            self.problem("expend needs a number of at least 1");
+        }
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
@@ -1295,7 +1298,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::DiceRolled { who, .. }
             | TriggerPattern::Amassed { who }
             | TriggerPattern::Surveilled { who }
-            | TriggerPattern::Bolstered { who } => {
+            | TriggerPattern::Bolstered { who }
+            | TriggerPattern::Expend { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             TriggerPattern::Drew { who, what } => {
@@ -1404,6 +1408,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Mutates { .. }
                 | TriggerPattern::Adapted { .. }
                 | TriggerPattern::Bolstered { .. }
+                | TriggerPattern::Expend { .. }
                 | TriggerPattern::Surveilled { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }

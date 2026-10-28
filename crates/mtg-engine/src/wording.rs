@@ -468,6 +468,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
+        TriggerPattern::Expend { who: by, n } => {
+            let (name, s) = who(by);
+            (format!("{name} expend{s} {n}"), false)
+        }
         TriggerPattern::Bolstered { who: by } => {
             let (name, s) = who(by);
             (
@@ -1434,6 +1438,11 @@ mod tests {
     #[case::a_player_wins_a_flip(r#"{"CoinFlipWon":{}}"#, "Whenever a player wins a coin flip")]
     #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
     #[case::you_bolster(r#"{"Bolstered":{"who":"You"}}"#, "Whenever you bolster")]
+    #[case::you_expend(r#"{"Expend":{"who":"You","n":4}}"#, "Whenever you expend 4")]
+    #[case::an_opponent_expends(
+        r#"{"Expend":{"who":"Opponents","n":8}}"#,
+        "Whenever an opponent expends 8"
+    )]
     #[case::an_opponent_bolsters(
         r#"{"Bolstered":{"who":"Opponents"}}"#,
         "Whenever an opponent bolsters"

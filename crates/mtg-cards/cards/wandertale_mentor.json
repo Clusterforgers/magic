@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9d14c7bd-7802-401c-b02b-c7f3c51b007f",
+  "name": "Wandertale Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wandertale Mentor",
+      "oracle_fingerprint": "8f12d1c8d31d1b8e735585fc3b5ccf93",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Expend": { "who": "You", "n": 4 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

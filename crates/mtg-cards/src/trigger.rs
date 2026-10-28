@@ -441,6 +441,18 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player expends N ("whenever you expend 4", CR 701.59): they spend their Nth total mana to cast spells during a
+    /// turn; `Triggering` is that player.
+    Expend {
+        /// Who expends.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// Which total of mana, from one.
+        n: u32,
+    },
     /// A player surveils ("whenever you surveil"); `Triggering` is that player.
     Surveilled {
         /// Who surveils.

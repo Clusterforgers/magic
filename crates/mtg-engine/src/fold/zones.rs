@@ -217,6 +217,8 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    let mana = u32::try_from(choices.spent().len()).unwrap_or(u32::MAX);
+    state.tally_by(player, Tally::W9aSpellMana, mana);
     for target in choices.targeted_objects() {
         state.tally_object(target, Some(player), Tally::Targeted);
     }

@@ -146,6 +146,8 @@ pub(crate) enum Tally {
     GainedTotal,
     /// A land played from a hand or another zone (counted for the player).
     LandsPlayed,
+    /// Mana spent to cast spells, by the amount (counted for the player; expend, CR 701.59).
+    W9aSpellMana,
 }
 
 /// The events counted in the turn so far.

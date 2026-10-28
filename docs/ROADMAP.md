@@ -55,6 +55,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 "- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Emblems: objects in the command zone with abilities of their own that work from there, read and written by the compiler.
 - Incubate: the Incubator token with its Phyrexian back face, read and written by the compiler.
+- Expend: the trigger on the turn's Nth mana spent on spells, read and written by the compiler.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge, Harmonize and Read ahead (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
@@ -152,8 +153,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-e) Mill triggers ("whenever one or more nonland cards are milled", "whenever a player mills a nonland card": a pattern on `ZoneCause::Milled`, not surveil) and the rest of the rad cards ("you gain life rather than lose life from radiation", "loses all rad counters", "costs {1} less for each rad counter"); frees about 10 cards (Mirelurk Queen, Glowing One, Strong, the Brutish Thespian)
 - [ ] (r2da-c-a) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
-- [~] (r2da-c-b) (w9a-expend-exert) Expend N: the trigger as a player spends their Nth total mana on spells in a turn (Wandertale Mentor, Teapot Slinger, Trailtracker Scout, Pyreswipe Hawk)
-- [~] (r2da-c-c) (w9a-expend-exert) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
+- [ ] (r2da-c-c) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
 - [~] (r2da-c-d) (w9b-crimes-clash-forecast) Crimes, clash and forecast (Bandit's Haul, Patrolling Peacemaker, Lash Out, Hoarder's Greed, Skyscribing)
 - [ ] (r2da-c-e) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
