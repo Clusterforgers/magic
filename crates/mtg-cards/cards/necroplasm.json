@@ -1,0 +1,43 @@
+{
+  "oracle_id": "aa1c40fb-c230-4e7f-99b1-4e2e8c39a168",
+  "name": "Necroplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necroplasm",
+      "oracle_fingerprint": "03496a57dfe8f9540da6a3a11686e810",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Dredge": 2 } }
+      ]
+    }
+  ]
+}

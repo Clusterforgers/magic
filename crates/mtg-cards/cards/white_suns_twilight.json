@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a38828be-781e-4340-9c6f-f40b1d34773f",
+  "name": "White Sun's Twilight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Sun's Twilight",
+      "oracle_fingerprint": "7e6c3cacbe3a73fd3a63eb78b49dddbd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": "X" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Mite",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Mite"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": { "Toxic": 1 } },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

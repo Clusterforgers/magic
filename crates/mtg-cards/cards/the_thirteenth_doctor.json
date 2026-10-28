@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3778e06c-62c7-4b8f-90ff-b2fc2d2e213c",
+  "name": "The Thirteenth Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Thirteenth Doctor",
+      "oracle_fingerprint": "262f2a3ee22ee67af3f9e5e77ea3410a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

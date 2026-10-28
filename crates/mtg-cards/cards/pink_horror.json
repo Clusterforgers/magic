@@ -1,0 +1,63 @@
+{
+  "oracle_id": "3aa4c374-b146-4890-a8e1-717f214d9741",
+  "name": "Pink Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pink Horror",
+      "oracle_fingerprint": "cbdc41dcc2966a1ed7ee347ee07059cf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Blue Horror",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon", "Horror"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "SpellCast": {
+                                "what": [
+                                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                                ],
+                                "by": "You"
+                              }
+                            },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -67,7 +67,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Chance and choices: dice tables, coin flips, votes, piles, repeat for each player or object, planechase votes and modes at random, once each turn, once ever, repeated or one or more.
 - Fights and targets: fights of two targets, ability counters, second targets kept apart, targets for each opponent and the chosen player.
 - Turn structure: extra turns, added phases, phase conditions, skipped extra turns and time travel.
-- Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server), `promote`, `dsl-reference` and `dsl-schema` (schema-constrained output of a local server), the census of stored proposals and writers for every accepted sample wording.
+- Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server), `promote`, `dsl-reference` and `dsl-schema` (schema-constrained output of a local server), the census of stored proposals and writers for every accepted sample wording, and the other printed wordings of the abilities they write.
 - Reference engines: Forge, XMage and Magarena surveyed, and `mtg-cli forge-check` maps Forge's scripts to DSL verbs (`docs/reference-engines.md`).
 - Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser.
 - Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
@@ -218,7 +218,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (r3w4) (r3w4-delayed-repeat-writers) Writers for delayed triggers and "for each player or opponent" (`RepeatEach`) (19 abilities)
 - [~] (r3w5) (r3w5-move-counters-writers) Writers for `Move`, `PutCounters`, `RemoveCounters` and the "combination or shape" spells (about 40 abilities)
 - [~] (r3w6) (r3w6-mismatch-al) Renderer variants for the Mismatch proposals of names A to L (proliferate twice, the order of a token's name and ability, an activation limit before modes)
-- [~] (r3w7) (r3w7-mismatch-mz) The same for names M to Z
+- [ ] (r3w7b) Propose again the M to Z Mismatch proposals whose rules differ from the text: Mirkwood Bats, Reconstruct History, Regal Sliver, Soaring Lightbringer, Squee, Tenza, Their Number Is Legion, Thor, Unbreakable Formation, Unquenchable Fury, Wake the Past, Windgrace's Judgment
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each
 - [ ] (r2dgf) Tap or untap one target, and a replacement that names the event it replaces; frees about 6 cards (Tidal Force, Merrow Reejerey, Pariah, Ravenous Slime)

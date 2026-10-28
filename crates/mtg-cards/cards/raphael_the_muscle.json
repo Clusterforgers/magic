@@ -1,0 +1,30 @@
+{
+  "oracle_id": "22008c3b-6e15-41cc-a15c-7871495191aa",
+  "name": "Raphael, the Muscle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raphael, the Muscle",
+      "oracle_fingerprint": "b48de325da4827dd61bd51c29146d07b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "mutagen" } } }]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Character select" } }
+      ]
+    }
+  ]
+}
