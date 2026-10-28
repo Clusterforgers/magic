@@ -528,8 +528,9 @@ pub enum Event {
     Surveilled(Surveilled),
     /// A player revealed cards.
     Revealed(Revealed),
-    /// Cards of a public zone were picked at random with the next substream of the generator (CR 701.24 for a shuffle,
-    /// CR 608.2c for the choice): the cards picked, in the order they were drawn.
+    /// Cards of a public zone, or the cards a discard at random takes from a hand (CR 701.9b), were picked at random
+    /// with the next substream of the generator (CR 701.24 for a shuffle, CR 608.2c for the choice): the cards picked,
+    /// in the order they were drawn. A discard names only the cards it then reveals.
     ChosenAtRandom {
         /// The cards picked.
         cards: Vec<ObjectId>,

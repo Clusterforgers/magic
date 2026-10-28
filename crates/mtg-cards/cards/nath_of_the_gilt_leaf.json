@@ -1,0 +1,49 @@
+{
+  "oracle_id": "87a44a87-a2a5-4193-a163-e4846e5b8387",
+  "name": "Nath of the Gilt-Leaf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nath of the Gilt-Leaf",
+      "oracle_fingerprint": "8140cc5cad11a36805caa97af149b1ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "May": { "effects": [{ "Discard": { "who": { "Target": 0 }, "random": true } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elf Warrior",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elf", "Warrior"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

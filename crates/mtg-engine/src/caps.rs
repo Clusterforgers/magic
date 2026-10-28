@@ -108,6 +108,7 @@ const RUNS: &[&str] = &[
     "Cost.TapPower",
     "Effect.Draw",
     "Effect.Discard",
+    "Effect.Discard.Random",
     "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
@@ -504,7 +505,7 @@ mod tests {
     #[case::tapping("Cost.Tap", true)]
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
-    #[case::discarding_at_random("Effect.Discard.Random", false)]
+    #[case::discarding_at_random("Effect.Discard.Random", true)]
     #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
