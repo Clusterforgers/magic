@@ -33,10 +33,15 @@ pub struct Problem {
 /// How deep the abilities of a token may make tokens whose abilities are counted.
 const MOST_NESTED: u32 = 4;
 
-/// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
+/// An exchange of control names its two permanents with one reference or two.
+const W6E_EXCHANGE_PAIR: &str =
+    "an exchange of control names its two permanents with one reference or two";
+
 /// Only the rule that a permanent doesn't untap lasts through the next untap step of its controller.
 const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
+
+/// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
 
 fn tag_of<T: Serialize>(value: &T) -> String {
     match serde_json::to_value(value) {
@@ -2172,6 +2177,22 @@ impl Walker<'_> {
                     w.uses("Duration", "WhileYouControlSource");
                 }
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
+                    w.problem(C7_UNTAP_ONLY);
+                }
+            }
+            Effect::ExchangeControl { what, duration } => {
+                w.at("what", |w| {
+                    for (at, one) in what.iter().enumerate() {
+                        w.at(at.to_string(), |w| w.reference(one, Kind::Object));
+                    }
+                });
+                if !matches!(what.len(), 1 | 2) {
+                    w.problem(W6E_EXCHANGE_PAIR);
+                }
+                if *duration == Duration::WhileYouControlSource {
+                    w.uses("Duration", "WhileYouControlSource");
+                }
+                if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
                 }
             }

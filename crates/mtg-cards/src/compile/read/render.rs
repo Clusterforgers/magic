@@ -56,6 +56,7 @@ mod two_targets;
 mod untapped;
 mod w2b_you_and;
 mod w2d_villainous;
+mod w6e_control;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -173,6 +174,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(searches);
     let replaced = instead_pairs::other_wordings(&texts);
     texts.extend(replaced);
+    let hosts = w6e_control::w6e_wordings(&texts);
+    texts.extend(hosts);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
     let regenerating = regeneration_wordings(&texts);
@@ -2161,6 +2164,7 @@ impl Writer<'_> {
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))
             .or_else(|| self.control_for_good(effect))
+            .or_else(|| self.w6e_exchanged(effect))
     }
 
     /// The cast of the target during the resolution and the exile of that spell (`c11b_cast_target`).
@@ -2394,6 +2398,7 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.stolen(effects))
+            .or_else(|| self.w6e_stolen(effects))
             .or_else(|| self.c10_uc_held(effects))
             .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.taken_and_typed(effects))

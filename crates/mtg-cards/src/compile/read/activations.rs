@@ -5,12 +5,17 @@
 
 use super::as_long_as;
 use super::restrictions::moments;
+use super::restrictions::{W6E_NOT_IN_COMBAT, w6e_out_of_combat};
 use super::statics::control_texts;
 use crate::ability::{Limit, Timing};
 use crate::value::Condition;
 
 /// The sentences for an ability with a condition, in every order of its parts.
 pub(super) fn tails(timing: Timing, condition: &Condition, limit: Option<Limit>) -> Vec<String> {
+    // The one restriction a card words as a prohibition.
+    if timing == Timing::Instant && limit.is_none() && *condition == w6e_out_of_combat() {
+        return vec![format!("{}.", W6E_NOT_IN_COMBAT.replacen("you", "You", 1))];
+    }
     let mut parts: Vec<Vec<String>> = Vec::new();
     if timing == Timing::Sorcery {
         parts.push(vec!["as a sorcery".to_owned()]);

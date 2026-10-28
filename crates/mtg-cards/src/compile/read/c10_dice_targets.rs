@@ -21,8 +21,9 @@ pub fn c10_dice_per_opponent(r: &mut Reader<'_>, over: &Ref) -> Option<Vec<Effec
         let [spec] = r.targets.get_mut(before..)? else {
             return None;
         };
-        (spec.bounds == Bounds::up_to(Some(crate::value::Amount::one())) && spec.divide.is_none())
-            .then_some(())?;
+        let one =
+            spec.bounds == Bounds::up_to(Some(crate::value::Amount::one())) || spec.bounds.is_one();
+        (one && spec.divide.is_none()).then_some(())?;
         let Targetable::Object(selector) = &spec.what else {
             return None;
         };
