@@ -21,7 +21,10 @@ impl KeywordRules for Dredge {
             return Vec::new();
         };
         vec![Ability::Replacement {
-            when: ReplaceWhen::Draw { who: Ref::You },
+            when: ReplaceWhen::Draw {
+                who: Ref::You,
+                except_draw_step: 0,
+            },
             by: ReplaceBy::Dredge(*cards),
             condition: None,
             from: ZoneKind::Graveyard,
@@ -40,7 +43,10 @@ mod tests {
         assert_eq!(
             added,
             [Ability::Replacement {
-                when: ReplaceWhen::Draw { who: Ref::You },
+                when: ReplaceWhen::Draw {
+                    who: Ref::You,
+                    except_draw_step: 0,
+                },
                 by: ReplaceBy::Dredge(3),
                 condition: None,
                 from: ZoneKind::Graveyard,

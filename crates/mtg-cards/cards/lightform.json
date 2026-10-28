@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f2df375c-3741-409f-91d1-21bf632b2e1d",
+  "name": "Lightform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightform",
+      "oracle_fingerprint": "134e0d9943b320d5e8d4f69ec1dc66ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "Manifest": { "as": "manifested" } },
+              { "Attach": { "what": "This", "to": { "Bound": "manifested" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

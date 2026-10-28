@@ -347,13 +347,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             controller,
             chosen,
         } => enter(state, *object, *tapped, *controller, chosen.as_ref())?,
-        Event::CardDrawn { player, object } => {
-            if state.zones.get(Zone::Library(*player)).last() != Some(object) {
-                return Err(invalid("drawn card is not on top of the library"));
-            }
-            move_object(state, *object, Zone::Hand(*player), Placement::Top)?;
-            state.tally(*player, Tally::Drawn);
-        }
+        Event::CardDrawn { player, object } => card_drawn(state, *player, *object)?,
         Event::CardDiscarded { player, object } => {
             expect_in(state, *object, Zone::Hand(*player))?;
             let owner = owner_of(state, *object)?;
@@ -367,6 +361,23 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         }
         Event::ObjectLeftGame { object } => leave_game(state, *object)?,
         other => return Err(invalid(format!("not a zone event: {other:?}"))),
+    }
+    Ok(())
+}
+
+/// Moves the top card of the library to the hand and counts the draw, also the draw of the draw step.
+fn card_drawn(
+    state: &mut GameState,
+    player: PlayerId,
+    object: ObjectId,
+) -> Result<(), EngineError> {
+    if state.zones.get(Zone::Library(player)).last() != Some(&object) {
+        return Err(invalid("drawn card is not on top of the library"));
+    }
+    move_object(state, object, Zone::Hand(player), Placement::Top)?;
+    state.tally(player, Tally::Drawn);
+    if state.turn.step == crate::turn::Step::Draw && state.active_player() == Some(player) {
+        state.tally(player, Tally::C6BlkDrawStepDrawn);
     }
     Ok(())
 }

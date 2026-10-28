@@ -45,6 +45,8 @@ mod c4_prepare_triggers;
 mod c4_skipped_turns;
 mod c5_dice_piles;
 mod c6_au_dead_card;
+mod c6_blk_aura;
+mod c6_blk_draws;
 mod c6_eg_cards;
 mod c6_kw_renown_exploit;
 mod card_grants;

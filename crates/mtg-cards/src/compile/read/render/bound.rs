@@ -24,7 +24,8 @@ impl Writer<'_> {
             sentences.extend(after);
             return Some((sentences, 1 + used));
         }
-        self.exile_and_return_later(effects)
+        Writer::c6_blk_aura_manifest(effects)
+            .or_else(|| self.exile_and_return_later(effects))
             .or_else(|| self.exile_and_maybe_return(effects))
             .or_else(|| Writer::return_itself_later(effects))
             .or_else(|| self.exile_chosen_from_graveyard(effects))

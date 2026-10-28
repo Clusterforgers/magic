@@ -244,6 +244,18 @@ pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
         .any(|rules| triggers_something(rules))
 }
 
+/// Whether an effect in the rules of this definition gives its object one of the subtypes `names` ("it becomes an Aura
+/// with enchant creature", CR 205.1b), so the game holds attachments though no card prints one.
+pub(crate) fn c6_blk_definition_gives_subtype(definition: &CardDefinition, names: &[&str]) -> bool {
+    definition.rules.iter().any(|rules| {
+        rules.effects().iter().any(|effect| {
+            matches!(effect, mtg_cards::effect::Effect::Continuous { mods, .. }
+                if mods.iter().any(|modification| matches!(modification,
+                    mtg_cards::modify::Modification::AddSubtype(subtype) if names.contains(&subtype.0.as_str()))))
+        })
+    })
+}
+
 /// Whether a card with this definition prints a state trigger or gives one (`GameState::possible`).
 pub(crate) fn definition_has_state_trigger(definition: &CardDefinition) -> bool {
     definition

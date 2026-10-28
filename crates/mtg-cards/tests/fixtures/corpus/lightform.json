@@ -1,0 +1,25 @@
+{
+  "id": "82b194d0-8f1c-4864-b2dd-603cbe1d9dc6",
+  "oracle_id": "f2df375c-3741-409f-91d1-21bf632b2e1d",
+  "name": "Lightform",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "68",
+  "rarity": "uncommon",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, it becomes an Aura with enchant creature. Manifest the top card of your library and attach this enchantment to it. (To manifest a card, put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nEnchanted creature has flying and lifelink.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Manifest"
+  ]
+}

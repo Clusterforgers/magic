@@ -507,6 +507,10 @@ pub enum ReplaceWhen {
         /// Who would draw.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+        /// The first this many cards the player draws in each of their draw steps are not replaced ("except the first
+        /// one you draw in each of your draw steps"); zero replaces every draw.
+        #[serde(default, skip_serializing_if = "crate::spend::is_zero")]
+        except_draw_step: u32,
     },
     /// A card matching the selector would enter the battlefield (a land played, a permanent spell resolving, a card
     /// put onto the battlefield); `This` is the card with the ability, in whatever zone it enters from.

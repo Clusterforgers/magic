@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2b9384a0-db2d-49e2-b121-6b81a0d77722",
+  "name": "Cloudform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudform",
+      "oracle_fingerprint": "602825d6ebb5f3301b29c9c0fd9ae156",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "Manifest": { "as": "manifested" } },
+              { "Attach": { "what": "This", "to": { "Bound": "manifested" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Hexproof" }]
+          }
+        }
+      ]
+    }
+  ]
+}

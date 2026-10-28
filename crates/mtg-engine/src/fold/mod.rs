@@ -287,6 +287,13 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             if *step == Step::BeginCombat {
                 state.turn.combats += 1;
             }
+            // "Each of your draw steps" counts the draws of each draw step afresh, an added one included.
+            if *step == Step::Draw {
+                state
+                    .tallies
+                    .players
+                    .retain(|(_, kind), _| *kind != Tally::C6BlkDrawStepDrawn);
+            }
             state.turn.step = *step;
             state.priority = None;
             // Each combat damage step divides its damage afresh: a double striker divides twice.

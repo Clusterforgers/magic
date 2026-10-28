@@ -42,6 +42,10 @@ pub(crate) fn definition_attaches(definition: &CardDefinition) -> bool {
         .subtypes
         .iter()
         .any(|subtype| KINDS.iter().any(|(name, _)| subtype.0 == *name))
+        || crate::ability_reader::c6_blk_definition_gives_subtype(
+            definition,
+            &KINDS.map(|(name, _)| name),
+        )
 }
 
 /// What `id` is as an attachment, by the subtypes it prints and those effects gave it.
