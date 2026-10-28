@@ -31,9 +31,9 @@ pub(super) fn w4g_add_texts(ability: &Ability, texts: &mut Vec<String>) {
     w4g_extend(texts, w4g_name_before_quote);
     w4g_extend(texts, w4g_where_x_equal_to);
     w4g_extend(texts, |text| {
-        let found = W4G_EACH
-            .iter()
-            .fold(text.to_owned(), |found, (all, each)| found.replace(all, each));
+        let found = W4G_EACH.iter().fold(text.to_owned(), |found, (all, each)| {
+            found.replace(all, each)
+        });
         (found != text).then_some(found)
     });
     match ability {
@@ -130,7 +130,7 @@ fn w4g_where_x_equal_to(text: &str) -> Option<String> {
     }
     let create = head.rfind("reate X ")?;
     let tokens = &head[create + "reate X ".len()..];
-    if !(tokens.ends_with(" tokens") && !tokens.contains(['.', '"'])) {
+    if !tokens.ends_with(" tokens") || tokens.contains(['.', '"']) {
         return None;
     }
     Some(format!(
@@ -162,6 +162,10 @@ fn w4g_counter_on_it(text: &str) -> Option<String> {
 fn w4g_they_control(text: &str) -> Option<String> {
     let they = text.find(" they ")?;
     let (head, tail) = text.split_at(they);
-    tail.contains(" that player controls")
-        .then(|| format!("{head}{}", tail.replace(" that player controls", " they control")))
+    tail.contains(" that player controls").then(|| {
+        format!(
+            "{head}{}",
+            tail.replace(" that player controls", " they control")
+        )
+    })
 }

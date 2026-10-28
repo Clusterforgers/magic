@@ -73,5 +73,7 @@ fn w4g_double_all(ability: &Ability, texts: &mut Vec<String>) {
         Some(true) => "combat ",
         Some(false) => return,
     };
-    texts.push(format!("Double all {kind}damage that {sources} would deal."));
+    texts.push(format!(
+        "Double all {kind}damage that {sources} would deal."
+    ));
 }
