@@ -366,8 +366,18 @@ fn step_with(
             next,
         } => {
             let mut events = events;
+            let mut bound = bound;
+            let position = tree::after(effects, chosen, &resolving.position, next);
+            // CR 700.2d: a mode chosen again runs again; the names it binds are cleared for the new run.
+            if let Some(mode) = tree::later_mode_begun(effects, chosen, &position) {
+                bound.extend(
+                    mtg_cards::effect::bound_names(mode)
+                        .into_iter()
+                        .map(|name| (format!("{CLEAR}{name}"), Vec::new())),
+                );
+            }
             events.push(Event::StepDone {
-                position: tree::after(effects, chosen, &resolving.position, next),
+                position,
                 bound,
                 snapshots,
             });
