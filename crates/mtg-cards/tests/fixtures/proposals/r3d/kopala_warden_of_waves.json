@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["Spell",{"ControlledBy":"Opponents"},{"Targeting":[{"Subtype":"Merfolk"},{"ControlledBy":"You"}]}],"change":"Increase","mana":"{2}"}},{"CostModifier":{"applies_to":[{"Ability":"Activated"},{"ControlledBy":"Opponents"},{"Targeting":[{"Subtype":"Merfolk"},{"ControlledBy":"You"}]}],"change":"Increase","mana":"{2}"}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Prowess"},{"CostModifier":{"applies_to":["Spell",{"Not":{"Type":"Creature"}},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}"}},{"Static":{"affected":"This","mods":[{"AddKeyword":"DoubleStrike"}],"condition":{"Compare":{"left":{"Tallied":{"who":"You","what":"NoncreatureSpellsCast"}},"op":"Ge","right":2}}}}]}]}

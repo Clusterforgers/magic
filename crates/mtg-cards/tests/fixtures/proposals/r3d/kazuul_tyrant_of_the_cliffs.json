@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AttacksPlayer":{"what":[{"Type":"Creature"},{"ControlledBy":"Opponents"}],"at":"You"}},"effects":[{"Pay":{"who":{"ControllerOf":"Triggering"},"cost":"{3}","unpaid":[{"CreateToken":{"token":{"Custom":{"name":"Ogre","colors":["Red"],"types":["Creature"],"subtypes":["Ogre"],"power":3,"toughness":3}}}}]}}]}}]}]}

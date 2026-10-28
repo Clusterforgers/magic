@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["Token",{"ControlledBy":"You"}],"to":"Battlefield"}},{"Sacrificed":{"what":["Token"],"by":"You"}}]},"effects":[{"LoseLife":{"who":"Opponents","amount":1}}]}}]}]}
