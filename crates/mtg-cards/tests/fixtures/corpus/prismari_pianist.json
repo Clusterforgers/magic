@@ -1,0 +1,25 @@
+{
+  "id": "7e3e5990-ad48-4be2-af8a-4ff77177758d",
+  "oracle_id": "f58117e4-ba85-41b8-8fd5-4245716a84dc",
+  "name": "Prismari Pianist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "34",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Djinn Bard",
+  "oracle_text": "Whenever you cast an instant or sorcery spell, create a 1/1 blue and red Elemental creature token. If that spell's mana value is 5 or greater, create three of those tokens instead.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

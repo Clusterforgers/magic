@@ -1,0 +1,31 @@
+{
+  "oracle_id": "12cc97ec-5d03-4434-a31b-51e77d208466",
+  "name": "Grey Knight Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grey Knight Paragon",
+      "oracle_fingerprint": "821f96447791bb985b26e2de8456af9e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Subtype": "Demon" }] }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }],
+                  "otherwise": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "a0cedaa9-f08a-4d7b-8314-1d0a09a657bd",
+  "oracle_id": "13e94530-defb-4c9b-9ec7-bb7789ec2630",
+  "name": "Decaying Time Loop",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "80",
+  "rarity": "uncommon",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Discard all the cards in your hand, then draw that many cards.\nRetrace (You may cast this card from your graveyard by discarding a land card in addition to paying its other costs.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Retrace"
+  ]
+}

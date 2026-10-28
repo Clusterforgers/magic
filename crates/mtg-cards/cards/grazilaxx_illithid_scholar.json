@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d22ff377-d282-4a28-9dce-96f25913dc96",
+  "name": "Grazilaxx, Illithid Scholar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grazilaxx, Illithid Scholar",
+      "oracle_fingerprint": "273c27066ddc2a4e565a63eb2c565cc4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

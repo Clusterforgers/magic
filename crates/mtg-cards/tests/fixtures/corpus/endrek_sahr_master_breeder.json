@@ -1,0 +1,25 @@
+{
+  "id": "123490fb-5908-45f2-b376-7959ccdf9c3e",
+  "oracle_id": "47a0079f-3544-45bc-a32a-bd93844c8c43",
+  "name": "Endrek Sahr, Master Breeder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "155",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "Whenever you cast a creature spell, create X 1/1 black Thrull creature tokens, where X is that spell's mana value.\nWhen you control seven or more Thrulls, sacrifice Endrek Sahr.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

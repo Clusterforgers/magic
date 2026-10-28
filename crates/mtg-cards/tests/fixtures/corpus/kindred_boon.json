@@ -1,0 +1,23 @@
+{
+  "id": "a9d21710-3006-45a0-9af2-275159bb5315",
+  "oracle_id": "f04441b0-755c-4e7b-a9e4-4e03b8175ab6",
+  "name": "Kindred Boon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "129",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "As this enchantment enters, choose a creature type.\n{1}{W}: Put a divinity counter on target creature you control of the chosen type.\nEach creature you control with a divinity counter on it has indestructible.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f5e18b27-c5cc-4f5e-b767-4b1b43e00fd0",
+  "name": "Dominus of Fealty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dominus of Fealty",
+      "oracle_fingerprint": "1ffca3cdef73831fc9de7ad482629541",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "Untap": { "what": { "Target": 0 } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

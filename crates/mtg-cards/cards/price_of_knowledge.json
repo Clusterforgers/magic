@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1c586aa7-7a61-464f-abba-b33f9a525f0e",
+  "name": "Price of Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Price of Knowledge",
+      "oracle_fingerprint": "e2dc924e454770f2291d60d97aed78a4",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "EachPlayer" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

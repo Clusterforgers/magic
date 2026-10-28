@@ -1,0 +1,23 @@
+{
+  "id": "dc69f960-68ba-4315-8146-6a7a82047503",
+  "oracle_id": "02090581-61aa-4348-ad57-451be8ee91c2",
+  "name": "Ponder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "159",
+  "rarity": "common",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top three cards of your library, then put them back in any order. You may shuffle.\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

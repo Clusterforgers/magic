@@ -1,0 +1,23 @@
+{
+  "id": "347c6e76-dba4-4448-a4f4-d9591d4539c7",
+  "oracle_id": "f325fd7a-dcae-4892-adf5-de9893a23ac5",
+  "name": "Learn from the Past",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dtk",
+  "collector_number": "60",
+  "rarity": "uncommon",
+  "released_at": "2015-03-27",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Target player shuffles their graveyard into their library.\nDraw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

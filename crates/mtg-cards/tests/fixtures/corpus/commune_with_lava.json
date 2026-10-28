@@ -1,0 +1,23 @@
+{
+  "id": "862771b6-8e82-45b7-922f-4f40322a607e",
+  "oracle_id": "f4aa0f64-d202-42a1-af62-0e53bbe87782",
+  "name": "Commune with Lava",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afc",
+  "collector_number": "118",
+  "rarity": "rare",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{X}{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile the top X cards of your library. Until the end of your next turn, you may play those cards.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3e638aa1-31ff-4e57-9e4e-444211031eb5",
+  "name": "Crimson Honor Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crimson Honor Guard",
+      "oracle_fingerprint": "cc35a43b972460efede9599fd7c55d20",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "Triggering" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

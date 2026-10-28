@@ -1,0 +1,43 @@
+{
+  "oracle_id": "1b01dcff-0639-4ed0-bd9e-f28429cb803d",
+  "name": "Nurgle's Rot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nurgle's Rot",
+      "oracle_fingerprint": "7dfcab9e94d345b485caa23b8e95d3e3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Plaguebearer of Nurgle",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
+                      "power": 1,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

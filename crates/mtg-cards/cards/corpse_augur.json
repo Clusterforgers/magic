@@ -1,0 +1,43 @@
+{
+  "oracle_id": "06eb43af-637a-4f73-8071-a7036d4c8c3d",
+  "name": "Corpse Augur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpse Augur",
+      "oracle_fingerprint": "43436f73042fb14225956560aab62469",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

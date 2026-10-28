@@ -1,0 +1,39 @@
+{
+  "oracle_id": "04b35e95-2963-4a0a-bd1c-d516cda2dd37",
+  "name": "Elven Farsight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elven Farsight",
+      "oracle_fingerprint": "782607711c1ff6361288bd703f0f2543",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Scry": { "count": 3 } },
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [{ "Type": "Creature" }]
+                          }
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

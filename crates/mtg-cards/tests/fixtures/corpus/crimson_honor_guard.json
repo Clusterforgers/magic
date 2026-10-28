@@ -1,0 +1,27 @@
+{
+  "id": "7ac7b366-a967-4efb-9254-a4ec423d63a7",
+  "oracle_id": "3e638aa1-31ff-4e57-9e4e-444211031eb5",
+  "name": "Crimson Honor Guard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "voc",
+  "collector_number": "145",
+  "rarity": "rare",
+  "released_at": "2021-11-19",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Vampire Knight",
+  "oracle_text": "Trample\nAt the beginning of each player's end step, this creature deals 4 damage to that player unless they control a commander.",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ]
+}

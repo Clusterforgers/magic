@@ -1,0 +1,30 @@
+{
+  "id": "56955e63-db6f-4f1d-b3c4-dd268c902653",
+  "oracle_id": "326adf88-3f6d-4bc2-aafa-dd55c6c95784",
+  "name": "Blood Baron of Vizkopa",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ima",
+  "collector_number": "195",
+  "rarity": "rare",
+  "released_at": "2017-11-17",
+  "digital": false,
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Vampire",
+  "oracle_text": "Lifelink, protection from white and from black\nAs long as you have 30 or more life and an opponent has 10 or less life, this creature gets +6/+6 and has flying.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Protection"
+  ]
+}

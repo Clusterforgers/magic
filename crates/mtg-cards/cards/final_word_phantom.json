@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f07db0f7-7d25-4395-9af3-6b0ca9197b61",
+  "name": "Final-Word Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Final-Word Phantom",
+      "oracle_fingerprint": "6d13e0730e7c6ffccfbed5867467e9cd",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "flash": true } },
+            "condition": { "All": [{ "Step": "End" }, { "Not": "YourTurn" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "8006515a-69de-4713-8318-79c0ef78a6d1",
+  "oracle_id": "71b5fdf2-4475-4102-85eb-9be164a9ae29",
+  "name": "Deathbringer Regent",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "246",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying\nWhen this creature enters, if you cast it from your hand and there are five or more other creatures on the battlefield, destroy all other creatures.",
+  "power": "5",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

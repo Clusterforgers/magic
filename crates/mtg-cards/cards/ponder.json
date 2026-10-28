@@ -1,0 +1,28 @@
+{
+  "oracle_id": "02090581-61aa-4348-ad57-451be8ee91c2",
+  "name": "Ponder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ponder",
+      "oracle_fingerprint": "feeeb322307f1e219306ec98ef88267c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              { "May": { "effects": [{ "Shuffle": {} }] } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

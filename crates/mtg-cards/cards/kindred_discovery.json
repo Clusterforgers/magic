@@ -1,0 +1,39 @@
+{
+  "oracle_id": "005ee549-1bf5-478f-bc3f-3e791bd7eecf",
+  "name": "Kindred Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindred Discovery",
+      "oracle_fingerprint": "78902300a550b871d1a0f58f534fbceb",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "Attacks": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "dfbd3afc-9905-4cff-a4f4-df08a4d0a7fa",
+  "name": "Restoration Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restoration Angel",
+      "oracle_fingerprint": "83999be5f52606b96290ae16b5056b3e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Angel" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "flickered" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "flickered" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

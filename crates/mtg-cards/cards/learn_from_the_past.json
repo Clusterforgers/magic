@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f325fd7a-dcae-4892-adf5-de9893a23ac5",
+  "name": "Learn from the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Learn from the Past",
+      "oracle_fingerprint": "db9f31f7879f423da8ecae3c0c0872f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

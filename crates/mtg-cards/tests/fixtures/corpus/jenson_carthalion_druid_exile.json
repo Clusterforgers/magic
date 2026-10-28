@@ -1,0 +1,39 @@
+{
+  "id": "6a67f32c-4c9a-4bda-92f4-037b99999777",
+  "oracle_id": "68cefb44-afad-4638-8fdc-65a099b51d55",
+  "name": "Jenson Carthalion, Druid Exile",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmc",
+  "collector_number": "3",
+  "rarity": "mythic",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Druid",
+  "oracle_text": "Whenever you cast a multicolored spell, scry 1. If that spell was all colors, create a 4/4 white Angel creature token with flying and vigilance.\n{5}, {T}: Add {W}{U}{B}{R}{G}.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

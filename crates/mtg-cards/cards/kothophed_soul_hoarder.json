@@ -1,0 +1,26 @@
+{
+  "oracle_id": "85e1791f-f9a0-4e82-baf6-33cff2dcf60b",
+  "name": "Kothophed, Soul Hoarder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kothophed, Soul Hoarder",
+      "oracle_fingerprint": "40073528b269648181dd5ff977198756",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": { "OwnedBy": "You" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

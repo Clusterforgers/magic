@@ -1,0 +1,40 @@
+{
+  "oracle_id": "69d4ecac-4735-4667-bfc1-c8800b436d08",
+  "name": "Endless Ranks of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Ranks of the Dead",
+      "oracle_fingerprint": "af6b750c5c5c47478a9b0f5b3728d302",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

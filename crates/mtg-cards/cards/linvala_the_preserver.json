@@ -1,0 +1,61 @@
+{
+  "oracle_id": "64f5689d-504d-40e9-bdb5-36dcefd257e2",
+  "name": "Linvala, the Preserver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Linvala, the Preserver",
+      "oracle_fingerprint": "04e4135b3e7733287763a6c7273cbec4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "HighestLife": "Opponents" },
+                "op": "Gt",
+                "right": { "Life": "You" }
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 5 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

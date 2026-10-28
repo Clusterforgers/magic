@@ -1,0 +1,30 @@
+{
+  "id": "d411ad43-3718-4ed7-932f-fcea28705782",
+  "oracle_id": "daff70a4-a990-47c9-b6ef-2c379272c8a3",
+  "name": "Dragonlord Atarka",
+  "lang": "en",
+  "layout": "normal",
+  "set": "tdc",
+  "collector_number": "285",
+  "rarity": "mythic",
+  "released_at": "2025-04-11",
+  "digital": false,
+  "mana_cost": "{5}{R}{G}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Elder Dragon",
+  "oracle_text": "Flying, trample\nWhen Dragonlord Atarka enters, it deals 5 damage divided as you choose among any number of target creatures and/or planeswalkers your opponents control.",
+  "power": "8",
+  "toughness": "8",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Trample"
+  ]
+}

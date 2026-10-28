@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ac830812-2f33-4f9e-ba3a-ea665989011c",
+  "name": "Paladin Danse, Steel Maverick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paladin Danse, Steel Maverick",
+      "oracle_fingerprint": "5d300ca4cc986cefafd0583024e8e044",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": ["ExileSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Subtype": "Human" }] }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

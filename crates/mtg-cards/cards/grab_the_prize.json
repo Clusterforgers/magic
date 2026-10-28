@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a37387f0-9d57-49ff-aa38-2c6b359e8916",
+  "name": "Grab the Prize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grab the Prize",
+      "oracle_fingerprint": "8fd1a3840957253cd54fe299a5d51ed4",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": {} }], "required": true } },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Paid", "selector": [{ "Not": { "Type": "Land" } }] }
+                  },
+                  "then": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

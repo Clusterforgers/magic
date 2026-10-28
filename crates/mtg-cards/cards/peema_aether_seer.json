@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4a00f56e-e558-4239-bc75-fb0af7639042",
+  "name": "Peema Aether-Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peema Aether-Seer",
+      "oracle_fingerprint": "bda116ca82b0d8e5eaa7e7c9b35f39a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 3 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

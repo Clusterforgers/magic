@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1cad92ce-55c8-4b78-8d8c-56645ef8e6ee",
+  "name": "Firespitter Whelp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firespitter Whelp",
+      "oracle_fingerprint": "4024ce1ff21ccc80c126321430829206",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Subtype": "Dragon" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

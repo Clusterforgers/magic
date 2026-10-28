@@ -1,0 +1,27 @@
+{
+  "id": "ef0dbb08-d124-46da-bfb1-af7ef4a18179",
+  "oracle_id": "64f5689d-504d-40e9-bdb5-36dcefd257e2",
+  "name": "Linvala, the Preserver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ogw",
+  "collector_number": "25",
+  "rarity": "mythic",
+  "released_at": "2016-01-22",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Angel",
+  "oracle_text": "Flying\nWhen Linvala enters, if an opponent has more life than you, you gain 5 life.\nWhen Linvala enters, if an opponent controls more creatures than you, create a 3/3 white Angel creature token with flying.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

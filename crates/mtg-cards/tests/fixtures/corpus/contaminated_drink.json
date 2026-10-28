@@ -1,0 +1,25 @@
+{
+  "id": "bde9eb15-544a-462a-8ab8-86067840c083",
+  "oracle_id": "ee327c5e-ed29-4de3-bf50-92488f51a3a5",
+  "name": "Contaminated Drink",
+  "lang": "en",
+  "layout": "normal",
+  "set": "pip",
+  "collector_number": "99",
+  "rarity": "uncommon",
+  "released_at": "2024-03-08",
+  "digital": false,
+  "mana_cost": "{X}{U}{B}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw X cards, then you get half X rad counters, rounded up.",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": []
+}

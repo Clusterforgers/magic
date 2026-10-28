@@ -1,0 +1,27 @@
+{
+  "id": "bb65df55-d6a6-4a57-a903-e5eb17637982",
+  "oracle_id": "28c7c816-07e7-42fb-923c-bf149ba28b38",
+  "name": "Luminous Broodmoth",
+  "lang": "en",
+  "layout": "normal",
+  "set": "iko",
+  "collector_number": "21",
+  "rarity": "mythic",
+  "released_at": "2020-04-24",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "Flying\nWhenever a creature you control without flying dies, return it to the battlefield under its owner's control with a flying counter on it.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

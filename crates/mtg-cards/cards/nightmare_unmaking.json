@@ -1,0 +1,65 @@
+{
+  "oracle_id": "285fecb7-f872-454d-ac2f-bc5615c70cd8",
+  "name": "Nightmare Unmaking",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightmare Unmaking",
+      "oracle_fingerprint": "4468bdf8c5dced53e99e34a18b90b4c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                {
+                                  "Compare": {
+                                    "stat": "Power",
+                                    "op": "Gt",
+                                    "to": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                {
+                                  "Compare": {
+                                    "stat": "Power",
+                                    "op": "Lt",
+                                    "to": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

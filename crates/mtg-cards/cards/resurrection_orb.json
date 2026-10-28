@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b410f294-cbb6-4016-981f-808fd9b7bbae",
+  "name": "Resurrection Orb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resurrection Orb",
+      "oracle_fingerprint": "7498b8b0c44adfebd5671de7d9e510f4",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Lifelink" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

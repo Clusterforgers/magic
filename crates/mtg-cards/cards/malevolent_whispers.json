@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b7ff27b6-7591-44b9-86b9-ee12f795ec25",
+  "name": "Malevolent Whispers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malevolent Whispers",
+      "oracle_fingerprint": "e20dcce0b98985cdf3a2bd9cf648ac0b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{3}{R}" } }
+      ]
+    }
+  ]
+}

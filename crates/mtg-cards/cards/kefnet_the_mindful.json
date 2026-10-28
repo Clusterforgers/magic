@@ -1,0 +1,49 @@
+{
+  "oracle_id": "caf626a8-7abc-496b-9d3a-23194ce70e01",
+  "name": "Kefnet the Mindful",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kefnet the Mindful",
+      "oracle_fingerprint": "0cbaaaa596853c9ae18980db69f7973f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Lt",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "effects": [
+              { "Draw": {} },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

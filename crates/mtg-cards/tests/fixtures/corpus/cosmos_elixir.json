@@ -1,0 +1,19 @@
+{
+  "id": "6bf084fe-7762-49c5-974a-cdecc10666b3",
+  "oracle_id": "ed7300f4-831a-4ba4-b5e6-ceba8d079eaa",
+  "name": "Cosmos Elixir",
+  "lang": "en",
+  "layout": "normal",
+  "set": "khm",
+  "collector_number": "237",
+  "rarity": "rare",
+  "released_at": "2021-02-05",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "At the beginning of your end step, draw a card if your life total is greater than your starting life total. Otherwise, you gain 2 life.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

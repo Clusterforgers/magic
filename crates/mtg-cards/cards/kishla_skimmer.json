@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a3275d80-112b-4839-a014-e44ef48d2e6b",
+  "name": "Kishla Skimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kishla Skimmer",
+      "oracle_fingerprint": "200424c43b0ec3c700e2e3c0016fac36",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } },
+            "if": "YourTurn",
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

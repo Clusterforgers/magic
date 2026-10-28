@@ -133,7 +133,7 @@ const C9_WR_WHOLES: [(&str, &str); 65] = [
     ),
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking"]}}],"effects":[{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":[{"Subtype":"Demon"}]}},"then":[{"Exile":{"what":{"Target":0}}}],"otherwise":[{"Destroy":{"what":{"Target":0}}}]}}]}}"#,
-        "Rites of Banishment \u{2014} When this creature enters, destroy target attacking creature. If that creature is a Demon, exile it instead.",
+        "When this creature enters, destroy target attacking creature. If that creature is a Demon, exile it instead.",
     ),
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}},"if":{"Matches":{"subject":"Triggering","selector":[{"DamagedBy":"This"}]}},"effects":[{"Draw":{"count":1}}]}}"#,
@@ -149,7 +149,7 @@ const C9_WR_WHOLES: [(&str, &str); 65] = [
     ),
     (
         r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"You"}}]},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":1,"toughness":0}},"CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}}"#,
-        "Shiva's Aid \u{2014} When ~ enters and whenever you cast a noncreature spell, target creature gets +1/+0 until end of turn and can't be blocked this turn.",
+        "When ~ enters and whenever you cast a noncreature spell, target creature gets +1/+0 until end of turn and can't be blocked this turn.",
     ),
     (
         r#"{"Triggered":{"when":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"GainLife":{"amount":{"Stat":{"of":"Dealer","stat":"Toughness"}}}}]}}"#,
@@ -279,9 +279,10 @@ static C9_WR_SHAPES: LazyLock<Vec<(serde_json::Value, &str)>> = LazyLock::new(||
 
 /// Adds the wording of an ability that one of the entries matches whole.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
-    let Ok(data) = serde_json::to_value(ability) else {
+    let Ok(mut data) = serde_json::to_value(ability) else {
         return;
     };
+    c9_wr_own_source(&mut data);
     for (shape, text) in C9_WR_SHAPES.iter() {
         if *shape == data {
             texts.push((*text).to_owned());
@@ -292,11 +293,23 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 /// The JSON of an ability as the data writes it, defaults filled in the way the rules files hold them.
 fn c9_wr_shape(shape: &str) -> Option<serde_json::Value> {
     let ability: Ability = serde_json::from_str(shape).ok()?;
-    serde_json::to_value(ability).ok()
+    let mut data = serde_json::to_value(ability).ok()?;
+    c9_wr_own_source(&mut data);
+    Some(data)
 }
 
-/// The number of entries that do not load as an ability; a test asserts it is zero.
-#[cfg(test)]
-pub(crate) fn c9_wr_unloaded() -> usize {
-    C9_WR_WHOLES.len() - C9_WR_SHAPES.len()
+/// Drops the `"source": "This"` of every damage: an absent source is the ability's own, so both write one wording.
+fn c9_wr_own_source(data: &mut serde_json::Value) {
+    match data {
+        serde_json::Value::Object(map) => {
+            if let Some(serde_json::Value::Object(damage)) = map.get_mut("DealDamage")
+                && damage.get("source").and_then(serde_json::Value::as_str) == Some("This")
+            {
+                damage.remove("source");
+            }
+            map.values_mut().for_each(c9_wr_own_source);
+        }
+        serde_json::Value::Array(items) => items.iter_mut().for_each(c9_wr_own_source),
+        _ => {}
+    }
 }

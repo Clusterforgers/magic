@@ -1,0 +1,34 @@
+{
+  "oracle_id": "13f58292-9b78-4cd1-a16e-b1779a170d33",
+  "name": "Court of Ire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court of Ire",
+      "oracle_fingerprint": "c0005886e51b3e8a88fa80d7d51446ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Monarch": "You" },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 7 } }],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

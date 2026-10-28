@@ -1,0 +1,19 @@
+{
+  "id": "af2115e4-009e-4432-99bb-05e844bc18b6",
+  "oracle_id": "cd1eda60-53e4-44d0-9b2c-7a57395e291f",
+  "name": "Conjurer's Closet",
+  "lang": "en",
+  "layout": "normal",
+  "set": "inr",
+  "collector_number": "259",
+  "rarity": "rare",
+  "released_at": "2025-01-24",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact",
+  "oracle_text": "At the beginning of your end step, you may exile target creature you control, then return that card to the battlefield under your control.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "434e58f4-4237-454f-a2d0-61885c9aafaa",
+  "name": "Archon of Redemption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon of Redemption",
+      "oracle_fingerprint": "6195df11de1551e6a405275400b3b8bc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "AnyOf": ["This", { "HasKeyword": "Flying" }] }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Power" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

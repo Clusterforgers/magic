@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fadfbceb-4392-4e7e-be29-cbf372135d16",
+  "name": "Kruphix's Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kruphix's Insight",
+      "oracle_fingerprint": "fb6c14943f425cbc5be24c7277789ac2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "top" } }, { "Type": "Enchantment" }] },
+                  "count": { "min": 0, "max": 3 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Is": { "Bound": "picked" } } }
+                    ]
+                  },
+                  "to": "Graveyard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

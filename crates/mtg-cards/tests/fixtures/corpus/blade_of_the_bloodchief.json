@@ -1,0 +1,21 @@
+{
+  "id": "34e7bebf-1844-476c-a947-978393908fa2",
+  "oracle_id": "8985e545-07c3-45f9-9058-fe3c1f50de04",
+  "name": "Blade of the Bloodchief",
+  "lang": "en",
+  "layout": "normal",
+  "set": "lcc",
+  "collector_number": "300",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Whenever a creature dies, put a +1/+1 counter on equipped creature. If equipped creature is a Vampire, put two +1/+1 counters on it instead.\nEquip {1}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ]
+}

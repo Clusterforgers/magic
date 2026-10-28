@@ -1,0 +1,23 @@
+{
+  "id": "9e663ce3-1871-4cde-82ba-4f009d582b77",
+  "oracle_id": "967f0c23-7af2-4e86-9ebc-dc2f8856c7c5",
+  "name": "Nurgle's Conscription",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "44",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Put target creature card from an opponent's graveyard onto the battlefield tapped under your control, then exile that player's graveyard.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

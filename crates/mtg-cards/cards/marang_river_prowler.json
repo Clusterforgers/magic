@@ -1,0 +1,32 @@
+{
+  "oracle_id": "002e767c-0b30-4ad1-a924-88da400a4cff",
+  "name": "Marang River Prowler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marang River Prowler",
+      "oracle_fingerprint": "339fa4be1d0ef4626e953b4a61f43956",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock", "CantBeBlocked"] } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Green" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

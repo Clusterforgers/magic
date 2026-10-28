@@ -1,0 +1,32 @@
+{
+  "id": "de4b0d5f-1071-4030-be16-2b4dadbdf9e9",
+  "oracle_id": "aeaf7768-ed67-487d-8506-e667babb88ba",
+  "name": "Narset, Enlightened Master",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "931",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{U}{R}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Monk",
+  "oracle_text": "First strike, hexproof\nWhenever Narset attacks, exile the top four cards of your library. Until end of turn, you may cast noncreature spells from among those cards without paying their mana costs.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Hexproof",
+    "First strike"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "a1070dd6-944f-44a0-8834-02eae93dabaa",
+  "oracle_id": "85e1791f-f9a0-4e82-baf6-33cff2dcf60b",
+  "name": "Kothophed, Soul Hoarder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmc",
+  "collector_number": "114",
+  "rarity": "rare",
+  "released_at": "2022-09-09",
+  "digital": false,
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Demon",
+  "oracle_text": "Flying\nWhenever a permanent owned by another player is put into a graveyard from the battlefield, you draw a card and you lose 1 life.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

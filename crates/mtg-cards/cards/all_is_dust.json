@@ -1,0 +1,39 @@
+{
+  "oracle_id": "14693689-d087-43b6-9c3f-63ab0648fc20",
+  "name": "All Is Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All Is Dust",
+      "oracle_fingerprint": "247ea6ad21e380a03b869e7b75bbee83",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Not": "Colorless" }],
+                        "count": {
+                          "Count": [
+                            { "Not": "Colorless" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

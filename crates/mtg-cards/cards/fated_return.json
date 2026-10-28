@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0eeab568-9186-4813-87e7-9c1e6a7c76e7",
+  "name": "Fated Return",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fated Return",
+      "oracle_fingerprint": "7b5748065860a12d1369388f3457c7ca",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "Forever"
+                }
+              },
+              { "If": { "condition": "YourTurn", "then": [{ "Scry": { "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

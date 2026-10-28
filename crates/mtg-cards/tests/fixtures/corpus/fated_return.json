@@ -1,0 +1,25 @@
+{
+  "id": "5d168856-5568-4ee0-942d-78865d2bb1ef",
+  "oracle_id": "0eeab568-9186-4813-87e7-9c1e6a7c76e7",
+  "name": "Fated Return",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znc",
+  "collector_number": "42",
+  "rarity": "rare",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{4}{B}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Instant",
+  "oracle_text": "Put target creature card from a graveyard onto the battlefield under your control. It gains indestructible. If it's your turn, scry 2.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Scry"
+  ]
+}

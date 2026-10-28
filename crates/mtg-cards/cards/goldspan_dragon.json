@@ -1,0 +1,41 @@
+{
+  "oracle_id": "716b3ea2-45b7-4a8f-af72-de7f4e510eff",
+  "name": "Goldspan Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldspan Dragon",
+      "oracle_fingerprint": "382f7b2bbb206d23ecfb084c2d5d29ae",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": ["This"] } },
+                { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } }
+              ]
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "SacrificeSelf"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

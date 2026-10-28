@@ -1,0 +1,25 @@
+{
+  "id": "d885b5af-f77f-481c-be6c-bfc1980638c4",
+  "oracle_id": "fa0a4765-5799-4464-88b6-6d1b15889eb5",
+  "name": "Bellowing Mauler",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "33",
+  "rarity": "rare",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Ogre Warrior",
+  "oracle_text": "At the beginning of your end step, each player loses 4 life unless they sacrifice a nontoken creature of their choice.",
+  "power": "4",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

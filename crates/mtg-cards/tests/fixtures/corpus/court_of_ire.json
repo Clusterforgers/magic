@@ -1,0 +1,23 @@
+{
+  "id": "73ca0dcc-7a87-49da-8011-8c11a8835df2",
+  "oracle_id": "13f58292-9b78-4cd1-a16e-b1779a170d33",
+  "name": "Court of Ire",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "170",
+  "rarity": "rare",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you become the monarch.\nAt the beginning of your upkeep, this enchantment deals 2 damage to any target. If you're the monarch, it deals 7 damage instead.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

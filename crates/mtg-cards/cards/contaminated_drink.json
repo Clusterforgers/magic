@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ee327c5e-ed29-4de3-bf50-92488f51a3a5",
+  "name": "Contaminated Drink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contaminated Drink",
+      "oracle_fingerprint": "dec5c362e7df236bd9a053770e3db669",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": "X" } },
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "rad" },
+                  "count": { "Half": { "of": "X", "up": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

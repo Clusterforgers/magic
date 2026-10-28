@@ -1,0 +1,21 @@
+{
+  "oracle_id": "93e1d3a6-e12f-4a0a-be0f-fbf568d89f1a",
+  "name": "Bloodhusk Ritualist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodhusk Ritualist",
+      "oracle_fingerprint": "73543618fbd44508122f7023561cd0fa",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": "Kicks" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

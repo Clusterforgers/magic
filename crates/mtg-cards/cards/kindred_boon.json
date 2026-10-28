@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f04441b0-755c-4e7b-a9e4-4e03b8175ab6",
+  "name": "Kindred Boon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindred Boon",
+      "oracle_fingerprint": "f4bfb13d4659d638b4d357856e587cef",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "divinity" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasCounter": { "Other": "divinity" } }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        }
+      ]
+    }
+  ]
+}

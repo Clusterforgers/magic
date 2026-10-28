@@ -1,0 +1,23 @@
+{
+  "id": "19bdedb2-768b-4adf-8193-917a10c8f729",
+  "oracle_id": "005ee549-1bf5-478f-bc3f-3e791bd7eecf",
+  "name": "Kindred Discovery",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "150",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "As this enchantment enters, choose a creature type.\nWhenever a creature you control of the chosen type enters or attacks, draw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": []
+}

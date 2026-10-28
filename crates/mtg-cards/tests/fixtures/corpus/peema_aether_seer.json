@@ -1,0 +1,25 @@
+{
+  "id": "fe1bc709-2157-4711-a027-c0ff00ff2728",
+  "oracle_id": "4a00f56e-e558-4239-bc75-fb0af7639042",
+  "name": "Peema Aether-Seer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "aer",
+  "collector_number": "119",
+  "rarity": "uncommon",
+  "released_at": "2017-01-20",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "When this creature enters, you get an amount of {E} (energy counters) equal to the greatest power among creatures you control.\nPay {E}{E}{E}: Target creature blocks this turn if able.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

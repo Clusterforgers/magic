@@ -1,0 +1,30 @@
+{
+  "id": "abcfefe3-c66d-4512-bcc3-c9a39cfbb983",
+  "oracle_id": "44cbf70c-61cf-473e-901d-039956ced642",
+  "name": "Hraesvelgr of the First Brood",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fic",
+  "collector_number": "37",
+  "rarity": "rare",
+  "released_at": "2025-06-13",
+  "digital": false,
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Elder Dragon",
+  "oracle_text": "Flying, vigilance, ward {2}\nShiva's Aid — When Hraesvelgr enters and whenever you cast a noncreature spell, target creature gets +1/+0 until end of turn and can't be blocked this turn.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Shiva's Aid",
+    "Vigilance",
+    "Ward"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "14fc0dfb-663a-4713-902e-96dbecc404b7",
+  "oracle_id": "06eb43af-637a-4f73-8071-a7036d4c8c3d",
+  "name": "Corpse Augur",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "145",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Zombie Wizard",
+  "oracle_text": "When this creature dies, you draw X cards and you lose X life, where X is the number of creature cards in target player's graveyard.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

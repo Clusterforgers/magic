@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a1a1761c-88e5-40b4-ba4c-60735c054b09",
+  "name": "Ikra Shidiqi, the Usurper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ikra Shidiqi, the Usurper",
+      "oracle_fingerprint": "c9d8d472dabe5d1b93bb19d91ca8097d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": "Dealer", "stat": "Toughness" } } } }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "4210c54e-89fd-4971-ab6a-ca8f4e7fe97a",
+  "oracle_id": "14693689-d087-43b6-9c3f-63ab0648fc20",
+  "name": "All Is Dust",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "800",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{7}",
+  "cmc": 7.0,
+  "type_line": "Kindred Sorcery — Eldrazi",
+  "oracle_text": "Each player sacrifices all permanents they control that are one or more colors.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

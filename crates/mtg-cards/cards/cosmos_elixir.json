@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ed7300f4-831a-4ba4-b5e6-ceba8d079eaa",
+  "name": "Cosmos Elixir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cosmos Elixir",
+      "oracle_fingerprint": "12e931e25077369eadd7e2e8c8655d6d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Gt",
+                      "right": { "StartingLife": "You" }
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

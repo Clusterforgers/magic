@@ -1,0 +1,49 @@
+{
+  "oracle_id": "e7564d66-767c-4cd9-a5f0-0f2488a4a74b",
+  "name": "Heliod's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heliod's Intervention",
+      "oracle_fingerprint": "9c077d90c3d3c59a525d95604f02ed09",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          },
+                          "bounds": { "min": "X", "max": "X" }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "GainLife": {
+                            "who": { "Target": 0 },
+                            "amount": { "Times": { "by": 2, "of": "X" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
