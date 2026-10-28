@@ -1,0 +1,29 @@
+{
+  "oracle_id": "95ce305f-34bc-4d6d-b7ba-ffd4b2a25336",
+  "name": "Maelstrom Pulse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maelstrom Pulse",
+      "oracle_fingerprint": "8ce42c68f0759add3ad9a5c4d5570e60",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesName": { "Target": 0 } }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

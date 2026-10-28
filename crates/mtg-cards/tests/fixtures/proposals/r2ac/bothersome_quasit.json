@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Static":{"affected":{"Each":[{"Type":"Creature"},"Goaded",{"ControlledBy":"Opponents"}]},"mods":["CantBlock"]}},{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}],"by":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Goad":{"what":{"Target":0}}}]}}]}]}

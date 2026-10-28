@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ef100544-3e6d-4661-a1d1-8b02e58c059c",
+  "name": "Echoing Truth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoing Truth",
+      "oracle_fingerprint": "bdc71ec2e40f25f4017ab9b5a4479084",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesName": { "Target": 0 } }] }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

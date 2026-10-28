@@ -413,6 +413,9 @@ impl<'a> Walker<'a> {
             }
             Pred::Is(r)
             | Pred::SharesSubtype(r)
+            | Pred::SharesName(r)
+            | Pred::SharesType(r)
+            | Pred::SharesColor(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
             | Pred::Crewed(r)
@@ -433,7 +436,7 @@ impl<'a> Walker<'a> {
                     self.problem("`CastFrom` names a hand or a graveyard");
                 }
             }
-            Pred::Targeting(inner) => self.selector(inner),
+            Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {
@@ -467,6 +470,8 @@ impl<'a> Walker<'a> {
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter
             | Pred::ChosenColor
+            | Pred::XInCost
+            | Pred::Goaded
             | Pred::ChosenSubtype
             | Pred::In(_) => {}
         }

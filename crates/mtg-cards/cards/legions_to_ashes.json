@@ -1,0 +1,37 @@
+{
+  "oracle_id": "dc29cb25-57f5-4cac-9764-efa644b41296",
+  "name": "Legions to Ashes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legions to Ashes",
+      "oracle_fingerprint": "39e6b9affad13edaeeef3801f831e800",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, "Token"] },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } },
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesName": { "Target": 0 } }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

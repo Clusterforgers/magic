@@ -266,6 +266,7 @@ mod w5b_parts;
 mod w5b_rules;
 mod w5c_later;
 mod w5c_player_counters;
+mod w6d_wholes;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -518,6 +519,7 @@ fn add_c10_cen(ability: &Ability, texts: &mut Vec<String>) {
 fn add_c9_wr(ability: &Ability, texts: &mut Vec<String>) {
     c9_wr_returns::add(ability, texts);
     c9_wr_wholes::add(ability, texts);
+    w6d_wholes::w6d_add_wholes(ability, texts);
 }
 
 /// The wordings of the sixth sample of the names A to F; it runs last because it rewrites the texts of the others.

@@ -133,6 +133,7 @@ mod w2g_next_cast;
 mod w5d_replaced;
 mod w6a_attacks_you;
 mod w6b_emblem;
+mod w6d_shares;
 mod w6e_control;
 mod where_x;
 mod zone_moves;

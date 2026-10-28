@@ -464,6 +464,7 @@ mod w2g_next_cast;
 mod w5d_replaced_event;
 mod w6a_attacks_on_you;
 mod w6b_emblems;
+mod w6d_shared_selectors;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;

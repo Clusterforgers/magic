@@ -193,6 +193,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::In(_)
         | Pred::CastFrom(_)
         | Pred::HasCounter(_)
+        | Pred::XInCost
+        | Pred::Goaded
         | Pred::HasAnyCounter
         | Pred::Named(_) => Traits::NONE,
         Pred::Is(who)
@@ -202,8 +204,11 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::EncodedWith(who)
         | Pred::Crewed(who)
         | Pred::Saddled(who)
+        | Pred::SharesName(who)
         | Pred::DamagedBy(who)
         | Pred::SameCard(who) => reads_of_ref(who),
+        Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
+        Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) | Pred::ChosenSubtype => Traits::SUBTYPES,
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
@@ -212,7 +217,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::HasKeyword(_) => Traits::KEYWORDS,
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Not(inner) => reads_of_pred(inner),
-        Pred::Targeting(inner) => reads_of_selector(inner),
+        Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
         Pred::AnyOf(any) => any
             .iter()
             .fold(Traits::NONE, |all, inner| all.or(reads_of_pred(inner))),

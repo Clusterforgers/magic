@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7de8ffa5-f6e5-4987-b3f8-6d6fc83f8fa8",
+  "name": "Martyr's Bond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr's Bond",
+      "oracle_fingerprint": "9538ef76da873ae236b0c568dc2bb8d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "SharesType": "Triggering" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
