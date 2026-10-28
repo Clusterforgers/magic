@@ -28,6 +28,8 @@ mod join_attack;
 mod retarget;
 mod unattach;
 pub(crate) use continuous::lower;
+mod c6_kw_exploit;
+mod c6_kw_renown;
 mod counter;
 mod create_token;
 mod deal_damage;
@@ -153,6 +155,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::BecomeDayNight { .. } => become_day_night::run(cx, effect),
         Effect::Amass { .. } => amass::run(cx, effect),
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
+        Effect::Renown { .. } => c6_kw_renown::run(cx, effect),
+        Effect::Exploit { .. } => c6_kw_exploit::run(cx, effect),
         Effect::BecomeLevel { .. } => become_level::run(cx, effect),
         Effect::Adapt { .. } => adapt::run(cx, effect),
         Effect::Bolster { .. } => bolster::run(cx, effect),
@@ -213,7 +217,7 @@ mod tests {
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"Tap":{"what":"This"}},
         {"Untap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
-        {"BecomeMonarch":{}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"BecomeLevel":{"level":2}},
+        {"BecomeMonarch":{}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
@@ -241,7 +245,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 78, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 80, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -318,6 +322,8 @@ mod tests {
         "Effect.BecomeDayNight",
         "Effect.Amass",
         "Effect.Monstrosity",
+        "Effect.Renown",
+        "Effect.Exploit",
         "Effect.BecomeLevel",
         "Effect.Adapt",
         "Effect.Bolster",

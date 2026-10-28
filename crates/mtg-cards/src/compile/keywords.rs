@@ -406,6 +406,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "fading" => positive(rest).map(Keyword::Fading),
         "graft" => positive(rest).map(Keyword::Graft),
         "afflict" => positive(rest).map(Keyword::Afflict),
+        "renown" => positive(rest).map(Keyword::Renown),
         "replicate" => spell_cost(rest).map(Keyword::Replicate),
         "backup" => positive(rest).map(|count| Keyword::Backup {
             count,
@@ -682,6 +683,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "dethrone" => Keyword::Dethrone,
         "umbra armor" => Keyword::UmbraArmor,
         "cipher" => Keyword::Cipher,
+        "exploit" => Keyword::Exploit,
         "extort" => Keyword::Extort,
         "evolve" => Keyword::Evolve,
         "saddled" => Keyword::Saddled,
@@ -1158,6 +1160,8 @@ mod tests {
     #[case::cipher("Cipher", Keyword::Cipher)]
     #[case::graft("Graft 2", Keyword::Graft(2))]
     #[case::afflict("Afflict 3", Keyword::Afflict(3))]
+    #[case::renown("Renown 2", Keyword::Renown(2))]
+    #[case::exploit("Exploit", Keyword::Exploit)]
     #[case::extort("Extort", Keyword::Extort)]
     #[case::evolve("Evolve", Keyword::Evolve)]
     #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
@@ -1619,6 +1623,8 @@ mod tests {
             "Graft 2",
             "Afflict 2",
             "Replicate {1}{R}",
+            "Renown 1",
+            "Exploit",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

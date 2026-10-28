@@ -227,6 +227,7 @@ Coastal Breach
 Coastal Discovery
 Cold-Eyed Selkie
 Collective Unconscious
+Colonel Autumn
 Colossal Plow
 Colossus Hammer
 Command Tower
@@ -237,6 +238,7 @@ Conclave Tribunal
 Consider
 Consign // Oblivion
 Consign to Dust
+Constable of the Realm
 Consuming Aetherborn
 Contentious Plan
 Conversion Apparatus
@@ -937,6 +939,7 @@ Reiterate
 Rejuvenation Chamber
 Relentless Advance
 Relentless Skaabs
+Relic Seeker
 Relic of Progenitus
 Relic of Sauron
 Remorseful Cleric

@@ -333,6 +333,18 @@ pub enum TriggerPattern {
         /// The creature that becomes monstrous.
         what: Selector,
     },
+    /// A creature matching the selector becomes renowned ("when this creature becomes renowned", CR 702.112);
+    /// `Triggering` is its controller.
+    BecomesRenowned {
+        /// The creature that becomes renowned.
+        what: Selector,
+    },
+    /// A creature matching the selector exploits a creature ("when this creature exploits a creature", CR 702.110),
+    /// judged as the battlefield was before the sacrifice; `Triggering` is its controller.
+    Exploits {
+        /// The creature that exploits.
+        what: Selector,
+    },
     /// A Vehicle matching the selector becomes crewed, a crew ability of it resolved ("whenever this Vehicle becomes
     /// crewed", CR 702.122); `Triggering` is its controller.
     BecomesCrewed {

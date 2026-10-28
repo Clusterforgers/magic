@@ -87,6 +87,7 @@ const KEYWORDS: &[&str] = &[
     "shadow",
     "riot",
     "decayed",
+    "exploit",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names

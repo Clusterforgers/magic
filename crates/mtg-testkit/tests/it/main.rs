@@ -43,6 +43,7 @@ mod c4_party;
 mod c4_party_fuzz;
 mod c4_prepare_triggers;
 mod c4_skipped_turns;
+mod c6_kw_renown_exploit;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;

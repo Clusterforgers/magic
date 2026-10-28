@@ -62,6 +62,8 @@ const RUNS: &[&str] = &[
     "Trigger.Connived",
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
+    "Trigger.BecomesRenowned",
+    "Trigger.Exploits",
     "Trigger.BecomesCrewed",
     "Trigger.BecomesSaddled",
     "Trigger.BecomesLevel",
@@ -171,6 +173,8 @@ const RUNS: &[&str] = &[
     "Effect.Connive",
     "Effect.Amass",
     "Effect.Monstrosity",
+    "Effect.Renown",
+    "Effect.Exploit",
     "Effect.BecomeLevel",
     "Effect.Adapt",
     "Effect.Bolster",
@@ -441,6 +445,8 @@ const RUNS: &[&str] = &[
     "Keyword.Graft",
     "Keyword.Afflict",
     "Keyword.Replicate",
+    "Keyword.Renown",
+    "Keyword.Exploit",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -907,6 +913,10 @@ mod tests {
     #[case::graft("Keyword.Graft", true)]
     #[case::afflict("Keyword.Afflict", true)]
     #[case::replicate("Keyword.Replicate", true)]
+    #[case::renown("Keyword.Renown", true)]
+    #[case::exploit("Keyword.Exploit", true)]
+    #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]
+    #[case::exploiting_triggers("Trigger.Exploits", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]

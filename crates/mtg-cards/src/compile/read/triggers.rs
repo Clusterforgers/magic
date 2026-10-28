@@ -719,6 +719,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         ));
     } else if r.words("becomes monstrous") {
         return Some(TriggerPattern::BecomesMonstrous { what: what.clone() });
+    } else if r.words("becomes renowned") {
+        return Some(TriggerPattern::BecomesRenowned { what: what.clone() });
+    } else if r.words("exploits a creature") {
+        return Some(TriggerPattern::Exploits { what: what.clone() });
     } else if r.words("becomes level") {
         return Some(TriggerPattern::BecomesLevel {
             what: what.clone(),
@@ -1136,6 +1140,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
+        TriggerPattern::BecomesRenowned { what } => said(what, "becomes renowned"),
+        TriggerPattern::Exploits { what } => said(what, "exploits a creature"),
         TriggerPattern::BecomesCrewed { what } => said(what, "becomes crewed"),
         TriggerPattern::BecomesSaddled { what } => said(what, "becomes saddled"),
         TriggerPattern::BecomesLevel { what, level } => {
@@ -1490,6 +1496,8 @@ fn about(what: &Selector, verbs: &[String]) -> Option<String> {
                         | "is put into a graveyard from anywhere"
                         | "leaves the battlefield"
                         | "becomes monstrous"
+                        | "becomes renowned"
+                        | "exploits a creature"
                         | "is turned face up"
                 )
         });

@@ -686,6 +686,24 @@ pub enum Event {
         /// Its controller.
         player: PlayerId,
     },
+    /// A creature became renowned (CR 702.112): the permanent keeps the designation while it stays on the battlefield;
+    /// the counters are the event before it.
+    Renowned {
+        /// The creature that became renowned.
+        object: ObjectId,
+        /// Its controller.
+        player: PlayerId,
+    },
+    /// A creature exploited a creature (CR 702.110b): its exploit ability resolved and the sacrifice is the event
+    /// before it.
+    Exploited {
+        /// The creature whose exploit ability resolved.
+        object: ObjectId,
+        /// The creature sacrificed.
+        sacrificed: ObjectId,
+        /// The controller of the exploit ability, who sacrificed.
+        player: PlayerId,
+    },
     /// A Vehicle became crewed or a Mount saddled (CR 702.122, 702.171): its crew or saddle ability resolved; the type
     /// change is the effect before it.
     Crewed {
@@ -990,6 +1008,8 @@ impl Event {
             | Event::Connived { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
+            | Event::Renowned { object, .. }
+            | Event::Exploited { object, .. }
             | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }

@@ -652,6 +652,26 @@ object: ObjectId,
 /**
  * Its controller.
  */
+player: PlayerId, } } | { "Renowned": { 
+/**
+ * The creature that became renowned.
+ */
+object: ObjectId, 
+/**
+ * Its controller.
+ */
+player: PlayerId, } } | { "Exploited": { 
+/**
+ * The creature whose exploit ability resolved.
+ */
+object: ObjectId, 
+/**
+ * The creature sacrificed.
+ */
+sacrificed: ObjectId, 
+/**
+ * The controller of the exploit ability, who sacrificed.
+ */
 player: PlayerId, } } | { "Crewed": { 
 /**
  * The Vehicle or Mount.

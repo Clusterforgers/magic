@@ -318,6 +318,10 @@ pub enum Keyword {
     Afflict(u32),
     /// Replicate with its cost: paid any number of times as the spell is cast, each time the cast copies it (CR 702.56).
     Replicate(Cost),
+    /// Renown N (CR 702.112): whenever the creature deals combat damage to a player, if it isn't renowned, it gets N +1/+1 counters and becomes renowned.
+    Renown(u32),
+    /// Exploit (CR 702.110): when the creature enters, its controller may sacrifice a creature; the creature exploits the one sacrificed.
+    Exploit,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -478,6 +482,8 @@ impl Keyword {
         "Graft",
         "Afflict",
         "Replicate",
+        "Renown",
+        "Exploit",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -630,6 +636,8 @@ impl Keyword {
             Keyword::Graft(_) => "Graft",
             Keyword::Afflict(_) => "Afflict",
             Keyword::Replicate(_) => "Replicate",
+            Keyword::Renown(_) => "Renown",
+            Keyword::Exploit => "Exploit",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -823,6 +831,8 @@ mod tests {
             Keyword::Graft(2),
             Keyword::Afflict(2),
             Keyword::Replicate(Cost::default()),
+            Keyword::Renown(2),
+            Keyword::Exploit,
         ]
     }
 

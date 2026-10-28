@@ -153,6 +153,10 @@ enum Happened {
     Amassed { player: PlayerId },
     /// A creature became monstrous.
     Monstrous { object: ObjectId, player: PlayerId },
+    /// A creature became renowned.
+    Renowned { object: ObjectId, player: PlayerId },
+    /// A creature exploited a creature; judged against the battlefield before the sacrifice.
+    Exploited { object: ObjectId, player: PlayerId },
     /// A Vehicle became crewed, the `nth` time of the turn.
     Crewed {
         object: ObjectId,
@@ -192,7 +196,7 @@ impl Happened {
             Happened::Moved {
                 from: Zone::Battlefield,
                 ..
-            }
+            } | Happened::Exploited { .. }
         )
     }
 
@@ -755,6 +759,14 @@ fn about_players_and_permanents(
             object: *object,
             player: *player,
         }),
+        Event::Renowned { object, player } => found.push(Happened::Renowned {
+            object: *object,
+            player: *player,
+        }),
+        Event::Exploited { object, player, .. } => found.push(Happened::Exploited {
+            object: *object,
+            player: *player,
+        }),
         Event::Crewed {
             object,
             player,
@@ -1123,6 +1135,20 @@ fn matching_permanents(
         | (
             TriggerPattern::BecomesMonstrous { what },
             Happened::Monstrous {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::BecomesRenowned { what },
+            Happened::Renowned {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Exploits { what },
+            Happened::Exploited {
                 object: actor,
                 player,
             },

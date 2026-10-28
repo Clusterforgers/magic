@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1f101363-c7d1-405a-b3a9-e93b46928dbf",
+  "name": "Relic Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relic Seeker",
+      "oracle_fingerprint": "002a67156e2d1071599d6a39dc32bdd4",
+      "abilities": [
+        { "Keyword": { "Renown": 1 } },
+        {
+          "Triggered": {
+            "when": { "BecomesRenowned": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Equipment" }],
+                        "reveal": true,
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

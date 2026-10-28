@@ -524,6 +524,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('Connived' in event) return line(`${n.card(event.Connived.object)} connives`)
   if ('Amassed' in event) return line(`${n.seat(event.Amassed.player)} amasses`)
   if ('Monstrous' in event) return line(`${n.card(event.Monstrous.object)} becomes monstrous`)
+  if ('Renowned' in event) return line(`${n.card(event.Renowned.object)} becomes renowned`)
+  if ('Exploited' in event)
+    return line(`${n.card(event.Exploited.object)} exploits ${n.card(event.Exploited.sacrificed)}`)
   if ('Crewed' in event) {
     const { object, creatures, saddle } = event.Crewed
     const by = creatures.length > 0 ? ` by ${joinWords(creatures.map((id) => n.card(id)))}` : ''

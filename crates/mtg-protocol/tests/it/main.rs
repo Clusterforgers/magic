@@ -8,6 +8,7 @@ mod batch_diff;
 mod batch_size;
 mod batch_visibility;
 mod bindings;
+mod c6_kw_renown_exploit_hidden;
 mod card_grants_games_hidden;
 mod card_grants_hidden;
 mod cast_hidden;
