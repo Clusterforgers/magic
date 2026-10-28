@@ -836,3 +836,22 @@ describe('joinWords', () => {
     expect(joinWords(items)).toBe(text)
   })
 })
+
+describe('the choice a permanent enters with', () => {
+  it.each<[Event, string]>([
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Color: 'Red' } } },
+      "Forest enters under Ana's control, choosing red",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Player: 1 } } },
+      "Forest enters under Ana's control, choosing Bo",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { Chapter: 2 } } },
+      "Forest enters under Ana's control, reading ahead to chapter 2",
+    ],
+  ])('%j reads "%s"', (event, text) => {
+    expect(say(event)).toBe(text)
+  })
+})

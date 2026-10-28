@@ -1362,6 +1362,7 @@ fn matching_permanents(
                 && *kind == CounterKind::lore()
                 && before < number
                 && *number <= after
+                && !crate::saga::w2b_read_past(state, on.id, *number)
                 && picks(&Selector::this(), on)?)
             .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
         }

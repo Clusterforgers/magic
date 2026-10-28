@@ -26,7 +26,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
 - Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1va), (r1vb), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a), (r2dgc-a).
-- Cast ways and zones: (c5e), (c2l3), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
+- Cast ways and zones: (c5e), (c2l3a) to (c2l3c), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
@@ -53,7 +53,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
 "- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
-- Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge and Harmonize (`docs/engine.md`).
+- Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge, Harmonize and Read ahead (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
 - Vehicles and Mounts: crew, saddle and station, crewed and saddled events, the crew record of the turn and Vehicles animated by abilities.
 - Phasing and day and night: phased-out permanents in their own zone, life totals that can't change, player protection, day and night effects and conditions.
@@ -138,7 +138,9 @@ The server is settled first, then the web is built once against the final types.
 ### Keywords and cast ways
 - [ ] (c2g) Keywords given to spells beyond convoke, improvise and delve, and keywords with a cost given to cards in a hand or graveyard; frees about 20 cards (Ghost Ark, Past in Flames, Zhulodok)
 - [ ] (c2d) The cards that print scavenge, transmute, awaken, gravestorm or sunburst and wait on another wording; frees about 15 cards (Brainspoil, Ondu Rising, Dodgy Jalopy)
-- [~] (c2l3) (c2l3-keyword-tails) Plot, Read ahead, Soulbond, Backup lists, and the emerge, harmonize, replicate, spectacle, mayhem and afflict cards that wait on another wording; frees about 35 cards (Lock and Load, Silverblade Paladin)
+- [ ] (c2l3a) Plot: the special action from a hand, the plotted card cast free as a sorcery on a later turn, plot cost reductions; frees about 4 cards (Lock and Load, Pyretic Charge)
+- [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
+- [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-a) Keyword actions and designations not built: emblems, rad counters, crimes, incubate, expend, exert, clash, forecast and venture; frees about 15 cards (Elspeth, Sun's Champion, Bloatfly Swarm, Combat Celebrant)
 - [ ] (r2dga) Rules for the partners of accepted proposals, so both halves become corpus cards; frees about 8 cards (Ukkima, Stalking Shadow, Pippin, Warden of Isengard, Brallin, Skyshark Rider)
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background and a planeswalker commander, once their other text runs
@@ -214,7 +216,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1ag) The map names the 84 unnamed items of the `forge-check` report and the verb of each of the 594 marked without one that the DSL has
 
 ### Layouts
-- [ ] (c11) Rooms, Battles, Read ahead, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
+- [ ] (c11) Rooms, Battles, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas, the two precon flip cards and the `prepare` layout's back face; frees about 37 cards (Budoka Gardener, Nezumi Graverobber)
 
 ### Tooling

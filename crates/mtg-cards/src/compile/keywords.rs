@@ -655,6 +655,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "gravestorm" => Keyword::Gravestorm,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
+        "read ahead" => Keyword::ReadAhead,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
@@ -1117,6 +1118,7 @@ mod tests {
     #[case::gift_an_extra_turn("Gift an extra turn", Keyword::Gift(GiftKind::ExtraTurn))]
     #[case::hideaway_five("hideaway 5", Keyword::Hideaway(5))]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
+    #[case::read_ahead("Read ahead", Keyword::ReadAhead)]
     #[case::devour("Devour 2", Keyword::Devour { counters: 2, of: creature() })]
     #[case::devour_artifact("Devour artifact 1", Keyword::Devour { counters: 1, of: Selector(vec![Pred::Type(CardType::Artifact)]) })]
     #[case::devour_land_in_lowercase("devour land 3", Keyword::Devour { counters: 3, of: Selector(vec![Pred::Type(CardType::Land)]) })]
@@ -1637,6 +1639,7 @@ mod tests {
             "Replicate {1}{R}",
             "Renown 1",
             "Exploit",
+            "Read ahead",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

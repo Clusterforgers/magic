@@ -326,6 +326,8 @@ pub enum Keyword {
     Emerge(Cost),
     /// Harmonize with its cost (CR 702.180): an alternative cost to cast the card from its owner's graveyard, reduced by the power of a creature its caster may tap; the spell is exiled when it leaves the stack.
     Harmonize(Cost),
+    /// Read ahead (CR 702.155): as the Saga enters, its controller chooses a chapter number and it enters with that many lore counters; chapter abilities with a lower number don't trigger.
+    ReadAhead,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -490,6 +492,7 @@ impl Keyword {
         "Exploit",
         "Emerge",
         "Harmonize",
+        "Read ahead",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -646,6 +649,7 @@ impl Keyword {
             Keyword::Exploit => "Exploit",
             Keyword::Emerge(_) => "Emerge",
             Keyword::Harmonize(_) => "Harmonize",
+            Keyword::ReadAhead => "Read ahead",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -843,6 +847,7 @@ mod tests {
             Keyword::Exploit,
             Keyword::Emerge(Cost::default()),
             Keyword::Harmonize(Cost::default()),
+            Keyword::ReadAhead,
         ]
     }
 

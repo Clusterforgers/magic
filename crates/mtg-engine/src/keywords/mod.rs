@@ -137,6 +137,7 @@ mod undying;
 mod unearth;
 mod vanishing;
 mod vigilance;
+mod w2b_read_ahead;
 mod ward;
 mod wither;
 
@@ -534,6 +535,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Exploit => &c6_kw_exploit::Exploit,
         Keyword::Emerge(_) => &c9_emerge_emerge::Emerge,
         Keyword::Harmonize(_) => &c9_emerge_harmonize::Harmonize,
+        Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -903,6 +905,7 @@ mod tests {
             Keyword::Exploit,
             Keyword::Emerge(cost()),
             Keyword::Harmonize(cost()),
+            Keyword::ReadAhead,
         ]
     }
 
@@ -1043,6 +1046,7 @@ mod tests {
         "Keyword.Exploit",
         "Keyword.Emerge",
         "Keyword.Harmonize",
+        "Keyword.ReadAhead",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1189,6 +1193,7 @@ mod tests {
     #[case::exploit(Keyword::Exploit, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::emerge(Keyword::Emerge(Cost::mana("{5}{U}{U}".parse().unwrap())), Hooks::none())]
     #[case::harmonize(Keyword::Harmonize(Cost::mana("{4}{R}".parse().unwrap())), Hooks::none())]
+    #[case::read_ahead(Keyword::ReadAhead, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]

@@ -54,6 +54,7 @@ mod token_attach;
 mod twins;
 mod two_targets;
 mod untapped;
+mod w2b_you_and;
 mod w2d_villainous;
 
 use super::activations;
@@ -2356,6 +2357,7 @@ impl Writer<'_> {
             .or_else(|| self.library_steps(effects))
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
+            .or_else(|| self.w2b_you_and_each(effects))
             .or_else(|| untapped::text(effects))
             .or_else(|| free_casts::text(effects))
             .or_else(|| self.opponent_exiles(effects))

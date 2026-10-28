@@ -68,6 +68,16 @@ fn is_saga(state: &GameState, object: &GameObject) -> bool {
         .is_some_and(|(chars, _)| chars.has_subtype(&object.card().subtypes, &saga()))
 }
 
+/// Whether the Saga `id` entered by read ahead at a chapter after `number`, so chapter `number` does not trigger (CR
+/// 702.155c).
+pub(crate) fn w2b_read_past(state: &GameState, id: ObjectId, number: u32) -> bool {
+    state
+        .object(id)
+        .and_then(GameObject::permanent)
+        .and_then(|permanent| permanent.chosen())
+        .is_some_and(|chosen| matches!(chosen, crate::object::Chosen::Chapter(at) if number < *at))
+}
+
 /// The number of the last chapter ability the permanent has; `None` for one with no chapter abilities.
 pub(crate) fn final_chapter(state: &GameState, id: ObjectId) -> Option<u32> {
     abilities_of(state, id)
