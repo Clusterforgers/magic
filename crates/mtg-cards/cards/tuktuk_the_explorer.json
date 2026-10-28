@@ -1,0 +1,35 @@
+{
+  "oracle_id": "754e227b-ff31-4b5c-b612-2221c2b44246",
+  "name": "Tuktuk the Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tuktuk the Explorer",
+      "oracle_fingerprint": "0e1011e004fda2a21e8b0022813d7983",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tuktuk the Returned",
+                      "supertypes": ["Legendary"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Goblin", "Golem"],
+                      "power": 5,
+                      "toughness": 5
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

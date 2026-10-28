@@ -1,0 +1,27 @@
+{
+  "id": "3e0de032-a107-4095-b475-28f3f13b2c6e",
+  "oracle_id": "7dcb95a9-c114-4333-8b45-4380f92d9695",
+  "name": "Reiver Demon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cma",
+  "collector_number": "64",
+  "rarity": "rare",
+  "released_at": "2017-06-09",
+  "digital": false,
+  "mana_cost": "{4}{B}{B}{B}{B}",
+  "cmc": 8.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Flying\nWhen this creature enters, if you cast it from your hand, destroy all nonartifact, nonblack creatures. They can't be regenerated.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

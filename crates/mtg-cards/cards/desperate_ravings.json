@@ -1,0 +1,15 @@
+{
+  "oracle_id": "8b96c334-82c7-4511-805e-f04c27514d7c",
+  "name": "Desperate Ravings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desperate Ravings",
+      "oracle_fingerprint": "8fc4ebbd22bf86214f9df34ba245d47d",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }, { "Discard": { "random": true } }] } },
+        { "Keyword": { "Flashback": "{2}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "79638767-fbc7-451a-b29f-d93f2ac6f102",
+  "name": "Kher Keep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kher Keep",
+      "oracle_fingerprint": "c5525e4ae9e01646347dfef4a415d328",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kobolds of Kher Keep",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kobold"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "d3e5b091-2aa7-4aca-9855-bb802d3d563e",
+  "oracle_id": "ddff34d8-715b-4d6a-8ced-7ff5c4c911bc",
+  "name": "Deny the Witch",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "116",
+  "rarity": "uncommon",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{1}{W}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell, activated ability, or triggered ability. Its controller loses life equal to the number of creatures you control.",
+  "colors": [
+    "B",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

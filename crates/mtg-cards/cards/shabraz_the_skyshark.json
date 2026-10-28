@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7599fe9a-b6a5-491b-a308-aef3bf1e9daf",
+  "name": "Shabraz, the Skyshark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shabraz, the Skyshark",
+      "oracle_fingerprint": "119559d1c63226632464e2da9d00bbfb",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Brallin, Skyshark Rider" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W/U}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Human" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

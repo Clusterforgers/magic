@@ -1,0 +1,20 @@
+{
+  "oracle_id": "247a0c13-c611-4c00-bedf-ecf7ea6bb956",
+  "name": "Time Beetle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Beetle",
+      "oracle_fingerprint": "418868630408ed71129cace0deae45ed",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "TimeTravel": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

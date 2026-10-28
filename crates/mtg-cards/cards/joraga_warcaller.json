@@ -1,0 +1,40 @@
+{
+  "oracle_id": "8959a147-75b1-4f4a-a699-cb354ff55e59",
+  "name": "Joraga Warcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Joraga Warcaller",
+      "oracle_fingerprint": "59e6f3c7e7e1a5088592b9ce68ea7e9e",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "Kicks" } }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Elf" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                  "toughness": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "69428825-3c40-486d-b051-14e97a598ce6",
+  "name": "Gonti's Aether Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gonti's Aether Heart",
+      "oracle_fingerprint": "434bb9416b3dec6147424cf0543adee3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 8 }, "ExileSelf"],
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

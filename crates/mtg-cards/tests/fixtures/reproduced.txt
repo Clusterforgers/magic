@@ -325,6 +325,7 @@ Demon of Wailing Agonies
 Dense Canopy
 Deputized Protester
 Desert
+Desperate Ravings
 Determined Iteration
 Devastation Tide
 Dimir Infiltrator
@@ -1061,6 +1062,7 @@ Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
 Servant of the Conduit
+Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
 Shadowspear
@@ -1160,6 +1162,7 @@ Steelburr Champion
 Steelclaw Lance
 Stensia Masquerade
 Sticky Fingers
+Stitch in Time
 Stitched Drake
 Stoke the Flames
 Stolen Identity
@@ -1273,6 +1276,7 @@ Thunderherd Migration
 Thunderous Wrath
 Tiamat's Fanatics
 Tilonalli's Skinshifter
+Time Beetle
 Time Sieve
 Time Stretch
 Time Walk

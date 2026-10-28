@@ -1,0 +1,25 @@
+{
+  "id": "328b93f0-5078-4334-9c95-60ecdd17a388",
+  "oracle_id": "af65bbf9-e328-4b8b-8caa-c6dff743867b",
+  "name": "Too Greedily, Too Deep",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ltc",
+  "collector_number": "72",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "digital": false,
+  "mana_cost": "{5}{B}{R}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Put target creature card from a graveyard onto the battlefield under your control. That creature deals damage equal to its power to each other creature.",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": []
+}

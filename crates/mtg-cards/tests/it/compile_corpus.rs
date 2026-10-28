@@ -10,7 +10,7 @@ use serde_json::Value;
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
-    ClauseKind, Compiled, compile, same_text, static_pair_texts, written_variants,
+    ClauseKind, Compiled, compile, own_names, same_text, static_pair_texts, written_variants,
 };
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
@@ -297,10 +297,18 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             } else {
                 lines.iter().map(|line| (*line).to_owned()).collect()
             };
-            assert!(
-                wanted.iter().any(|text| written
+            // The clause shows the face's own names as `~`, also inside a token name or a type.
+            let names = printed.faces.get(face).map(own_names).unwrap_or_default();
+            let shown = |variant: &str| {
+                names
                     .iter()
-                    .any(|variant| same_text(without_numerals(variant), text))),
+                    .fold(variant.to_owned(), |text, name| text.replace(name.as_str(), "~"))
+            };
+            assert!(
+                wanted.iter().any(|text| written.iter().any(|variant| {
+                    same_text(without_numerals(variant), text)
+                        || same_text(without_numerals(&shown(variant)), text)
+                })),
                 "{}: none of {written:?} is in {wanted:?}",
                 printed.name
             );

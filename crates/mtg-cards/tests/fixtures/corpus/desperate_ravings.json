@@ -1,0 +1,26 @@
+{
+  "id": "b2e59ba7-e4e1-4c51-a34c-17a48850a0f5",
+  "oracle_id": "8b96c334-82c7-4511-805e-f04c27514d7c",
+  "name": "Desperate Ravings",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c19",
+  "collector_number": "137",
+  "rarity": "uncommon",
+  "released_at": "2019-08-23",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Draw two cards, then discard a card at random.\nFlashback {2}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ]
+}

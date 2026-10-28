@@ -1,0 +1,25 @@
+{
+  "id": "da3a311a-d2c2-4bd1-aa39-9e6f4eb51960",
+  "oracle_id": "59b2a90e-542f-4fb0-b290-ac79dc2892a4",
+  "name": "Stitch in Time",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "229",
+  "rarity": "rare",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Flip a coin. If you win the flip, take an extra turn after this one.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": []
+}

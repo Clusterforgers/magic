@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a6e720a2-9819-40ec-a811-7812898b531a",
+  "name": "Necrotic Hex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrotic Hex",
+      "oracle_fingerprint": "767a93587ea645c28d16e9d390044ae4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }], "count": 6 }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 6,
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

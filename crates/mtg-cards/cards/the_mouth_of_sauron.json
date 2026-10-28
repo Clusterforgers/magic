@@ -1,0 +1,34 @@
+{
+  "oracle_id": "49e3396a-a125-4cca-b02a-4a96102bcb16",
+  "name": "The Mouth of Sauron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mouth of Sauron",
+      "oracle_fingerprint": "71d6557e1085775fa944e62b770b5a9e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 3 } },
+              {
+                "Amass": {
+                  "subtype": "Orc",
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
