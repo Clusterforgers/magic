@@ -132,11 +132,7 @@ impl W2aBasis<'_> {
         if state != Support::Verified && !(self.partial && state == Support::Partial) {
             return Err(W2aSkip::State(state));
         }
-        if !self
-            .library
-            .check_generated(&rules, printed, self.corpus)
-            .is_empty()
-        {
+        if w2a_names_outside(self.library, &rules, printed, self.corpus) {
             return Err(W2aSkip::NamesOutside);
         }
         Ok(W2aPromotion {
@@ -155,6 +151,16 @@ pub fn w2a_corpus_names(library: &Library) -> BTreeSet<String> {
         .flat_map(|card| std::iter::once(&card.name).chain(card.faces.iter().map(|f| &f.name)))
         .map(|name| name.to_lowercase())
         .collect()
+}
+
+/// Whether the rules fail their checks once only the corpus names count: they name a card without a corpus file.
+pub fn w2a_names_outside(
+    library: &Library,
+    rules: &Card,
+    printed: &PrintedCard,
+    corpus: &BTreeSet<String>,
+) -> bool {
+    !library.check_generated(rules, printed, corpus).is_empty()
 }
 
 /// The fixture directory below the `mtg-cards` crate.
@@ -360,4 +366,69 @@ pub async fn w2a_promote_against(
         written,
         dry_run: args.dry_run,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a card whose rules name a partner is promoted only when the partner is a corpus card, and rules that name
+    //! no card always pass; the corpus names are the lowercase card and face names.
+    #![allow(clippy::unwrap_used)]
+
+    use mtg_cards::support::PrintedFace;
+    use rstest::rstest;
+
+    use super::*;
+
+    fn printed(text: &str) -> PrintedCard {
+        PrintedCard {
+            oracle_id: "00000000-0000-4000-8000-00000000a1fa".into(),
+            name: "Alpha".into(),
+            keywords: Vec::new(),
+            layout: "normal".into(),
+            faces: vec![PrintedFace {
+                name: "Alpha".into(),
+                mana_cost: "{1}{W}".into(),
+                type_line: "Legendary Creature — Human".into(),
+                oracle_text: text.into(),
+                power: Some("2".into()),
+                toughness: Some("2".into()),
+                ..PrintedFace::default()
+            }],
+        }
+    }
+
+    const PARTNER: &str = r#"{"Keyword":{"PartnerWith":"Beta Prime"}}"#;
+
+    #[rstest]
+    #[case("Partner with Beta Prime", PARTNER, &[], true)]
+    #[case("Partner with Beta Prime", PARTNER, &["gamma"], true)]
+    #[case("Partner with Beta Prime", PARTNER, &["beta prime"], false)]
+    #[case("Flying", r#"{"Keyword":"Flying"}"#, &[], false)]
+    fn a_partner_must_be_a_corpus_card(
+        #[case] text: &str,
+        #[case] ability: &str,
+        #[case] corpus: &[&str],
+        #[case] outside: bool,
+    ) {
+        let card = printed(text);
+        let library = Library::default();
+        let names: BTreeSet<String> = ["alpha", "beta prime"].map(String::from).into();
+        let json = format!(r#"{{"faces":[{{"abilities":[{ability}]}}]}}"#);
+        let report = check(&json, &card, &library, &names, &mtg_engine::caps());
+        assert!(report.problems.is_empty(), "{:?}", report.problems);
+        let corpus: BTreeSet<String> = corpus.iter().map(|name| (*name).to_owned()).collect();
+        let rules = report.rules.unwrap();
+        assert_eq!(w2a_names_outside(&library, &rules, &card, &corpus), outside);
+    }
+
+    #[test]
+    fn the_corpus_names_are_the_lowercase_card_and_face_names() {
+        let names = w2a_corpus_names(builtin::library().unwrap());
+        assert!(
+            names.contains("lightning bolt")
+                && names.contains("fire")
+                && names.contains("fire // ice")
+        );
+        assert!(names.iter().all(|name| *name == name.to_lowercase()));
+    }
 }

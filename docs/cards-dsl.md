@@ -540,6 +540,8 @@ A language model writes the rules of a card and a deterministic checker accepts 
 
 - `mtg_cards::proposal::check(json, &PrintedCard, &Library, &names, &Caps) -> Report`; `mtg-cli check-rules [--card NAME] [--bundle] [--verbose] [--write DIR] FILE...` (a file is named `<slug>.json` after its card unless `--card` names it; a bundle is one object from a card name to its rules).
 - A proposal may leave out the oracle id, the names, the status and the fingerprints: they come from the card, and the status is derived from what is modelled (a declared status counts for nothing). A clause no ability stands for becomes a `Manual` ability, so the state is `Partial`; abilities are put in printed order. `--write` stores the completed rules in canonical form.
+- `mtg-cli promote [--dry-run] [--partial] [--out DIR] FILE...` and `propose --promote [DIR]` (`mtg_cli::w2a_promote`) make corpus cards of proposals: one the checker accepts `Verified` (`Partial` with `--partial`) becomes `cards/<slug>.json` in canonical form, with the card's record from the cached Oracle Cards file, pretty-printed in its key order, as `tests/fixtures/corpus/<slug>.json`. A card with a corpus file, a card the compiler already makes `Verified`, a card an earlier file promotes, rules that name a card outside the corpus (a partner) and a card the cache has no record of are skipped with the reason; a dry run lists both.
+- Yield over the 1,261 stored samples: 119 corpus cards (2 more accepted `Verified` name a partner outside the corpus), and the `Verified` precon cards go from 4,022 to 4,141 of 6,429 (64.4%; 80.7% of the copies).
 
 | Check | How | Result |
 |---|---|---|

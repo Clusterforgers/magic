@@ -15,3 +15,4 @@ mod ingest;
 mod ingest_printings;
 mod propose;
 mod propose_http;
+mod w2a_promote;
