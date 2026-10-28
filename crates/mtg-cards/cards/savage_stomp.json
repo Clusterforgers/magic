@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2ecda58d-9aa9-4857-bdc5-b6b7b70a79c0",
+  "name": "Savage Stomp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Stomp",
+      "oracle_fingerprint": "60dadd70cf95021a82ff68bd76f58236",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              { "Targeting": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

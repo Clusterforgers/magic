@@ -15,7 +15,9 @@ pub fn c9_fight_double(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let toughness = r.words("and toughness");
     r.need("until end of turn")?;
     r.targets.push(TargetSpec {
-        what: Targetable::Object(Selector(vec![Pred::Type(mtg_core::card::CardType::Creature)])),
+        what: Targetable::Object(Selector(vec![Pred::Type(
+            mtg_core::card::CardType::Creature,
+        )])),
         bounds: Bounds::default(),
         divide: None,
     });

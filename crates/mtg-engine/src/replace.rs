@@ -1349,7 +1349,11 @@ impl Pass<'_> {
                 return Ok(false);
             }
         }
-        if shield.from.as_ref().is_some_and(|from| !self.c9_fight_from(from, dealer)) {
+        if shield
+            .from
+            .as_ref()
+            .is_some_and(|from| !self.c9_fight_from(from, dealer))
+        {
             return Ok(false);
         }
         if shield.source.is_empty() {

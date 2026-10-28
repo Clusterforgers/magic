@@ -1,0 +1,60 @@
+{
+  "oracle_id": "4bdfc580-de51-445b-b170-8c6832e44704",
+  "name": "Epic Fight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Epic Fight",
+      "oracle_fingerprint": "567716e84c984446ef55fb744e608941",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                                  "toughness": {
+                                    "Stat": { "of": { "Target": 0 }, "stat": "Toughness" }
+                                  }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -165,6 +165,7 @@ Breath of Life
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
+Brigid's Command
 Brimstone Vandal
 Brion Stoutarm
 Bronzeplate Boar
@@ -353,6 +354,7 @@ Dreg Mangler
 Dregscape Zombie
 Drift of Phantasms
 Dromoka Captain
+Dromoka's Command
 Dromoka's Gift
 Dromoka, the Eternal
 Drove of Elves
@@ -396,6 +398,7 @@ Entreat the Angels
 Entreat the Dead
 Ephara's Dispersal
 Epic Confrontation
+Epic Fight
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
@@ -1024,6 +1027,7 @@ Sanitarium Skeleton
 Sarah Jane Smith
 Satyr Wayfinder
 Sauroform Hybrid
+Savage Stomp
 Savage Ventmaw
 Savor the Moment
 Saw It Coming

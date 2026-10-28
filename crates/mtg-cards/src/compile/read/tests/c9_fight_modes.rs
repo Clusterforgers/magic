@@ -113,13 +113,22 @@ fn c9_fight_a_reduction_for_a_target_reads_as_targeting(
     #[case] mana: &str,
     #[case] wanted: &str,
 ) {
-    reads_as(text, ClauseKind::Static, false, &c9_fight_targeting(mana, wanted));
+    reads_as(
+        text,
+        ClauseKind::Static,
+        false,
+        &c9_fight_targeting(mana, wanted),
+    );
 }
 
 #[rstest]
 #[case::two_targets("This spell costs {2} less to cast if it targets two creatures.")]
-#[case::another_spell("Creature spells you cast cost {2} less to cast if it targets a Dinosaur you control.")]
-#[case::and_a_condition("This spell costs {2} less to cast if it targets a Dinosaur you control and you control a Dragon.")]
+#[case::another_spell(
+    "Creature spells you cast cost {2} less to cast if it targets a Dinosaur you control."
+)]
+#[case::and_a_condition(
+    "This spell costs {2} less to cast if it targets a Dinosaur you control and you control a Dragon."
+)]
 #[case::no_article("This spell costs {2} less to cast if it targets Dinosaurs you control.")]
 fn c9_fight_a_reduction_for_another_target_stays_unread(#[case] text: &str) {
     assert!(clause(text, ClauseKind::Static, false).is_none(), "{text}");
