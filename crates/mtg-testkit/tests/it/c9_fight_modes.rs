@@ -196,7 +196,11 @@ fn c9_fight_savage_stomp_costs_less_for_a_dinosaur(
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| driver.state().object(*id))
-        .filter(|object| object.permanent().is_some_and(|p| p.tapped()))
+        .filter(|object| {
+            object
+                .permanent()
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
         .count();
     assert_eq!(tapped, spent, "lands tapped");
     settle(&mut driver)?;
