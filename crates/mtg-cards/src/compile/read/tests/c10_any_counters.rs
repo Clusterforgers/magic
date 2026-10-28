@@ -1,5 +1,20 @@
-//! Goal: "with a counter on it", "with counters on them", "for each counter on ~" and "the number of counters on ~" read as a counter of any kind (`HasAnyCounter`, `AnyCounters`) and write back as the card's text; a count of the counters on another object stays unread.
+//! Goal: "with a counter on it", "with counters on them", "for each counter on ~" and "the number of counters on ~" read as a counter of any kind (`HasAnyCounter`, `AnyCounters`) and write back as the card's text, "if you've cast a noncreature spell this turn" reads as the tally of noncreature spells, and a count of the counters on another object stays unread.
 use super::*;
+
+#[rstest]
+#[case::surveil(
+    "At the beginning of combat on your turn, if you've cast a noncreature spell this turn, surveil 1."
+)]
+#[case::counter(
+    "At the beginning of combat on your turn, if you've cast a noncreature spell this turn, put a +1/+1 counter on ~."
+)]
+fn c10_any_a_noncreature_spell_cast_this_turn_reads_and_writes_back(#[case] text: &str) {
+    let json = serde_json::to_string(&golden(text, ClauseKind::Triggered, false)).unwrap();
+    assert!(
+        json.contains(r#"{"Tallied":{"who":"You","what":"NoncreatureSpellsCast"}}"#),
+        "{json}"
+    );
+}
 
 #[rstest]
 #[case::a_target(

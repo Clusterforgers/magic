@@ -243,6 +243,13 @@ fn spell_cast(
     if instant_or_sorcery {
         state.tally(player, Tally::CastInstantOrSorcery);
     }
+    if state
+        .objects
+        .get(&object)
+        .is_some_and(|spell| !spell.card().is_type(CardType::Creature))
+    {
+        state.tally(player, Tally::C10AnyNoncreatureCast);
+    }
     // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
     if let Some(spell) = state.objects.get_mut(&object) {
         spell.choices.clone_from(choices);

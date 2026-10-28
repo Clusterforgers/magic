@@ -223,6 +223,8 @@ pub enum TurnTally {
     /// The instant and sorcery spells the player cast this turn ("the number of instant and sorcery spells you've cast
     /// this turn").
     InstantsAndSorceriesCast,
+    /// The noncreature spells the player cast this turn ("if you've cast a noncreature spell this turn").
+    NoncreatureSpellsCast,
     /// The cards the player discarded this turn, once for each discard ("for each card you've discarded this turn").
     Discarded,
     /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):
