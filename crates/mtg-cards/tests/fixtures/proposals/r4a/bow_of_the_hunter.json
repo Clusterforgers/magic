@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"DealDamage":{"amount":2,"to":{"Target":0}}},{"DealDamage":{ "amount":2,"to":{"Target":0}}}],"targets":[{"what":"AnyTarget"}]}}}]}}],"name":"Bow of the Hunter"}] }

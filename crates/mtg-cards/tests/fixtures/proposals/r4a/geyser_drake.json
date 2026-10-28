@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"CostModifier":{"applies_to":["Spell",{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","condition":{"Not":"YourTurn"}}}]}]}

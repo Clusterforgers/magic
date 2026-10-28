@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{1}{R}"}],"effects":[{"Continuous":{"affected":{"Each":[{"ControlledBy":"You"},{"Named":"Pack Mastiff"},{"Type":"Creature"}]},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":1,"toughness":0}}]}}]} }]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"HasKeyword":"Evolve"}}]},"regenerate":false}}]}}]}] }

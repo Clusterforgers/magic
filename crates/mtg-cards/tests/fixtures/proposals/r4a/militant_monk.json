@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Activated":{"cost":["Tap"],"effects":[{"Shield":{"by":{"PreventUpTo":1},"duration":"UntilEndOfTurn","when":{"Damage":{"to":{"Target":0}}}}}],"targets":[{"what":"AnyTarget"}]} } ]}]
+
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Sacrifice":{"filter":["This"]}}],"when":{"State":{"condition":{"Compare":{"left":{"Count":[{"Type":"Sorcery"}] },"op":"Eq","right":0}}}}} }]}] }

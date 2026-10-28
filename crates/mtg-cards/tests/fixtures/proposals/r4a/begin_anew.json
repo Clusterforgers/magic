@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"}]}}},{"Continuous":{"affected":{"Each":[{"ControlledBy":"You"},{"Type":"Creature"},{"In":"Hand"}]},"duration":"Forever","mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}]} }]}] }

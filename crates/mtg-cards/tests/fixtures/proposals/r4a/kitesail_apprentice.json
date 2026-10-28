@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}},{"AddKeyword":"Flying"}],"condition":{"Matches":{"selector":[{"HasKeyword":"Evolve"}],"subject":"This"}}} } ]} ]}

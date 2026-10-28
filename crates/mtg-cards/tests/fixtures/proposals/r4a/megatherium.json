@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"effects":[{"Pay":{"cost":"{X}","unpaid":[{"Sacrifice":{"filter":["This"]}}]}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}} }]} ]}

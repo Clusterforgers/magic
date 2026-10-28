@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":"{C}","effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"CantBeBlockedBy":[]}]} }],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]} }]}] }

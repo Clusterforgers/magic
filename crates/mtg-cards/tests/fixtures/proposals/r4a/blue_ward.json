@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":"Attached","mods":[{"AddKeyword":{"Protection":[{"Color":"Blue"}]}}]}},{"Replacement":{"by":{"PreventRemovingCounter":{"Other":"This"}},"when":{"Damage":{"to":"This"}}} }]}] }

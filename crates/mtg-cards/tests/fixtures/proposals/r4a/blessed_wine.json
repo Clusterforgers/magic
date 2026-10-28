@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"GainLife":{"amount":1}}]}},{"Triggered": { "effects":[{"Draw":{}}], "when": {"StepBegins":{"step":"Upkeep"}}, "from":"Stack"} } ]}]}

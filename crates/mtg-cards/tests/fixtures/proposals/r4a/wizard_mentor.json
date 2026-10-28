@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Move":{"to":"Hand","what":{"Target":0}}},{"Move":{"to":"Hand","what":"This"}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"},{"ControlledBy":"You"},{"Not":{"Subtype":"Ogre"}}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"},{"Not":{"Subtype":"Ogre"}}]}}}],"when":{"ZoneChange":{"what":["This"],"from":"Battlefield"}}}}]}]}

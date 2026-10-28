@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Exile":{"what":{"Target":1}}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Opponent"},{"what":{"Object":[{"In":"Hand"},{"OwnedBy":{"Target":0}}]}}]} }]}]}

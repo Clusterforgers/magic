@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{3}"}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"SetPT":{"power":4,"toughness":4}},{"AddKeyword":"Trample"}]}}]}}]}]}

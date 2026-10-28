@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Activated":{"cost":[{"Mana":"{G}"},{"TapPermanents":{"filter":[]} }],"effects":[{"PutCounters":{"counter":{"Other":"ticket"},"on":"You"}}]} }]}]}

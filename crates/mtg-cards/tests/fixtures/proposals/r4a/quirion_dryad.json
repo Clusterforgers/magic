@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"PutCounters":{"counter":"+1/+1","on":"This"}}],"when":{"SpellCast":{"by":"You","what":[{"AnyOf":[{"Color":"White"},{"Color":"Blue"},{"Color":"Black"},{"Color":"Red"}]}]}}} }]} ]}

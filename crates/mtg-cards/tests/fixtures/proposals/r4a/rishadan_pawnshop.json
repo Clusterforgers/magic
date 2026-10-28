@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"effects":[{"Move":{"to":{"Library":{"place":"Shuffled"}},"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"ControlledBy":"You"},{"Not":{"Type":"Artifact"}}]}}]} }]}] }

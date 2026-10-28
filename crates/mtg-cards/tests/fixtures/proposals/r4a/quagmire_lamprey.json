@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"PutCounters":{"counter":"-1/-1","on":"Triggering"}}],"when":{"BecomesBlocked":{"what":["This"]}}}}]}] }
