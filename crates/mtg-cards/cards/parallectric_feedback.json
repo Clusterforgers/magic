@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a01071c5-aca5-4faa-8a8a-30b50b642f42",
+  "name": "Parallectric Feedback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parallectric Feedback",
+      "oracle_fingerprint": "12c45bf7e4c5fdfe777ce190d7ce51f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

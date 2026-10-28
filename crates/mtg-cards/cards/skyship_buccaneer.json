@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5951f734-05d3-41ad-94ee-19bd310077d2",
+  "name": "Skyship Buccaneer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyship Buccaneer",
+      "oracle_fingerprint": "e45c03f54150d161cf411749c895a3c7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

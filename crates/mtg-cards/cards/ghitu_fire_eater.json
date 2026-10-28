@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3e792338-4a21-4a06-ad94-39931118e06c",
+  "name": "Ghitu Fire-Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghitu Fire-Eater",
+      "oracle_fingerprint": "5170a99b2012596a4e1942f141247992",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

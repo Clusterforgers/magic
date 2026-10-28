@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f8a06210-de30-4e87-835e-80a6df5716ca",
+  "name": "Auriok Windwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auriok Windwalker",
+      "oracle_fingerprint": "6513d23c223611b3766e52eaf80ec3f9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "2e712090-2284-4325-8ee8-38cd0e2bedd8",
+  "name": "Psychic Barrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Barrier",
+      "oracle_fingerprint": "0c100dbe76e4086c158e9c6112a73cdc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Creature" }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

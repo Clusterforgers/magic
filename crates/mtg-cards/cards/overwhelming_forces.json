@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bdccceb6-ad3c-4a75-a8a6-ca796ede4185",
+  "name": "Overwhelming Forces",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelming Forces",
+      "oracle_fingerprint": "4e7cfed987720c3f2f226f4760698fda",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              },
+              { "Draw": { "count": { "Destroyed": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

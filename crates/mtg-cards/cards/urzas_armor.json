@@ -1,0 +1,14 @@
+{
+  "oracle_id": "e5fa232a-c8f2-4532-88bf-60d1223181b0",
+  "name": "Urza's Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Armor",
+      "oracle_fingerprint": "ce319932f7a6d8e7ad4d60dc28ebdfc0",
+      "abilities": [
+        { "Replacement": { "when": { "Damage": { "to": "You" } }, "by": { "PreventUpTo": 1 } } }
+      ]
+    }
+  ]
+}

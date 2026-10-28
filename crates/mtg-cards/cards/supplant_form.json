@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7e49f689-996a-477e-a327-32b69fbc0d85",
+  "name": "Supplant Form",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supplant Form",
+      "oracle_fingerprint": "4e58e10dcf37c698beaf7f206ada658b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
