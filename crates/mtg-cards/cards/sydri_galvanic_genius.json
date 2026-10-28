@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4e92d36b-1a35-4fa9-87ea-10eace5a3cc7",
+  "name": "Sydri, Galvanic Genius",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sydri, Galvanic Genius",
+      "oracle_fingerprint": "071c0e3124302e1413720cc36d4e9e5c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{B}",
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }, { "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

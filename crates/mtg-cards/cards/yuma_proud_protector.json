@@ -1,0 +1,66 @@
+{
+  "oracle_id": "b8a0b967-3b5b-46f5-830b-5c8f1037784a",
+  "name": "Yuma, Proud Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yuma, Proud Protector",
+      "oracle_fingerprint": "362ab93c03cd4089150d627b77b9826f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Desert" }, { "OwnedBy": "You" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Plant Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Plant", "Warrior"],
+                      "power": 4,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

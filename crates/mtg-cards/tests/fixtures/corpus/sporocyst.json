@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "72101d5f-f3a4-4490-a6f5-c320f3aeb242",
+  "oracle_id": "ed58a617-cf86-4c2e-8044-1af37b1a1465",
+  "multiverse_ids": [
+    580920
+  ],
+  "mtgo_id": 108668,
+  "tcgplayer_id": 285910,
+  "cardmarket_id": 674740,
+  "name": "Sporocyst",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/72101d5f-f3a4-4490-a6f5-c320f3aeb242",
+  "scryfall_uri": "https://scryfall.com/card/40k/98/sporocyst?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:34:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.jpg?1783920872",
+    "normal": "https://cards.scryfall.io/normal/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.jpg?1783920872",
+    "large": "https://cards.scryfall.io/large/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.jpg?1783920872",
+    "png": "https://cards.scryfall.io/png/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.png?1783920872",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.jpg?1783920872",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.jpg?1783920872",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.webp?1783920872",
+    "grid": "https://cards.scryfall.io/grid/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.webp?1783920872",
+    "display": "https://cards.scryfall.io/display/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.webp?1783920872",
+    "art": "https://cards.scryfall.io/art/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.webp?1783920872",
+    "crop": "https://cards.scryfall.io/crop/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.webp?1783920872",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/2/72101d5f-f3a4-4490-a6f5-c320f3aeb242.jpg?1783920872"
+  },
+  "mana_cost": "{X}{X}{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Tyranid",
+  "oracle_text": "Ravenous (This creature enters with X +1/+1 counters on it. If X is 5 or more, draw a card when it enters.)\nDefender\nSpore Chimney — When this creature enters, search your library for up to X basic land cards, put them onto the battlefield tapped, then shuffle.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Spore Chimney",
+    "Ravenous",
+    "Defender"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/72101d5f-f3a4-4490-a6f5-c320f3aeb242/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed58a617-cf86-4c2e-8044-1af37b1a1465&unique=prints",
+  "collector_number": "98",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fajareka Setiawan",
+  "artist_ids": [
+    "0cc534e0-be18-4cb1-8521-50fabd0dac6f"
+  ],
+  "illustration_id": "745b8126-8866-4ae2-aa2e-7d76af9c6912",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4904,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=wTvU04n4dVo",
+    "previewed_at": "2022-09-13"
+  },
+  "prices": {
+    "usd": "8.82",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "14.80",
+    "eur_foil": null,
+    "tix": "1.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580920&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSporocyst",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSporocyst",
+    "edhrec": "https://edhrec.com/route/?cc=Sporocyst"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F285910%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=674740&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108668?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

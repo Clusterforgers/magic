@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8b5c6754-36bd-44ac-b0c0-5a3cd2d9f2c3",
+  "name": "Salvation Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Salvation Colossus",
+      "oracle_fingerprint": "2ac70bb77fb1c2a5f635113f5df8596d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Unearth": [{ "PayEnergy": 8 }] } }
+      ]
+    }
+  ]
+}

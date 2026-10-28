@@ -1,0 +1,49 @@
+{
+  "oracle_id": "42820e09-f817-4485-a96a-ac2b0b798269",
+  "name": "Stoic Farmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stoic Farmer",
+      "oracle_fingerprint": "919f2a3f093fb9d81183ca32002c756f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Largest": { "who": "Opponents", "of": [{ "Type": "Land" }] } },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "land" }, "to": "Hand" } }]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{W}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bb9bb65e-504f-4edd-8d47-d0efa03e7d17",
+  "name": "Spectral Deluge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Deluge",
+      "oracle_fingerprint": "9aec5deda3826c6992961771edd2d5c5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Opponents" },
+                      {
+                        "Compare": {
+                          "stat": "Toughness",
+                          "op": "Le",
+                          "to": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                        }
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{U}{U}" } }
+      ]
+    }
+  ]
+}

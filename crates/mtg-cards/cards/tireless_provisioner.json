@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ab8d5f5c-1976-4f77-8ed2-8d28ee666741",
+  "name": "Tireless Provisioner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tireless Provisioner",
+      "oracle_fingerprint": "009a80f59ebd7f1ee981c6642b781097",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "CreateToken": { "token": { "Named": "food" } } }] },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

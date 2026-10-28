@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1ed24fc6-b1d5-47f8-a1d1-3243372e0c9f",
+  "name": "Well of Ideas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Well of Ideas",
+      "oracle_fingerprint": "0d8f921fe049f841153be70e852af884",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "Opponents" } },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

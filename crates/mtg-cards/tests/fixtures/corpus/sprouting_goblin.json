@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "f5555845-0424-4cb6-b373-57a722444a4a",
+  "oracle_id": "b0871e12-b156-4fa6-b01c-acaae222b3a5",
+  "multiverse_ids": [],
+  "resource_id": "C4DEC2772A8039229A2337792C813D1274C3C0A481172DBCFEC342CF276A0FB0",
+  "mtgo_id": 142317,
+  "tcgplayer_id": 641972,
+  "cardmarket_id": 834095,
+  "name": "Sprouting Goblin",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "uri": "https://api.scryfall.com/cards/f5555845-0424-4cb6-b373-57a722444a4a",
+  "scryfall_uri": "https://scryfall.com/card/eoc/90/sprouting-goblin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:27:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.jpg?1783906037",
+    "normal": "https://cards.scryfall.io/normal/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.jpg?1783906037",
+    "large": "https://cards.scryfall.io/large/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.jpg?1783906037",
+    "png": "https://cards.scryfall.io/png/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.png?1783906037",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.jpg?1783906037",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.jpg?1783906037",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.webp?1783906037",
+    "grid": "https://cards.scryfall.io/grid/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.webp?1783906037",
+    "display": "https://cards.scryfall.io/display/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.webp?1783906037",
+    "art": "https://cards.scryfall.io/art/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.webp?1783906037",
+    "crop": "https://cards.scryfall.io/crop/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.webp?1783906037",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/5/f5555845-0424-4cb6-b373-57a722444a4a.jpg?1783906037"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Druid",
+  "oracle_text": "Kicker {G} (You may pay an additional {G} as you cast this spell.)\nWhen this creature enters, if it was kicked, search your library for a land card with a basic land type, reveal it, put it into your hand, then shuffle.\n{R}, {T}, Sacrifice a land: Draw a card.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Kicker"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set": "eoc",
+  "set_name": "Edge of Eternities Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eoc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f5555845-0424-4cb6-b373-57a722444a4a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab0871e12-b156-4fa6-b01c-acaae222b3a5&unique=prints",
+  "collector_number": "90",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Uriah Voth",
+  "artist_ids": [
+    "14cf4c0c-1a83-4366-ba61-6d0a26ee5a69"
+  ],
+  "illustration_id": "40c41955-5f07-4c3b-a8e1-a962a03a87c4",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6687,
+  "penny_rank": 14531,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=HxXLWC_JRdM",
+    "previewed_at": "2025-07-09"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSprouting%2BGoblin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSprouting%2BGoblin",
+    "edhrec": "https://edhrec.com/route/?cc=Sprouting+Goblin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F641972%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=834095&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142317?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

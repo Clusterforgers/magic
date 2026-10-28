@@ -1,0 +1,56 @@
+{
+  "oracle_id": "e4fb15b6-02bb-4923-953a-69784ca780b8",
+  "name": "Sierra, Nuka's Biggest Fan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sierra, Nuka's Biggest Fan",
+      "oracle_fingerprint": "a3cd3d429ceeb786733e773d1c611b24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Food" }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                        "toughness": {
+                          "Counters": { "on": "This", "counter": { "Other": "quest" } }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1aae80a5-079c-48f3-aad1-563931e1a031",
+  "name": "Vile Mutilator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vile Mutilator",
+      "oracle_fingerprint": "0f0cb6cd0753c9060c44b4bb18f9e9ff",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Enchantment" }, { "Not": "Token" }]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }, { "Not": "Token" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

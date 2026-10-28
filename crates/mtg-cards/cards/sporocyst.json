@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ed58a617-cf86-4c2e-8044-1af37b1a1465",
+  "name": "Sporocyst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sporocyst",
+      "oracle_fingerprint": "e3ff09843fc38e1f6cd1523e82d04649",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": "X" },
+                  "as": "lands"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "lands" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

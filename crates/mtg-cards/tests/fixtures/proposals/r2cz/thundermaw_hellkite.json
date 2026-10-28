@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Haste"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"DealDamage":{"to":{"Each":[{"Type":"Creature"},{"HasKeyword":"Flying"},{"ControlledBy":"Opponents"}]},"amount":1}},{"Tap":{"what":{"Each":[{"Type":"Creature"},{"HasKeyword":"Flying"},{"ControlledBy":"Opponents"}]}}}]}}]}]}

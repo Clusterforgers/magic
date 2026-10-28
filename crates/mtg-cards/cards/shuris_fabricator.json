@@ -1,0 +1,42 @@
+{
+  "oracle_id": "127f6985-c1f4-487f-b5ee-c84524cd6c55",
+  "name": "Shuri's Fabricator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shuri's Fabricator",
+      "oracle_fingerprint": "1b25b97c709bee63ff2692fc1559a33f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "vibranium" }, "count": 2, "tapped": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

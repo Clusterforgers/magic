@@ -1,0 +1,56 @@
+{
+  "oracle_id": "57c1a98e-c4fb-4144-9e3e-d0fe6789ba26",
+  "name": "Simic Ascendancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Ascendancy",
+      "oracle_fingerprint": "3d9d2f5877a9d013c6132f920bc686e8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}{G}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "counter": "+1/+1"
+                }
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "growth" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "growth" } } },
+                "op": "Ge",
+                "right": 20
+              }
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

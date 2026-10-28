@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1f3c3365-7dc8-47e1-b304-2a09aa229292",
+  "name": "Szarel, Genesis Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Szarel, Genesis Shepherd",
+      "oracle_fingerprint": "ea1de450b8f67d92ee4e64ea566c5a73",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Land" }], "from": "Graveyard", "play": true }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["Other", { "Not": "Token" }], "by": "You" } },
+            "if": "YourTurn",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

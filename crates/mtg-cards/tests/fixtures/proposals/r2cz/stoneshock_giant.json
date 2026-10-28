@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":"{6}{R}{R}","effects":[{"Monstrosity":{"count":3}}]}},{"Triggered":{"when":{"BecomesMonstrous":{"what":["This"]}},"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"Not":{"HasKeyword":"Flying"}},{"ControlledBy":"Opponents"}]},"mods":["CantBlock"],"duration":"UntilEndOfTurn"}}]}}]}]}

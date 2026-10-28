@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9e9164be-3534-4445-bfad-00d16a50575c",
+  "name": "Workshop Elders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Workshop Elders",
+      "oracle_fingerprint": "d07315d7e2d9ca13188177f47b76252e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "AddType": "Creature" },
+                          { "SetPT": { "power": 0, "toughness": 0 } }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 4 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

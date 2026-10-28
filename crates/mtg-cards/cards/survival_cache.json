@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5fb8be5a-3666-4680-84e2-341cb269df07",
+  "name": "Survival Cache",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Survival Cache",
+      "oracle_fingerprint": "aa50c73b14c5d15e53932d832fe2cb9a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "You" },
+                      "op": "Gt",
+                      "right": { "LowestLife": "Opponents" }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

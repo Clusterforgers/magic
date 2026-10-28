@@ -282,6 +282,8 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                 | Ability::AdditionalCost { .. }
                 | Ability::FreeCast { .. }
                 | Ability::CostModifier { .. } => &[ClauseKind::Static],
+                // A keyword line the keyword reader does not read ("Unearth—Pay eight {E}.") is written whole.
+                Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],
                 _ => &[ClauseKind::Activated],
             };
             let lines: Vec<&str> = compiled

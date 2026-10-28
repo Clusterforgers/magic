@@ -1,0 +1,65 @@
+{
+  "oracle_id": "4d60dae0-7be4-4859-99ac-781a27bcfd93",
+  "name": "Thickest in the Thicket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thickest in the Thicket",
+      "oracle_fingerprint": "e1d407c2b37c54f67d94bce5c491755c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                              "stat": "Power"
+                            }
+                          },
+                          "op": "Ge",
+                          "right": {
+                            "Greatest": { "of": [{ "Type": "Creature" }], "stat": "Power" }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

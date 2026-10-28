@@ -1,0 +1,73 @@
+{
+  "oracle_id": "942a318e-90eb-4f10-bb30-2e10f5cc922a",
+  "name": "Xenagos, the Reveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xenagos, the Reveler",
+      "oracle_fingerprint": "fac66ccd58850b2d721b2c6ca3af68fb",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyCombination": {
+                      "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "among": ["Red", "Green"]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Satyr",
+                      "colors": ["Red", "Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Satyr"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              { "ExileTop": { "count": 7, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "chosen"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

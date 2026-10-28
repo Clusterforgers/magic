@@ -1,0 +1,49 @@
+{
+  "oracle_id": "66950068-adf4-42d7-ad72-fdb4a0e58922",
+  "name": "W'Kabi, Shield of the Nation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "W'Kabi, Shield of the Nation",
+      "oracle_fingerprint": "6a612cea5969fdac866c1613603c15ca",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["Commander", { "ControlledBy": "You" }] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Artifact" },
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rhino",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rhino"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

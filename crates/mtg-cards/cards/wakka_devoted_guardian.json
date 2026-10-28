@@ -1,0 +1,50 @@
+{
+  "oracle_id": "fbd37284-35ff-4409-b6d5-f813c06c4931",
+  "name": "Wakka, Devoted Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wakka, Devoted Guardian",
+      "oracle_fingerprint": "7fb1efef614b1f5e31d4eebf9d3b14f3",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "This", "what": "CountersPut" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

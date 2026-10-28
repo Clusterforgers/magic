@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e3fc10d2-2733-4265-8275-112c285fd11a",
+  "name": "Topiary Stomper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Topiary Stomper",
+      "oracle_fingerprint": "80f26fc5e06d7ad97d3c1eb5575de3bc",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Lt",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
