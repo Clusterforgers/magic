@@ -93,6 +93,10 @@ pub(crate) enum Tally {
     CastInstantOrSorcery,
     /// A noncreature spell cast (counted for the player).
     C10AnyNoncreatureCast,
+    /// A creature spell cast (counted for the player).
+    C11aCreatureCast,
+    /// An artifact spell cast (counted for the player).
+    C11aArtifactCast,
     /// Life gained, once for each event.
     Gained,
     /// An object declared as an attacker (counted for the object).

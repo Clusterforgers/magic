@@ -28,6 +28,7 @@ Akroma's Vengeance
 Akroma's Will
 Akroma, Angel of Wrath
 Alhammarret's Archive
+Alisaie Leveilleur
 All That Glitters
 All of History, All at Once
 Alpha Deathclaw
@@ -141,6 +142,7 @@ Blight Mamba
 Blight Pile
 Blightwidow
 Blood Seeker
+Blood for the Blood God!
 Bloodbraid Elf
 Bloodghast
 Bloom Hulk
@@ -433,6 +435,7 @@ Exterminate!
 Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
+Ezzaroot Channeler
 Faith Unbroken
 Faithful Watchdog
 Faithless Looting
@@ -721,6 +724,7 @@ Legion Loyalty
 Legolas Greenleaf
 Levitation
 Lhurgoyf
+Licia, Sanguine Tribune
 Life of Toshiro Umezawa // Memory of Toshiro
 Life's Legacy
 Light 'Em Up
@@ -1034,6 +1038,7 @@ Rootborn Defenses
 Rope
 Rosheen Meanderer
 Rousing Refrain
+Rowdy Research
 Rugged Prairie
 Ruinous Path
 Rumbleweed

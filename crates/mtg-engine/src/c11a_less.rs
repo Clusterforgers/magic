@@ -5,13 +5,14 @@
 
 use mtg_cards::ability::CostChange;
 use mtg_cards::cost::CostItem;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
 use crate::announce::c11a_reduced;
 use crate::price::Price;
 use crate::resolve::Scope;
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 
 /// The most times one change applies: a count this large is more mana than any cost has.
 const C11A_MOST_TIMES: i64 = 100;
@@ -62,4 +63,24 @@ fn c11a_joined(cost: ManaCost, more: &ManaCost) -> ManaCost {
     more.symbols()
         .iter()
         .fold(cost, |cost, symbol| cost.with(*symbol))
+}
+
+/// Counts the spell `object` that `player` casts among the creature and artifact spells of the turn ("the first
+/// creature spell you cast each turn").
+pub(crate) fn c11a_tally_kinds(state: &mut GameState, player: PlayerId, object: ObjectId) {
+    let counted: Vec<Tally> = [
+        (CardType::Creature, Tally::C11aCreatureCast),
+        (CardType::Artifact, Tally::C11aArtifactCast),
+    ]
+    .into_iter()
+    .filter(|(kind, _)| {
+        state
+            .object(object)
+            .is_some_and(|spell| spell.card().is_type(*kind))
+    })
+    .map(|(_, tally)| tally)
+    .collect();
+    for tally in counted {
+        state.tally(player, tally);
+    }
 }

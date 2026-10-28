@@ -172,6 +172,7 @@ mod c10_pa_pay_x;
 mod c10_uc;
 mod c10_xp_copy_until;
 mod c11a_ability_less;
+mod c11a_turn_costs;
 mod c4_af_writers;
 mod c4_conditions;
 mod c4_gl_writers;

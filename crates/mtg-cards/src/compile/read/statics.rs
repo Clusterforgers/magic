@@ -41,7 +41,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 30] = [
+const TEMPLATES: [Template; 31] = [
     super::c8_eg_cast_itself::c8_eg_cast_itself,
     super::c6_blk_draws::c6_blk_draw_replacement,
     entering,
@@ -60,6 +60,7 @@ const TEMPLATES: [Template; 30] = [
     lands::cast_from_the_top,
     cannot,
     cost_modifier,
+    super::c11a_turn_costs::c11a_first_spell,
     super::spell_keywords::ability,
     super::card_grants::ability,
     modifies,
@@ -939,6 +940,9 @@ pub(super) fn cost_mana(r: &mut Reader<'_>) -> Option<(ManaCostX, bool)> {
 /// How many times the mana changes the cost: once, for each target beyond the first, for each thing counted, or as
 /// many times as the number "where X is" gives.
 pub(super) fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Amount> {
+    if let Some(tallied) = r.attempt(|r| super::c11a_turn_costs::c11a_turn_count(r, x)) {
+        return Some(tallied);
+    }
     if x {
         r.punct(',').then_some(())?;
         r.need("where x is")?;
@@ -1039,6 +1043,11 @@ fn cost_modifier_texts(
     per: &Amount,
     condition: Option<&Condition>,
 ) -> Vec<String> {
+    if let Some(text) =
+        super::c11a_turn_costs::c11a_first_spell_text(applies_to, change, mana, per, condition)
+    {
+        return vec![text];
+    }
     if let Some(wanted) = cost_conditions::c9_fight_targets_text(applies_to) {
         if condition.is_some() {
             return Vec::new();
@@ -1076,6 +1085,13 @@ pub(super) fn cost_sentences(
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
     };
+    if let Some(wordings) = super::c11a_turn_costs::c11a_turn_wordings(mana, per) {
+        return wordings
+            .into_iter()
+            .filter(|_| condition.is_none())
+            .map(|(mana, tail)| format!("{subject} {verb} {mana} {more} to cast{tail}"))
+            .collect();
+    }
     let (mana, tail) = if per.is_one() {
         (mana.to_string(), String::new())
     } else if itself && *per == beyond_the_first() {

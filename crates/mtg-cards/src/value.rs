@@ -225,6 +225,10 @@ pub enum TurnTally {
     InstantsAndSorceriesCast,
     /// The noncreature spells the player cast this turn ("if you've cast a noncreature spell this turn").
     NoncreatureSpellsCast,
+    /// The creature spells the player cast this turn ("the first creature spell you cast each turn" is a count of zero).
+    CreatureSpellsCast,
+    /// The artifact spells the player cast this turn ("the first artifact spell you cast each turn").
+    ArtifactSpellsCast,
     /// The cards the player discarded this turn, once for each discard ("for each card you've discarded this turn").
     Discarded,
     /// The life the players lost, added up over the players read ("for each 1 life your opponents have lost this turn"):

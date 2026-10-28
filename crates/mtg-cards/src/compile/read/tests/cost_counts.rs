@@ -162,7 +162,6 @@ fn a_subtype_of_cards_in_a_graveyard_is_counted() {
     "Spells cast from anywhere other than your hand cost {1} less to cast."
 )]
 #[case::from_the_graveyard("Spells you cast from your graveyard cost {1} less to cast.")]
-#[case::this_turn("This spell costs {1} less to cast for each creature that died this turn.")]
 #[case::a_sum_of_two_counts(
     "This spell costs {1} less to cast for each Cave you control and each Cave card in your graveyard."
 )]
