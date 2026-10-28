@@ -1,0 +1,20 @@
+{
+  "oracle_id": "66cdbd34-a864-4c39-acac-9fb26ef4adf9",
+  "name": "Skullmulcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullmulcher",
+      "oracle_fingerprint": "791a95e92a7262b70e40c1e2922601d4",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": "Devoured" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -475,6 +475,7 @@ mod w8a_declaration_limits;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;
+mod w10b_phasing;
 mod windows_games;
 mod x_after;
 mod x_corpus;
