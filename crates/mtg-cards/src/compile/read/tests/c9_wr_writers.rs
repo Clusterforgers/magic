@@ -59,7 +59,7 @@ fn c9_wr_the_oracle_wording_reads_back(#[case] json: &str, #[case] clause: &str)
     C9_WR_CLOSET_TEXT
 )]
 #[case::closet_then_draws(
-    &C9_WR_CONJURERS_CLOSET.replace(r#"]}}]}}"#, r#",{"Draw":{}}]}}]}}"#),
+    &C9_WR_CONJURERS_CLOSET.replace(r"]}}]}}", r#",{"Draw":{}}]}}]}}"#),
     C9_WR_CLOSET_TEXT
 )]
 #[case::angel_targets_any_creature(
