@@ -3,6 +3,8 @@
 
 pub mod anthropic;
 pub mod budget;
+pub mod c11i_http;
+pub mod c11i_openai;
 pub mod examples;
 pub mod fake;
 pub mod model;
@@ -20,13 +22,14 @@ use mtg_cards::builtin;
 use mtg_cards::reference::dsl_reference;
 use mtg_db::Database;
 
-use crate::args::ProposeArgs;
+use crate::args::{ProposeArgs, Provider};
 use crate::audit::stored_cards;
 use crate::cache::Cache;
 use crate::compile::names_of;
 use crate::error::CliError;
 use crate::progress::Progress;
 use anthropic::{AnthropicClient, AnthropicConfig, ApiKey};
+use c11i_openai::{OpenAi, OpenAiClient};
 use examples::ExampleIndex;
 use model::{ModelClient, estimate_tokens};
 use outcome::ProposeReport;
@@ -116,15 +119,57 @@ pub fn dry_run(
     Ok(text.trim_end().to_owned())
 }
 
-/// The options of a run from the command line.
-pub fn options_of(args: &ProposeArgs) -> Options {
-    Options {
-        model: args.model.clone(),
+/// The options of a run from the command line; a local provider has no default model.
+pub fn options_of(args: &ProposeArgs) -> Result<Options, CliError> {
+    let model = match (&args.model, args.provider) {
+        (Some(model), _) => model.clone(),
+        (None, Provider::Anthropic) => DEFAULT_MODEL.to_owned(),
+        (None, Provider::Openai) => {
+            return Err(CliError::Config(
+                "--provider openai needs --model: the id the server knows, such as `gpt-oss:20b`"
+                    .into(),
+            ));
+        }
+    };
+    Ok(Options {
+        model,
         examples: usize::from(args.examples),
         resume: args.resume,
         max_requests: args.max_requests,
         max_input_tokens: args.max_input_tokens,
-    }
+    })
+}
+
+/// The client of the provider the arguments name, reaching `api` (its address replaced by `--base-url`). The Anthropic
+/// key is required; a key for a local server is optional.
+pub fn c11i_client_of(
+    args: &ProposeArgs,
+    env: &dyn Fn(&str) -> Option<String>,
+    api: &AnthropicConfig,
+    progress: Progress,
+) -> Result<Box<dyn ModelClient + Send>, CliError> {
+    let handle = tokio::runtime::Handle::current();
+    let mut config = api.clone();
+    Ok(match args.provider {
+        Provider::Anthropic => {
+            if let Some(base) = &args.base_url {
+                config.base_url.clone_from(base);
+            }
+            let key = ApiKey::from_env(env)?;
+            Box::new(AnthropicClient::new(key, &config, handle, progress)?)
+        }
+        Provider::Openai => {
+            config.base_url = args
+                .base_url
+                .clone()
+                .unwrap_or_else(|| c11i_openai::C11I_DEFAULT_BASE.to_owned());
+            let dialect = OpenAi {
+                json_mode: !args.no_json_mode,
+            };
+            let key = c11i_openai::c11i_key_from_env(env);
+            Box::new(OpenAiClient::new(dialect, key, &config, handle, progress)?)
+        }
+    })
 }
 
 /// The cards the arguments select, as positions in `cards`.
@@ -191,24 +236,18 @@ pub async fn run_command(
 ) -> Result<String, CliError> {
     let cards = stored_cards(db).await?;
     let targets = targets_of(&cards, args)?;
-    let options = options_of(args);
+    let options = options_of(args)?;
     if args.dry_run {
         return dry_run(&cards, &targets, &options);
     }
     if targets.is_empty() {
         return Err(CliError::Config("no card is selected".into()));
     }
-    let key = ApiKey::from_env(env)?;
-    let client = AnthropicClient::new(
-        key,
-        api,
-        tokio::runtime::Handle::current(),
-        progress.clone(),
-    )?;
+    let client = c11i_client_of(args, env, api, progress.clone())?;
     let store = Store::new(args.out.clone().unwrap_or_else(|| default_out(cache)));
     // The client blocks on the runtime, so the loop runs on a blocking thread.
     let report = tokio::task::spawn_blocking(move || {
-        propose_cards(&cards, &targets, &client, &options, &store, &progress)
+        propose_cards(&cards, &targets, &*client, &options, &store, &progress)
     })
     .await
     .map_err(|error| CliError::Config(format!("the run stopped: {error}")))??;

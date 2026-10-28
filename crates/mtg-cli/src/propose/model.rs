@@ -112,6 +112,25 @@ pub enum ModelError {
     /// The connection or the body failed.
     #[error("cannot reach the API: {0}")]
     Transport(String),
+    /// The server cannot be reached at all: nothing listens at the address, or the name does not resolve.
+    #[error("cannot reach the model server at {endpoint}: {detail}; is it running?")]
+    Unreachable {
+        /// The address asked.
+        endpoint: String,
+        /// The operating system's complaint.
+        detail: String,
+    },
+    /// The server read far fewer prompt tokens than were sent: it cut the prompt to fit its context window.
+    #[error(
+        "the server read {read} prompt tokens of an estimated {sent}, so it cut the prompt to its context window; \
+         raise the context to at least 32768 tokens (`OLLAMA_CONTEXT_LENGTH=32768 ollama serve`, `llama-server -c 32768`)"
+    )]
+    Truncated {
+        /// The prompt tokens the server reports.
+        read: u64,
+        /// The upper estimate of the tokens sent.
+        sent: u64,
+    },
     /// The answer is not what the API documents.
     #[error("unexpected answer from the API: {0}")]
     Answer(String),
@@ -127,16 +146,20 @@ impl ModelError {
             ModelError::Status { status, .. } => {
                 matches!(status, 408 | 409 | 425 | 429 | 500..=599)
             }
-            ModelError::Transport(_) => true,
+            ModelError::Transport(_) | ModelError::Unreachable { .. } => true,
             _ => false,
         }
     }
 
-    /// Whether every further request will fail the same way: a key or model the API does not accept.
+    /// Whether every further request will fail the same way: a key or model the API does not accept, a server that cannot
+    /// be reached after the retries, or one that cuts the prompt.
     pub fn is_fatal(&self) -> bool {
         match self {
             ModelError::Status { status, .. } => matches!(status, 400 | 401 | 403 | 404),
-            ModelError::MissingKey | ModelError::Client(_) => true,
+            ModelError::MissingKey
+            | ModelError::Client(_)
+            | ModelError::Unreachable { .. }
+            | ModelError::Truncated { .. } => true,
             _ => false,
         }
     }
