@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "1edc1be8-f1be-448a-b869-6fd81f7e21ec",
+  "oracle_id": "3415a199-05ac-4627-be97-f842eb1415a3",
+  "multiverse_ids": [
+    397621
+  ],
+  "mtgo_id": 56650,
+  "mtgo_foil_id": 56651,
+  "name": "Avenging Angel",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/1edc1be8-f1be-448a-b869-6fd81f7e21ec",
+  "scryfall_uri": "https://scryfall.com/card/tpr/6/avenging-angel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:28:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.jpg?1783938512",
+    "normal": "https://cards.scryfall.io/normal/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.jpg?1783938512",
+    "large": "https://cards.scryfall.io/large/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.jpg?1783938512",
+    "png": "https://cards.scryfall.io/png/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.png?1783938512",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.jpg?1783938512",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.jpg?1783938512",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.webp?1783938512",
+    "grid": "https://cards.scryfall.io/grid/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.webp?1783938512",
+    "display": "https://cards.scryfall.io/display/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.webp?1783938512",
+    "art": "https://cards.scryfall.io/art/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.webp?1783938512",
+    "crop": "https://cards.scryfall.io/crop/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.webp?1783938512",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/e/1edc1be8-f1be-448a-b869-6fd81f7e21ec.jpg?1783938512"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying\nWhen this creature dies, you may put it on top of its owner's library.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1edc1be8-f1be-448a-b869-6fd81f7e21ec/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3415a199-05ac-4627-be97-f842eb1415a3&unique=prints",
+  "collector_number": "6",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matthew D. Wilson",
+  "artist_ids": [
+    "4fbafd13-0cf9-42a1-870d-7f8ea276f140"
+  ],
+  "illustration_id": "79e021a3-1330-4327-ad29-e100346183af",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28951,
+  "penny_rank": 16673,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397621&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAvenging%2BAngel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAvenging%2BAngel",
+    "edhrec": "https://edhrec.com/route/?cc=Avenging+Angel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DAvenging%2BAngel%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Avenging+Angel&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56650?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

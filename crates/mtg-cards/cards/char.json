@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e57d90ad-2f54-46ca-8237-aa383353a0de",
+  "name": "Char",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Char",
+      "oracle_fingerprint": "04727133edc964c55270b3d8c81ed5d7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "to": "You", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f3229980-994e-4492-be98-267b781614c1",
+  "name": "Kei Takahashi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kei Takahashi",
+      "oracle_fingerprint": "29731fa4a3fa09d3ab9667a851d3e785",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

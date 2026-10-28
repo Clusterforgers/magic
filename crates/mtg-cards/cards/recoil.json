@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1579bf86-4400-4467-88e8-1c5ba1209804",
+  "name": "Recoil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recoil",
+      "oracle_fingerprint": "629bcbeec6b7d5f33f43691803cf2284",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Discard": { "who": { "OwnerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
