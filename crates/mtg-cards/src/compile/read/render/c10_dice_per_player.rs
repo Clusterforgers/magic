@@ -37,6 +37,7 @@ pub(super) fn c10_dice_variants(ability: &Ability) -> Option<Vec<String>> {
         variants(&stand)
             .iter()
             .filter_map(|text| c10_dice_for_each(text))
+            .map(|text| super::w6e_control::w6e_plural(&text))
             .collect()
     })
 }
@@ -44,7 +45,11 @@ pub(super) fn c10_dice_variants(ability: &Ability) -> Option<Vec<String>> {
 /// The wording with the opponent of the target named as the player of the pass and "for each opponent," before the
 /// clause that asks for it.
 fn c10_dice_for_each(text: &str) -> Option<String> {
-    let target = text.find("up to one target ")?;
+    // A target of each opponent that must be chosen is "target permanent that player controls".
+    let target = text.find("up to one target ").or_else(|| {
+        text.find("control of target ")
+            .map(|at| at + "control of ".len())
+    })?;
     let (head, tail) = text.split_at(target);
     let (from, to) = C10_DICE_PLAYER
         .iter()

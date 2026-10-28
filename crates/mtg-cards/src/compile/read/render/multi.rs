@@ -14,6 +14,7 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
         .or_else(|| super::target_counts::text(targets, effects))
         .or_else(|| super::shuffled_in::text(targets, effects))
         .or_else(|| super::two_targets::text(targets, effects))
+        .or_else(|| super::w6e_control::w6e_exchange_pair(targets, effects))
     {
         return vec![vec![sentence]];
     }

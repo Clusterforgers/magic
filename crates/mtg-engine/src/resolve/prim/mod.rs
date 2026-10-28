@@ -29,6 +29,7 @@ mod join_attack;
 mod retarget;
 mod unattach;
 mod w2d_villainous;
+mod w6e_exchange;
 pub(crate) use continuous::lower;
 mod c6_kw_exploit;
 mod c6_kw_renown;
@@ -186,6 +187,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
+        Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
@@ -233,6 +235,7 @@ mod tests {
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
+        {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
@@ -255,7 +258,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 84, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 85, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -360,6 +363,7 @@ mod tests {
         "Effect.BecomeCopy",
         "Effect.CreateToken",
         "Effect.Continuous",
+        "Effect.ExchangeControl",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.Shield",

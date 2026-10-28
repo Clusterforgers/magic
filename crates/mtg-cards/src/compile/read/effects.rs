@@ -40,7 +40,10 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 82] = [
+const TEMPLATES: [Template; 85] = [
+    super::w6e_control::w6e_those_untapped,
+    super::w6e_control::w6e_gain_control,
+    super::w6e_control::w6e_exchange,
     super::c11b_cast_target::c11b_cast_target,
     super::c10_uc::c10_uc_tap_counted,
     super::c10_uc::c10_uc_held_control,

@@ -1391,9 +1391,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 phrase_text(what, Form::All)?
             ))
         }
-        TriggerPattern::AnyOf(patterns) => {
-            super::w2e_copied::w2e_cast_or_copy_text(patterns).or_else(|| any_of_text(patterns))
-        }
+        TriggerPattern::AnyOf(patterns) => super::w2e_copied::w2e_cast_or_copy_text(patterns)
+            .or_else(|| any_of_text(patterns))
+            .or_else(|| super::w6e_control::w6e_joined_step(patterns)),
         _ => {
             let (what, verb) = happening(pattern)?;
             about(&what, &[verb])

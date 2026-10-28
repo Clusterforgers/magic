@@ -87,8 +87,21 @@ fn part(
     Some(())
 }
 
+/// "You can't activate this ability during combat": the ability is activated only outside the combat phase.
+pub(super) const W6E_NOT_IN_COMBAT: &str = "you can't activate this ability during combat";
+
+/// The condition of an ability that can't be activated during combat.
+pub(super) fn w6e_out_of_combat() -> Condition {
+    Condition::Not(Box::new(Condition::InCombat))
+}
+
 /// The restrictions after the effects of an activated ability: nothing, or "Activate only ..." and its parts.
 pub(super) fn read(r: &mut Reader<'_>) -> Option<Restrictions> {
+    if r.words(W6E_NOT_IN_COMBAT) {
+        return r
+            .sentence_end()
+            .then(|| (Timing::Instant, None, Some(w6e_out_of_combat())));
+    }
     if !r.words("activate only") {
         return Some((Timing::Instant, None, None));
     }

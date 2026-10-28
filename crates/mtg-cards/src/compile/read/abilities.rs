@@ -15,6 +15,11 @@ use crate::trigger::TriggerPattern;
 /// once each turn."
 fn at_restriction(r: &mut Reader<'_>) -> bool {
     r.peek_word() == Some("activate")
+        || r.lookahead(|r| {
+            r.words(super::restrictions::W6E_NOT_IN_COMBAT)
+                .then_some(())
+        })
+        .is_some()
         || super::c11a_ability_less::c11a_at_less(r)
         || r.lookahead(|r| r.words(ONCE_EACH_TURN).then_some(()))
             .is_some()

@@ -42,6 +42,10 @@ impl Writer<'_> {
             {
                 Some(format!("{} gains control of ~", self.name_target()?))
             }
+            (_, Ref::You) => Some(format!(
+                "gain control of {}{until}",
+                self.w6e_taken(affected)?
+            )),
             _ => None,
         }
     }

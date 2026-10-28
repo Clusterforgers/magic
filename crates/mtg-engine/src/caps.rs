@@ -211,6 +211,7 @@ const RUNS: &[&str] = &[
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
     "Effect.Continuous",
+    "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
     "Effect.Rule",
     "Effect.Regenerate",

@@ -984,6 +984,14 @@ pub enum Effect {
         /// How long they last.
         duration: Duration,
     },
+    /// Exchanges the controllers of two permanents (CR 701.12b): the references together name exactly two, or nothing
+    /// happens, as also when one player controls both.
+    ExchangeControl {
+        /// The two permanents: one reference of two targets, or one reference for each.
+        what: Vec<Ref>,
+        /// How long the exchange lasts.
+        duration: Duration,
+    },
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

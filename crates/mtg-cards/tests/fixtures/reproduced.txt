@@ -8,6 +8,8 @@ Abzan Falconer
 Abzan Skycaptain
 Academy Elite
 Accomplished Automaton
+Act of Aggression
+Act of Treason
 Adaptive Snapjaw
 Adorned Pouncer
 Adriana, Captain of the Guard
@@ -200,6 +202,7 @@ Caldera Hellion
 Caller of the Pack
 Caprichrome
 Capsize
+Captivating Crew
 Capture of Jingzhou
 Caravan Escort
 Carnage Tyrant
@@ -279,6 +282,7 @@ Coruscation Mage
 Counterspell
 Courser of Kruphix
 Court of Grace
+Crack in Time
 Cram Session
 Creeping Tar Pit
 Crib Swap
@@ -370,6 +374,7 @@ Diviner Spirit
 Dockside Extortionist
 Dokuchi Shadow-Walker
 Domesticated Hydra
+Dominate
 Doom Blade
 Doom Whisperer
 Doublecast
@@ -433,6 +438,7 @@ Empyrial Storm
 Enigma Thief
 Enraged Revolutionary
 Enthusiastic Study
+Entrancing Melody
 Entreat the Angels
 Entreat the Dead
 Ephara's Dispersal
@@ -638,6 +644,7 @@ Hearthhull, the Worldseed
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
+Hellkite Tyrant
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
@@ -729,6 +736,8 @@ Kathari Screecher
 Kaya's Wrath
 Kazandu Tuskcaller
 Keep Watch
+Keiga, the Tide Star
+Kellogg, Dangerous Mind
 Kemba's Banner
 Kenrith's Transformation
 Kessig Wolf Run
@@ -833,6 +842,7 @@ Marwyn, the Nurturer
 Mask of Griselbrand
 Mask of Riddles
 Mass Diminish
+Master Thief
 Master of Dark Rites
 Master of Etherium
 Master of Pearls
@@ -860,6 +870,7 @@ Midnight Banshee
 Migratory Greathorn
 Migratory Route
 Millikin
+Mind Flayer
 Mindlock Orb
 Ministrant of Obligation
 Mirari
@@ -984,6 +995,7 @@ Phyrexian Soulgorger
 Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
+Piper of the Swarm
 Pit Fight
 Plague Drone
 Plague Myr
@@ -1241,6 +1253,8 @@ Soul of Zendikar
 Soul's Attendant
 Souldrinker
 Soultether Golem
+Souvenir Snatcher
+Sower of Temptation
 Space Marine Devastator
 Spawn of Mayhem
 Spectral Rider
@@ -1256,6 +1270,7 @@ Spire Golem
 Spire Winder
 Spirit of the Hearth
 Spoils of Adventure
+Spreading Insurrection
 Spring // Mind
 Springleaf Drum
 Squad Commander
@@ -1548,6 +1563,7 @@ Wurmwall Sweeper
 Wyrm's Crossing Patrol
 Young Wolf
 Zanikev Locust
+Zealous Conscripts
 Zendikar Farguide
 Zendikar Resurgent
 Zhang Fei, Fierce Warrior
