@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Vanishing":12}},{"Triggered":{"when":{"Batch":{"CountersRemoved":{"what":["This"],"counter":{"Other":"time"}}}},"effects":[{"Scry":{}},{"GainLife":{"amount":1}},{"If":{"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"time"}}},"op":"Eq","right":0}},"then":[{"Exile":{"what":"This"}},{"ExtraTurn":{}}]}}]}}]}]}

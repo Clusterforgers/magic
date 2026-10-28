@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"when":{"Damage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"},"HasAnyCounter"]}},"by":{"Multiply":2}}},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"CreateToken":{"token":{"Named":"mutagen"}}}]}},{"Keyword":{"PartnerGroup":"Character select"}}]}]}

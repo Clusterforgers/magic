@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Loyalty":{"cost":{"Plus":1},"effects":[{"Draw":{"who":"You"}},{"LoseLife":{"amount":1}}]}},{"Loyalty":{"cost":{"Minus":3},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}]}

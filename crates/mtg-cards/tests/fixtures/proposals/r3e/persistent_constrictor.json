@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"Opponents"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Triggering"}]},"bounds":{"min":0,"max":1}}],"effects":[{"LoseLife":{"who":"Triggering","amount":1}},{"PutCounters":{"on":{"Target":0},"counter":"-1/-1"}}]}},{"Keyword":"Persist"}]}]}
