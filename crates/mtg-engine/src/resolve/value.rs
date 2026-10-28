@@ -13,7 +13,7 @@ use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, 
 use mtg_cards::value::{
     Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TurnTally,
 };
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaType};
@@ -35,6 +35,9 @@ use crate::party;
 use crate::snapshot::Snapshot;
 use crate::state::{GameState, Tally};
 use crate::zones::Zone;
+
+/// The basic land types (CR 205.3i), which domain counts.
+const W7A_BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
 
 /// What earlier steps of a resolution bound to a name.
 pub type Bindings = BTreeMap<String, Vec<Target>>;
@@ -1108,7 +1111,26 @@ impl<'a> Scope<'a> {
                         .map_or(0, i64::from)
                 }
             }),
+            StatKind::BasicLandTypes => {
+                i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
+            }
         }
+    }
+
+    /// The basic land types the object has (CR 305.6), as the layers give and take them, by their index in
+    /// `W7A_BASIC_LAND_TYPES`.
+    fn w7a_basic_land_types<'s>(seen: &'s Seen<'_>) -> impl Iterator<Item = usize> + 's {
+        W7A_BASIC_LAND_TYPES
+            .iter()
+            .enumerate()
+            .filter(move |(_, name)| {
+                let subtype = Subtype((**name).to_owned());
+                seen.chars.has_subtype(&[], &subtype)
+                    || seen
+                        .card
+                        .is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, &subtype))
+            })
+            .map(|(index, _)| index)
     }
 
     /// The number an amount stands for.
@@ -1361,7 +1383,20 @@ impl<'a> Scope<'a> {
     /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.
     /// How many different values of the characteristic there are among the objects the selector matches.
     fn w2c_distinct(&self, of: &Selector, stat: StatKind) -> Result<i64, ResolveError> {
-        let values: BTreeSet<i64> = self.stats(of, stat)?.into_iter().collect();
+        let values: BTreeSet<i64> = if stat == StatKind::BasicLandTypes {
+            // Domain counts each basic land type once, a land of several types adding each of them.
+            let mut types = BTreeSet::new();
+            for object in self.matching(of)? {
+                if let Some(seen) = self.seen(object) {
+                    types.extend(
+                        Self::w7a_basic_land_types(&seen).filter_map(|i| i64::try_from(i).ok()),
+                    );
+                }
+            }
+            types
+        } else {
+            self.stats(of, stat)?.into_iter().collect()
+        };
         Ok(i64::try_from(values.len()).unwrap_or(i64::MAX))
     }
 

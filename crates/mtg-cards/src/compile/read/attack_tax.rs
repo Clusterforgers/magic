@@ -66,8 +66,11 @@ fn tax(r: &mut Reader<'_>) -> Option<GameRule> {
     let (mana, per) = if symbols == "{X}" {
         r.punct(',').then_some(())?;
         r.need("where x is the number of")?;
-        let counted = phrase(r, Form::All)?;
-        ("{1}".parse::<ManaCostX>().ok()?, Amount::Count(counted))
+        let per = match super::w2c_counts::w2c_distinct(r, true) {
+            Some(distinct) => distinct,
+            None => Amount::Count(phrase(r, Form::All)?),
+        };
+        ("{1}".parse::<ManaCostX>().ok()?, per)
     } else {
         (symbols.parse::<ManaCostX>().ok()?, Amount::one())
     };
@@ -152,6 +155,15 @@ fn sentences(rule: &GameRule) -> Vec<String> {
         Amount::Fixed(1) if !mana.has_x() => (mana.to_string(), String::new()),
         Amount::Count(counted) if mana.to_string() == "{1}" => {
             match phrase_text(counted, Form::All) {
+                Some(counted) => (
+                    "{X}".to_owned(),
+                    format!(", where X is the number of {counted}"),
+                ),
+                None => return Vec::new(),
+            }
+        }
+        Amount::Distinct { .. } if mana.to_string() == "{1}" => {
+            match super::w2c_counts::w2c_distinct_text(per, true) {
                 Some(counted) => (
                     "{X}".to_owned(),
                     format!(", where X is the number of {counted}"),

@@ -831,6 +831,7 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
                     | Amount::Party(_)
                     | Amount::Times { .. }
                     | Amount::Tallied { .. }
+                    | Amount::Distinct { .. }
                     | Amount::CommanderCasts(_),
                 ..
             }
