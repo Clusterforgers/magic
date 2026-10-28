@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cb8ec2e4-8223-4172-8f2c-37c918a573fa",
+  "name": "Homeward Path",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Homeward Path",
+      "oracle_fingerprint": "83a0e5e35cc3da774030932e74ee3d95",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 14, "end": 71 }
+          }
+        }
+      ]
+    }
+  ]
+}
