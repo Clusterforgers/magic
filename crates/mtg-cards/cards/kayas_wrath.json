@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bc8de6c7-c69d-4add-8f25-825d945874f9",
+  "name": "Kaya's Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaya's Wrath",
+      "oracle_fingerprint": "d95dffd2cd84368ad51284dad4ac6d78",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "GainLife": {
+                  "amount": { "Destroyed": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

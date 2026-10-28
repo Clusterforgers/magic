@@ -1,0 +1,29 @@
+{
+  "oracle_id": "724700ad-1e4e-4cbc-af7f-0b3b87ed4bc8",
+  "name": "Golden Ratio",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golden Ratio",
+      "oracle_fingerprint": "b995da318f07711c4804a700e83527f9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

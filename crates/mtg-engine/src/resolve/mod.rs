@@ -65,6 +65,8 @@ pub struct Resolving {
     pub(crate) lost: u32,
     /// The dice rolled so far in the resolution, in the order logged, which "the result" reads.
     pub(crate) rolled: Vec<u32>,
+    /// The permanents the resolution has destroyed so far, as the objects they were, which "destroyed this way" reads.
+    pub(crate) destroyed: Vec<ObjectRef>,
 }
 
 impl Resolving {
@@ -78,6 +80,7 @@ impl Resolving {
             shown: Vec::new(),
             lost: 0,
             rolled: Vec::new(),
+            destroyed: Vec::new(),
         }
     }
 

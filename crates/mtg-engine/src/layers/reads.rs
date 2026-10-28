@@ -238,6 +238,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ColorsSpent
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
+        | Amount::Destroyed(_)
         | Amount::DieResult(_)
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
@@ -259,9 +260,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::EvenShare(total) => reads_of_amount(total),
         Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
         Amount::Devotion(_) => Traits::CONTROL,
-        Amount::Greatest { of, stat } | Amount::Total { of, stat } => {
-            reads_of_selector(of).or(reads_of_stat(*stat))
-        }
+        Amount::Greatest { of, stat }
+        | Amount::Total { of, stat }
+        | Amount::Distinct { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::Largest { who, of } => reads_of_ref(who).or(reads_of_selector(of)),
         Amount::Party(who) => reads_of_ref(who)

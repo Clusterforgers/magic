@@ -1,0 +1,40 @@
+{
+  "oracle_id": "88ba283d-2d03-4455-a4a3-a2a5622209bd",
+  "name": "Stalwart Pathlighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalwart Pathlighter",
+      "oracle_fingerprint": "8b77ca746927d4371fe6c7c6013c7a06",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

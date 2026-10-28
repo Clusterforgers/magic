@@ -1,0 +1,37 @@
+{
+  "oracle_id": "932668fa-d6e3-41c0-ad0c-8e0a00e68d11",
+  "name": "Decree of Pain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decree of Pain",
+      "oracle_fingerprint": "ca4d14be950c4111fafddfa77c84e4ee",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] }, "regenerate": false } },
+              { "Draw": { "count": { "Destroyed": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{3}{B}{B}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

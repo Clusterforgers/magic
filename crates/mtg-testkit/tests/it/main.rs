@@ -457,6 +457,8 @@ mod vehicles;
 mod vote_fuzz;
 mod votes;
 mod w2b_read_ahead;
+mod w2c_destroyed;
+mod w2c_distinct;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;

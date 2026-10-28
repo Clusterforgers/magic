@@ -99,7 +99,7 @@ fn a_search_for_a_count_a_where_clause_names_writes_back(#[case] text: &str) {
     "Search your library for up to X basic land cards, put them onto the battlefield, then shuffle."
 )]
 #[case::an_unread_count(
-    "Search your library for up to X basic land cards, where X is the number of different powers among creatures you control. Put those cards onto the battlefield tapped, then shuffle."
+    "Search your library for up to X basic land cards, where X is the number of differently named artifact tokens you control. Put those cards onto the battlefield tapped, then shuffle."
 )]
 fn a_count_that_is_not_read_stays_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");

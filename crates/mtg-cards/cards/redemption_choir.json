@@ -1,0 +1,58 @@
+{
+  "oracle_id": "90c62b27-027a-44a3-8d21-3c62701b18a8",
+  "name": "Redemption Choir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redemption Choir",
+      "oracle_fingerprint": "9b03a7d6dc25264a9c9ed90af0c7a14c",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -846,6 +846,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(coven) = r.attempt(super::w2c_counts::w2c_coven) {
+        return Some(coven);
+    }
     if let Some(paid) = r.attempt(|r| cost_paid(r, false)) {
         return Some(paid);
     }
@@ -1017,6 +1020,12 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(coven) = super::w2c_counts::w2c_coven_texts(condition)
+        .into_iter()
+        .next()
+    {
+        return Some(coven);
+    }
     if let Some(paid) = cost_paid_text(condition, false) {
         return Some(paid);
     }

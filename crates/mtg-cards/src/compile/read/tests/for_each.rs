@@ -134,8 +134,8 @@ fn a_count_by_for_each_reads_as_the_count_of_a_selector(
 #[case::a_compound_type(
     "Target opponent loses 2 life for each instant and sorcery card in your graveyard."
 )]
-#[case::a_quantity("Draw a card for each different power among creatures you control.")]
-#[case::damage_dealt("Draw a card for each creature destroyed this way.")]
+#[case::a_quantity("Draw a card for each different toughness among creatures you control.")]
+#[case::sacrificed_this_way("Draw a card for each creature sacrificed this way.")]
 #[case::no_thing("Draw a card for each.")]
 #[case::x_for_each("Draw X cards for each creature you control.")]
 #[case::zero_for_each("Draw zero cards for each creature you control.")]

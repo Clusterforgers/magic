@@ -562,10 +562,9 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "Total");
                 self.at("of", |w| w.selector(of));
             }
-            Amount::CardTypes(of) => {
-                self.uses("Amount", "CardTypes");
-                self.selector(of);
-            }
+            Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
+            Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
+            Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
@@ -589,6 +588,12 @@ impl<'a> Walker<'a> {
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::Triggering => self.c11e_triggering(),
         }
+    }
+
+    /// An amount that counts over the objects a selector names.
+    fn w2c_selector_amount(&mut self, tag: &str, of: &Selector) {
+        self.uses("Amount", tag);
+        self.selector(of);
     }
 
     /// The amount of the event, which only a triggered ability has.
