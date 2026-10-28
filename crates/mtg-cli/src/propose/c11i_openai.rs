@@ -2,6 +2,9 @@
 //! `llama-server` and similar local servers offer it: the key is optional, the system prompt comes first and unchanged so
 //! a server's prefix cache is reused, and a prompt the server cut to its context window ends the run.
 
+use std::sync::OnceLock;
+
+use mtg_cards::reference::w3a_card_schema;
 use reqwest::header::{AUTHORIZATION, HeaderMap};
 use serde_json::{Value, json};
 use tokio::runtime::Handle;
@@ -28,6 +31,8 @@ pub const C11I_DEFAULT_ANSWER_TOKENS: u32 = 16_384;
 pub struct OpenAi {
     /// Ask for a JSON object only (`response_format`); some servers reject the field.
     pub json_mode: bool,
+    /// Send the schema of a rules file (`response_format` json_schema) in place of the JSON-object mode.
+    pub schema: bool,
     /// The most tokens an answer may have, the reasoning of a reasoning model included.
     pub max_answer_tokens: u32,
 }
@@ -67,7 +72,11 @@ impl Dialect for OpenAi {
     }
 
     fn body(&self, request: &Request) -> Value {
-        c11i_request_body(request, self.json_mode, self.max_answer_tokens)
+        let mut body = c11i_request_body(request, self.json_mode, self.max_answer_tokens);
+        if self.schema {
+            body["response_format"] = w3a_schema_format().clone();
+        }
+        body
     }
 
     fn parse(&self, request: &Request, body: &str) -> Result<Response, ModelError> {
@@ -101,7 +110,18 @@ pub fn c11i_request_body(request: &Request, json_mode: bool, max_tokens: u32) ->
     body
 }
 
-/// Reads a successful answer: the first choice's text and the tokens used. `sent` is the estimate of the prompt tokens;
+/// The `response_format` that limits an answer to the schema of a rules file, built once.
+pub fn w3a_schema_format() -> &'static Value {
+    static W3A_FORMAT: OnceLock<Value> = OnceLock::new();
+    W3A_FORMAT.get_or_init(|| {
+        json!({
+            "type": "json_schema",
+            "json_schema": {"name": "card_rules", "strict": true, "schema": w3a_card_schema()},
+        })
+    })
+}
+
+/// Reads a successful answer:the first choice's text and the tokens used. `sent` is the estimate of the prompt tokens;
 /// a server that reports far fewer cut the prompt, which is an error.
 pub fn c11i_parse_response(body: &str, sent: u64, limit: u32) -> Result<Response, ModelError> {
     let value: Value =

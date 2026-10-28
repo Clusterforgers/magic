@@ -141,6 +141,9 @@ pub fn options_of(args: &ProposeArgs) -> Result<Options, CliError> {
     })
 }
 
+/// What `--schema` with the Anthropic provider prints: that API takes no schema, so the flag does nothing there.
+pub const W3A_SCHEMA_IGNORED: &str = "--schema is ignored: only --provider openai sends a schema; the Anthropic API is asked as usual";
+
 /// The client of the provider the arguments name, reaching `api` (its address replaced by `--base-url`). The Anthropic
 /// key is required; a key for a local server is optional.
 pub fn c11i_client_of(
@@ -157,6 +160,9 @@ pub fn c11i_client_of(
                 config.base_url.clone_from(base);
             }
             let key = ApiKey::from_env(env)?;
+            if args.schema {
+                progress.line(W3A_SCHEMA_IGNORED);
+            }
             Box::new(AnthropicClient::new(key, &config, handle, progress)?)
         }
         Provider::Openai => {
@@ -166,6 +172,7 @@ pub fn c11i_client_of(
                 .unwrap_or_else(|| c11i_openai::C11I_DEFAULT_BASE.to_owned());
             let dialect = OpenAi {
                 json_mode: !args.no_json_mode,
+                schema: args.schema,
                 max_answer_tokens: args.max_answer_tokens,
             };
             let key = c11i_openai::c11i_key_from_env(env);
