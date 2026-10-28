@@ -858,9 +858,6 @@ mod tests {
             Keyword::Harmonize(Cost::default()),
             Keyword::ReadAhead,
             Keyword::Exert {
-                once_per_turn: false,
-            },
-            Keyword::Exert {
                 once_per_turn: true,
             },
         ]

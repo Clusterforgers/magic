@@ -1486,9 +1486,17 @@ mod tests {
         }
     }
 
+    /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
+    /// attacks.").
+    const W9D_SENTENCES: [&str; 1] = ["Exert"];
+
     #[test]
     fn every_keyword_the_dsl_declares_is_recognised_by_name() {
-        for name in Keyword::NAMES.iter().copied() {
+        for name in Keyword::NAMES
+            .iter()
+            .copied()
+            .filter(|name| !W9D_SENTENCES.contains(name))
+        {
             let name = printed(name);
             assert!(
                 KEYWORDS
@@ -1658,7 +1666,7 @@ mod tests {
         }
         let missing: Vec<_> = Keyword::NAMES
             .iter()
-            .filter(|name| !seen.contains(name))
+            .filter(|name| !seen.contains(name) && !W9D_SENTENCES.contains(name))
             .collect();
         assert!(missing.is_empty(), "{missing:?}");
     }
