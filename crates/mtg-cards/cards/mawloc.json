@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e5d928dc-b465-4cf7-ab11-d5bd3328f8e7",
+  "name": "Mawloc",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mawloc",
+      "oracle_fingerprint": "70f1400a4770074100b3370d50b861db",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Fight": { "what": "This", "with": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

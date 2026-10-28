@@ -2092,11 +2092,19 @@ impl<'a> Walker<'a> {
                 }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));
-                // The engine makes shields of damage prevention; any other shield waits.
+                // The engine makes shields of damage prevention and of a death sent elsewhere; any other waits.
                 match (when, by) {
                     (
                         ReplaceWhen::Damage { .. },
                         ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_),
+                    )
+                    | (
+                        ReplaceWhen::ZoneChange {
+                            from: Some(ZoneKind::Battlefield),
+                            to: Some(ZoneKind::Graveyard),
+                            ..
+                        },
+                        ReplaceBy::MoveTo(_),
                     ) => {}
                     _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
                 }

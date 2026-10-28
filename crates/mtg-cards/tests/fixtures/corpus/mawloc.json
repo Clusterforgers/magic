@@ -1,0 +1,31 @@
+{
+  "cmc": 2.0,
+  "collector_number": "133",
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "colors": [
+    "G",
+    "R"
+  ],
+  "digital": false,
+  "id": "bbec97ff-bb84-4496-9e09-d4fc1570c516",
+  "keywords": [
+    "Ravenous",
+    "Fight",
+    "Terror from the Deep"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{X}{R}{G}",
+  "name": "Mawloc",
+  "oracle_id": "e5d928dc-b465-4cf7-ab11-d5bd3328f8e7",
+  "oracle_text": "Ravenous (This creature enters with X +1/+1 counters on it. If X is 5 or more, draw a card when it enters.)\nTerror from the Deep — When this creature enters, it fights up to one target creature an opponent controls. If that creature would die this turn, exile it instead.",
+  "power": "2",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "set": "40k",
+  "toughness": "2",
+  "type_line": "Creature — Tyranid"
+}

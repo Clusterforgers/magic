@@ -2390,6 +2390,7 @@ impl Writer<'_> {
         prevention::effect_text(effect)
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
+            .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))
     }
 

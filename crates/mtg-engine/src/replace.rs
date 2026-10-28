@@ -357,8 +357,10 @@ fn shields_of(state: &GameState) -> Vec<RuleEffect> {
         .rule_effects()
         .iter()
         .filter(|effect| {
-            matches!(effect.rule, Rule::PreventDamage(_) | Rule::Regenerate(_))
-                && effect.source.is_some()
+            matches!(
+                effect.rule,
+                Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. }
+            ) && effect.source.is_some()
                 && effect.is_active(state)
         })
         .cloned()
@@ -989,8 +991,8 @@ impl Pass<'_> {
         Ok(found)
     }
 
-    /// The rules about a move that are no abilities: the exile of a spell that leaves the stack, buyback, an Adventure
-    /// and rebound.
+    /// The rules about a move that are no abilities: the exile of a spell that leaves the stack, buyback, an
+    /// Adventure, rebound and the death shields.
     fn move_rule_candidates(&self, slot: &Slot) -> Vec<Candidate> {
         [
             self.exile_from_stack_candidate(slot),
@@ -1000,6 +1002,7 @@ impl Pass<'_> {
         ]
         .into_iter()
         .flatten()
+        .chain(self.c7_untap_dies(slot))
         .collect()
     }
 
@@ -2722,6 +2725,8 @@ mod reveal;
 mod riot;
 
 mod c6_blk_draw_step;
+
+mod c7_untap_dies;
 
 #[cfg(test)]
 mod shields;
