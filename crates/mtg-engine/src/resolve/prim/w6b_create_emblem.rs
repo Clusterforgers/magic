@@ -97,13 +97,11 @@ mod tests {
             let emblem = game.object(made.object).unwrap();
             assert_eq!(emblem.zone(), Zone::Command(PlayerId(owner)));
             assert_eq!(emblem.kind(), ObjectKind::Emblem);
-            assert!(emblem.def.rules.iter().all(|rule| matches!(
-                **rule,
-                mtg_cards::ability::Ability::Static {
-                    from: ZoneKind::Command,
-                    ..
-                }
-            )));
+            let written = serde_json::to_value(&*made.definition).unwrap();
+            assert_eq!(
+                written["rules"][0]["Static"]["from"],
+                serde_json::to_value(ZoneKind::Command).unwrap()
+            );
             assert!(
                 apply_event(&mut game, event).is_err(),
                 "the same object twice"

@@ -474,12 +474,15 @@ pub(crate) fn note_definition(state: &mut GameState, definition: &CardDefinition
     if crate::ability_reader::definition_has_protection(definition) {
         state.possible.protection = true;
     }
+    if crate::ability_reader::definition_works_elsewhere(definition) {
+        state.possible.elsewhere = true;
+    }
 }
 
 /// Whether the object may be copied: an object of the game that is not an ability. A double-faced permanent is copied
 /// as the face it shows (CR 707.8), so a transformed one is no exception.
 pub(crate) fn may_be_copied(object: &GameObject) -> bool {
-    object.kind() != ObjectKind::Ability
+    !matches!(object.kind(), ObjectKind::Ability | ObjectKind::Emblem)
 }
 
 /// The copiable values of the object `reference` names (CR 707.2): what its card prints, or the values of the copy

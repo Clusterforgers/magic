@@ -11,13 +11,13 @@ use std::sync::Arc;
 use common::pid;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
-use mtg_core::card::CardType;
+use mtg_core::color::Color;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::object::ObjectKind;
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{free_creature, island};
+use mtg_testkit::cards::{free_creature, instant, island};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -26,17 +26,13 @@ const ANTHEM: &str = r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"Con
 /// Whenever a player draws a card, you lose 2 life.
 const DRAIN: &str = r#"{"Triggered":{"when":{"Drew":{}},"effects":[{"LoseLife":{"amount":2}}]}}"#;
 
-/// A free instant: "`who` gets an emblem with `ability`".
+/// An instant for `{U}`: "`who` gets an emblem with `ability`".
 fn gift(name: &str, who: &str, ability: &str) -> Arc<CardDefinition> {
     let rules: Ability = serde_json::from_str(&format!(
         r#"{{"Spell":{{"effects":[{{"CreateEmblem":{{"who":"{who}","abilities":[{ability}]}}}}]}}}}"#
     ))
     .unwrap();
-    Arc::new(
-        CardDefinition::new(name)
-            .with_type(CardType::Instant)
-            .with_rules(rules),
-    )
+    Arc::new(Arc::unwrap_or_clone(instant(name, 0, &[Color::Blue])).with_rules(rules))
 }
 
 /// Seat 0 holds the gift; every seat has a 1/1 Bear and an Island.
