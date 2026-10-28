@@ -48,6 +48,7 @@ mod c6_au_dead_card;
 mod c6_blk_aura;
 mod c6_blk_draws;
 mod c6_eg_cards;
+mod c6_gap_batches;
 mod c6_kw_renown_exploit;
 mod card_grants;
 mod card_grants_fuzz;
