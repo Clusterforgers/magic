@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - M0 to M2 (foundations, card data, engine core, protocol and server, game flow, web client, deck builder): done.
-- M3 card system and M6 coverage: in progress; 3,991 of the 6,429 stored precon cards (62.1%) and 79.4% of the copies are Verified.
+- M3 card system and M6 coverage: in progress; 4,022 of the 6,429 stored precon cards (62.6%) and 79.7% of the copies are Verified.
 - M4 Commander: done in the engine, server and lobby except the companion conditions that need more than the card (m4c).
 - M5 table and prompts, M7 product, M8 polish and deploy: not started.
 
@@ -32,7 +32,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2ea), (r2dge), (r2eba) a local run, (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
-- Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5) affected-only checks.
+- Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
 - After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
 
@@ -70,7 +70,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server) and `dsl-reference`, the census of stored proposals and writers for every accepted sample wording.
 - Reference engines: Forge, XMage and Magarena surveyed, and `mtg-cli forge-check` maps Forge's scripts to DSL verbs (`docs/reference-engines.md`).
 - Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser.
-- Tooling: `scripts/check.sh`, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
+- Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
 
 ## M3 Card system
 
@@ -121,7 +121,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (3,991 of 6,429 precon cards, 62.1%; 79.4% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,022 of 6,429 precon cards, 62.6%; 79.7% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
@@ -219,7 +219,8 @@ The server is settled first, then the web is built once against the final types.
 
 ### Tooling
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
-- [~] (t5) (t5-affected-checks) `scripts/check.sh affected` runs only the phases a diff can break: web only for changes to `web/`, the protocol or the bindings, changed-file web tests, no rerun of a tree that already passed, and nextest where it is faster
+- [ ] (t5a) The Postgres lock covers only the `sqlx::test` tests: the other tests of `mtg-server` and `mtg-cli` run outside it (one full check: 398 s under the lock, 1,087 s waiting for it)
+- [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds (9,310 over 15,155 tests in 460 modules, 22% in fuzz modules): shared per-test setup and a smaller default game count for diffs that cannot change engine behaviour
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load
 - [ ] (t3c) DSL amounts for what an earlier effect did and for the mana value a cost took, and a partner by creature type (Foul-Tongue Shriek, Nahiri's Sacrifice, The Knight of Land Drops)
 - [ ] The expected X symbols in `x_cards.rs` of `mtg-testkit` are derived from the card list, so a new X card edits no test
