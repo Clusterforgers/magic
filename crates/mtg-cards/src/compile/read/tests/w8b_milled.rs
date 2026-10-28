@@ -1,4 +1,4 @@
-//! Goal: a mill trigger ("whenever a player mills a nonland card", "an opponent mills", "one or more nonland cards are milled") reads into `Milled` (a batch for "one or more") and writes back the same way, and a move into a graveyard that is no mill stays with the other patterns.
+//! Goal: a mill trigger ("whenever a player mills a nonland card", "an opponent mills", "one or more nonland cards are milled") reads into `Milled` (a batch for "one or more") and writes back the same way, and a move into a graveyard that is no mill stays with the other patterns; ", then" and "you get counters and put" join two steps, "if this creature is in your graveyard" makes a return work from there, and "you gain life rather than lose life from radiation" is a rule.
 use super::*;
 
 #[rstest]
@@ -39,12 +39,32 @@ fn w8b_a_mill_trigger(#[case] text: &str, #[case] json: &str) {
     "Whenever a creature dies, if this creature is in your graveyard, you may return it to your hand.",
     r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}},"from":"Graveyard","effects":[{"May":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}]}}"#
 )]
+#[case::you_get_counters_and_put(
+    "Whenever this creature is dealt damage, you get three rad counters and put three +1/+1 counters on this creature.",
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":[],"to":"This"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"rad"},"count":3}},{"PutCounters":{"on":"This","counter":"+1/+1","count":3}}]}}"#
+)]
 fn w8b_a_whole_ability(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Triggered, false, json);
 }
 
+#[test]
+fn w8b_radiation_gains_life_reads_as_a_rule() {
+    reads_as(
+        "You gain life rather than lose life from radiation.",
+        ClauseKind::Static,
+        false,
+        r#"{"Rule":{"rule":{"RadiationGainsLife":"You"}}}"#,
+    );
+}
+
 #[rstest]
 #[case::then_an_unlisted_verb("Whenever a creature dies, draw a card, then gain 1 life.")]
+#[case::you_gain_life_and_put(
+    "Whenever a creature dies, you gain 3 life and put a +1/+1 counter on this creature."
+)]
+#[case::an_opponent_gets_counters_and_put(
+    "Whenever a creature dies, each opponent gets a rad counter and put a +1/+1 counter on this creature."
+)]
 #[case::in_your_graveyard_then_another_effect(
     "Whenever a creature dies, if this creature is in your graveyard, you may draw a card."
 )]

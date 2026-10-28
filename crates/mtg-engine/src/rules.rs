@@ -51,6 +51,8 @@ pub enum Rule {
     CantGainLife(Vec<PlayerId>),
     /// Damage dealt to the players causes no loss of life.
     NoLifeLossFromDamage(Vec<PlayerId>),
+    /// The players gain life rather than lose life from radiation.
+    RadiationGainsLife(Vec<PlayerId>),
     /// The players' life totals can't change (CR 119.7, 119.8).
     LifeTotalCantChange(Vec<PlayerId>),
     /// The players have the keyword, such as protection from everything.
@@ -266,6 +268,7 @@ pub(crate) struct RulesInForce {
     uncounterable: BTreeSet<ObjectId>,
     no_life_gain: BTreeSet<PlayerId>,
     no_damage_loss: BTreeSet<PlayerId>,
+    radiation_gains: BTreeSet<PlayerId>,
     no_life_change: BTreeSet<PlayerId>,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
@@ -379,6 +382,7 @@ impl RulesInForce {
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
+            Rule::RadiationGainsLife(players) => self.radiation_gains.extend(players),
             Rule::LifeTotalCantChange(players) => self.no_life_change.extend(players),
             Rule::PlayersHave { who, keyword } => self
                 .player_keywords
@@ -508,6 +512,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
+        GameRule::RadiationGainsLife(who) => Rule::RadiationGainsLife(scope.players(who)?),
         GameRule::LifeTotalCantChange(who) => Rule::LifeTotalCantChange(scope.players(who)?),
         GameRule::PlayersHave { who, keyword } => Rule::PlayersHave {
             who: scope.players(who)?,
@@ -574,6 +579,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
         Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
+        | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
@@ -690,6 +696,7 @@ static NONE: RulesInForce = RulesInForce {
     uncounterable: BTreeSet::new(),
     no_life_gain: BTreeSet::new(),
     no_damage_loss: BTreeSet::new(),
+    radiation_gains: BTreeSet::new(),
     no_life_change: BTreeSet::new(),
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
@@ -863,6 +870,11 @@ pub fn life_total_cant_change(state: &GameState, player: PlayerId) -> bool {
 pub fn damage_causes_no_life_loss(state: &GameState, player: PlayerId) -> bool {
     let rules = state.rules();
     rules.no_damage_loss.contains(&player) || rules.no_life_change.contains(&player)
+}
+
+/// Whether `player` gains life rather than loses life from radiation: the one place the rad rule reads this rule.
+pub(crate) fn w8b_radiation_gains_life(state: &GameState, player: PlayerId) -> bool {
+    state.rules().radiation_gains.contains(&player)
 }
 
 /// The keywords the rules in force give `player` for a time, such as protection from everything.

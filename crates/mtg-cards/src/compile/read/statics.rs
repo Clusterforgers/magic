@@ -555,6 +555,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("players have no maximum hand size") {
         return Some(GameRule::NoMaxHandSize(Ref::EachPlayer));
     }
+    if r.words("you gain life rather than lose life from radiation") {
+        return Some(GameRule::RadiationGainsLife(Ref::You));
+    }
     if r.words("skip your draw step") {
         return Some(GameRule::SkipDrawStep(Ref::You));
     }
@@ -1504,6 +1507,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         }
         (GameRule::NoMaxHandSize(Ref::EachPlayer), ZoneKind::Battlefield) => {
             vec!["Players have no maximum hand size".to_owned()]
+        }
+        (GameRule::RadiationGainsLife(Ref::You), ZoneKind::Battlefield) => {
+            vec!["You gain life rather than lose life from radiation".to_owned()]
         }
         (GameRule::SkipDrawStep(Ref::You), ZoneKind::Battlefield) => {
             vec!["Skip your draw step".to_owned()]

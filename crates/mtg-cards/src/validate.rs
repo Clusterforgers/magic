@@ -2756,6 +2756,7 @@ impl Walker<'_> {
             }),
             GameRule::CantGainLife(who)
             | GameRule::NoLifeLossFromDamage(who)
+            | GameRule::RadiationGainsLife(who)
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
@@ -3718,6 +3719,7 @@ mod tests {
     )]
     #[case::no_life_gain(r#"{"CantGainLife":"EachPlayer"}"#, "CantGainLife")]
     #[case::no_life_loss_from_damage(r#"{"NoLifeLossFromDamage":"You"}"#, "NoLifeLossFromDamage")]
+    #[case::radiation_gains_life(r#"{"RadiationGainsLife":"You"}"#, "RadiationGainsLife")]
     #[case::no_draw(r#"{"CantDraw":"Opponents"}"#, "CantDraw")]
     #[case::no_search(r#"{"CantSearch":"You"}"#, "CantSearch")]
     #[case::a_revealed_top(r#"{"RevealTop":"You"}"#, "RevealTop")]
