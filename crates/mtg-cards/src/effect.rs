@@ -506,11 +506,16 @@ pub enum Effect {
     RemoveCounters {
         /// Where they come from.
         from: Ref,
-        /// The kind.
-        counter: CounterKind,
+        /// The kind; counters of any kinds the controller picks one at a time when absent ("Remove three counters from
+        /// target permanent").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The controller may stop before the count ("Remove up to three counters").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        up_to: bool,
     },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
     MoveCounters {
@@ -1290,8 +1295,12 @@ mod tests {
         r#"{"PutCounters":{"on":{"Target":0},"counter":"poison"}}"#
     )]
     #[case::remove_all_the_counters_of_a_kind(
-        Effect::RemoveCounters { from: Ref::This, counter: CounterKind::Other("energy".into()), count: Amount::Counters { on: Ref::This, counter: CounterKind::Other("energy".into()) } },
+        Effect::RemoveCounters { from: Ref::This, counter: Some(CounterKind::Other("energy".into())), count: Amount::Counters { on: Ref::This, counter: CounterKind::Other("energy".into()) }, up_to: false },
         r#"{"RemoveCounters":{"from":"This","counter":{"Other":"energy"},"count":{"Counters":{"on":"This","counter":{"Other":"energy"}}}}}"#
+    )]
+    #[case::w2f_up_to_three_of_any_kind(
+        Effect::RemoveCounters { from: Ref::Target(0), counter: None, count: Amount::Fixed(3), up_to: true },
+        r#"{"RemoveCounters":{"from":{"Target":0},"count":3,"up_to":true}}"#
     )]
     #[case::double_the_counters_of_a_kind(
         Effect::MultiplyCounters { on: Ref::This, counter: Some(CounterKind::PlusOnePlusOne), factor: 2 },

@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "7f1ff9e5-3d69-43a9-965c-2d87951cfd2b",
+  "oracle_id": "31b990e3-9bad-4b0a-a9d5-f5b9ed2ad0b0",
+  "multiverse_ids": [
+    658577
+  ],
+  "mtgo_id": 124725,
+  "tcgplayer_id": 545295,
+  "cardmarket_id": 764971,
+  "name": "Fain, the Broker",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b",
+  "scryfall_uri": "https://scryfall.com/card/otc/133/fain-the-broker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:05:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.jpg?1783911932",
+    "normal": "https://cards.scryfall.io/normal/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.jpg?1783911932",
+    "large": "https://cards.scryfall.io/large/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.jpg?1783911932",
+    "png": "https://cards.scryfall.io/png/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.png?1783911932",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.jpg?1783911932",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.jpg?1783911932",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.webp?1783911932",
+    "grid": "https://cards.scryfall.io/grid/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.webp?1783911932",
+    "display": "https://cards.scryfall.io/display/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.webp?1783911932",
+    "art": "https://cards.scryfall.io/art/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.webp?1783911932",
+    "crop": "https://cards.scryfall.io/crop/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.webp?1783911932",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/f/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b.jpg?1783911932"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Warlock",
+  "oracle_text": "{T}, Sacrifice a creature: Put two +1/+1 counters on target creature.\n{T}, Remove a counter from a creature you control: Create a Treasure token.\n{T}, Sacrifice an artifact: Create a 2/1 white and black Inkling creature token with flying.\n{3}{B}: Untap Fain.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "7f1ff9e5-3d69-43a9-965c-2d87951cfd2b",
+      "component": "combo_piece",
+      "name": "Fain, the Broker",
+      "type_line": "Legendary Creature — Human Warlock",
+      "uri": "https://api.scryfall.com/cards/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b"
+    },
+    {
+      "object": "related_card",
+      "id": "7ec6f053-96f7-4e57-b2eb-4e7699a40a4f",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/7ec6f053-96f7-4e57-b2eb-4e7699a40a4f"
+    },
+    {
+      "object": "related_card",
+      "id": "2af2f485-ee1c-468f-9854-a9529c38ec55",
+      "component": "token",
+      "name": "Inkling",
+      "type_line": "Token Creature — Inkling",
+      "uri": "https://api.scryfall.com/cards/2af2f485-ee1c-468f-9854-a9529c38ec55"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set": "otc",
+  "set_name": "Outlaws of Thunder Junction Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7f1ff9e5-3d69-43a9-965c-2d87951cfd2b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A31b990e3-9bad-4b0a-a9d5-f5b9ed2ad0b0&unique=prints",
+  "collector_number": "133",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lius Lasahido",
+  "artist_ids": [
+    "0a0e9093-ce44-4a69-93a7-09b63e7c330d"
+  ],
+  "illustration_id": "489322e8-0ee1-4e9d-8899-39e5643967b3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3396,
+  "prices": {
+    "usd": "2.55",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.23",
+    "eur_foil": null,
+    "tix": "0.37"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658577&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFain%252C%2Bthe%2BBroker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFain%252C%2Bthe%2BBroker",
+    "edhrec": "https://edhrec.com/route/?cc=Fain%2C+the+Broker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545295%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764971&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124725?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

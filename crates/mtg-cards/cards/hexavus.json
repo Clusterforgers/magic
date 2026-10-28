@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ba48a1a6-a53f-4e7e-881a-472637a3a007",
+  "name": "Hexavus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hexavus",
+      "oracle_fingerprint": "62ef2fb3bc572f93dbc565206199cb81",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 6 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "from": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2e358f7e-c282-4b92-8255-1436c99cda49",
+  "name": "Power Conduit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Conduit",
+      "oracle_fingerprint": "46269923c5c1e34cfa8fbfddca6c4b1c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "from": [] } }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "charge" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

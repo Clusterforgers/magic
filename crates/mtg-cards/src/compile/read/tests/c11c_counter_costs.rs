@@ -1,4 +1,4 @@
-//! Goal: a counter removed from a permanent the payer controls reads as a cost part with `from` and writes back as the card's text, for a named kind and each noun; a count other than one, "from among", a counter of any kind and a permanent of another player stay unread.
+//! Goal: a counter removed from a permanent the payer controls reads as a cost part with `from` and writes back as the card's text, for a named kind and each noun; a count other than one, "from among" and a permanent of another player stay unread.
 use super::*;
 
 #[rstest]
@@ -30,7 +30,6 @@ fn c11c_counter_costs_read_and_write_back(#[case] text: &str, #[case] part: &str
 #[rstest]
 #[case::two_counters("{1}, Remove two +1/+1 counters from a creature you control: Draw a card.")]
 #[case::from_among("{1}, Remove two +1/+1 counters from among creatures you control: Draw a card.")]
-#[case::any_kind("{T}, Remove a counter from a creature you control: Draw a card.")]
 #[case::an_opponents(
     "{1}, Remove a +1/+1 counter from a creature an opponent controls: Draw a card."
 )]

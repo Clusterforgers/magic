@@ -244,16 +244,21 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::PutCounters { on, counter, count }])
 }
 
-/// "Remove a +1/+1 counter from ~.", "Remove two charge counters from target permanent."
+/// "Remove a +1/+1 counter from ~.", "Remove two charge counters from target permanent.", "Remove up to three counters
+/// from target permanent."
 pub fn remove(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("remove")?;
-    let (counter, number) = counters(r)?;
+    let up_to = r.words("up to");
+    let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
+    // A count the controller announces is no effect's count; "a counter" alone is the one "up to" never prints.
+    (count != Amount::X && !(up_to && count == Amount::one())).then_some(())?;
     r.need("from")?;
     let from = place(r)?;
     Some(vec![Effect::RemoveCounters {
         from,
         counter,
-        count: Amount::Fixed(i32::try_from(number).ok()?),
+        count,
+        up_to,
     }])
 }
 

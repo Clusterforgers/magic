@@ -186,7 +186,7 @@ fn cost_item() -> impl Strategy<Value = CostItem> {
             .prop_map(|(count, filter)| CostItem::Discard { count, filter }),
         simple_amount().prop_map(CostItem::PayEnergy),
         (
-            counter(),
+            proptest::option::of(counter()),
             simple_amount(),
             proptest::option::of(leaf_selector())
         )

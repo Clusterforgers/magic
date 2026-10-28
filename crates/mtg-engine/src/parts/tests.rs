@@ -115,6 +115,7 @@ fn what_is_not_a_part_is_not_read_as_one(#[case] json: &str) {
     "Cost.Sacrifice.Counted"
 )]
 #[case::negative(r#"{"PayLife":-1}"#, "Cost.PayLife.Counted")]
+#[case::w2f_any_kind_from_the_source(r#"{"RemoveCounters":{}}"#, "Cost.RemoveCounters.AnyKind")]
 fn an_amount_that_is_not_a_fixed_number_is_named(#[case] json: &str, #[case] name: &str) {
     assert_eq!(Part::read(&item(json)), Err(name));
 }
@@ -165,6 +166,8 @@ fn an_amount_that_is_not_a_fixed_number_is_named(#[case] json: &str, #[case] nam
     &[],
     &[]
 )]
+#[case::w2f_a_creature_with_any_counter(r#"{"RemoveCounters":{"from":[{"Type":"Creature"}]}}"#, &[], &["Source"])]
+#[case::w2f_no_artifact_with_any_counter(r#"{"RemoveCounters":{"from":[{"Type":"Artifact"}]}}"#, &[], &[])]
 #[case::a_land_to_return(r#"{"ReturnToHand":{"filter":[{"Type":"Artifact"}]}}"#, &[], &["Relic"])]
 fn a_pick_offers_what_the_player_may_take(
     #[case] json: &str,
@@ -216,6 +219,8 @@ fn a_pick_offers_what_the_player_may_take(
     r#"{"RemoveCounters":{"counter":"poison","from":[]}}"#,
     false
 )]
+#[case::w2f_a_permanent_with_any_counter(r#"{"RemoveCounters":{"from":[]}}"#, true)]
+#[case::w2f_two_permanents_with_any_counter(r#"{"RemoveCounters":{"count":2,"from":[]}}"#, false)]
 #[case::three_cards_to_discard(r#"{"Discard":{"count":3}}"#, false)]
 #[case::two_cards_to_discard(r#"{"Discard":{"count":2}}"#, true)]
 fn a_part_is_payable_with_what_it_needs(#[case] json: &str, #[case] payable: bool) {
@@ -355,6 +360,10 @@ fn the_parts_of_a_cost_are_paid_with_the_events_the_engine_logs() {
     r#"{"TapPower":{"filter":[{"Type":"Creature"}],"power":3}}"#,
     "Tap any number of untapped creatures you control with total power 3 or more."
 )]
+#[case::w2f_any_counter(
+    r#"{"RemoveCounters":{"from":[{"Type":"Creature"}]}}"#,
+    "Remove a counter from a creature you control"
+)]
 #[case::return_one(
     r#"{"ReturnToHand":{"filter":[{"Type":"Land"}]}}"#,
     "Return a land you control to its owner's hand."
@@ -389,5 +398,25 @@ fn a_cost_of_parts_has_the_names_a_refusal_gives() {
             "Cost.TapPower",
             "Cost.ReturnToHand"
         ]
+    );
+}
+
+#[rstest]
+#[case::w2f_the_kind_chosen(&[CounterKind::Other("shield".into())], CounterKind::Other("shield".into()))]
+#[case::w2f_the_first_kind_held_when_none_was_chosen(&[], CounterKind::Charge)]
+fn a_counter_of_any_kind_takes_the_kind_chosen(
+    #[case] kinds: &[CounterKind],
+    #[case] expected: CounterKind,
+) {
+    let game = game();
+    let source = named(&game, "Source");
+    let any = part(r#"{"RemoveCounters":{"from":[{"Type":"Creature"}]}}"#);
+    assert_eq!(
+        any.w2f_events(&game, (ME, source), &[source], &mut kinds.iter()),
+        [Event::CountersChanged(CountersChanged {
+            on: crate::choose::Target::Object(game.object(source).unwrap().reference()),
+            counter: expected,
+            delta: -1,
+        })]
     );
 }

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "31b990e3-9bad-4b0a-a9d5-f5b9ed2ad0b0",
+  "name": "Fain, the Broker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fain, the Broker",
+      "oracle_fingerprint": "7c25ca4a5e39da1bf6003d5227ff2a73",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "from": [{ "Type": "Creature" }] } }],
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Inkling",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Inkling"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}{B}", "effects": [{ "Untap": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

@@ -53,8 +53,10 @@ pub enum CostItem {
     /// Remove counters of a kind from the source ("Remove a charge counter from this land"), or one from each of `count`
     /// permanents the payer controls that match `from` ("Remove a +1/+1 counter from a creature you control").
     RemoveCounters {
-        /// The kind of counter.
-        counter: CounterKind,
+        /// The kind of counter; a counter of any kind the payer picks when absent ("Remove a counter from a permanent you
+        /// control").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,

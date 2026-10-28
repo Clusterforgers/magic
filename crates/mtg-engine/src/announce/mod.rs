@@ -23,6 +23,7 @@ pub(crate) mod suspend;
 mod targets;
 mod total;
 pub(crate) mod turn_up;
+mod w2f_counter_kinds;
 mod x;
 
 use std::sync::Arc;
@@ -234,6 +235,9 @@ pub(crate) struct Done {
     pub(crate) x: bool,
     /// How many target specifications have their division settled.
     pub(crate) divided: usize,
+    /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
+    /// position in the options.
+    pub(crate) w2f_kind_picked: Option<u8>,
     /// The step whose decision the player has been asked.
     asked: Option<Phase>,
 }
@@ -351,11 +355,14 @@ impl Pending {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
             Answered::Way(_) if self.done.asked == Some(Phase::Face) => Phase::Face,
+            // The X of a counted part is asked while the parts are, before the picks that depend on it, and a choice of
+            // option among the parts is the kind of counter a picked permanent loses.
+            Answered::Way(_) | Answered::Number(_) if self.done.asked == Some(Phase::Parts) => {
+                Phase::Parts
+            }
+            Answered::Cards(_) => Phase::Parts,
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
-            Answered::Cards(_) => Phase::Parts,
-            // The X of a counted part is asked while the parts are, before the picks that depend on it.
-            Answered::Number(_) if self.done.asked == Some(Phase::Parts) => Phase::Parts,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
             // costs that are paid once are settled.
             Answered::Number(_)
@@ -380,6 +387,9 @@ impl Pending {
                 self.done.modes = true;
             }
             Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
+            Answered::Way(pick) if wanted == Phase::Parts => {
+                self.done.w2f_kind_picked = u8::try_from(pick).ok();
+            }
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),
             Answered::Targets(targets) => self.choices.targets.push(targets),

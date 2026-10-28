@@ -1277,6 +1277,20 @@ fn full_control_starts_off() {
     assert_eq!(FullControlMode::default(), FullControlMode::Off);
 }
 
+/// What a cost took, with every field set.
+fn w2f_cost_taken(
+    a: ObjectId,
+    b: ObjectId,
+    shot: mtg_engine::snapshot::Snapshot,
+) -> mtg_engine::choose::CostTaken {
+    mtg_engine::choose::CostTaken {
+        picks: vec![vec![a], vec![b, a]],
+        shots: vec![shot],
+        variant: 1,
+        kinds: vec![mtg_cards::value::CounterKind::Other("shield".into())],
+    }
+}
+
 /// The events of ability objects and of a resolution, with the fields they carry.
 fn pipeline_events() -> Vec<Event> {
     use mtg_core::mana::ManaType;
@@ -1297,11 +1311,7 @@ fn pipeline_events() -> Vec<Event> {
         way: Some(mtg_cards::value::CastWay::Evoke),
         face: Some(1),
         spent: Some(Box::new(vec![ManaType::Red, ManaType::Green])),
-        cost_taken: Some(Box::new(mtg_engine::choose::CostTaken {
-            picks: vec![vec![a], vec![b, a]],
-            shots: vec![shot.clone()],
-            variant: 1,
-        })),
+        cost_taken: Some(Box::new(w2f_cost_taken(a, b, shot.clone()))),
     };
     vec![
         Event::SpellCast {

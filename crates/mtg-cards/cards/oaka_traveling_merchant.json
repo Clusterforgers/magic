@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ed0fc294-de9b-4c64-b97d-e3a41fd2f46a",
+  "name": "O'aka, Traveling Merchant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "O'aka, Traveling Merchant",
+      "oracle_fingerprint": "c385cdc1b41025a16e9b3ac4636e30a7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "from": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}
