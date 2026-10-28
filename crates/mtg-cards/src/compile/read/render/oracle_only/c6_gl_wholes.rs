@@ -6,7 +6,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording.
-const C6_GL_WHOLES: [(&str, &str); 18] = [
+const C6_GL_WHOLES: [(&str, &str); 22] = [
     (
         r#"{"Spell":{"effects":[{"ExileTop":{"count":3,"as":"impulse"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"impulse"},"play":true}},"duration":"UntilEndOfTurn"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Move":{"what":{"Each":[{"Is":{"Bound":"impulse"}},{"In":"Exile"}]},"to":"Graveyard"}},{"CreateToken":{"token":{"Custom":{"name":"Eldrazi Spawn","types":["Creature"],"subtypes":["Eldrazi","Spawn"],"power":0,"toughness":1,"abilities":[{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}]}},"count":{"Count":[{"Is":{"Bound":"impulse"}},{"In":"Graveyard"}]}}}]}}]}}"#,
         "Exile the top three cards of your library. You may play those cards this turn. At the beginning of the next end step, if any of those cards remain exiled, put them into your graveyard, then create a 0/1 colorless Eldrazi Spawn creature token for each card put into your graveyard this way. Those tokens have \"Sacrifice this token: Add {C}.\"",
@@ -78,6 +78,22 @@ const C6_GL_WHOLES: [(&str, &str); 18] = [
     (
         r#"{"Loyalty":{"cost":{"Plus":2},"effects":[{"Discard":{"as":"discarded"}},{"Draw":{}},{"If":{"condition":{"Matches":{"subject":{"Bound":"discarded"},"selector":[{"Type":"Land"}]}},"then":[{"Draw":{}}]}}]}}"#,
         "+2: Discard a card, then draw a card. If a land card is discarded this way, draw an additional card.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"Choose":{"from":"Opponents","as":"opponent"}},{"Draw":{"count":3}},{"Draw":{"who":{"Bound":"opponent"},"count":3}},{"Choose":{"from":"Opponents","as":"untapper"}},{"Untap":{"what":{"Each":[{"Not":{"Type":"Land"}},{"AnyOf":[{"ControlledBy":"You"},{"ControlledBy":{"Bound":"untapper"}}]}]}}}]}}"#,
+        "Choose an opponent. You and that player each draw three cards.\nChoose an opponent. Untap all nonland permanents you control and all nonland permanents that player controls.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]},"as":"dead"}},{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Sacrifice":{"who":{"Bound":"player"},"filter":[{"Type":"Creature"}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":{"Bound":"player"}}]}}}]}},{"Move":{"what":{"Bound":"dead"},"to":{"Battlefield":{}}}}]}}"#,
+        "Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"Modal":{"choose":{"min":2,"max":2},"modes":[{"targets":[{"what":{"Either":["Player",{"Object":[{"Type":"Planeswalker"}]}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":4}}]},{"effects":[{"DealDamage":{"to":{"Each":[{"Type":"Creature"}]},"amount":2}}]},{"targets":[{"what":{"Object":[{"Type":"Land"},{"Not":{"Supertype":"Basic"}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]},{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Discard":{"who":{"Bound":"player"},"count":{"Count":[{"In":"Hand"},{"OwnedBy":{"Bound":"player"}}]},"as":"discarded"}},{"Draw":{"who":{"Bound":"player"},"count":{"Count":[{"In":"Graveyard"},{"Is":{"Bound":"discarded"}}]}}}]}}]}]}}]}}"#,
+        "Choose two —\n• ~ deals 4 damage to target player or planeswalker.\n• ~ deals 2 damage to each creature.\n• Destroy target nonbasic land.\n• Each player discards all the cards in their hand, then draws that many cards.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"Modal":{"modes":[{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetController":"You"},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]},{"targets":[{"what":"AnyTarget"}],"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"as":"sacrificed"}},{"Sacrifice":{"filter":[{"Is":{"Bound":"sacrificed"}}]}},{"DealDamage":{"to":{"Target":0},"amount":{"Stat":{"of":{"Bound":"sacrificed"},"stat":"Power"}}}}]}]}}]}}"#,
+        "Choose one —\n• Until end of turn, you gain control of target creature and it gains haste.\n• Sacrifice a creature. ~ deals damage equal to that creature's power to any target.",
     ),
 ];
 
