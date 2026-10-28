@@ -25,6 +25,8 @@ mod state;
 mod w2e_detect;
 #[cfg(test)]
 mod w8b_detect_milled;
+#[cfg(test)]
+mod w9a_expend;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;

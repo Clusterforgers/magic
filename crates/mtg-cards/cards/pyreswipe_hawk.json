@@ -1,0 +1,58 @@
+{
+  "oracle_id": "35a03b0f-9dac-476a-97e9-67767c1e453e",
+  "name": "Pyreswipe Hawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyreswipe Hawk",
+      "oracle_fingerprint": "bea42e56abfcc6648fb4bb5d2e12779e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Greatest": {
+                            "of": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                            "stat": "ManaValue"
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Expend": { "who": "You", "n": 6 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

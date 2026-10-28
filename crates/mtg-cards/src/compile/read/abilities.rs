@@ -274,6 +274,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::DiceRolled { .. }
             | TriggerPattern::Amassed { .. }
             | TriggerPattern::Bolstered { .. }
+            | TriggerPattern::Expend { .. }
             | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }

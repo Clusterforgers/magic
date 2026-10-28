@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d38646dc-d1ea-473c-aaf1-df8ba327459f",
+  "name": "Trailtracker Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trailtracker Scout",
+      "oracle_fingerprint": "16a341aa83188ccf30c6810adc1786f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Expend": { "who": "You", "n": 8 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5ba19dbe-9dbb-4cc9-81a3-18c26f27bd0f",
+  "name": "Teapot Slinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teapot Slinger",
+      "oracle_fingerprint": "70659a4bcf935743a86a1f33182d8358",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Expend": { "who": "You", "n": 4 } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

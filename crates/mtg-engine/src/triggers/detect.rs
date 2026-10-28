@@ -67,6 +67,12 @@ enum Happened {
         nth: u32,
         before: u32,
     },
+    /// A player's cast spent mana: the total of mana they spent to cast spells this turn went from `from` to `to`.
+    Expended {
+        player: PlayerId,
+        from: u32,
+        to: u32,
+    },
     /// Something was chosen as a  of a spell or ability: the `nth` time this turn for it by what the same player
     /// controls, the `nth_any` time by what anyone controls.
     Targeted {
@@ -421,6 +427,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     nth,
                     before: cast_before(post, later),
                 });
+                found.extend(w9a_expended(post, later, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
@@ -480,6 +487,37 @@ fn cast_before(post: &GameState, later: &[Event]) -> u32 {
         .filter(|event| matches!(event, Event::SpellCast { .. }))
         .count();
     total.saturating_sub(u32::try_from(after).unwrap_or(u32::MAX).saturating_add(1))
+}
+
+/// The mana a cast of `player` spent, as the move of their turn's total of mana spent on spells: the total after the
+/// batch less what their casts later in the batch spent. A cast that spent no mana expends nothing.
+fn w9a_expended(
+    post: &GameState,
+    later: &[Event],
+    player: PlayerId,
+    choices: &Choices,
+) -> Option<Happened> {
+    let len = |mana: &[mtg_core::mana::ManaType]| u32::try_from(mana.len()).unwrap_or(u32::MAX);
+    let spent = len(choices.spent());
+    let after: u32 = later
+        .iter()
+        .filter_map(|event| match event {
+            Event::SpellCast {
+                player: who,
+                choices,
+                ..
+            } if *who == player => Some(len(choices.spent())),
+            _ => None,
+        })
+        .fold(0, u32::saturating_add);
+    let to = post
+        .tallied(player, Tally::W9aSpellMana)
+        .saturating_sub(after);
+    (spent > 0).then(|| Happened::Expended {
+        player,
+        from: to.saturating_sub(spent),
+        to,
+    })
 }
 
 /// Which time of the turn the event of `player` and kind `kind` is: the count after the batch less the events of that kind
@@ -1189,6 +1227,10 @@ fn matching_event(
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
+        (TriggerPattern::Expend { who, n }, Happened::Expended { player, from, to }) => {
+            (by(who, player) && *from < *n && *n <= *to)
+                .then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
         (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
             // The card is read where the batch left it: in the hand it was drawn into, or wherever an effect sent it since.
             let drawn = object(*card)?;

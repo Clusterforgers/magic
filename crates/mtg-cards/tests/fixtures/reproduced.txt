@@ -1068,6 +1068,7 @@ Psychosis Crawler
 Pteramander
 Putrid Goblin
 Pygmy Kavu
+Pyreswipe Hawk
 Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
@@ -1398,6 +1399,7 @@ Tavern Scoundrel
 Teach by Example
 Teacher's Pest
 Team Pennant
+Teapot Slinger
 Tectonic Reformation
 Teferi's Ageless Insight
 Teferi's Protection
@@ -1472,6 +1474,7 @@ Torrential Gearhulk
 Towering Titan
 Toxic Deluge
 Trace of Abundance
+Trailtracker Scout
 Trash for Treasure
 Traumatic Visions
 Traverse the Outlands
@@ -1559,6 +1562,7 @@ Vow of Wildness
 Vulshok Splitter
 Walking Ballista
 Wanderbrine Preacher
+Wandertale Mentor
 Wanderwine Hub
 Waning Wurm
 War Balloon
