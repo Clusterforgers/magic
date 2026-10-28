@@ -86,7 +86,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (n1d6) The day and night wordings left; frees about 10 corpus cards (Celestus Sanctifier, Angel of Eternal Dawn, Tovolar, Dire Overlord)
 - [ ] (n2b) Face-down remaining: manifest dread and of chosen cards, face-up and face-down predicates, turn-up conditions, morph costs beyond mana; frees about 14 cards (Write into Being, Whisperwood Elemental, Fathom Seer)
 - [ ] (o2c) A storm trigger or copy effect that resolves after its spell has left the stack copies it from last known information
-- [ ] (o2f) Copy wordings left: storm riders, "when you next cast", exceptions that set a name or depend on the copy, copies attacking a player, Populate X times; frees about 30 cards (Skull Storm, Spark Double, The Scarab God)
+- [~] (o2f) (o2f-copy-wordings) Copy wordings left: storm riders, "when you next cast", exceptions that set a name or depend on the copy, copies attacking a player, Populate X times; frees about 30 cards (Skull Storm, Spark Double, The Scarab God)
 - [ ] (o1d) A transformed permanent that dies reads its trigger from the face it showed, and a copy-granted static reads it from the copy that left in the same batch
 
 ### Attachments
@@ -138,7 +138,7 @@ The server is settled first, then the web is built once against the final types.
 ### Keywords and cast ways
 - [ ] (c2g) Keywords given to spells beyond convoke, improvise and delve, and keywords with a cost given to cards in a hand or graveyard; frees about 20 cards (Ghost Ark, Past in Flames, Zhulodok)
 - [ ] (c2d) The cards that print scavenge, transmute, awaken, gravestorm or sunburst and wait on another wording; frees about 15 cards (Brainspoil, Ondu Rising, Dodgy Jalopy)
-- [ ] (c2l3) Plot, Read ahead, Soulbond, Backup lists, and the emerge, harmonize, replicate, spectacle, mayhem and afflict cards that wait on another wording; frees about 35 cards (Lock and Load, Silverblade Paladin)
+- [~] (c2l3) (c2l3-keyword-tails) Plot, Read ahead, Soulbond, Backup lists, and the emerge, harmonize, replicate, spectacle, mayhem and afflict cards that wait on another wording; frees about 35 cards (Lock and Load, Silverblade Paladin)
 - [ ] (r2da-a) Keyword actions and designations not built: emblems, rad counters, crimes, incubate, expend, exert, clash, forecast and venture; frees about 15 cards (Elspeth, Sun's Champion, Bloatfly Swarm, Combat Celebrant)
 - [ ] (r2dga) Rules for the partners of accepted proposals, so both halves become corpus cards; frees about 8 cards (Ukkima, Stalking Shadow, Pippin, Warden of Isengard, Brallin, Skyshark Rider)
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background and a planeswalker commander, once their other text runs
@@ -168,14 +168,14 @@ The server is settled first, then the web is built once against the final types.
 
 ### Compiler wordings
 - [ ] (c10) Unread spell, trigger and activated wordings ranked by `mtg-cli coverage`: one piece per family left (quoted tokens, goad, counters, pump, manlands, graveyard, flicker, damage, draw and discard)
-- [ ] (c10s) Counted amounts left: counts of another player, distinct values, mana spent, things destroyed this way, differences and "whichever is greater"; frees about 30 cards (Celebrate the Harvest, Wurmquake, Kaya's Wrath)
-- [ ] (r2de-a2) Counters of any kind removed: by an effect with a choice of kinds ("up to three counters from target permanent") and as a cost from a permanent the payer picks; frees about 8 cards (Glissa Sunslayer, Power Conduit, Fain, the Broker)
+- [~] (c10s) (c10s-counted-amounts) Counted amounts left: counts of another player, distinct values, mana spent, things destroyed this way, differences and "whichever is greater"; frees about 30 cards (Celebrate the Harvest, Wurmquake, Kaya's Wrath)
+- [~] (r2de-a2) (r2de-a2-counters-any-removed) Counters of any kind removed: by an effect with a choice of kinds ("up to three counters from target permanent") and as a cost from a permanent the payer picks; frees about 8 cards (Glissa Sunslayer, Power Conduit, Fain, the Broker)
 - [ ] (r2de-a3) Counters from among permanents as a cost or effect, the counters of a permanent that left put on another, and "that many" of its counters; frees about 10 cards (Tayam, Iron Apprentice, Reyhan, Last of the Abzan)
 - [ ] (c10d) Top-of-library wordings left: reveals with a follow-up, each player's top cards, a land put from a look, places beneath the top X; frees about 20 cards (Risen Reef, Explorer's Scope, Unexpectedly Absent)
 - [ ] (c10e) Subtype and type nouns, legendary names without a comma as `~`, and the events "enters from your graveyard", "is turned face up" and "modified creature"
 - [ ] (c10r) The flicker with a delayed return, the exile that returns when the source leaves for an Aura with several hosts, and "until your next turn" durations
 - [ ] (c13h) Draw replacements and triggers "except the first one they draw in each of their draw steps", and a token when N or more cards leave your graveyard (Notion Thief, Leela, Xyris)
-- [ ] (r2j) Trigger events left: an opponent's activation, energy, a token or a spell copied, an unblocked attacker, "first time" variants, several events in one trigger; frees about 20 cards (Harsh Mentor, Valgavoth, Kalamax)
+- [~] (r2j) (r2j-trigger-events) Trigger events left: an opponent's activation, energy, a token or a spell copied, an unblocked attacker, "first time" variants, several events in one trigger; frees about 20 cards (Harsh Mentor, Valgavoth, Kalamax)
 - [ ] (r2ad) Delayed triggers left: "until end of turn, whenever", with a target of their own, on the next spell, on every block, repeating this turn; frees about 7 cards (Infested Thrinax, Jailbreak, Ride the Avalanche)
 - [ ] (r2dgb) Effects "unless that player sacrifices or pays", a sentence for each player, and a token copy after a payment; frees about 12 cards (Demanding Dragon, All Is Dust, Bramble Sovereign)
 - [ ] (r2dgc-a) A cost for each mode chosen: Spree costs and escalate in the engine, the DSL and the compiler; frees about 4 cards (Requisition Raid, Great Train Heist, Collective Resistance)
@@ -196,15 +196,16 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auec) Die results left: a roll in a cost (Clay Golem), "if the result is" conditions (Arden Angel, Sword of Hours), each player rolls and the highest result (Chaos Dragon), X dice and their total (Neverwinter Hydra, Luck Bobblehead), dice ignored or added (Berserker's Frenzy, Barbarian Class), "roll a 4 or higher" triggers (Mr. House) and table rows after an amount; frees about 15 cards
 - [ ] (r1aued) Endeavors left: a search for a number of lands, power at least an amount, a return with that many counters, a free cast up to a mana value, "have ~ deal damage to itself"; frees 5 cards (Wild, Valiant, Grave and Arcane Endeavor, Vrondiss)
 - [ ] (r1aui) Coins left: lose triggers, stop flipping, counted flips and heads, "Otherwise" after a flip; frees about 11 cards (Krark, the Thumbless, Fiery Gambit, Ral Zarek)
-- [ ] (r1auh) Votes left: tallies as amounts, more than two choices, extra votes, voting triggers, objects and secret or villainous choices; frees about 22 cards (Orchard Elemental, Council Guardian, Tivit)
+- [~] (r1auh) (r1auh-votes-left) Votes left: tallies as amounts, more than two choices, extra votes, voting triggers, objects and secret or villainous choices; frees about 22 cards (Orchard Elemental, Council Guardian, Tivit)
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
 - [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
-- [ ] (r2ea) `mtg-cli propose --promote` copies accepted proposals into `crates/mtg-cards/cards/` with their fixtures, and the yield of a live run is recorded in `docs/cards-dsl.md`
+- [~] (r2ea) (r2ea-promote-proposals) `mtg-cli propose --promote` copies accepted proposals into `crates/mtg-cards/cards/` with their fixtures, and the yield of a live run is recorded in `docs/cards-dsl.md`
 - [ ] (r2eba) A `propose --provider openai` run of `gpt-oss:20b` on a 16 GB GPU over a sample, with its yield and tokens a second recorded in `docs/cards-dsl.md`
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
-- [~] (r2dge) (r2dge-a-proposals-al, r2dge-b-proposals-mz) The single-wording tail of the stored proposals: 136 unchecked, 16 invalid, 18 `Partial` and 42 mismatched (`mtg-cli check-rules --verbose` names each)
+- [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each
+- [ ] (r2dgf) Tap or untap one target, and a replacement that names the event it replaces; frees about 6 cards (Tidal Force, Merrow Reejerey, Pariah, Ravenous Slime)
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 - [ ] (r1a) `mtg-cli forge-check` compares a Forge clause with the ability that stands for it and reads `Count$` amounts, `Valid*` filters and conditions (`docs/reference-engines.md`)
 - [ ] (r1b) The prompt of `mtg-cli propose` takes examples from Forge clause-script pairs fetched at run time; examples kept in the repository come from XMage with its MIT notice
