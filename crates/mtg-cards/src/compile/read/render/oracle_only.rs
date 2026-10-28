@@ -54,6 +54,8 @@ mod c6_gap_wholes;
 mod c6_sz_and_you;
 mod c6_sz_bodies;
 mod c6_sz_wholes;
+mod c9_wr_returns;
+mod c9_wr_wholes;
 mod cant_countered;
 mod cant_unless;
 mod cast_condition;
@@ -290,6 +292,13 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c6_gap(ability, texts);
     add_c6_af(ability, texts);
     add_c6_sz(ability, texts);
+    add_c9_wr(ability, texts);
+}
+
+/// Adds the wordings of the third samples' writers (r2bfb, r2bgb, r2bhb): the returns, then the whole abilities.
+fn add_c9_wr(ability: &Ability, texts: &mut Vec<String>) {
+    c9_wr_returns::add(ability, texts);
+    c9_wr_wholes::add(ability, texts);
 }
 
 /// The wordings of the sixth sample of the names A to F; it runs last because it rewrites the texts of the others.
