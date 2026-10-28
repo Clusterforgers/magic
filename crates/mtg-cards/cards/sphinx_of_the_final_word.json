@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d4246e4d-390d-4925-a5a8-89cd096a237c",
+  "name": "Sphinx of the Final Word",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of the Final Word",
+      "oracle_fingerprint": "db70096c02b765ab7da2b379a7fd66f0",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Hexproof" },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": [
+                  "Spell",
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

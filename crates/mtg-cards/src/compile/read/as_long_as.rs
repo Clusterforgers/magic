@@ -42,6 +42,7 @@ pub(super) fn read(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
 pub(super) fn body(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
     triggers::monarch_condition(r)
         .or_else(|| r.attempt(|r| state(r, it)))
+        .or_else(|| r.attempt(|r| super::c11h_attached::c11h_read(r, it)))
         .or_else(|| r.attempt(|r| counters_held(r, it)))
         .or_else(|| r.attempt(devotion))
         .or_else(|| r.attempt(cards_counted))
@@ -257,6 +258,7 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         counted_texts(condition),
         none_texts(condition),
         facts::texts(condition),
+        super::c11h_attached::c11h_texts(condition),
     ]
     .concat();
     if !own.is_empty() {

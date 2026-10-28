@@ -27,7 +27,7 @@
           "Replacement": {
             "when": {
               "Damage": {
-                "to": { "Each": ["Attacking", { "Type": "Creature" }, { "ControlledBy": "You" }] }
+                "to": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] }
               }
             },
             "by": "Prevent"

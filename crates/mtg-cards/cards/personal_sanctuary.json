@@ -1,0 +1,20 @@
+{
+  "oracle_id": "20963cad-1c13-44a1-901a-bfc9930089e6",
+  "name": "Personal Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Personal Sanctuary",
+      "oracle_fingerprint": "85d1d866c69226096210ebe532bfe48d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": "Prevent",
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

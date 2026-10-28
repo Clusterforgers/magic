@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e01ab6d8-8419-436e-a8fb-10aa46ca3d05",
+  "name": "Akki War Paint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akki War Paint",
+      "oracle_fingerprint": "4ec6ea15997670722086f1cc4375ec1a",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

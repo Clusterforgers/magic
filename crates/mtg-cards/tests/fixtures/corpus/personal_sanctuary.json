@@ -1,0 +1,23 @@
+{
+  "cmc": 3.0,
+  "collector_number": "30",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "56f10d57-687d-4ee3-8226-bae525d56e9e",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{W}",
+  "name": "Personal Sanctuary",
+  "oracle_id": "20963cad-1c13-44a1-901a-bfc9930089e6",
+  "oracle_text": "During your turn, prevent all damage that would be dealt to you.",
+  "rarity": "rare",
+  "released_at": "2011-07-15",
+  "set": "m12",
+  "type_line": "Enchantment"
+}

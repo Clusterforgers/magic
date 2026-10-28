@@ -1,0 +1,21 @@
+{
+  "cmc": 3.0,
+  "collector_number": "256",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "3c55bce1-8746-4554-9876-f443c37a125b",
+  "keywords": [
+    "Equip"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{3}",
+  "name": "Butcher's Cleaver",
+  "oracle_id": "5cc5be7a-cbe6-4853-bb95-0390e25b4f2b",
+  "oracle_text": "Equipped creature gets +3/+0.\nAs long as equipped creature is a Human, it has lifelink.\nEquip {3}",
+  "rarity": "uncommon",
+  "released_at": "2025-01-24",
+  "set": "inr",
+  "type_line": "Artifact — Equipment"
+}

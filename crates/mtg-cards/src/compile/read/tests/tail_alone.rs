@@ -151,9 +151,6 @@ fn damage_to_the_card_is_prevented(#[case] text: &str, #[case] when: &str, #[cas
 }
 
 #[rstest]
-#[case::to_creatures_you_control(
-    "Prevent all combat damage that would be dealt to creatures you control."
-)]
 #[case::to_an_opponent("Prevent all damage that would be dealt to target opponent.")]
 #[case::a_counter_of_another_creature(
     "If damage would be dealt to this creature, prevent that damage. Remove a +1/+1 counter from target creature."

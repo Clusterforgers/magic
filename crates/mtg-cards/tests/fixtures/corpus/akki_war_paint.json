@@ -1,0 +1,25 @@
+{
+  "cmc": 1.0,
+  "collector_number": "132",
+  "color_identity": [
+    "R"
+  ],
+  "colors": [
+    "R"
+  ],
+  "digital": false,
+  "id": "f110698e-a343-4eff-ba23-ed7ac5a3f87b",
+  "keywords": [
+    "Enchant"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{R}",
+  "name": "Akki War Paint",
+  "oracle_id": "e01ab6d8-8419-436e-a8fb-10aa46ca3d05",
+  "oracle_text": "Enchant artifact or creature\nAs long as enchanted permanent is a creature, it gets +2/+1.",
+  "rarity": "common",
+  "released_at": "2022-02-18",
+  "set": "neo",
+  "type_line": "Enchantment — Aura"
+}

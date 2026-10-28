@@ -1,0 +1,27 @@
+{
+  "cmc": 3.0,
+  "collector_number": "924",
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "colors": [
+    "G",
+    "W"
+  ],
+  "digital": false,
+  "id": "1228d068-a5cb-4fd5-9e6a-5dc6ac9376a4",
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{G}{W}",
+  "name": "Harmonic Sliver",
+  "oracle_id": "1c06c093-18ab-49e6-a82d-38e826d25016",
+  "oracle_text": "All Slivers have \"When this permanent enters, destroy target artifact or enchantment.\"",
+  "power": "1",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "set": "cmm",
+  "toughness": "1",
+  "type_line": "Creature — Sliver"
+}

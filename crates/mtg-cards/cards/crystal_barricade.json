@@ -1,0 +1,26 @@
+{
+  "oracle_id": "291c7abf-9d64-4ba0-ae21-e3459edc9a95",
+  "name": "Crystal Barricade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Barricade",
+      "oracle_fingerprint": "bffd1985172d163789662c2e9329bc5e",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "combat": false
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

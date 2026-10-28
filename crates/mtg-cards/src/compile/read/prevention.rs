@@ -25,6 +25,9 @@ pub fn static_rule(r: &mut Reader<'_>) -> Option<Ability> {
 /// creature.", "Prevent all damage that would be dealt to you.", and "If damage would be dealt to this creature, prevent
 /// that damage. Remove a +1/+1 counter from this creature."
 pub fn static_prevent(r: &mut Reader<'_>) -> Option<Ability> {
+    if let Some(group) = r.attempt(super::c11h_prevent::c11h_read) {
+        return Some(group);
+    }
     let (to, combat, by) = if r.words("prevent all") {
         let combat = kind(r)?.flag();
         r.need("that would be dealt to")?;

@@ -1,0 +1,32 @@
+{
+  "cmc": 3.0,
+  "collector_number": "211",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "39d757af-86fd-4f99-a09a-0f3898ed95f6",
+  "keywords": [
+    "Enchant"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}",
+  "name": "Nature's Embrace",
+  "oracle_id": "9ab101c2-215b-4736-873a-4a1ef6666b6d",
+  "oracle_text": "Enchant creature or land\nAs long as enchanted permanent is a creature, it gets +2/+2.\nAs long as enchanted permanent is a land, it has \"{T}: Add two mana of any one color.\"",
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "rarity": "common",
+  "released_at": "2021-11-19",
+  "set": "vow",
+  "type_line": "Enchantment — Aura"
+}

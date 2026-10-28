@@ -1,0 +1,27 @@
+{
+  "cmc": 2.0,
+  "collector_number": "7",
+  "color_identity": [
+    "W"
+  ],
+  "colors": [
+    "W"
+  ],
+  "digital": false,
+  "id": "905d3e02-ea06-45e7-9adb-c8e7583323a2",
+  "keywords": [
+    "Defender"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{W}",
+  "name": "Crystal Barricade",
+  "oracle_id": "291c7abf-9d64-4ba0-ae21-e3459edc9a95",
+  "oracle_text": "Defender (This creature can't attack.)\nYou have hexproof. (You can't be the target of spells or abilities your opponents control.)\nPrevent all noncombat damage that would be dealt to other creatures you control.",
+  "power": "0",
+  "rarity": "rare",
+  "released_at": "2024-11-15",
+  "set": "fdn",
+  "toughness": "4",
+  "type_line": "Artifact Creature — Wall"
+}

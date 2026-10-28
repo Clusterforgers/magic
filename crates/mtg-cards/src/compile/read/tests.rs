@@ -178,6 +178,7 @@ mod c11c_had_counters;
 mod c11d_modes;
 mod c11f_writers;
 mod c11g_writers;
+mod c11h_statics;
 mod c4_af_writers;
 mod c4_conditions;
 mod c4_gl_writers;

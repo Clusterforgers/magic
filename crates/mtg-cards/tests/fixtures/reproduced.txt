@@ -23,6 +23,7 @@ Ainok Survivalist
 Air Bladder
 Ajani's Pridemate
 Akim, the Soaring Wind
+Akki War Paint
 Akrasan Squire
 Akroma's Vengeance
 Akroma's Will
@@ -136,6 +137,7 @@ Black Knight
 Black Market Connections
 Blackblade Reforged
 Blade of Selves
+Bladed Bracers
 Blasphemous Act
 Blastoderm
 Blaze
@@ -180,7 +182,9 @@ Broodbirth Viper
 Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
+Bubble Matrix
 Buried Alive
+Butcher's Cleaver
 Cabaretti Confluence
 Cached Defenses
 Cackling Counterpart
@@ -220,6 +224,7 @@ Charmbreaker Devils
 Chartooth Cougar
 Chemister's Insight
 Chief Engineer
+Chimil, the Inner Sun
 Chittering Harvester
 Chittering Witch
 Chomping Kavu
@@ -278,6 +283,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crush Contraband
 Crypt Ghast
+Crystal Barricade
 Crystal Quarry
 Cultivate
 Curate
@@ -366,6 +372,7 @@ Dreamtail Heron
 Dreg Mangler
 Dregscape Zombie
 Drift of Phantasms
+Drogskol Reinforcements
 Dromoka Captain
 Dromoka's Command
 Dromoka's Gift
@@ -406,6 +413,7 @@ Eliminate the Competition
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
+Emmara Tandris
 Empowered Autogenerator
 Empyrial Plate
 Empyrial Storm
@@ -595,6 +603,7 @@ Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
 Harabaz Druid
+Harmonic Sliver
 Harmonious Archon
 Harrow
 Haruspex
@@ -663,6 +672,7 @@ Invading Manticore
 Invisible Force Field
 Invisible Stalker
 Iridescent Vinelasher
+Iroas, God of Victory
 Iron League Steed
 Isperia, Supreme Judge
 It's Clobberin' Time!
@@ -862,6 +872,7 @@ Nanogene Conversion
 Nantuko Husk
 Nantuko Vigilante
 Nardole, Resourceful Cyborg
+Nature's Embrace
 Necropolis Regent
 Necroskitter
 Nessian Asp
@@ -927,6 +938,7 @@ Peacewalker Colossus
 Peema Outrider
 Pentad Prism
 Persist
+Personal Sanctuary
 Pestilent Syphoner
 Phantasmal Image
 Phantom Nantuko
@@ -1033,6 +1045,7 @@ Rhox Charger
 Rhox Faithmender
 Rhys the Redeemed
 Rhystic Study
+Rhythm of the Wild
 Riddlekeeper
 Riders of Gavony
 Rienne, Angel of Rebirth
@@ -1049,6 +1062,7 @@ Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder
 Rogue Refiner
+Root Sliver
 Rootborn Defenses
 Rootcast Apprenticeship
 Rope
@@ -1186,8 +1200,10 @@ Soultether Golem
 Space Marine Devastator
 Spawn of Mayhem
 Spectral Rider
+Spellbreaker Behemoth
 Sphere of Safety
 Sphinx of Jwar Isle
+Sphinx of the Final Word
 Sphinx of the Steel Wind
 Spider-Islanders
 Spikewheel Acrobat
@@ -1255,6 +1271,7 @@ Suntouched Myr
 Super Combo
 Supreme Verdict
 Surgehacker Mech
+Surrak Dragonclaw
 Surreal Memoir
 Susurian Dirgecraft
 Suture Priest

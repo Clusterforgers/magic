@@ -1,0 +1,21 @@
+{
+  "cmc": 1.0,
+  "collector_number": "213",
+  "color_identity": [],
+  "colors": [],
+  "digital": false,
+  "id": "897a5116-043c-46aa-880e-be8dcb1618bc",
+  "keywords": [
+    "Equip"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}",
+  "name": "Bladed Bracers",
+  "oracle_id": "24d373cd-245a-4051-b187-ba8cc83b0c48",
+  "oracle_text": "Equipped creature gets +1/+1.\nAs long as equipped creature is a Human or an Angel, it has vigilance.\nEquip {2} ({2}: Attach to target creature you control. Equip only as a sorcery.)",
+  "rarity": "common",
+  "released_at": "2012-05-04",
+  "set": "avr",
+  "type_line": "Artifact — Equipment"
+}
