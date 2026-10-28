@@ -11,6 +11,7 @@ Accomplished Automaton
 Adaptive Snapjaw
 Adorned Pouncer
 Adriana, Captain of the Guard
+Adric, Mathematical Genius
 Adventurous Eater // Have a Bite
 Aeromunculus
 Aether Gale
@@ -83,6 +84,7 @@ Aven Squire
 Aven Tactician
 Avenging Huntbonder
 Azorius Chancery
+Azorius Guildmage
 Azorius Herald
 Azorius Signet
 Azure Fleet Admiral
@@ -324,6 +326,7 @@ Dina, Soul Steeper
 Dire Fleet Interloper
 Direct Current
 Dirgur Focusmage // Braingeyser
+Disallow
 Disciple of Griselbrand
 Disembowel
 Dismantling Blow
@@ -845,6 +848,7 @@ Orochi Hatchery
 Orzhov Enforcer
 Orzhov Racketeers
 Otherworldly Gaze
+Overcharged Amalgam
 Overgrown Arch
 Overgrowth
 Overwhelming Stampede

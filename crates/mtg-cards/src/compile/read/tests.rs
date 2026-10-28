@@ -183,6 +183,7 @@ mod c6_blk_aura;
 mod c6_blk_draws;
 mod c6_eg_writers;
 mod c6_kw_renown_exploit;
+mod c8_kwq_counters;
 mod card_grants;
 mod cast;
 mod cast_cost_paid;
@@ -785,7 +786,7 @@ mod removal {
     #[case::a_second_target("Destroy target creature and target land.")]
     #[case::each("Destroy each creature.")]
     #[case::that("Destroy target creature that was dealt damage this turn.")]
-    #[case::an_ability("Counter target activated ability.")]
+    #[case::an_ability_of_a_creature("Counter target activated ability of a creature.")]
     #[case::a_player("Destroy target player.")]
     #[case::any_target("Destroy any target.")]
     #[case::counter_a_creature("Counter target creature.")]

@@ -95,7 +95,9 @@ fn more_oracle_wordings_of_a_spell_cast_trigger_read_and_write_back(#[case] text
 #[case::an_additional_cost(
     "Counter target spell unless its controller pays {2} and discards a card."
 )]
-#[case::an_activated_ability("Counter target activated ability unless its controller pays {2}.")]
+#[case::an_ability_of_a_creature(
+    "Counter target activated ability of a creature unless its controller pays {2}."
+)]
 #[case::no_object("Draw a card unless its controller pays {1}.")]
 #[case::unless_first("Unless its controller pays {2}, counter target spell.")]
 #[case::unless_alone("Unless its controller pays {2}.")]
