@@ -211,7 +211,14 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
-- [~] (r3) (r3a-proposals-ac, r3b-proposals-df, r3c-proposals-gj, r3d-proposals-km, r3e-proposals-nr, r3f-proposals-st, r3g-proposals-uz) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
+- [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
+- [~] (r3w1) (r3w1-if-writers) Writers for conditional effects ("If X, Y", "Otherwise", "If you can't") in triggers, spells, activated and loyalty abilities, so the stored proposals they unblock are accepted and promoted (24 abilities in the r3 samples)
+- [~] (r3w2) (r3w2-continuous-writers) Writers for `Continuous` effects (+X/+X until end of turn, gains a keyword, can't block, becomes) and the `AddKeyword` and `GrantAbility` modifications (28 abilities)
+- [~] (r3w3) (r3w3-may-pay-writers) Writers for "you may", "you may pay" and the reflexive "When you do" (18 abilities)
+- [~] (r3w4) (r3w4-delayed-repeat-writers) Writers for delayed triggers and "for each player or opponent" (`RepeatEach`) (19 abilities)
+- [~] (r3w5) (r3w5-move-counters-writers) Writers for `Move`, `PutCounters`, `RemoveCounters` and the "combination or shape" spells (about 40 abilities)
+- [~] (r3w6) (r3w6-mismatch-al) Renderer variants for the Mismatch proposals of names A to L (proliferate twice, the order of a token's name and ability, an activation limit before modes)
+- [~] (r3w7) (r3w7-mismatch-mz) The same for names M to Z
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each
 - [ ] (r2dgf) Tap or untap one target, and a replacement that names the event it replaces; frees about 6 cards (Tidal Force, Merrow Reejerey, Pariah, Ravenous Slime)
