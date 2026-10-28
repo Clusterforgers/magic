@@ -121,7 +121,7 @@ fn tapped_lands(driver: &Driver, land: &str) -> usize {
                 .state()
                 .object(**id)
                 .and_then(|object| object.permanent())
-                .is_some_and(|permanent| permanent.tapped())
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count()
 }

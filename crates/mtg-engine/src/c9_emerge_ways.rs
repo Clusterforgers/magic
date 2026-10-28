@@ -138,13 +138,13 @@ pub(crate) fn c9_emerge_most(
     let Some(Part::Pick(pick)) = parts.first() else {
         return 0;
     };
-    let payer = Payer {
+    let owner = Payer {
         state,
         player,
         source: id,
         barred: &[],
     };
-    pick.candidates(&payer)
+    pick.candidates(&owner)
         .into_iter()
         .map(|object| measure(state, object))
         .max()
