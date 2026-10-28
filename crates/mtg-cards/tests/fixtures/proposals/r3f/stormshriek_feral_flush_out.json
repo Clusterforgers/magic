@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Haste"},{"Activated":{"cost":"{1}{R}","effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]},{"abilities":[{"Spell":{"effects":[{"Discard":{}},{"If":{"condition":"Performed","then":[{"Draw":{"count":2}}]}}]}}]}]}

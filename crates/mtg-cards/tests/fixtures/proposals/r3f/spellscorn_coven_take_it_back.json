@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Discard":{"who":"Opponents"}}]}}]},{"abilities":[{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}]}

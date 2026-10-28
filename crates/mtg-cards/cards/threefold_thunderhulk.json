@@ -1,0 +1,54 @@
+{
+  "oracle_id": "b8020a8b-557b-465d-865d-b59fecd7abc1",
+  "name": "Threefold Thunderhulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Threefold Thunderhulk",
+      "oracle_fingerprint": "cfd39eb7bbe48365dd5eb5cd367d2249",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gnome",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gnome"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

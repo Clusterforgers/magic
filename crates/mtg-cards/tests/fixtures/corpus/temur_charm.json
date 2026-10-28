@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "009c5aac-194f-4b95-8f69-cc74aa15c3a5",
+  "oracle_id": "418bc6c8-972b-4f07-aac0-8d003b9c1b17",
+  "multiverse_ids": [
+    482858
+  ],
+  "tcgplayer_id": 212331,
+  "cardmarket_id": 454273,
+  "name": "Temur Charm",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/009c5aac-194f-4b95-8f69-cc74aa15c3a5",
+  "scryfall_uri": "https://scryfall.com/card/c20/230/temur-charm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:25:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.jpg?1783931142",
+    "normal": "https://cards.scryfall.io/normal/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.jpg?1783931142",
+    "large": "https://cards.scryfall.io/large/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.jpg?1783931142",
+    "png": "https://cards.scryfall.io/png/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.png?1783931142",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.jpg?1783931142",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.jpg?1783931142",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.webp?1783931142",
+    "grid": "https://cards.scryfall.io/grid/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.webp?1783931142",
+    "display": "https://cards.scryfall.io/display/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.webp?1783931142",
+    "art": "https://cards.scryfall.io/art/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.webp?1783931142",
+    "crop": "https://cards.scryfall.io/crop/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.webp?1783931142",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/0/009c5aac-194f-4b95-8f69-cc74aa15c3a5.jpg?1783931142"
+  },
+  "mana_cost": "{G}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Target creature you control gets +1/+1 until end of turn. It fights target creature you don't control.\n• Counter target spell unless its controller pays {3}.\n• Creatures with power 3 or less can't block this turn.",
+  "colors": [
+    "G",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Fight"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/009c5aac-194f-4b95-8f69-cc74aa15c3a5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A418bc6c8-972b-4f07-aac0-8d003b9c1b17&unique=prints",
+  "collector_number": "230",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mathias Kollros",
+  "artist_ids": [
+    "2ae0dd12-047c-4efb-80d7-bccc3bac5fba"
+  ],
+  "illustration_id": "fafd8ece-5ff2-46a4-a87d-2aa08c8e72e2",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7511,
+  "penny_rank": 5714,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=482858&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTemur%2BCharm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTemur%2BCharm",
+    "edhrec": "https://edhrec.com/route/?cc=Temur+Charm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212331%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=454273&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Temur+Charm&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"AnyOf":[{"ZoneChangeExcept":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"except":"Hand","to":"Battlefield"}},{"SpellCast":{"what":[{"Not":{"CastFrom":"Hand"}}],"by":"You"}}]},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Spawn","colors":["Red"],"types":["Creature"],"subtypes":["Spawn"],"power":3,"toughness":3}}}}]}}]}]}

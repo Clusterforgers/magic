@@ -1,0 +1,35 @@
+{
+  "oracle_id": "11ad6e75-9bbd-40ea-b04a-e6a61db3bcda",
+  "name": "Smitten Swordmaster // Curry Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smitten Swordmaster",
+      "oracle_fingerprint": "8701c4216ab0c9a70ce992c6ad633b95",
+      "abilities": [{ "Keyword": "Lifelink" }]
+    },
+    {
+      "name": "Curry Favor",
+      "oracle_fingerprint": "e5eaf6840bce83fc81721251313cb437",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

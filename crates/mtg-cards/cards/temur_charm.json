@@ -1,0 +1,75 @@
+{
+  "oracle_id": "418bc6c8-972b-4f07-aac0-8d003b9c1b17",
+  "name": "Temur Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temur Charm",
+      "oracle_fingerprint": "145c3b433f9431da1c34dc3997322726",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [
+                        {
+                          "Pay": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "cost": "{3}",
+                            "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+                              ]
+                            },
+                            "mods": ["CantBlock"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

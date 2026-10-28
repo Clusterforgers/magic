@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b04ef0bd-5e96-45d4-afa8-1f3bc8544e1a",
+  "name": "Treason of Isengard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treason of Isengard",
+      "oracle_fingerprint": "1d940a8c5d1c03d30d89636c496742e6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              { "Amass": { "subtype": "Orc", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

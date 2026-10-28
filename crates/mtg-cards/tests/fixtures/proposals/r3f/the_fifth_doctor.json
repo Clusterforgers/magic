@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"effects":[{"PutCounters":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"Not":"AttackedThisTurn"},{"Not":"EnteredThisTurn"}]},"counter":"+1/+1"}},{"Untap":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"Not":"AttackedThisTurn"},{"Not":"EnteredThisTurn"}]}}}]}}]}]}

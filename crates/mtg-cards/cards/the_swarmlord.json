@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ead75ea4-025f-443a-824f-26fef9e424db",
+  "name": "The Swarmlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Swarmlord",
+      "oracle_fingerprint": "52f51f75231f131ed158ec5720dce2f3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Times": { "by": 2, "of": { "CommanderCasts": "You" } } }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Riot"},{"Keyword":"Flying"},{"Activated":{"cost":"{3}{R}","condition":{"Matches":{"subject":"This","selector":[{"HasCounter":"+1/+1"}]}},"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}]}]}

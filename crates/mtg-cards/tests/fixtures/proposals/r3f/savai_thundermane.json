@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"Cycled":{"by":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Pay":{"cost":"{2}","paid":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":2}},{"GainLife":{"amount":2}}]}}]}}]}]}
