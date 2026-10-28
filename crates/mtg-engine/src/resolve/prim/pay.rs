@@ -124,9 +124,14 @@ fn repeated(cost: &Cost, times: usize) -> Cost {
                 CostItem::Mana(_) => vec![item.clone(); times],
                 CostItem::PayLife(amount) => vec![CostItem::PayLife(times_over(amount))],
                 CostItem::PayEnergy(amount) => vec![CostItem::PayEnergy(times_over(amount))],
-                CostItem::RemoveCounters { counter, count } => vec![CostItem::RemoveCounters {
+                CostItem::RemoveCounters {
+                    counter,
+                    count,
+                    from,
+                } => vec![CostItem::RemoveCounters {
                     counter: counter.clone(),
                     count: times_over(count),
+                    from: from.clone(),
                 }],
                 CostItem::Sacrifice { filter, count } => vec![CostItem::Sacrifice {
                     filter: filter.clone(),

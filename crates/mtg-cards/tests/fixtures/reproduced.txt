@@ -48,6 +48,7 @@ Angel of Vitality
 Angelic Accord
 Angelic Ascension
 Angelic Field Marshal
+Angelic Sleuth
 Ant-Man, Elusive Avenger
 Apex Altisaur
 Aquastrand Spider
@@ -369,6 +370,7 @@ Drudge Beetle
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
+Duchess, Wayward Tavernkeep
 Dungeon Geists
 Dunland Crebain
 Durkwood Baloth
@@ -508,6 +510,7 @@ Genesis Storm
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
+Ghave, Guru of Spores
 Ghired, Conclave Exile
 Ghost Quarter
 Ghostblade Eidolon
@@ -1041,6 +1044,7 @@ Ruthless Radrat
 Sacred Cat
 Sadistic Slash
 Safehold Elite
+Sage of Fables
 Sage of the Beyond
 Sage of the Maze
 Sagu Mauler

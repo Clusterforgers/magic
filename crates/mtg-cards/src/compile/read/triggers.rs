@@ -822,6 +822,9 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(bare) = r.attempt(no_counters) {
         return Some(bare);
     }
+    if let Some(had) = r.attempt(super::c11c_had_counters::c11c_had) {
+        return Some(had);
+    }
     if let Some(fact) = super::facts::read(r) {
         return Some(fact);
     }
@@ -986,6 +989,12 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     }
     if let Some(phase) = super::c4_phase::text(condition) {
         return Some(phase);
+    }
+    if let Some(had) = super::c11c_had_counters::c11c_had_texts(condition)
+        .into_iter()
+        .next()
+    {
+        return Some(had);
     }
     if let Some(fact) = super::facts::texts(condition).into_iter().next() {
         return Some(fact);

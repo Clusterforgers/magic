@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "c2be0e99-cf43-423f-974f-02e3313b3aa9",
+  "oracle_id": "e579a72f-4933-40fe-9e57-96f8d65370bc",
+  "multiverse_ids": [
+    571549
+  ],
+  "mtgo_id": 101916,
+  "tcgplayer_id": 276457,
+  "cardmarket_id": 664306,
+  "name": "Ghave, Guru of Spores",
+  "lang": "en",
+  "released_at": "2022-07-08",
+  "uri": "https://api.scryfall.com/cards/c2be0e99-cf43-423f-974f-02e3313b3aa9",
+  "scryfall_uri": "https://scryfall.com/card/2x2/216/ghave-guru-of-spores?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:50:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.jpg?1783921836",
+    "normal": "https://cards.scryfall.io/normal/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.jpg?1783921836",
+    "large": "https://cards.scryfall.io/large/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.jpg?1783921836",
+    "png": "https://cards.scryfall.io/png/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.png?1783921836",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.jpg?1783921836",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.jpg?1783921836",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.webp?1783921836",
+    "grid": "https://cards.scryfall.io/grid/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.webp?1783921836",
+    "display": "https://cards.scryfall.io/display/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.webp?1783921836",
+    "art": "https://cards.scryfall.io/art/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.webp?1783921836",
+    "crop": "https://cards.scryfall.io/crop/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.webp?1783921836",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/2/c2be0e99-cf43-423f-974f-02e3313b3aa9.jpg?1783921836"
+  },
+  "mana_cost": "{2}{W}{B}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Fungus Shaman",
+  "oracle_text": "Ghave enters with five +1/+1 counters on it.\n{1}, Remove a +1/+1 counter from a creature you control: Create a 1/1 green Saproling creature token.\n{1}, Sacrifice a creature: Put a +1/+1 counter on target creature.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "B",
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b2c9bcf4-4e8c-467c-8c72-4a9cd0556e93",
+      "component": "token",
+      "name": "Saproling",
+      "type_line": "Token Creature — Saproling",
+      "uri": "https://api.scryfall.com/cards/b2c9bcf4-4e8c-467c-8c72-4a9cd0556e93"
+    },
+    {
+      "object": "related_card",
+      "id": "3ca4df5e-14b3-42ed-89dd-d87450cc78f2",
+      "component": "combo_piece",
+      "name": "Ghave, Guru of Spores",
+      "type_line": "Legendary Creature — Fungus Shaman",
+      "uri": "https://api.scryfall.com/cards/3ca4df5e-14b3-42ed-89dd-d87450cc78f2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set": "2x2",
+  "set_name": "Double Masters 2022",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2x2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2x2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c2be0e99-cf43-423f-974f-02e3313b3aa9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae579a72f-4933-40fe-9e57-96f8d65370bc&unique=prints",
+  "collector_number": "216",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "James Paick",
+  "artist_ids": [
+    "1a7be0a2-d8ac-45c7-b0a0-eb0886f47b5f"
+  ],
+  "illustration_id": "76f85ba1-dac7-4833-9e57-851cd389f5be",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9838,
+  "preview": {
+    "source": "Stephen Croke",
+    "source_uri": "https://twitter.com/crokeyz/status/1538092818266304513",
+    "previewed_at": "2022-06-18"
+  },
+  "prices": {
+    "usd": "1.18",
+    "usd_foil": "1.97",
+    "usd_etched": null,
+    "eur": "0.82",
+    "eur_foil": "2.28",
+    "tix": "0.26"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=571549&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGhave%252C%2BGuru%2Bof%2BSpores",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGhave%252C%2BGuru%2Bof%2BSpores",
+    "edhrec": "https://edhrec.com/route/?cc=Ghave%2C+Guru+of+Spores"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F276457%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=664306&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101916?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

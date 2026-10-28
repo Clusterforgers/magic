@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b47d91a1-f2ac-4604-95a7-c247ac2fab18",
+  "name": "Duchess, Wayward Tavernkeep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Duchess, Wayward Tavernkeep",
+      "oracle_fingerprint": "70186a7ccfc4615f316ba1c886cbfa53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": { "Other": "quest" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "quest" }, "from": [] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "Named": "junk" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

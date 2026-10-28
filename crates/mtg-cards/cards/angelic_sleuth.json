@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2579e9e0-b00f-4a1b-8fce-15d06bb7fe5a",
+  "name": "Angelic Sleuth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Sleuth",
+      "oracle_fingerprint": "c5f30a9935561efb8dc339bfae8cc94c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Other", { "ControlledBy": "You" }], "from": "Battlefield" }
+            },
+            "if": { "Compare": { "left": { "AnyCounters": "Triggering" }, "op": "Ge", "right": 1 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

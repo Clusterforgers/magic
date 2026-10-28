@@ -5,6 +5,7 @@
 //! (`announce/parts.rs`), and every part is paid with its events as the ability goes on the stack (`cast.rs`).
 
 mod bounce;
+mod c11c_counter_picks;
 mod counters;
 mod discard;
 pub(crate) mod energy;
@@ -19,7 +20,7 @@ mod tap;
 pub(crate) use counters::after_removal;
 
 use mtg_cards::cost::CostItem;
-use mtg_cards::refs::Selector;
+use mtg_cards::refs::{Pred, Selector};
 use mtg_cards::value::{Amount, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -47,6 +48,8 @@ pub(crate) enum Kind {
     TapPower,
     /// A permanent the payer controls returns to its owner's hand.
     Return,
+    /// A permanent the payer controls loses a counter of the kind its filter names.
+    Counter,
 }
 
 /// A part of the cost that takes objects the player picks.
@@ -146,7 +149,16 @@ impl Part {
                 let (number, x) = amount(count, item)?;
                 (Part::Mill(number), x)
             }
-            CostItem::RemoveCounters { counter, count } => {
+            CostItem::RemoveCounters {
+                counter,
+                count,
+                from: Some(filter),
+            } => {
+                let mut filter = filter.clone();
+                filter.0.push(Pred::HasCounter(counter.clone()));
+                pick(Kind::Counter, &filter, count, item)?
+            }
+            CostItem::RemoveCounters { counter, count, .. } => {
                 let (number, x) = amount(count, item)?;
                 let counter = counter.clone();
                 (
@@ -244,6 +256,7 @@ impl Part {
                 Kind::Tap => "Cost.TapPermanents",
                 Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
+                Kind::Counter => "Cost.RemoveCounters",
             },
         }
     }
@@ -415,6 +428,7 @@ impl Pick {
             Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
             Kind::Return => bounce::candidates(payer, &self.filter),
+            Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
         }
     }
 
@@ -473,6 +487,7 @@ impl Pick {
             Kind::Tap => tap::text(&self.filter, self.count),
             Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
+            Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
         }
     }
 
@@ -486,6 +501,7 @@ impl Pick {
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
+            Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object),
         }
     }
 }

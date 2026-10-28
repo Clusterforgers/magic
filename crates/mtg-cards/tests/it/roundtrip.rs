@@ -185,8 +185,16 @@ fn cost_item() -> impl Strategy<Value = CostItem> {
         (simple_amount(), proptest::option::of(leaf_selector()))
             .prop_map(|(count, filter)| CostItem::Discard { count, filter }),
         simple_amount().prop_map(CostItem::PayEnergy),
-        (counter(), simple_amount())
-            .prop_map(|(counter, count)| CostItem::RemoveCounters { counter, count }),
+        (
+            counter(),
+            simple_amount(),
+            proptest::option::of(leaf_selector())
+        )
+            .prop_map(|(counter, count, from)| CostItem::RemoveCounters {
+                counter,
+                count,
+                from
+            }),
         (leaf_selector(), simple_amount())
             .prop_map(|(filter, count)| CostItem::TapPermanents { filter, count }),
         (leaf_selector(), 0..20u32)
