@@ -1263,11 +1263,15 @@ impl<'a> Walker<'a> {
         }
     }
 
-    fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
-        self.uses("Trigger", &tag_of(pattern));
+    fn expend_count(&mut self, pattern: &TriggerPattern) {
         if let TriggerPattern::Expend { n: 0, .. } = pattern {
             self.problem("expend needs a number of at least 1");
         }
+    }
+
+    fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
+        self.uses("Trigger", &tag_of(pattern));
+        self.expend_count(pattern);
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
@@ -1338,6 +1342,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Exploits { what }
             | TriggerPattern::BecomesCrewed { what }
             | TriggerPattern::BecomesSaddled { what }
+            | TriggerPattern::Exerted { what }
             | TriggerPattern::BecomesLevel { what, .. }
             | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Mutates { what }
@@ -1421,6 +1426,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Exploits { .. }
                 | TriggerPattern::BecomesCrewed { .. }
                 | TriggerPattern::BecomesSaddled { .. }
+                | TriggerPattern::Exerted { .. }
                 | TriggerPattern::BecomesLevel { .. }
                 | TriggerPattern::TurnedFaceUp { .. }
                 | TriggerPattern::Mutates { .. }

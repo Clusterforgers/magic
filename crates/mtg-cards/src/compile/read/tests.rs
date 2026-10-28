@@ -408,6 +408,7 @@ mod w8c_writers;
 mod w9a_expend;
 mod w9b_clash;
 mod w9c_replaced;
+mod w9d_exert;
 mod where_x;
 mod written_effects;
 mod x_after;

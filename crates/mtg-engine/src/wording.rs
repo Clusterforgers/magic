@@ -550,6 +550,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} exploits a creature", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::Exerted { what } => (
+            format!("{} is exerted", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::BecomesCrewed { what } => (
             format!("{} becomes crewed", subject(what)),
             what.0 == [Pred::This],

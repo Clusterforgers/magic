@@ -42,7 +42,7 @@ pub fn split(text: &Normalized) -> Vec<RawClause> {
                     });
                 }
             }
-            None => match entering_split(&line_text) {
+            None => match entering_split(&line_text).or_else(|| w9d_exert_split(&line_text)) {
                 Some(first) => {
                     clauses.push(RawClause {
                         range: line.start..line.start + first,
@@ -70,6 +70,14 @@ fn entering_split(line: &str) -> Option<usize> {
     let tapped =
         first.ends_with(" enters tapped") || first.ends_with(" enters the battlefield tapped");
     (tapped && rest.starts_with("As ")).then(|| first.chars().count() + 1)
+}
+
+/// Where the first sentence of "You may exert ~ as it attacks. When you do, ..." ends: the exert (CR 701.43) and its
+/// reflexive trigger are two abilities on one line.
+fn w9d_exert_split(line: &str) -> Option<usize> {
+    let (first, rest) = line.split_once(". ")?;
+    let exert = first.contains("exert ") && first.ends_with(" attacks");
+    (exert && rest.starts_with("When you do, ")).then(|| first.chars().count() + 1)
 }
 
 /// A mode of a modal spell or a cost of a Spree spell.
@@ -147,7 +155,9 @@ mod tests {
     #[case::entering_tapped_alone("This land enters tapped.\nAs this land enters, choose a color.", &["This land enters tapped.", "As this land enters, choose a color."])]
     #[case::entering_tapped_then_a_rule("This land enters tapped. Draw a card.", &["This land enters tapped. Draw a card."])]
     #[case::a_condition_before_the_choice("This land enters tapped unless you control a Forest. As it enters, choose a color.", &["This land enters tapped unless you control a Forest. As it enters, choose a color."])]
-    #[case::keyword_list("Vigilance, deathtouch, haste", &["Vigilance", "deathtouch", "haste"])]
+    #[case::exert_then_when_you_do("You may exert ~ as it attacks. When you do, draw a card. (An exerted creature won't untap during your next untap step.)", &["You may exert ~ as it attacks.", "When you do, draw a card."])]
+    #[case::exert_alone("You may exert ~ as it attacks. (It won't untap during your next untap step.)", &["You may exert ~ as it attacks."])]
+    #[case::keyword_list("Vigilance, deathtouch, haste",&["Vigilance", "deathtouch", "haste"])]
     #[case::keyword_list_between_lines("Flying\nFirst strike, lifelink\nWhenever ~ attacks, draw.", &["Flying", "First strike", "lifelink", "Whenever ~ attacks, draw."])]
     #[case::partner_name_keeps_its_comma("Partner with Pir, Imaginative Rascal", &["Partner with Pir, Imaginative Rascal"])]
     #[case::cost_with_commas("Ward\u{2014}{2}, Pay 2 life.", &["Ward\u{2014}{2}, Pay 2 life."])]

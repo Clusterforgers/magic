@@ -909,6 +909,9 @@ mod tests {
             Keyword::Emerge(cost()),
             Keyword::Harmonize(cost()),
             Keyword::ReadAhead,
+            Keyword::Exert {
+                once_per_turn: false,
+            },
         ]
     }
 
