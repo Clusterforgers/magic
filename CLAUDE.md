@@ -18,7 +18,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 - Every change ships with tests that justify it.
 
 ## Commands
-- `scripts/check.sh [fast|rust|web|all]` runs fmt, clippy, tests (fail-fast); `scripts/setup.sh` enables the git hooks once.
+- `scripts/check.sh [fast|rust|web|all|affected [BASE]]` runs fmt, clippy, tests (fail-fast); `affected` tests only what the diff against the merge-base with origin/main can break (`--list` shows it), and a tree that passed skips its phases (`--force` reruns); `scripts/setup.sh` enables the git hooks once.
 - Raw: `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
 - `docker compose up -d db` starts local Postgres; DB tests use `sqlx::test`, and `sqlx::query!` is checked offline against committed `.sqlx/` (refresh steps in `.cargo/config.toml`).
 - `cargo run -p mtg-cli -- fetch scryfall`, `fetch decks`, then `ingest` fill the local database with cards and precons; `status` shows what is loaded (`docs/data-sources.md`).
