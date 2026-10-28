@@ -46,9 +46,21 @@ impl Writer<'_> {
             Effect::RollDice {
                 who: Ref::You,
                 sides,
+                dice: 1,
+                choose: false,
                 plus,
                 ..
             } if plus.is_zero() => Some((vec![format!("roll a d{sides}")], 1)),
+            Effect::RollDice {
+                who: Ref::You,
+                sides,
+                dice: 2,
+                choose: true,
+                ..
+            } => Some((
+                vec![format!("roll two d{sides} and choose one result")],
+                1,
+            )),
             Effect::Vote {
                 options: VoteFor::Named(names),
                 secret,

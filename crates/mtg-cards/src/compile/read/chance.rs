@@ -7,7 +7,7 @@ use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::{DieRow, Effect};
 use crate::refs::Ref;
-use crate::value::Amount;
+use crate::value::{Amount, DieResult};
 
 /// The largest number of faces a die the readers know has.
 const MOST_SIDES: u32 = 1000;
@@ -64,21 +64,55 @@ fn branch(r: &mut Reader<'_>, they: bool) -> Option<(bool, Vec<Effect>)> {
     (!effects.is_empty()).then_some((won, effects))
 }
 
-/// "Roll a d20.": a die of that many faces rolled by you, with a table of rows the lines after it fill in.
+/// "Roll a d20.": a die of that many faces rolled by you, with a table of rows the lines after it fill in. "Roll two d4
+/// and choose one result.": two dice, one result chosen, which the effects after it read.
 pub fn roll(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.need("roll a")?;
+    r.need("roll")?;
+    let dice = if r.word("a") {
+        1
+    } else {
+        r.word("two").then_some(2)?
+    };
     let sides = r
         .take_word()?
         .strip_prefix('d')?
         .parse::<u32>()
         .ok()
         .filter(|sides| (2..=MOST_SIDES).contains(sides))?;
+    let choose = dice > 1;
+    if choose {
+        r.need("and choose one result")?;
+    }
     Some(vec![Effect::RollDice {
         who: Ref::You,
         sides,
+        dice,
+        choose,
         plus: Amount::zero(),
         results: Vec::new(),
     }])
+}
+
+/// "the result" of a die, "that result" chosen among two and "the other result": a result of the latest roll.
+pub(super) fn c11e_result(r: &mut Reader<'_>) -> Option<Amount> {
+    let which = if r.words("the result") {
+        DieResult::Only
+    } else if r.words("that result") {
+        DieResult::Chosen
+    } else {
+        r.need("the other result")?;
+        DieResult::Other
+    };
+    Some(Amount::DieResult(which))
+}
+
+/// The words of a result of the latest roll.
+pub(super) const fn c11e_result_text(which: DieResult) -> &'static str {
+    match which {
+        DieResult::Only => "the result",
+        DieResult::Chosen => "that result",
+        DieResult::Other => "the other result",
+    }
 }
 
 /// A row of the table of a die roll: the totals it holds and the text after the bar. "1—9 | S", "20 | S" (that total

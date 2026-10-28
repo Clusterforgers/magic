@@ -224,7 +224,7 @@ fn stats(value: &Value, found: &mut Vec<Value>) {
 }
 
 /// The amounts that count, as the data names them.
-const COUNTS: [&str; 12] = [
+const COUNTS: [&str; 13] = [
     "Count",
     "Greatest",
     "Total",
@@ -237,6 +237,7 @@ const COUNTS: [&str; 12] = [
     "Tallied",
     "Life",
     "Devotion",
+    "DieResult",
 ];
 
 /// The counts in the data, each once; what a count holds is not searched.
@@ -391,6 +392,9 @@ fn with_x(mut json: Value, amount: &Value) -> Option<Ability> {
 fn counted_wordings(json: &Value) -> Vec<String> {
     let mut found = Vec::new();
     counts(json, &mut found);
+    if found.len() > 1 {
+        return c11e_counted_each(json, &found);
+    }
     let [count] = found.as_slice() else {
         return Vec::new();
     };
@@ -411,6 +415,92 @@ fn counted_wordings(json: &Value) -> Vec<String> {
         }
     }
     found
+}
+
+/// The wordings of an ability with several counts, each in a sentence of its own in the order of the data ("Draw cards
+/// equal to that result. Then create a number of Treasure tokens equal to the other result."): every count is written
+/// as X and each sentence that says X names its own count, at the end or after "equal to".
+fn c11e_counted_each(json: &Value, counts: &[Value]) -> Vec<String> {
+    let mut replaced = json.clone();
+    for count in counts {
+        if compared(json, count) || !replace(&mut replaced, count, &x()) {
+            return Vec::new();
+        }
+    }
+    let Ok(replaced) = serde_json::from_value::<Ability>(replaced) else {
+        return Vec::new();
+    };
+    let saids: Option<Vec<Vec<String>>> = counts
+        .iter()
+        .map(|count| {
+            serde_json::from_value::<Amount>(count.clone())
+                .ok()
+                .map(|amount| defining::value_texts(&amount))
+        })
+        .collect();
+    let Some(saids) = saids else {
+        return Vec::new();
+    };
+    render::variants(&replaced)
+        .iter()
+        .flat_map(|text| c11e_named_in_turn(text, &saids))
+        .collect()
+}
+
+/// The text with the k-th sentence that says X naming the k-th count, in every wording of each; none when the sentences
+/// that say X are not one for each count.
+fn c11e_named_in_turn(text: &str, saids: &[Vec<String>]) -> Vec<String> {
+    let mut spans = Vec::new();
+    let mut start = 0;
+    for (end, _) in text.match_indices('.') {
+        if end + 1 != text.len() && !text[end + 1..].starts_with(' ') {
+            continue;
+        }
+        if x_count(&text[start..end]) > 0 {
+            spans.push((start, end));
+        }
+        start = end + 1;
+    }
+    if spans.len() != saids.len() {
+        return Vec::new();
+    }
+    // The last sentence first, so the spans of those before it stay where they are.
+    let mut found = vec![text.to_owned()];
+    for ((start, end), said) in spans.iter().zip(saids).rev() {
+        found = found
+            .iter()
+            .flat_map(|text| {
+                let sentence = format!("{}.", &text[*start..*end]);
+                let mut forms: Vec<String> = said
+                    .iter()
+                    .flat_map(|said| {
+                        let mut forms = insert(&sentence, &format!(", where X is {said}"));
+                        forms.extend(equal_to_forms(&sentence, said));
+                        forms
+                    })
+                    .collect();
+                // The other result of a roll is said in a sentence that opens with "Then".
+                if said.iter().any(|said| said == "the other result") {
+                    let opened: Vec<String> = forms.iter().filter_map(|form| c11e_then(form)).collect();
+                    forms.extend(opened);
+                }
+                forms.dedup();
+                forms
+                    .into_iter()
+                    .map(|form| format!("{}{}{}", &text[..*start], form.trim_end_matches('.'), &text[*end..]))
+                    .collect::<Vec<_>>()
+            })
+            .collect();
+    }
+    found
+}
+
+/// The sentence opened with "Then" (after the space that follows the sentence before it).
+fn c11e_then(sentence: &str) -> Option<String> {
+    let body = sentence.strip_prefix(' ')?;
+    let mut letters = body.chars();
+    let first = letters.next()?;
+    Some(format!(" Then {}{}", first.to_lowercase(), letters.as_str()))
 }
 
 /// The wordings of an ability with one characteristic of an object or one count as its amount, in the sentence that

@@ -10,7 +10,7 @@ use std::collections::BTreeMap;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, DayNight, StatKind, TurnTally};
+use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TurnTally};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -1180,6 +1180,7 @@ impl<'a> Scope<'a> {
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
+            Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
@@ -1309,6 +1310,22 @@ impl<'a> Scope<'a> {
             .map(|player| i64::try_from(self.state.zone(Zone::Hand(player)).len()).unwrap_or(0))
             .min()
             .unwrap_or(i64::from(i32::MAX)))
+    }
+
+    /// A result of the latest roll of the resolution: the last die logged (a single die, or the one chosen, which a choice
+    /// logs last) or the one before it (the other result); zero outside a resolution or before a roll.
+    fn c11e_die_result(&self, which: DieResult) -> i64 {
+        let rolled = self
+            .state
+            .resolving
+            .as_ref()
+            .map_or(&[][..], |resolving| &resolving.rolled[..]);
+        let back = usize::from(which == DieResult::Other);
+        rolled
+            .len()
+            .checked_sub(1 + back)
+            .and_then(|at| rolled.get(at))
+            .map_or(0, |result| i64::from(*result))
     }
 
     /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.

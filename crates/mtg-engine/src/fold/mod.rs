@@ -322,8 +322,14 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Learned { .. }
         | Event::Proliferated { .. } => {}
         // Each random pick, roll and flip spends a substream of the generator, as a shuffle does.
-        Event::ChosenAtRandom { .. } | Event::DieRolled { .. } | Event::CoinFlipped { .. } => {
+        Event::ChosenAtRandom { .. } | Event::CoinFlipped { .. } => {
             state.rng_index += 1;
+        }
+        Event::DieRolled { result, .. } => {
+            state.rng_index += 1;
+            if let Some(resolving) = state.resolving.as_mut() {
+                resolving.rolled.push(*result);
+            }
         }
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
         Event::PriorityGranted { player } => {

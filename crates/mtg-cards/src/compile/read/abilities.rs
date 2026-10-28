@@ -248,6 +248,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::BecomesMonarch { .. }
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::CoinFlipWon { .. }
+            | TriggerPattern::DiceRolled { .. }
             | TriggerPattern::Amassed { .. }
             | TriggerPattern::Bolstered { .. }
             | TriggerPattern::Surveilled { .. }

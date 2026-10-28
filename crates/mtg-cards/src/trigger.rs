@@ -314,6 +314,20 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player rolls one or more dice ("whenever you roll one or more dice"), once for each roll; with `highest`, once
+    /// for each die that rolls its highest natural result ("whenever you roll a die's highest natural result", CR 706.2).
+    /// `Triggering` is that player.
+    DiceRolled {
+        /// Who rolls.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// Only a die that rolls its number of faces.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        highest: bool,
+    },
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {
         /// Who wins the flip.

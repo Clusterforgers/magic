@@ -148,6 +148,12 @@ enum Happened {
     Proliferated { player: PlayerId },
     /// A player won a coin flip.
     CoinFlipWon { player: PlayerId },
+    /// A player rolled a die: `first` for the first die of a roll, `highest` when it rolled its number of faces.
+    DiceRolled {
+        player: PlayerId,
+        first: bool,
+        highest: bool,
+    },
     /// A creature explored.
     Explored { object: ObjectId, player: PlayerId },
     /// A creature connived.
@@ -506,6 +512,15 @@ fn loss_ordinal(look: Look<'_>, player: PlayerId, amount: u32) -> u32 {
     ordinal(look.post, look.later, player, Tally::Losses)
 }
 
+/// Whether a die the player rolled is the first of its roll: no die of theirs since the step before it ended.
+fn c11e_first_die(earlier: &[Event], player: PlayerId) -> bool {
+    !earlier
+        .iter()
+        .rev()
+        .take_while(|event| !matches!(event, Event::StepDone { .. }))
+        .any(|event| matches!(event, Event::DieRolled { player: rolled, .. } if *rolled == player))
+}
+
 /// Where an event stands in its batch: the state before the batch, the state after it and the events that come before and after the event.
 #[derive(Clone, Copy)]
 struct Look<'a> {
@@ -778,6 +793,15 @@ fn about_players_and_permanents(
             to: *to,
         }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
+        Event::DieRolled {
+            player,
+            sides,
+            result,
+        } => found.push(Happened::DiceRolled {
+            player: *player,
+            first: c11e_first_die(look.earlier, *player),
+            highest: result == sides,
+        }),
         Event::CoinFlipped { player, won: true } => {
             found.push(Happened::CoinFlipWon { player: *player });
         }
@@ -1102,6 +1126,15 @@ fn matching_event(
                 },
             )
         }
+        (
+            TriggerPattern::DiceRolled { who, highest },
+            Happened::DiceRolled {
+                player,
+                first,
+                highest: rolled_highest,
+            },
+        ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
+            .then(|| counted(state, vec![Target::Player(*player)], 0)),
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })

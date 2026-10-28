@@ -63,6 +63,8 @@ pub struct Resolving {
     pub(crate) shown: Vec<Shown>,
     /// The life the resolution has made players lose so far, which "the life lost this way" reads.
     pub(crate) lost: u32,
+    /// The dice rolled so far in the resolution, in the order logged, which "the result" reads.
+    pub(crate) rolled: Vec<u32>,
 }
 
 impl Resolving {
@@ -75,6 +77,7 @@ impl Resolving {
             journal: Vec::new(),
             shown: Vec::new(),
             lost: 0,
+            rolled: Vec::new(),
         }
     }
 

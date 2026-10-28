@@ -2,7 +2,10 @@
 
 use mtg_cards::effect::{DieRow, Effect};
 
+use mtg_core::ids::PlayerId;
+
 use super::wrong_effect;
+use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::events::Event;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::rng::GameRng;
@@ -12,6 +15,33 @@ fn holds(row: &DieRow, total: i64) -> bool {
     total >= i64::from(row.from) && row.to.is_none_or(|to| total <= i64::from(to))
 }
 
+/// The different numbers the dice rolled, in the order rolled.
+fn c11e_distinct(rolled: &[u32]) -> Vec<u32> {
+    let mut distinct: Vec<u32> = Vec::with_capacity(rolled.len());
+    for result in rolled {
+        if !distinct.contains(result) {
+            distinct.push(*result);
+        }
+    }
+    distinct
+}
+
+/// The roller chooses one of the numbers rolled ("choose one result"); dice that all rolled the same ask nothing.
+fn c11e_chosen_last(cx: &Cx<'_>, player: PlayerId, rolled: &[u32]) -> Result<Optioned, ResolveError> {
+    let options = c11e_distinct(rolled)
+        .into_iter()
+        .map(|result| ChoiceOption::Label(result.to_string()))
+        .collect();
+    pick_options(
+        cx,
+        &[OptionChooser {
+            player,
+            options,
+            text: "Choose one result.".to_owned(),
+        }],
+    )
+}
+
 /// The first player the effect names who is still in the game rolls the die: the next substream of the game's random
 /// stream gives a number from 1 to the sides, logged as `DieRolled`, and the step goes on into the first row that holds
 /// that number plus `plus`, past the effect when no row does.
@@ -19,6 +49,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::RollDice {
         who,
         sides,
+        dice,
+        choose,
         plus,
         results,
     } = effect
@@ -34,15 +66,41 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    let below = GameRng::substream(state.seed(), state.rng_index()).below(u64::from(*sides));
-    let result = u32::try_from(below).unwrap_or(0) + 1;
+    let mut rolled: Vec<u32> = (0..*dice)
+        .map(|at| {
+            let below = GameRng::substream(state.seed(), state.rng_index() + u64::from(at))
+                .below(u64::from(*sides));
+            u32::try_from(below).unwrap_or(0) + 1
+        })
+        .collect();
+    if *choose {
+        match c11e_chosen_last(cx, player, &rolled)? {
+            Optioned::Done(taken) => {
+                let distinct = c11e_distinct(&rolled);
+                let chosen = taken
+                    .first()
+                    .and_then(|(_, at)| distinct.get(*at))
+                    .copied()
+                    .unwrap_or(0);
+                if let Some(at) = rolled.iter().position(|result| *result == chosen) {
+                    let kept = rolled.remove(at);
+                    rolled.push(kept);
+                }
+            }
+            Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+        }
+    }
+    let result = rolled.last().copied().unwrap_or(0);
     let total = i64::from(result) + cx.scope.amount(plus)?;
     Ok(Run::Done {
-        events: vec![Event::DieRolled {
-            player,
-            sides: *sides,
-            result,
-        }],
+        events: rolled
+            .iter()
+            .map(|result| Event::DieRolled {
+                player,
+                sides: *sides,
+                result: *result,
+            })
+            .collect(),
         bound: Vec::new(),
         snapshots: Vec::new(),
         next: results

@@ -60,6 +60,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
     "Trigger.CoinFlipWon",
+    "Trigger.DiceRolled",
     "Trigger.Explored",
     "Trigger.Connived",
     "Trigger.Amassed",
@@ -87,6 +88,7 @@ const RUNS: &[&str] = &[
     "Amount.HighestLife",
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
+    "Amount.DieResult",
     "Cost.Tap",
     "Cost.Mana",
     "Cost.Mana.X",
@@ -909,6 +911,8 @@ mod tests {
     #[case::the_highest_life_total("Amount.HighestLife", true)]
     #[case::the_fewest_cards_in_a_hand("Amount.LowestHand", true)]
     #[case::the_life_lost_this_way("Amount.LifeLostThisWay", true)]
+    #[case::c11e_a_die_result("Amount.DieResult", true)]
+    #[case::c11e_a_roll_trigger("Trigger.DiceRolled", true)]
     #[case::myriad("Keyword.Myriad", true)]
     #[case::crew("Keyword.Crew", true)]
     #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]

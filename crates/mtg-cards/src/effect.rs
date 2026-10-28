@@ -18,6 +18,17 @@ pub(crate) const fn is_false(value: &bool) -> bool {
     !*value
 }
 
+/// One die, what a roll that names no number rolls.
+const fn c11e_one_die() -> u32 {
+    1
+}
+
+/// Whether a roll is of one die.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn c11e_is_one_die(dice: &u32) -> bool {
+    *dice == 1
+}
+
 #[allow(clippy::trivially_copy_pass_by_ref)]
 pub(crate) const fn is_true(value: &bool) -> bool {
     *value
@@ -815,6 +826,13 @@ pub enum Effect {
         who: Ref,
         /// How many faces the die has.
         sides: u32,
+        /// How many dice are rolled ("roll two d4"); more than one only with `choose`.
+        #[serde(default = "c11e_one_die", skip_serializing_if = "c11e_is_one_die")]
+        dice: u32,
+        /// The roller chooses one result ("and choose one result"): `DieResult::Chosen` reads it and `DieResult::Other`
+        /// the other; a choice has no table.
+        #[serde(default, skip_serializing_if = "is_false")]
+        choose: bool,
         /// Added to the number rolled before the rows are read ("roll a d20 and add the number of cards in your hand").
         #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
         plus: Amount,
@@ -1266,7 +1284,7 @@ mod tests {
         r#"{"RepeatEach":{"over":"Opponents","as":"foe","effects":[{"Draw":{"who":{"Bound":"foe"}}}]}}"#
     )]
     #[case::roll_a_die_with_a_table(
-        Effect::RollDice { who: Ref::You, sides: 20, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
+        Effect::RollDice { who: Ref::You, sides: 20, dice: 1, choose: false, plus: Amount::Fixed(2), results: vec![DieRow { from: 1, to: Some(9), effects: vec![Effect::Shuffle { who: Ref::You }] }, DieRow { from: 10, to: None, effects: vec![Effect::Shuffle { who: Ref::You }] }] },
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
