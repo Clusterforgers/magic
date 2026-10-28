@@ -40,7 +40,8 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 78] = [
+const TEMPLATES: [Template; 79] = [
+    super::c11b_cast_target::c11b_cast_target,
     super::c10_uc::c10_uc_tap_counted,
     super::c10_uc::c10_uc_held_control,
     super::c10_uc::c10_uc_sleep,
@@ -187,6 +188,11 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
 /// The sentence shapes of `sentence`, tried in order.
 fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| cast::after_exiling(r, effects)).is_some() {
+        return true;
+    }
+    if r.attempt(|r| super::c11b_cast_target::c11b_exile_instead(r, effects))
+        .is_some()
+    {
         return true;
     }
     if r.attempt(|r| regeneration(r, effects)).is_some() {

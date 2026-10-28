@@ -24,7 +24,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if let (
         ReplaceWhen::ZoneChange {
             what,
-            from: Some(ZoneKind::Battlefield),
+            from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
             to: Some(ZoneKind::Graveyard),
         },
         ReplaceBy::MoveTo(to),

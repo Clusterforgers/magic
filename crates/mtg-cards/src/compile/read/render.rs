@@ -2121,9 +2121,18 @@ impl Writer<'_> {
             .or_else(|| mass_moves::text(effect))
             .or_else(|| all_graveyards::text(effect))
             .or_else(|| cast::text(effect))
+            .or_else(|| self.c11b_cast(effect))
             .or_else(|| self.keyword_action(effect))
             .or_else(|| self.controller_search(effect))
             .or_else(|| self.control_for_good(effect))
+    }
+
+    /// The cast of the target during the resolution and the exile of that spell (`c11b_cast_target`).
+    fn c11b_cast(&mut self, effect: &Effect) -> Option<String> {
+        let target = self.targets.first().map(|spec| &spec.what);
+        super::c11b_cast_target::c11b_exile_text(effect, target).or_else(|| {
+            super::c11b_cast_target::c11b_cast_text(effect, || self.name_target())
+        })
     }
 
     /// A search another player may make: "its controller may search their library for a basic land card, put it onto

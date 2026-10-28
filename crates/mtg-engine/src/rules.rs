@@ -112,10 +112,11 @@ pub enum Rule {
     PreventDamage(DamageShield),
     /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
     Regenerate(ObjectRef),
-    /// A shield over deaths (CR 614): each of the permanents, fixed when it was made, that would go from the battlefield
-    /// to a graveyard goes to the zone instead ("if that creature would die this turn, exile it instead").
+    /// A shield over deaths (CR 614): each of the permanents or spells, fixed when it was made, that would go from the
+    /// battlefield or the stack to a graveyard goes to the zone instead ("if that creature would die this turn, exile it
+    /// instead", "if that spell would be put into your graveyard, exile it instead").
     DiesInstead {
-        /// The permanents it covers.
+        /// The permanents and spells it covers.
         objects: Vec<ObjectRef>,
         /// Where they go instead.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]

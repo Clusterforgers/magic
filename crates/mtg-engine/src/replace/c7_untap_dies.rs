@@ -1,5 +1,5 @@
-//! "If that creature would die this turn, exile it instead": the death shields of the permanents an effect named
-//! (`Rule::DiesInstead`, CR 614.1a, 611.2c).
+//! "If that creature would die this turn, exile it instead", "If that spell would be put into your graveyard, exile it
+//! instead": the shields of the permanents and spells an effect named (`Rule::DiesInstead`, CR 614.1a, 611.2c).
 
 use mtg_cards::trigger::ReplaceBy;
 
@@ -9,12 +9,12 @@ use crate::rules::Rule;
 use crate::zones::Zone;
 
 impl Pass<'_> {
-    /// The death shields that send the permanent of the slot elsewhere as it would go from the battlefield to a
-    /// graveyard, each once; a shield applies to every death it covers while it lasts and is never used up.
+    /// The shields that send the permanent or spell of the slot elsewhere as it would go from the battlefield or the
+    /// stack to a graveyard, each once; a shield applies to every move it covers while it lasts and is never used up.
     pub(super) fn c7_untap_dies(&self, slot: &Slot) -> Vec<Candidate> {
         let Unit::Move {
             object,
-            from: Zone::Battlefield,
+            from: Zone::Battlefield | Zone::Stack,
             to: Zone::Graveyard(_),
             ..
         } = self.unit(&slot.item)

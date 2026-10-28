@@ -29,6 +29,7 @@ mod aura_forms;
 mod batches;
 mod becomes;
 mod c10_dice_targets;
+mod c11b_cast_target;
 mod c10_pa_attacks;
 mod c10_pa_monstrous;
 mod c10_pa_pay_x;

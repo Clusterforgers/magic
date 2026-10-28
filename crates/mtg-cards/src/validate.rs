@@ -2129,7 +2129,7 @@ impl Walker<'_> {
                     )
                     | (
                         ReplaceWhen::ZoneChange {
-                            from: Some(ZoneKind::Battlefield),
+                            from: Some(ZoneKind::Battlefield | ZoneKind::Stack),
                             to: Some(ZoneKind::Graveyard),
                             ..
                         },
