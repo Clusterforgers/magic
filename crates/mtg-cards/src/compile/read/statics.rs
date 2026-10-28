@@ -1597,6 +1597,22 @@ pub(super) fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
     }
 }
 
+/// The subject after a leading condition: lowered, except a subtype that opens it keeps its capital ("As long as you
+/// have the city's blessing, Detectives you control can't be blocked.").
+fn leading_subject(subject: &str, affected: &Ref) -> String {
+    let named = match affected {
+        Ref::Each(selector) => selector.0.iter().any(|pred| {
+            matches!(pred, Pred::Subtype(Subtype(name)) if subject.starts_with(name.as_str()))
+        }),
+        _ => false,
+    };
+    let mut words = subject.chars();
+    match words.next() {
+        Some(first) if !named => first.to_lowercase().chain(words).collect(),
+        _ => subject.to_owned(),
+    }
+}
+
 fn static_texts(
     affected: &Ref,
     mods: &[Modification],
@@ -1653,10 +1669,7 @@ fn static_texts(
         .flat_map(|(subject, predicate)| {
             // The condition may also come first: "As long as you're the monarch, creatures you control have flying."
             let leading = helds.iter().map(|held| {
-                let mut words = subject.chars();
-                let lowered: String = words.next().map_or_else(String::new, |first| {
-                    first.to_lowercase().chain(words).collect()
-                });
+                let lowered = leading_subject(&subject, affected);
                 format!("as long as {held}, {lowered} {predicate}")
             });
             let trailing = tails

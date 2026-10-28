@@ -227,6 +227,10 @@ mod uncounterable_group;
 mod unless;
 mod untap_lands;
 mod untapped_cost;
+mod w4f_counts;
+mod w4f_pronouns;
+mod w4f_sentences;
+mod w4f_tokens;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -306,6 +310,16 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c10_cen(ability, texts);
     add_c11g(ability, texts);
     add_c11f(ability, texts);
+    add_w4f(texts);
+}
+
+/// Adds the rewordings of the Mismatch proposals of the names A to L (r3w6): sentences joined or ordered as the oracle
+/// text does, counts by "for each", a token named before its ability in quotes and the pronouns of a person, last.
+fn add_w4f(texts: &mut Vec<String>) {
+    w4f_sentences::add(texts);
+    w4f_counts::add(texts);
+    w4f_tokens::add(texts);
+    w4f_pronouns::add(texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.

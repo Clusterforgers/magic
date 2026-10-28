@@ -403,7 +403,18 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = super::c11c_had_counters::c11c_had_wordings(&texts);
     texts.extend(more);
     graveyard_wordings(ability, &mut texts);
+    produced_wordings(&mut texts);
     texts
+}
+
+/// The mana of the permanent a trigger is about, "that permanent produced" as well as "that land produced".
+fn produced_wordings(texts: &mut Vec<String>) {
+    let produced: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains("of any type that land produced"))
+        .map(|text| text.replace("of any type that land produced", "of any type that permanent produced"))
+        .collect();
+    texts.extend(produced);
 }
 
 /// Every wording the proposal checker accepts for an ability: the wordings of [`variants`], which the templates read,
