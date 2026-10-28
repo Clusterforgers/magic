@@ -2436,6 +2436,9 @@ impl Pass<'_> {
             .and_then(|made| made.checked_mul(*counters))
             .and_then(|total| i32::try_from(total).ok())
             .filter(|total| *total > 0);
+        if let Some(slot) = w7e_devoured_slot(object, made) {
+            self.slots.insert(entering + 1, slot);
+        }
         if let (Some(card), Some(delta)) = (self.state.object(object), gained) {
             let mut inherited = applied;
             inherited.dedup();
@@ -2796,6 +2799,17 @@ mod riot;
 mod c6_blk_draw_step;
 
 mod c7_untap_dies;
+
+/// The event that keeps how many permanents `object` devoured as it entered, which its abilities read once it is on
+/// the battlefield; none when it devoured nothing.
+fn w7e_devoured_slot(object: ObjectId, made: usize) -> Option<Slot> {
+    let count = u32::try_from(made).ok().filter(|count| *count > 0)?;
+    Some(Slot {
+        item: Item::One(Event::Devoured { object, count }),
+        applied: Vec::new(),
+        frozen: true,
+    })
+}
 
 #[cfg(test)]
 mod shields;

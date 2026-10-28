@@ -217,6 +217,7 @@ Cathars' Crusade
 Cathartic Reunion
 Cathedral Acolyte
 Cavern Whisperer
+Caverns of Despair
 Cayth, Famed Mechanist
 Celebrate the Harvest
 Celestial Archon
@@ -246,6 +247,7 @@ Citadel Gate
 Citanul Hierophants
 Clan Defiance
 Clash of Titans
+Clever Concealment
 Clever Lumimancer
 Cliffgate
 Clifftop Lookout
@@ -407,6 +409,7 @@ Dual Casting
 Dual Strike
 Dualcaster Mage
 Duchess, Wayward Tavernkeep
+Dueling Grounds
 Dungeon Geists
 Dunland Crebain
 Durkwood Baloth
@@ -1227,6 +1230,7 @@ Siege Smash
 Siege Wurm
 Sigiled Paladin
 Sigiled Sentinel
+Silent Arbiter
 Silhana Ledgewalker
 Silumgar's Command
 Silvar, Devourer of the Free
@@ -1388,6 +1392,7 @@ Teacher's Pest
 Team Pennant
 Tectonic Reformation
 Teferi's Ageless Insight
+Teferi's Protection
 Tempestra, Dame of Games
 Temporal Manipulation
 Temur Devotee
@@ -1492,6 +1497,7 @@ Unbreakable Bond
 Unclaimed Territory
 Underworld Dreams
 Underworld Rage-Hound
+Unite the Coalition
 Universal Automaton
 Universal Surveillance
 Unstable Molecule Suit

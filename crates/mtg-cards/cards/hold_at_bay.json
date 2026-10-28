@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a57b84e4-951c-4475-bb34-b68815858f87",
+  "name": "Hold at Bay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hold at Bay",
+      "oracle_fingerprint": "bebd062480b9a2d90af48d4839ab0318",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 7 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

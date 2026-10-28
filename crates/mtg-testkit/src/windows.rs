@@ -296,6 +296,7 @@ mod tests {
         let blocks = Decision {
             player: ME,
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
+                most: None,
                 blockers: Vec::new(),
                 min_blockers: Vec::new(),
                 max_blockers: Vec::new(),

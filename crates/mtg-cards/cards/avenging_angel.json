@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3415a199-05ac-4627-be97-f842eb1415a3",
+  "name": "Avenging Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avenging Angel",
+      "oracle_fingerprint": "c99de4a0bca5a97ea0abd06f6f4aa2d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

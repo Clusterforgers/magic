@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a1fb1b77-a49f-4447-bbe0-156407f192e2",
+  "name": "Wizard Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wizard Mentor",
+      "oracle_fingerprint": "12a489da4c6d7b6ee6da3205e5137c5f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": "This", "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

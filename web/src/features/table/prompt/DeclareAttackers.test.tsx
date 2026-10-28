@@ -450,3 +450,18 @@ describe('the words', () => {
     expect(line.querySelectorAll('[aria-live]')).toHaveLength(1)
   })
 })
+
+describe('a limit on the declaration', () => {
+  it.each([
+    [1, 'No more than 1 creature can attack this combat.'],
+    [2, 'No more than 2 creatures can attack this combat.'],
+  ])('says the limit of %i', (most, words) => {
+    attack({ ...optionsOf(SPECS[2] as Spec), most })
+    expect(screen.getByText(words)).toBeInTheDocument()
+  })
+
+  it('says nothing without one', () => {
+    attack(optionsOf(SPECS[2] as Spec))
+    expect(screen.queryByText(/No more than/)).toBeNull()
+  })
+})

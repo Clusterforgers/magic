@@ -266,6 +266,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             help: Box::default(),
         }),
         DecisionKind::DeclareAttackers(AttackOptions {
+            most: None,
             attackers: vec![AttackerOption::free(
                 a,
                 vec![AttackTarget::Player(PlayerId(1))],
@@ -274,6 +275,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             mana: 0,
         }),
         DecisionKind::DeclareBlockers(BlockOptions {
+            most: None,
             blockers: vec![BlockerOption {
                 object: a,
                 can_block: vec![b],
@@ -283,6 +285,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             required: Vec::new(),
         }),
         DecisionKind::DeclareBlockers(BlockOptions {
+            most: None,
             blockers: vec![BlockerOption {
                 object: a,
                 can_block: vec![b],
@@ -868,7 +871,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(3),
         decision: Decision {
             player: PlayerId(1),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], max_blockers: vec![], required: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], max_blockers: vec![], required: vec![], most: None }),
         },
         deadline_ms: Some(45_000),
         show_after_ms: None,
@@ -883,7 +886,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(4),
         decision: Decision {
             player: PlayerId(0),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], max_blockers: vec![], required: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![], max_blockers: vec![], required: vec![], most: None }),
         },
         deadline_ms: None,
         show_after_ms: None,

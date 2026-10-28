@@ -1,0 +1,21 @@
+{
+  "id": "14f42cc9-8b7f-4f8a-8d68-8480e668c239",
+  "oracle_id": "1cdf30de-d88c-421a-80df-4917bbd2f09e",
+  "name": "Silent Arbiter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "972",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "No more than one creature can attack each combat.\nNo more than one creature can block each combat.",
+  "power": "1",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

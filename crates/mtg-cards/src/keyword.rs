@@ -306,6 +306,8 @@ pub enum Keyword {
     Afterlife(u32),
     /// Horsemanship (CR 702.31): the creature can't be blocked except by creatures with horsemanship.
     Horsemanship,
+    /// Phasing (CR 702.26): the permanent phases out, or in, as its controller's untap step begins.
+    Phasing,
     /// Spectacle with its cost (CR 702.137): an alternative cost to cast the card from a hand when an opponent lost life this turn.
     Spectacle(Cost),
     /// Umbra armor (CR 702.89): if the creature this Aura enchants would be destroyed, instead all damage is removed from it and this Aura is destroyed.
@@ -489,6 +491,7 @@ impl Keyword {
         "Sunburst",
         "Afterlife",
         "Horsemanship",
+        "Phasing",
         "Spectacle",
         "Umbra armor",
         "Cipher",
@@ -648,6 +651,7 @@ impl Keyword {
             Keyword::Mayhem(_) => "Mayhem",
             Keyword::Afterlife(_) => "Afterlife",
             Keyword::Horsemanship => "Horsemanship",
+            Keyword::Phasing => "Phasing",
             Keyword::Spectacle(_) => "Spectacle",
             Keyword::Cipher => "Cipher",
             Keyword::Graft(_) => "Graft",
@@ -846,6 +850,7 @@ mod tests {
             Keyword::Sunburst,
             Keyword::Afterlife(2),
             Keyword::Horsemanship,
+            Keyword::Phasing,
             Keyword::Spectacle(Cost::default()),
             Keyword::UmbraArmor,
             Keyword::Cipher,

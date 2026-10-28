@@ -1,7 +1,9 @@
 //! Turn-based actions and step transitions (CR 500-514).
 
 use mtg_cards::spend::ManaLasts;
-use mtg_core::ids::PlayerId;
+use std::collections::BTreeSet;
+
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::characteristics::controller_of;
 use crate::combat::{attack_options, block_options, defending_players};
@@ -43,8 +45,19 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
     match step {
         Step::Untap => {
             // Phasing comes first (CR 502.1): what phases in untaps with the rest.
+            let leaving = active.map_or_else(Vec::new, |active| {
+                crate::phasing::w7e_keyword_out_events(state, active)
+            });
+            let going: BTreeSet<ObjectId> = leaving
+                .iter()
+                .filter_map(|event| match event {
+                    Event::PermanentPhasedOut { object, .. } => Some(*object),
+                    _ => None,
+                })
+                .collect();
             let mut events =
                 active.map_or_else(Vec::new, |active| crate::phasing::in_events(state, active));
+            events.splice(0..0, leaving);
             let coming: Vec<_> = events
                 .iter()
                 .filter_map(|event| match event {
@@ -59,6 +72,7 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                     .chain(&coming)
                     .filter(|id| {
                         active.is_some()
+                            && !going.contains(*id)
                             && controller_of(state, **id) == active
                             && !crate::characteristics::doesnt_untap(state, **id)
                             && state

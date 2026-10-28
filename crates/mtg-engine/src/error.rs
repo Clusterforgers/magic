@@ -243,6 +243,15 @@ pub enum IllegalAnswer {
         /// Creatures the answer blocks it with.
         got: usize,
     },
+    /// A declaration names more creatures than a rule lets attack or block together ("no more than one creature can
+    /// attack each combat").
+    #[error("no more than {allowed} creatures may be declared together but {got} were")]
+    TooManyCreatures {
+        /// The most creatures the declaration may name.
+        allowed: usize,
+        /// Creatures the declaration names.
+        got: usize,
+    },
     /// An attacker that can't be blocked by more than some creatures was blocked by more.
     #[error("the attacker may be blocked by {allowed} creatures together at most but got {got}")]
     TooManyBlockers {

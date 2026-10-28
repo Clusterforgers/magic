@@ -1,0 +1,23 @@
+{
+  "id": "209f7479-b3a0-4c27-9602-78babb8d2e99",
+  "oracle_id": "a1034a02-36cf-4586-a001-9dc3fb76e904",
+  "name": "Caverns of Despair",
+  "lang": "en",
+  "layout": "normal",
+  "set": "leg",
+  "collector_number": "136",
+  "rarity": "rare",
+  "released_at": "1994-06-01",
+  "digital": false,
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "World Enchantment",
+  "oracle_text": "No more than two creatures can attack each combat.\nNo more than two creatures can block each combat.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

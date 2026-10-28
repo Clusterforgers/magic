@@ -45,6 +45,10 @@ pub enum Rule {
     /// Creatures can't attack the players unless their controller pays for each of them as the attack is declared
     /// (CR 508.1h).
     AttackTax(AttackTax),
+    /// No more than this many creatures can attack each combat (CR 508.1c).
+    AttackLimit(u32),
+    /// No more than this many creatures can block each combat (CR 509.1b).
+    BlockLimit(u32),
     /// The spells can't be countered.
     CantBeCountered(Vec<ObjectRef>),
     /// The players can't gain life.
@@ -280,6 +284,8 @@ pub(crate) struct RulesInForce {
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
+    attack_limit: Option<u32>,
+    block_limit: Option<u32>,
 }
 
 /// A tax on attacking in force, with whose it is.
@@ -376,6 +382,12 @@ impl RulesInForce {
                 source,
                 tax: tax.clone(),
             }),
+            Rule::AttackLimit(most) => {
+                self.attack_limit = Some(self.attack_limit.map_or(*most, |was| was.min(*most)));
+            }
+            Rule::BlockLimit(most) => {
+                self.block_limit = Some(self.block_limit.map_or(*most, |was| was.min(*most)));
+            }
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
@@ -505,6 +517,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 life: life.saturating_mul(u32::try_from(times).unwrap_or(u32::MAX)),
             })
         }
+        GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
+        GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
@@ -587,7 +601,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::PlayersHave { who, .. } => who.is_empty(),
-        Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
+        Rule::TriggerAgain(_)
+        | Rule::DamageCantBePrevented { .. }
+        | Rule::Regenerate(_)
+        | Rule::AttackLimit(_)
+        | Rule::BlockLimit(_) => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -704,6 +722,8 @@ static NONE: RulesInForce = RulesInForce {
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
+    attack_limit: None,
+    block_limit: None,
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
@@ -817,6 +837,24 @@ pub(crate) fn fold_expired(state: &mut GameState, id: EffectId) -> Result<(), En
         return Err(invalid(format!("unknown rule {id:?}")));
     }
     Ok(())
+}
+
+/// The most creatures that may attack together this combat, the least of the limits in force (CR 508.1c); none while
+/// no rule limits the declaration.
+pub fn attack_limit(state: &GameState) -> Option<usize> {
+    state
+        .rules()
+        .attack_limit
+        .map(|most| usize::try_from(most).unwrap_or(usize::MAX))
+}
+
+/// The most creatures that may block together this combat, the least of the limits in force (CR 509.1b); none while no
+/// rule limits the declaration.
+pub fn block_limit(state: &GameState) -> Option<usize> {
+    state
+        .rules()
+        .block_limit
+        .map(|most| usize::try_from(most).unwrap_or(usize::MAX))
 }
 
 /// Whether the creature `id` attacks each combat if able: the one place the attack declaration reads this requirement.

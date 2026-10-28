@@ -1,0 +1,29 @@
+{
+  "oracle_id": "29c0a904-43e3-44c3-8e00-deea523de8eb",
+  "name": "Militant Monk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Militant Monk",
+      "oracle_fingerprint": "00ecfaf0a92ce64326157aa579539232",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

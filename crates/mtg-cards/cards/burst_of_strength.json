@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1ab592fa-adfb-4879-af6c-0204eab323fb",
+  "name": "Burst of Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burst of Strength",
+      "oracle_fingerprint": "0969f01ec4570d2da49a1ba1b2bc304e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

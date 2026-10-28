@@ -119,6 +119,8 @@ pub struct Designations {
     pub(crate) prepared: bool,
     /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
     pub(crate) level: u32,
+    /// How many permanents it devoured as it entered (CR 702.82).
+    pub(crate) devoured: u32,
 }
 
 /// How a permanent is phased out (CR 702.26): who controlled it when it phased out, which is who it phases in for, and
@@ -249,6 +251,12 @@ impl PermanentState {
     /// Whether the permanent is tapped.
     pub const fn tapped(&self) -> bool {
         self.tapped
+    }
+
+    /// How many permanents it devoured as it entered (CR 702.82); a permanent that leaves the battlefield is a new
+    /// object that devoured none.
+    pub const fn devoured(&self) -> u32 {
+        self.designations.devoured
     }
 
     /// Whether the permanent has become monstrous (CR 701.37); a permanent that leaves the battlefield is a new

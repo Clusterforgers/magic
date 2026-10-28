@@ -131,6 +131,10 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         if r.words("creature in your party") {
             return Some(Amount::Party(Ref::You));
         }
+        // The permanent that devoured: "draw a card for each creature it devoured" (Skullmulcher).
+        if r.words("creature it devoured") {
+            return Some(Amount::Devoured);
+        }
         if let Some(tally) = super::vote::w2d_tally(r, false) {
             return Some(tally);
         }
@@ -270,6 +274,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
         Amount::Players(Ref::Bound(_)) => super::vote::w2d_tally_text(counted, false)?,
         Amount::Party(Ref::You) => "creature in your party".to_owned(),
+        Amount::Devoured => "creature it devoured".to_owned(),
         Amount::CommanderCasts(Ref::You) => {
             "time you've cast your commander from the command zone this game".to_owned()
         }

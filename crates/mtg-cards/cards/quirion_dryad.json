@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f42b6510-7322-4733-85ea-7ae6bd6ca8fc",
+  "name": "Quirion Dryad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quirion Dryad",
+      "oracle_fingerprint": "9ed8123d1b88d31f60387905ac33a195",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Color": "White" },
+                      { "Color": "Blue" },
+                      { "Color": "Black" },
+                      { "Color": "Red" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

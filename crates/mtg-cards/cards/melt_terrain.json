@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1c0940d6-9f0d-4d84-ab28-ff6595254675",
+  "name": "Melt Terrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melt Terrain",
+      "oracle_fingerprint": "8d91142235c6bd6d81837ad2abbde04b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

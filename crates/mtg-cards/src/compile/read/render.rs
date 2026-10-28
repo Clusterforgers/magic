@@ -2265,7 +2265,25 @@ impl Writer<'_> {
     }
 
     /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".
+    /// "target creature phases out", "all permanents you control phase out": the verb agrees with its subject.
+    fn w7e_phase_out_text(&mut self, what: &Ref) -> Option<String> {
+        matches!(what, Ref::This | Ref::Target(0) | Ref::Each(_)).then_some(())?;
+        let verb = if *what == Ref::This || self.single(what) {
+            "phases out"
+        } else {
+            "phase out"
+        };
+        Some(format!("{} {verb}", self.object(what)?))
+    }
+
     fn consequence(&mut self, condition: &Condition, then: &[Effect]) -> Option<String> {
+        // "if the gift was promised, all permanents you control phase out, and until your next turn, ...".
+        if let Some((text, taken)) = super::w7e_phase::w7e_phased_and_protected_text(then)
+            .or_else(|| super::w7e_phase::w7e_protected_text(then))
+            && taken == then.len()
+        {
+            return Some(text);
+        }
         let mut steps = Vec::with_capacity(then.len());
         for effect in then {
             steps.push(match conditional::remove_all_text(condition, effect) {
@@ -2280,35 +2298,15 @@ impl Writer<'_> {
     /// battlefield", "if there are five or more charge counters on ~, transform ~": a keyword action, a designation,
     /// the card returning itself or an effect on a condition.
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
+        if let Some(text) = Self::card_returning_itself(effect) {
+            return Some(text);
+        }
         Some(match effect {
             Effect::WinGame { who } => format!(
                 "{} {} the game",
                 self.player(who)?,
                 if *who == Ref::You { "win" } else { "wins" }
             ),
-            Effect::Move {
-                what: Ref::This,
-                to:
-                    Destination::Battlefield {
-                        tapped,
-                        under: None,
-                        transformed: false,
-                        counters,
-                    },
-            } if counters.is_empty() => format!(
-                "return ~ from your graveyard to the battlefield{}",
-                if *tapped { " tapped" } else { "" }
-            ),
-            Effect::Move {
-                what,
-                to:
-                    Destination::Library {
-                        place: Place::Shuffled,
-                        order: None,
-                    },
-            } if *what == Ref::This || *what == dead_card() => {
-                "shuffle ~ into its owner's library".to_owned()
-            }
             Effect::Surveil {
                 who: Ref::You,
                 count,
@@ -2334,6 +2332,7 @@ impl Writer<'_> {
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
+            Effect::PhaseOut { what } => self.w7e_phase_out_text(what)?,
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),
@@ -2380,6 +2379,36 @@ impl Writer<'_> {
             ),
             _ => return self.module_effect(effect),
         })
+    }
+
+    /// "return ~ from your graveyard to the battlefield", "shuffle ~ into its owner's library".
+    fn card_returning_itself(effect: &Effect) -> Option<String> {
+        match effect {
+            Effect::Move {
+                what: Ref::This,
+                to:
+                    Destination::Battlefield {
+                        tapped,
+                        under: None,
+                        transformed: false,
+                        counters,
+                    },
+            } if counters.is_empty() => Some(format!(
+                "return ~ from your graveyard to the battlefield{}",
+                if *tapped { " tapped" } else { "" }
+            )),
+            Effect::Move {
+                what,
+                to:
+                    Destination::Library {
+                        place: Place::Shuffled,
+                        order: None,
+                    },
+            } if *what == Ref::This || *what == dead_card() => {
+                Some("shuffle ~ into its owner's library".to_owned())
+            }
+            _ => None,
+        }
     }
 
     /// "counter target spell unless its controller pays {2}", "you may pay {1}. If you do, draw a card".
@@ -2438,6 +2467,8 @@ impl Writer<'_> {
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
+            .or_else(|| super::w7e_phase::w7e_phased_and_protected_text(effects))
+            .or_else(|| super::w7e_phase::w7e_protected_text(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
     }
