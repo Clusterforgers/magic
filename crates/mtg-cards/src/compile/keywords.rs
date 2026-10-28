@@ -160,6 +160,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("plot", Params::Cost),
     ("prowl", Params::Cost),
     ("mayhem", Params::Cost),
+    ("emerge", Params::Cost),
+    ("harmonize", Params::Cost),
     ("transmute", Params::Cost),
     ("level up", Params::Cost),
     ("embalm", Params::Cost),
@@ -397,6 +399,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "blitz" => spell_cost(rest).map(Keyword::Blitz),
         "prowl" => spell_cost(rest).map(Keyword::Prowl),
         "mayhem" => spell_cost(rest).map(Keyword::Mayhem),
+        "emerge" => spell_cost(rest).map(Keyword::Emerge),
+        "harmonize" => spell_cost(rest).map(Keyword::Harmonize),
         "spectacle" => spell_cost(rest).map(Keyword::Spectacle),
         "afterlife" => positive(rest).map(Keyword::Afterlife),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
@@ -1203,6 +1207,12 @@ mod tests {
     #[case::prowl("Prowl {1}{B}", Keyword::Prowl(mana("{1}{B}")))]
     #[case::mayhem("Mayhem {1}{B}", Keyword::Mayhem(mana("{1}{B}")))]
     #[case::mayhem_hybrid("Mayhem {B/R}", Keyword::Mayhem(mana("{B/R}")))]
+    #[case::emerge("Emerge {5}{U}{U}", Keyword::Emerge(mana("{5}{U}{U}")))]
+    #[case::harmonize("Harmonize {4}{R}", Keyword::Harmonize(mana("{4}{R}")))]
+    #[case::harmonize_with_x(
+        "Harmonize {X}{G}{G}{G}{G}",
+        Keyword::Harmonize(mana("{X}{G}{G}{G}{G}"))
+    )]
     #[case::spectacle("Spectacle {1}{B}", Keyword::Spectacle(mana("{1}{B}")))]
     #[case::spectacle_hybrid("spectacle {B/R}{B/R}", Keyword::Spectacle(mana("{B/R}{B/R}")))]
     #[case::afterlife("Afterlife 1", Keyword::Afterlife(1))]
@@ -1607,6 +1617,8 @@ mod tests {
             "Blitz {1}",
             "Prowl {1}",
             "Mayhem {1}",
+            "Emerge {1}",
+            "Harmonize {1}",
             "Afterlife 2",
             "Horsemanship",
             "Spectacle {B}",

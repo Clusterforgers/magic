@@ -103,6 +103,10 @@ pub enum CastWay {
     Mutate,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
+    /// Emerge (CR 702.119): from a hand for its emerge cost and the sacrifice of a creature, reduced by that creature's mana value.
+    Emerge,
+    /// Harmonize (CR 702.180): from a graveyard for its harmonize cost, reduced by the power of a creature tapped for it; exiled when it leaves the stack.
+    Harmonize,
 }
 
 impl CastWay {
@@ -111,9 +115,12 @@ impl CastWay {
         !matches!(self, CastWay::JumpStart | CastWay::Retrace)
     }
 
-    /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start).
+    /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start, harmonize).
     pub const fn exiles_the_spell(self) -> bool {
-        matches!(self, CastWay::Flashback | CastWay::JumpStart)
+        matches!(
+            self,
+            CastWay::Flashback | CastWay::JumpStart | CastWay::Harmonize
+        )
     }
 }
 
@@ -721,6 +728,8 @@ mod tests {
     #[case::prowl(CastWay::Prowl, true)]
     #[case::spectacle(CastWay::Spectacle, true)]
     #[case::mayhem(CastWay::Mayhem, true)]
+    #[case::emerge(CastWay::Emerge, true)]
+    #[case::harmonize(CastWay::Harmonize, true)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]
     #[case::free(CastWay::Free, true)]

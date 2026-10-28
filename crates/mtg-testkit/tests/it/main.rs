@@ -55,6 +55,7 @@ mod c7_untap_held;
 mod c8_eg_cards;
 mod c8_kwq_counters;
 mod c8_vote_coins;
+mod c9_emerge;
 mod card_grants;
 mod card_grants_fuzz;
 mod card_lists;

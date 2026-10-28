@@ -111,6 +111,9 @@ fn cast_cost_x(cost: &mtg_cards::cost::Cost, counted: bool) -> Option<(ManaCost,
 /// How many `{X}` the cost of the alternative way `way` of the card `id` holds: the miracle cost may hold some
 /// ("Miracle {X}{W}{W}", CR 107.3), whose X is announced in place of the one of the printed cost; any other way holds none.
 pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u32 {
+    if way == CastWay::Harmonize {
+        return crate::c9_emerge_ways::c9_emerge_harmonize_x(&keywords_of(state, id));
+    }
     if way != CastWay::Miracle {
         return 0;
     }
@@ -123,8 +126,13 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
         .unwrap_or(0)
 }
 
+/// [`cast_cost`] that also allows `{X}` in the mana: the mana without the X, the parts, and how many `{X}` the cost holds.
+pub(crate) fn cast_cost_with_x(cost: &mtg_cards::cost::Cost) -> Option<(ManaCost, Vec<Part>, u32)> {
+    cast_cost_x(cost, false)
+}
+
 /// A cost in words: its mana, then its parts.
-fn cost_words(mana: &ManaCost, parts: &[Part]) -> String {
+pub(crate) fn cost_words(mana: &ManaCost, parts: &[Part]) -> String {
     let mut words: Vec<String> = Vec::new();
     if mana.mana_value() > 0 || parts.is_empty() {
         words.push(mana.to_string());
@@ -249,6 +257,9 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         ways.push(free_way(instant));
     }
     for keyword in keywords_of(state, id) {
+        ways.extend(crate::c9_emerge_ways::c9_emerge_ways(
+            state, id, keyword, instant,
+        ));
         if let Some(way) = keyword_way(state, player, id, keyword, instant)
             && !ways.iter().any(|w| w.alternative == way.alternative)
         {
@@ -734,6 +745,7 @@ pub(crate) fn grantable_as_is(
             && parts_payable(state, player, id, &way.parts)
             && way
                 .cost(card.card().mana_cost.as_ref())
+                .map(|cost| crate::c9_emerge_ways::c9_emerge_offered(state, player, id, way, cost))
                 .is_some_and(|cost| {
                     announce::payable(
                         state,
@@ -817,6 +829,7 @@ pub(crate) fn castable_as_is(
             && parts_payable(state, player, id, &way.parts)
             && way
                 .cost(card.card().mana_cost.as_ref())
+                .map(|cost| crate::c9_emerge_ways::c9_emerge_offered(state, player, id, way, cost))
                 .is_some_and(|cost| {
                     announce::payable(
                         state,

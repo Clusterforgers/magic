@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4eafe717-4ba4-4901-8c67-11757230eb54",
+  "name": "Elder Deep-Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Deep-Fiend",
+      "oracle_fingerprint": "ec22a76976c2638c23dd6e62d5044d44",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Emerge": "{5}{U}{U}" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [{ "what": { "Object": [] }, "bounds": { "min": 0, "max": 4 } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -374,6 +374,7 @@ Echo Storm
 Echoes of the Kin Tree
 Eel Umbra
 Eiganjo Dynastorian // Replenish
+Elder Deep-Fiend
 Elder Owyn Lyons
 Eldrazi Conscription
 Eldritch Immunity
@@ -1369,6 +1370,7 @@ White Auracite
 Wibbly-wobbly, Timey-wimey
 Wickersmith's Tools
 Wild Growth
+Wild Ride
 Wild Wasteland
 Wilderness Elemental
 Windborn Muse

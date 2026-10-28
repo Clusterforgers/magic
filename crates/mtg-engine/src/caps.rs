@@ -452,6 +452,8 @@ const RUNS: &[&str] = &[
     "Keyword.Replicate",
     "Keyword.Renown",
     "Keyword.Exploit",
+    "Keyword.Emerge",
+    "Keyword.Harmonize",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -921,6 +923,8 @@ mod tests {
     #[case::replicate("Keyword.Replicate", true)]
     #[case::renown("Keyword.Renown", true)]
     #[case::exploit("Keyword.Exploit", true)]
+    #[case::emerge("Keyword.Emerge", true)]
+    #[case::harmonize("Keyword.Harmonize", true)]
     #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]
     #[case::exploiting_triggers("Trigger.Exploits", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]

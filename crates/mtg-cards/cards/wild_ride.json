@@ -1,0 +1,31 @@
+{
+  "oracle_id": "61978202-538b-4f92-acfc-e95f4a6ce466",
+  "name": "Wild Ride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Ride",
+      "oracle_fingerprint": "5cd8712fdee69a521efeafd032f9b6bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Harmonize": "{4}{R}" } }
+      ]
+    }
+  ]
+}

@@ -50,6 +50,8 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::FaceDown => "face-down",
                             CastWay::Mutate => "mutate",
                             CastWay::Free => "free",
+                            CastWay::Emerge => "emerge",
+                            CastWay::Harmonize => "harmonize",
                         });
                         *seen.entry(way.to_owned()).or_default() += 1;
                         if choices.way == Some(CastWay::Flashback) {

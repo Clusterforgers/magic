@@ -18,6 +18,8 @@ mod blitz;
 mod buyback;
 mod c6_kw_exploit;
 mod c6_kw_renown;
+mod c9_emerge_emerge;
+mod c9_emerge_harmonize;
 mod cascade;
 mod casualty;
 mod changeling;
@@ -530,6 +532,8 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Replicate(_) => &replicate::Replicate,
         Keyword::Renown(_) => &c6_kw_renown::Renown,
         Keyword::Exploit => &c6_kw_exploit::Exploit,
+        Keyword::Emerge(_) => &c9_emerge_emerge::Emerge,
+        Keyword::Harmonize(_) => &c9_emerge_harmonize::Harmonize,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -897,6 +901,8 @@ mod tests {
             Keyword::Replicate(cost()),
             Keyword::Renown(2),
             Keyword::Exploit,
+            Keyword::Emerge(cost()),
+            Keyword::Harmonize(cost()),
         ]
     }
 
@@ -1035,6 +1041,8 @@ mod tests {
         "Keyword.Replicate",
         "Keyword.Renown",
         "Keyword.Exploit",
+        "Keyword.Emerge",
+        "Keyword.Harmonize",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
     ];
@@ -1179,6 +1187,8 @@ mod tests {
     #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::renown(Keyword::Renown(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::exploit(Keyword::Exploit, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::emerge(Keyword::Emerge(Cost::mana("{5}{U}{U}".parse().unwrap())), Hooks::none())]
+    #[case::harmonize(Keyword::Harmonize(Cost::mana("{4}{R}".parse().unwrap())), Hooks::none())]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::extort(Keyword::Extort, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::evolve(Keyword::Evolve, Hooks { abilities: 1, ..Hooks::none() })]
