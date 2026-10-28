@@ -604,13 +604,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             return None;
         }
     }
-    // "Put a charge counter on this artifact. Add X mana ..., where X is the number of charge counters on this
-    // artifact.": one counter put on the source comes first and the mana counts it.
-    let first = usize::from(matches!(
-        effects.first(),
-        Some(Effect::PutCounters { on: Ref::This, .. })
-    ));
-    let (before, effects) = effects.split_at(first);
+    let (before, effects) = c8_time_before(effects);
     let [
         Effect::AddMana {
             who: Ref::You,
@@ -650,10 +644,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     if x_paid != x_added {
         return None;
     }
-    let distinct = then
-        .iter()
-        .enumerate()
-        .all(|(i, effect)| then[..i].iter().all(|before| !same_kind(before, effect)));
+    let distinct = c8_time_distinct(then);
     (targets.is_empty()
         && (tap || sacrifice || !pays.is_empty() || !picks.is_empty() || limit.is_some())
         && then.iter().all(needs_no_answer)
@@ -673,6 +664,23 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             then,
             only,
         })
+}
+
+/// The effects of a mana ability split before its mana: "Put a charge counter on this artifact. Add X mana ..., where
+/// X is the number of charge counters on this artifact." puts one counter on the source first and the mana counts it.
+fn c8_time_before(effects: &[Effect]) -> (&[Effect], &[Effect]) {
+    let first = usize::from(matches!(
+        effects.first(),
+        Some(Effect::PutCounters { on: Ref::This, .. })
+    ));
+    effects.split_at(first)
+}
+
+/// Whether no two of the effects are of one kind.
+fn c8_time_distinct(then: &[Effect]) -> bool {
+    then.iter()
+        .enumerate()
+        .all(|(i, effect)| then[..i].iter().all(|before| !same_kind(before, effect)))
 }
 
 /// Whether two effects are of one kind (the same variant).

@@ -155,5 +155,5 @@ fn nothing_with_a_time_counter_asks_nothing() {
     let Run::Done { events, .. } = c8_time_run(&game, Vec::new()) else {
         panic!("nothing to ask");
     };
-    assert!(events.is_empty());
+    assert_eq!(events, Vec::new());
 }
