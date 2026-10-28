@@ -431,11 +431,7 @@ impl RandomBot {
             }
             DecisionKind::Priority(options) => Answer::Priority(self.priority(options)),
             DecisionKind::PayMana(options) => Answer::PayMana(self.pay_for(options, paying_attack)),
-            DecisionKind::DeclareAttackers(options) => {
-                let attackers = self.attack(options);
-                let exert = self.w11a_exert(options, &attackers);
-                w11a_declaration(attackers, exert)
-            }
+            DecisionKind::DeclareAttackers(options) => self.w11a_attack_answer(options),
             DecisionKind::DeclareBlockers(options) => {
                 let mut blocks = Vec::new();
                 for option in &options.blockers {
@@ -598,6 +594,13 @@ impl RandomBot {
     /// more than the player surely has (CR 508.1h) is cut back to what it can pay ([`within_budget`]). After backing
     /// out of the payment of an attack the declaration comes back and the bot does only what the rules require, so
     /// backing out ends the step.
+    /// A declaration of attackers chosen at random, with the attackers it exerts.
+    fn w11a_attack_answer(&mut self, options: &AttackOptions) -> Answer {
+        let attackers = self.attack(options);
+        let exert = self.w11a_exert(options, &attackers);
+        w11a_declaration(attackers, exert)
+    }
+
     /// The attackers it exerts: each that may be exerted, at random; no draw from the generator for a declaration
     /// with none, so games without exert play as before.
     fn w11a_exert(&mut self, options: &AttackOptions, attackers: &Attack) -> Vec<ObjectId> {

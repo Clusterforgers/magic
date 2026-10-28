@@ -56,6 +56,19 @@ pub(crate) enum Outcome {
     DropTrigger,
 }
 
+/// A declaration of attackers checked against its options, with the creatures it exerts (CR 508.1, 701.43).
+fn w11a_declare(
+    state: &GameState,
+    player: mtg_core::ids::PlayerId,
+    options: &crate::decision::AttackOptions,
+    attackers: Vec<(ObjectId, AttackTarget)>,
+    exert: Vec<ObjectId>,
+) -> Result<Outcome, EngineError> {
+    check_attackers(options, &attackers)?;
+    crate::w11a_exert::w11a_check_exert(options, &attackers, &exert)?;
+    attack_tax::declare(state, player, attackers, exert)
+}
+
 /// Whether a yes-or-no question outside any resolution is one the game itself asks: about a commander or a mutating spell.
 fn table_asks(state: &GameState, options: &choose::YesNoOptions) -> bool {
     crate::commanders::asks(state, options) || crate::merged::asks(state, options)
@@ -100,13 +113,10 @@ pub(crate) fn handle(
             cast::pay_answer(state, player, options, choice, pending)
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
-            check_attackers(options, &attackers)?;
-            attack_tax::declare(state, player, attackers, Vec::new())
+            w11a_declare(state, player, options, attackers, Vec::new())
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareExerting { attackers, exert }) => {
-            check_attackers(options, &attackers)?;
-            crate::w11a_exert::w11a_check_exert(options, &attackers, &exert)?;
-            attack_tax::declare(state, player, attackers, exert)
+            w11a_declare(state, player, options, attackers, exert)
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
             check_blockers(state, options, &blocks)?;

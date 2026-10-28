@@ -15,6 +15,7 @@ use mtg_core::ids::ObjectId;
 use mtg_engine::decision::{AttackOptions, DecisionKind};
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::events::NothingToDo;
+use mtg_engine::object::{GameObject, PermanentState};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event};
@@ -108,7 +109,12 @@ fn w11a_tapped(driver: &Driver, name: &str) -> bool {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .is_some_and(|permanent| permanent.tapped())
+        .is_some_and(PermanentState::tapped)
+}
+
+/// The turn of seat 0 `rounds` rounds after turn 2.
+fn w11a_later(seats: usize, rounds: u32) -> u32 {
+    2 + rounds * u32::try_from(seats).unwrap()
 }
 
 /// How many events of the log `pick` counts.
@@ -146,15 +152,15 @@ fn w11a_glorybringer_skips_one_untap_step_of_its_exerter(
     }
     driver.idle_until(2, Step::Main2)?;
     assert_eq!(
-        driver.state().object(bear).map(|object| object.zone()) == Some(Zone::Battlefield),
+        driver.state().object(bear).map(GameObject::zone) == Some(Zone::Battlefield),
         !exert,
         "the Bear dies to the exert trigger only"
     );
-    driver.idle_until(2 + seats as u32, Step::Upkeep)?;
+    driver.idle_until(w11a_later(seats, 1), Step::Upkeep)?;
     assert_eq!(w11a_tapped(&driver, "Glorybringer"), exert);
     let ended = |event: &Event| matches!(event, Event::ExertEnded { object, player } if *object == glorybringer && *player == pid(0));
     assert_eq!(w11a_count(&driver, ended), usize::from(exert));
-    driver.idle_until(2 + 2 * seats as u32, Step::Upkeep)?;
+    driver.idle_until(w11a_later(seats, 2), Step::Upkeep)?;
     assert!(
         !w11a_tapped(&driver, "Glorybringer"),
         "skipped exactly once"
@@ -225,7 +231,7 @@ fn w11a_a_borrowed_exerted_creature_untaps_for_its_owner(
     );
     let ended = |event: &Event| matches!(event, Event::ExertEnded { object, player } if *object == exerter && *player == pid(0));
     assert_eq!(w11a_count(&driver, ended), 0);
-    driver.idle_until(2 + seats as u32, Step::Upkeep)?;
+    driver.idle_until(w11a_later(seats, 1), Step::Upkeep)?;
     assert_eq!(
         w11a_count(&driver, ended),
         1,
@@ -274,7 +280,7 @@ fn w11a_two_combats_exert_twice_and_skip_one_untap_step(
     );
     let life = driver.state().player(pid(0)).unwrap().life();
     assert_eq!(life, 23, "the watcher fires for each of three exerts");
-    driver.idle_until(2 + seats as u32, Step::Upkeep)?;
+    driver.idle_until(w11a_later(seats, 1), Step::Upkeep)?;
     let ended = |event: &Event| matches!(event, Event::ExertEnded { .. });
     assert_eq!(
         w11a_count(&driver, ended),
@@ -282,7 +288,7 @@ fn w11a_two_combats_exert_twice_and_skip_one_untap_step(
         "one end for each exerted creature"
     );
     let exerted = driver.state().object(vigil).unwrap().permanent().unwrap();
-    assert!(exerted.exerted().is_empty());
+    assert_eq!(exerted.exerted(), []);
     replays(&driver, &setup);
     Ok(())
 }
@@ -301,7 +307,7 @@ fn w11a_an_exerted_creature_that_dies_leaves_nothing(
     driver.w11a_attack_exerting(&[("Exerter", 1)], &["Exerter"])?;
     w11a_until(&mut driver, 1, "declare-blockers")?;
     driver.block(&[("Ogre", "Exerter")])?;
-    driver.idle_until(2 + seats as u32, Step::Upkeep)?;
+    driver.idle_until(w11a_later(seats, 1), Step::Upkeep)?;
     let ended = |event: &Event| matches!(event, Event::ExertEnded { .. });
     assert_eq!(w11a_count(&driver, ended), 0);
     replays(&driver, &setup);
@@ -390,7 +396,7 @@ fn w11a_combat_celebrant_untaps_the_others_and_adds_one_combat(
         2,
         "one combat more, not two"
     );
-    driver.idle_until(2 + seats as u32, Step::Upkeep)?;
+    driver.idle_until(w11a_later(seats, 1), Step::Upkeep)?;
     assert!(w11a_tapped(&driver, "Combat Celebrant"));
     replays(&driver, &setup);
     Ok(())
