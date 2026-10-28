@@ -42,6 +42,19 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             spec_text(first)?,
             spec_text(second)?
         )),
+        [
+            Effect::BecomeCopy {
+                what: Ref::Target(0),
+                of: Ref::Target(1),
+                except,
+                duration,
+            },
+        ] if except.is_empty() => Some(format!(
+            "{} becomes a copy of {}{}",
+            spec_text(first)?,
+            spec_text(second)?,
+            crate::compile::read::copy_spells::c10_xp_copy_duration_text(*duration)?
+        )),
         _ => None,
     }
 }

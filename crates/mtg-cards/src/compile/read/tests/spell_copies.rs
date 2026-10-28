@@ -266,9 +266,6 @@ fn near_misses_of_copying_a_spell_or_an_ability_stay_unread(#[case] text: &str) 
 )]
 #[case::the_card_copying_a_spell("~ becomes a copy of target spell until end of turn.")]
 #[case::the_card_copying_itself("~ becomes a copy of ~ until end of turn.")]
-#[case::another_creature(
-    "Target creature becomes a copy of another target creature until end of turn."
-)]
 fn near_misses_of_becoming_a_copy_stay_unread(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Spell, false), None, "{text}");
 }

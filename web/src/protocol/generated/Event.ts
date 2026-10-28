@@ -592,7 +592,11 @@ object: ObjectId, } } | { "AbilityCopied": AbilityCopy } | { "CopyEnded": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "MonarchChanged": { 
+object: ObjectId, 
+/**
+ * The player whose next turn began: the copies until that turn end; none for those until end of turn.
+ */
+next_turn_of?: PlayerId, } } | { "MonarchChanged": { 
 /**
  * The new monarch.
  */

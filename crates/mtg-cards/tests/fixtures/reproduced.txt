@@ -1067,6 +1067,7 @@ Shadowspear
 Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
+Shapesharer
 Sharding Sphinx
 Sharktocrab
 Sheer Drop

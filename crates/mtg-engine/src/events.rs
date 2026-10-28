@@ -623,10 +623,14 @@ pub enum Event {
     },
     /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
     AbilityCopied(Box<AbilityCopy>),
-    /// A permanent's copy effect that lasted until end of turn ended.
+    /// A permanent's copy effect that lasted until end of turn, or until a player's next turn, ended.
     CopyEnded {
         /// The permanent.
         object: ObjectId,
+        /// The player whose next turn began: the copies until that turn end; none for those until end of turn.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        next_turn_of: Option<PlayerId>,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {
@@ -1029,7 +1033,7 @@ impl Event {
             | Event::Bolstered { object, .. }
             | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
-            | Event::CopyEnded { object }
+            | Event::CopyEnded { object, .. }
             | Event::CopyCeased { object }
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }

@@ -199,6 +199,7 @@ const RUNS: &[&str] = &[
     "Effect.CopySpell",
     "Effect.CopyAbility",
     "Effect.BecomeCopy",
+    "Copy.Duration.UntilYourNextTurn",
     "Effect.Continuous",
     "Duration.WhileYouControlSource",
     "Effect.Rule",
@@ -686,7 +687,8 @@ mod tests {
     #[case::copying_spells("Effect.CopySpell", true)]
     #[case::copying_abilities("Effect.CopyAbility", true)]
     #[case::becoming_a_copy("Effect.BecomeCopy", true)]
-    #[case::a_copy_that_ends_with_another_duration("Copy.Duration.UntilYourNextTurn", false)]
+    #[case::a_copy_until_your_next_turn("Copy.Duration.UntilYourNextTurn", true)]
+    #[case::a_copy_that_ends_with_another_duration("Copy.Duration.UntilEndOfCombat", false)]
     #[case::storming("Keyword.Storm", true)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", true)]
