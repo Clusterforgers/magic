@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5e15ff93-99a0-4000-918e-4bd2c257188d",
+  "name": "Combat Celebrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combat Celebrant",
+      "oracle_fingerprint": "b420253b23d38e0fbcb4b22186480f11",
+      "abilities": [
+        { "Keyword": { "Exert": { "once_per_turn": true } } },
+        {
+          "Triggered": {
+            "when": { "Exerted": { "what": ["This"] } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  }
+                }
+              },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -153,3 +153,73 @@ pub(crate) fn w11a_fold_ended(
     permanent.exerted.0.retain(|exerter| *exerter != player);
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: an exert in a declaration is accepted only for a declared attacker offered as one that may be exerted, once,
+    //! and its events name the exerting player in the order the declaration gives.
+    use rstest::rstest;
+
+    use super::*;
+    use crate::decision::AttackerOption;
+
+    const ME: PlayerId = PlayerId(0);
+    const FOE: AttackTarget = AttackTarget::Player(PlayerId(1));
+
+    fn options() -> AttackOptions {
+        AttackOptions {
+            attackers: vec![
+                AttackerOption {
+                    exert: true,
+                    ..AttackerOption::free(ObjectId(1), vec![FOE])
+                },
+                AttackerOption::free(ObjectId(2), vec![FOE]),
+                AttackerOption {
+                    exert: true,
+                    ..AttackerOption::free(ObjectId(3), vec![FOE])
+                },
+            ],
+            required: Vec::new(),
+            mana: 0,
+            most: None,
+        }
+    }
+
+    #[rstest]
+    #[case::none(&[1, 2], &[], true)]
+    #[case::one(&[1, 2], &[1], true)]
+    #[case::both(&[1, 3], &[3, 1], true)]
+    #[case::not_offered(&[1, 2], &[2], false)]
+    #[case::not_attacking(&[1], &[3], false)]
+    #[case::twice(&[1], &[1, 1], false)]
+    fn w11a_an_exert_is_checked_against_the_declaration(
+        #[case] attacking: &[u64],
+        #[case] exert: &[u64],
+        #[case] accepted: bool,
+    ) {
+        let attackers: Vec<_> = attacking.iter().map(|id| (ObjectId(*id), FOE)).collect();
+        let exert: Vec<_> = exert.iter().map(|id| ObjectId(*id)).collect();
+        assert_eq!(
+            w11a_check_exert(&options(), &attackers, &exert).is_ok(),
+            accepted
+        );
+    }
+
+    #[test]
+    fn w11a_the_events_follow_the_declaration() {
+        let events = w11a_exert_events(ME, &[ObjectId(3), ObjectId(1)]);
+        assert_eq!(
+            events,
+            [
+                Event::Exerted {
+                    object: ObjectId(3),
+                    player: ME
+                },
+                Event::Exerted {
+                    object: ObjectId(1),
+                    player: ME
+                },
+            ]
+        );
+    }
+}

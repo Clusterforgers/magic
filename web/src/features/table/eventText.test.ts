@@ -86,6 +86,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
   Explored: [{ Explored: { object: 3, player: 1 } }, 'Forest explores'],
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
+  Exerted: [{ Exerted: { object: 3, player: 1 } }, 'Forest is exerted'],
+  ExertEnded: [{ ExertEnded: { object: 3, player: 1 } }, 'Forest is no longer exerted'],
   Amassed: [{ Amassed: { object: 3, player: 1 } }, 'Bo amasses'],
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
   Devoured: [{ Devoured: { object: 3, count: 2 } }, 'Forest devours 2'],

@@ -781,6 +781,22 @@ object: ObjectId,
 /**
  * Its controller, who drew and discarded.
  */
+player: PlayerId, } } | { "Exerted": { 
+/**
+ * The creature exerted.
+ */
+object: ObjectId, 
+/**
+ * The player who exerted it.
+ */
+player: PlayerId, } } | { "ExertEnded": { 
+/**
+ * The permanent exerted.
+ */
+object: ObjectId, 
+/**
+ * The player whose untap step it was.
+ */
 player: PlayerId, } } | { "DayNightChanged": { 
 /**
  * What it became.

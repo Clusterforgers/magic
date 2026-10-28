@@ -4,7 +4,8 @@
 //! borrowed control untaps in its owner's untap step, vigilance leaves an exerted creature untapped, a creature exerted in
 //! two combats skips one untap step and "Whenever you exert a creature" fires for each exert, "hasn't been exerted this
 //! turn" offers the exert once, an exerted creature that dies leaves nothing behind, and bot games with exert keep the
-//! invariants; every log replays to the state.
+//! invariants; Combat Celebrant untaps the others and adds one combat, Clockwork Droid can't be blocked and scries;
+//! every log replays to the state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -13,6 +14,7 @@ use mtg_cards::CardDefinition;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::{AttackOptions, DecisionKind};
 use mtg_engine::error::IllegalAnswer;
+use mtg_engine::events::NothingToDo;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event};
@@ -343,6 +345,77 @@ fn w11a_bots_exert_and_keep_the_invariants(
         w11a_count(&driver, exerted) > 0,
         "no creature was ever exerted"
     );
+    replays(&driver, &setup);
+    Ok(())
+}
+
+#[rstest]
+fn w11a_combat_celebrant_untaps_the_others_and_adds_one_combat(
+    #[values(2, 3, 4)] seats: usize,
+) -> W11aResult {
+    let scenario = Scenario::new(seats).at(2, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(card("Combat Celebrant").unwrap()),
+            ready(free_creature("Wolf", 2, 2)),
+        ],
+    );
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario)?;
+    let celebrant = driver.id_of("Combat Celebrant")?;
+    w11a_until(&mut driver, 0, "declare-attackers")?;
+    driver.w11a_attack_exerting(
+        &[("Combat Celebrant", 1), ("Wolf", 1)],
+        &["Combat Celebrant"],
+    )?;
+    w11a_until(&mut driver, 0, "declare-attackers")?;
+    assert!(
+        !w11a_tapped(&driver, "Wolf"),
+        "the other creatures untapped"
+    );
+    let options = w11a_options(&driver);
+    assert!(
+        !w11a_offered(&options, celebrant),
+        "tapped, and exerted this turn"
+    );
+    driver.attack(&[("Wolf", 1)])?;
+    driver.idle_until(2, Step::End)?;
+    assert_eq!(
+        driver.state().player(pid(1)).unwrap().life(),
+        12,
+        "four and two, then two"
+    );
+    assert_eq!(
+        driver.state().turn().combats(),
+        2,
+        "one combat more, not two"
+    );
+    driver.idle_until(2 + seats as u32, Step::Upkeep)?;
+    assert!(w11a_tapped(&driver, "Combat Celebrant"));
+    replays(&driver, &setup);
+    Ok(())
+}
+
+#[rstest]
+fn w11a_clockwork_droid_cant_be_blocked_and_scries(#[values(2, 3, 4)] seats: usize) -> W11aResult {
+    let scenario = Scenario::new(seats)
+        .at(2, 0, Step::Main1)
+        .battlefield(0, [ready(card("Clockwork Droid").unwrap())])
+        .battlefield(1, [ready(free_creature("Wall", 0, 8))]);
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario)?;
+    w11a_until(&mut driver, 0, "declare-attackers")?;
+    driver.w11a_attack_exerting(&[("Clockwork Droid", 1)], &["Clockwork Droid"])?;
+    driver.idle_until(2, Step::End)?;
+    let blocked = |event: &Event| matches!(event, Event::NothingToDo { player, kind: NothingToDo::Block } if *player == pid(1));
+    assert_eq!(
+        w11a_count(&driver, blocked),
+        1,
+        "it can't be blocked this turn"
+    );
+    assert_eq!(driver.state().player(pid(1)).unwrap().life(), 17);
+    let scried = |event: &Event| matches!(event, Event::Scried(_));
+    assert_eq!(w11a_count(&driver, scried), 1);
     replays(&driver, &setup);
     Ok(())
 }

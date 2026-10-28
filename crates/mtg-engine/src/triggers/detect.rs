@@ -2004,6 +2004,7 @@ mod tests {
     #[case::becoming_untapped(r#"{"Untapped":{"what":[]}}"#)]
     #[case::exploring(r#"{"Explored":{"what":[]}}"#)]
     #[case::conniving(r#"{"Connived":{"what":[]}}"#)]
+    #[case::exerting(r#"{"Exerted":{"what":[]}}"#)]
     #[case::tapping_for_mana(r#"{"TappedForMana":{"what":[]}}"#)]
     #[case::blocking(r#"{"Blocks":{"what":[]}}"#)]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":[]}}"#)]

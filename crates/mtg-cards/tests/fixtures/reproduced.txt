@@ -252,6 +252,7 @@ Clever Lumimancer
 Cliffgate
 Clifftop Lookout
 Clive's Hideaway
+Clockwork Droid
 Clone
 Clone Legion
 Cloud Sprite
@@ -268,6 +269,7 @@ Collective Unconscious
 Colonel Autumn
 Colossal Plow
 Colossus Hammer
+Combat Celebrant
 Command Tower
 Commander's Insignia
 Commence the Endgame
