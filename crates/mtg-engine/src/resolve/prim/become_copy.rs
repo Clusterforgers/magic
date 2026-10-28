@@ -25,12 +25,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("BecomeCopy"));
     };
-    let until_end_of_turn = match duration {
-        Duration::UntilEndOfTurn => true,
-        Duration::Forever => false,
+    let state = cx.state();
+    let (until_end_of_turn, until_next_turn_of) = match duration {
+        Duration::UntilEndOfTurn => (true, None),
+        Duration::Forever => (false, None),
+        Duration::UntilYourNextTurn => (false, Some(cx.controller())),
         _ => return Err(ResolveError::Unsupported("Copy.Duration")),
     };
-    let state = cx.state();
     let mut events = Vec::new();
     if let Some(original) = cx.scope.objects(of)?.into_iter().next()
         && let Some(values) = copiable_values(state, original, cx.scope.snapshot_of(original))
@@ -49,6 +50,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     of: original,
                     definition: Arc::clone(&definition),
                     until_end_of_turn,
+                    until_next_turn_of,
                 }));
             }
         }

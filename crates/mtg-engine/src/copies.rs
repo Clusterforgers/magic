@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::choose::Choices;
 use crate::error::EngineError;
+use crate::events::Event;
 use crate::fold::{invalid, reset_passes};
 use crate::hash::stable_hash;
 use crate::merged::Merged;
@@ -30,8 +31,9 @@ pub struct CopyEffect {
     definition: Arc<CardDefinition>,
     fingerprint: u64,
     timestamp: u64,
-    /// Whether the effect ends in the cleanup step ("becomes a copy until end of turn").
-    temporary: bool,
+    /// When the effect ends: in the cleanup step ("until end of turn") or as a player's next turn begins; never for a
+    /// lasting copy.
+    ends: Option<C10XpCopyEnds>,
     /// The copy effect this temporary one is over, which applies again when it ends (CR 613.7).
     under: Option<Box<CopyEffect>>,
     /// What a merged permanent shows under the effect: the copiable values with the abilities of its other cards.
@@ -46,7 +48,7 @@ impl CopyEffect {
             fingerprint: stable_hash(&*definition),
             definition,
             timestamp,
-            temporary: false,
+            ends: None,
             under: None,
             merged: None,
         }
@@ -66,25 +68,41 @@ impl CopyEffect {
         }
     }
 
-    /// The same effect lasting until the end of the turn, over the copy effect `under` it (if any).
-    fn until_end_of_turn(mut self, under: Option<CopyEffect>) -> Self {
-        self.temporary = true;
+    /// The same effect ending as `ends` says, over the copy effect `under` it (if any).
+    fn temporary(mut self, ends: C10XpCopyEnds, under: Option<CopyEffect>) -> Self {
+        self.ends = Some(ends);
         self.under = under.map(Box::new);
         self
     }
 
-    /// Whether the effect ends with the turn.
+    /// Whether the effect ends at some point (with the turn, or as a player's next turn begins).
     pub const fn is_temporary(&self) -> bool {
-        self.temporary
+        self.ends.is_some()
     }
 
-    /// What the permanent is a copy of once the temporary effects are gone: the first lasting copy effect, if any.
-    fn lasting(self) -> Option<CopyEffect> {
-        let mut current = self;
-        while current.temporary {
-            current = *current.under.take()?;
+    /// Whether this effect or a temporary one it is over ends at `ends`.
+    pub fn c10_xp_ends_at(&self, ends: C10XpCopyEnds) -> bool {
+        self.ends.is_some_and(|own| {
+            own == ends
+                || self
+                    .under
+                    .as_ref()
+                    .is_some_and(|under| under.c10_xp_ends_at(ends))
+        })
+    }
+
+    /// What the permanent is a copy of once the temporary effects that end at `ends` are gone; the others stay in their
+    /// order (CR 613.7).
+    fn without(mut self, ends: C10XpCopyEnds) -> Option<CopyEffect> {
+        let rest = self.under.take().and_then(|under| under.without(ends));
+        match self.ends {
+            None => Some(self),
+            Some(own) if own == ends => rest,
+            Some(_) => {
+                self.under = rest.map(Box::new);
+                Some(self)
+            }
         }
-        Some(current)
     }
 
     /// The object copied, as it was when the copy effect began.
@@ -113,7 +131,7 @@ impl PartialEq for CopyEffect {
         self.of == other.of
             && self.fingerprint == other.fingerprint
             && self.timestamp == other.timestamp
-            && self.temporary == other.temporary
+            && self.ends == other.ends
             && self.under == other.under
     }
 }
@@ -127,11 +145,23 @@ impl Hash for CopyEffect {
         self.fingerprint.hash(state);
         self.timestamp.hash(state);
         // Left out for a lasting effect, which hashes as it did before copies could end.
-        if self.temporary {
-            self.temporary.hash(state);
+        if let Some(ends) = self.ends {
+            true.hash(state);
             self.under.hash(state);
+            if let C10XpCopyEnds::NextTurnOf(player) = ends {
+                player.hash(state);
+            }
         }
     }
+}
+
+/// When a temporary copy effect ends.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum C10XpCopyEnds {
+    /// In the cleanup step of the turn ("until end of turn", CR 514.2).
+    Cleanup,
+    /// As this player's next turn begins ("until your next turn", CR 611.2b), or the next turn after the player left.
+    NextTurnOf(PlayerId),
 }
 
 /// A permanent became a copy of another object (CR 707.2): its copiable values are now those of the copy effect, with a
@@ -151,6 +181,10 @@ pub struct BecameCopy {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub until_end_of_turn: bool,
+    /// The copy ends as this player's next turn begins, and the permanent is what it was before ("until your next turn").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub until_next_turn_of: Option<PlayerId>,
 }
 
 /// A spell was copied (CR 707.10): the copy is a spell on the stack above the original, controlled by the player who
@@ -222,10 +256,14 @@ pub(crate) fn fold(state: &mut GameState, event: &BecameCopy) -> Result<(), Engi
         .ok_or_else(|| invalid(format!("{:?} is not a permanent", event.object)))?;
     let began = CopyEffect::new(event.of, Arc::clone(&event.definition), timestamp);
     // A lasting copy replaces the temporary ones under it too; a temporary one keeps what it is over (CR 613.7).
-    permanent.copy = Some(if event.until_end_of_turn {
-        began.until_end_of_turn(permanent.copy.take())
-    } else {
-        began
+    let ends = match (event.until_end_of_turn, event.until_next_turn_of) {
+        (_, Some(player)) => Some(C10XpCopyEnds::NextTurnOf(player)),
+        (true, None) => Some(C10XpCopyEnds::Cleanup),
+        (false, None) => None,
+    };
+    permanent.copy = Some(match ends {
+        Some(ends) => began.temporary(ends, permanent.copy.take()),
+        None => began,
     });
     if let Some(copy) = permanent.copy.as_mut() {
         copy.over(permanent.merged.as_ref());
@@ -375,21 +413,29 @@ fn on_the_stack(state: &GameState, reference: ObjectRef, ability: bool) -> bool 
 }
 
 /// Folds the event: a temporary copy effect ends, and the permanent is a copy of what it was a copy of before, if anything.
-pub(crate) fn fold_ended(state: &mut GameState, object: ObjectId) -> Result<(), EngineError> {
+pub(crate) fn fold_ended(state: &mut GameState, ended: &Event) -> Result<(), EngineError> {
+    let &Event::CopyEnded {
+        object,
+        next_turn_of,
+    } = ended
+    else {
+        return Err(invalid("not the end of a copy"));
+    };
+    let ends = next_turn_of.map_or(C10XpCopyEnds::Cleanup, C10XpCopyEnds::NextTurnOf);
     let permanent = state
         .objects
         .get_mut(&object)
         .and_then(|o| o.permanent.as_mut())
         .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
     match permanent.copy.take() {
-        Some(copy) if copy.is_temporary() => {
-            permanent.copy = copy.lasting();
+        Some(copy) if copy.c10_xp_ends_at(ends) => {
+            permanent.copy = copy.without(ends);
             Ok(())
         }
         other => {
             permanent.copy = other;
             Err(invalid(format!(
-                "{object:?} is not under a temporary copy effect"
+                "{object:?} is not under a copy effect that ends now"
             )))
         }
     }
@@ -487,7 +533,7 @@ mod tests {
     use super::*;
     use crate::characteristics::characteristics;
     use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
-    use crate::events::{Event, ZoneCause};
+    use crate::events::ZoneCause;
     use crate::fixtures::{creature, state};
     use crate::fold::apply_event;
     use crate::snapshot::snapshot;
@@ -529,6 +575,7 @@ mod tests {
             of,
             definition: Arc::new(definition),
             until_end_of_turn: false,
+            until_next_turn_of: None,
         });
         apply_event(game, &event).unwrap();
     }
@@ -684,6 +731,7 @@ mod tests {
             of: start("Wolf"),
             definition: Arc::new(creature("Wolf", 4, 4).copiable()),
             until_end_of_turn: false,
+            until_next_turn_of: None,
         });
         assert!(apply_event(&mut game, &late).is_err());
     }
@@ -716,8 +764,48 @@ mod tests {
             of,
             definition: Arc::new(definition),
             until_end_of_turn: true,
+            until_next_turn_of: None,
         });
         apply_event(game, &event).unwrap();
+    }
+
+    fn c10_xp_become_copy_until_next_turn(game: &mut GameState, object: &str, of: &str) {
+        let of = start(of);
+        let definition = copiable_values(game, of, None).unwrap();
+        let event = Event::BecameCopy(BecameCopy {
+            object: start(object).id,
+            of,
+            definition: Arc::new(definition),
+            until_end_of_turn: false,
+            until_next_turn_of: Some(PlayerId(0)),
+        });
+        apply_event(game, &event).unwrap();
+    }
+
+    #[rstest]
+    #[case::the_cleanup_ends_the_copy_on_top(true, "Wolf")]
+    #[case::the_next_turn_ends_the_copy_under(false, "Ogre")]
+    fn c10_xp_each_end_takes_only_its_own_copies(
+        #[case] cleanup_first: bool,
+        #[case] after_first: &str,
+    ) {
+        let mut game = game();
+        c10_xp_become_copy_until_next_turn(&mut game, "Copy A", "Wolf");
+        become_copy_until_end_of_turn(&mut game, "Copy A", "Ogre");
+        let end = |next_turn_of| Event::CopyEnded {
+            object: start("Copy A").id,
+            next_turn_of,
+        };
+        let (first, second) = if cleanup_first {
+            (None, Some(PlayerId(0)))
+        } else {
+            (Some(PlayerId(0)), None)
+        };
+        apply_event(&mut game, &end(first)).unwrap();
+        assert_eq!(name_of(&game, "Copy A"), after_first);
+        assert!(apply_event(&mut game, &end(first)).is_err(), "ended once");
+        apply_event(&mut game, &end(second)).unwrap();
+        assert_eq!(name_of(&game, "Copy A"), "Copy A");
     }
 
     fn name_of(game: &GameState, object: &str) -> String {
@@ -755,6 +843,7 @@ mod tests {
         );
         let ended = Event::CopyEnded {
             object: start("Copy A").id,
+            next_turn_of: None,
         };
         if !ends {
             // A lasting copy made over the temporary ones replaced them: there is nothing to end.
@@ -830,6 +919,7 @@ mod tests {
             of: moth,
             definition: Arc::new(copiable_values(&game, moth, None).unwrap()),
             until_end_of_turn: false,
+            until_next_turn_of: None,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Butterfly");
@@ -877,6 +967,7 @@ mod tests {
             of: rat,
             definition: Arc::new(values),
             until_end_of_turn: false,
+            until_next_turn_of: None,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Nightrat");

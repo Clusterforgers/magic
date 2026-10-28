@@ -1,0 +1,32 @@
+{
+  "oracle_id": "400c9fd8-c307-4b27-af6a-73e100717881",
+  "name": "Shapesharer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shapesharer",
+      "oracle_fingerprint": "78350d0cf1aa44004facd68666392484",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Shapeshifter" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Target": 0 },
+                  "of": { "Target": 1 },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

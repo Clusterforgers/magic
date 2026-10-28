@@ -325,9 +325,12 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .objects()
             .filter(|o| {
                 o.copy_effect()
-                    .is_some_and(crate::copies::CopyEffect::is_temporary)
+                    .is_some_and(|copy| copy.c10_xp_ends_at(crate::copies::C10XpCopyEnds::Cleanup))
             })
-            .map(|o| Event::CopyEnded { object: o.id() }),
+            .map(|o| Event::CopyEnded {
+                object: o.id(),
+                next_turn_of: None,
+            }),
     );
     events.extend(pool_emptying(state, ManaLasts::Turn));
     if turn_limit_reached(state) {
@@ -347,6 +350,7 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
         active,
         extra: extra.is_some(),
     });
+    events.extend(crate::c10_xp_copy_ends::c10_xp_copies_ending(state, active));
     // The spells the ending turn's active player cast are counted before the new turn clears the count (CR 726.3a).
     if let Some(to) = crate::day_night::at_turn_start(state) {
         events.push(Event::DayNightChanged { to });

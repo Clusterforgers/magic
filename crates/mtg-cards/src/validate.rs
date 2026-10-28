@@ -2060,7 +2060,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("of", |w| w.reference(of, Kind::Object));
                 w.copy_exceptions(except);
-                // The engine ends a copy with the turn or never.
+                // A copy that ends otherwise than with the turn or never is a capability of its own.
                 if !matches!(duration, Duration::UntilEndOfTurn | Duration::Forever) {
                     w.uses("Copy", &format!("Duration.{}", tag_of(duration)));
                 }

@@ -281,14 +281,13 @@ fn tail_text(count: &Amount, new_targets: bool, except: &[Modification]) -> Opti
 /// "~ becomes a copy of target creature until end of turn", "it becomes a copy of another target creature until end
 /// of turn" after an attack: the card is a copy of one target permanent.
 pub fn becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    if let Some(effects) = r.attempt(c10_xp_target_becomes_copy) {
+        return Some(effects);
+    }
     (r.source() || (r.attacker && r.word("it"))).then_some(())?;
     r.need("becomes a copy of")?;
     let of = permanent_target(r)?;
-    let duration = if r.words("until end of turn") {
-        Duration::UntilEndOfTurn
-    } else {
-        Duration::Forever
-    };
+    let duration = c10_xp_copy_duration(r);
     let except = r
         .attempt(|r| {
             r.punct(',').then_some(())?;
@@ -301,6 +300,48 @@ pub fn becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         except,
         duration,
     }])
+}
+
+/// "until end of turn", "until your next turn" or nothing: how long a copy lasts.
+fn c10_xp_copy_duration(r: &mut Reader<'_>) -> Duration {
+    if r.words("until end of turn") {
+        Duration::UntilEndOfTurn
+    } else if r.words("until your next turn") {
+        Duration::UntilYourNextTurn
+    } else {
+        Duration::Forever
+    }
+}
+
+/// "Target Shapeshifter becomes a copy of target creature until your next turn.": the first target permanent becomes
+/// a copy of the second.
+fn c10_xp_target_becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let what = permanent_target(r)?;
+    r.need("becomes a copy of")?;
+    let of = super::selectors::second_target(r)?;
+    (of == Ref::Target(1)).then_some(())?;
+    let spec = r.targets.get(1)?;
+    (spec.bounds.is_one()
+        && matches!(&spec.what, Targetable::Object(selector)
+            if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell))))
+    .then_some(())?;
+    let duration = c10_xp_copy_duration(r);
+    Some(vec![Effect::BecomeCopy {
+        what,
+        of,
+        except: Vec::new(),
+        duration,
+    }])
+}
+
+/// The words of how long a copy lasts, after the copied object; `None` for a duration no card says.
+pub(super) fn c10_xp_copy_duration_text(duration: Duration) -> Option<&'static str> {
+    match duration {
+        Duration::UntilEndOfTurn => Some(" until end of turn"),
+        Duration::UntilYourNextTurn => Some(" until your next turn"),
+        Duration::Forever => Some(""),
+        _ => None,
+    }
 }
 
 /// One target permanent, "another target creature" also: not a spell, not a card in a zone.
@@ -414,11 +455,7 @@ pub(super) fn becomes_text(effect: &Effect, target: &str) -> Option<String> {
     else {
         return None;
     };
-    let until = match duration {
-        Duration::UntilEndOfTurn => " until end of turn",
-        Duration::Forever => "",
-        _ => return None,
-    };
+    let until = c10_xp_copy_duration_text(*duration)?;
     let except = if except.is_empty() {
         String::new()
     } else {

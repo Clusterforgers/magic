@@ -135,7 +135,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
-        Event::CopyEnded { object } => crate::copies::fold_ended(state, *object),
+        ended @ Event::CopyEnded { .. } => crate::copies::fold_ended(state, ended),
         Event::Prepared { object } => set_prepared(state, *object, true),
         Event::Unprepared { object } => set_prepared(state, *object, false),
         Event::Crewed { .. } => tally_crewed(state, event),
