@@ -109,14 +109,36 @@ pub(crate) struct Modal<'a> {
     pub(crate) modes: &'a [Mode],
     /// The game picks the modes at random.
     pub(crate) at_random: bool,
-    /// A mode chosen earlier in the turn by this ability is not offered.
-    pub(crate) once_each_turn: bool,
-    /// A mode chosen earlier by this ability, in any turn, is not offered.
-    pub(crate) once_ever: bool,
+    /// Which modes this ability chose before are not offered.
+    pub(crate) once: C11dOnce,
     /// Every mode may be chosen when this holds as the ability is announced.
     pub(crate) all_if: Option<&'a Condition>,
-    /// The modes this ability chose earlier in the turn (read from the tally by the announcement).
+    /// The modes this ability chose earlier in the turn, or in any turn (read from the tally by the announcement).
     pub(crate) used: Vec<usize>,
+}
+
+/// Which modes an ability chose before are left out of its choice.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum C11dOnce {
+    /// None: every mode is offered.
+    Any,
+    /// Those chosen earlier in the turn ("choose one that hasn't been chosen this turn").
+    EachTurn,
+    /// Those chosen in any turn ("choose one that hasn't been chosen").
+    Ever,
+}
+
+impl C11dOnce {
+    /// The kind the flags of a `Modal` name.
+    fn c11d_of(once_each_turn: bool, once_ever: bool) -> C11dOnce {
+        if once_ever {
+            C11dOnce::Ever
+        } else if once_each_turn {
+            C11dOnce::EachTurn
+        } else {
+            C11dOnce::Any
+        }
+    }
 }
 
 /// The modes of the ability, if it is a modal one: a `Modal` is the only effect of its ability.
@@ -137,8 +159,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             repeat: *repeat,
             modes,
             at_random: *at_random,
-            once_each_turn: *once_each_turn,
-            once_ever: *once_ever,
+            once: C11dOnce::c11d_of(*once_each_turn, *once_ever),
             all_if: all_if.as_ref(),
             used: Vec::new(),
         }),
@@ -238,9 +259,7 @@ pub(crate) fn mode_options(
         .modes
         .iter()
         .enumerate()
-        .filter(|(index, _)| {
-            !((modal.once_each_turn || modal.once_ever) && modal.used.contains(index))
-        })
+        .filter(|(index, _)| modal.once == C11dOnce::Any || !modal.used.contains(index))
         .filter(|(_, mode)| is_legal(state, source, controller, mode, cause))
         .map(|(index, mode)| ModeOption {
             index,

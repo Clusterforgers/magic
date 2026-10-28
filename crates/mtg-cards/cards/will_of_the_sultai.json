@@ -1,0 +1,69 @@
+{
+  "oracle_id": "951a0e34-e610-477f-b441-6680df55a29b",
+  "name": "Will of the Sultai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Will of the Sultai",
+      "oracle_fingerprint": "9b6817f3c98b03e96d443c20b3e72d1f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Mill": { "who": { "Target": 0 }, "count": 3 } },
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Land" },
+                                { "In": "Graveyard" },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Target": 0 },
+                            "counter": "+1/+1",
+                            "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Trample" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

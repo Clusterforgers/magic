@@ -1,0 +1,86 @@
+{
+  "oracle_id": "99c32f20-da98-477d-9eb2-9c0b189d8d88",
+  "name": "Cabaretti Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cabaretti Confluence",
+      "oracle_fingerprint": "4fc0cfe5da0e6e3b817c93e25aabcf92",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": { "CopyOf": { "of": { "Target": 0 } } },
+                            "as": "copy"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "copy" },
+                            "mods": [{ "AddKeyword": "Haste" }],
+                            "duration": "Forever"
+                          }
+                        },
+                        {
+                          "DelayedTrigger": {
+                            "when": { "StepBegins": { "step": "End" } },
+                            "effects": [
+                              { "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "FirstStrike" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

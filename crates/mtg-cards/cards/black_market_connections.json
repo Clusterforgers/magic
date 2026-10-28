@@ -1,0 +1,58 @@
+{
+  "oracle_id": "d2664f28-49e1-46f8-a863-b217e961a57c",
+  "name": "Black Market Connections",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Market Connections",
+      "oracle_fingerprint": "7c7c47506e4391e4eacd92b7fdda843b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": null },
+                  "modes": [
+                    {
+                      "label": "Sell Contraband",
+                      "effects": [
+                        { "CreateToken": { "token": { "Named": "treasure" } } },
+                        { "LoseLife": { "amount": 1 } }
+                      ]
+                    },
+                    {
+                      "label": "Buy Information",
+                      "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 2 } }]
+                    },
+                    {
+                      "label": "Hire a Mercenary",
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Shapeshifter",
+                                "types": ["Creature"],
+                                "subtypes": ["Shapeshifter"],
+                                "power": 3,
+                                "toughness": 2,
+                                "abilities": [{ "Keyword": "Changeling" }]
+                              }
+                            }
+                          }
+                        },
+                        { "LoseLife": { "amount": 3 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

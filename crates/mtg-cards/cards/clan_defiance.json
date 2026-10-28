@@ -1,0 +1,57 @@
+{
+  "oracle_id": "abcf5e77-88fc-4b76-a1e8-907a5b27d612",
+  "name": "Clan Defiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clan Defiance",
+      "oracle_fingerprint": "c9fd8f124b30897729433e6cd6dafc02",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": null },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Not": { "HasKeyword": "Flying" } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2201,13 +2201,7 @@ impl Walker<'_> {
     }
 
     /// A pick at random chooses a fixed number of modes, none twice; each flag is a primitive of its own.
-    fn modal_flags(
-        &mut self,
-        choose: &Bounds,
-        repeat: bool,
-        at_random: bool,
-        once: (bool, bool),
-    ) {
+    fn modal_flags(&mut self, choose: &Bounds, repeat: bool, at_random: bool, once: (bool, bool)) {
         let (once_each_turn, once_ever) = once;
         if at_random {
             self.uses("Effect", "Modal.AtRandom");
@@ -3334,6 +3328,7 @@ mod tests {
     #[case::an_x_in_the_mana_of_an_ability_is_read_by_its_effects(r#"{"Activated":{"cost":"{X}{G}","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Effect.Draw"])]
     #[case::a_mode_picked_at_random(r#"{"Spell":{"effects":[{"Modal":{"at_random":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.AtRandom"])]
     #[case::a_mode_not_chosen_twice_in_a_turn(r#"{"Spell":{"effects":[{"Modal":{"once_each_turn":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.OnceEachTurn"])]
+    #[case::c11d_a_mode_not_chosen_ever(r#"{"Spell":{"effects":[{"Modal":{"once_ever":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]}}"#, &["Ability.Spell", "Effect.Draw", "Effect.GainLife", "Effect.Modal", "Effect.Modal.OnceEver"])]
     #[case::an_x_beside_a_tap(r#"{"Activated":{"cost":[{"Mana":"{X}{R}{G}"},"Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Cost.Tap", "Effect.Draw"])]
     #[case::an_exile_until_the_source_leaves(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"WhileSourceOnBattlefield"}}]}}"#, &["Ability.Spell", "Effect.Exile"])]
     #[case::a_control_for_as_long_as_you_control_the_source(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetController":"You"}],"duration":"WhileYouControlSource"}}]}}"#, &["Ability.Triggered", "Duration.WhileYouControlSource", "Effect.Continuous", "Mod.SetController", "Trigger.ZoneChange"])]
@@ -4036,6 +4031,10 @@ mod tests {
     #[case::a_fresh_mode_that_repeats(
         r#"{"Spell":{"effects":[{"Modal":{"once_each_turn":true,"repeat":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
         "cannot repeat"
+    )]
+    #[case::c11d_a_mode_once_ever_that_repeats(
+        r#"{"Spell":{"effects":[{"Modal":{"once_ever":true,"repeat":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
+        "cannot repeat or be chosen once each turn"
     )]
     #[case::empty_spell(r#"{"Spell":{"effects":[]}}"#, "needs at least one effect")]
     #[case::empty_clause_reason(

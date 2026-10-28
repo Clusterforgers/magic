@@ -719,14 +719,13 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
         let flags = choices::C11dFlags {
             repeat: *repeat,
             at_random: *at_random,
-            once_each_turn: *once_each_turn,
-            once_ever: *once_ever,
+            once: (*once_each_turn, *once_ever),
         };
         return choices::texts(choose, modes, flags, all_if.as_ref())
             .into_iter()
             .chain(either::texts(choose, modes).into_iter().filter(|_| !repeat))
-        .map(|text| vec![text])
-        .collect();
+            .map(|text| vec![text])
+            .collect();
     }
     // Bit `at` of a mask joins the effect after the one at `at` to it; a long list is tried whole
     // and apart only.

@@ -26,7 +26,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                 return None;
             }
         }
-        modal.used = chosen_before(ctx, modal.once_ever);
+        modal.used = chosen_before(ctx, modal.once == crate::choose::C11dOnce::Ever);
         let Some(options) = mode_options(
             ctx.state,
             ctx.source,

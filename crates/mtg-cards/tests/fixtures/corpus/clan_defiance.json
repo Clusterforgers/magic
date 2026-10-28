@@ -1,0 +1,25 @@
+{
+  "id": "cc1afafd-d57b-4733-80c8-184947b7c5e6",
+  "oracle_id": "abcf5e77-88fc-4b76-a1e8-907a5b27d612",
+  "name": "Clan Defiance",
+  "lang": "en",
+  "released_at": "2024-02-23",
+  "layout": "normal",
+  "mana_cost": "{X}{R}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose one or more —\n• Clan Defiance deals X damage to target creature with flying.\n• Clan Defiance deals X damage to target creature without flying.\n• Clan Defiance deals X damage to target player or planeswalker.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "set": "clu",
+  "collector_number": "182",
+  "digital": false,
+  "rarity": "rare"
+}

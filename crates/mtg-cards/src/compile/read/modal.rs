@@ -114,9 +114,7 @@ const C11D_SMALL: [&str; 6] = ["a", "an", "the", "of", "and", "to"];
 
 /// The name a card gives a mode before its text: "Thay —", "Typhoid Mary —", "AV Bead —", "Hire a Mercenary —".
 fn label(r: &mut Reader<'_>) -> Option<String> {
-    let mut name = r
-        .opening_name()
-        .or_else(|| r.name().map(str::to_owned))?;
+    let mut name = r.opening_name().or_else(|| r.name().map(str::to_owned))?;
     loop {
         if let Some(next) = r.name() {
             name.push(' ');
@@ -135,7 +133,7 @@ fn label(r: &mut Reader<'_>) -> Option<String> {
 fn c11d_small<'a>(r: &mut Reader<'a>) -> Option<&'a str> {
     let word = r.peek_word().filter(|word| C11D_SMALL.contains(word))?;
     r.word(word);
-    r.lookahead(|r| r.name()).map(|_| word)
+    r.lookahead(Reader::name).map(|_| word)
 }
 
 /// The sentences of one bullet, up to the next bullet or the end, with targets of their own and a

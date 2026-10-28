@@ -19,8 +19,7 @@ fn header(choose: &Bounds, modes: usize, repeat: bool) -> Option<String> {
         None => None,
     };
     // A card never asks for more modes than it has, unless a mode may repeat.
-    if !repeat && most.is_some_and(|most| usize::try_from(most).map_or(true, |most| most > modes))
-    {
+    if !repeat && most.is_some_and(|most| usize::try_from(most).map_or(true, |most| most > modes)) {
         return None;
     }
     let word = |number: u32| count_word(number);
@@ -99,10 +98,8 @@ pub(super) struct C11dFlags {
     pub(super) repeat: bool,
     /// The modes are picked at random.
     pub(super) at_random: bool,
-    /// A mode is chosen once each turn.
-    pub(super) once_each_turn: bool,
-    /// A mode is chosen once ever.
-    pub(super) once_ever: bool,
+    /// A mode is chosen once each turn, and once ever.
+    pub(super) once: (bool, bool),
 }
 
 /// The header lines a `Modal` may start with, or `None` for flags no card words; an empty line when the condition of
@@ -116,8 +113,7 @@ fn c11d_headers(
     let C11dFlags {
         repeat,
         at_random,
-        once_each_turn,
-        once_ever,
+        once: (once_each_turn, once_ever),
     } = flags;
     if repeat {
         // "choose three. You may choose the same mode more than once.": a fixed number of two or more.

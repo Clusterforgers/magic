@@ -131,6 +131,7 @@ Bird Admirer // Wing Shredder
 Bitter Triumph
 Black Dragon Gate
 Black Knight
+Black Market Connections
 Blackblade Reforged
 Blade of Selves
 Blasphemous Act
@@ -177,6 +178,7 @@ Broodcaller Scourge
 Broodhatch Nantuko
 Broodstar
 Buried Alive
+Cabaretti Confluence
 Cached Defenses
 Cackling Counterpart
 Cadaverous Bloom
@@ -224,6 +226,7 @@ Circle of Dreams Druid
 Circuitous Route
 Citadel Gate
 Citanul Hierophants
+Clan Defiance
 Clash of Titans
 Cliffgate
 Clifftop Lookout
@@ -687,6 +690,7 @@ Kemba's Banner
 Kenrith's Transformation
 Kessig Wolf Run
 Kill! Maim! Burn!
+Kimoyo Beads
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
@@ -1219,6 +1223,7 @@ Stroke of Genius
 Stubborn Burrowfiend
 Student of Warfare
 Study Break
+Sublime Epiphany
 Sublime Exhalation
 Subterranean Schooner
 Sudden Death
@@ -1385,6 +1390,7 @@ Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
+Verdant Confluence
 Vestige of Emrakul
 Vesuva
 Veteran's Powerblade
@@ -1434,6 +1440,7 @@ Wild Growth
 Wild Ride
 Wild Wasteland
 Wilderness Elemental
+Will of the Sultai
 Windborn Muse
 Windbrisk Heights
 Windfall
@@ -1449,6 +1456,7 @@ Wooded Bastion
 Woodripper
 Worldspine Wurm
 Wrath of God
+Wretched Confluence
 Writ of Return
 Wurmwall Sweeper
 Wyrm's Crossing Patrol

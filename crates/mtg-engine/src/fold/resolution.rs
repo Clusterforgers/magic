@@ -183,7 +183,9 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
 /// The modes an ability that chooses a mode not yet chosen chose are kept for the rest of the game ("choose one that
 /// hasn't been chosen").
 fn c11d_keep_modes(state: &mut GameState, put: &PutOnStack, rules: &Ability) {
-    if crate::choose::modal_of(rules).is_some_and(|modal| modal.once_ever) {
+    if crate::choose::modal_of(rules)
+        .is_some_and(|modal| modal.once == crate::choose::C11dOnce::Ever)
+    {
         for mode in &put.choices.modes {
             state
                 .modes_ever

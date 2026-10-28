@@ -171,6 +171,7 @@ mod c10_pa_monstrous;
 mod c10_pa_pay_x;
 mod c10_uc;
 mod c10_xp_copy_until;
+mod c11d_modes;
 mod c4_af_writers;
 mod c4_conditions;
 mod c4_gl_writers;
@@ -1006,4 +1007,3 @@ mod sentences {
         assert_eq!(effects.len(), 2);
     }
 }
-mod c11d_probe;

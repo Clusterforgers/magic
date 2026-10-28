@@ -25,11 +25,11 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
-- Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1v), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a).
+- Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1v), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a), (r2dgc-a).
 - Cast ways and zones: (c5e), (c2l3), (r2de-b), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8j), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
-- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc), (r1aueb).
+- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1aueb).
 - Model-assisted reading: (r3) the next sample, (r2ea), (r2dge).
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test.
@@ -64,7 +64,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Commander: house rules, the format rules, the deck check, Partner, the companion in the engine and at the table, and both modes for a commander's controller.
 - Zone moves: moves by a choice, linked exiles, exact and X targets, random picks from a graveyard, reveal until a match and mass moves.
 - Tokens: kinds, named and legendary tokens, sized tokens, quoted abilities on tokens and results bound to the tokens made.
-- Chance and choices: dice tables, coin flips, votes, piles, repeat for each player or object, planechase votes and modes at random or once each turn.
+- Chance and choices: dice tables, coin flips, votes, piles, repeat for each player or object, planechase votes and modes at random, once each turn, once ever, repeated or one or more.
 - Fights and targets: fights of two targets, ability counters, second targets kept apart, targets for each opponent and the chosen player.
 - Turn structure: extra turns, added phases, phase conditions, skipped extra turns and time travel.
 - Model-assisted reading: `mtg-cli check-rules`, `propose` and `dsl-reference`, the census of stored proposals and writers for every accepted sample wording.
@@ -175,7 +175,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2j) Trigger events left: an opponent's activation, energy, a token or a spell copied, an unblocked attacker, "first time" variants, several events in one trigger; frees about 20 cards (Harsh Mentor, Valgavoth, Kalamax)
 - [ ] (r2ad) Delayed triggers left: "until end of turn, whenever", with a target of their own, on the next spell, on every block, repeating this turn; frees about 7 cards (Infested Thrinax, Jailbreak, Ride the Avalanche)
 - [ ] (r2dgb) Effects "unless that player sacrifices or pays", a sentence for each player, and a token copy after a payment; frees about 12 cards (Demanding Dragon, All Is Dust, Bramble Sovereign)
-- [~] (r2dgc) (r2dgc-charm-modes) Charm and modal wordings: charm modes, "choose three" with repeats, Spree costs, a used-mode tally for activations, the commander pairs; frees about 20 cards (Prismari Charm, Fiery Confluence, Will of the Abzan)
+- [ ] (r2dgc-a) A cost for each mode chosen: Spree costs and escalate in the engine, the DSL and the compiler; frees about 4 cards (Requisition Raid, Great Train Heist, Collective Resistance)
+- [ ] (r2dgc-b) Modal headers left: "Each mode must target a different player" and "Choose one. Activate only as a sorcery."; frees about 3 cards (Vindictive Lich, Shadrix Silverquill, Aetheric Amplifier)
+- [ ] (r2dgc-c) Charm and commander-pair mode sentences: "each of one or two targets", counters distributed among targets, "each creature deals 1 damage to its controller", "counter target spell that targets you", a power-limited "can't block", phasing and goad by a target player; frees about 15 cards (Prismari Charm, Abzan Charm, Will of the Abzan)
 - [ ] (r2dgd) Intervening "if" with a may-pay, a removed counter or a cast from the hand, and "you win the game" under a count; frees about 8 cards (Ingenious Prodigy, Reiver Demon, Helix Pinnacle)
 - [ ] (r2cxe) X paid in a trigger without X in the cost, half X on cast and the X of a cycling cost in its trigger; frees about 6 cards (Elenda and Azor, Flameblast Dragon, Shark Typhoon)
 - [ ] (r2aa) Control changes left: by a type, of all artifacts, exchanges, a gift of a permanent, and with untap and haste; frees about 8 cards (Djinn of Infinite Deceits, Hellkite Tyrant, Zedruu the Greathearted)
