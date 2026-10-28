@@ -124,7 +124,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,141 of 6,429 precon cards, 64.4%; 80.7% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,170 of 6,429 precon cards, 64.9%; 81.0% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
@@ -211,7 +211,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
-- [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
+- [~] (r3) (r3a-proposals-ac, r3b-proposals-df, r3c-proposals-gj, r3d-proposals-km, r3e-proposals-nr, r3f-proposals-st, r3g-proposals-uz) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each
 - [ ] (r2dgf) Tap or untap one target, and a replacement that names the event it replaces; frees about 6 cards (Tidal Force, Merrow Reejerey, Pariah, Ravenous Slime)
