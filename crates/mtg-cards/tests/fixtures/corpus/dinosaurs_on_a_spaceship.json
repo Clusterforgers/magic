@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "816242c4-54ec-4f49-8f77-b3dbf1576247",
+  "oracle_id": "e3b4314b-e7a2-449a-af5a-817c8260adf1",
+  "multiverse_ids": [
+    634817
+  ],
+  "tcgplayer_id": 519199,
+  "cardmarket_id": 738713,
+  "name": "Dinosaurs on a Spaceship",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/816242c4-54ec-4f49-8f77-b3dbf1576247",
+  "scryfall_uri": "https://scryfall.com/card/who/122/dinosaurs-on-a-spaceship?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.jpg?1783914637",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.jpg?1783914637",
+    "large": "https://cards.scryfall.io/large/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.jpg?1783914637",
+    "png": "https://cards.scryfall.io/png/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.png?1783914637",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.jpg?1783914637",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.jpg?1783914637",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.webp?1783914637",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.webp?1783914637",
+    "display": "https://cards.scryfall.io/display/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.webp?1783914637",
+    "art": "https://cards.scryfall.io/art/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.webp?1783914637",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.webp?1783914637",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/816242c4-54ec-4f49-8f77-b3dbf1576247.jpg?1783914637"
+  },
+  "mana_cost": "{4}{R}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "Vigilance, trample\nOther Dinosaurs you control get +1/+1 and have vigilance and trample.\nSuspend 4—{3}{R}{W}\nWhenever a time counter is removed from this card while it's exiled, create a 2/2 red and white Dinosaur creature token with flying and haste.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Suspend",
+    "Trample"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "3406b2d4-d227-4b03-801f-38230161c708",
+      "component": "token",
+      "name": "Dinosaur",
+      "type_line": "Token Creature — Dinosaur",
+      "uri": "https://api.scryfall.com/cards/3406b2d4-d227-4b03-801f-38230161c708"
+    },
+    {
+      "object": "related_card",
+      "id": "8c8bfda3-ea87-470d-94eb-0951b7f4ab1c",
+      "component": "combo_piece",
+      "name": "Dinosaurs on a Spaceship",
+      "type_line": "Creature — Dinosaur",
+      "uri": "https://api.scryfall.com/cards/8c8bfda3-ea87-470d-94eb-0951b7f4ab1c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/816242c4-54ec-4f49-8f77-b3dbf1576247/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae3b4314b-e7a2-449a-af5a-817c8260adf1&unique=prints",
+  "collector_number": "122",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Narendra Bintara Adi",
+  "artist_ids": [
+    "1be2b84d-99c5-4a51-b741-105cbeb53078"
+  ],
+  "illustration_id": "2e6eb218-2c0c-4856-a596-86fa533e5f91",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5372,
+  "preview": {
+    "source": "Princess Weekes",
+    "source_uri": "https://youtu.be/yhFHKNTnMkg?si=t6VKcCCJVv54YfUf",
+    "previewed_at": "2023-10-03"
+  },
+  "prices": {
+    "usd": "9.01",
+    "usd_foil": "11.35",
+    "usd_etched": null,
+    "eur": "6.22",
+    "eur_foil": "8.09",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634817&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDinosaurs%2Bon%2Ba%2BSpaceship",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDinosaurs%2Bon%2Ba%2BSpaceship",
+    "edhrec": "https://edhrec.com/route/?cc=Dinosaurs+on+a+Spaceship"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519199%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738713&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Dinosaurs+on+a+Spaceship&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

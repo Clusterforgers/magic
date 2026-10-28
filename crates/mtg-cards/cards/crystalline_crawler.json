@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5ea3e672-ae14-49a4-badb-f713497dd126",
+  "name": "Crystalline Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystalline Crawler",
+      "oracle_fingerprint": "0a538c36d3438bd0c532102f82b58dee",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

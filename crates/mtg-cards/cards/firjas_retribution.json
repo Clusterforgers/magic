@@ -1,0 +1,88 @@
+{
+  "oracle_id": "fea32d4e-ceef-4954-a84d-e7e2509e4a13",
+  "name": "Firja's Retribution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firja's Retribution",
+      "oracle_fingerprint": "161d617be36c04ba808db4ec3684d0a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel", "Warrior"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Angel" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [
+                                  { "Type": "Creature" },
+                                  {
+                                    "Compare": {
+                                      "stat": "Power",
+                                      "op": "Lt",
+                                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Angel" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

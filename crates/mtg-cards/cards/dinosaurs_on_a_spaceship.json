@@ -1,0 +1,49 @@
+{
+  "oracle_id": "e3b4314b-e7a2-449a-af5a-817c8260adf1",
+  "name": "Dinosaurs on a Spaceship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dinosaurs on a Spaceship",
+      "oracle_fingerprint": "48bfba1e696c9693b7cd137818d189ba",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Trample" }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 4, "cost": "{3}{W}{R}" } } },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "from": "Exile",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

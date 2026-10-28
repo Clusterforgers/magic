@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "cbb60f03-7bcf-46a3-9310-c2067d9c5396",
+  "oracle_id": "1954994f-17bf-4ea5-af72-60f9bfcb6569",
+  "multiverse_ids": [
+    446824
+  ],
+  "tcgplayer_id": 166749,
+  "cardmarket_id": 358741,
+  "name": "Breath of Darigaaz",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/cbb60f03-7bcf-46a3-9310-c2067d9c5396",
+  "scryfall_uri": "https://scryfall.com/card/cm2/88/breath-of-darigaaz?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:25:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.jpg?1783934748",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.jpg?1783934748",
+    "large": "https://cards.scryfall.io/large/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.jpg?1783934748",
+    "png": "https://cards.scryfall.io/png/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.png?1783934748",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.jpg?1783934748",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.jpg?1783934748",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.webp?1783934748",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.webp?1783934748",
+    "display": "https://cards.scryfall.io/display/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.webp?1783934748",
+    "art": "https://cards.scryfall.io/art/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.webp?1783934748",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.webp?1783934748",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cbb60f03-7bcf-46a3-9310-c2067d9c5396.jpg?1783934748"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Kicker {2} (You may pay an additional {2} as you cast this spell.)\nBreath of Darigaaz deals 1 damage to each creature without flying and each player. If this spell was kicked, it deals 4 damage to each creature without flying and each player instead.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Kicker"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2ba5b1a3-40ed-422e-981d-56753004dfc6",
+  "set": "cm2",
+  "set_name": "Commander Anthology Volume II",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/2ba5b1a3-40ed-422e-981d-56753004dfc6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acm2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cm2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cbb60f03-7bcf-46a3-9310-c2067d9c5396/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1954994f-17bf-4ea5-af72-60f9bfcb6569&unique=prints",
+  "collector_number": "88",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Hildebrandt & Tim Hildebrandt",
+  "artist_ids": [
+    "020f967b-0d2f-4166-aabe-901dba8bc7ec",
+    "caa7228c-f74c-4145-91fb-1af8d623c353"
+  ],
+  "illustration_id": "bb2f58ae-11d6-4888-8d0d-7951f0e092a5",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14635,
+  "penny_rank": 3361,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=446824&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBreath%2Bof%2BDarigaaz",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBreath%2Bof%2BDarigaaz",
+    "edhrec": "https://edhrec.com/route/?cc=Breath+of+Darigaaz"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F166749%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358741&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Breath+of+Darigaaz&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1954994f-17bf-4ea5-af72-60f9bfcb6569",
+  "name": "Breath of Darigaaz",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breath of Darigaaz",
+      "oracle_fingerprint": "08425fb15538fe635377dda3f6edd5f6",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                        },
+                        "amount": 4
+                      }
+                    },
+                    { "DealDamage": { "to": "EachPlayer", "amount": 4 } }
+                  ],
+                  "otherwise": [
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                        },
+                        "amount": 1
+                      }
+                    },
+                    { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

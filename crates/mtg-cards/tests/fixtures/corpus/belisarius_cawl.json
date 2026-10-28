@@ -1,0 +1,166 @@
+{
+  "object": "card",
+  "id": "102746f5-ba25-45f2-943e-55f9a4458fa7",
+  "oracle_id": "6b336228-92c0-4f14-a479-1f97aaeae018",
+  "multiverse_ids": [
+    580928
+  ],
+  "mtgo_id": 108684,
+  "tcgplayer_id": 286506,
+  "cardmarket_id": 675720,
+  "name": "Belisarius Cawl",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/102746f5-ba25-45f2-943e-55f9a4458fa7",
+  "scryfall_uri": "https://scryfall.com/card/40k/106/belisarius-cawl?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:34:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.jpg?1783920865",
+    "normal": "https://cards.scryfall.io/normal/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.jpg?1783920865",
+    "large": "https://cards.scryfall.io/large/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.jpg?1783920865",
+    "png": "https://cards.scryfall.io/png/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.png?1783920865",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.jpg?1783920865",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.jpg?1783920865",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.webp?1783920865",
+    "grid": "https://cards.scryfall.io/grid/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.webp?1783920865",
+    "display": "https://cards.scryfall.io/display/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.webp?1783920865",
+    "art": "https://cards.scryfall.io/art/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.webp?1783920865",
+    "crop": "https://cards.scryfall.io/crop/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.webp?1783920865",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/0/102746f5-ba25-45f2-943e-55f9a4458fa7.jpg?1783920865"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact Creature — Human",
+  "oracle_text": "Ultima Founding — {T}, Tap two untapped artifacts you control: Create a 2/2 white Astartes Warrior creature token with vigilance.\nMaster of Machines — {T}, Tap X untapped creatures you control: Look at the top X cards of your library. You may reveal an artifact card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Master of Machines",
+    "Ultima Founding"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2077e1c1-744b-4379-b4ab-220642873c2d",
+      "component": "token",
+      "name": "Astartes Warrior",
+      "type_line": "Token Creature — Astartes Warrior",
+      "uri": "https://api.scryfall.com/cards/2077e1c1-744b-4379-b4ab-220642873c2d"
+    },
+    {
+      "object": "related_card",
+      "id": "2dc4a3de-e9ae-4023-9cac-d9043fe3d3ca",
+      "component": "combo_piece",
+      "name": "Belisarius Cawl",
+      "type_line": "Legendary Artifact Creature — Human",
+      "uri": "https://api.scryfall.com/cards/2dc4a3de-e9ae-4023-9cac-d9043fe3d3ca"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/102746f5-ba25-45f2-943e-55f9a4458fa7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6b336228-92c0-4f14-a479-1f97aaeae018&unique=prints",
+  "collector_number": "106",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lie Setiawan",
+  "artist_ids": [
+    "6f771d3f-310e-4aa4-841f-5ba4ba9f025a"
+  ],
+  "illustration_id": "d17b05b7-9d2a-4ab4-8002-4a5664b3d1c8",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13055,
+  "preview": {
+    "source": "PleasantKenobi",
+    "source_uri": "https://www.youtube.com/watch?v=cZUMys8LVis",
+    "previewed_at": "2022-09-16"
+  },
+  "prices": {
+    "usd": "0.41",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580928&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBelisarius%2BCawl",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBelisarius%2BCawl",
+    "edhrec": "https://edhrec.com/route/?cc=Belisarius+Cawl"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286506%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675720&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108684?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

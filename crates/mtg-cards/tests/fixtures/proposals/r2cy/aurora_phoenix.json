@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Cascade"},{"Triggered":{"when":{"SpellCast":{"what":[{"HasKeyword":"Cascade"}],"by":"You"}},"from":"Graveyard","effects":[{"Move":{"what":"This","to":"Hand"}}]}}]}]}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "83a3897c-c245-4fad-b253-3f8bbe6445fb",
+  "name": "Agility Bobblehead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agility Bobblehead",
+      "oracle_fingerprint": "5f118f2facea60092eb68885e52120c5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Subtype": "Bobblehead" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Haste" },
+                    { "CantBeBlockedBy": [{ "Not": { "HasKeyword": "Haste" } }] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

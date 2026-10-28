@@ -1,0 +1,67 @@
+{
+  "oracle_id": "6b336228-92c0-4f14-a479-1f97aaeae018",
+  "name": "Belisarius Cawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Belisarius Cawl",
+      "oracle_fingerprint": "b53f6ff200f1944ca7a3cd609b3117e7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "TapPermanents": { "filter": [{ "Type": "Artifact" }], "count": 2 } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Astartes Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Astartes", "Warrior"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": "X" } }
+            ],
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

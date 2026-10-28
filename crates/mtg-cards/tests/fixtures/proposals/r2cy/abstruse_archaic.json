@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"targets":[{"what":{"Object":[{"AnyOf":[{"Ability":"Activated"},{"Ability":"Triggered"}]},{"ControlledBy":"You"},"Colorless"]}}],"effects":[{"CopyAbility":{"what":{"Target":0},"new_targets":true}}]}}]}]}

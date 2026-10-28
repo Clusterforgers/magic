@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ff192482-3808-4291-a31e-3dfaeb49cda2",
+  "name": "Artistic Refusal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artistic Refusal",
+      "oracle_fingerprint": "e3aabb588bc4cf5512326517d0732e99",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    { "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

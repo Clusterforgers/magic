@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"by":{"WithCounters":{"count":"X","counter":"charge"}},"when":{"Enters":{"what":["This"]}}}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":{"Counters":{"on":"This","counter":"charge"}}}}}]}}]}]}

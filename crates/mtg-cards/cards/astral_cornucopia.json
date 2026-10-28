@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1bc42024-52da-4d93-8b47-544f0a4a72a1",
+  "name": "Astral Cornucopia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astral Cornucopia",
+      "oracle_fingerprint": "8f71b740be4fd6449108773d4db1ce3c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": { "Counters": { "on": "This", "counter": "charge" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f0ead7f5-5c82-40fd-8e89-3e3c5d31fbad",
+  "name": "Cleric Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleric Class",
+      "oracle_fingerprint": "edb638f4e2980776fd685709ea2c9aa0",
+      "abilities": [
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Add": 1 } } },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{W}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesLevel": { "what": ["This"], "level": 3 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

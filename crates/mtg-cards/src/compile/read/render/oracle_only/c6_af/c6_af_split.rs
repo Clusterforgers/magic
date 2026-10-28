@@ -51,10 +51,8 @@ fn c6_af_halves(ability: &Ability) -> Option<(Ability, Ability)> {
     head_map.insert("effects".into(), Value::Array(vec![first.clone()]));
     let head_json = serde_json::json!({ kind: head_body }).to_string();
     let tail_step = second.to_string().replace(C6_AF_SECOND, C6_AF_FIRST);
-    let tail_json = format!(
-        r#"{{"Spell":{{"targets":[{}],"effects":[{tail_step}]}}}}"#,
-        second_target
-    );
+    let tail_json =
+        format!(r#"{{"Spell":{{"targets":[{second_target}],"effects":[{tail_step}]}}}}"#);
     Some((
         serde_json::from_str(&head_json).ok()?,
         serde_json::from_str(&tail_json).ok()?,

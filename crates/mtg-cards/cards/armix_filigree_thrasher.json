@@ -1,0 +1,82 @@
+{
+  "oracle_id": "a1464164-fbda-43b5-988e-6e1da9bd9eef",
+  "name": "Armix, Filigree Thrasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armix, Filigree Thrasher",
+      "oracle_fingerprint": "efc2872fe97dc45a42e5407147855c86",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Discard": {} }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Sum": [
+                                      {
+                                        "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                      },
+                                      {
+                                        "Count": [
+                                          { "Type": "Artifact" },
+                                          { "In": "Graveyard" },
+                                          { "OwnedBy": "You" }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              "toughness": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Sum": [
+                                      {
+                                        "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                      },
+                                      {
+                                        "Count": [
+                                          { "Type": "Artifact" },
+                                          { "In": "Graveyard" },
+                                          { "OwnedBy": "You" }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}
