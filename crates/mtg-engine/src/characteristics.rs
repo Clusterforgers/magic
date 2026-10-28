@@ -8,7 +8,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::effects::Modification;
-use crate::layers::outside;
+use crate::layers::{Held, outside};
 use crate::object::{GameObject, ObjectKind};
 use crate::resolve::Scope;
 use crate::state::GameState;
@@ -189,16 +189,19 @@ pub(crate) fn goaded_by(state: &GameState, id: ObjectId) -> Vec<PlayerId> {
         .object(id)
         .filter(|object| object.zone() == Zone::Battlefield)
         .and_then(|object| state.layers().get(object.id()))
-        .map(|held| {
-            held.applied
-                .iter()
-                .filter_map(|applied| match applied.modification {
-                    Modification::Goaded { by } => Some(by),
-                    _ => None,
-                })
-                .collect()
-        })
+        .map(|held| goaders(held).collect())
         .unwrap_or_default()
+}
+
+/// The players whose goad effects have applied to what is held of a permanent, in the order they applied: what a
+/// selector of goaded creatures reads while the layers are worked out.
+pub(crate) fn goaders(held: &Held) -> impl Iterator<Item = PlayerId> + '_ {
+    held.applied
+        .iter()
+        .filter_map(|applied| match applied.modification {
+            Modification::Goaded { by } => Some(by),
+            _ => None,
+        })
 }
 
 /// Whether an effect that applies to `id` says it does not untap during its controller's untap step: the one place the

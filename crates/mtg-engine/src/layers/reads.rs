@@ -13,7 +13,7 @@ use crate::effects::Modification;
 
 /// A set of the things the layers change in an object.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-pub(crate) struct Traits(u8);
+pub(crate) struct Traits(u16);
 
 impl Traits {
     pub(crate) const NONE: Traits = Traits(0);
@@ -27,6 +27,8 @@ impl Traits {
     pub(crate) const KEYWORDS: Traits = Traits(1 << 6);
     /// The other abilities it has, whether it has its static abilities among them.
     pub(crate) const RULES: Traits = Traits(1 << 7);
+    /// Whether it is goaded (CR 701.15), which a selector of goaded creatures reads.
+    pub(crate) const GOADED: Traits = Traits(1 << 8);
 
     /// Both sets together.
     pub(crate) const fn or(self, other: Traits) -> Traits {
@@ -65,8 +67,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantBeBlockedBy { .. }
         | Modification::CanBlockOnly { .. }
         | Modification::MinBlockers(_)
-        | Modification::MaxBlockers(_)
-        | Modification::Goaded { .. } => Traits::NONE,
+        | Modification::MaxBlockers(_) => Traits::NONE,
+        Modification::Goaded { .. } => Traits::GOADED,
     }
 }
 
@@ -98,8 +100,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
-        | Wanted::MaxBlockers(_)
-        | Wanted::Goaded => Traits::NONE,
+        | Wanted::MaxBlockers(_) => Traits::NONE,
+        Wanted::Goaded => Traits::GOADED,
     }
 }
 
@@ -194,9 +196,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CastFrom(_)
         | Pred::HasCounter(_)
         | Pred::XInCost
-        | Pred::Goaded
         | Pred::HasAnyCounter
         | Pred::Named(_) => Traits::NONE,
+        Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
@@ -243,6 +245,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TargetCount(_)
         | Amount::Kicks
         | Amount::Promised
+        | Amount::Devoured
         | Amount::CastWith(_)
         | Amount::ColorsSpent
         | Amount::PermanentsGraved

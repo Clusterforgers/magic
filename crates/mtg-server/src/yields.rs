@@ -550,6 +550,7 @@ mod tests {
         let decision = Decision {
             player: ME,
             kind: DecisionKind::DeclareBlockers(BlockOptions {
+                most: None,
                 blockers: Vec::new(),
                 min_blockers: Vec::new(),
                 max_blockers: Vec::new(),

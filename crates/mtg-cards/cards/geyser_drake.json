@@ -1,0 +1,22 @@
+{
+  "oracle_id": "411b9158-e427-4099-bd30-3fbb22edb553",
+  "name": "Geyser Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geyser Drake",
+      "oracle_fingerprint": "fadd4caf93d94217bea52794e7e391f0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": { "Not": "YourTurn" }
+          }
+        }
+      ]
+    }
+  ]
+}

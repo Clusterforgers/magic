@@ -7,7 +7,7 @@ use mtg_cards::refs::{Pred, Ref, Selector};
 use mtg_core::card::CardType;
 
 use super::{ResolveError, Scope, Seen};
-use crate::characteristics::goaded_by;
+use crate::characteristics::{goaded_by, goaders};
 use crate::object::GameObject;
 
 /// Every card type, in the order of the comprehensive rules.
@@ -96,7 +96,13 @@ impl Scope<'_> {
         seen.card.is_some_and(|card| {
             seen.zone == Zone::Battlefield
                 && seen.chars.types.contains(CardType::Creature)
-                && !goaded_by(self.state, card.id()).is_empty()
+                && match self.layered {
+                    // While the layers are worked out, the goad effects that have applied so far.
+                    Some(view) => view
+                        .get(card.id())
+                        .is_some_and(|held| goaders(held).next().is_some()),
+                    None => !goaded_by(self.state, card.id()).is_empty(),
+                }
         })
     }
 

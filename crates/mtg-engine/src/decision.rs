@@ -312,16 +312,22 @@ pub struct AttackOptions {
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub mana: u32,
+    /// The most creatures that may attack together (CR 508.1c: "no more than one creature can attack each combat"). Left
+    /// out while no rule limits the declaration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub most: Option<usize>,
 }
 
 impl AttackOptions {
     /// The declaration that does only what the rules require: each creature that must attack, at the first defender
-    /// it may attack for nothing.
+    /// it may attack for nothing; no more of them than the limit lets attack.
     pub fn required_attack(&self) -> Vec<(ObjectId, AttackTarget)> {
         self.attackers
             .iter()
             .filter(|option| self.required.contains(&option.object))
             .filter_map(|option| option.free_defender().map(|first| (option.object, first)))
+            .take(self.most.unwrap_or(usize::MAX))
             .collect()
     }
 
@@ -376,6 +382,11 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub required: Vec<ObjectId>,
+    /// The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
+    /// out while no rule limits the declaration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub most: Option<usize>,
 }
 
 impl BlockOptions {
@@ -439,7 +450,7 @@ impl BlockOptions {
                 }
             }
         }
-        blocks
+        self.w8a_capped(&blocks)
     }
 
     /// Whether `blocker`, which the declaration `blocks` leaves out, could be added to it without breaking a rule: it
@@ -654,6 +665,7 @@ mod tests {
         required: &[u64],
     ) -> BlockOptions {
         BlockOptions {
+            most: None,
             blockers: blockers
                 .iter()
                 .map(|(object, can_block)| BlockerOption {
@@ -708,6 +720,7 @@ mod tests {
     /// `blocking` with attackers that may be blocked by so many creatures at most.
     fn limited(blockers: &[(u64, &[u64])], max: &[(u64, usize)], required: &[u64]) -> BlockOptions {
         BlockOptions {
+            most: None,
             max_blockers: max.iter().map(|(a, n)| (id(*a), *n)).collect(),
             ..blocking(blockers, &[], required)
         }
@@ -770,6 +783,7 @@ mod tests {
             )
         };
         let options = AttackOptions {
+            most: None,
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
             mana: 0,
@@ -784,6 +798,7 @@ mod tests {
     #[test]
     fn the_new_fields_are_left_out_of_the_json_while_empty() {
         let plain = AttackOptions {
+            most: None,
             attackers: Vec::new(),
             required: Vec::new(),
             mana: 0,
@@ -798,6 +813,7 @@ mod tests {
             r#"{"blockers":[]}"#
         );
         let required = AttackOptions {
+            most: None,
             required: vec![id(4)],
             ..plain
         };

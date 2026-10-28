@@ -325,6 +325,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Connived { .. }
         | Event::Amassed { .. }
         | Event::Monstrous { .. }
+        | Event::Devoured { .. }
         | Event::Renowned { .. }
         | Event::Exploited { .. }
         | Event::Crewed { .. }

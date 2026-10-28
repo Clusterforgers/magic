@@ -105,7 +105,6 @@ fn w7d_blaze() -> Arc<CardDefinition> {
 }
 
 #[rstest]
-#[ignore = "(r2aa-c): a static reads Goaded while the layers are computed, so it matches nothing"]
 fn w7d_a_goaded_creature_cannot_block(#[values(2, 3, 4)] seats: usize) -> W7dResult {
     let scenario = Scenario::new(seats)
         .at(2, 0, Step::Main1)

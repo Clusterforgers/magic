@@ -1,0 +1,26 @@
+{
+  "oracle_id": "09a1ab1b-d9f0-4a2a-a448-3190f85006e4",
+  "name": "Natural Affinity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Natural Affinity",
+      "oracle_fingerprint": "596092af4744491675b31482426a6e2c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }] },
+                  "mods": [{ "AddType": "Creature" }, { "SetPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

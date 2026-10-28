@@ -210,10 +210,16 @@ impl Held {
         }
     }
 
-    /// What is held now, without the record of what changed it: the copy a trial changes.
+    /// What is held now, without the record of what changed it but the goad effects, which a selector reads: the copy a
+    /// trial changes.
     fn without_history(&self) -> Held {
         Held {
-            applied: Vec::new(),
+            applied: self
+                .applied
+                .iter()
+                .filter(|applied| matches!(applied.modification, Modification::Goaded { .. }))
+                .cloned()
+                .collect(),
             ..self.clone()
         }
     }
@@ -1132,6 +1138,12 @@ impl<'a> Pass<'a> {
                 .filter_map(|id| {
                     let mut trial = self.held.get(id)?.without_history();
                     trial.change(&by_b.modification, waiting[b].origin, waiting[b].timestamp);
+                    trial.applied.push(Applied {
+                        origin: waiting[b].origin,
+                        layer: waiting[b].layer,
+                        timestamp: waiting[b].timestamp,
+                        modification: by_b.modification.clone(),
+                    });
                     Some((*id, trial))
                 })
                 .collect();
@@ -1303,3 +1315,5 @@ mod keyword_counters;
 mod outside;
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod w8a_goaded;

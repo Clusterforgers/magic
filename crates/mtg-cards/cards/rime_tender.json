@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1141a12a-2ebd-4e7b-8c8c-c7a1f160244c",
+  "name": "Rime Tender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rime Tender",
+      "oracle_fingerprint": "9c0b4b338515b4eccea5609568ebd654",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Supertype": "Snow" }, "Other"] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -84,6 +84,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("fear", Params::None),
     ("shroud", Params::None),
     ("horsemanship", Params::None),
+    ("phasing", Params::None),
     ("shadow", Params::None),
     ("skulk", Params::None),
     ("banding", Params::None),
@@ -676,6 +677,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "skulk" => Keyword::Skulk,
         "shadow" => Keyword::Shadow,
         "horsemanship" => Keyword::Horsemanship,
+        "phasing" => Keyword::Phasing,
         "split second" => Keyword::SplitSecond,
         "undaunted" => Keyword::Undaunted,
         "rebound" => Keyword::Rebound,
@@ -1020,6 +1022,7 @@ mod tests {
     #[case::shadow("Shadow", Keyword::Shadow)]
     #[case::horsemanship("Horsemanship", Keyword::Horsemanship)]
     #[case::lowercase_horsemanship("horsemanship", Keyword::Horsemanship)]
+    #[case::phasing("Phasing", Keyword::Phasing)]
     #[case::split_second("Split second", Keyword::SplitSecond)]
     #[case::undaunted("Undaunted", Keyword::Undaunted)]
     #[case::islandwalk("Islandwalk", walks("Island"))]
@@ -1623,6 +1626,7 @@ mod tests {
             "Harmonize {1}",
             "Afterlife 2",
             "Horsemanship",
+            "Phasing",
             "Spectacle {B}",
             "Demonstrate",
             "Hideaway 4",
