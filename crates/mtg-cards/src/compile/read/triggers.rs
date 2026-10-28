@@ -448,6 +448,26 @@ fn spell_cast(r: &mut Reader<'_>, by: Ref, third: bool) -> Option<TriggerPattern
     })
 }
 
+/// What follows "you cycle": "another card", "~" or "a card", with the count of the turn of a card other than this one.
+fn w2e_cycled(r: &mut Reader<'_>, by: Ref) -> Option<TriggerPattern> {
+    let what = if r.words("another card") {
+        Selector(vec![Pred::Other])
+    } else if r.source() {
+        Selector::this()
+    } else {
+        r.need("a card")?;
+        Selector::default()
+    };
+    // The card itself is cycled once, so it has no count.
+    let itself = what == Selector::this();
+    let cycled = TriggerPattern::Cycled { what, by };
+    Some(if itself {
+        cycled
+    } else {
+        first_time(r, cycled)
+    })
+}
+
 /// The spell of a cast or a copy, "an instant or sorcery spell", without the noun: the pattern is about a spell already.
 fn w2e_spell(r: &mut Reader<'_>) -> Option<Vec<Pred>> {
     let mut spell = subject(r)?.0;
@@ -504,22 +524,7 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             by,
         })
     } else if verb == if third { "cycles" } else { "cycle" } {
-        let what = if r.words("another card") {
-            Selector(vec![Pred::Other])
-        } else if r.source() {
-            Selector::this()
-        } else {
-            r.need("a card")?;
-            Selector::default()
-        };
-        // The card itself is cycled once, so it has no count.
-        let itself = what == Selector::this();
-        let cycled = TriggerPattern::Cycled { what, by };
-        Some(if itself {
-            cycled
-        } else {
-            first_time(r, cycled)
-        })
+        w2e_cycled(r, by)
     } else if verb == if third { "surveils" } else { "surveil" } {
         Some(first_time(r, TriggerPattern::Surveilled { who: by }))
     } else if verb == if third { "creates" } else { "create" } {

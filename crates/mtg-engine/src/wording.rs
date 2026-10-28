@@ -1363,8 +1363,14 @@ mod tests {
     )]
     #[case::blocking(r#"{"Blocks":{"what":["This"]}}"#, "When it blocks")]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":["This"]}}"#, "When it becomes blocked")]
-    #[case::w2e_unblocked(r#"{"Unblocked":{"what":["This"]}}"#, "When it attacks and isn't blocked")]
-    #[case::w2e_copied(r#"{"SpellCopied":{"by":"Opponents"}}"#, "Whenever an opponent copies a spell")]
+    #[case::w2e_unblocked(
+        r#"{"Unblocked":{"what":["This"]}}"#,
+        "When it attacks and isn't blocked"
+    )]
+    #[case::w2e_copied(
+        r#"{"SpellCopied":{"by":"Opponents"}}"#,
+        "Whenever an opponent copies a spell"
+    )]
     #[case::w2e_copy_instant(
         r#"{"SpellCopied":{"what":[{"Type":"Instant"}],"by":"You"}}"#,
         "Whenever you copy an instant spell"

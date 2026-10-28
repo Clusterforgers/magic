@@ -42,16 +42,8 @@ fn copied(state: &GameState, controller: PlayerId) -> Event {
 #[case::they_copy_not_me(r#"{"SpellCopied":{"by":"You"}}"#, FOE, 0)]
 #[case::an_opponent_copies(r#"{"SpellCopied":{"by":"Opponents"}}"#, FOE, 1)]
 #[case::anyone_copies(r#"{"SpellCopied":{}}"#, FOE, 1)]
-#[case::an_instant_copied(
-    r#"{"SpellCopied":{"what":[{"Type":"Instant"}],"by":"You"}}"#,
-    ME,
-    1
-)]
-#[case::not_a_sorcery(
-    r#"{"SpellCopied":{"what":[{"Type":"Sorcery"}],"by":"You"}}"#,
-    ME,
-    0
-)]
+#[case::an_instant_copied(r#"{"SpellCopied":{"what":[{"Type":"Instant"}],"by":"You"}}"#, ME, 1)]
+#[case::not_a_sorcery(r#"{"SpellCopied":{"what":[{"Type":"Sorcery"}],"by":"You"}}"#, ME, 0)]
 #[case::a_copy_is_not_cast(r#"{"SpellCast":{"by":"You"}}"#, ME, 0)]
 #[case::cast_or_copy(
     r#"{"AnyOf":[{"SpellCast":{"by":"You"}},{"SpellCopied":{"by":"You"}}]}"#,

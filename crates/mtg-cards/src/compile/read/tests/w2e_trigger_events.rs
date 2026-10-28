@@ -47,7 +47,9 @@ fn more_copies_and_unblocked_attackers_read_and_write_back(#[case] text: &str) {
 #[case::copy_without_an_object("Whenever you copy, draw a card.")]
 #[case::cast_or_copy_twice("Whenever you cast or copy or copy a spell, draw a card.")]
 #[case::copy_or_cast("Whenever you copy or cast a spell, draw a card.")]
-#[case::unblocked_this_combat("Whenever a creature attacks and isn't blocked this combat, draw a card.")]
+#[case::unblocked_this_combat(
+    "Whenever a creature attacks and isn't blocked this combat, draw a card."
+)]
 #[case::unblocked_attacking_a_player("Whenever ~ attacks a player and isn't blocked, draw a card.")]
 #[case::not_blocked_wording("Whenever ~ attacks and is not blocked, draw a card.")]
 fn other_wordings_of_copies_and_unblocked_attackers_stay_unread(#[case] text: &str) {
@@ -56,7 +58,8 @@ fn other_wordings_of_copies_and_unblocked_attackers_stay_unread(#[case] text: &s
 
 #[test]
 fn it_in_an_unblocked_trigger_is_the_attacker() {
-    let text = "Whenever a Rogue you control attacks and isn't blocked, it gets +1/+1 until end of turn.";
+    let text =
+        "Whenever a Rogue you control attacks and isn't blocked, it gets +1/+1 until end of turn.";
     let Some(Ability::Triggered { effects, .. }) = trigger(text) else {
         panic!("not read: {text}");
     };

@@ -1287,23 +1287,31 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("to", |w| w.selector(to));
             }
+            TriggerPattern::GroupAttacks { .. } | TriggerPattern::Chapter { .. } => {
+                self.w2e_counted(pattern);
+            }
+            TriggerPattern::State { .. } => {
+                self.problem("a state is the whole pattern of a triggered ability");
+            }
+            TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
+            TriggerPattern::Batch(inner) => self.batch(inner),
+            TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+        }
+    }
+
+    /// The patterns that count: the attackers of a `GroupAttacks` and the number of a `Chapter`.
+    fn w2e_counted(&mut self, pattern: &TriggerPattern) {
+        match pattern {
             TriggerPattern::GroupAttacks { what, at_least } => {
                 self.at("what", |w| w.selector(what));
                 if *at_least == 0 {
                     self.at("at_least", |w| w.problem("at least one creature attacks"));
                 }
             }
-            TriggerPattern::State { .. } => {
-                self.problem("a state is the whole pattern of a triggered ability");
+            TriggerPattern::Chapter { number } if *number == 0 => {
+                self.at("number", |w| w.problem("the first chapter is 1"));
             }
-            TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
-            TriggerPattern::Chapter { number } => {
-                if *number == 0 {
-                    self.at("number", |w| w.problem("the first chapter is 1"));
-                }
-            }
-            TriggerPattern::Batch(inner) => self.batch(inner),
-            TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+            _ => {}
         }
     }
 

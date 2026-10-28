@@ -48,14 +48,14 @@ pub(super) fn w2e_cast_or_copy_text(patterns: &[TriggerPattern]) -> Option<Strin
     let [
         TriggerPattern::SpellCast { what, by },
         TriggerPattern::SpellCopied {
-            what: copied,
-            by: copier,
+            what: copy_what,
+            by: copy_by,
         },
     ] = patterns
     else {
         return None;
     };
-    (what == copied && by == copier).then_some(())?;
+    (what == copy_what && by == copy_by).then_some(())?;
     Some(format!(
         "Whenever {} {}",
         w2e_who(by, true)?,
