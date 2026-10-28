@@ -922,8 +922,7 @@ impl Pass<'_> {
                 || (regeneration.is_some() && !matches!(by, ReplaceBy::UmbraArmor))
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
-                || !step.matches(source, when, &unit)?
-                || step.c6_blk_spared_draw(at, when, &unit)
+                || !step.c6_blk_matches(at, source, when, &unit)?
             {
                 return Ok(());
             }
