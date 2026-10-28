@@ -542,6 +542,9 @@ impl<'a> Scope<'a> {
         };
         match &spec.what {
             Targetable::Object(selector) => self.refs(&Ref::Each(selector.clone())),
+            Targetable::PerPlayer { players, what } => self.refs(&Ref::Each(
+                Targetable::c10_dice_per_player_objects(players, what),
+            )),
             Targetable::Player => self.refs(&Ref::EachPlayer),
             Targetable::Opponent => self.refs(&Ref::Opponents),
             Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(

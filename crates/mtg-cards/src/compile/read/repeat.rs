@@ -26,6 +26,9 @@ pub fn each_player(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Ref::EachPlayer
     };
     r.punct(',').then_some(())?;
+    if let Some(effects) = super::c10_dice_targets::c10_dice_per_opponent(r, &over) {
+        return Some(effects);
+    }
     let (event, targets) = (
         std::mem::replace(&mut r.that_player, false),
         r.targets.len(),

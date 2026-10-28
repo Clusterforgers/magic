@@ -128,7 +128,7 @@ impl Kind {
 fn kind_of_targetable(what: &Targetable) -> Kind {
     match what {
         Targetable::Player | Targetable::Opponent => Kind::Player,
-        Targetable::Object(_) => Kind::Object,
+        Targetable::Object(_) | Targetable::PerPlayer { .. } => Kind::Object,
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
 }
@@ -1426,6 +1426,11 @@ impl Walker<'_> {
                 for (i, inner) in list.iter().enumerate() {
                     self.at(format!("[{i}]"), |w| w.targetable(inner));
                 }
+            }
+            Targetable::PerPlayer { players, what } => {
+                self.uses("Target", "PerPlayer");
+                self.at("players", |w| w.reference(players, Kind::Player));
+                self.at("what", |w| w.selector(what));
             }
             Targetable::AnyTarget | Targetable::Player | Targetable::Opponent => {}
         }

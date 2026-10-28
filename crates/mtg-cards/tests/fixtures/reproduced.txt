@@ -336,6 +336,7 @@ Disallow
 Disciple of Griselbrand
 Disembowel
 Dismantling Blow
+Dismantling Wave
 Disrupt Decorum
 Distorting Wake
 Dockside Extortionist
@@ -395,6 +396,7 @@ Elvish Rejuvenator
 Empowered Autogenerator
 Empyrial Plate
 Empyrial Storm
+Enigma Thief
 Enraged Revolutionary
 Enthusiastic Study
 Entreat the Angels
@@ -538,6 +540,7 @@ Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Gorma, the Gullet
 Grapeshot
+Grasp of Fate
 Graveblade Marauder
 Gravecrawler
 Graven Cairns

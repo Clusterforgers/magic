@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d39a1e12-bb6b-4e7a-96a4-5dab98084716",
+  "name": "Enigma Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enigma Thief",
+      "oracle_fingerprint": "fca32de3db402b671dfdcf71fe52d01a",
+      "abilities": [
+        { "Keyword": { "Prowl": "{3}{U}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Not": { "Type": "Land" } }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

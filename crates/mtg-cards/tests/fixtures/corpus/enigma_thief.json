@@ -1,0 +1,28 @@
+{
+  "id": "3536a97f-565b-45c6-a54b-96afd2a268ec",
+  "oracle_id": "d39a1e12-bb6b-4e7a-96a4-5dab98084716",
+  "name": "Enigma Thief",
+  "lang": "en",
+  "released_at": "2020-09-25",
+  "layout": "normal",
+  "mana_cost": "{5}{U}{U}",
+  "cmc": 7.0,
+  "type_line": "Creature — Sphinx Rogue",
+  "oracle_text": "Prowl {3}{U} (You may cast this spell for its prowl cost if you dealt combat damage to a player this turn with a Sphinx or Rogue.)\nFlying\nWhen this creature enters, for each opponent, return up to one target nonland permanent that player controls to its owner's hand.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Prowl"
+  ],
+  "set": "znc",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "rare"
+}
