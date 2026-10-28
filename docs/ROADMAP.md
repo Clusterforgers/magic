@@ -124,7 +124,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,170 of 6,429 precon cards, 64.9%; 81.0% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,194 of 6,429 precon cards, 65.2%; 81.2% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
