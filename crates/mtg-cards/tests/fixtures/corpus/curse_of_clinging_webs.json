@@ -1,0 +1,25 @@
+{
+  "cmc": 3.0,
+  "collector_number": "25",
+  "color_identity": [
+    "G"
+  ],
+  "colors": [
+    "G"
+  ],
+  "digital": false,
+  "id": "5e2d349e-fe5f-4627-84b7-2f01982603d2",
+  "keywords": [
+    "Enchant"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}",
+  "name": "Curse of Clinging Webs",
+  "oracle_id": "d063f1d4-eb6b-40fa-97b7-f15ea53397fb",
+  "oracle_text": "Enchant player\nWhenever a nontoken creature enchanted player controls dies, exile it and you create a 1/2 green Spider creature token with reach.",
+  "rarity": "rare",
+  "released_at": "2021-09-24",
+  "set": "mic",
+  "type_line": "Enchantment — Aura Curse"
+}

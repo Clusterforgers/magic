@@ -34,6 +34,7 @@ mod c4_hands;
 mod c4_joined_events;
 mod c4_phase;
 mod c4_rules;
+mod c6_au_dead;
 mod card_grants;
 mod cast;
 mod chance;

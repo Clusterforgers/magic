@@ -381,6 +381,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let pronouns = create::pronoun_wordings(&counted);
     texts.extend(counted);
     texts.extend(pronouns);
+    let more = super::c6_au_dead::c6_au_wordings(&texts);
+    texts.extend(more);
     graveyard_wordings(ability, &mut texts);
     texts
 }
@@ -2045,7 +2047,7 @@ impl Writer<'_> {
                 what,
                 bind: None,
                 duration: None,
-            } if *what == dead_card() => Some("exile it".to_owned()),
+            } if *what == dead_card() || *what == other_dead_card() => Some("exile it".to_owned()),
             // A target exiled and bound for a later step ("the mana value of the permanent exiled this way") is the same.
             Effect::Exile {
                 what,
@@ -2136,6 +2138,9 @@ impl Writer<'_> {
             None if self.in_your_graveyard(what) => Some(format!(
                 "return {} to the battlefield{tapped}{entering}",
                 self.object(what)?
+            )),
+            Some(Ref::You) if entering.is_empty() && *what == other_dead_card() => Some(format!(
+                "return it to the battlefield{tapped} under your control"
             )),
             // A card of another graveyard enters under the control of the player who takes it.
             Some(Ref::You) if entering.is_empty() && self.in_another_graveyard(what) => {

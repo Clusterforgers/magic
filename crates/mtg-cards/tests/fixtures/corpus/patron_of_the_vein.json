@@ -1,0 +1,27 @@
+{
+  "cmc": 6.0,
+  "collector_number": "207",
+  "color_identity": [
+    "B"
+  ],
+  "colors": [
+    "B"
+  ],
+  "digital": false,
+  "id": "a70d7b65-77d0-41d3-9735-d64b9288fde1",
+  "keywords": [
+    "Flying"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{B}{B}",
+  "name": "Patron of the Vein",
+  "oracle_id": "8dbc8fdb-36ce-4f30-b679-9c2029fcd9c6",
+  "oracle_text": "Flying\nWhen this creature enters, destroy target creature an opponent controls.\nWhenever a creature an opponent controls dies, exile it and put a +1/+1 counter on each Vampire you control.",
+  "power": "4",
+  "rarity": "rare",
+  "released_at": "2023-11-17",
+  "set": "lcc",
+  "toughness": "4",
+  "type_line": "Creature — Vampire Shaman"
+}

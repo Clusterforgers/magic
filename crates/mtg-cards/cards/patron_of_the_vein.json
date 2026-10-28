@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8dbc8fdb-36ce-4f30-b679-9c2029fcd9c6",
+  "name": "Patron of the Vein",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patron of the Vein",
+      "oracle_fingerprint": "471d1932be130f185615bbd0e802faf0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] }
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

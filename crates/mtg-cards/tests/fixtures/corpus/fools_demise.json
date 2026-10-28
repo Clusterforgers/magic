@@ -1,0 +1,25 @@
+{
+  "cmc": 5.0,
+  "collector_number": "111",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "3ed39bd7-d059-4a44-9f03-0f628dcdb119",
+  "keywords": [
+    "Enchant"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{4}{U}",
+  "name": "Fool's Demise",
+  "oracle_id": "d719b761-a35d-4cec-b3fe-f0fc64278677",
+  "oracle_text": "Enchant creature\nWhen enchanted creature dies, return that card to the battlefield under your control.\nWhen this Aura is put into a graveyard from the battlefield, return it to its owner's hand.",
+  "rarity": "uncommon",
+  "released_at": "2014-11-07",
+  "set": "c14",
+  "type_line": "Enchantment — Aura"
+}

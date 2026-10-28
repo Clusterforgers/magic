@@ -215,6 +215,8 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     }
     r.attempt(|r| super::joined::and_you(r, effects)).is_some()
         || r.attempt(|r| super::joined::then_you(r, effects)).is_some()
+        || r.attempt(|r| super::c6_au_dead::c6_au_exile_and(r, effects))
+            .is_some()
 }
 
 /// "Counter target spell unless its controller pays {2}.", "You may draw a card unless that player
@@ -731,6 +733,9 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("return")?;
     // The permanent itself once the ability has spoken of the card: "return it to its owner's hand" (a card that
     // returns from the graveyard says its name, and is the table's).
+    if let Some(effects) = super::c6_au_dead::c6_au_return_under_you(r) {
+        return Some(effects);
+    }
     if (r.it == Some(Ref::This) || r.others_died) && r.word("it") {
         return itself_to_hand(r);
     }
@@ -1054,6 +1059,11 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     // countered this way.
     let what = if matches!(verb, "exile" | "tap" | "untap" | "regenerate") && r.source() {
         Ref::This
+    } else if let Some(card) = (verb == "exile")
+        .then(|| super::c6_au_dead::c6_au_exile_it(r))
+        .flatten()
+    {
+        card
     } else {
         object(r)?
     };

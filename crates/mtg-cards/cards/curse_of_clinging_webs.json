@@ -1,0 +1,51 @@
+{
+  "oracle_id": "d063f1d4-eb6b-40fa-97b7-f15ea53397fb",
+  "name": "Curse of Clinging Webs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Clinging Webs",
+      "oracle_fingerprint": "02d2c03f3602b99d7a4a7d093ed1ab90",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "AttachedPlayer" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
