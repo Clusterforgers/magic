@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fe9106e3-c637-4995-9dc1-cae0be31f23b",
+  "name": "Guardian Seraph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Seraph",
+      "oracle_fingerprint": "a67cf906f07950038307f1def733741a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You", "source": [{ "ControlledBy": "Opponents" }] } },
+            "by": { "PreventUpTo": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

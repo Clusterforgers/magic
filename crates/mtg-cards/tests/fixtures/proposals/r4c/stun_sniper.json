@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"DealDamage":{"amount":1,"to":{"Target":0},"source":"This"}},{"Tap":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}]}
+
+  						    				    ]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Defender"},{"Keyword":"Flying"},{"Activated":{"cost":[{"Mana":"{W}"}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"RemoveKeyword":"Defender"},{"AddKeyword":"Cascade"}]}}]} } ]}]}

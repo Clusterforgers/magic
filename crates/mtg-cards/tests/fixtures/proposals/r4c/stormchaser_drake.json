@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a9530416-d5fb-4ddd-ae6f-0eefb9f276c5",
+  "name": "Stormchaser Drake",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stormchaser Drake",
+      "oracle_fingerprint": "1ee9db8c2cfb48ebb02431e72d3e9289",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 7, "end": 85 }
+          }
+        }
+      ]
+    }
+  ]
+}

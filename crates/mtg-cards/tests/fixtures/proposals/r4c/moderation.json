@@ -1,0 +1,20 @@
+{
+  "oracle_id": "57f94fcb-a224-410b-a38e-3ed8cca7d0c7",
+  "name": "Moderation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Moderation",
+      "oracle_fingerprint": "404908090f63f70df5f9c64f5faaa9cd",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 0, "end": 45 }
+          }
+        },
+        { "Triggered": { "when": { "SpellCast": { "by": "You" } }, "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

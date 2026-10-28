@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a0324f33-3f25-4374-affa-c7b5b54bc8d7",
+  "name": "Chainwhip Cyclops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chainwhip Cyclops",
+      "oracle_fingerprint": "13f5bda421b50b45f45d63901cf42268",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

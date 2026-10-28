@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b772d35a-d365-47ce-b1dd-a2ba574c74ea",
+  "name": "Summit Intimidator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summit Intimidator",
+      "oracle_fingerprint": "f73791cb27a3c1991f25184b85c80e21",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

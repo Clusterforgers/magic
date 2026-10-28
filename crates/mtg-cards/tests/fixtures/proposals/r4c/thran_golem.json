@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":2,"toughness":2}},{"AddKeyword":"Flying"},{"AddKeyword":"FirstStrike"},{"AddKeyword":"Trample"}],"condition":{"Matches":{"selector":[{"HasAttached":[{"Type":"Artifact"}, {"Type":"Enchantment"}]}],"subject":"This"}}} }]} ]}

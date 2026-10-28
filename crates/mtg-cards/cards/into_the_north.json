@@ -1,0 +1,26 @@
+{
+  "oracle_id": "30aefabc-5fd2-451b-aa93-8e5a972c7691",
+  "name": "Into the North",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the North",
+      "oracle_fingerprint": "9a46363230ebf3fb6668df4a4652e8b6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Snow" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

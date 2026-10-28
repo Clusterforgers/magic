@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":2,"toughness":2}}]}}],"when":{"Tapped":{ "what": ["Tapped"] }},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"max":2}}]}}]}]}

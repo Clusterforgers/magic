@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e154e612-4041-4fb7-903f-917588dbe58e",
+  "name": "Fangren Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fangren Marauder",
+      "oracle_fingerprint": "526befc80f89aefa6ef6d20294578646",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 5 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

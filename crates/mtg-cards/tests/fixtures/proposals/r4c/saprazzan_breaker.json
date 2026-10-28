@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{U}"}],"effects":[{"Mill":{}},{"If":{"condition":{"Matches":{"selector":[{"Type":"Land"}],"subject":"This"}}, "then":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":["CantBeBlocked"]}}]}}]} }]} ]}

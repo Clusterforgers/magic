@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":{"Count":[{"AnyOf":[{"Subtype":"Dwarf"},{"Type":"Enchantment"},{"Subtype":"Vehicle"}]},{"ControlledBy":"You"}]},"toughness":{"Count":[{"AnyOf":[{"Subtype":"Dwarf"},{"Type":"Enchantment"},{"Subtype":"Vehicle"}]},{"ControlledBy":"You"}]}}}]}},{"Keyword":{"Equip":"{2}"}}]}]}

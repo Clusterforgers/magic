@@ -1,0 +1,20 @@
+{
+  "oracle_id": "dbf193a5-c131-4073-b6a7-1768260f136e",
+  "name": "Polterheist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Polterheist",
+      "oracle_fingerprint": "eb1ac1253b11e0bb0aff382acb98af81",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 3 }] } },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 17, "end": 81 }
+          }
+        }
+      ]
+    }
+  ]
+}

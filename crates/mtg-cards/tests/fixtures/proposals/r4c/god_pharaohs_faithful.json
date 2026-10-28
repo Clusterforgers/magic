@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"GainLife":{"amount":1}}],"when":{"SpellCast":{"by":"You","what":[{"Color":"Blue"},{"Color":"Black"},{"Color":"Red"}]}}}}] } ]}

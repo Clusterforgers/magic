@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "9c00c27c-7826-4d6e-9d56-2844c59c8066",
+  "oracle_id": "94bcae2f-86a6-4d38-b8e1-5ebf69dc7cbc",
+  "multiverse_ids": [
+    413671
+  ],
+  "mtgo_id": 60757,
+  "mtgo_foil_id": 60758,
+  "tcgplayer_id": 118708,
+  "cardmarket_id": 290413,
+  "name": "Fervent Cathar",
+  "lang": "en",
+  "released_at": "2016-06-10",
+  "uri": "https://api.scryfall.com/cards/9c00c27c-7826-4d6e-9d56-2844c59c8066",
+  "scryfall_uri": "https://scryfall.com/card/ema/129/fervent-cathar?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:13:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.jpg?1783937582",
+    "normal": "https://cards.scryfall.io/normal/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.jpg?1783937582",
+    "large": "https://cards.scryfall.io/large/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.jpg?1783937582",
+    "png": "https://cards.scryfall.io/png/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.png?1783937582",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.jpg?1783937582",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.jpg?1783937582",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.webp?1783937582",
+    "grid": "https://cards.scryfall.io/grid/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.webp?1783937582",
+    "display": "https://cards.scryfall.io/display/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.webp?1783937582",
+    "art": "https://cards.scryfall.io/art/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.webp?1783937582",
+    "crop": "https://cards.scryfall.io/crop/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.webp?1783937582",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/c/9c00c27c-7826-4d6e-9d56-2844c59c8066.jpg?1783937582"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Haste\nWhen this creature enters, target creature can't block this turn.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set": "ema",
+  "set_name": "Eternal Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aema&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ema?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9c00c27c-7826-4d6e-9d56-2844c59c8066/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A94bcae2f-86a6-4d38-b8e1-5ebf69dc7cbc&unique=prints",
+  "collector_number": "129",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"I'll put my sword down only to die. And I don't plan on doing that today.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steven Belledin",
+  "artist_ids": [
+    "f07d73b9-52a0-4fe5-858b-61f7b42174a5"
+  ],
+  "illustration_id": "39715fa1-595f-4e3d-84a3-35f2636bccc7",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28877,
+  "penny_rank": 13204,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "0.18",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=413671&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFervent%2BCathar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFervent%2BCathar",
+    "edhrec": "https://edhrec.com/route/?cc=Fervent+Cathar"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F118708%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=290413&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60757?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

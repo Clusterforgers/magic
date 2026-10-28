@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1feeb881-ebe6-4afb-ba31-3d116d8ab7a1",
+  "name": "Dismal Failure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dismal Failure",
+      "oracle_fingerprint": "6aede747dddf1b9298e195574eca8a11",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Discard": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

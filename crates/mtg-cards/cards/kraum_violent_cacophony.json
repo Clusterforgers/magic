@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1d764f70-985e-4cf0-9482-f30f73b9baf1",
+  "name": "Kraum, Violent Cacophony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kraum, Violent Cacophony",
+      "oracle_fingerprint": "3a6e6bb02a0908f6597fe0a512a4cfc5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

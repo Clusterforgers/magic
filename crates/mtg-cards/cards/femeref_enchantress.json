@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8b983a46-580f-4a94-8ef3-5253e503148e",
+  "name": "Femeref Enchantress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Femeref Enchantress",
+      "oracle_fingerprint": "1772f9ec1c6842410c7b571bd6bfd828",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

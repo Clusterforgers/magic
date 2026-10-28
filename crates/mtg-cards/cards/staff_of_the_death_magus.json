@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c3fda16e-fd56-434e-91ac-561ae0482f43",
+  "name": "Staff of the Death Magus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of the Death Magus",
+      "oracle_fingerprint": "ce82dd6f34ee16cb47d803a3368edfd5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "Color": "Black" }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

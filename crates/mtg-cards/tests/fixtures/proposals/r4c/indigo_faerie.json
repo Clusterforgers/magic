@@ -1,0 +1,20 @@
+{
+  "oracle_id": "10ae611f-e56d-47c5-8b6e-d38d95208bba",
+  "name": "Indigo Faerie",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Indigo Faerie",
+      "oracle_fingerprint": "19c20a3186a3696d20d77e249ed97a90",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 7, "end": 92 }
+          }
+        }
+      ]
+    }
+  ]
+}

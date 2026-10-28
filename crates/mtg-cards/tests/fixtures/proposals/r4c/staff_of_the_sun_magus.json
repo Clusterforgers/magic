@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"GainLife":{"amount":1}}],"when":{"AnyOf":[{"SpellCast":{"by":"You","what":[{"Color":"White"}]}},{"ZoneChange":{"what":[{"Type":"Planeswalker"},{"ControlledBy":"You"}],"to":"Battlefield"}}]}}}]}] }

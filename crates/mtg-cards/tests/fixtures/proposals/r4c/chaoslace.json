@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Target":0},"duration": "WhileSourceOnBattlefield","mods":[{"SetColors":["Red"]}]}},{"AddMana":{"mana":{ "Fixed":["Red"]}, "who": "You"}}],"targets":[{"what":{"Object":[]}}]} }]}]}

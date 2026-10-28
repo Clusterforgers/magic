@@ -1,0 +1,22 @@
+{
+  "oracle_id": "5a651557-ce08-46ba-aecd-0e4fbfdef3c0",
+  "name": "Bile-Vial Boggart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bile-Vial Boggart",
+      "oracle_fingerprint": "8d28bc742753f46d08c407e766761c63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

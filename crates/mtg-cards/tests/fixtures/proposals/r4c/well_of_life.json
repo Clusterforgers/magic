@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"GainLife":{"amount":2}}],"when":{"StepBegins":{"step":"End","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"Type":"Land"},{"ControlledBy":"You"},{"Targeting":[]}]},"op":"Eq","right":0}}}}] }]}
