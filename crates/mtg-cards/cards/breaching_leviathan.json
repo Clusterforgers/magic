@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7d249b16-33ef-463e-9e5d-0b84d434f093",
+  "name": "Breaching Leviathan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breaching Leviathan",
+      "oracle_fingerprint": "fed3da4a10f95ce79838353e57238a51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Not": { "Color": "Blue" } }, { "Type": "Creature" }] }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Not": { "Color": "Blue" } }, { "Type": "Creature" }] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

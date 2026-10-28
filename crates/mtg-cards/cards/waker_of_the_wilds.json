@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ebf6ef9f-97b2-48cf-855e-d68dc7b11de4",
+  "name": "Waker of the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waker of the Wilds",
+      "oracle_fingerprint": "f5acf93d3611eae0ec608a15c44dcbcd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}{G}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "X" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

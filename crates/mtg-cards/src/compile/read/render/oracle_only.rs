@@ -227,6 +227,14 @@ mod uncounterable_group;
 mod unless;
 mod untap_lands;
 mod untapped_cost;
+mod w4b_becomes;
+mod w4b_conditions;
+mod w4b_control;
+mod w4b_durations;
+mod w4b_grants;
+mod w4b_pumps;
+mod w4b_stand;
+mod w4b_untap;
 mod w4c_bodies;
 mod w4c_may_pay;
 mod wheres;
@@ -309,11 +317,24 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c11g(ability, texts);
     add_c11f(ability, texts);
     add_w4c(ability, texts);
+    add_w4b(ability, texts);
 }
 
 /// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
 fn add_w4c(ability: &Ability, texts: &mut Vec<String>) {
     w4c_may_pay::add(ability, texts);
+}
+
+/// Adds the wordings of continuous effects and static grants (r3w2): conditions, grants, pumps, durations, a land
+/// that becomes a creature, permanents kept tapped and a card given to an opponent.
+fn add_w4b(ability: &Ability, texts: &mut Vec<String>) {
+    w4b_conditions::add(ability, texts);
+    w4b_grants::add(ability, texts);
+    w4b_pumps::add(ability, texts);
+    w4b_becomes::add(ability, texts);
+    w4b_durations::add(ability, texts);
+    w4b_untap::add(ability, texts);
+    w4b_control::add(ability, texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "47bce63e-8edb-43c1-b273-4b86da5c616b",
+  "name": "Lyse Hext",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lyse Hext",
+      "oracle_fingerprint": "efa7a2b8d764370e1b4c0404ad1dca8d",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "NoncreatureSpellsCast" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

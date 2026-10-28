@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dbf0ad03-ab31-49d2-89b1-05b45948a61f",
+  "name": "Vorinclex, Voice of Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vorinclex, Voice of Hunger",
+      "oracle_fingerprint": "1b0ea0f08ee2c0e5a8db1d6078bc2502",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": "OfTapped" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9138a768-d01d-4603-9bae-d3bff6cd2f61",
+  "name": "Taunt from the Rampart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taunt from the Rampart",
+      "oracle_fingerprint": "56f4b13cf7f8cd552872903269daea4e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Goad": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

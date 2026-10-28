@@ -1,0 +1,51 @@
+{
+  "oracle_id": "8d0213d7-9e25-49d2-93fa-1d346cb2e869",
+  "name": "Akroan Horse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akroan Horse",
+      "oracle_fingerprint": "cc77c82616413c8caef18fe96b921576",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Bound": "opponent" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Opponents",
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

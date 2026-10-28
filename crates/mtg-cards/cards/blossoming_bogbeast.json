@@ -1,0 +1,36 @@
+{
+  "oracle_id": "30f3c3be-0fe9-463d-a245-e44701aec7f2",
+  "name": "Blossoming Bogbeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blossoming Bogbeast",
+      "oracle_fingerprint": "b459567734ac4ce86dc8634c0a19de23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "ModifyPT": {
+                        "power": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                        "toughness": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

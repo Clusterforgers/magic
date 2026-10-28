@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c53f2d1c-5a53-4020-aace-a1d9f75e47c7",
+  "name": "Cliffside Rescuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cliffside Rescuer",
+      "oracle_fingerprint": "11b12ffa8974b5789aa54cd2ed39e801",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "ControlledBy": "Opponents" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

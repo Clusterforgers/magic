@@ -1,0 +1,61 @@
+{
+  "oracle_id": "97bb1589-2941-4a75-a5f6-916871e51e9e",
+  "name": "Alandra, Sky Dreamer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alandra, Sky Dreamer",
+      "oracle_fingerprint": "49a2da56a1b3d4d836c59b54e53c7644",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Drake",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Drake"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 5 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": ["This", { "Subtype": "Drake" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
