@@ -173,7 +173,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c8ja) Life gain replaced by another effect (`ReplaceBy::Instead` in the engine): a loss instead, cards drawn instead, no life gained; frees about 6 cards (Tainted Remedy, Plague Drone, Nefarious Lich)
 - [ ] (c8jb) Prevention for "you and" a group, quoted static abilities given under a condition, and the Slivers' quoted abilities left (flip, becomes a type, top of library); frees about 20 cards (Rune of Flight, The Wanderer, Pulmonic Sliver)
 - [ ] (r1ab) The rest of the `Continuous` statics: types for spells and cards, every land type, a color added, group unions, "modified", attachment conditions; frees about 25 cards (Arcane Adaptation, Death Baron, Song of the Dryads)
-- [ ] (r2az-c) "No more than N creatures can attack you each combat" (a limit on the attacks at one player or planeswalker): frees about 5 cards (Crawlspace, Judoon Enforcers, Tomik, Orzhov Lawmage)
+- [ ] (r2az-c) "No more than N creatures can attack you each combat" (a limit on the attacks at one player or planeswalker): frees about 4 cards (Crawlspace, Judoon Enforcers, The Eternal Wanderer)
 - [~] (r2az-b) (r2az-b-domain-amount) Domain: "the number of basic land types among lands you control" as an amount; frees about 20 cards (Collective Restraint, Tribal Flames, Territorial Kavu)
 - [ ] (r2bhd) Untaps in other players' untap steps and groups held through their next untap step; frees about 8 cards (Seedborn Muse, Unwinding Clock, Lorthos, the Tidemaker)
 - [ ] (r2u) Attached Auras and Equipment as a count, and attachments made by effects (any number, onto tokens, onto returned cards); frees about 15 cards (Kor Spiritdancer, Kemba, Goldwardens' Gambit)
