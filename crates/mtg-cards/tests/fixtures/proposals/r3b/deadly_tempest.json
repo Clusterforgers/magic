@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"}]}}},{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"LoseLife":{"who":{"Bound":"player"},"amount":{"Destroyed":[{"Type":"Creature"},{"ControlledBy":{"Bound":"player"}}]}}}]}}]}}]}]}

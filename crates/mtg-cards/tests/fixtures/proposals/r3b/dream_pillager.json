@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"ExileTop":{"count":"Triggering","as":"exiled"}},{"Rule":{"rule":{"MayCast":{"only":{"Bound":"exiled"},"from":"Exile"}},"duration":"UntilEndOfTurn"}}]}}]}]}

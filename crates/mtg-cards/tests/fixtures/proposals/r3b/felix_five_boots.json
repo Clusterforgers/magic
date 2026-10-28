@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Menace"},{"Keyword":{"Ward":"{2}"}},{"Rule":{"rule":{"TriggerAgain":{"cause":{"DealsDamage":{"source":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}}}}}]}]}

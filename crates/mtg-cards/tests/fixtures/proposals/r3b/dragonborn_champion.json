@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"when":{"DealsDamage":{"source":[{"ControlledBy":"You"}],"to":"EachPlayer"}},"if":{"Compare":{"left":"Triggering","op":"Ge","right":5}},"effects":[{"Draw":{}}]}}]}]}

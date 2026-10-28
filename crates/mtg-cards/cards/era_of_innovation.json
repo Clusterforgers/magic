@@ -1,0 +1,42 @@
+{
+  "oracle_id": "355603d1-f62d-407a-8fa9-74e7dca8ecf9",
+  "name": "Era of Innovation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Era of Innovation",
+      "oracle_fingerprint": "8974006576a1d170988ebb567c8cb0b9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Subtype": "Artificer" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 6 }, "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
