@@ -412,7 +412,12 @@ fn produced_wordings(texts: &mut Vec<String>) {
     let produced: Vec<String> = texts
         .iter()
         .filter(|text| text.contains("of any type that land produced"))
-        .map(|text| text.replace("of any type that land produced", "of any type that permanent produced"))
+        .map(|text| {
+            text.replace(
+                "of any type that land produced",
+                "of any type that permanent produced",
+            )
+        })
         .collect();
     texts.extend(produced);
 }

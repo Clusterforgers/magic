@@ -1,8 +1,8 @@
 //! Sentences the oracle text joins, orders or shortens where the renderers write them apart: "proliferate twice",
 //! "you lose 1 life and amass Zombies 1", "Choose one. Activate only as a sorcery." before the modes, "Exile ~ with three
 //! time counters on it.", "for the first time each turn", "~ becomes ... until end of turn and can't be blocked this
-//! turn", "Choose a color. ... protection from the chosen color", "Remove X time counters from ~ and exile it" and two
-//! damage steps on the mana spent in one sentence.
+//! turn", "Choose a color. ... protection from the chosen color", "Remove X time counters from ~ and exile it", two
+//! damage steps on the mana spent in one sentence and "put your choice of ... or ..." for two modes of counters.
 
 /// A wording of the text, or `None` when its words are not there.
 type W4fRewording = fn(&str) -> Option<String>;
@@ -122,9 +122,12 @@ fn w4f_first_time(text: &str) -> Option<String> {
 
 /// "~ becomes ... until end of turn. ~ can't be blocked this turn." as one sentence with "and".
 fn w4f_and_unblockable(text: &str) -> Option<String> {
-    let from = [". ~ can't be blocked this turn", ". It can't be blocked this turn"]
-        .iter()
-        .find(|from| text.contains(*from))?;
+    let from = [
+        ". ~ can't be blocked this turn",
+        ". It can't be blocked this turn",
+    ]
+    .iter()
+    .find(|from| text.contains(*from))?;
     let at = text.find(from)?;
     let opens = text[..at]
         .rfind(". ")
