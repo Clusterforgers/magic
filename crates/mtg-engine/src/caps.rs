@@ -184,6 +184,7 @@ const RUNS: &[&str] = &[
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
+    "Effect.Incubate",
     "Effect.Monstrosity",
     "Effect.Renown",
     "Effect.Exploit",

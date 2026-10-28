@@ -149,6 +149,15 @@ pub fn ability(ability: &Ability) -> Option<String> {
     variants(ability).into_iter().next()
 }
 
+/// "mill two cards, then incubate X": an incubate after a step of the same sentence, joined by ", then".
+fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter(|text| text.contains(". Incubate "))
+        .map(|text| text.replacen(". Incubate ", ", then incubate ", 1))
+        .collect()
+}
+
 /// Every wording of an ability the readers produce. The effects of one player in a row are one
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
@@ -178,6 +187,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(hosts);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
+    let incubated = w7c_then_incubate(&texts);
+    texts.extend(incubated);
     let regenerating = regeneration_wordings(&texts);
     texts.extend(regenerating);
     // A card may count the casts of "a commander" for those of "your commander" (Jirina Kudro).
@@ -1161,6 +1172,7 @@ fn player_of(effect: &Effect) -> Option<&Ref> {
         | Effect::LoseLife { who, .. }
         | Effect::Shuffle { who }
         | Effect::Sacrifice { who, .. }
+        | Effect::Incubate { who, .. }
         | Effect::CreateToken { who, .. } => Some(who),
         _ => None,
     }
@@ -1246,6 +1258,7 @@ fn is_imperative(effect: &Effect) -> bool {
             Effect::Scry { who: Ref::You, .. }
                 | Effect::Surveil { who: Ref::You, .. }
                 | Effect::Proliferate { who: Ref::You }
+                | Effect::Incubate { who: Ref::You, .. }
                 | Effect::TimeTravel { who: Ref::You }
                 | Effect::Draw { who: Ref::You, .. }
                 | Effect::Mill { who: Ref::You, .. }
@@ -2288,6 +2301,10 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Incubate {
+                who: Ref::You,
+                count,
+            } => format!("incubate {}", points_text(count)?),
             Effect::TimeTravel { who: Ref::You } => "time travel".to_owned(),
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
@@ -2563,6 +2580,7 @@ impl Writer<'_> {
                 format!("sacrifice{s} {}", sacrifice_text(filter)?)
             }
             Effect::CreateToken { .. } => create::text(effect, self.per)?,
+            Effect::Incubate { count, .. } => format!("incubate{s} {}", points_text(count)?),
             Effect::Shuffle { who } => {
                 format!(
                     "shuffle{s} {} library",
