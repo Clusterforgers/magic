@@ -1719,7 +1719,7 @@ impl Pass<'_> {
                 self.slots.remove(at);
             }
             (ReplaceBy::PreventAnd(effects), Unit::Damage { .. }) => {
-                self.w9c_prevent_and(at, candidate, effects, &unit, applied);
+                self.w9c_prevent_and(at, candidate, effects, &unit, &applied);
             }
             (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);

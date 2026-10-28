@@ -2940,7 +2940,9 @@ impl Walker<'_> {
             {
                 self.problem("a zone change or an entering is not prevented");
             }
-            ReplaceBy::PreventUpTo(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+            ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAllBut(_)
+                if !matches!(when, ReplaceWhen::Damage { .. }) =>
+            {
                 self.problem("only damage is prevented in part");
             }
             ReplaceBy::PreventRemovingCounter(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
@@ -2948,9 +2950,6 @@ impl Walker<'_> {
             }
             ReplaceBy::Instead(effects) => self.w5d_instead(when, effects),
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
-            ReplaceBy::PreventAllBut(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
-                self.problem("only damage is prevented in part");
-            }
             ReplaceBy::Dredge(cards) => {
                 if !matches!(when, ReplaceWhen::Draw { .. }) {
                     self.problem("`Dredge` replaces a `Draw`");

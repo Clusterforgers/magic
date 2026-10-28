@@ -108,7 +108,7 @@ impl Pass<'_> {
         candidate: &Candidate,
         effects: &[Effect],
         unit: &Unit,
-        applied: Vec<Origin>,
+        applied: &[Origin],
     ) {
         let cause = self.w5d_cause(at, unit);
         let events = w5d_run_instead(
@@ -119,11 +119,11 @@ impl Pass<'_> {
             effects,
         )
         .unwrap_or_default();
-        self.prevent(at, candidate, &ReplaceBy::Prevent, applied.clone());
+        self.prevent(at, candidate, &ReplaceBy::Prevent, applied.to_vec());
         let slots: Vec<Slot> = slots_of(events)
             .into_iter()
             .map(|mut slot| {
-                slot.applied.clone_from(&applied);
+                slot.applied = applied.to_vec();
                 slot
             })
             .collect();

@@ -1161,11 +1161,6 @@ pub(super) fn statics(
 pub fn texts(ability: &Ability) -> Vec<String> {
     let group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
-    let group = if group.is_empty() {
-        super::w9c_replaced::w9c_sentences(ability)
-    } else {
-        group
-    };
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {

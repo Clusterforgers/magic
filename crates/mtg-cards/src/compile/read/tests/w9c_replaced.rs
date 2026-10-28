@@ -56,14 +56,16 @@ fn near_misses_are_not_read_as_these(#[case] text: &str) {
     assert!(
         !matches!(
             read,
-            Some(Ability::Replacement {
-                by: ReplaceBy::PreventAnd(_) | ReplaceBy::PreventAllBut(_),
-                ..
-            }) | Some(Ability::Replacement {
-                when: ReplaceWhen::TokenCreation { .. },
-                by: ReplaceBy::Instead(_),
-                ..
-            })
+            Some(
+                Ability::Replacement {
+                    by: ReplaceBy::PreventAnd(_) | ReplaceBy::PreventAllBut(_),
+                    ..
+                } | Ability::Replacement {
+                    when: ReplaceWhen::TokenCreation { .. },
+                    by: ReplaceBy::Instead(_),
+                    ..
+                }
+            )
         ),
         "{text}: {read:?}"
     );
