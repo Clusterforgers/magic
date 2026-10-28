@@ -22,6 +22,7 @@ pub mod pacer;
 pub mod progress;
 pub mod propose;
 pub mod status;
+pub mod w2a_promote;
 
 use args::{Cli, Command, Fetch};
 use cache::{Cache, PRINTINGS_TYPE, SCRYFALL_TYPES, default_dir};
@@ -82,8 +83,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             Ok(dry_run(&cache, &progress)?.summary(started.elapsed()))
         }
         Command::Ingest(args) => {
-            let url = cli.database_url.ok_or_else(missing_database_url)?;
-            let db = Database::connect(&url).await?;
+            let db = connect(cli.database_url).await?;
             let options = IngestOptions {
                 force: args.force,
                 batch_size: args.batch_size,
@@ -95,8 +95,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             .await
             .map(|text| text.trim_end().to_owned()),
         Command::Audit(args) => {
-            let url = cli.database_url.ok_or_else(missing_database_url)?;
-            let db = Database::connect(&url).await?;
+            let db = connect(cli.database_url).await?;
             let text = audit::audit(&db, &args).await?;
             let Some(path) = &args.file else {
                 return Ok(text);
@@ -107,29 +106,35 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             Ok(format!("audit: written to {}", path.display()))
         }
         Command::Compile(args) => {
-            let url = cli.database_url.ok_or_else(missing_database_url)?;
-            let db = Database::connect(&url).await?;
+            let db = connect(cli.database_url).await?;
             Ok(compile::compile(&db, &args).await?.render())
         }
         Command::CheckRules(args) => {
-            let url = cli.database_url.ok_or_else(missing_database_url)?;
-            let db = Database::connect(&url).await?;
+            let db = connect(cli.database_url).await?;
             let checked = check_rules::check_rules(&db, &args).await?;
             Ok(checked.render(args.verbose))
         }
         Command::ForgeCheck(args) => {
-            let url = cli.database_url.ok_or_else(missing_database_url)?;
-            let db = Database::connect(&url).await?;
+            let db = connect(cli.database_url).await?;
             forge::forge_check(&db, &args).await
         }
         Command::Coverage(args) => {
-            let url = cli.database_url.ok_or_else(missing_database_url)?;
-            let db = Database::connect(&url).await?;
+            let db = connect(cli.database_url).await?;
             coverage::coverage(&db, &args).await
+        }
+        Command::Promote(args) => {
+            let db = connect(cli.database_url).await?;
+            Ok(w2a_promote::w2a_promote(&db, &cache, &args).await?.render())
         }
         Command::Propose(args) => propose::command(cli.database_url, &cache, &args, progress).await,
         Command::DslReference => Ok(mtg_cards::reference::dsl_reference().trim_end().to_owned()),
     }
+}
+
+/// The database the URL names, or the error that asks for one.
+async fn connect(url: Option<String>) -> Result<Database, CliError> {
+    let url = url.ok_or_else(missing_database_url)?;
+    Ok(Database::connect(&url).await?)
 }
 
 fn missing_database_url() -> CliError {

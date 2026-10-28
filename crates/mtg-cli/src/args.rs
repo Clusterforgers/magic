@@ -52,6 +52,8 @@ pub enum Command {
     ForgeCheck(ForgeCheckArgs),
     /// Ask a model for the rules of cards and keep the proposals the checker accepts (needs `ANTHROPIC_API_KEY` and costs money; --dry-run sends nothing).
     Propose(ProposeArgs),
+    /// Copy the proposals the checker accepts as `Verified` into the corpus: the rules file in `cards/` and the card's Scryfall record from the cache as its fixture.
+    Promote(PromoteArgs),
     /// Print the reference of the rules DSL that `propose` sends to the model: the type tree and its vocabulary.
     DslReference,
 }
@@ -247,6 +249,31 @@ pub struct ProposeArgs {
     /// Print the prompt of the first card and the estimated size of the run, and send nothing (no API key is needed).
     #[arg(long)]
     pub dry_run: bool,
+
+    /// Then promote the run's accepted `Verified` proposals into this `mtg-cards` crate directory (`crates/mtg-cards` when no
+    /// directory follows), as `promote` does.
+    #[arg(long, value_name = "DIR", num_args = 0..=1, default_missing_value = crate::w2a_promote::W2A_DEFAULT_OUT)]
+    pub promote: Option<PathBuf>,
+}
+
+/// Options of `promote`.
+#[derive(Debug, Args)]
+pub struct PromoteArgs {
+    /// List what would be promoted and why the other files are skipped, and write nothing.
+    #[arg(long)]
+    pub dry_run: bool,
+
+    /// Also promote the proposals accepted as `Partial`.
+    #[arg(long)]
+    pub partial: bool,
+
+    /// The `mtg-cards` crate directory, holding `cards/` and `tests/fixtures/corpus/` (default: `crates/mtg-cards`).
+    #[arg(long, value_name = "DIR")]
+    pub out: Option<PathBuf>,
+
+    /// The proposal files, each named `<slug>.json` after its card.
+    #[arg(value_name = "FILE", required = true)]
+    pub files: Vec<PathBuf>,
 }
 
 /// How many cards `audit` lists by default.
@@ -591,5 +618,61 @@ mod tests {
             Command::DslReference
         ));
         assert!(Cli::try_parse_from(["mtg-cli", "dsl-reference", "x"]).is_err());
+    }
+}
+
+#[cfg(test)]
+mod w2a_tests {
+    //! Goal: `promote` takes its files, the dry run, the partial switch and the crate directory, and `propose --promote`
+    //! names the default crate directory unless a directory follows.
+    #![allow(clippy::unwrap_used)]
+
+    use rstest::rstest;
+
+    use super::*;
+
+    #[rstest]
+    #[case(&["a.json"], false, false, None)]
+    #[case(&["--dry-run", "a.json", "b.json"], true, false, None)]
+    #[case(&["--partial", "--out", "x", "a.json"], false, true, Some("x"))]
+    fn promote_reads_its_switches(
+        #[case] line: &[&str],
+        #[case] dry_run: bool,
+        #[case] partial: bool,
+        #[case] out: Option<&str>,
+    ) {
+        let mut words = vec!["mtg-cli", "promote"];
+        words.extend_from_slice(line);
+        let Command::Promote(args) = Cli::try_parse_from(words).unwrap().command else {
+            panic!("expected promote");
+        };
+        assert_eq!((args.dry_run, args.partial), (dry_run, partial));
+        assert_eq!(args.out, out.map(PathBuf::from));
+        assert!(
+            args.files
+                .iter()
+                .all(|file| file.extension().unwrap() == "json")
+        );
+    }
+
+    #[test]
+    fn promote_needs_a_file() {
+        assert!(Cli::try_parse_from(["mtg-cli", "promote", "--dry-run"]).is_err());
+    }
+
+    #[rstest]
+    #[case(&["--cards", "Opt"], None)]
+    #[case(&["--cards", "Opt", "--promote"], Some("crates/mtg-cards"))]
+    #[case(&["--promote", "x", "--cards", "Opt"], Some("x"))]
+    fn propose_promotes_into_the_named_or_default_crate(
+        #[case] line: &[&str],
+        #[case] out: Option<&str>,
+    ) {
+        let mut words = vec!["mtg-cli", "propose"];
+        words.extend_from_slice(line);
+        let Command::Propose(args) = Cli::try_parse_from(words).unwrap().command else {
+            panic!("expected propose");
+        };
+        assert_eq!(args.promote, out.map(PathBuf::from));
     }
 }
