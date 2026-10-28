@@ -518,6 +518,8 @@ pub enum Event {
     CountersChanged(CountersChanged),
     /// A token was created.
     TokenCreated(TokenCreated),
+    /// A player got an emblem (CR 114).
+    EmblemCreated(crate::w6b_emblems::EmblemCreated),
     /// A player looked at cards in a library.
     LibraryLooked(LibraryLooked),
     /// A player found cards by searching.
@@ -997,6 +999,7 @@ impl Event {
                 .copied()
                 .collect(),
             Event::TokenCreated(token) => vec![token.object],
+            Event::EmblemCreated(emblem) => vec![emblem.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],

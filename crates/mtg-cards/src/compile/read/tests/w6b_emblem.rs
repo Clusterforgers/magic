@@ -15,7 +15,10 @@ fn emblem(text: &str) -> (Ref, Vec<Ability>) {
 }
 
 #[rstest]
-#[case::anthem("−7: You get an emblem with \"Creatures you control get +2/+2 and have flying.\"", 1)]
+#[case::anthem(
+    "−7: You get an emblem with \"Creatures you control get +2/+2 and have flying.\"",
+    1
+)]
 #[case::anthem_plus("−2: You get an emblem with \"Creatures you control get +1/+0.\"", 1)]
 #[case::trigger_for_the_owner(
     "−6: You get an emblem with \"Whenever an artifact you control becomes tapped, draw a card.\"",

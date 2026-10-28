@@ -714,7 +714,10 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         }
         "sacrifice" | "sacrifices" => sacrifice(r, who)?,
         // "you get {E}{E}": energy counters, written with their symbol.
-        "get" | "gets" if r.lookahead(|r| r.words("an emblem with").then_some(())).is_some() => {
+        "get" | "gets"
+            if r.lookahead(|r| r.words("an emblem with").then_some(()))
+                .is_some() =>
+        {
             super::w6b_emblem::w6b_read(r, who)?
         }
         "get" | "gets" => Effect::PutCounters {

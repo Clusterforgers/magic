@@ -131,6 +131,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::Unattached { object } => crate::attach::fold_unattached(state, *object),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
+        Event::EmblemCreated(emblem) => crate::w6b_emblems::fold(state, emblem),
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::CardCopied(copy) => crate::copies::fold_card(state, copy),

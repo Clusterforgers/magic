@@ -46,4 +46,3 @@ pub(super) fn w6b_text(subject: &str, you: bool, abilities: &[Ability]) -> Optio
         quoted.join(" and ")
     ))
 }
-

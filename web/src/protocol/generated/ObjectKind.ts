@@ -3,4 +3,4 @@
 /**
  * What a game object is.
  */
-export type ObjectKind = "Card" | "Token" | "Ability";
+export type ObjectKind = "Card" | "Token" | "Ability" | "Emblem";
