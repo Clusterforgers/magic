@@ -151,6 +151,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
                 stat: StatKind::Colors,
             });
         }
+        if let Some(destroyed) = super::w2c_counts::w2c_destroyed_each(r) {
+            return Some(destroyed);
+        }
         let selector = phrase(r, Form::Count)?;
         // A group that no one holds stands on the battlefield.
         if !selector.0.iter().any(holds) {
@@ -273,6 +276,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         } => format!("{} counter on ~", counters::kind_text(counter)?),
         Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
+        Amount::Destroyed(_) => super::w2c_counts::w2c_destroyed_each_text(counted)?,
         _ => return None,
     })
 }

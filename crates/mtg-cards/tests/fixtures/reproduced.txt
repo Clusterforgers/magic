@@ -99,6 +99,7 @@ Azure Fleet Admiral
 Azusa, Lost but Seeking
 Back in Town
 Baird, Steward of Argive
+Bane of Progress
 Banish to Another Universe
 Banisher Priest
 Banishing Light
@@ -329,6 +330,7 @@ Deathcap Cultivator
 Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
+Decree of Pain
 Deep Analysis
 Deep Forest Hermit
 Deepfathom Skulker
@@ -511,6 +513,7 @@ Franklin Richards, Ascendant
 Freyalise, Llanowar's Fury
 Frogtosser Banneret
 Fruit of Tizerus
+Fumigate
 Fungal Reaches
 Furtive Homunculus
 Fury Storm
@@ -707,6 +710,7 @@ Karametra's Favor
 Karametra, God of Harvests
 Karn's Bastion
 Kathari Screecher
+Kaya's Wrath
 Kazandu Tuskcaller
 Keep Watch
 Kemba's Banner
@@ -906,6 +910,7 @@ Nyxborn Behemoth
 Oath of Gideon
 Oath of Jace
 Oathsworn Vampire
+Ob Nixilis, the Ascended
 Obscuring Haze
 Octomancer
 Octopus Umbra
@@ -1469,6 +1474,7 @@ Wei Scout
 Weigh Down
 Weirding Wood
 Well Rested
+Whiptongue Hydra
 Whir of Invention
 Whisperer of the Wilds
 Whispering Madness

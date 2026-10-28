@@ -88,6 +88,7 @@ const RUNS: &[&str] = &[
     "Amount.HighestLife",
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
+    "Amount.Destroyed",
     "Amount.DieResult",
     "Cost.Tap",
     "Cost.Mana",
@@ -667,6 +668,7 @@ mod tests {
     #[case::the_size_of_a_party("Amount.Party", true)]
     #[case::cast_for_a_way("Amount.CastWith", true)]
     #[case::colors_spent("Amount.ColorsSpent", true)]
+    #[case::destroyed_this_way("Amount.Destroyed", true)]
     #[case::permanents_graved("Amount.PermanentsGraved", true)]
     #[case::commander_casts("Amount.CommanderCasts", true)]
     #[case::may("Effect.May", true)]

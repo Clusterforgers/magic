@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3a49b518-61c8-4dea-8008-c5edf8384581",
+  "name": "Ob Nixilis, the Ascended",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ob Nixilis, the Ascended",
+      "oracle_fingerprint": "6ebf8f74e39caf45dc0a499d1ccd6b97",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "Opponents" }]
+                  }
+                }
+              },
+              { "GainLife": { "amount": { "Destroyed": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

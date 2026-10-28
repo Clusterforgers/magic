@@ -18,7 +18,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::characteristics::controller_of;
 use crate::effects::Modification;
 use crate::error::EngineError;
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
 use crate::mana::ManaPool;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::{LossReason, Player, PlayerStatus};
@@ -56,6 +56,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         state.layers.reset();
         state.rules_cache.reset();
     }
+    w2c_note_destroyed(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -506,6 +507,25 @@ fn c11e_draw_random(state: &mut GameState, event: &Event) {
     state.rng_index += 1;
     if let (Event::DieRolled { result, .. }, Some(resolving)) = (event, state.resolving.as_mut()) {
         resolving.rolled.push(*result);
+    }
+}
+
+/// A permanent destroyed while a spell or ability resolves is kept, as the object it was, for "destroyed this way".
+fn w2c_note_destroyed(state: &mut GameState, event: &Event) {
+    let Event::ZoneChanged {
+        object,
+        from: Zone::Battlefield,
+        cause: ZoneCause::Destroyed | ZoneCause::Buried,
+        ..
+    } = event
+    else {
+        return;
+    };
+    let Some(was) = state.object(*object).map(GameObject::reference) else {
+        return;
+    };
+    if let Some(resolving) = state.resolving.as_mut() {
+        resolving.destroyed.push(was);
     }
 }
 

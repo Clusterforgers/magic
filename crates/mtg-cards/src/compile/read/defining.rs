@@ -164,6 +164,9 @@ fn held(r: &mut Reader<'_>) -> Option<Amount> {
     if let Some(died) = r.attempt(died) {
         return Some(died);
     }
+    if let Some(destroyed) = super::w2c_counts::w2c_destroyed_all(r) {
+        return Some(destroyed);
+    }
     if r.words("opponents you have") {
         return Some(Amount::Players(Ref::Opponents));
     }
@@ -334,6 +337,8 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         }
         Amount::Count(of) => Some(format!("the number of {}", counted_text(of)?)),
         Amount::Players(Ref::Opponents) => Some("the number of opponents you have".to_owned()),
+        Amount::Destroyed(_) => super::w2c_counts::w2c_destroyed_all_text(amount)
+            .map(|text| format!("the number of {text}")),
         Amount::Party(Ref::You) => Some("the number of creatures in your party".to_owned()),
         Amount::Mutations(Ref::This) => {
             Some("the number of times this creature has mutated".to_owned())

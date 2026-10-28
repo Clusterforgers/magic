@@ -238,6 +238,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ColorsSpent
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
+        | Amount::Destroyed(_)
         | Amount::DieResult(_)
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),

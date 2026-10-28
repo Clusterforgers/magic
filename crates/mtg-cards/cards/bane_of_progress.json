@@ -1,0 +1,28 @@
+{
+  "oracle_id": "51f9a6cc-8eb2-44ed-a2d9-913ac514ad67",
+  "name": "Bane of Progress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bane of Progress",
+      "oracle_fingerprint": "32d4233379b300f1f0b977610c3b55b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                  }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": { "Destroyed": [] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

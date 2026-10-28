@@ -1,0 +1,33 @@
+{
+  "oracle_id": "53d5d961-d6a3-49b1-b335-2c2b49972008",
+  "name": "Whiptongue Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whiptongue Hydra",
+      "oracle_fingerprint": "dc52cb06df3f4b8a33bfa5029984c5c8",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Destroyed": [{ "Type": "Creature" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

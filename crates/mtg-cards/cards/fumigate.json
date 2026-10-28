@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b17ea905-0696-4e58-b564-557e87236e27",
+  "name": "Fumigate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fumigate",
+      "oracle_fingerprint": "a531f5ecb3e030fbf5f27097d773e361",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              { "GainLife": { "amount": { "Destroyed": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

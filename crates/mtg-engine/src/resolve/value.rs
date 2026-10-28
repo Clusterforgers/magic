@@ -1184,6 +1184,7 @@ impl<'a> Scope<'a> {
             Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
+            Amount::Destroyed(of) => self.w2c_destroyed(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
@@ -1333,6 +1334,20 @@ impl<'a> Scope<'a> {
     }
 
     /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.
+    /// How many of the permanents the resolution destroyed so far match the selector as they last existed.
+    fn w2c_destroyed(&self, of: &Selector) -> Result<i64, ResolveError> {
+        let Some(resolving) = self.state.resolving.as_ref() else {
+            return Ok(0);
+        };
+        let mut found = 0i64;
+        for destroyed in &resolving.destroyed {
+            if self.selects(of, *destroyed)? {
+                found += 1;
+            }
+        }
+        Ok(found)
+    }
+
     fn life_lost_this_way(&self) -> i64 {
         i64::from(
             self.state
