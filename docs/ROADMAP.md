@@ -134,7 +134,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,350 of 6,429 precon cards, 67.7%; 82.8% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,368 of 6,429 precon cards, 67.9%; 82.9% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
@@ -156,10 +156,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-c-a) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
 - [~] (r2da-c-c) (w9d-exert) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
-- [ ] (r2da-c-f) Crimes: a turn tally of targeting an opponent, their permanents, spells or graveyard cards, "whenever you commit a crime" and "whenever an opponent commits a crime" (Bandit's Haul, Patrolling Peacemaker)
-- [ ] (r2da-c-g) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
-- [ ] (r2da-c-h) Clash wordings not read: "clash, then return ... If you win, ... instead", "that player's next untap step", a delayed mana of the countered spell, "whenever you win a clash" (Whirlpool Whelm, Pollen Lullaby, Scattering Stroke, Marvo, Deep Operative)
-- [ ] (r2da-c-e) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
+- [~] (r2da-c-f) (w11c-crimes-forecast-clash) Crimes: a turn tally of targeting an opponent, their permanents, spells or graveyard cards, "whenever you commit a crime" and "whenever an opponent commits a crime" (Bandit's Haul, Patrolling Peacemaker)
+- [~] (r2da-c-g) (w11c-crimes-forecast-clash) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
+- [~] (r2da-c-h) (w11c-crimes-forecast-clash) Clash wordings not read: "clash, then return ... If you win, ... instead", "that player's next untap step", a delayed mana of the countered spell, "whenever you win a clash" (Whirlpool Whelm, Pollen Lullaby, Scattering Stroke, Marvo, Deep Operative)
+- [~] (r2da-c-e) (w11d-venture) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
 - [ ] (r2da-f) Mill leftovers: target bounds from the trigger's count ("each of up to X target creatures, where X is the number of nonland cards milled this way"), "Do this only once each turn" after a may, a batch per player ("whenever a player mills one or more creature cards") and "a card that was milled this turn"; frees about 5 cards (The Wise Mothman, Screeching Scorchbeast, Zellix, Sanity Flayer, Tato Farmer)
 - [ ] (r2da-g) Rad leftovers: "costs {1} less to activate for each rad counter you have", "you may have this land enter tapped. If you do, you get two rad counters", "loses all rad counters" and "Choose one that hasn't been chosen"; frees about 2 cards (Mariposa Military Base, Survivor's Med Kit)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
