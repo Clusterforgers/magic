@@ -256,6 +256,8 @@ mod w4f_sentences;
 mod w4f_tokens;
 mod w4g_amounts;
 mod w4g_texts;
+mod w5a_combat;
+mod w5a_heads;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -342,6 +344,14 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_w4f(texts);
     add_w4d(ability, texts);
     add_w4b(ability, texts);
+    add_w5a(ability, texts);
+}
+
+/// Adds the trigger heads the writers before do not word (r3w8): a discard of a kind of card, an attack on an opponent
+/// or their planeswalker, a target of a spell, a batch of events, several events in one head.
+fn add_w5a(ability: &Ability, texts: &mut Vec<String>) {
+    w5a_heads::add(ability, texts);
+    w5a_combat::add(ability, texts);
 }
 
 /// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
