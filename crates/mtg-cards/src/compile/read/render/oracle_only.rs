@@ -227,6 +227,9 @@ mod uncounterable_group;
 mod unless;
 mod untap_lands;
 mod untapped_cost;
+mod w4d_each;
+mod w4d_later;
+mod w4d_parts;
 mod wheres;
 mod while_control;
 mod without_counter;
@@ -306,6 +309,13 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c10_cen(ability, texts);
     add_c11g(ability, texts);
     add_c11f(ability, texts);
+    add_w4d(ability, texts);
+}
+
+/// Adds the wordings of delayed triggers and of steps repeated for each player that close an ability (r3w4).
+fn add_w4d(ability: &Ability, texts: &mut Vec<String>) {
+    w4d_later::add(ability, texts);
+    w4d_each::add(ability, texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.
