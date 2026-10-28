@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantAttack"],"condition":{"Compare":{"left":{"Count":[{"Type":"Artifact"},{"ControlledBy":"You"},{"Not":{"Type":"Artifact"}}]},"op":"Lt","right":1}}}}]}] }

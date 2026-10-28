@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"effects":[{"Destroy":{"what":{"Target":0}}}],"when":{"BecomesTarget":{"what":[{"Type":"Creature"}]}}, "targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}]}] }

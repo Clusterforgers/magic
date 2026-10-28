@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"LoseLife":{"amount":{"Counters":{"counter":"+1/+1","on":"Defending"}},"who":"Defending"}}],"when":{"BecomesBlocked":{"what":["This"]}}}}]}]}

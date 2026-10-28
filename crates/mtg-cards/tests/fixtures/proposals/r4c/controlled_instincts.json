@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Creature"},{"AnyOf":[{"Color":"Red"},{"Color":"Green"}]}]}},{"Static":{"affected":"Attached","mods":["DoesntUntap"]}}] }]}

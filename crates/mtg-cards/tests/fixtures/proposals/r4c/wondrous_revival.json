@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Move":{"to":{"Battlefield":{}},"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"Subtype":"Hero"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0},"divide":null}]} }]}]}

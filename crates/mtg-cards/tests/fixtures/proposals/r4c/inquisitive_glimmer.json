@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["Spell",{"Type":"Enchantment"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}"}},{"CostModifier":{"applies_to":["Unblocked","Spell"],"change":"Reduce","mana":"{1}"}}]}] }

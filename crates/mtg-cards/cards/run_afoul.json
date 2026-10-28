@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5462cb38-7cd7-46e8-a273-35d0d1af45b4",
+  "name": "Run Afoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Run Afoul",
+      "oracle_fingerprint": "32b4fbf7d048393c1f6e2d12b739dc6b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

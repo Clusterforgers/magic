@@ -1,0 +1,26 @@
+{
+  "oracle_id": "613b824e-39d1-4c6e-a19c-c915abdc860b",
+  "name": "Index",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Index",
+      "oracle_fingerprint": "ae8f36038a16cbbb763d0ca45384d098",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

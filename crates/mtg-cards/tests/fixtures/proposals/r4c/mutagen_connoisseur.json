@@ -1,0 +1,18 @@
+{
+  "oracle_id": "07b4f5b5-47ef-43a5-af71-51693d775d4b",
+  "name": "Mutagen Connoisseur",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mutagen Connoisseur",
+      "oracle_fingerprint": "492e30b6f5843ac84d9b5622decb8ac2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": { "reason": "Transformed permanent count", "span": { "start": 18, "end": 86 } }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"by":{"Instead":[{"PutCounters":{"counter":"+1/+1","on":"This","count":"Triggering"}}]},"when":{"Damage":{"to":"This"}}} } ] }] }

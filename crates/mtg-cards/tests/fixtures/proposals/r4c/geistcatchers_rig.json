@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"May":{"effects":[{"DealDamage":{"amount":4,"to":{"Target":0},"source":"This"}}]}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"HasKeyword":"Flying"}]}}]}}]}] }

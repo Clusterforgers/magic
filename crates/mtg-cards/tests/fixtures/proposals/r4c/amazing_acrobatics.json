@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Modal":{"modes":[{"effects":[{"Counter":{"what":{"Target":0}}}],"targets":[{"what":{"Object":["Spell"]}}]},{"effects":[{"Tap":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":1},"divide":1}]}]}}]} }]}]}

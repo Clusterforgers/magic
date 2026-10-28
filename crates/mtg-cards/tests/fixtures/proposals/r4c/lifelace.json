@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Target":0},"duration": "UntilEndOfTurn","mods":[{"SetColors":["Green"]}]} }],"targets":[{"what":{"Either":[{"Object":["Spell"]},{"Object":[]}]}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":3,"toughness":1}},{"AddKeyword":"Lifelink"}],"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]},"op":"Eq","right":1}}} } ]}]}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "68a2e371-ccf0-4c2a-aeef-c66852811e1a",
+  "name": "Boreal Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boreal Elemental",
+      "oracle_fingerprint": "a25c2b4ac814524ec2db88300e0a3e04",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    }
+  ]
+}

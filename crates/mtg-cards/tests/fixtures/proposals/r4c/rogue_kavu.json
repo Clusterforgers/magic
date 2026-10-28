@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":2,"toughness":0}}]}},{"Attach":{ "to":"This", "what":"This"}}],"when":{"AttacksAlone":{"what":["This"]}}}}]}]}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "77f1734d-ea0b-4344-8a9e-9d1a34eb6164",
+  "name": "Fresh Start",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fresh Start",
+      "oracle_fingerprint": "1296a3e7b2f5953bf773551acd5fc483",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -5, "toughness": 0 } }, "LoseAbilities"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "87a97c72-143d-48a8-a1c5-3c44aa8e5a86",
+  "name": "Sokka's Haiku",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sokka's Haiku",
+      "oracle_fingerprint": "26bf8a8d77ea8258ae7b8e42c76d5cda",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": ["Spell"] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Draw": {} },
+              { "Mill": { "count": 3 } },
+              { "Untap": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

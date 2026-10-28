@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"amount":5,"to":{"Target":0}}},{"DealDamage":{"amount":3,"to":{"Target":1}}},{"AddMana":{"mana":{"Fixed":["Red","Red","Red"]},"who":"You"}}],"targets":[{"what":"AnyTarget"},{"what":"AnyTarget","bounds":{"min":1},"divide" : null}]}}]}] }

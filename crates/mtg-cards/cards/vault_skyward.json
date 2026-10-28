@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e2a32a0f-bf06-4cb3-a704-ff0f783f19e4",
+  "name": "Vault Skyward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vault Skyward",
+      "oracle_fingerprint": "45a9a55ce8b3cc837ea3632bf400d9bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

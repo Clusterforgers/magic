@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"amount":4,"to":{"Target":0},"source":"This"}},{"If":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Giant"},{"ControlledBy":"You"}]},"op":"Gt","right":0}},"then":[{"Draw":{}}]}}],"targets":[{"what":{"Either":["Player",{"Object":[{"Type":"Planeswalker"}]}]}}]}}]}
+
+  ]}

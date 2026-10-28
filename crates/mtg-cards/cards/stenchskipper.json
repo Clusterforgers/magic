@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0817d902-08c8-4ec3-9a84-2de65bc70e6a",
+  "name": "Stenchskipper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stenchskipper",
+      "oracle_fingerprint": "81b22933b8a3b6caf8418730f8ab00de",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

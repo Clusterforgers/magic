@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a4003cd1-e98c-4346-b685-89c7891f9920",
+  "name": "Brutal Nightstalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brutal Nightstalker",
+      "oracle_fingerprint": "625e7715d5cd9b6e5964cbbb0ca63276",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "May": { "effects": [{ "Discard": { "who": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"May":{"effects":[{"Draw":{}}],"who":"Opponents"}}],"when":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}]}}}}]}] }

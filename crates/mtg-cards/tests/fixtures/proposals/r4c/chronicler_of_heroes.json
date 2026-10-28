@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"If":{"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"HasCounter":{"Other":"+1/+1"}},{"ControlledBy":"You"}]},"op":"Gt","right":0}},"then":[{"Draw":{}}]}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}}}] } ]}

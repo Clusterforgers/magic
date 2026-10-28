@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d8b7b78e-91b2-4ad5-aeb8-6ebdca363e71",
+  "name": "Rockslide Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rockslide Sorcerer",
+      "oracle_fingerprint": "f59f15186ec234d7da240291bd385e28",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Subtype": "Wizard" }]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
