@@ -158,6 +158,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
                 stat: StatKind::Colors,
             });
         }
+        if let Some(phased) = super::w11b_phase::w11b_phased_each(r) {
+            return Some(phased);
+        }
         if let Some(destroyed) = super::w2c_counts::w2c_destroyed_each(r) {
             return Some(destroyed);
         }
@@ -289,6 +292,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
         Amount::Destroyed(_) => super::w2c_counts::w2c_destroyed_each_text(counted)?,
+        Amount::PhasedOut(_) => super::w11b_phase::w11b_phased_each_text(counted)?,
         Amount::Distinct { .. } => super::w2c_counts::w2c_distinct_text(counted, false)?,
         _ => return None,
     })

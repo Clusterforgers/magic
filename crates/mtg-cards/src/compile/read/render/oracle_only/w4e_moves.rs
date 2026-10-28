@@ -169,6 +169,8 @@ fn phased(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
     let [
         Effect::PhaseOut {
             what: Ref::Target(0),
+            duration: None,
+            tapped: false,
         },
     ] = effects
     else {

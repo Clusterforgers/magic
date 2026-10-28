@@ -607,6 +607,7 @@ impl<'a> Walker<'a> {
             Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
+            Amount::PhasedOut(of) => self.w2c_selector_amount("PhasedOut", of),
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
@@ -1334,6 +1335,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
+            | TriggerPattern::PhasedOut { what }
+            | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
             | TriggerPattern::Unblocked { what }
@@ -1918,6 +1921,15 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
+            Effect::PhaseOut {
+                what, duration, ..
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                // The engine phases them in when the source leaves the battlefield, and knows no other duration.
+                if let Some(duration) = duration.filter(|d| *d != Duration::WhileSourceOnBattlefield) {
+                    w.uses("PhaseOut", &format!("Duration.{}", tag_of(&duration)));
+                }
+            }
             Effect::Exile {
                 what,
                 bind,
@@ -1945,7 +1957,6 @@ impl Walker<'_> {
             | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }
-            | Effect::PhaseOut { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
             | Effect::Prepare { what }

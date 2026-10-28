@@ -564,6 +564,13 @@ pub enum Effect {
     PhaseOut {
         /// What phases out.
         what: Ref,
+        /// How long they stay out: `WhileSourceOnBattlefield` is "until ~ leaves the battlefield", when each phases in
+        /// and not during an untap step; none is until the next untap step of its controller.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        duration: Option<Duration>,
+        /// "Tap that creature as it phases in this way": each phases in tapped.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        tapped: bool,
     },
     /// Attaches Auras, Equipment or Fortifications to an object (CR 701.3).
     Attach {

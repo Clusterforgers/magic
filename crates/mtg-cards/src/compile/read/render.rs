@@ -2270,15 +2270,33 @@ impl Writer<'_> {
     }
 
     /// The effects after a condition, as steps joined by "and": "remove all of them and transform ~".
-    /// "target creature phases out", "all permanents you control phase out": the verb agrees with its subject.
-    fn w7e_phase_out_text(&mut self, what: &Ref) -> Option<String> {
+    /// "target creature phases out", "all permanents you control phase out": the verb agrees with its subject, and a
+    /// duration and "Tap that creature as it phases in this way" follow it.
+    fn w7e_phase_out_text(
+        &mut self,
+        what: &Ref,
+        duration: Option<Duration>,
+        tapped: bool,
+    ) -> Option<String> {
         matches!(what, Ref::This | Ref::Target(0) | Ref::Each(_)).then_some(())?;
-        let verb = if *what == Ref::This || self.single(what) {
-            "phases out"
+        let one = *what == Ref::This || self.single(what);
+        let verb = if one { "phases out" } else { "phase out" };
+        let noun = self
+            .targets
+            .first()
+            .filter(|_| self.single(what))
+            .and_then(|spec| match &spec.what {
+                Targetable::Object(selector) => super::w11b_phase::w11b_noun(selector),
+                _ => None,
+            });
+        let tail = super::w11b_phase::w11b_phase_tail_text(duration, tapped, noun)?;
+        // "Untap target creature you control. It phases out ...": a target named before is "it".
+        let subject = if *what == Ref::Target(0) && self.named {
+            "it".to_owned()
         } else {
-            "phase out"
+            self.object(what)?
         };
-        Some(format!("{} {verb}", self.object(what)?))
+        Some(format!("{subject} {verb}{tail}"))
     }
 
     fn consequence(&mut self, condition: &Condition, then: &[Effect]) -> Option<String> {
@@ -2337,7 +2355,11 @@ impl Writer<'_> {
             Effect::Connive {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} connives", self.object(what)?),
-            Effect::PhaseOut { what } => self.w7e_phase_out_text(what)?,
+            Effect::PhaseOut {
+                what,
+                duration,
+                tapped,
+            } => self.w7e_phase_out_text(what, *duration, *tapped)?,
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),
@@ -2474,6 +2496,7 @@ impl Writer<'_> {
             .or_else(|| self.owner_shuffles(effects))
             .or_else(|| super::w7e_phase::w7e_phased_and_protected_text(effects))
             .or_else(|| super::w7e_phase::w7e_protected_text(effects))
+            .or_else(|| super::w11b_phase::w11b_untap_then_phase_out_text(effects))
             // Populate is two steps and one word.
             .or_else(|| copies::is_populate(effects).then(|| ("populate".to_owned(), 2)))
     }
