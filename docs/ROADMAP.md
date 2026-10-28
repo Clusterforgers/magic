@@ -213,7 +213,9 @@ The server is settled first, then the web is built once against the final types.
 ### Model-assisted reading
 - [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
 - [~] (r3w1) (r3w1-if-writers) Writers for conditional effects ("If X, Y", "Otherwise", "If you can't") in triggers, spells, activated and loyalty abilities, so the stored proposals they unblock are accepted and promoted (24 abilities in the r3 samples)
-- [~] (r3w2) (r3w2-continuous-writers) Writers for `Continuous` effects (+X/+X until end of turn, gains a keyword, can't block, becomes) and the `AddKeyword` and `GrantAbility` modifications (28 abilities)
+- [ ] (r3w2a) Writers for gaining control of one target per opponent or of an enchanted permanent (Mass Mutiny, Blatant Thievery, Frenzied Fugue) and a group that becomes a creature "and gains flying" (Sarkhan the Masterless)
+- [ ] (r3w2b) Writers for granted abilities in quotes whose trigger or effect is unwritten (The Reaver Cleaver, Unquenchable Fury), Clues that become Equipment (Armed with Proof), "creatures you control with toxic" (Skrelv's Hive) and an artifact type added without end (Phyrexian Scriptures)
+- [ ] (r3w2c) New proposals for Dungeon Geists and Merchant Raiders (the duration is "for as long as you control" the creature) and Unnatural Growth (each creature doubles its own power and toughness)
 - [~] (r3w3) (r3w3-may-pay-writers) Writers for "you may", "you may pay" and the reflexive "When you do" (18 abilities)
 - [~] (r3w4) (r3w4-delayed-repeat-writers) Writers for delayed triggers and "for each player or opponent" (`RepeatEach`) (19 abilities)
 - [~] (r3w5) (r3w5-move-counters-writers) Writers for `Move`, `PutCounters`, `RemoveCounters` and the "combination or shape" spells (about 40 abilities)
