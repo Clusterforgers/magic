@@ -1,0 +1,23 @@
+{
+  "id": "78a655b3-969f-40d7-9d69-61abf338df86",
+  "oracle_id": "f5c5f462-10fa-422a-90da-07f46257f22f",
+  "name": "Storm King's Thunder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "196",
+  "rarity": "mythic",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{X}{R}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "When you next cast an instant or sorcery spell this turn, copy that spell X times. You may choose new targets for the copies.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

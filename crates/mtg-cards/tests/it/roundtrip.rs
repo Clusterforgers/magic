@@ -1040,6 +1040,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                 Effect::DelayedTrigger {
                     when,
                     once,
+                    this_turn: false,
                     effects,
                 }
             }),

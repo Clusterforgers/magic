@@ -243,6 +243,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
         ability: 0,
         when: null,
         once: true,
+        this_turn: false,
         effects: [],
         bindings: [],
       },

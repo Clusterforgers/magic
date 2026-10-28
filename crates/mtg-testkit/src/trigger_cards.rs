@@ -361,6 +361,7 @@ pub fn delaying(when: TriggerPattern, once: bool, effects: Vec<Effect>) -> Abili
         effects: vec![Effect::DelayedTrigger {
             when,
             once,
+            this_turn: false,
             effects,
         }],
     }

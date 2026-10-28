@@ -1,0 +1,52 @@
+{
+  "oracle_id": "88d0a394-79e2-42ac-9a37-1a7b78231941",
+  "name": "Thunderclap Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderclap Drake",
+      "oracle_fingerprint": "e8594fe4d22fde4dfa61f52fd25b25ab",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "count": { "CommanderCasts": "You" },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

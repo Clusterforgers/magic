@@ -54,6 +54,7 @@ impl KeywordRules for Myriad {
                                 whose: Ref::EachPlayer,
                             },
                             once: true,
+                            this_turn: false,
                             effects: vec![Effect::Exile {
                                 what: Ref::Bound(COPIES.to_owned()),
                                 bind: None,

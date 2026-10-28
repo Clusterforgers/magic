@@ -49,6 +49,7 @@ impl KeywordRules for Decayed {
                     whose: Ref::EachPlayer,
                 },
                 once: true,
+                this_turn: false,
                 effects: vec![Effect::Sacrifice {
                     who: Ref::ControllerOf(Box::new(Ref::This)),
                     filter: Selector(vec![Pred::Is(Ref::This)]),
@@ -90,6 +91,7 @@ mod tests {
                         ..
                     },
                 once: true,
+                this_turn: false,
                 effects,
             },
         ] = effects.as_slice()

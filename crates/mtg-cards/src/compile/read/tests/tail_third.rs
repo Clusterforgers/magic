@@ -260,6 +260,7 @@ fn another_creature_that_dies_returns_as_the_card_in_the_graveyard(
             Effect::DelayedTrigger {
                 effects: moved,
                 once: true,
+                this_turn: false,
                 ..
             },
         ] = effects.as_slice()

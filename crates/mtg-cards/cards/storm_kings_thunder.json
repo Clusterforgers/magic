@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f5c5f462-10fa-422a-90da-07f46257f22f",
+  "name": "Storm King's Thunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm King's Thunder",
+      "oracle_fingerprint": "875aaf5a3be7fd26ad766372d0334aca",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    { "CopySpell": { "what": "Triggering", "count": "X", "new_targets": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

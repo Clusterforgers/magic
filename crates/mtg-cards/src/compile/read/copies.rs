@@ -169,6 +169,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 whose: Ref::EachPlayer,
             },
             once: true,
+            this_turn: false,
             effects: vec![if verb == "exile" {
                 Effect::Exile {
                     what: copy,
@@ -454,6 +455,7 @@ fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 whose: Ref::EachPlayer,
             },
             once: true,
+            this_turn: false,
             effects: vec![Effect::Sacrifice {
                 who: Ref::You,
                 filter: Selector(vec![Pred::Is(token)]),
@@ -1239,6 +1241,7 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Op
                 whose: Ref::EachPlayer,
             },
         once: true,
+        this_turn: false,
         effects,
     } = delayed
     else {

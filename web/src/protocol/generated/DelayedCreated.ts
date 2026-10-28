@@ -38,6 +38,10 @@ when: unknown,
  */
 once: boolean, 
 /**
+ * Whether it waits only until the end of the turn it was set up in, also when it triggers once.
+ */
+this_turn: boolean, 
+/**
  * What it does.
  */
 effects: unknown, 

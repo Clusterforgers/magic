@@ -45,6 +45,7 @@ impl Writer<'_> {
                         whose: Ref::EachPlayer,
                     },
                 once: true,
+                this_turn: false,
                 effects: later,
             },
         ] = then.as_slice()

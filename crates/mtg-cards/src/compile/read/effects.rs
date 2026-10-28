@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 81] = [
+const TEMPLATES: [Template; 82] = [
     super::c11b_cast_target::c11b_cast_target,
     super::c10_uc::c10_uc_tap_counted,
     super::c10_uc::c10_uc_held_control,
@@ -100,6 +100,7 @@ const TEMPLATES: [Template; 81] = [
     copies::token_copy,
     copies::populate,
     copy_spells::copy,
+    super::w2g_next_cast::w2g_next_cast,
     super::group_copies::group_becomes_copy,
     copy_spells::becomes_copy,
     copy_spells::choose_and_become,
@@ -853,6 +854,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 whose: Ref::EachPlayer,
             },
             once: true,
+            this_turn: false,
             effects: vec![Effect::Move {
                 what: Ref::Bound(LATER.to_owned()),
                 to: Destination::Hand,

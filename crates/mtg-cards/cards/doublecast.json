@@ -1,0 +1,31 @@
+{
+  "oracle_id": "946675f5-8998-4f1b-934b-85ffe6e2f002",
+  "name": "Doublecast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doublecast",
+      "oracle_fingerprint": "6e7e202fab7f6287f9a8df942e779175",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

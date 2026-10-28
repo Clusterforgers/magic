@@ -478,6 +478,11 @@ fn w2e_spell(r: &mut Reader<'_>) -> Option<Vec<Pred>> {
     Some(spell)
 }
 
+/// The kind of spell after "you next cast" ("an instant or sorcery spell", "a creature spell"), without `Spell`.
+pub(super) fn w2g_next_spell(r: &mut Reader<'_>) -> Option<Selector> {
+    w2e_spell(r).map(Selector)
+}
+
 /// "you cast a creature spell", "an opponent casts a spell", "you sacrifice a Clue".
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;

@@ -14,6 +14,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::DelayedTrigger {
         when,
         once,
+        this_turn,
         effects,
     } = effect
     else {
@@ -56,6 +57,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             ability,
             when: when.clone(),
             once: *once,
+            this_turn: *this_turn,
             effects: effects.clone(),
             bindings,
         },

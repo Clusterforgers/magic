@@ -44,6 +44,9 @@ pub struct DelayedCreated {
     pub when: TriggerPattern,
     /// Whether it triggers once and is gone, else it lasts until the end of the turn it was set up in.
     pub once: bool,
+    /// Whether it waits only until the end of the turn it was set up in, also when it triggers once.
+    #[serde(default)]
+    pub this_turn: bool,
     /// What it does.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub effects: Vec<Effect>,
@@ -171,7 +174,7 @@ pub(crate) fn fold_created(
         }),
         bindings,
         once: created.once,
-        duration: if created.once {
+        duration: if created.once && !created.this_turn {
             Duration::Forever
         } else {
             Duration::UntilEndOfTurn
@@ -228,6 +231,7 @@ mod tests {
                 whose: Ref::EachPlayer,
             },
             once: false,
+            this_turn: false,
             effects: vec![mtg_cards::effect::Effect::GainLife {
                 who: Ref::You,
                 amount: mtg_cards::value::Amount::Fixed(1),
@@ -276,6 +280,25 @@ mod tests {
     ) {
         let (mut state, source) = table();
         set_up(&mut state, source, duration);
+        assert!(!state.delayed()[0].lapsed(&state), "not at once");
+        next_turn(&mut state, FOE);
+        assert_eq!(state.delayed()[0].lapsed(&state), lapsed);
+    }
+
+    #[rstest]
+    #[case::once_for_ever(true, false, false)]
+    #[case::once_this_turn(true, true, true)]
+    #[case::each_time_this_turn(false, false, true)]
+    #[case::each_time_said_this_turn(false, true, true)]
+    fn the_card_data_decide_whether_it_waits_past_the_turn(
+        #[case] once: bool,
+        #[case] this_turn: bool,
+        #[case] lapsed: bool,
+    ) {
+        let (mut state, source) = table();
+        let mut event = created(&state, source, Vec::new());
+        (event.once, event.this_turn) = (once, this_turn);
+        apply_event(&mut state, &Event::DelayedTriggerCreated(Box::new(event))).unwrap();
         assert!(!state.delayed()[0].lapsed(&state), "not at once");
         next_turn(&mut state, FOE);
         assert_eq!(state.delayed()[0].lapsed(&state), lapsed);

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d85ba214-fa05-44ca-a7f9-ab2c5dc07962",
+  "name": "Teach by Example",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teach by Example",
+      "oracle_fingerprint": "a587115707ce0ef2589b1cff3fc4d9d9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

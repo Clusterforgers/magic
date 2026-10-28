@@ -61,6 +61,7 @@ fn later(effects: &[Effect]) -> Option<(String, usize)> {
                     whose: Ref::EachPlayer,
                 },
             once: true,
+            this_turn: false,
             effects: later,
         },
         ..,

@@ -82,7 +82,8 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         .unwrap_or(head);
     if is_loyalty(body) {
         ClauseKind::Loyalty
-    } else if is_triggered(body) {
+    } else if is_triggered(body) && !(spell && body.starts_with("When you next cast ")) {
+        // A spell that sets up a delayed trigger ("When you next cast an instant spell this turn, copy it") is its effect.
         ClauseKind::Triggered
     } else if is_activated(body) {
         ClauseKind::Activated
@@ -201,6 +202,16 @@ mod tests {
 
     #[rstest]
     #[case::flying("Flying", false, Keyword)]
+    #[case::next_cast_on_a_spell(
+        "When you next cast an instant spell this turn, copy it.",
+        true,
+        Spell
+    )]
+    #[case::next_cast_on_a_permanent(
+        "When you next cast an instant spell this turn, copy it.",
+        false,
+        Triggered
+    )]
     #[case::list("Vigilance, deathtouch, haste", false, Keyword)]
     #[case::equip("Equip {1}", false, Keyword)]
     #[case::equip_with_a_colon_free_cost("Equip {1}", true, Keyword)]
