@@ -1,0 +1,25 @@
+{
+  "oracle_id": "05e910aa-cf84-468c-8a48-256588cbbf08",
+  "name": "Rampaging War Mammoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging War Mammoth",
+      "oracle_fingerprint": "023a48fcb7e553d59ad16f7ab928484c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Cycling": "{X}{2}{R}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": "X" } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

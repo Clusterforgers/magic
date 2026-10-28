@@ -9,7 +9,7 @@ use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
-use super::wrong_effect;
+use super::{w6c_pay_x, wrong_effect};
 use crate::cast::payment_decision;
 use crate::choose::{CardsOptions, Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
@@ -53,7 +53,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             snapshots: Vec::new(),
         });
     }
-    let price = price_of(&repeated(&c6_eg_counted(cx, cost)?, times))?;
+    let template = price_of(&repeated(&c6_eg_counted(cx, cost)?, times))?;
     let state = cx.state();
     let mut journal = cx
         .journal()
@@ -64,19 +64,25 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     for player in cx.scope.players(who)? {
         let Some((_, asked)) = journal.next_if(|entry| entry.0 == player) else {
             if state.is_alive(player) {
-                return Ok(Run::Ask(question(cx, player, &price)));
+                return Ok(Run::Ask(question(cx, player, &template)));
             }
             continue;
         };
         match asked {
             Choice::YesNo(false) => {}
-            Choice::YesNo(true) => match settle(cx, player, &price, &mut journal)? {
-                Settled::Ask(decision) => return Ok(Run::Ask(decision)),
-                Settled::Paid(events) => {
-                    paid = Some(events);
-                    break;
+            Choice::YesNo(true) => {
+                let (price, x) = match w6c_pay_x::announced(cx, player, &template, &mut journal)? {
+                    w6c_pay_x::Announced::Ask(decision) => return Ok(Run::Ask(decision)),
+                    w6c_pay_x::Announced::Price(price, x) => (price, x),
+                };
+                match settle(cx, player, &price, &mut journal)? {
+                    Settled::Ask(decision) => return Ok(Run::Ask(decision)),
+                    Settled::Paid(events) => {
+                        paid = Some((events, x));
+                        break;
+                    }
                 }
-            },
+            }
             other => return Err(unexpected(other, player)),
         }
     }
@@ -85,10 +91,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             "an answer was given to a question that was not asked".into(),
         ));
     }
+    let next = Next::Enter(usize::from(paid.is_none()));
+    let (events, x) = paid.unwrap_or_default();
     Ok(Run::Done {
-        next: Next::Enter(usize::from(paid.is_none())),
-        events: paid.unwrap_or_default(),
-        bound: Vec::new(),
+        next,
+        events,
+        bound: w6c_pay_x::bound(x),
         snapshots: Vec::new(),
     })
 }
@@ -172,9 +180,9 @@ fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
     ))
 }
 
-/// The price of a cost an effect asks for: mana, and the parts the engine pays (life, counters removed from the source,
-/// energy, objects picked). A cost that loses the source, taps it, has an `{X}` or counts X is refused by name: no
-/// announcement chooses an X in the middle of a resolution.
+/// The price of a cost an effect asks for: mana, with the `{X}` the payer announces once they say yes, and the parts the
+/// engine pays (life, counters removed from the source, energy, objects picked). A cost that loses the source, taps it or
+/// has a part that counts X is refused by name.
 fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
     let price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
     match price.leaves {
@@ -184,11 +192,8 @@ fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
         Leaves::Stays => {}
     }
-    if price.x > 0 {
-        return Err(ResolveError::Unsupported("Cost.Mana.X"));
-    }
     if price.counted() {
-        return Err(ResolveError::Unsupported("Effect.Pay.X"));
+        return Err(ResolveError::Unsupported("Effect.Pay.X.Parts"));
     }
     if price.tap || (price.mana.is_none() && price.parts.is_empty()) {
         return Err(ResolveError::Invalid(
@@ -200,7 +205,7 @@ fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
 
 /// Whether the player has the mana, the life, the counters, the energy and the objects for `price`: the mana floating or
 /// from the permanents they may tap, other than the ones the other parts take.
-fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
+pub(super) fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
     let state = cx.state();
     let Some(claimed) = price.claimed(state, player, cx.scope.source.id) else {
         return false;
@@ -218,13 +223,13 @@ fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
     })
 }
 
-/// "Pay {2}?", "Pay 2 life?", "Discard a card?": the parts of the cost as a card says them, with No the only answer when
-/// the player cannot pay.
+/// "Pay {2}?", "Pay {X}{R}?", "Pay 2 life?", "Discard a card?": the parts of the cost as a card says them, with No the
+/// only answer when the player cannot pay it with X = 0.
 fn question(cx: &Cx<'_>, player: PlayerId, price: &Price) -> Decision {
     Decision {
         player,
         kind: DecisionKind::YesNo(YesNoOptions {
-            only_no: !can_pay(cx, player, price),
+            only_no: !can_pay(cx, player, &w6c_pay_x::at(price, 0)),
             ..YesNoOptions::new(cx.scope.source.id, wording::pay(&said(price)))
         }),
     }
@@ -235,7 +240,7 @@ fn said(price: &Price) -> Vec<String> {
     price
         .mana
         .iter()
-        .map(|mana| format!("Pay {mana}"))
+        .map(|mana| w6c_pay_x::mana_text(mana, price.x))
         .chain(price.parts.iter().map(Part::text))
         .collect()
 }
@@ -353,7 +358,7 @@ fn payment(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, and refuses by name a cost the effect cannot ask (losing the source, tapping it, an X, a counted amount).
+    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, asks a player who pays a cost with {X} for X from 0 to the most they can pay and binds the X paid, and refuses by name a cost the effect cannot ask (losing the source, tapping it, a part that counts X).
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -791,10 +796,13 @@ mod tests {
     }
 
     #[rstest]
-    #[case::counted_life(r#"[{"PayLife":"X"}]"#, ResolveError::Unsupported("Effect.Pay.X"))]
+    #[case::counted_life(
+        r#"[{"PayLife":"X"}]"#,
+        ResolveError::Unsupported("Effect.Pay.X.Parts")
+    )]
     #[case::counted_mana_and_energy(
         r#"[{"Mana":"{1}"},{"PayEnergy":"X"}]"#,
-        ResolveError::Unsupported("Effect.Pay.X")
+        ResolveError::Unsupported("Effect.Pay.X.Parts")
     )]
     #[case::sacrifice(
         r#"["SacrificeSelf"]"#,
@@ -804,7 +812,6 @@ mod tests {
         r#"[{"Mana":"{2}"},"SacrificeSelf"]"#,
         ResolveError::Unsupported("Effect.Pay.SacrificeSelf")
     )]
-    #[case::x(r#""{X}""#, ResolveError::Unsupported("Cost.Mana.X"))]
     #[case::tapping(
         r#"[{"Mana":"{1}"},"Tap"]"#,
         ResolveError::Invalid(
@@ -830,6 +837,85 @@ mod tests {
         assert_eq!(
             error,
             ResolveError::Invalid("the Pay primitive was given another effect".into())
+        );
+    }
+
+    fn w6c_number(run: Result<Run, ResolveError>) -> (u32, Option<u32>) {
+        match run.unwrap() {
+            Run::Ask(Decision {
+                kind: DecisionKind::ChooseNumber(options),
+                ..
+            }) => (options.min, options.max),
+            other => panic!("a value of X was expected: {other:?}"),
+        }
+    }
+
+    #[rstest]
+    #[case::three_forests_x_and_green("{X}{G}", 3, "Pay {X}{G}?", 2)]
+    #[case::three_forests_x_alone("{X}", 3, "Pay {X}?", 3)]
+    #[case::two_x("{X}{X}", 5, "Pay {X}{X}?", 2)]
+    #[case::only_the_green("{X}{G}", 1, "Pay {X}{G}?", 0)]
+    fn w6c_a_payment_with_x_asks_for_x_up_to_the_most_the_player_can_pay(
+        #[case] cost: &str,
+        #[case] lands: usize,
+        #[case] question: &str,
+        #[case] most: u32,
+    ) {
+        let game = game(&[lands, 0]);
+        let pay = pay(r#""You""#, &format!(r#""{cost}""#));
+        assert_eq!(
+            said(run_with(&game, &[], &pay)),
+            Said::Asks(0, question.into())
+        );
+        assert_eq!(
+            w6c_number(run_with(&game, &[(0, true)], &pay)),
+            (0, Some(most))
+        );
+        let chosen = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(most))];
+        let Run::Ask(Decision {
+            kind: DecisionKind::PayMana(options),
+            ..
+        }) = run_journal(&game, chosen, &pay).unwrap()
+        else {
+            panic!("a payment was expected");
+        };
+        assert_eq!(
+            options.cost.mana_value(),
+            most * (1 + u32::from(cost == "{X}{X}")) + u32::from(cost.contains('G'))
+        );
+    }
+
+    #[test]
+    fn w6c_a_payment_with_x_binds_the_x_paid_and_enters_the_paid_effects() {
+        let game = game(&[3, 0]);
+        let pay = pay(r#""You""#, r#""{X}{G}""#);
+        let journal = vec![
+            (ME, Choice::YesNo(true)),
+            (ME, Choice::Number(2)),
+            (ME, Choice::YesNo(true)),
+        ];
+        let Run::Done { bound, next, .. } = run_journal(&game, journal, &pay).unwrap() else {
+            panic!("the payment was expected to be done");
+        };
+        assert_eq!(next, Next::Enter(0));
+        assert_eq!(bound, vec![("~x:2".to_owned(), Vec::new())]);
+    }
+
+    #[rstest]
+    #[case::another_kind(vec![(ME, Choice::YesNo(true)), (ME, Choice::YesNo(true))])]
+    fn w6c_another_answer_for_x_is_refused(#[case] journal: Vec<(PlayerId, Choice)>) {
+        let game = game(&[3, 0]);
+        let error = run_journal(&game, journal, &pay(r#""You""#, r#""{X}{G}""#)).unwrap_err();
+        assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
+    }
+
+    #[test]
+    fn w6c_a_player_without_the_mana_for_x_zero_can_only_decline() {
+        let game = game(&[0, 0]);
+        let pay = pay(r#""You""#, r#""{X}{G}""#);
+        assert_eq!(
+            said(run_with(&game, &[], &pay)),
+            Said::Declines(0, "Pay {X}{G}?".into())
         );
     }
 }

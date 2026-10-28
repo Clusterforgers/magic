@@ -915,6 +915,7 @@ mod tests {
             Event::Cycled {
                 player: OWNER,
                 object: t.hand,
+                x: 0,
             },
         ] {
             for viewer in [OWNER, OTHER] {

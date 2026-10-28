@@ -138,6 +138,8 @@ enum Happened {
         player: PlayerId,
         card: ObjectId,
         nth: u32,
+        /// The X of the cycling cost.
+        x: u32,
     },
     /// A player surveilled, the `nth` time of their turn.
     Surveilled { player: PlayerId, nth: u32 },
@@ -217,14 +219,15 @@ impl Happened {
         )
     }
 
-    /// How much it was: the damage dealt, the life gained or lost, the counters put or removed; zero for the rest.
+    /// How much it was: the damage dealt, the life gained or lost, the counters put or removed, the X of a monstrosity or a
+    /// cycling cost; zero for the rest.
     const fn amount(&self) -> u32 {
         match self {
             Happened::Damaged { amount, .. }
             | Happened::LifeGained { amount, .. }
             | Happened::LifeLost { amount, .. } => *amount,
             Happened::Counters { delta, .. } => delta.unsigned_abs(),
-            Happened::Monstrous { x, .. } => *x,
+            Happened::Monstrous { x, .. } | Happened::Cycled { x, .. } => *x,
             Happened::Cast { before, .. } => *before,
             _ => 0,
         }
@@ -792,9 +795,10 @@ fn about_players_and_permanents(
             attachment: *object,
             to: *to,
         }),
-        Event::Cycled { player, object } => found.push(Happened::Cycled {
+        Event::Cycled { player, object, x } => found.push(Happened::Cycled {
             player: *player,
             card: *object,
+            x: *x,
             nth: ordinal(look.post, look.later, *player, Tally::Cycled),
         }),
         Event::Surveilled(surveilled) => found.push(Happened::Surveilled {
@@ -1189,8 +1193,10 @@ fn matching_event(
         )
         | (TriggerPattern::Cycled { what, by: who }, Happened::Cycled { player, card, .. }) => {
             let card = object(*card)?;
+            // A cycling carries the X of its cost as the amount (`Happened::amount`); a discard has none.
+            let subjects = vec![Target::Player(*player), Target::Object(card)];
             (by(who, player) && picks(what, card)?)
-                .then(|| cause(state, vec![Target::Player(*player), Target::Object(card)]))
+                .then(|| counted(state, subjects, happened.amount()))
         }
         (
             TriggerPattern::DayNightChanges { to: wanted },

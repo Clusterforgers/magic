@@ -93,6 +93,7 @@ mod vote;
 mod w2f_any_counters;
 mod w5d_tap_or_untap;
 mod w6b_create_emblem;
+mod w6c_pay_x;
 mod win_game;
 
 use mtg_cards::effect::Effect;

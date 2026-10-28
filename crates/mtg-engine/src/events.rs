@@ -301,6 +301,9 @@ pub enum Event {
         player: PlayerId,
         /// The card.
         object: ObjectId,
+        /// The X of the cycling cost, which the trigger "when you cycle this card" reads.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        x: u32,
     },
     /// Attackers were declared (possibly none).
     AttackersDeclared {

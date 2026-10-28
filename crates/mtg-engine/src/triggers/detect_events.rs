@@ -355,7 +355,11 @@ fn cycling_triggers_for_the_player_and_the_card_the_pattern_names(
     let object = id(&pre, card);
     let cycled = [
         Event::CardDiscarded { player, object },
-        Event::Cycled { player, object },
+        Event::Cycled {
+            player,
+            object,
+            x: 0,
+        },
     ];
     assert_eq!(fired(&pre, &cycled), expected);
 }
@@ -647,7 +651,11 @@ fn a_discard_that_is_not_cycling_does_not_trigger_a_cycling_pattern_and_the_cycl
     let pre = board(r#"{"Discarded":{}}"#);
     let cycled = [
         Event::CardDiscarded { player: ME, object },
-        Event::Cycled { player: ME, object },
+        Event::Cycled {
+            player: ME,
+            object,
+            x: 0,
+        },
     ];
     assert_eq!(
         fired(&pre, &cycled),
@@ -691,7 +699,11 @@ fn a_card_cycled_triggers_its_own_ability_from_the_graveyard_and_what_watches_fo
     let object = id(&pre, cycled);
     let events = [
         Event::CardDiscarded { player: ME, object },
-        Event::Cycled { player: ME, object },
+        Event::Cycled {
+            player: ME,
+            object,
+            x: 0,
+        },
     ];
     let post = fold(&pre, &events);
     let mut names: Vec<_> = detect(&pre, &events, &post)

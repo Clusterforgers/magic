@@ -394,6 +394,7 @@ mod w5c_writers;
 mod w5d_replaced;
 mod w6a_attacks_you;
 mod w6b_emblem;
+mod w6c_x_triggers;
 mod w6e_control;
 mod where_x;
 mod written_effects;

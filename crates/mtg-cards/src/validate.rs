@@ -249,6 +249,8 @@ struct Walker<'a> {
     /// The effect before the one being walked is a `May`, whose acceptance "if you do" asks about.
     after_may: bool,
     face: usize,
+    /// The face has an `{X}` in a cycling cost or in the cost of a monstrosity, which its trigger on that action reads.
+    w6c_cost_x: bool,
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
     names: Vec<(usize, String, String)>,
@@ -277,6 +279,7 @@ impl<'a> Walker<'a> {
             after: After::Nothing,
             after_may: false,
             face: 0,
+            w6c_cost_x: false,
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
             names: Vec::new(),
@@ -732,10 +735,12 @@ impl<'a> Walker<'a> {
     /// The effects of a payment: an `{X}` its mana announces is the X they read ("you may pay {X}{R}. If you do, it
     /// deals X damage"), whatever the mana cost of the card.
     fn c11f_paid_x(&mut self, cost: &Cost, paid: &[Effect]) {
-        let saved = self.x_free;
+        let (saved, saved_now) = (self.x_free, self.x_now);
         self.x_free |= has_x_mana(cost);
+        // The resolution reads the X the payer announced (`Effect.Pay.X`), wherever the ability stands.
+        self.x_now |= has_x_mana(cost);
         self.effect_list("paid", paid, false);
-        self.x_free = saved;
+        (self.x_free, self.x_now) = (saved, saved_now);
     }
 
     /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") is counted as the effect
@@ -933,9 +938,12 @@ impl<'a> Walker<'a> {
                 self.uses("Effect", name);
             }
         }
-        // There is no announcement to choose an X in the middle of a resolution.
-        if cost.has_x() {
+        // The payer announces the X of an `{X}` once they say yes; a part that counts X is not asked there.
+        if has_x_mana(cost) {
             self.uses("Effect", "Pay.X");
+        }
+        if cost.0.iter().any(amount_is_x) {
+            self.uses("Effect", "Pay.X.Parts");
         }
     }
 
@@ -2641,8 +2649,9 @@ impl Walker<'_> {
                 // The permanent remembers the X of the spell it came from for its own enters trigger (CR 107.3m); a
                 // trigger on a spell being cast reads the X that spell was cast with, which another card's trigger
                 // finds in a spell whose cost this card does not print.
-                w.x_now = enters_itself(when) || casts_a_spell(when);
-                w.x_free |= casts_another_spell(when);
+                w.x_now = enters_itself(when) || casts_a_spell(when) || w6c_reads_cost_x(when);
+                // "When you cycle this card", "when this creature becomes monstrous": the X of that cost, when the face prints one.
+                w.x_free |= casts_another_spell(when) || (w6c_reads_cost_x(when) && w.w6c_cost_x);
                 if let Some(condition) = intervening_if {
                     w.at("if", |w| w.condition(condition));
                 }
@@ -2965,6 +2974,7 @@ impl Walker<'_> {
 
     fn face(&mut self, index: usize, face: &Face) {
         self.face = index;
+        self.w6c_cost_x = w6c_cost_x(face);
         self.spell_targets = face
             .abilities
             .iter()
@@ -2974,6 +2984,32 @@ impl Walker<'_> {
             self.at(format!("abilities[{i}]"), |w| w.ability(ability));
         }
     }
+}
+
+/// Whether the trigger is on an action of the card itself whose cost may hold an `{X}`: "when you cycle this card",
+/// "when this creature becomes monstrous". It reads the X of that cost.
+fn w6c_reads_cost_x(when: &TriggerPattern) -> bool {
+    matches!(
+        when,
+        TriggerPattern::Cycled { what, .. } | TriggerPattern::BecomesMonstrous { what }
+            if what.0.contains(&Pred::This)
+    )
+}
+
+/// Whether the face has an `{X}` in a cycling cost or in the cost of an activated ability that makes it monstrous.
+fn w6c_cost_x(face: &Face) -> bool {
+    face.abilities.iter().any(|ability| match ability {
+        Ability::Keyword(Keyword::Cycling(cost) | Keyword::Typecycling { cost, .. }) => {
+            has_x_mana(cost)
+        }
+        Ability::Activated { cost, effects, .. } => {
+            has_x_mana(cost)
+                && effects
+                    .iter()
+                    .any(|effect| matches!(effect, Effect::Monstrosity { .. }))
+        }
+        _ => false,
+    })
 }
 
 /// Whether the trigger is "when this enters": the one trigger of a permanent that reads the X its spell was cast with.
@@ -3531,6 +3567,11 @@ mod tests {
     #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
     #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted", "Effect.Draw"])]
     #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]
+    #[case::w6c_the_x_a_payment_announces(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"Pay":{"cost":"{X}{R}","paid":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.X", "Trigger.Attacks"])]
+    #[case::w6c_a_part_that_counts_x_in_a_payment(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"X"}]}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Cost.PayLife", "Effect.Pay", "Effect.Pay.X.Parts", "Trigger.StepBegins"])]
+    #[case::w6c_the_x_of_the_cycling_cost(r#"{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.Cycled"])]
+    #[case::w6c_the_x_of_a_monstrosity(r#"{"Triggered":{"when":{"BecomesMonstrous":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":"X"}}],"effects":[{"Tap":{"what":{"Target":0}}}]}}"#, &["Ability.Triggered", "Effect.Tap", "Trigger.BecomesMonstrous"])]
+    #[case::w6c_the_x_of_another_cards_cycling(r#"{"Triggered":{"when":{"Cycled":{"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.Cycled"])]
     #[case::attaching_the_source_to_a_target(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":"This","to":{"Target":0}}}]}}"#, &["Ability.Activated", "Ability.Sorcery", "Cost.Mana", "Effect.Attach"])]
     #[case::equip_pays_a_mana_cost(r#"{"Keyword":{"Equip":"{2}"}}"#, &["Cost.Mana", "Keyword.Equip"])]
     #[case::reconfigure_pays_a_mana_cost(r#"{"Keyword":{"Reconfigure":"{2}"}}"#, &["Cost.Mana", "Keyword.Reconfigure"])]

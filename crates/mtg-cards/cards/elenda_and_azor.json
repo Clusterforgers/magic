@@ -1,0 +1,53 @@
+{
+  "oracle_id": "4b9f463f-3786-4374-bf77-739ae162b3ba",
+  "name": "Elenda and Azor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elenda and Azor",
+      "oracle_fingerprint": "31ae64ba70aba2f59ad7d8d29af790ba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Pay": { "cost": "{X}{W}{U}{B}", "paid": [{ "Draw": { "count": "X" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 4 }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Vampire Knight",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Vampire", "Knight"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Lifelink" }]
+                          }
+                        },
+                        "count": { "Tallied": { "who": "You", "what": "Drawn" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "8c0520fa-276b-4d21-b4a9-dce1fce59f6b",
+  "name": "Shark Typhoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shark Typhoon",
+      "oracle_fingerprint": "d81f40d0faf0bab9d7eda45e93e71a6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "token": {
+                        "name": "Shark",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Shark"],
+                        "abilities": [{ "Keyword": "Flying" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{X}{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": "X",
+                      "token": {
+                        "name": "Shark",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Shark"],
+                        "abilities": [{ "Keyword": "Flying" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

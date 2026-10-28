@@ -420,6 +420,8 @@ pub struct Reader<'a> {
     /// Whether the cost of the clause takes objects out of their zones (a sacrifice, a discard, an exile), so "the
     /// sacrificed creature's power" names what it took (`Ref::Paid`).
     pub paid: bool,
+    /// Whether the face has an `{X}` in its cycling cost, which "when you cycle this card" reads.
+    pub w6c_cost_x: bool,
     /// The names of the votes read so far, the only names a tally ("for each sprout vote") counts.
     pub w2d_votes: Vec<String>,
 }
@@ -456,6 +458,7 @@ impl<'a> Reader<'a> {
             ability: false,
             triggered: false,
             paid: false,
+            w6c_cost_x: false,
             w2d_votes: Vec::new(),
         }
     }

@@ -1591,6 +1591,16 @@ fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
         });
     }
     if r.words("up to") {
+        // "up to X target artifacts": no more than the X announced.
+        if r.x() {
+            r.need("target")?;
+            let what = Targetable::Object(phrase(r, Form::Targets)?);
+            return Some(TargetSpec {
+                what,
+                bounds: Bounds::up_to(Some(Amount::X)),
+                divide: None,
+            });
+        }
         let count = number_word(r.take_word()?)?;
         // "up to one other target Vehicle you control".
         let other = count == 1 && r.word("other");

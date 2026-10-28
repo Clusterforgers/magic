@@ -1232,7 +1232,7 @@ impl<'a> Scope<'a> {
 
     /// [`Scope::x_value`] when an X was chosen, else nothing.
     pub(crate) fn announced_x(&self) -> Option<u32> {
-        self.choices.x.or_else(|| {
+        self.w6c_paid_x().or(self.choices.x).or_else(|| {
             self.state
                 .object(self.source.id)
                 .filter(|object| {
@@ -1240,6 +1240,16 @@ impl<'a> Scope<'a> {
                 })
                 .and_then(GameObject::announced_x)
         })
+    }
+
+    /// The X a payment of the resolving spell or ability announced ("you may pay {X}{R}. If you do"), read only by the
+    /// scope of that spell or ability.
+    fn w6c_paid_x(&self) -> Option<u32> {
+        let resolving = self.state.resolving.as_ref()?;
+        let object = self.state.object(resolving.object)?;
+        std::ptr::eq(self.choices, object.choices())
+            .then_some(resolving.w6c_paid_x)
+            .flatten()
     }
 
     /// A characteristic of each object the selector matches that has one.

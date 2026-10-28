@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3180ee4f-66d7-4b73-bc10-9ee0c790ec18",
+  "name": "Flameblast Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flameblast Dragon",
+      "oracle_fingerprint": "6fe4228ce5d4118fc3543608b8f7d3b6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}{R}",
+                  "paid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

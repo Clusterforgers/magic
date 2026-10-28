@@ -253,6 +253,8 @@ pub struct Own {
     /// Whether the spell must pay an additional cost that takes objects out of their zones ("As an additional cost to
     /// cast this spell, sacrifice a creature."), which its effects read as "the sacrificed creature's power".
     pub pays: bool,
+    /// Whether the face has an `{X}` in its cycling cost ("Cycling {X}{1}{U}"), which "when you cycle this card" reads.
+    pub w6c_cost_x: bool,
 }
 
 /// The words before an activated ability that are rules, not flavor: the ability works from another zone (a hand, an
@@ -294,6 +296,7 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     reader.power = own.power;
     reader.toughness = own.toughness;
     reader.paid = own.pays;
+    reader.w6c_cost_x = own.w6c_cost_x;
     let ability = match kind {
         ClauseKind::Spell => abilities::spell(&mut reader)?,
         ClauseKind::Modal => abilities::modal_spell(&mut reader)?,

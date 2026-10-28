@@ -514,7 +514,14 @@ fn own_face(face: &PrintedFace) -> read::Own {
         toughness: number(&face.toughness),
         creature_at: creature_at(face),
         pays: face.oracle_text.lines().any(requires_a_pick),
+        w6c_cost_x: face.oracle_text.lines().any(w6c_cost_x),
     }
+}
+
+/// Whether the line is a cycling cost with an `{X}`: "Cycling {X}{2}{R}".
+fn w6c_cost_x(line: &str) -> bool {
+    let line = line.split(" (").next().unwrap_or(line);
+    line.starts_with("Cycling ") && line.contains("{X}")
 }
 
 /// The charge counters at which a Spacecraft with a printed power becomes a creature: its highest station threshold.

@@ -12,7 +12,8 @@ use crate::zones::Zone;
 /// was. A delayed trigger reads the X of the spell or ability that set it up; the trigger "when this enters" the X its
 /// spell was cast with (CR 107.3m); a trigger on a spell being cast the X that spell was cast with, whether it is a
 /// trigger of the spell itself ("when you cast this spell") or of another permanent ("whenever you cast a spell").
-/// Any other trigger reads 0, which is `None`.
+/// The trigger "when you cycle this card" or "when this creature becomes monstrous" reads the X of that cost, which the
+/// event carries as its amount. Any other trigger reads 0, which is `None`.
 pub(crate) fn read(
     when: &TriggerPattern,
     delayed: bool,
@@ -33,13 +34,19 @@ pub(crate) fn read(
             .iter()
             .find(|shot| shot.zone == Zone::Stack)
             .and_then(|shot| shot.x),
+        // The X of the cost of the action itself: a cycling cost or a monstrosity (CR 107.3, 701.37c).
+        TriggerPattern::Cycled { what, .. } | TriggerPattern::BecomesMonstrous { what }
+            if what.0.contains(&Pred::This) =>
+        {
+            Some(cause.amount)
+        }
         _ => None,
     }
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a triggered ability reads X only where the rules give it one: a delayed trigger the X of what set it up, the trigger "when this enters" the X of its spell, a trigger on a spell being cast the X of the spell cast; any other trigger of a permanent, and a trigger on another zone change, read 0.
+    //! Goal: a triggered ability reads X only where the rules give it one: a delayed trigger the X of what set it up, the trigger "when this enters" the X of its spell, a trigger on a spell being cast the X of the spell cast, a trigger on cycling its card or on its card becoming monstrous the X of that cost; any other trigger of a permanent, and a trigger on another zone change, read 0.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -139,5 +146,28 @@ mod tests {
             read(&pattern(CASTS_ANY), false, &source, &Cause::default()),
             None
         );
+    }
+
+    #[rstest]
+    #[case::cycling_this(r#"{"Cycled":{"what":["This"],"by":"You"}}"#, 3, Some(3))]
+    #[case::cycling_this_for_nothing(r#"{"Cycled":{"what":["This"],"by":"You"}}"#, 0, Some(0))]
+    #[case::cycling_another_card(r#"{"Cycled":{"by":"You"}}"#, 3, None)]
+    #[case::becoming_monstrous(r#"{"BecomesMonstrous":{"what":["This"]}}"#, 2, Some(2))]
+    #[case::another_becoming_monstrous(
+        r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"}]}}"#,
+        2,
+        None
+    )]
+    fn w6c_a_trigger_on_cycling_or_a_monstrosity_of_its_card_reads_the_x_of_that_cost(
+        #[case] when: &str,
+        #[case] amount: u32,
+        #[case] expected: Option<u32>,
+    ) {
+        let source = spell_cast_with(Some(7));
+        let cause = Cause {
+            amount,
+            ..Cause::default()
+        };
+        assert_eq!(read(&pattern(when), false, &source, &cause), expected);
     }
 }

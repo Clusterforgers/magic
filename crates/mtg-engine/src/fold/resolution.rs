@@ -81,6 +81,13 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     resolving.bindings.remove(cleared);
                     continue;
                 }
+                if let Some(x) = name.strip_prefix(crate::resolve::W6C_PAID_X) {
+                    let x = x
+                        .parse()
+                        .map_err(|_| invalid(format!("`{name}` names no paid X")))?;
+                    resolving.w6c_paid_x = Some(x);
+                    continue;
+                }
                 if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
                     && !renews(&old, targets)
                 {
