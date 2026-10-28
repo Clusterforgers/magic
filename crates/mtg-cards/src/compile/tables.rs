@@ -22,11 +22,6 @@ pub(super) fn attach(pending: &mut [Pending], x_free: bool, own: &read::Own) {
             .ability
             .as_ref()
             .is_some_and(read::ends_in_roll);
-        // A roll that ends the ability with no rows after it does nothing the card says.
-        if rows == 0 && rolls {
-            pending[head].ability = None;
-            pending[head].read = false;
-        }
         if rows > 0 && rolls {
             let table = table(
                 &pending[head],
