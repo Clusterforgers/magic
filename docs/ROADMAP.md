@@ -215,7 +215,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (r3w1) (r3w1-if-writers) Writers for conditional effects ("If X, Y", "Otherwise", "If you can't") in triggers, spells, activated and loyalty abilities, so the stored proposals they unblock are accepted and promoted (24 abilities in the r3 samples)
 - [~] (r3w2) (r3w2-continuous-writers) Writers for `Continuous` effects (+X/+X until end of turn, gains a keyword, can't block, becomes) and the `AddKeyword` and `GrantAbility` modifications (28 abilities)
 - [~] (r3w3) (r3w3-may-pay-writers) Writers for "you may", "you may pay" and the reflexive "When you do" (18 abilities)
-- [~] (r3w4) (r3w4-delayed-repeat-writers) Writers for delayed triggers and "for each player or opponent" (`RepeatEach`) (19 abilities)
+- [ ] (r3w4b) Delayed triggers and repeated steps left: "deals combat damage to a creature, destroy that creature at end of combat" (Ohran Viper), a loyalty ability's delayed return (Nahiri, the Harbinger), steps repeated for each object ("each Dragon you control", "each of those creatures", "for each of them") and a delayed trigger on its own line (Forth Eorlingas!, Theoretical Duplication)
 - [~] (r3w5) (r3w5-move-counters-writers) Writers for `Move`, `PutCounters`, `RemoveCounters` and the "combination or shape" spells (about 40 abilities)
 - [~] (r3w6) (r3w6-mismatch-al) Renderer variants for the Mismatch proposals of names A to L (proliferate twice, the order of a token's name and ability, an activation limit before modes)
 - [~] (r3w7) (r3w7-mismatch-mz) The same for names M to Z
