@@ -766,7 +766,7 @@ mod tests {
     )]
     #[case::a_cost_that_counts_targets_the_spell_does_not_read(
         "Sorcery",
-        "This spell costs {1} more to cast for each target beyond the first.\nAny number of target creatures phase out.",
+        "This spell costs {1} more to cast for each target beyond the first.\nAny number of target creatures phase in.",
         Some(ImplStatus::Manual)
     )]
     #[case::a_cost_that_counts_nothing_stands_alone(

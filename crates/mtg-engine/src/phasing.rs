@@ -125,6 +125,21 @@ pub fn in_events(state: &GameState, player: PlayerId) -> Vec<Event> {
     events
 }
 
+/// The events that phase out the permanents with phasing that `player` controls as their untap step begins (CR 502.1,
+/// 702.26a), each with what is attached to it; it happens together with what phases in (`in_events`).
+pub fn w7e_keyword_out_events(state: &GameState, player: PlayerId) -> Vec<Event> {
+    let named: Vec<ObjectId> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| {
+            controller_of(state, *id) == Some(player)
+                && crate::keywords::has_keyword(state, *id, &mtg_cards::keyword::Keyword::Phasing)
+        })
+        .collect();
+    out_events(state, &named)
+}
+
 /// A permanent phases out: it leaves the battlefield's list without leaving the battlefield, and leaves combat (CR 506.4).
 pub(crate) fn fold_out(
     state: &mut GameState,
@@ -245,6 +260,45 @@ mod tests {
         assert_eq!(held.counter(), counter, "phasing is no new object");
         assert_eq!(held.permanent().unwrap().tapped(), tapped);
         assert_eq!(game.zone(Zone::Battlefield).len(), seats + 1);
+    }
+
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn w7e_only_the_permanents_with_phasing_of_the_untapping_player_phase_out(
+        #[case] seats: usize,
+    ) {
+        let phaser = |name: &str| {
+            std::sync::Arc::new(
+                mtg_cards::CardDefinition::new(name)
+                    .with_type(mtg_core::card::CardType::Creature)
+                    .with_power_toughness(1, 1)
+                    .with_rules(mtg_cards::ability::Ability::Keyword(
+                        mtg_cards::keyword::Keyword::Phasing,
+                    )),
+            )
+        };
+        let mut battlefields: Vec<Vec<_>> = (0..seats)
+            .map(|seat| vec![phaser(&format!("Phaser {seat}")), creature("Bear", 2, 2)])
+            .collect();
+        battlefields[0].push(creature("Other", 1, 1));
+        let mut game = state(vec![Vec::new(); seats], battlefields);
+        for seat in 0..seats {
+            let out = w7e_keyword_out_events(&game, PlayerId(seat as u64));
+            assert_eq!(out.len(), 1, "one phaser for seat {seat}");
+            let Some(Event::PermanentPhasedOut { object, .. }) = out.first() else {
+                panic!("{out:?}");
+            };
+            assert_eq!(*object, id(&game, &format!("Phaser {seat}")));
+            apply(&mut game, &out);
+            // Out, it is no longer found, so the next untap step only phases it in.
+            assert_eq!(
+                w7e_keyword_out_events(&game, PlayerId(seat as u64)).len(),
+                0
+            );
+            assert_eq!(in_events(&game, PlayerId(seat as u64)).len(), 1);
+        }
     }
 
     #[rstest]

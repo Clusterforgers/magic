@@ -227,6 +227,8 @@ struct Walker<'a> {
     path: Vec<String>,
     scope: Scope,
     has_kicker: bool,
+    /// The card has a Devour keyword: what `Amount::Devoured` reads.
+    w7e_has_devour: bool,
     /// The costs of the card's Kicker keywords: what `KickedWith` may name.
     kickers: Vec<Cost>,
     /// Whether the card prints an optional additional cost ("As an additional cost to cast this spell, you may ...").
@@ -267,6 +269,7 @@ impl<'a> Walker<'a> {
             path: Vec::new(),
             scope: Scope::default(),
             has_kicker: false,
+            w7e_has_devour: false,
             kickers: Vec::new(),
             has_additional_cost: false,
             pays_objects: false,
@@ -482,7 +485,12 @@ impl<'a> Walker<'a> {
 
     /// The amounts that read the optional costs paid: the kicks and the gift promised.
     fn paid_amount(&mut self, amount: &Amount) {
-        if *amount == Amount::Kicks {
+        if *amount == Amount::Devoured {
+            self.uses("Amount", "Devoured");
+            if !self.w7e_has_devour {
+                self.problem("`Devoured` needs a Devour keyword on the card");
+            }
+        } else if *amount == Amount::Kicks {
             self.uses("Amount", "Kicks");
             if !self.has_kicker {
                 self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
@@ -605,7 +613,7 @@ impl<'a> Walker<'a> {
             Amount::LowestHand(_) | Amount::LifeLostThisWay | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
             }
-            Amount::Kicks | Amount::Promised => self.paid_amount(amount),
+            Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
             Amount::Mutations(of) => {
                 self.uses("Amount", "Mutations");
                 self.at("of", |w| w.reference(of, Kind::Either));
@@ -3154,6 +3162,9 @@ fn check_spans(walker: &mut Walker<'_>, face: &Face) {
 /// Walks a whole card, collecting its problems, the uses of X and the card names it mentions.
 fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     let mut walker = Walker::new(tokens);
+    walker.w7e_has_devour = card
+        .abilities()
+        .any(|(_, a)| matches!(a, Ability::Keyword(Keyword::Devour { .. })));
     walker.has_kicker = card
         .abilities()
         .any(|(_, a)| matches!(a, Ability::Keyword(k) if k.is_kicker()));

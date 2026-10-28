@@ -138,6 +138,7 @@ mod unearth;
 mod vanishing;
 mod vigilance;
 mod w2b_read_ahead;
+mod w7e_phasing;
 mod ward;
 mod wither;
 
@@ -525,6 +526,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Sunburst => &sunburst::Sunburst,
         Keyword::Afterlife(_) => &afterlife::Afterlife,
         Keyword::Horsemanship => &horsemanship::Horsemanship,
+        Keyword::Phasing => &w7e_phasing::Phasing,
         Keyword::Spectacle(_) => &spectacle::Spectacle,
         Keyword::UmbraArmor => &umbra_armor::UmbraArmor,
         Keyword::Cipher => &cipher::Cipher,
@@ -895,6 +897,7 @@ mod tests {
             Keyword::Sunburst,
             Keyword::Afterlife(2),
             Keyword::Horsemanship,
+            Keyword::Phasing,
             Keyword::Spectacle(cost()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
@@ -1036,6 +1039,7 @@ mod tests {
         "Keyword.Sunburst",
         "Keyword.Afterlife",
         "Keyword.Horsemanship",
+        "Keyword.Phasing",
         "Keyword.Spectacle",
         "Keyword.UmbraArmor",
         "Keyword.Cipher",
@@ -1222,6 +1226,7 @@ mod tests {
     #[case::sunburst(Keyword::Sunburst, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afterlife(Keyword::Afterlife(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::horsemanship(Keyword::Horsemanship, Hooks::none())]
+    #[case::phasing(Keyword::Phasing, Hooks::none())]
     #[case::spectacle(Keyword::Spectacle(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {

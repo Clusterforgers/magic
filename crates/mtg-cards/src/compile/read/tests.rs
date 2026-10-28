@@ -399,6 +399,8 @@ mod w6e_control;
 mod w7a_domain;
 mod w7b_player_counters;
 mod w7c_incubate;
+mod w7e_devoured;
+mod w7e_phase_out;
 mod where_x;
 mod written_effects;
 mod x_after;
