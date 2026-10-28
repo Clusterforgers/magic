@@ -26,7 +26,10 @@
                 "May": {
                   "effects": [
                     {
-                      "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } }
+                      "Move": {
+                        "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
                     }
                   ]
                 }
