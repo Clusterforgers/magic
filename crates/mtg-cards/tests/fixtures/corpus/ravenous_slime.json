@@ -1,0 +1,25 @@
+{
+  "id": "528d8f5e-2d58-4526-875b-21d199267210",
+  "oracle_id": "4696decb-7bff-4c6b-8a7b-9ec324faefde",
+  "name": "Ravenous Slime",
+  "lang": "en",
+  "released_at": "2018-08-10",
+  "layout": "normal",
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Ooze",
+  "oracle_text": "This creature can't be blocked by creatures with power 2 or less.\nIf a creature an opponent controls would die, instead exile it and put a number of +1/+1 counters equal to that creature's power on this creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "set": "c18",
+  "collector_number": "34",
+  "digital": false,
+  "rarity": "rare"
+}

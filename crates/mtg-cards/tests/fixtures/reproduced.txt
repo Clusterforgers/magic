@@ -852,6 +852,7 @@ Merchant of Truth
 Mercurial Chemister
 Merfolk Branchwalker
 Merfolk Mistbinder
+Merrow Reejerey
 Mesmeric Orb
 Methods of the Mighty
 Metropolis Reformer
@@ -961,6 +962,7 @@ Pale Bears
 Panther Robot
 Paradise Druid
 Parhelion Patrol
+Pariah
 Patagia Viper
 Path of the Animist
 Path of the Enigma
@@ -983,6 +985,7 @@ Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
 Pit Fight
+Plague Drone
 Plague Myr
 Plague Stinger
 Planar Outburst
@@ -1043,6 +1046,7 @@ Rampant Growth
 Rancor
 Ransom Note
 Ravenous Leucrocota
+Ravenous Slime
 Ray Fillet, Wave Warrior
 Reality Shift
 Realm Seekers
@@ -1072,6 +1076,7 @@ Replication Technique
 Rescue Skiff
 Reshape
 Resplendent Angel
+Retreat to Coralhelm
 Revel Ruiner
 Revenge of Ravens
 Reverberate
@@ -1328,6 +1333,7 @@ Sylvok Battle-Chair
 Syndic of Tithes
 Syndicate Messenger
 Syphon Life
+Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
@@ -1392,6 +1398,7 @@ Thunderfoot Baloth
 Thunderherd Migration
 Thunderous Wrath
 Tiamat's Fanatics
+Tidal Force
 Tilonalli's Skinshifter
 Time Beetle
 Time Sieve

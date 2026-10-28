@@ -1,0 +1,25 @@
+{
+  "id": "51b2136c-392c-436d-9263-b3236adc4a10",
+  "oracle_id": "2c5c8250-1860-42a1-a335-071f54830d37",
+  "name": "Pariah",
+  "lang": "en",
+  "released_at": "2016-08-26",
+  "layout": "normal",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nAll damage that would be dealt to you is dealt to enchanted creature instead.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "set": "cn2",
+  "collector_number": "95",
+  "digital": false,
+  "rarity": "rare"
+}

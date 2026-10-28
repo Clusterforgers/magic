@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2c5c8250-1860-42a1-a335-071f54830d37",
+  "name": "Pariah",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pariah",
+      "oracle_fingerprint": "41b25a28b38445f196727903b86f7d5a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "Attached", "amount": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

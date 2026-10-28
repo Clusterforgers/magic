@@ -845,6 +845,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         ),
         reference().prop_map(|what| Effect::Tap { what }),
         reference().prop_map(|what| Effect::Untap { what }),
+        reference().prop_map(|what| Effect::TapOrUntap { what }),
         (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),
         reference().prop_map(|what| Effect::Transform { what }),
         who().prop_map(|who| Effect::WinGame { who }),
