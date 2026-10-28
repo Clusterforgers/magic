@@ -75,6 +75,9 @@ fn the_reminder_text_of_energy_counters_does_not_keep_the_clause_from_being_read
     assert!(!reminder_mentions_counter(
         "Create two 1/1 green Phyrexian Insect creature tokens with infect. (They deal damage to creatures in the form of -1/-1 counters and to players in the form of poison counters.)"
     ));
+    assert!(!reminder_mentions_counter(
+        "Time travel. (For each suspended card you own and each permanent you control with a time counter on it, you may add or remove a time counter.)"
+    ));
 }
 
 #[rstest]

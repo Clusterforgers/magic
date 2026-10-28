@@ -168,6 +168,7 @@ const RUNS: &[&str] = &[
     "Effect.AddPhase",
     "Effect.Surveil",
     "Effect.Proliferate",
+    "Effect.TimeTravel",
     "Effect.Goad",
     "Effect.Fight",
     "Effect.Explore",
@@ -745,7 +746,7 @@ mod tests {
     #[case::cascading("Keyword.Cascade", true)]
     #[case::convoking("Keyword.Convoke", true)]
     #[case::delving("Keyword.Delve", true)]
-    #[case::time_travelling("Effect.TimeTravel", false)]
+    #[case::time_travelling("Effect.TimeTravel", true)]
     #[case::extra_turns("Effect.ExtraTurn", true)]
     #[case::added_phases("Effect.AddPhase", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]

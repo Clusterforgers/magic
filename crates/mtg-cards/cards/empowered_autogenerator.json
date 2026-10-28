@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6832f9e2-294a-44a2-8af9-eb16ccfdfc36",
+  "name": "Empowered Autogenerator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empowered Autogenerator",
+      "oracle_fingerprint": "e972b29b66ea6afaa15c10e2231187c5",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "charge" } },
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": { "Counters": { "on": "This", "counter": "charge" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

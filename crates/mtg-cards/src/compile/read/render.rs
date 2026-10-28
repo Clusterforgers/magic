@@ -1193,6 +1193,7 @@ fn is_imperative(effect: &Effect) -> bool {
             Effect::Scry { who: Ref::You, .. }
                 | Effect::Surveil { who: Ref::You, .. }
                 | Effect::Proliferate { who: Ref::You }
+                | Effect::TimeTravel { who: Ref::You }
                 | Effect::Draw { who: Ref::You, .. }
                 | Effect::Mill { who: Ref::You, .. }
                 | Effect::Discard { who: Ref::You, .. }
@@ -2214,6 +2215,7 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::TimeTravel { who: Ref::You } => "time travel".to_owned(),
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
             Effect::Adapt { count } => format!("adapt {}", points_text(count)?),

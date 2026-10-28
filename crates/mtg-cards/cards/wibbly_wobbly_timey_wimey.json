@@ -1,0 +1,12 @@
+{
+  "oracle_id": "5207621d-aecf-40ae-8108-2bd571e3a427",
+  "name": "Wibbly-wobbly, Timey-wimey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wibbly-wobbly, Timey-wimey",
+      "oracle_fingerprint": "60bd29785821722f7103674a5f604efc",
+      "abilities": [{ "Spell": { "effects": [{ "TimeTravel": {} }, { "Draw": {} }] } }]
+    }
+  ]
+}

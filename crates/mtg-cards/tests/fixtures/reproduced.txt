@@ -29,6 +29,7 @@ Akroma's Will
 Akroma, Angel of Wrath
 Alhammarret's Archive
 All That Glitters
+All of History, All at Once
 Alpha Deathclaw
 Alphinaud Leveilleur
 Altar's Reap
@@ -384,6 +385,7 @@ Eliminate the Competition
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
+Empowered Autogenerator
 Empyrial Plate
 Empyrial Storm
 Enraged Revolutionary
@@ -1359,6 +1361,7 @@ Whisperer of the Wilds
 Whispering Madness
 Whispering Snitch
 White Auracite
+Wibbly-wobbly, Timey-wimey
 Wickersmith's Tools
 Wild Growth
 Wild Wasteland

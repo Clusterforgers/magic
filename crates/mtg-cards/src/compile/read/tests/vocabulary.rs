@@ -1,4 +1,4 @@
-//! Goal: the wordings of the vocabulary pass (surveil, proliferate, becoming the monarch, a choice of mana, mana of the chosen color, paying energy, and the triggers of life, drawing and discarding) read into the DSL and write back as the card's own text, and the near-misses stay with the table.
+//! Goal: the wordings of the vocabulary pass (surveil, proliferate, time travel, becoming the monarch, a choice of mana, mana of the chosen color, paying energy, and the triggers of life, drawing and discarding) read into the DSL and write back as the card's own text, and the near-misses stay with the table.
 use super::*;
 
 #[rstest]
@@ -21,6 +21,16 @@ use super::*;
     "Draw a card, then proliferate.",
     ClauseKind::Spell,
     r#"{"Spell":{"effects":[{"Draw":{}},{"Proliferate":{}}]}}"#
+)]
+#[case::c8_time_travel(
+    "Time travel.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"effects":[{"TimeTravel":{}}]}}"#
+)]
+#[case::c8_time_travel_then_draw(
+    "Time travel, then draw a card.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"effects":[{"TimeTravel":{}},{"Draw":{}}]}}"#
 )]
 #[case::monarch_when_it_enters(
     "When ~ enters, you become the monarch.",
