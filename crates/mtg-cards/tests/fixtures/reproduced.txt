@@ -104,6 +104,7 @@ Azure Fleet Admiral
 Azusa, Lost but Seeking
 Back in Town
 Baird, Steward of Argive
+Bandit's Haul
 Bane of Progress
 Banish to Another Universe
 Banisher Priest
@@ -1007,6 +1008,7 @@ Path of the Enigma
 Path of the Ghosthunter
 Path to Exile
 Path to the Festival
+Patrolling Peacemaker
 Patron of the Vein
 Peacewalker Colossus
 Peema Outrider
@@ -1033,6 +1035,7 @@ Planar Outburst
 Plaxcaster Frogling
 Plaxmanta
 Poet's Quill
+Pollen Lullaby
 Polymorphist's Jest
 Pongify
 Pontiff of Blight
@@ -1584,6 +1587,7 @@ Weirding Wood
 Well Rested
 Whiptongue Hydra
 Whir of Invention
+Whirlpool Whelm
 Whisperer of the Wilds
 Whispering Madness
 Whispering Snitch

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7f527852-bf7d-43a3-be0b-784c73ed88aa",
+  "name": "Whirlpool Whelm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlpool Whelm",
+      "oracle_fingerprint": "5c5c50b096ece2c205899f177c694771",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Clash": {
+                  "win": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Library": { "place": "Top" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

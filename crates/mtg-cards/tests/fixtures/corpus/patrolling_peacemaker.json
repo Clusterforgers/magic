@@ -1,0 +1,25 @@
+{
+  "id": "1e06d6be-c2a3-4c73-a916-89674c0ddfed",
+  "oracle_id": "aa44171d-1c76-40a7-82fc-5ef2abbca647",
+  "name": "Patrolling Peacemaker",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eoc",
+  "collector_number": "5",
+  "rarity": "rare",
+  "released_at": "2025-08-01",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Robot Soldier",
+  "oracle_text": "This creature enters with two +1/+1 counters on it.\nWhenever an opponent commits a crime, proliferate. (They commit a crime if they target an opponent, anything an opponent controls, and/or cards in an opponent's graveyard. To proliferate, you choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Proliferate"
+  ]
+}

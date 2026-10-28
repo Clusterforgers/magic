@@ -78,6 +78,7 @@ const RUNS: &[&str] = &[
     "Trigger.Adapted",
     "Trigger.Bolstered",
     "Trigger.Expend",
+    "Trigger.W11cCrime",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
     "Trigger.Batch",
@@ -846,6 +847,7 @@ mod tests {
     #[case::adapting_triggers("Trigger.Adapted", true)]
     #[case::bolstering_triggers("Trigger.Bolstered", true)]
     #[case::expend_triggers("Trigger.Expend", true)]
+    #[case::w11c_crime_triggers("Trigger.W11cCrime", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::batch_triggers("Trigger.Batch", true)]

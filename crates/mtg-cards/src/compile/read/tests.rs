@@ -375,6 +375,7 @@ mod untap_rules;
 mod vocabulary;
 mod votes;
 mod w11c_clash;
+mod w11c_crime;
 mod w2b_each_of;
 mod w2b_you_and;
 mod w2c_counts;
