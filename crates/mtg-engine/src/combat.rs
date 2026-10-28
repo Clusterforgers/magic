@@ -251,9 +251,15 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
 }
 
 /// Removes from combat each creature that changed controller since it was declared an attacker or a blocker
-/// (CR 506.4); the fold calls it after every event that can change control.
+/// (CR 506.4); the fold calls it after every event that can change control, while an effect sets a controller.
 pub(crate) fn w7d_leave_on_control_change(state: &mut GameState) {
-    if state.combat.attackers.is_empty() {
+    let controls = state.effects.iter().any(|effect| {
+        matches!(
+            effect.modification,
+            crate::effects::Modification::SetController(_)
+        )
+    });
+    if state.combat.attackers.is_empty() || !controls {
         return;
     }
     for id in state.combat.w7d_changed_sides(state) {

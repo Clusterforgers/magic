@@ -205,8 +205,10 @@ fn w7d_frontline_medic_counters_only_a_spell_with_x(#[values(2, 3, 4)] seats: us
     let last = driver.target_player(seats - 1);
     driver.cast_at("Shock", &[last])?;
     w7d_until(&mut driver, 1, "priority")?;
-    assert!(
-        driver.offered_abilities("Frontline Medic")?.is_empty(),
+    let offered = driver.offered_abilities("Frontline Medic")?;
+    assert_eq!(
+        offered,
+        Vec::<usize>::new(),
         "Shock has no {{X}} in its cost"
     );
     w7d_settle(&mut driver, &mut Vec::new(), 0)?;

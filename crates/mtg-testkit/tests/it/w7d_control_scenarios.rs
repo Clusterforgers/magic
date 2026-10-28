@@ -525,11 +525,8 @@ fn w7d_djinn_exchanges_outside_combat_only(#[values(2, 3, 4)] seats: usize) -> W
     let mut driver = Driver::from_scenario(scenario)?;
     driver.attack(&[("Cub", 1)])?;
     w7d_until(&mut driver, 0, "priority")?;
-    assert!(
-        driver
-            .offered_abilities("Djinn of Infinite Deceits")?
-            .is_empty()
-    );
+    let offered = driver.offered_abilities("Djinn of Infinite Deceits")?;
+    assert_eq!(offered, Vec::<usize>::new(), "not during combat");
     driver.idle_until(2, Step::Main2)?;
     let pair = vec![driver.target_named("Cub")?, driver.target_named("Ogre")?];
     driver.begin_activation("Djinn of Infinite Deceits")?;
