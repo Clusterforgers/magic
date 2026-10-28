@@ -137,7 +137,7 @@ fn sentences(rule: &GameRule) -> Vec<String> {
         return Vec::new();
     };
     let no_mana = mana.rest().symbols().is_empty() && !mana.has_x();
-    if (*life > 0) == !no_mana {
+    if (*life > 0) != no_mana {
         return Vec::new();
     }
     let Some(creatures) = (if attackers.is_empty() {

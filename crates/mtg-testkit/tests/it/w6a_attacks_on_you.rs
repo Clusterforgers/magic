@@ -235,20 +235,17 @@ fn a_life_tax_is_paid_as_the_attack_is_declared(
     let mut driver = Driver::from_scenario(scenario)?;
     driver.add_rule(life_tax(each, ""), Duration::UntilEndOfTurn)?;
     let attacks: Vec<(&str, usize)> = names[..count].iter().map(|name| (*name, 1)).collect();
-    match total {
-        Some(total) => {
-            let events = driver.attack(&attacks)?;
-            assert_eq!(paid(&events), total);
-            assert_eq!(life(&driver, 0), start - i32::try_from(total).unwrap());
-        }
-        None => {
-            assert!(driver.attack(&attacks).is_err());
-            assert_eq!(life(&driver, 0), start);
-            // Another player is not protected and costs nothing.
-            if seats > 2 {
-                let events = driver.attack(&[("A", 2)])?;
-                assert_eq!(paid(&events), 0);
-            }
+    if let Some(total) = total {
+        let events = driver.attack(&attacks)?;
+        assert_eq!(paid(&events), total);
+        assert_eq!(life(&driver, 0), start - i32::try_from(total).unwrap());
+    } else {
+        assert!(driver.attack(&attacks).is_err());
+        assert_eq!(life(&driver, 0), start);
+        // Another player is not protected and costs nothing.
+        if seats > 2 {
+            let events = driver.attack(&[("A", 2)])?;
+            assert_eq!(paid(&events), 0);
         }
     }
     replays(&driver, &setup);
