@@ -1,7 +1,8 @@
 // Goal: the search pane says how to start until something is typed or chosen, sends one request when typing pauses and lists each hit with name, cost and type, adds a copy to the main deck by click or Enter and to the other zones from a menu, sends each filter the way the server reads it, pages 40 at a time and starts over when the search changes, gives every control a 44 px target under a coarse pointer, and designs its loading, empty, failed and unavailable states.
 import { screen, waitFor, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { deckError } from '@/features/decks/fakeDecks'
+import { flushFakeClock, installFakeClock } from '@/test-utils/fakeClock'
 import { pool } from './fakeCards'
 import {
   asked,
@@ -14,6 +15,10 @@ import {
   searchBox,
   searchPane,
 } from './renderBuilder'
+
+// A fake clock: the search waits out a pause in typing only when a test waits, never because the machine is slow.
+beforeEach(installFakeClock)
+afterEach(flushFakeClock)
 
 const results = () => screen.findByRole('list', { name: 'Search results' })
 

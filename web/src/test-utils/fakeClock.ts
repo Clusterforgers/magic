@@ -17,6 +17,17 @@ export function removeFakeClock(): void {
   Reflect.deleteProperty(globalThis, 'jest')
 }
 
+/**
+ * Runs the timers still pending, then puts the real clock back. Dropping them would leave a library's teardown
+ * (a menu that closes on a timer) undone for the next test; a polling page wants `removeFakeClock` instead.
+ */
+export async function flushFakeClock(): Promise<void> {
+  await act(async () => {
+    await vi.runOnlyPendingTimersAsync()
+  })
+  removeFakeClock()
+}
+
 /** Lets `ms` of fake time pass inside `act`, running every promise and timer that falls due on the way. */
 export const settle = (ms = 0): Promise<void> =>
   act(async () => {

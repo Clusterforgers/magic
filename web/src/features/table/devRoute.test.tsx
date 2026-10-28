@@ -2,9 +2,11 @@
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { flushFakeClock, installFakeClock, settle } from '@/test-utils/fakeClock'
 import { scaled } from '@/test-utils/loadFactor'
 import { maybePrimaryButton, primaryButton } from '@/test-utils/passControls'
 import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
+import { FIRST_MOVE_MS } from './dev/DevFxControls'
 import { FIXTURE_MARKER } from './dev/fixture'
 
 /** The real route tree, loaded fresh so the route sees the `import.meta.env.DEV` the test has set. */
@@ -199,14 +201,20 @@ describe('/dev/table with table effects', () => {
     expect(document.querySelector('[data-fx]')).toBeNull()
   })
 
+  // A fake clock: the move waits for FIRST_MOVE_MS of the test's time, however long the page took to load.
   it('plays the move named by `fx` once the page has loaded, with the effect on', async () => {
-    await visit('/dev/table?seats=2&fx=damage&slow=4')
-    await screen.findByRole('region', { name: 'Game table' })
-    expect(document.querySelector('[data-fx]')).toBeNull()
-    await waitFor(() => expect(document.querySelector('[data-fx="damaged"]')).not.toBeNull(), {
-      timeout: scaled(4000),
-    })
-    expect(document.querySelectorAll('[data-slot="fx-float"]').length).toBeGreaterThan(0)
+    installFakeClock()
+    try {
+      await visit('/dev/table?seats=2&fx=damage&slow=4')
+      expect(screen.getByRole('region', { name: 'Game table' })).toBeInTheDocument()
+      await settle(FIRST_MOVE_MS - 1)
+      expect(document.querySelector('[data-fx]')).toBeNull()
+      await settle(1)
+      expect(document.querySelector('[data-fx="damaged"]')).not.toBeNull()
+      expect(document.querySelectorAll('[data-slot="fx-float"]').length).toBeGreaterThan(0)
+    } finally {
+      await flushFakeClock()
+    }
   })
 
   it('plays a move when its button is pressed, which changes the table either way', async () => {
@@ -240,11 +248,16 @@ describe('/dev/table with table effects', () => {
   it.each(['?seats=2&fx=zap', '?seats=2&slow=500', '?seats=2&slow=0.5', '?seats=2&slow=fast'])(
     'ignores the nonsense in %s',
     async (search) => {
-      await visit(`/dev/table${search}`)
-      const table = await screen.findByRole('region', { name: 'Game table' })
-      expect(table.getAttribute('style')).toBeNull()
-      await new Promise((resolve) => setTimeout(resolve, 900))
-      expect(document.querySelector('[data-fx]')).toBeNull()
+      installFakeClock()
+      try {
+        await visit(`/dev/table${search}`)
+        const table = screen.getByRole('region', { name: 'Game table' })
+        expect(table.getAttribute('style')).toBeNull()
+        await settle(FIRST_MOVE_MS * 2)
+        expect(document.querySelector('[data-fx]')).toBeNull()
+      } finally {
+        await flushFakeClock()
+      }
     },
   )
 })

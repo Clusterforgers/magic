@@ -1,6 +1,7 @@
 /** A harness for the builder: the page over a deck server and a card server in memory, signed in as Ada. */
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { vi } from 'vitest'
 import { AuthProvider } from '@/features/auth/AuthProvider'
 import { createAuthStore } from '@/features/auth/store'
 import { deckView, lineOf, startDecks } from '@/features/decks/fakeDecks'
@@ -94,7 +95,9 @@ export async function renderBuilder(script: BuilderScript = {}) {
     </AuthProvider>,
   )
   if (script.wait !== false) await screen.findByRole('region', { name: 'Deck' })
-  return { ...rendered, decks, cards, checks, view, user: userEvent.setup() }
+  // Under a fake clock the keystrokes take no time, so a pause passes only when the test lets it.
+  const user = userEvent.setup(vi.isFakeTimers() ? { advanceTimers: vi.advanceTimersByTime } : {})
+  return { ...rendered, decks, cards, checks, view, user }
 }
 
 export const searchBox = (): HTMLElement => screen.getByRole('searchbox', { name: 'Search cards' })
