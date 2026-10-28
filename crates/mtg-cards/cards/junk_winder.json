@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5b677e88-bcc9-4a55-9c89-8bbd0e2344dc",
+  "name": "Junk Winder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Junk Winder",
+      "oracle_fingerprint": "1b28582b0ee859578f4cf957817d62d0",
+      "abilities": [
+        { "Keyword": { "Affinity": ["Token"] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

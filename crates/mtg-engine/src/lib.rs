@@ -9,6 +9,7 @@ mod announce;
 mod answers;
 mod attach;
 mod attack_tax;
+mod c7_untap;
 mod cast;
 mod commanders;
 mod damage;

@@ -298,7 +298,8 @@ pub(crate) fn lasts(
     match duration {
         // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2); `UntilEndOfYourNextTurn` ends
         // the same way, in the cleanup step of the next turn its controller has.
-        Duration::UntilEndOfTurn | Duration::Forever => true,
+        // `NextUntapStep` ends with the untap step that the permanent it holds down would untap in (`c7_untap`).
+        Duration::UntilEndOfTurn | Duration::Forever | Duration::NextUntapStep => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         Duration::UntilYourNextTurn => {
@@ -366,7 +367,7 @@ pub struct ContinuousEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"WhileYouControlSource\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"WhileYouControlSource\" | \"NextUntapStep\" | \"Forever\""
         )
     )]
     pub duration: Duration,

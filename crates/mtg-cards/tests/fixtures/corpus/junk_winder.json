@@ -1,0 +1,27 @@
+{
+  "cmc": 7.0,
+  "collector_number": "107",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "1c1acd61-efc9-4fd3-86ec-b5cbd43c0b08",
+  "keywords": [
+    "Affinity"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{5}{U}{U}",
+  "name": "Junk Winder",
+  "oracle_id": "5b677e88-bcc9-4a55-9c89-8bbd0e2344dc",
+  "oracle_text": "Affinity for tokens (This spell costs {1} less to cast for each token you control.)\nWhenever a token you control enters, tap target nonland permanent an opponent controls. It doesn't untap during its controller's next untap step.",
+  "power": "5",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "set": "mkc",
+  "toughness": "6",
+  "type_line": "Creature — Serpent"
+}

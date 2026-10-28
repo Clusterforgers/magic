@@ -34,6 +34,10 @@ pub struct Problem {
 const MOST_NESTED: u32 = 4;
 
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
+/// Only the rule that a permanent doesn't untap lasts through the next untap step of its controller.
+const C7_UNTAP_ONLY: &str =
+    "only a permanent that doesn't untap waits for its controller's next untap step";
+
 fn tag_of<T: Serialize>(value: &T) -> String {
     match serde_json::to_value(value) {
         Ok(serde_json::Value::String(name)) => name,
@@ -2050,12 +2054,18 @@ impl<'a> Walker<'a> {
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Duration", "WhileYouControlSource");
                 }
+                if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
+                    w.problem(C7_UNTAP_ONLY);
+                }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
                 w.rule(rule);
                 // Only the layers end an effect when the source changes controller.
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Rule", "Duration.WhileYouControlSource");
+                }
+                if *duration == Duration::NextUntapStep {
+                    w.problem(C7_UNTAP_ONLY);
                 }
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
@@ -2076,6 +2086,9 @@ impl<'a> Walker<'a> {
             } => {
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Shield", "Duration.WhileYouControlSource");
+                }
+                if *duration == Duration::NextUntapStep {
+                    w.problem(C7_UNTAP_ONLY);
                 }
                 w.at("when", |w| w.replace_when(when));
                 w.at("by", |w| w.replace_by(when, by));

@@ -639,6 +639,7 @@ Jo Grant
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
+Junk Winder
 Jyoti, Moag Ancient
 Kalemne's Captain
 Kalonian Hydra
@@ -810,6 +811,7 @@ Necroskitter
 Nessian Asp
 Nettlecyst
 New Horizons
+Niblis of Frost
 Nick Valentine, Private Eye
 Night Clubber
 Nighthawk Scavenger
@@ -1041,6 +1043,7 @@ Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
 Sharding Sphinx
+Sharktocrab
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans

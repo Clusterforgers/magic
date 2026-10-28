@@ -68,6 +68,9 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                     })
                     .map(|id| Event::PermanentUntapped { object: *id }),
             );
+            if let Some(active) = active {
+                events.extend(crate::c7_untap::c7_untap_spent(state, active));
+            }
             events.extend(leave_step(state));
             Progress::Events(events)
         }

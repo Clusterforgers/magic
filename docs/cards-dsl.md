@@ -162,7 +162,7 @@ CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf | 
 Modification= ModifyPT{power,toughness} SetPT{..} SwitchPT AddType SetTypes RemoveSupertype AddSubtype SetCreatureTypes AddAllCreatureTypes SetColors
             | AddKeyword AddProtectionFromChosenColor RemoveKeyword SetController(Ref) CantAttack CantBlock
             | CantBeBlocked CantBeBlockedBy(Selector)
-Duration    = UntilEndOfTurn | UntilEndOfCombat | UntilYourNextTurn | UntilEndOfYourNextTurn | WhileSourceOnBattlefield | WhileYouControlSource | UntilOpponentBecomesMonarch | Forever
+Duration    = UntilEndOfTurn | UntilEndOfCombat | UntilYourNextTurn | UntilEndOfYourNextTurn | WhileSourceOnBattlefield | WhileYouControlSource | UntilOpponentBecomesMonarch | NextUntapStep | Forever
 GameRule    = DamageCantBePrevented{source?,combat?} | MustAttack(Ref) | MustAttackPlayers{who,players} | MustBlock(Ref) | AttackTax{who = You, attacked, attackers?, mana, per = 1} | CantBeCountered(Ref)
             | CantGainLife(Ref) | NoLifeLossFromDamage(Ref) | LifeTotalCantChange(Ref) | PlayersHave{who,keyword} | CantDraw(Ref) | CantSearch(Ref) | SkipExtraTurns(Ref) | RevealTop(Ref) | TriggerAgain{cause: TriggerPattern}
             | MayCast{who = You, what?, from?, free?, flash?, only?, play?}

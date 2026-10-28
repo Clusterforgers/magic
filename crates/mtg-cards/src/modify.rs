@@ -148,6 +148,9 @@ pub enum Duration {
     WhileYouControlSource,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
+    /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
+    /// controller's next untap step", CR 502.3): only the rule that a permanent doesn't untap lasts this long.
+    NextUntapStep,
     /// Without end (until the object or the game is gone).
     Forever,
 }
