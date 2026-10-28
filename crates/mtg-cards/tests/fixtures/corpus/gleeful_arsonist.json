@@ -1,0 +1,27 @@
+{
+  "id": "bbb2956c-ef76-4e80-81d4-7f1ce6841d37",
+  "oracle_id": "9025b3ce-f6ae-431d-9eb5-02d713b8c9b8",
+  "name": "Gleeful Arsonist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "27",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Whenever an opponent casts a noncreature spell, this creature deals damage equal to its power to that player.\nUndying (When this creature dies, if it had no +1/+1 counters on it, return it to the battlefield under its owner's control with a +1/+1 counter on it.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Undying"
+  ]
+}

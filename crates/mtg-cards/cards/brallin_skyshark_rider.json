@@ -1,0 +1,38 @@
+{
+  "oracle_id": "464df46a-079b-47c1-95e7-930160abef2f",
+  "name": "Brallin, Skyshark Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brallin, Skyshark Rider",
+      "oracle_fingerprint": "4a21da34b8818792d4ac11f18c29e062",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Shabraz, the Skyshark" } },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "DealDamage": { "to": "Opponents", "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Shark" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

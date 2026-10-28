@@ -1,0 +1,23 @@
+{
+  "id": "a24dfde7-0b29-4adb-914a-90eb2dd09ece",
+  "oracle_id": "1e9b3c9e-07ae-4de5-8607-93773825f655",
+  "name": "Raiders' Karve",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "156",
+  "rarity": "common",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Whenever this Vehicle attacks, look at the top card of your library. If it's a land card, you may put it onto the battlefield tapped.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Crew"
+  ]
+}

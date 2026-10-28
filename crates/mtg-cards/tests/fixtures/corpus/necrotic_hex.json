@@ -1,0 +1,23 @@
+{
+  "id": "009d2fb8-6144-46d9-9085-26232c174109",
+  "oracle_id": "a6e720a2-9819-40ec-a811-7812898b531a",
+  "name": "Necrotic Hex",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmr",
+  "collector_number": "137",
+  "rarity": "rare",
+  "released_at": "2020-11-20",
+  "digital": false,
+  "mana_cost": "{6}{B}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player sacrifices six creatures of their choice. You create six tapped 2/2 black Zombie creature tokens.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

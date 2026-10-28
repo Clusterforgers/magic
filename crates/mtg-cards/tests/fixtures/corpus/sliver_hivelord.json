@@ -1,0 +1,33 @@
+{
+  "id": "2b902f64-7795-4f1f-81e6-26db7c78a10c",
+  "oracle_id": "e4fe33e7-b952-4152-8c83-81d948756d2f",
+  "name": "Sliver Hivelord",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "937",
+  "rarity": "mythic",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{W}{U}{B}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Sliver",
+  "oracle_text": "Sliver creatures you control have indestructible. (Damage and effects that say \"destroy\" don't destroy them.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

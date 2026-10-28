@@ -1,0 +1,19 @@
+{
+  "id": "9e4fc5ed-e90d-4965-985a-ed126a713506",
+  "oracle_id": "69428825-3c40-486d-b051-14e97a598ce6",
+  "name": "Gonti's Aether Heart",
+  "lang": "en",
+  "layout": "normal",
+  "set": "aer",
+  "collector_number": "152",
+  "rarity": "mythic",
+  "released_at": "2017-01-20",
+  "digital": false,
+  "mana_cost": "{6}",
+  "cmc": 6.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "Whenever Gonti's Aether Heart or another artifact you control enters, you get {E}{E} (two energy counters).\nPay eight {E}, Exile Gonti's Aether Heart: Take an extra turn after this one.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

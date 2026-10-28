@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7aba1039-f108-423e-8aa4-d9d8b4da2414",
+  "name": "Mold Shambler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mold Shambler",
+      "oracle_fingerprint": "7940c83b67c3fde171f0fb84c6cc034c",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "Kicked",
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

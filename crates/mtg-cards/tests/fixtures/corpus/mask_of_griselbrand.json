@@ -1,0 +1,25 @@
+{
+  "id": "a8c36e65-395c-4800-bd0a-c444940a9b36",
+  "oracle_id": "b46da6bd-578c-4040-97c3-0005b78e31be",
+  "name": "Mask of Griselbrand",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "145",
+  "rarity": "rare",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "Equipped creature has flying and lifelink.\nWhenever equipped creature dies, you may pay X life, where X is its power. If you do, draw X cards.\nEquip {3}",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

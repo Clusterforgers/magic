@@ -1,0 +1,24 @@
+{
+  "id": "15ca0b68-33a1-4d25-b622-d3f5ba05b0a5",
+  "oracle_id": "79638767-fbc7-451a-b29f-d93f2ac6f102",
+  "name": "Kher Keep",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "75",
+  "rarity": "rare",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Legendary Land",
+  "oracle_text": "{T}: Add {C}.\n{1}{R}, {T}: Create a 0/1 red Kobold creature token named Kobolds of Kher Keep.",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "20cc0f3e-de69-4e5f-88b3-ae7e6c6b5996",
+  "name": "Naya Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naya Charm",
+      "oracle_fingerprint": "a455d25ddee1f595adcaf7f128bb2314",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Tap": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

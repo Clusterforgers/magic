@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7dcb95a9-c114-4333-8b45-4380f92d9695",
+  "name": "Reiver Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reiver Demon",
+      "oracle_fingerprint": "d8078bd5ed3a6f49cff0fb101023c4e7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Type": "Artifact" } },
+                      { "Not": { "Color": "Black" } }
+                    ]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

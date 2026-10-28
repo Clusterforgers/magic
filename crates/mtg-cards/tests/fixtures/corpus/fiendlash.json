@@ -1,0 +1,25 @@
+{
+  "id": "7ff6fab0-7872-445d-a514-774ecccd2355",
+  "oracle_id": "2d21dc80-2900-4dc3-9657-f17b50716481",
+  "name": "Fiendlash",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "221",
+  "rarity": "uncommon",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+0 and has reach.\nWhenever equipped creature is dealt damage, it deals damage equal to its power to target player or planeswalker.\nEquip {2}{R}",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

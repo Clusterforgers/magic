@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e4fe33e7-b952-4152-8c83-81d948756d2f",
+  "name": "Sliver Hivelord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sliver Hivelord",
+      "oracle_fingerprint": "2d8128f7b0dbde4f4c05230adfa3f037",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Sliver" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        }
+      ]
+    }
+  ]
+}

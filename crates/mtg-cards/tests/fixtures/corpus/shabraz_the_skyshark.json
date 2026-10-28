@@ -1,0 +1,31 @@
+{
+  "id": "9955d172-0b24-4c61-9dee-c935a1f26da2",
+  "oracle_id": "7599fe9a-b6a5-491b-a308-aef3bf1e9daf",
+  "name": "Shabraz, the Skyshark",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c20",
+  "collector_number": "14",
+  "rarity": "mythic",
+  "released_at": "2020-04-17",
+  "digital": false,
+  "mana_cost": "{3}{W}{U}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Shark Bird",
+  "oracle_text": "Partner with Brallin, Skyshark Rider\nFlying\nWhenever you draw a card, put a +1/+1 counter on Shabraz and you gain 1 life.\n{W/U}: Target Human gains flying until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Partner with",
+    "Partner"
+  ]
+}

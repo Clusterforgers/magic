@@ -1,0 +1,29 @@
+{
+  "id": "8c592af4-5470-4311-af05-761e5a9c46be",
+  "oracle_id": "247a0c13-c611-4c00-bedf-ecf7ea6bb956",
+  "name": "Time Beetle",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "58",
+  "rarity": "uncommon",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Alien Insect",
+  "oracle_text": "Skulk (This creature can't be blocked by creatures with greater power.)\nParallel Universe — Whenever this creature deals combat damage to a player, time travel. (For each suspended card you own and each permanent you control with a time counter on it, you may add or remove a time counter.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Skulk",
+    "Parallel Universe",
+    "Time Travel"
+  ]
+}

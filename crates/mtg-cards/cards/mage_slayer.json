@@ -1,0 +1,28 @@
+{
+  "oracle_id": "db444262-c40f-4c80-9d14-265c32f77cf1",
+  "name": "Mage Slayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mage Slayer",
+      "oracle_fingerprint": "e1b1568e83f342cefe4a13e53c34ebe9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": "Attacked",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

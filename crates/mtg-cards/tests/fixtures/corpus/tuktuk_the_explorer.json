@@ -1,0 +1,27 @@
+{
+  "id": "b17f5403-7692-41ca-a3c9-b81c31bddc00",
+  "oracle_id": "754e227b-ff31-4b5c-b612-2221c2b44246",
+  "name": "Tuktuk the Explorer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "149",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Goblin",
+  "oracle_text": "Haste\nWhen Tuktuk the Explorer dies, create Tuktuk the Returned, a legendary 5/5 colorless Goblin Golem artifact creature token.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ]
+}

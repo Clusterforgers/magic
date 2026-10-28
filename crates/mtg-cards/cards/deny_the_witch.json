@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ddff34d8-715b-4d6a-8ced-7ff5c4c911bc",
+  "name": "Deny the Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deny the Witch",
+      "oracle_fingerprint": "8b76b4c7b1fdefc6146c46f984d0eae1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "LoseLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

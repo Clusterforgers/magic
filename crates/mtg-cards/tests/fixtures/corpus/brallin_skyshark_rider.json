@@ -1,0 +1,28 @@
+{
+  "id": "9b4fdcd5-5346-46a8-b1a4-84ddb74089e0",
+  "oracle_id": "464df46a-079b-47c1-95e7-930160abef2f",
+  "name": "Brallin, Skyshark Rider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c20",
+  "collector_number": "4",
+  "rarity": "mythic",
+  "released_at": "2020-04-17",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Shaman",
+  "oracle_text": "Partner with Shabraz, the Skyshark (When this creature enters, target player may put Shabraz into their hand from their library, then shuffle.)\nWhenever you discard a card, put a +1/+1 counter on Brallin and it deals 1 damage to each opponent.\n{R}: Target Shark gains trample until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner"
+  ]
+}

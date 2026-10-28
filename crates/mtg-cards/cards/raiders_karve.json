@@ -1,0 +1,43 @@
+{
+  "oracle_id": "1e9b3c9e-07ae-4de5-8607-93773825f655",
+  "name": "Raiders' Karve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raiders' Karve",
+      "oracle_fingerprint": "e00f8097ef2800b3b238d68697d9551a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Bound": "top" }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

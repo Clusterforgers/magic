@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b46da6bd-578c-4040-97c3-0005b78e31be",
+  "name": "Mask of Griselbrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mask of Griselbrand",
+      "oracle_fingerprint": "a3533b308e0243da2650986ff1cabe16",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": { "Stat": { "of": "Triggering", "stat": "Power" } } }],
+                  "paid": [
+                    { "Draw": { "count": { "Stat": { "of": "Triggering", "stat": "Power" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}
