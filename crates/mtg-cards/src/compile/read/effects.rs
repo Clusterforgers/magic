@@ -1065,11 +1065,17 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .flatten()
     {
         card
+    } else if let Some(ability) = (verb == "counter")
+        .then(|| r.attempt(super::c8_kwq_abilities::c8_kwq_counter_target))
+        .flatten()
+    {
+        ability
     } else {
         object(r)?
     };
     let spell = r.targets.first().is_some_and(|spec| {
-        matches!(&spec.what, Targetable::Object(selector) if selector.0.first() == Some(&Pred::Spell))
+        matches!(&spec.what, Targetable::Object(selector) if selector.0.first() == Some(&Pred::Spell)
+            || super::c8_kwq_abilities::c8_kwq_ability_phrase(selector).is_some())
     });
     if verb == "counter" && !spell {
         return None;

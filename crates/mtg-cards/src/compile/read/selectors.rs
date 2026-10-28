@@ -1737,7 +1737,9 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 _ => return None,
             },
             Targetable::Object(selector) => {
-                let phrase = phrase_text(selector, Form::Target)?;
+                let phrase = phrase_text(selector, Form::Target).or_else(|| {
+                    super::c8_kwq_abilities::c8_kwq_ability_phrase(selector).map(str::to_owned)
+                })?;
                 // The card puts "another" before "target": "another target attacking creature".
                 match phrase.strip_prefix("other ") {
                     Some(rest) => format!("another target {rest}"),
