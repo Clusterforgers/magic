@@ -335,6 +335,7 @@ Deathcap Cultivator
 Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
+Decree of Justice
 Decree of Pain
 Deekah, Fractal Theorist
 Deep Analysis
@@ -422,6 +423,7 @@ Electric Revelation
 Electro's Bolt
 Electrodominance
 Elegant Edgecrafters
+Elenda and Azor
 Eliminate the Competition
 Elven Ambush
 Elvish Aberration
@@ -500,6 +502,7 @@ Firmament Sage
 Fissure Vent
 Fists of Flame
 Flame Jab
+Flameblast Dragon
 Flamebraider
 Flamekin Village
 Flamerush Rider
@@ -1016,6 +1019,7 @@ Primeval Protector
 Primordial Hydra
 Prismatic Lens
 Prizefight
+Profane Command
 Professional Face-Breaker
 Professor of Symbology
 Propaganda
@@ -1042,6 +1046,7 @@ Rakish Heir
 Rally the Ranks
 Rambling Possum
 Ramos, Dragon Engine
+Rampaging War Mammoth
 Rampant Growth
 Rancor
 Ransom Note
@@ -1178,6 +1183,7 @@ Shamanic Revelation
 Shambling Shell
 Shapesharer
 Sharding Sphinx
+Shark Typhoon
 Sharktocrab
 Sheer Drop
 Sheltered by Ghosts
@@ -1483,6 +1489,7 @@ Village Pillagers
 Village Rites
 Viridian Corrupter
 Visionary Augmenter
+Vitality Hunter
 Vivid Crag
 Vivid Creek
 Vivid Grove

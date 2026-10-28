@@ -58,9 +58,19 @@ fn w6c_the_x_of_the_cards_own_cost_is_read_by_its_trigger(
 }
 
 #[rstest]
-#[case::the_cards_own_x("{X}{R}", true)]
-#[case::two_parts("{X} and 2 life", false)]
-fn w6c_a_payment_with_another_x_stays_with_the_table(#[case] cost: &str, #[case] own_x: bool) {
+#[case::two_parts("{X} and 2 life")]
+#[case::x_life("X life")]
+fn w6c_a_payment_with_another_x_stays_with_the_table(#[case] cost: &str) {
     let text = format!("Whenever ~ attacks, you may pay {cost}. If you do, draw X cards.");
-    assert_eq!(clause(&text, ClauseKind::Triggered, own_x), None, "{text}");
+    assert_eq!(clause(&text, ClauseKind::Triggered, false), None, "{text}");
+}
+
+#[test]
+fn w6c_a_payment_of_x_on_a_card_with_its_own_x_reads_the_x_paid() {
+    reads_as(
+        "When you cycle ~, you may pay {X}. If you do, create X 1/1 white Soldier creature tokens.",
+        ClauseKind::Triggered,
+        true,
+        r#"{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"from":"Graveyard","effects":[{"Pay":{"cost":"{X}","paid":[{"CreateToken":{"count":"X","token":{"Custom":{"name":"Soldier","types":["Creature"],"subtypes":["Soldier"],"colors":["White"],"power":1,"toughness":1}}}}]}}]}}"#,
+    );
 }

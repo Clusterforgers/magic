@@ -24,9 +24,9 @@
                           "what": {
                             "Object": [
                               { "Type": "Creature" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
                               { "In": "Graveyard" },
-                              { "OwnedBy": "You" },
-                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                              { "OwnedBy": "You" }
                             ]
                           }
                         }

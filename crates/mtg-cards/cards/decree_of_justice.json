@@ -1,0 +1,66 @@
+{
+  "oracle_id": "67a98359-6f02-4556-ad47-c01b643686d6",
+  "name": "Decree of Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decree of Justice",
+      "oracle_fingerprint": "ae8fa5cc51ab7fb1021549a8858aa3fc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{W}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": "X"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

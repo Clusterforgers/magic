@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d383c589-d8c7-4c4d-8084-37034d14b385",
+  "name": "Vitality Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vitality Hunter",
+      "oracle_fingerprint": "6947036453fa5c87efcce91f3b8e8637",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Activated": { "cost": "{X}{W}{W}", "effects": [{ "Monstrosity": { "count": "X" } }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesMonstrous": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": "X" } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

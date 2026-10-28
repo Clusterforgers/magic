@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "2bec0d43-f321-49eb-9402-83632d00d4be",
+  "oracle_id": "d383c589-d8c7-4c4d-8084-37034d14b385",
+  "multiverse_ids": [
+    484877
+  ],
+  "mtgo_id": 80641,
+  "tcgplayer_id": 212216,
+  "cardmarket_id": 452518,
+  "name": "Vitality Hunter",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/2bec0d43-f321-49eb-9402-83632d00d4be",
+  "scryfall_uri": "https://scryfall.com/card/c20/30/vitality-hunter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:27:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.jpg?1783931223",
+    "normal": "https://cards.scryfall.io/normal/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.jpg?1783931223",
+    "large": "https://cards.scryfall.io/large/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.jpg?1783931223",
+    "png": "https://cards.scryfall.io/png/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.png?1783931223",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.jpg?1783931223",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.jpg?1783931223",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.webp?1783931223",
+    "grid": "https://cards.scryfall.io/grid/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.webp?1783931223",
+    "display": "https://cards.scryfall.io/display/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.webp?1783931223",
+    "art": "https://cards.scryfall.io/art/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.webp?1783931223",
+    "crop": "https://cards.scryfall.io/crop/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.webp?1783931223",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/b/2bec0d43-f321-49eb-9402-83632d00d4be.jpg?1783931223"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Nightmare",
+  "oracle_text": "Lifelink\n{X}{W}{W}: Monstrosity X. (If this creature isn't monstrous, put X +1/+1 counters on it and it becomes monstrous.)\nWhen this creature becomes monstrous, put a lifelink counter on each of up to X target creatures.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Monstrosity"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2bec0d43-f321-49eb-9402-83632d00d4be/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad383c589-d8c7-4c4d-8084-37034d14b385&unique=prints",
+  "collector_number": "30",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomasz Jedruszek",
+  "artist_ids": [
+    "bba69285-2445-4a4b-a847-59397be972ea"
+  ],
+  "illustration_id": "9ed4d341-16b9-4638-83f6-6f794f8442de",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 21097,
+  "preview": {
+    "source": "Commanderin",
+    "source_uri": "https://cdn.discordapp.com/attachments/455800835709075457/696572824344592404/unknown.png",
+    "previewed_at": "2020-04-06"
+  },
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": "0.23"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=484877&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVitality%2BHunter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVitality%2BHunter",
+    "edhrec": "https://edhrec.com/route/?cc=Vitality+Hunter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212216%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=452518&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80641?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -85,10 +85,9 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
-/// After "you may pay": mana with an `{X}` the payer announces once they say yes ("{X}{R}"), when the card's own X does
-/// not already stand for something.
+/// After "you may pay": mana with an `{X}` the payer announces once they say yes ("{X}{R}"); the X of the sentence after it is
+/// that one, whatever the mana cost of the card.
 fn w6c_x_mana(r: &mut Reader<'_>) -> Option<Cost> {
-    (!r.x_free).then_some(())?;
     let mut text = String::new();
     while let Some(symbol) = r.symbol() {
         text.push('{');
