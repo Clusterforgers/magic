@@ -268,6 +268,22 @@ impl<'a> Scope<'a> {
             .find(|shot| shot.id == reference.id && shot.counter == reference.counter)
     }
 
+    /// The counters of every kind on what `on` names, all added up (CR 122.1).
+    fn c10_any_counters(&self, on: &Ref) -> Result<i64, ResolveError> {
+        let mut total = 0i64;
+        for named in self.refs(on)? {
+            total += match named {
+                Target::Player(player) => self.state.player(player).map_or(0, |held| {
+                    i64::from(held.counters().map(|(_, count)| count).sum::<u32>())
+                }),
+                Target::Object(object) => self
+                    .seen(object)
+                    .map_or(0, |seen| i64::from(seen.counters.c10_any_total())),
+            };
+        }
+        Ok(total)
+    }
+
     /// The largest count of the turn among the players `who` names, or among the objects it names for the times counters
     /// were put on them.
     fn tallied(&self, who: &Ref, what: TurnTally) -> Result<i64, ResolveError> {
@@ -1122,20 +1138,7 @@ impl<'a> Scope<'a> {
                 }
                 total
             }
-            Amount::AnyCounters(on) => {
-                let mut total = 0i64;
-                for named in self.refs(on)? {
-                    total += match named {
-                        Target::Player(player) => self.state.player(player).map_or(0, |held| {
-                            i64::from(held.counters().map(|(_, count)| count).sum::<u32>())
-                        }),
-                        Target::Object(object) => self
-                            .seen(object)
-                            .map_or(0, |seen| i64::from(seen.counters.c10_any_total())),
-                    };
-                }
-                total
-            }
+            Amount::AnyCounters(on) => self.c10_any_counters(on)?,
             Amount::Sum(parts) => {
                 let mut sum = 0i64;
                 for part in parts {
