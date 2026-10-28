@@ -54,6 +54,7 @@ mod token_attach;
 mod twins;
 mod two_targets;
 mod untapped;
+mod w2d_villainous;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -942,6 +943,7 @@ fn written(
             .made_then(&effects[start..])
             .or_else(|| writer.copy_group(&effects[start..], wording.chosen))
             .or_else(|| writer.exile_kind(&effects[start..]))
+            .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {

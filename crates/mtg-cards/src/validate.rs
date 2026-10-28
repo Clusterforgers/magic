@@ -2051,6 +2051,13 @@ impl Walker<'_> {
                 results,
             } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
             Effect::FlipCoin { who, win, lose, .. } => w.flip_coin(who, win, lose),
+            Effect::VillainousChoice {
+                who, first, second, ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.effect_list("first", first, false);
+                w.effect_list("second", second, false);
+            }
             Effect::Vote {
                 options,
                 secret,

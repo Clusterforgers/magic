@@ -35,6 +35,7 @@ fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
             results.iter().map(|row| row.effects.as_slice()).collect()
         }
         Effect::FlipCoin { win, lose, .. } => vec![win, lose],
+        Effect::VillainousChoice { first, second, .. } => vec![first, second],
         Effect::If {
             then, otherwise, ..
         } => vec![then, otherwise],

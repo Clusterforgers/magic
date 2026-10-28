@@ -124,6 +124,7 @@ mod triggers;
 mod turns;
 mod untap_rules;
 mod vote;
+mod w2d_villainous;
 mod where_x;
 mod zone_moves;
 

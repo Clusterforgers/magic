@@ -875,6 +875,18 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// The player faces a villainous choice (CR 701.56): they choose one of the two lists and it is done.
+    VillainousChoice {
+        /// The one player who chooses.
+        who: Ref,
+        /// The first option, as printed.
+        first: Vec<Effect>,
+        /// The second option, after ", or".
+        second: Vec<Effect>,
+        /// The options call the player "they" rather than "that player"; nothing changes in play.
+        #[serde(default, skip_serializing_if = "is_false")]
+        they: bool,
+    },
     /// A step of a Planechase game (CR 901): the controller planeswalks, or chaos ensues. A game without a planar deck,
     /// which every game the engine plays is, does nothing for it.
     Planechase {
@@ -1316,6 +1328,10 @@ mod tests {
     #[case::vote_on_objects(
         Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },
         r#"{"Vote":{"options":{"Of":{"Each":[{"In":"Battlefield"}]}},"as":"top"}}"#
+    )]
+    #[case::w2d_villainous_choice(
+        Effect::VillainousChoice { who: Ref::Triggering, first: vec![Effect::Draw { who: Ref::You, count: Amount::Fixed(1) }], second: Vec::new(), they: true },
+        r#"{"VillainousChoice":{"who":"Triggering","first":[{"Draw":{}}],"second":[],"they":true}}"#
     )]
     #[case::attach_the_source_to_a_target(
         Effect::Attach { what: Ref::This, to: Ref::Target(0) },
