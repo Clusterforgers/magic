@@ -1,0 +1,37 @@
+{
+  "oracle_id": "54c3d8ba-ee7c-4f15-8ee3-e5daf860b428",
+  "name": "Charnel Serenade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charnel Serenade",
+      "oracle_fingerprint": "082bb1d44db5fd12d07033a4158458fc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Surveil": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card" },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              },
+              { "Exile": { "what": "This" } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "time" }, "count": 3 } }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{2}{B}" } } }
+      ]
+    }
+  ]
+}

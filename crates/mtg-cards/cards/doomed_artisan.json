@@ -1,0 +1,59 @@
+{
+  "oracle_id": "70c92f25-32d6-4cda-b961-cf2680bd59ab",
+  "name": "Doomed Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doomed Artisan",
+      "oracle_fingerprint": "9120d4289c3250fad3690d5c3d0a6184",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sculpture" }, { "ControlledBy": "You" }] },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sculpture",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Sculpture"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Count": [{ "Subtype": "Sculpture" }, { "ControlledBy": "You" }]
+                                  },
+                                  "toughness": {
+                                    "Count": [{ "Subtype": "Sculpture" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

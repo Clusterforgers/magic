@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2f109125-b743-4ecf-84da-690d8e8ddf9c",
+  "name": "Ceaseless Conflict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ceaseless Conflict",
+      "oracle_fingerprint": "b9084b0510942235d9e5088bc3d4be1c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Destroyed": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

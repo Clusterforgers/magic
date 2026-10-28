@@ -1,0 +1,95 @@
+{
+  "oracle_id": "554df866-3dbb-4811-8573-6033481591aa",
+  "name": "Inspirit, Flagship Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspirit, Flagship Vessel",
+      "oracle_fingerprint": "f95ebf77a89f52ef8d5cf0c1c527b7cd",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Artifact" }, "Other"] },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Artifact" }, "Other"] },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": "charge", "count": 2 }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

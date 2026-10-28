@@ -1,0 +1,48 @@
+{
+  "oracle_id": "98441834-7da0-4d9f-88a4-a342a9b2a4c3",
+  "name": "Crawling Sensation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crawling Sensation",
+      "oracle_fingerprint": "b3513aef9857ca975e32a29082971e44",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "May": { "effects": [{ "Mill": { "count": 2 } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

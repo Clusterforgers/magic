@@ -1,0 +1,38 @@
+{
+  "oracle_id": "295cd8e1-0830-46c1-9957-556afd4bcee6",
+  "name": "Aetheric Amplifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetheric Amplifier",
+      "oracle_fingerprint": "4166520e40458e7a8fdf893e1deae315",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+                    },
+                    { "effects": [{ "MultiplyCounters": { "on": "You" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

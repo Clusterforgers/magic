@@ -67,7 +67,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Chance and choices: dice tables, coin flips, votes, piles, repeat for each player or object, planechase votes and modes at random, once each turn, once ever, repeated or one or more.
 - Fights and targets: fights of two targets, ability counters, second targets kept apart, targets for each opponent and the chosen player.
 - Turn structure: extra turns, added phases, phase conditions, skipped extra turns and time travel.
-- Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server), `promote`, `dsl-reference` and `dsl-schema` (schema-constrained output of a local server), the census of stored proposals and writers for every accepted sample wording.
+- Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server), `promote`, `dsl-reference` and `dsl-schema` (schema-constrained output of a local server), the census of stored proposals, writers for every accepted sample wording and rewordings that join, order and shorten sentences as printed.
 - Reference engines: Forge, XMage and Magarena surveyed, and `mtg-cli forge-check` maps Forge's scripts to DSL verbs (`docs/reference-engines.md`).
 - Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser.
 - Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
@@ -221,7 +221,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (r3w3) (r3w3-may-pay-writers) Writers for "you may", "you may pay" and the reflexive "When you do" (18 abilities)
 - [ ] (r3w4b) Delayed triggers and repeated steps left: "deals combat damage to a creature, destroy that creature at end of combat" (Ohran Viper), a loyalty ability's delayed return (Nahiri, the Harbinger), steps repeated for each object ("each Dragon you control", "each of those creatures", "for each of them") and a delayed trigger on its own line (Forth Eorlingas!, Theoretical Duplication)
 - [~] (r3w5) (r3w5-move-counters-writers) Writers for `Move`, `PutCounters`, `RemoveCounters` and the "combination or shape" spells (about 40 abilities)
-- [~] (r3w6) (r3w6-mismatch-al) Renderer variants for the Mismatch proposals of names A to L (proliferate twice, the order of a token's name and ability, an activation limit before modes)
+- [ ] (r3w6a) The A to L mismatches left: "you may have it fight", "you and target opponent each create", "another target player", a token "that's all colors", one of two counter removals as a cost; the proposals of Commodore Guff, Heroes in a Half Shell, Kazuul, Ever-Watching Threshold and Gyome need a rewrite
 - [~] (r3w7) (r3w7-mismatch-mz) The same for names M to Z
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "01deabbb-af6a-4998-99a7-35b7cfa9ef77",
+  "name": "Dreadhorde Invasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreadhorde Invasion",
+      "oracle_fingerprint": "d1b7611fe0dcdbc34ba6bf6a76d7f68d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LoseLife": { "amount": 1 } },
+              { "Amass": { "subtype": "Zombie", "count": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Subtype": "Zombie" },
+                  "Token",
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 6 } }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

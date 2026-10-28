@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "21c33a91-b02c-43ec-a385-aa0349928f9c",
+  "oracle_id": "295cd8e1-0830-46c1-9957-556afd4bcee6",
+  "multiverse_ids": [
+    692179
+  ],
+  "mtgo_id": 137233,
+  "tcgplayer_id": 615193,
+  "cardmarket_id": 807938,
+  "name": "Aetheric Amplifier",
+  "lang": "en",
+  "released_at": "2025-02-14",
+  "uri": "https://api.scryfall.com/cards/21c33a91-b02c-43ec-a385-aa0349928f9c",
+  "scryfall_uri": "https://scryfall.com/card/drc/18/aetheric-amplifier?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:55:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.jpg?1783907748",
+    "normal": "https://cards.scryfall.io/normal/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.jpg?1783907748",
+    "large": "https://cards.scryfall.io/large/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.jpg?1783907748",
+    "png": "https://cards.scryfall.io/png/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.png?1783907748",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.jpg?1783907748",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.jpg?1783907748",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.webp?1783907748",
+    "grid": "https://cards.scryfall.io/grid/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.webp?1783907748",
+    "display": "https://cards.scryfall.io/display/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.webp?1783907748",
+    "art": "https://cards.scryfall.io/art/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.webp?1783907748",
+    "crop": "https://cards.scryfall.io/crop/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.webp?1783907748",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/1/21c33a91-b02c-43ec-a385-aa0349928f9c.jpg?1783907748"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add one mana of any color.\n{4}, {T}: Choose one. Activate only as a sorcery.\n• Double the number of each kind of counter on target permanent.\n• Double the number of each kind of counter you have.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Double"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
+  "set": "drc",
+  "set_name": "Aetherdrift Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/drc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/21c33a91-b02c-43ec-a385-aa0349928f9c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A295cd8e1-0830-46c1-9957-556afd4bcee6&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Victor Sales",
+  "artist_ids": [
+    "7f1fa8d2-22e2-4da2-9a7f-8d650bd9a186"
+  ],
+  "illustration_id": "bb498386-d5bc-47ea-a271-6579dee35cae",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2278,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=km1f1W0Tl6k",
+    "previewed_at": "2025-01-23"
+  },
+  "prices": {
+    "usd": "0.61",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.33",
+    "eur_foil": null,
+    "tix": "3.98"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=692179&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAetheric%2BAmplifier",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAetheric%2BAmplifier",
+    "edhrec": "https://edhrec.com/route/?cc=Aetheric+Amplifier"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F615193%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=807938&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/137233?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

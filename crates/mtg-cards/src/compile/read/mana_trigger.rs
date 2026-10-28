@@ -19,7 +19,10 @@ pub fn attached(what: &Selector) -> bool {
 /// The mana added: "an additional {G}{G}", "an additional one mana of any color", "an additional one mana of the
 /// chosen color", or the whole of "one mana of any type that land produced".
 fn produced(r: &mut Reader<'_>) -> Option<Produce> {
-    if r.words("one mana of any type that land produced") {
+    // A trigger on any permanent tapped for mana says "that permanent" for "that land" (Kinnan, Bonder Prodigy).
+    if r.words("one mana of any type that land produced")
+        || r.words("one mana of any type that permanent produced")
+    {
         return Some(Produce::OfTapped);
     }
     r.need("an additional")?;

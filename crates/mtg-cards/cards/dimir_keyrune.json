@@ -1,0 +1,46 @@
+{
+  "oracle_id": "7685ff3f-6d61-4b1d-a381-49bc6274aa01",
+  "name": "Dimir Keyrune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Keyrune",
+      "oracle_fingerprint": "247a71be418abea7e1a93bfc3262de02",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "SetColors": ["Blue", "Black"] },
+                    { "SetCreatureTypes": ["Horror"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
