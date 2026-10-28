@@ -1,0 +1,54 @@
+{
+  "oracle_id": "1cae5752-b4af-4a8f-8c8c-2493e163083b",
+  "name": "Alela, Cunning Conqueror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alela, Cunning Conqueror",
+      "oracle_fingerprint": "c983387b0f163a20651f77a8551e856c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "Not": "YourTurn" },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie Rogue",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie", "Rogue"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"CoinFlipWon":{"who":"You"}},"effects":[{"PutCounters":{"on":"This","counter":{"Other":"luck"}}}]}},{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"luck"}}},"op":"Ge","right":10}},"effects":[{"WinGame":{}}]}}]}]}

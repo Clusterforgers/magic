@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "d1031ce5-063f-4c38-a6a9-abc15d254dfc",
+  "oracle_id": "57e4a1c0-4218-4a07-88e7-d6083884c2b6",
+  "multiverse_ids": [],
+  "resource_id": "D50CDF0DC503975E19508602E2925BF059138DBE5667A2CAC33301BB1DDB5F28",
+  "mtgo_id": 140013,
+  "tcgplayer_id": 631097,
+  "cardmarket_id": 824499,
+  "name": "Champions from Beyond",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/d1031ce5-063f-4c38-a6a9-abc15d254dfc",
+  "scryfall_uri": "https://scryfall.com/card/fic/11/champions-from-beyond?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.jpg?1783906370",
+    "normal": "https://cards.scryfall.io/normal/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.jpg?1783906370",
+    "large": "https://cards.scryfall.io/large/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.jpg?1783906370",
+    "png": "https://cards.scryfall.io/png/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.png?1783906370",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.jpg?1783906370",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.jpg?1783906370",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.webp?1783906370",
+    "grid": "https://cards.scryfall.io/grid/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.webp?1783906370",
+    "display": "https://cards.scryfall.io/display/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.webp?1783906370",
+    "art": "https://cards.scryfall.io/art/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.webp?1783906370",
+    "crop": "https://cards.scryfall.io/crop/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.webp?1783906370",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/1/d1031ce5-063f-4c38-a6a9-abc15d254dfc.jpg?1783906370"
+  },
+  "mana_cost": "{X}{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, create X 1/1 colorless Hero creature tokens.\nLight Party — Whenever you attack with four or more creatures, scry 2, then draw a card.\nFull Party — Whenever you attack with eight or more creatures, those creatures get +4/+4 until end of turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Full Party",
+    "Light Party",
+    "Scry"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "92ef9285-e2dc-40fc-86fa-6913bbc405db",
+      "component": "combo_piece",
+      "name": "Champions from Beyond",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/92ef9285-e2dc-40fc-86fa-6913bbc405db"
+    },
+    {
+      "object": "related_card",
+      "id": "17fa0c1f-6737-487c-9101-0bec2e586795",
+      "component": "token",
+      "name": "Hero",
+      "type_line": "Token Creature — Hero",
+      "uri": "https://api.scryfall.com/cards/17fa0c1f-6737-487c-9101-0bec2e586795"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d1031ce5-063f-4c38-a6a9-abc15d254dfc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A57e4a1c0-4218-4a07-88e7-d6083884c2b6&unique=prints",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Darius Zablockis",
+  "artist_ids": [
+    "602daf30-797a-4071-991e-42d35f8969d1"
+  ],
+  "illustration_id": "c0c296ae-27a4-43ce-9351-3a71a87ee958",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3533,
+  "prices": {
+    "usd": "1.50",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.81",
+    "eur_foil": null,
+    "tix": "2.07"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChampions%2Bfrom%2BBeyond",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChampions%2Bfrom%2BBeyond",
+    "edhrec": "https://edhrec.com/route/?cc=Champions+from+Beyond"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631097%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824499&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140013?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

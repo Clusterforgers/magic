@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Activated":{"cost":["Tap","SacrificeSelf"],"targets":[{"what":{"Object":[{"ControlledBy":"You"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":{"Protection":[{"ControlledBy":"Opponents"}]}}],"duration":"UntilEndOfTurn"}}]}}]}]}

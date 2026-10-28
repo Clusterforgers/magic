@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Static":{"affected":"This","mods":[{"AddKeyword":"Indestructible"}],"condition":{"Matches":{"subject":"This","selector":["AttackedThisTurn"]}}}},{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]},"effects":[{"Proliferate":{}},{"Proliferate":{}}]}}]}]}

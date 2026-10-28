@@ -1,0 +1,45 @@
+{
+  "oracle_id": "dd01ef1f-f6be-498f-82e0-dc04833e685f",
+  "name": "Big Apple, 3 a.m.",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Big Apple, 3 a.m.",
+      "oracle_fingerprint": "075ab015697f0ff0a61f59097b65d2b9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Players": "Opponents" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

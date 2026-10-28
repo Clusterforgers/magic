@@ -1,0 +1,36 @@
+{
+  "oracle_id": "997d2f38-5a50-451e-bd48-e36dcb24d967",
+  "name": "Boggart Shenanigans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boggart Shenanigans",
+      "oracle_fingerprint": "2a205177c28f31ab585035eb02f70264",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

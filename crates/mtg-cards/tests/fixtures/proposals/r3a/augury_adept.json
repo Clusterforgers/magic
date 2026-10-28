@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"when":{"DealsDamage":{"source":["This"],"combat":true}},"effects":[{"LookAtTop":{"count":1,"as":"top"}},{"Reveal":{"what":{"Bound":"top"}}},{"Move":{"what":{"Bound":"top"},"to":"Hand"}},{"GainLife":{"amount":{"Stat":{"of":{"Bound":"top"},"stat":"ManaValue"}}}}]}}]}]}

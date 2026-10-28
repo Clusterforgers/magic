@@ -1,0 +1,66 @@
+{
+  "oracle_id": "57e4a1c0-4218-4a07-88e7-d6083884c2b6",
+  "name": "Champions from Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champions from Beyond",
+      "oracle_fingerprint": "6740d7411a9662bf57d8f97af31c6ac2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Hero",
+                      "types": ["Creature"],
+                      "subtypes": ["Hero"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 4
+              }
+            },
+            "effects": [{ "Scry": { "count": 2 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 8
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
