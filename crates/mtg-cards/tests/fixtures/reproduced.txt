@@ -394,6 +394,7 @@ Enraged Revolutionary
 Enthusiastic Study
 Entreat the Angels
 Entreat the Dead
+Ephara's Dispersal
 Epic Confrontation
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
@@ -905,6 +906,7 @@ Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
 Prey Upon
+Price of Fame
 Pridemalkin
 Priest of the Crossing
 Primal Beyond

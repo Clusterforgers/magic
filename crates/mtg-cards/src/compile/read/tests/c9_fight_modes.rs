@@ -79,3 +79,48 @@ fn c9_fight_a_trigger_chooses_two_and_writes_back() {
     };
     assert_eq!(choose.fixed_min(), Some(2));
 }
+
+/// A reduction of the spell itself while it targets what `wanted` selects.
+fn c9_fight_targeting(mana: &str, wanted: &str) -> String {
+    format!(
+        r#"{{"CostModifier":{{"applies_to":["This",{{"Targeting":[{wanted}]}}],"change":"Reduce","mana":"{mana}"}}}}"#
+    )
+}
+
+#[rstest]
+#[case::a_dinosaur_you_control(
+    "This spell costs {2} less to cast if it targets a Dinosaur you control.",
+    "{2}",
+    r#"{"Subtype":"Dinosaur"},{"ControlledBy":"You"}"#
+)]
+#[case::a_legendary_creature(
+    "This spell costs {2} less to cast if it targets a legendary creature.",
+    "{2}",
+    r#"{"Type":"Creature"},{"Supertype":"Legendary"}"#
+)]
+#[case::an_attacking_creature(
+    "This spell costs {2} less to cast if it targets an attacking creature.",
+    "{2}",
+    r#"{"Type":"Creature"},"Attacking""#
+)]
+#[case::an_artifact(
+    "This spell costs {1} less to cast if it targets an artifact.",
+    "{1}",
+    r#"{"Type":"Artifact"}"#
+)]
+fn c9_fight_a_reduction_for_a_target_reads_as_targeting(
+    #[case] text: &str,
+    #[case] mana: &str,
+    #[case] wanted: &str,
+) {
+    reads_as(text, ClauseKind::Static, false, &c9_fight_targeting(mana, wanted));
+}
+
+#[rstest]
+#[case::two_targets("This spell costs {2} less to cast if it targets two creatures.")]
+#[case::another_spell("Creature spells you cast cost {2} less to cast if it targets a Dinosaur you control.")]
+#[case::and_a_condition("This spell costs {2} less to cast if it targets a Dinosaur you control and you control a Dragon.")]
+#[case::no_article("This spell costs {2} less to cast if it targets Dinosaurs you control.")]
+fn c9_fight_a_reduction_for_another_target_stays_unread(#[case] text: &str) {
+    assert!(clause(text, ClauseKind::Static, false).is_none(), "{text}");
+}

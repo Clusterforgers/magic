@@ -11,7 +11,7 @@
           "CostModifier": {
             "applies_to": [
               "This",
-              { "Targeting": [{ "Supertype": "Legendary" }, { "Type": "Creature" }] }
+              { "Targeting": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] }
             ],
             "change": "Reduce",
             "mana": "{2}"

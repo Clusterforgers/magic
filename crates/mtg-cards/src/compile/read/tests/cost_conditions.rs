@@ -64,9 +64,6 @@ fn a_reduction_for_spells_of_two_kinds(#[case] text: &str, #[case] applies_to: &
 }
 
 #[rstest]
-#[case::a_reading_of_the_count_unknown(
-    "This spell costs {2} less to cast if it targets an attacking creature."
-)]
 #[case::one_opponent_with_cards(
     "This spell costs {3} less to cast if an opponent has seven or more cards in their graveyard."
 )]
