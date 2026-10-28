@@ -55,8 +55,8 @@ pub(super) fn c11c_text(filter: &Selector, count: usize) -> String {
     let whom = crate::wording::sacrifice(&rest, count);
     let whom = whom.trim_start_matches("Sacrifice ").trim_end_matches('.');
     if count == 1 {
-        format!("Remove a {kind} counter from {whom}")
+        format!("Remove a {kind} counter from {whom} you control")
     } else {
-        format!("Remove a {kind} counter from each of {whom}")
+        format!("Remove a {kind} counter from each of {whom} you control")
     }
 }

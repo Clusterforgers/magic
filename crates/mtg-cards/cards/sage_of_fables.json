@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f53da056-97be-41ad-8cfc-0d92e17dcd7b",
+  "name": "Sage of Fables",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage of Fables",
+      "oracle_fingerprint": "3404a47517c66a27b0a8d43f673beb7d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Subtype": "Wizard" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "RemoveCounters": { "counter": "+1/+1", "from": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

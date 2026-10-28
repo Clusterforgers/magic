@@ -4,7 +4,7 @@
 use super::counters;
 use super::tokens::Reader;
 use crate::refs::Ref;
-use crate::value::{Amount, Cmp, Condition, CounterKind};
+use crate::value::{Amount, Cmp, Condition};
 
 /// "it had counters on it", "it had one or more counters on it", "it had one or more +1/+1 counters on it".
 pub fn c11c_had(r: &mut Reader<'_>) -> Option<Condition> {
@@ -33,26 +33,6 @@ pub fn c11c_had(r: &mut Reader<'_>) -> Option<Condition> {
     })
 }
 
-/// The kind the condition counts, `None` for counters of any kind; nothing for another condition.
-fn c11c_kind(condition: &Condition) -> Option<Option<&CounterKind>> {
-    let Condition::Compare {
-        left,
-        op: Cmp::Ge,
-        right: Amount::Fixed(1),
-    } = condition
-    else {
-        return None;
-    };
-    match left {
-        Amount::AnyCounters(Ref::Triggering) => Some(None),
-        Amount::Counters {
-            on: Ref::Triggering,
-            counter,
-        } => Some(Some(counter)),
-        _ => None,
-    }
-}
-
 /// The longer wording "it had one or more counters on it" of each of `texts` that says "it had counters on it".
 pub fn c11c_had_wordings(texts: &[String]) -> Vec<String> {
     texts
@@ -64,12 +44,23 @@ pub fn c11c_had_wordings(texts: &[String]) -> Vec<String> {
 
 /// The wording of the condition: "it had counters on it" for any kind, "it had one or more +1/+1 counters on it".
 pub fn c11c_had_texts(condition: &Condition) -> Vec<String> {
-    match c11c_kind(condition) {
-        Some(None) => vec!["it had counters on it".to_owned()],
-        Some(Some(counter)) => counters::kind_text(counter)
+    let Condition::Compare {
+        left,
+        op: Cmp::Ge,
+        right: Amount::Fixed(1),
+    } = condition
+    else {
+        return Vec::new();
+    };
+    match left {
+        Amount::AnyCounters(Ref::Triggering) => vec!["it had counters on it".to_owned()],
+        Amount::Counters {
+            on: Ref::Triggering,
+            counter,
+        } => counters::kind_text(counter)
             .map(|kind| format!("it had one or more {kind} counters on it"))
             .into_iter()
             .collect(),
-        None => Vec::new(),
+        _ => Vec::new(),
     }
 }
