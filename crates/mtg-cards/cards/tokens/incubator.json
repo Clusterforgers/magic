@@ -5,7 +5,7 @@
     "types": ["Artifact"],
     "subtypes": ["Incubator"],
     "abilities": [
-      { "Activated": { "cost": [{ "Mana": "{2}" }], "effects": [{ "Transform": { "what": "This" } }] } }
+      { "Activated": { "cost": "{2}", "effects": [{ "Transform": { "what": "This" } }] } }
     ]
   },
   "back": {

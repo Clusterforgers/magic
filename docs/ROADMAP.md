@@ -54,6 +54,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
 "- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Emblems: objects in the command zone with abilities of their own that work from there, read and written by the compiler.
+- Incubate: the Incubator token with its Phyrexian back face, read and written by the compiler.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge, Harmonize and Read ahead (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
@@ -150,7 +151,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [~] (r2da-b) (r2da-b-rad-counters) Rad counters: the counters on players and the trigger as the precombat main phase begins; frees about 20 cards (Bloatfly Swarm, Vexing Radgull)
-- [~] (r2da-c) (r2da-c-keyword-actions) Keyword actions not built: exert, expend, crimes, incubate, clash, forecast and venture; frees about 30 cards (Combat Celebrant, Sunfall)
+- [ ] (r2da-c-a) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
+- [ ] (r2da-c-b) Expend N: the trigger as a player spends their Nth total mana on spells in a turn (Wandertale Mentor, Teapot Slinger, Trailtracker Scout, Pyreswipe Hawk)
+- [ ] (r2da-c-c) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
+- [ ] (r2da-c-d) Crimes, clash and forecast (Bandit's Haul, Patrolling Peacemaker, Lash Out, Hoarder's Greed, Skyscribing)
+- [ ] (r2da-c-e) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
 - [ ] (r2dga) Rules for the partners of accepted proposals, so both halves become corpus cards; frees about 8 cards (Ukkima, Stalking Shadow, Pippin, Warden of Isengard, Brallin, Skyshark Rider)
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background and a planeswalker commander, once their other text runs

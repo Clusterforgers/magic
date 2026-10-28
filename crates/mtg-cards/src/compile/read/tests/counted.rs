@@ -78,6 +78,9 @@ fn the_reminder_text_of_energy_counters_does_not_keep_the_clause_from_being_read
     assert!(!reminder_mentions_counter(
         "Time travel. (For each suspended card you own and each permanent you control with a time counter on it, you may add or remove a time counter.)"
     ));
+    assert!(!reminder_mentions_counter(
+        "Incubate 3. (Create an Incubator token with three +1/+1 counters on it and \"{2}: Transform this token.\" It transforms into a 0/0 Phyrexian artifact creature.)"
+    ));
 }
 
 #[rstest]
