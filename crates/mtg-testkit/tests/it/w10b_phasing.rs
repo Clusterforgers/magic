@@ -47,11 +47,7 @@ fn w10b_id(driver: &Driver, name: &str) -> ObjectId {
 }
 
 fn w10b_zone(driver: &Driver, name: &str) -> Zone {
-    driver
-        .state()
-        .object(w10b_id(driver, name))
-        .unwrap()
-        .zone()
+    driver.state().object(w10b_id(driver, name)).unwrap().zone()
 }
 
 fn w10b_replays(driver: &Driver) {
@@ -108,7 +104,10 @@ fn w10b_breezekeeper_phases_out_with_both_auras_and_in_again_for_its_controller_
     let pacifism = driver.state().object(w10b_id(&driver, "Pacifism")).unwrap();
     let phasing = pacifism.permanent().unwrap().phasing().unwrap();
     assert!(phasing.indirect && phasing.controller == pid(1));
-    let held = driver.state().object(w10b_id(&driver, "Breezekeeper")).unwrap();
+    let held = driver
+        .state()
+        .object(w10b_id(&driver, "Breezekeeper"))
+        .unwrap();
     assert_eq!(
         held.permanent().unwrap().tapped(),
         was_tapped,
@@ -313,7 +312,7 @@ fn w10b_a_creature_that_phases_out_in_combat_leaves_it(
     );
     if let Some(attacker) = driver.state().combat().attackers().first() {
         assert!(attacker.blocked(), "it stays blocked");
-        assert!(attacker.blockers().is_empty());
+        assert_eq!(attacker.blockers(), [] as [ObjectId; 0]);
     }
     driver.pass_until(Step::EndCombat)?;
     assert_eq!(driver.state().player(pid(1)).unwrap().life(), 20);
@@ -356,11 +355,19 @@ fn w10b_fused_gallifrey_falls_leaves_the_creatures_it_phases_out_alive(
             .unwrap()
             .damage()
     };
-    assert_eq!(damage(&driver, bear), 4, "dealt damage first, then phased out");
+    assert_eq!(
+        damage(&driver, bear),
+        4,
+        "dealt damage first, then phased out"
+    );
     assert_eq!(w10b_zone(&driver, "Wolf"), Zone::Exile);
     assert_eq!(w10b_zone(&driver, "Giant"), Zone::Battlefield);
     driver.idle_until(2, Step::Upkeep)?;
-    assert_eq!(damage(&driver, bear), 0, "the cleanup removes it from a phased-out permanent");
+    assert_eq!(
+        damage(&driver, bear),
+        0,
+        "the cleanup removes it from a phased-out permanent"
+    );
     driver.idle_until(w10b_turn_of_seat_0(seats, 1), Step::Draw)?;
     assert_eq!(w10b_zone(&driver, "Bear"), Zone::Battlefield);
     assert_eq!(w10b_id(&driver, "Bear"), bear);
