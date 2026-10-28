@@ -155,7 +155,11 @@ impl Part {
                 from: Some(filter),
             } => {
                 let mut filter = filter.clone();
-                filter.0.push(counter.clone().map_or(Pred::HasAnyCounter, Pred::HasCounter));
+                filter.0.push(
+                    counter
+                        .clone()
+                        .map_or(Pred::HasAnyCounter, Pred::HasCounter),
+                );
                 pick(Kind::Counter, &filter, count, item)?
             }
             CostItem::RemoveCounters { counter, count, .. } => {

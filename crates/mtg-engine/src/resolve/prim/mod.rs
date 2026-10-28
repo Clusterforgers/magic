@@ -72,7 +72,6 @@ mod proliferate;
 mod put_counters;
 mod regenerate;
 mod remove_counters;
-mod w2f_any_counters;
 mod repeat_each;
 mod reveal;
 mod reveal_until;
@@ -89,6 +88,7 @@ mod time_travel;
 mod transform;
 mod untap;
 mod vote;
+mod w2f_any_counters;
 mod win_game;
 
 use mtg_cards::effect::Effect;

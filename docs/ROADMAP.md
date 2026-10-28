@@ -47,7 +47,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
 - Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts and stored `card_rules` (`docs/cards-dsl.md`).
 - Abilities and characteristics: one ability reader, CR 613 in one pass, `GameRule` effects, state triggers and abilities that work from hands, graveyards, exile and the stack.
-- Counters and planeswalkers: counters on permanents and players, keyword counters, counters of any kind, counter costs on other permanents, "if it had counters on it", multiplied counters, loyalty abilities and the legend rule.
+- Counters and planeswalkers: counters on permanents and players, keyword counters, counters of any kind, counter costs on other permanents, counters of any kind removed by a cost or an effect, "if it had counters on it", multiplied counters, loyalty abilities and the legend rule.
 - Attachments: Auras on permanents and players, Equipment, Reconfigure, living weapon, umbra armor and Aura grants.
 - Replacement and prevention: enters tapped or with counters, damage shields, regeneration, protection, death shields and conditional "instead" replacements.
 - Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
@@ -169,7 +169,7 @@ The server is settled first, then the web is built once against the final types.
 ### Compiler wordings
 - [ ] (c10) Unread spell, trigger and activated wordings ranked by `mtg-cli coverage`: one piece per family left (quoted tokens, goad, counters, pump, manlands, graveyard, flicker, damage, draw and discard)
 - [~] (c10s) (c10s-counted-amounts) Counted amounts left: counts of another player, distinct values, mana spent, things destroyed this way, differences and "whichever is greater"; frees about 30 cards (Celebrate the Harvest, Wurmquake, Kaya's Wrath)
-- [~] (r2de-a2) (r2de-a2-counters-any-removed) Counters of any kind removed: by an effect with a choice of kinds ("up to three counters from target permanent") and as a cost from a permanent the payer picks; frees about 8 cards (Glissa Sunslayer, Power Conduit, Fain, the Broker)
+- [ ] (r2de-a4) Counters of any kind left: one removed from the source as a cost (its kind asked while paying) and X of them from a picked permanent or a target; frees about 6 cards (Loch Mare, Burdened Stoneback, Moxite Refinery, Thornmantle Striker)
 - [ ] (r2de-a3) Counters from among permanents as a cost or effect, the counters of a permanent that left put on another, and "that many" of its counters; frees about 10 cards (Tayam, Iron Apprentice, Reyhan, Last of the Abzan)
 - [ ] (c10d) Top-of-library wordings left: reveals with a follow-up, each player's top cards, a land put from a look, places beneath the top X; frees about 20 cards (Risen Reef, Explorer's Scope, Unexpectedly Absent)
 - [ ] (c10e) Subtype and type nouns, legendary names without a comma as `~`, and the events "enters from your graveyard", "is turned face up" and "modified creature"

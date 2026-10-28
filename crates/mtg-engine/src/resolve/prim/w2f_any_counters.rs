@@ -51,7 +51,9 @@ pub(super) fn w2f_run(
             } else {
                 match answers.next() {
                     None => return Ok(Run::Ask(w2f_question(cx, holder, &kinds, up_to))),
-                    Some((who, Choice::Option(index))) if *who == player && *index < offered => *index,
+                    Some((who, Choice::Option(index))) if *who == player && *index < offered => {
+                        *index
+                    }
                     Some(other) => {
                         return Err(ResolveError::Invalid(format!(
                             "{other:?} is no answer to the choice of a counter to remove"
@@ -79,7 +81,11 @@ pub(super) fn w2f_run(
 }
 
 /// One counter of `kind` leaves what is `held` and joins what is `taken`.
-fn w2f_take(held: &mut [(CounterKind, u32)], taken: &mut Vec<(CounterKind, i32)>, kind: &CounterKind) {
+fn w2f_take(
+    held: &mut [(CounterKind, u32)],
+    taken: &mut Vec<(CounterKind, i32)>,
+    kind: &CounterKind,
+) {
     if let Some((_, n)) = held.iter_mut().find(|(held, _)| held == kind) {
         *n = n.saturating_sub(1);
     }
@@ -102,7 +108,9 @@ fn w2f_question(cx: &Cx<'_>, holder: Target, kinds: &[CounterKind], up_to: bool)
         Target::Object(object) => cx
             .state()
             .object(object.id)
-            .map_or_else(String::new, |object| format!(" from {}", object.card().name)),
+            .map_or_else(String::new, |object| {
+                format!(" from {}", object.card().name)
+            }),
         Target::Player(_) => String::new(),
     };
     Decision {
@@ -132,7 +140,12 @@ mod tests {
 
     const ME: PlayerId = PlayerId(0);
 
-    type Outcome = Result<Vec<(String, i32)>, Vec<String>>;
+    /// What a run comes to: the labels of the question asked, or the counters removed as (kind, delta).
+    #[derive(Debug, PartialEq)]
+    enum Outcome {
+        Asked(Vec<String>),
+        Removed(Vec<(String, i32)>),
+    }
 
     /// Seat 0 controls the Source; seat 1 controls a Bear with two +1/+1, one shield and one stun counter and a Wolf
     /// with three charge counters.
@@ -179,34 +192,43 @@ mod tests {
                     panic!("a choice of option");
                 };
                 assert_eq!(decision.player, ME);
-                Err(options
-                    .options
-                    .into_iter()
-                    .map(|option| match option {
-                        ChoiceOption::Label(label) => label,
-                        other => panic!("{other:?}"),
-                    })
-                    .collect())
+                Outcome::Asked(
+                    options
+                        .options
+                        .into_iter()
+                        .map(|option| match option {
+                            ChoiceOption::Label(label) => label,
+                            other => panic!("{other:?}"),
+                        })
+                        .collect(),
+                )
             }
-            Run::Done { events, .. } => Ok(events
-                .into_iter()
-                .map(|event| {
-                    let Event::CountersChanged(changed) = event else {
-                        panic!("{event:?}");
-                    };
-                    (changed.counter.name().to_owned(), changed.delta)
-                })
-                .collect()),
+            Run::Done { events, .. } => Outcome::Removed(
+                events
+                    .into_iter()
+                    .map(|event| {
+                        let Event::CountersChanged(changed) = event else {
+                            panic!("{event:?}");
+                        };
+                        (changed.counter.name().to_owned(), changed.delta)
+                    })
+                    .collect(),
+            ),
             Run::Cast(_) => panic!("no cast"),
         }
     }
 
     fn asked(labels: &[&str]) -> Outcome {
-        Err(labels.iter().map(|label| (*label).to_owned()).collect())
+        Outcome::Asked(labels.iter().map(|label| (*label).to_owned()).collect())
     }
 
     fn removed(taken: &[(&str, i32)]) -> Outcome {
-        Ok(taken.iter().map(|(kind, n)| ((*kind).to_owned(), *n)).collect())
+        Outcome::Removed(
+            taken
+                .iter()
+                .map(|(kind, n)| ((*kind).to_owned(), *n))
+                .collect(),
+        )
     }
 
     #[rstest]

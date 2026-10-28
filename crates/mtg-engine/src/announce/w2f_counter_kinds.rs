@@ -20,7 +20,9 @@ pub(super) fn w2f_run(ctx: &Ctx<'_>, work: &mut Work<'_>, price: &Price) -> Opti
     let mut needed: Vec<ObjectId> = Vec::new();
     let mut taken = picks.iter();
     for part in &price.parts {
-        let Part::Pick(pick) = part.at(x) else { continue };
+        let Part::Pick(pick) = part.at(x) else {
+            continue;
+        };
         let picked = taken.next()?;
         if pick.w2f_any_kind() {
             needed.extend(picked.iter().copied());
@@ -29,21 +31,26 @@ pub(super) fn w2f_run(ctx: &Ctx<'_>, work: &mut Work<'_>, price: &Price) -> Opti
     let settled = work.choices.cost_kinds().len();
     for object in needed.into_iter().skip(settled) {
         let on = Target::Object(ctx.state.object(object)?.reference());
-        let kinds: Vec<_> = kinds_held(ctx.state, on).into_iter().map(|(kind, _)| kind).collect();
+        let kinds: Vec<_> = kinds_held(ctx.state, on)
+            .into_iter()
+            .map(|(kind, _)| kind)
+            .collect();
         let index = match (kinds.len(), work.done.w2f_kind_picked.take()) {
             (0, _) => return Some(Next::Drop),
             (1, _) => 0,
-            (_, Some(index)) => index,
+            (_, Some(index)) => usize::from(index),
             (_, None) => {
                 let name = ctx.state.object(object)?.card().name.clone();
-                return Some(ctx.ask(DecisionKind::ChooseOption(OptionOptions {
-                    source: ctx.source,
-                    options: kinds
-                        .iter()
-                        .map(|kind| ChoiceOption::Label(format!("{} counter", kind.name())))
-                        .collect(),
-                    text: format!("Choose a counter to remove from {name}."),
-                })));
+                return Some(
+                    ctx.ask(DecisionKind::ChooseOption(OptionOptions {
+                        source: ctx.source,
+                        options: kinds
+                            .iter()
+                            .map(|kind| ChoiceOption::Label(format!("{} counter", kind.name())))
+                            .collect(),
+                        text: format!("Choose a counter to remove from {name}."),
+                    })),
+                );
             }
         };
         work.choices.w2f_kind_for_cost(kinds.get(index)?.clone());

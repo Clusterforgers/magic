@@ -226,7 +226,10 @@ impl Choices {
 
     /// Adds the kind of counter removed from the next permanent picked for a part that removes one of any kind.
     pub(crate) fn w2f_kind_for_cost(&mut self, kind: CounterKind) {
-        self.cost_taken.get_or_insert_with(Box::default).kinds.push(kind);
+        self.cost_taken
+            .get_or_insert_with(Box::default)
+            .kinds
+            .push(kind);
     }
 
     /// Adds the objects picked for the next part of the cost that takes some.
