@@ -46,7 +46,7 @@ pub(crate) fn read(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a triggered ability reads X only where the rules give it one: a delayed trigger the X of what set it up, the trigger "when this enters" the X of its spell, a trigger on a spell being cast the X of the spell cast; any other trigger of a permanent, and a trigger on another zone change, read 0.
+    //! Goal: a triggered ability reads X only where the rules give it one: a delayed trigger the X of what set it up, the trigger "when this enters" the X of its spell, a trigger on a spell being cast the X of the spell cast, a trigger on cycling its card or on its card becoming monstrous the X of that cost; any other trigger of a permanent, and a trigger on another zone change, read 0.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -146,5 +146,28 @@ mod tests {
             read(&pattern(CASTS_ANY), false, &source, &Cause::default()),
             None
         );
+    }
+
+    #[rstest]
+    #[case::cycling_this(r#"{"Cycled":{"what":["This"],"by":"You"}}"#, 3, Some(3))]
+    #[case::cycling_this_for_nothing(r#"{"Cycled":{"what":["This"],"by":"You"}}"#, 0, Some(0))]
+    #[case::cycling_another_card(r#"{"Cycled":{"by":"You"}}"#, 3, None)]
+    #[case::becoming_monstrous(r#"{"BecomesMonstrous":{"what":["This"]}}"#, 2, Some(2))]
+    #[case::another_becoming_monstrous(
+        r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"}]}}"#,
+        2,
+        None
+    )]
+    fn w6c_a_trigger_on_cycling_or_a_monstrosity_of_its_card_reads_the_x_of_that_cost(
+        #[case] when: &str,
+        #[case] amount: u32,
+        #[case] expected: Option<u32>,
+    ) {
+        let source = spell_cast_with(Some(7));
+        let cause = Cause {
+            amount,
+            ..Cause::default()
+        };
+        assert_eq!(read(&pattern(when), false, &source, &cause), expected);
     }
 }

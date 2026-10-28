@@ -1193,8 +1193,10 @@ fn matching_event(
         )
         | (TriggerPattern::Cycled { what, by: who }, Happened::Cycled { player, card, .. }) => {
             let card = object(*card)?;
+            // A cycling carries the X of its cost as the amount (`Happened::amount`); a discard has none.
+            let subjects = vec![Target::Player(*player), Target::Object(card)];
             (by(who, player) && picks(what, card)?)
-                .then(|| cause(state, vec![Target::Player(*player), Target::Object(card)]))
+                .then(|| counted(state, subjects, happened.amount()))
         }
         (
             TriggerPattern::DayNightChanges { to: wanted },

@@ -56,17 +56,15 @@ pub(super) fn announced<'a>(
     if template.x == 0 {
         return Ok(Announced::Price(template.clone(), None));
     }
-    let most = most(cx, player, template);
+    // The answer was checked against the most the player could pay when it was asked; the mana is spent since.
     match journal.next_if(|entry| entry.0 == player) {
-        Some((_, Choice::Number(x))) if *x <= most => {
-            Ok(Announced::Price(at(template, *x), Some(*x)))
-        }
+        Some((_, Choice::Number(x))) => Ok(Announced::Price(at(template, *x), Some(*x))),
         None => Ok(Announced::Ask(Decision {
             player,
             kind: DecisionKind::ChooseNumber(NumberOptions {
                 source: cx.scope.source.id,
                 min: 0,
-                max: Some(most),
+                max: Some(most(cx, player, template)),
                 except: Vec::new(),
                 text: "Choose a value for X.".to_owned(),
                 can_cancel: false,

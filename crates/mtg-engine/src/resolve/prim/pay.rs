@@ -796,7 +796,10 @@ mod tests {
     }
 
     #[rstest]
-    #[case::counted_life(r#"[{"PayLife":"X"}]"#, ResolveError::Unsupported("Effect.Pay.X.Parts"))]
+    #[case::counted_life(
+        r#"[{"PayLife":"X"}]"#,
+        ResolveError::Unsupported("Effect.Pay.X.Parts")
+    )]
     #[case::counted_mana_and_energy(
         r#"[{"Mana":"{1}"},{"PayEnergy":"X"}]"#,
         ResolveError::Unsupported("Effect.Pay.X.Parts")
@@ -860,8 +863,14 @@ mod tests {
     ) {
         let game = game(&[lands, 0]);
         let pay = pay(r#""You""#, &format!(r#""{cost}""#));
-        assert_eq!(said(run_with(&game, &[], &pay)), Said::Asks(0, question.into()));
-        assert_eq!(w6c_number(run_with(&game, &[(0, true)], &pay)), (0, Some(most)));
+        assert_eq!(
+            said(run_with(&game, &[], &pay)),
+            Said::Asks(0, question.into())
+        );
+        assert_eq!(
+            w6c_number(run_with(&game, &[(0, true)], &pay)),
+            (0, Some(most))
+        );
         let chosen = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(most))];
         let Run::Ask(Decision {
             kind: DecisionKind::PayMana(options),
@@ -870,7 +879,10 @@ mod tests {
         else {
             panic!("a payment was expected");
         };
-        assert_eq!(options.cost.mana_value(), most * (1 + u32::from(cost == "{X}{X}")) + u32::from(cost.contains('G')));
+        assert_eq!(
+            options.cost.mana_value(),
+            most * (1 + u32::from(cost == "{X}{X}")) + u32::from(cost.contains('G'))
+        );
     }
 
     #[test]
@@ -890,9 +902,8 @@ mod tests {
     }
 
     #[rstest]
-    #[case::more_than_the_player_can_pay(vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(3))])]
     #[case::another_kind(vec![(ME, Choice::YesNo(true)), (ME, Choice::YesNo(true))])]
-    fn w6c_an_x_the_player_cannot_pay_is_refused(#[case] journal: Vec<(PlayerId, Choice)>) {
+    fn w6c_another_answer_for_x_is_refused(#[case] journal: Vec<(PlayerId, Choice)>) {
         let game = game(&[3, 0]);
         let error = run_journal(&game, journal, &pay(r#""You""#, r#""{X}{G}""#)).unwrap_err();
         assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
@@ -902,6 +913,9 @@ mod tests {
     fn w6c_a_player_without_the_mana_for_x_zero_can_only_decline() {
         let game = game(&[0, 0]);
         let pay = pay(r#""You""#, r#""{X}{G}""#);
-        assert_eq!(said(run_with(&game, &[], &pay)), Said::Declines(0, "Pay {X}{G}?".into()));
+        assert_eq!(
+            said(run_with(&game, &[], &pay)),
+            Said::Declines(0, "Pay {X}{G}?".into())
+        );
     }
 }

@@ -67,7 +67,6 @@ mod move_to;
 mod multiply_counters;
 mod myriad_copies;
 mod pay;
-mod w6c_pay_x;
 mod phase_out;
 mod prepare;
 mod proliferate;
@@ -92,6 +91,7 @@ mod untap;
 mod vote;
 mod w2f_any_counters;
 mod w5d_tap_or_untap;
+mod w6c_pay_x;
 mod win_game;
 
 use mtg_cards::effect::Effect;

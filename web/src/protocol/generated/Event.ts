@@ -285,7 +285,11 @@ player: PlayerId,
 /**
  * The card.
  */
-object: ObjectId, } } | { "AttackersDeclared": { 
+object: ObjectId, 
+/**
+ * The X of the cycling cost, which the trigger "when you cycle this card" reads.
+ */
+x?: number, } } | { "AttackersDeclared": { 
 /**
  * The attacking player.
  */
