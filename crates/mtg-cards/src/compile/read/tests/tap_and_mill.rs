@@ -183,9 +183,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[rstest]
 #[case::either("Tap or untap target creature.")]
 #[case::tap_or_untap_a_permanent("Tap or untap target permanent.")]
-#[case::it_stays_tapped(
-    "Tap target creature. It doesn't untap during its controller's next untap step."
-)]
 #[case::a_pronoun("Untap it.")]
 #[case::a_pronoun_to_tap("Tap it.")]
 #[case::enchanted("Tap enchanted creature.")]

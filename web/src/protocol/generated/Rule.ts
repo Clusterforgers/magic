@@ -52,4 +52,12 @@ source: unknown,
 /**
  * Only combat damage (`true`) or only other damage (`false`); both when absent.
  */
-combat: boolean | null, } } | { "PreventDamage": DamageShield } | { "Regenerate": ObjectRef };
+combat: boolean | null, } } | { "PreventDamage": DamageShield } | { "Regenerate": ObjectRef } | { "DiesInstead": { 
+/**
+ * The permanents it covers.
+ */
+objects: Array<ObjectRef>, 
+/**
+ * Where they go instead.
+ */
+to: unknown, } };

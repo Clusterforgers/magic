@@ -1,0 +1,29 @@
+{
+  "cmc": 4.0,
+  "collector_number": "222",
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "colors": [
+    "G",
+    "U"
+  ],
+  "digital": false,
+  "id": "ec7933b5-15de-4ed7-af0c-626f81726338",
+  "keywords": [
+    "Adapt"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{G}{U}",
+  "name": "Sharktocrab",
+  "oracle_id": "fb8e43f2-41d5-4ffb-a61e-940477749e00",
+  "oracle_text": "{2}{G}{U}: Adapt 1. (If this creature has no +1/+1 counters on it, put a +1/+1 counter on it.)\nWhenever one or more +1/+1 counters are put on this creature, tap target creature an opponent controls. That creature doesn't untap during its controller's next untap step.",
+  "power": "4",
+  "rarity": "uncommon",
+  "released_at": "2024-01-12",
+  "set": "rvr",
+  "toughness": "4",
+  "type_line": "Creature — Shark Octopus Crab"
+}

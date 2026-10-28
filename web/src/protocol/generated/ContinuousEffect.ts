@@ -32,7 +32,7 @@ modification: Modification,
 /**
  * How long it lasts.
  */
-duration: "UntilEndOfTurn" | "UntilEndOfCombat" | "UntilYourNextTurn" | "UntilEndOfYourNextTurn" | "WhileSourceOnBattlefield" | "WhileYouControlSource" | "Forever", 
+duration: "UntilEndOfTurn" | "UntilEndOfCombat" | "UntilYourNextTurn" | "UntilEndOfYourNextTurn" | "WhileSourceOnBattlefield" | "WhileYouControlSource" | "NextUntapStep" | "Forever", 
 /**
  * Order of creation; later effects apply after earlier ones within a layer.
  */

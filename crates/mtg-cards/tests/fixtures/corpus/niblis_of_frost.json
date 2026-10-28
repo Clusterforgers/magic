@@ -1,0 +1,28 @@
+{
+  "cmc": 4.0,
+  "collector_number": "120",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "id": "f4a3d06c-8059-4f73-8f7e-29aa004cd3d5",
+  "keywords": [
+    "Flying",
+    "Prowess"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{2}{U}{U}",
+  "name": "Niblis of Frost",
+  "oracle_id": "ed2f3339-5c3e-473f-b08e-58288c4ad9c2",
+  "oracle_text": "Flying\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)\nWhenever you cast an instant or sorcery spell, tap target creature an opponent controls. That creature doesn't untap during its controller's next untap step.",
+  "power": "3",
+  "rarity": "rare",
+  "released_at": "2020-04-17",
+  "set": "c20",
+  "toughness": "3",
+  "type_line": "Creature — Spirit"
+}

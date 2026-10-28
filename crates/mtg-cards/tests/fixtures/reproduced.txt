@@ -646,6 +646,7 @@ Jo Grant
 Join the Maestros
 Jolting Merfolk
 Jungle Lion
+Junk Winder
 Jyoti, Moag Ancient
 Kalemne's Captain
 Kalonian Hydra
@@ -757,6 +758,7 @@ Maul of the Skyclaves
 Maulfist Squad
 Mausoleum Harpy
 Maverick Thopterist
+Mawloc
 Mayhem Patrol
 Megrim
 Memory Guardian
@@ -817,6 +819,7 @@ Necroskitter
 Nessian Asp
 Nettlecyst
 New Horizons
+Niblis of Frost
 Nick Valentine, Private Eye
 Night Clubber
 Nighthawk Scavenger
@@ -1050,6 +1053,7 @@ Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
 Sharding Sphinx
+Sharktocrab
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans

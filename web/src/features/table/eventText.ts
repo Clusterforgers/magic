@@ -153,6 +153,7 @@ function durationWords(
       source === null
         ? ' while its controller controls its source'
         : ` while its controller controls ${n.card(source.id)}`,
+    NextUntapStep: " through its controller's next untap step",
     Forever: '',
   }
   return UNTIL[duration]

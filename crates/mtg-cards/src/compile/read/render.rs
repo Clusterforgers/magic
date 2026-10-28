@@ -9,6 +9,7 @@ mod and_lists;
 mod becomes_subtype;
 mod bound;
 mod c6_blk_aura;
+mod c7_untap;
 mod chance;
 mod compared_to_chosen;
 mod control;
@@ -382,6 +383,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let pronouns = create::pronoun_wordings(&counted);
     texts.extend(counted);
     texts.extend(pronouns);
+    let more = super::c7_untap::c7_untap_wordings(&texts);
+    texts.extend(more);
     let more = super::c6_au_dead::c6_au_wordings(&texts);
     texts.extend(more);
     graveyard_wordings(ability, &mut texts);
@@ -2325,6 +2328,7 @@ impl Writer<'_> {
             .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.stolen(effects))
             .or_else(|| self.held_down(effects))
+            .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
             .or_else(|| self.owner_shuffles(effects))
@@ -2388,6 +2392,7 @@ impl Writer<'_> {
         prevention::effect_text(effect)
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
+            .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))
     }
 

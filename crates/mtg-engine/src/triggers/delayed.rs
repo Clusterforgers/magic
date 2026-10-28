@@ -133,8 +133,11 @@ impl Delayed {
                 o.counter() == self.source.counter && o.zone().is_permanent_zone()
             }),
             // Only an exile lasts until an opponent becomes the monarch and only a continuous effect while its controller
-            // controls the source; a delayed trigger never does.
-            Duration::UntilOpponentBecomesMonarch | Duration::WhileYouControlSource => true,
+            // controls the source, and only a permanent that doesn't untap waits for an untap step; a delayed trigger never
+            // does.
+            Duration::UntilOpponentBecomesMonarch
+            | Duration::WhileYouControlSource
+            | Duration::NextUntapStep => true,
         }
     }
 }

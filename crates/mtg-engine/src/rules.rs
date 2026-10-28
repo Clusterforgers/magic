@@ -112,6 +112,15 @@ pub enum Rule {
     PreventDamage(DamageShield),
     /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
     Regenerate(ObjectRef),
+    /// A shield over deaths (CR 614): each of the permanents, fixed when it was made, that would go from the battlefield
+    /// to a graveyard goes to the zone instead ("if that creature would die this turn, exile it instead").
+    DiesInstead {
+        /// The permanents it covers.
+        objects: Vec<ObjectRef>,
+        /// Where they go instead.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        to: ZoneKind,
+    },
 }
 
 /// A tax on attacking: whom it protects, which attackers it taxes and what each costs.
@@ -203,14 +212,15 @@ impl RuleEffect {
     fn spent(&self, state: &GameState) -> bool {
         let gone = |r: &ObjectRef| state.object(r.id).is_none_or(|o| o.counter() != r.counter);
         match &self.rule {
-            Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
-                named.iter().all(gone)
-            }
-            Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
-            Rule::Regenerate(named) => gone(named),
-            Rule::MayCast {
+            Rule::MustAttack(named)
+            | Rule::MustBlock(named)
+            | Rule::CantBeCountered(named)
+            | Rule::DiesInstead { objects: named, .. }
+            | Rule::MayCast {
                 only: Some(named), ..
             } => named.iter().all(gone),
+            Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
+            Rule::Regenerate(named) => gone(named),
             Rule::PreventDamage(shield) => shield.spent(state),
             _ => false,
         }
@@ -399,7 +409,7 @@ impl RulesInForce {
                 }
             }
             // Shields are read by the replacement step from the rule changes themselves.
-            Rule::PreventDamage(_) | Rule::Regenerate(_) => {}
+            Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. } => {}
         }
     }
 }
@@ -539,6 +549,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::PlayersHave { who, .. } => who.is_empty(),
         Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
         Rule::PreventDamage(shield) => shield.to.as_ref().is_some_and(Vec::is_empty),
+        Rule::DiesInstead { objects, .. } => objects.is_empty(),
     }
 }
 
@@ -718,7 +729,10 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
         return Err(invalid(format!("duplicate rule {:?}", effect.id)));
     }
     state.next_effect = state.next_effect.max(effect.id.0 + 1);
-    if matches!(effect.rule, Rule::PreventDamage(_) | Rule::Regenerate(_)) {
+    if matches!(
+        effect.rule,
+        Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. }
+    ) {
         state.possible.replacements = true;
     }
     if matches!(

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fb8e43f2-41d5-4ffb-a61e-940477749e00",
+  "name": "Sharktocrab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sharktocrab",
+      "oracle_fingerprint": "f4b717cc880bcb78b67135255d9d093d",
+      "abilities": [
+        { "Activated": { "cost": "{2}{U}{G}", "effects": [{ "Adapt": { "count": 1 } }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

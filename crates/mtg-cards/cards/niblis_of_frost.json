@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ed2f3339-5c3e-473f-b08e-58288c4ad9c2",
+  "name": "Niblis of Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Niblis of Frost",
+      "oracle_fingerprint": "89e6f37297c982c350710e11b7d45265",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

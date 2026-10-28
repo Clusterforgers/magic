@@ -37,6 +37,7 @@ mod c4_rules;
 mod c6_au_dead;
 mod c6_blk_aura;
 mod c6_blk_draws;
+mod c7_untap;
 mod c8_eg_cast_itself;
 mod c8_kwq_abilities;
 mod card_grants;
