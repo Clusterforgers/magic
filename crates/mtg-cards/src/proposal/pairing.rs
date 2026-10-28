@@ -77,12 +77,13 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
     }
 }
 
-/// The clause without its ability word ("Landfall — "), which is flavor, and without the numerals of a Saga chapter.
+/// The clause without its ability word ("Landfall — "), which is flavor, and without the numerals of a Saga chapter;
+/// the name of a mode on a later line ("Choose one —\n• Disarm — ...") is no ability word.
 fn stripped(text: &str) -> &str {
     let Some((word, rest)) = text.split_once(" \u{2014} ") else {
         return text;
     };
-    let ability_word = !word.contains(['~', ',', '.', ':']) && word.split(' ').count() <= 5;
+    let ability_word = !word.contains(['~', ',', '.', ':', '\n']) && word.split(' ').count() <= 5;
     let numerals = word
         .chars()
         .all(|c| matches!(c, 'I' | 'V' | 'X' | ',' | ' '));
@@ -595,5 +596,29 @@ mod tests {
     fn an_ability_that_rolls_owns_the_rows(#[case] json: &str, #[case] rolls: bool) {
         let ability: Ability = serde_json::from_str(json).unwrap();
         assert_eq!(rolls_dice(&ability), rolls);
+    }
+}
+
+#[cfg(test)]
+mod c11g_stripped_tests {
+    //! Goal: an ability word or the numerals of a chapter leave the clause, while the name of a mode on a later line stays.
+    use rstest::rstest;
+
+    use super::stripped;
+
+    #[rstest]
+    #[case::ability_word(
+        "Landfall — Whenever a land you control enters, draw a card.",
+        "Whenever a land you control enters, draw a card."
+    )]
+    #[case::chapter("I, II — Draw a card.", "Draw a card.")]
+    #[case::mode_name(
+        "Choose one —\n• Disarm — Destroy target artifact.\n• Detonate — Draw a card.",
+        "Choose one —\n• Disarm — Destroy target artifact.\n• Detonate — Draw a card."
+    )]
+    #[case::self_named("~ — Draw a card.", "~ — Draw a card.")]
+    #[case::no_dash("Draw a card.", "Draw a card.")]
+    fn c11g_only_a_leading_word_is_stripped(#[case] text: &str, #[case] kept: &str) {
+        assert_eq!(stripped(text), kept);
     }
 }

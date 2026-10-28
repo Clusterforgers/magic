@@ -173,6 +173,7 @@ mod c10_uc;
 mod c10_xp_copy_until;
 mod c11b_cast_target;
 mod c11b_once;
+mod c11g_writers;
 mod c4_af_writers;
 mod c4_conditions;
 mod c4_gl_writers;
