@@ -31,6 +31,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-c).
 - Triggers and keywords: (c6d-a), (c6d-b), (c6d-c), (c6d-d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
+- Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-b), (r2az-c).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
@@ -62,7 +63,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
 - Vehicles and Mounts: crew, saddle and station, crewed and saddled events, the crew record of the turn and Vehicles animated by abilities.
 - Phasing and day and night: phased-out permanents in their own zone, life totals that can't change, player protection, day and night effects and conditions.
-- Statics: lords, characteristic-defining abilities, conditions, attack taxes in mana and life, "can't attack you or planeswalkers you control", blocker limits, player keywords, stay-tapped statics, grants outside the battlefield, group prevention, groups of spells that can't be countered and conditions on the attached permanent.
+- Statics: lords, characteristic-defining abilities, conditions, attack taxes in mana and life, "can't attack you or planeswalkers you control", blocker limits, limits on the whole attack and block declaration, player keywords, stay-tapped statics, grants outside the battlefield, group prevention, groups of spells that can't be countered and conditions on the attached permanent.
 - Mutate: merged permanents under copy effects, mutation counts, merged cards leaving to libraries and the command zone (`docs/engine.md`, Mutate).
 - Faces and copies: multi-face cards, transform, fuse, daybound, Sagas, Classes, flip cards, copiable values, token, spell and ability copies, copy groups and prepare cards.
 - Face-down objects: morph, megamorph, disguise, manifest and cloak with their compiler wordings and views.
@@ -183,9 +184,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c8ja) Life gain replaced by another effect (`ReplaceBy::Instead` in the engine): a loss instead, cards drawn instead, no life gained; frees about 6 cards (Tainted Remedy, Plague Drone, Nefarious Lich)
 - [ ] (c8jb) Prevention for "you and" a group, quoted static abilities given under a condition, and the Slivers' quoted abilities left (flip, becomes a type, top of library); frees about 20 cards (Rune of Flight, The Wanderer, Pulmonic Sliver)
 - [ ] (r1ab) The rest of the `Continuous` statics: types for spells and cards, every land type, a color added, group unions, "modified", attachment conditions; frees about 25 cards (Arcane Adaptation, Death Baron, Song of the Dryads)
-- [ ] (r2az-a) "No more than one creature can attack each combat" and "... can block each combat": a limit on the whole declaration; frees about 3 cards (Silent Arbiter, Dueling Grounds, Caverns of Despair)
 - [ ] (r2az-c) Domain of another player and the effects around domain the compiler does not read: "lands they control", "lands that player controls", "discards a card for each", "unless its controller pays {1} for each", "look at the top X ... put up to two into your hand", "prevent the next X damage"; frees about 10 cards (Allied Strategies, Mask of Intolerance, Evasive Action, Shadow Prophecy)
-- [~] (r2az-a) (r2az-a-attack-limit) "No more than one creature can attack each combat" and "... can block each combat": a limit on the whole declaration; frees about 3 cards (Silent Arbiter, Dueling Grounds, Caverns of Despair)
+- [ ] (r2az-d) "No more than N creatures can attack you each combat" (a limit on the attacks at one player or planeswalker): frees about 4 cards (Crawlspace, Judoon Enforcers, The Eternal Wanderer)
 - [ ] (r2bhd) Untaps in other players' untap steps and groups held through their next untap step; frees about 8 cards (Seedborn Muse, Unwinding Clock, Lorthos, the Tidemaker)
 - [ ] (r2u) Attached Auras and Equipment as a count, and attachments made by effects (any number, onto tokens, onto returned cards); frees about 15 cards (Kor Spiritdancer, Kemba, Goldwardens' Gambit)
 - [ ] (r2db-a) Several statics, or a player rule and statics, in one sentence, and hexproof from the Aura controller's opponents; frees about 6 cards (Tenza, Godo's Maul, Nighthowler, Sigarda, Heron's Grace)
@@ -212,7 +212,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2dgc-c) Charm and commander-pair mode sentences: "each of one or two targets", counters distributed among targets, "each creature deals 1 damage to its controller", "counter target spell that targets you", a power-limited "can't block", phasing and goad by a target player; frees about 15 cards (Prismari Charm, Abzan Charm, Will of the Abzan)
 - [ ] (r2dgd) Intervening "if" with a may-pay, a removed counter or a cast from the hand, and "you win the game" under a count; frees about 8 cards (Ingenious Prodigy, Reiver Demon, Helix Pinnacle)
 - [ ] (r2aa-a) Control changes left: a gift of the card to a player other than its owner (Crown of Doom), each player taking back what they own (Homeward Path, Alicia Masters), "untap target permanent and gain control of it" (Word of Seizing)
-- [ ] (r2aa-c) A static selector that reads `Goaded` (Bothersome Quasit) matches nothing, since goading is read from the layers while they are computed (`w7d_a_goaded_creature_cannot_block`)
 - [ ] (r2cxe-a) The X of a morph cost in "when it is turned face up" and of a madness cost under "if its madness cost was paid"; frees about 2 cards (Bane of the Living, From Under the Floorboards)
 - [ ] (r2cxe-b) Half X on cast and a part of a payment in an effect that counts X ("you may pay X life", `Effect.Pay.X.Parts`)
 - [ ] (r2ab) A color, creature type or card type chosen as a spell resolves or by each player; frees about 10 cards (Sudden Demise, Wash Out, Kindred Charge)

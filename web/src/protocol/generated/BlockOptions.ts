@@ -24,4 +24,9 @@ max_blockers?: Array<[ObjectId, number]>,
  * The creatures among `blockers` that a rule requires to block (CR 509.1c); the declaration names each of them,
  * together with the creatures an attacker that needs several blockers must have. Left out while there are none.
  */
-required?: Array<ObjectId>, };
+required?: Array<ObjectId>, 
+/**
+ * The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
+ * out while no rule limits the declaration.
+ */
+most?: number, };

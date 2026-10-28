@@ -264,6 +264,11 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
 
   return (
     <PromptLayout text={text}>
+      {options.most === undefined ? null : (
+        <p data-slot="declaration-limit" className="basis-full text-sm text-muted-foreground">
+          No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can block this combat.
+        </p>
+      )}
       <Button
         className="h-10 px-4"
         disabled={pairs.size === 0 || short.length > 0}

@@ -431,6 +431,8 @@ impl RandomBot {
                         a != attacker || kept <= *most
                     });
                 }
+                // A limit on the declaration keeps the creatures that must block first.
+                let mut blocks = options.w8a_capped(&blocks);
                 // An attacker that needs several blockers (menace) is left alone unless it got that many.
                 for (attacker, needed) in &options.min_blockers {
                     let got = blocks.iter().filter(|(_, a)| a == attacker).count();
@@ -599,6 +601,9 @@ impl RandomBot {
             }
         }
         let (attackers, taxed) = within_budget(&picks, options.mana);
+        // A limit on the declaration keeps the creatures that must attack first.
+        let attackers = options.w8a_capped(&attackers);
+        let taxed = taxed && !options.cost_of(&attackers).symbols().is_empty();
         if taxed {
             self.taxed = Taxed::Paying;
         }

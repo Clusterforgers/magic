@@ -1,0 +1,15 @@
+{
+  "oracle_id": "1cdf30de-d88c-421a-80df-4917bbd2f09e",
+  "name": "Silent Arbiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silent Arbiter",
+      "oracle_fingerprint": "69b08befbe0999d87976ee1588fa7361",
+      "abilities": [
+        { "Rule": { "rule": { "AttackLimit": 1 } } },
+        { "Rule": { "rule": { "BlockLimit": 1 } } }
+      ]
+    }
+  ]
+}

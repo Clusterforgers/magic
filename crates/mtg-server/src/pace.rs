@@ -562,6 +562,7 @@ mod tests {
 
     fn blockers() -> DecisionKind {
         DecisionKind::DeclareBlockers(BlockOptions {
+            most: None,
             blockers: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
@@ -609,6 +610,7 @@ mod tests {
     /// Creatures 10, 11 and 12 may attack the player 0; those named in `required` have to.
     fn attackers(required: &[u64]) -> DecisionKind {
         DecisionKind::DeclareAttackers(AttackOptions {
+            most: None,
             attackers: (10..13)
                 .map(|n| AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))]))
                 .collect(),
@@ -1165,6 +1167,7 @@ mod tests {
     fn a_seat_that_ran_out_of_time_blocks_only_where_a_rule_requires_it() {
         use mtg_engine::decision::BlockerOption;
         let kind = DecisionKind::DeclareBlockers(BlockOptions {
+            most: None,
             blockers: vec![
                 BlockerOption {
                     object: ObjectId(1),

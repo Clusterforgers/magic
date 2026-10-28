@@ -401,6 +401,7 @@ mod w7b_player_counters;
 mod w7c_incubate;
 mod w7e_devoured;
 mod w7e_phase_out;
+mod w8a_declaration_limits;
 mod where_x;
 mod written_effects;
 mod x_after;

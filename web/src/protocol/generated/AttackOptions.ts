@@ -20,4 +20,9 @@ required?: Array<ObjectId>,
  * the mana floating and that of the untapped permanents that are not creatures that may attack. Left out while
  * nothing is taxed.
  */
-mana?: number, };
+mana?: number, 
+/**
+ * The most creatures that may attack together (CR 508.1c: "no more than one creature can attack each combat"). Left
+ * out while no rule limits the declaration.
+ */
+most?: number, };

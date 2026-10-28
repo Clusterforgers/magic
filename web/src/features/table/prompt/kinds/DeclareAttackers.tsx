@@ -128,6 +128,11 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
 
   return (
     <PromptLayout text={text}>
+      {options.most === undefined ? null : (
+        <p data-slot="declaration-limit" className="basis-full text-sm text-muted-foreground">
+          No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can attack this combat.
+        </p>
+      )}
       {several && aim !== undefined ? (
         <label className="flex items-center gap-2 text-sm">
           Attack at

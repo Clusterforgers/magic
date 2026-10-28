@@ -1,0 +1,15 @@
+{
+  "oracle_id": "eb2df4a1-6b63-4f6a-a830-e9487afe59f8",
+  "name": "Dueling Grounds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dueling Grounds",
+      "oracle_fingerprint": "69b08befbe0999d87976ee1588fa7361",
+      "abilities": [
+        { "Rule": { "rule": { "AttackLimit": 1 } } },
+        { "Rule": { "rule": { "BlockLimit": 1 } } }
+      ]
+    }
+  ]
+}

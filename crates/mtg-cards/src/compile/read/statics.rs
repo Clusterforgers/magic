@@ -511,6 +511,8 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         GameRule::RevealTop(Ref::You)
     } else if let Some(rule) = r.attempt(player_rule) {
         rule
+    } else if let Some(rule) = r.attempt(super::w8a_declaration_limits::w8a_limit) {
+        rule
     } else if r.source() {
         if r.words("can be your commander") {
             GameRule::CanBeCommander
@@ -1535,6 +1537,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         }
         (GameRule::AttackTax { .. }, ZoneKind::Battlefield) => {
             super::attack_tax::static_texts(rule)
+        }
+        (GameRule::AttackLimit(_) | GameRule::BlockLimit(_), ZoneKind::Battlefield) => {
+            super::w8a_declaration_limits::w8a_limit_texts(rule)
         }
         _ => Vec::new(),
     }

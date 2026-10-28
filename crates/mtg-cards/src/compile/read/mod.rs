@@ -137,6 +137,7 @@ mod w6d_shares;
 mod w6e_control;
 mod w7b_player_counters;
 mod w7e_phase;
+mod w8a_declaration_limits;
 mod where_x;
 mod zone_moves;
 
