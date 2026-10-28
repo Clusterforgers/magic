@@ -1,6 +1,7 @@
 // Goal: while cards are added to or taken out of the draft the builder checks it live: the counts line, the marks, the reasons and the legality section follow the draft after the pause, "Checking…" shows while the counts are old and "as saved" says so until a check of the draft has come back, a failed check keeps the last report with a note and a Try again, a rename asks nothing, and taking the draft back to the saved list shows the saved report at once.
 import { screen, waitFor, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { flushFakeClock, installFakeClock, settle } from '@/test-utils/fakeClock'
 import { scaled } from '@/test-utils/loadFactor'
 import { deckError, legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { CheckRequest } from '@/protocol/generated'
@@ -16,6 +17,7 @@ import {
   SOL_RING,
 } from './renderBuilder'
 import type { BuilderScript } from './renderBuilder'
+import { CHECK_PAUSE_MS } from './useLiveCheck'
 
 const SAVED_REPORT = reportOf(
   [
@@ -56,7 +58,9 @@ async function add(user: Awaited<ReturnType<typeof renderBuilder>>['user'], quer
   await user.type(box, query)
   await user.click(await within(searchPane()).findByRole('button', { name: `Add ${name} to main deck` }))
 }
-const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+// A fake clock: the check waits out its pause only when a test lets the time pass.
+beforeEach(installFakeClock)
+afterEach(flushFakeClock)
 
 describe('the live check in the builder', () => {
   it('follows the draft: the counts, the mark and the reason of a card come after the pause', async () => {
@@ -104,14 +108,14 @@ describe('the live check in the builder', () => {
     await user.click(screen.getByRole('button', { name: 'Remove one Giant Growth' }))
     expect(counts()).toHaveTextContent(new RegExp(`^${SAVED_COUNTS}$`))
     expect(within(deckPane()).queryByRole('region', { name: /^Not legal/ })).toBeNull()
-    await pause(900)
+    await settle(CHECK_PAUSE_MS * 2)
     expect(checks.requests).toHaveLength(1)
   })
 
   it('asks nothing when only the name is edited', async () => {
     const { user, checks } = await renderBuilder(judging())
     await user.type(within(deckPane()).getByRole('textbox', { name: 'Deck name' }), ' II')
-    await pause(900)
+    await settle(CHECK_PAUSE_MS * 2)
     expect(checks.requests).toHaveLength(0)
     expect(counts()).toHaveTextContent(new RegExp(`^${SAVED_COUNTS}$`))
   })
