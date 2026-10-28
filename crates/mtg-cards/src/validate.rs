@@ -1293,7 +1293,6 @@ impl<'a> Walker<'a> {
         }
         self.at("Batch", |w| w.trigger_pattern(inner));
     }
-
 }
 
 /// Whether a batch of several patterns is of moves that each name the zone left, none of them the battlefield: the

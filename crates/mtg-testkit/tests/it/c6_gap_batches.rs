@@ -24,7 +24,8 @@ fn sweep(effects: &str) -> Arc<mtg_cards::CardDefinition> {
 const TOP: &str = r#"{"ExileTop":{"as":"t"}}"#;
 const OWN_YARD: &str = r#"{"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}}"#;
 const BOTH: &str = r#"{"Exile":{"what":{"Each":[{"AnyOf":[{"In":"Graveyard"},{"In":"Library"}]},{"OwnedBy":"You"}]}}}"#;
-const ONE_THEN_THE_OTHER: &str = r#"{"ExileTop":{"as":"t"}},{"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}}"#;
+const ONE_THEN_THE_OTHER: &str =
+    r#"{"ExileTop":{"as":"t"}},{"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}}"#;
 const THEIR_YARDS: &str =
     r#"{"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"Opponents"}]}}}"#;
 
