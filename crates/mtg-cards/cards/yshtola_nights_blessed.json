@@ -33,7 +33,7 @@
               }
             },
             "effects": [
-              { "DealDamage": { "source": "This", "to": "Opponents", "amount": 2 } },
+              { "DealDamage": { "to": "Opponents", "amount": 2 } },
               { "GainLife": { "amount": 2 } }
             ]
           }

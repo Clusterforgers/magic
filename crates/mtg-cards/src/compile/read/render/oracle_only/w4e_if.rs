@@ -6,10 +6,11 @@
 use super::super::super::as_long_as;
 use super::super::super::counters::kind_text;
 use super::super::super::draws;
+use super::super::super::facts;
 use super::super::pattern_text;
 use crate::ability::Ability;
 use crate::refs::{Pred, Ref};
-use crate::value::{Amount, Cmp, Condition, TurnTally};
+use crate::value::{Amount, Cmp, Condition, CounterKind, TurnTally};
 
 /// The wordings of a trigger with an intervening condition; `bodies` writes the trigger without it.
 pub(super) fn wordings(ability: &Ability, bodies: impl Fn(&Ability) -> Vec<String>) -> Vec<String> {
@@ -48,7 +49,34 @@ pub(super) fn wordings(ability: &Ability, bodies: impl Fn(&Ability) -> Vec<Strin
     let more = draws::wordings(ability, &spliced);
     spliced.extend(more);
     spliced.extend(you_draw(&spliced));
+    spliced.extend(the_end_step(&spliced));
+    spliced.extend(it_after_named(&spliced));
     spliced
+}
+
+/// "At the beginning of the end step" for "At the beginning of each end step".
+fn the_end_step(texts: &[String]) -> Vec<String> {
+    let each = "At the beginning of each end step, ";
+    texts
+        .iter()
+        .filter_map(|text| text.strip_prefix(each))
+        .map(|rest| format!("At the beginning of the end step, {rest}"))
+        .collect()
+}
+
+/// "flip it" for "flip ~" at the end, once the condition has named ~.
+fn it_after_named(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter_map(|text| {
+            let (head, rest) = text.split_once(", if ")?;
+            let (condition, effect) = rest.split_once(", ")?;
+            let effect = effect.strip_suffix(" ~.")?;
+            condition
+                .contains('~')
+                .then(|| format!("{head}, if {condition}, {effect} it."))
+        })
+        .collect()
 }
 
 /// "you draw a card" for "draw a card" after the condition.
@@ -62,9 +90,22 @@ fn you_draw(texts: &[String]) -> Vec<String> {
 
 /// The ways the condition is worded after "if".
 fn w4e_phrases(condition: &Condition) -> Vec<String> {
+    // A count of charge counters on ~ is the line of a Station block, which the block reader words.
+    if let Condition::Compare {
+        left:
+            Amount::Counters {
+                on: Ref::This,
+                counter: CounterKind::Charge,
+            },
+        ..
+    } = condition
+    {
+        return Vec::new();
+    }
     let mut found = as_long_as::texts(condition);
     found.extend(event_counters(condition));
     found.extend(life_lost(condition));
+    found.extend(counters_on_self(condition));
     found
 }
 
@@ -86,6 +127,28 @@ fn event_counters(condition: &Condition) -> Option<String> {
         }
         _ => None,
     }
+}
+
+/// "there are two or more ki counters on ~".
+fn counters_on_self(condition: &Condition) -> Vec<String> {
+    let Condition::Compare {
+        left: Amount::Counters {
+            on: Ref::This,
+            counter,
+        },
+        op: Cmp::Ge,
+        right: Amount::Fixed(number),
+    } = condition
+    else {
+        return Vec::new();
+    };
+    let (Some(kind), Ok(number)) = (kind_text(counter), u32::try_from(*number)) else {
+        return Vec::new();
+    };
+    facts::quantity_texts(number)
+        .iter()
+        .map(|words| format!("there are {words} or more {kind} counters on ~"))
+        .collect()
 }
 
 /// "a player lost 4 or more life this turn".

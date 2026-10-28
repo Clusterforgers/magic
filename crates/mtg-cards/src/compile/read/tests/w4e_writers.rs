@@ -291,6 +291,8 @@ const HAD_MINUS: &str =
 const HAD_PLUS: &str =
     r#"{"Matches":{"selector":[{"HasCounter":"+1/+1"}],"subject":"Triggering"}}"#;
 const LUCK: &str = r#"{"Compare":{"left":{"Counters":{"counter":{"Other":"luck"},"on":"This"}},"op":"Ge","right":10}}"#;
+const CHARGE: &str =
+    r#"{"Compare":{"left":{"Counters":{"counter":"charge","on":"This"}},"op":"Ge","right":10}}"#;
 const LOST: &str = r#"{"Compare":{"left":{"Tallied":{"what":"LifeLost","who":"EachPlayer"}},"op":"Ge","right":4}}"#;
 const GAINED: &str = r#"{"Compare":{"left":{"Tallied":{"what":"LifeGained","who":"EachPlayer"}},"op":"Ge","right":4}}"#;
 
@@ -318,6 +320,22 @@ const GAINED: &str = r#"{"Compare":{"left":{"Tallied":{"what":"LifeGained","who"
     "",
     "At the beginning of your upkeep, if ~ has ten or more luck counters on it, you win the game.",
     true
+)]
+#[case::there_are(
+    UPKEEP,
+    LUCK,
+    r#"{"WinGame":{}}"#,
+    "",
+    "At the beginning of your upkeep, if there are ten or more luck counters on ~, you win the game.",
+    true
+)]
+#[case::charge_is_a_station_line(
+    UPKEEP,
+    CHARGE,
+    r#"{"WinGame":{}}"#,
+    "",
+    "At the beginning of your upkeep, if there are ten or more charge counters on ~, you win the game.",
+    false
 )]
 #[case::nine_luck(
     UPKEEP,
