@@ -42,6 +42,21 @@ pub(crate) fn definition_attaches(definition: &CardDefinition) -> bool {
         .subtypes
         .iter()
         .any(|subtype| KINDS.iter().any(|(name, _)| subtype.0 == *name))
+        || definition
+            .rules
+            .iter()
+            .any(|rules| c6_blk_becomes_attachment(rules))
+}
+
+/// Whether an effect of `ability` gives its object the subtype of an attachment ("it becomes an Aura with enchant
+/// creature", CR 205.1b), so the game holds attachments though no card prints one.
+fn c6_blk_becomes_attachment(ability: &mtg_cards::ability::Ability) -> bool {
+    ability.effects().iter().any(|effect| {
+        matches!(effect, mtg_cards::effect::Effect::Continuous { mods, .. }
+            if mods.iter().any(|modification| matches!(modification,
+                mtg_cards::modify::Modification::AddSubtype(subtype)
+                    if KINDS.iter().any(|(name, _)| subtype.0 == *name))))
+    })
 }
 
 /// What `id` is as an attachment, by the subtypes it prints and those effects gave it.

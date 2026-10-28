@@ -1,0 +1,25 @@
+{
+  "id": "00e3ff89-9901-48ba-900c-5778cdd1b112",
+  "oracle_id": "2b9384a0-db2d-49e2-b121-6b81a0d77722",
+  "name": "Cloudform",
+  "lang": "en",
+  "layout": "normal",
+  "set": "c18",
+  "collector_number": "83",
+  "rarity": "uncommon",
+  "released_at": "2018-08-10",
+  "digital": false,
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, it becomes an Aura with enchant creature. Manifest the top card of your library and attach this enchantment to it. (To manifest a card, put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)\nEnchanted creature has flying and hexproof.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Manifest"
+  ]
+}

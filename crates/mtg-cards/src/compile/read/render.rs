@@ -8,6 +8,7 @@ mod all_graveyards;
 mod and_lists;
 mod becomes_subtype;
 mod bound;
+mod c6_blk_aura;
 mod chance;
 mod compared_to_chosen;
 mod control;

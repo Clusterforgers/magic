@@ -230,7 +230,18 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
         let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
             continue;
         };
-        let printed = |name: &str| object.card().subtypes.iter().any(|s| s.0 == name);
+        // An effect may give the subtype (an enchantment that becomes an Aura, CR 205.1b).
+        let derived = characteristics(state, id)
+            .map(|chars| chars.subtypes)
+            .unwrap_or_default();
+        let printed = |name: &str| {
+            object
+                .card()
+                .subtypes
+                .iter()
+                .chain(&derived)
+                .any(|s| s.0 == name)
+        };
         let attached = object.permanent().and_then(PermanentState::attached_to);
         let enchanted = state.player_host_of(id);
         let host = state.host_of(id).and_then(|host| state.object(host));
