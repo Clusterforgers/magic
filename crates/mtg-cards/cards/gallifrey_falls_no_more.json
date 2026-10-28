@@ -1,0 +1,52 @@
+{
+  "oracle_id": "d4424585-9564-4ec2-8267-3f5438e1f29e",
+  "name": "Gallifrey Falls // No More",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gallifrey Falls",
+      "oracle_fingerprint": "ff6f1b4da4dae7337130bfa17c80f1b7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 4 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "No More",
+      "oracle_fingerprint": "e3bc9d7f87b816086176fdd6161d8b2f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "PhaseOut": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "96313465-6a97-4c0e-ae9a-91e95f247f5b",
+  "name": "Marrow Chomper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marrow Chomper",
+      "oracle_fingerprint": "a22f2ddf0a6874f92db380bf38d70cf7",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 2, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": { "Times": { "by": 2, "of": "Devoured" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
