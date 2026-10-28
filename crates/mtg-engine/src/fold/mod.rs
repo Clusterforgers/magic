@@ -62,6 +62,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     if changes_layers {
         state.layers.reset_if_built();
         state.rules_cache.reset_if_built();
+        crate::combat::w7d_leave_on_control_change(state);
     }
     folded
 }
