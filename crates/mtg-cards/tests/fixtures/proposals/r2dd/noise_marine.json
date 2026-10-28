@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Cascade"},{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Tallied":{"who":"You","what":"SpellsCast"}}}}]}}]}]}

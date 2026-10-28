@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Fabricate":3}},{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Artifact"},{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"targets":[{"what":"Opponent"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":{"Stat":{"of":"This","stat":"Power"}}}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"},{"Triggered":{"when":{"Nth":{"nth":1,"event":{"SpellCast":{"by":"You"}}}},"if":{"Not":"YourTurn"},"effects":[{"LookAtTop":{"count":2,"as":"top"}},{"Choose":{"from":{"Bound":"top"},"as":"card","rest_as":"rest"}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"Move":{"what":{"Bound":"rest"},"to":"Graveyard"}}]}}]}]}

@@ -1,0 +1,70 @@
+{
+  "oracle_id": "3f8f72d8-5c3a-4f31-8741-3c1a55d9b739",
+  "name": "Oath of Eorl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Eorl",
+      "oracle_fingerprint": "61978c5c8c4a84b686d2d9a746cbf944",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Knight",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Human" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "indestructible" } } },
+              { "BecomeMonarch": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

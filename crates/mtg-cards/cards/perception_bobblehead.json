@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f0bcdc43-c43d-4ce7-a283-b8dcab4fc497",
+  "name": "Perception Bobblehead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perception Bobblehead",
+      "oracle_fingerprint": "182384d2746202c4e19c3ce0659be1a1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Count": [{ "Subtype": "Bobblehead" }, { "ControlledBy": "You" }] },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "kept" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

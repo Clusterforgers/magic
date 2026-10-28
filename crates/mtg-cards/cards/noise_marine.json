@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1f7e85cf-afee-4041-9436-1fb69b4ec292",
+  "name": "Noise Marine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noise Marine",
+      "oracle_fingerprint": "10d3db06bdea4da725ca510fb1868b81",
+      "abilities": [
+        { "Keyword": "Cascade" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Tallied": { "who": "You", "what": "SpellsCast" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

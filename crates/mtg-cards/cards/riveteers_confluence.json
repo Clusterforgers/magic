@@ -1,0 +1,71 @@
+{
+  "oracle_id": "9f0bd777-f79d-47cd-83e3-85b80d5e7942",
+  "name": "Riveteers Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riveteers Confluence",
+      "oracle_fingerprint": "526d23bed303973a674bb889b50bbc3d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                                { "Not": { "ControlledBy": "You" } }
+                              ]
+                            },
+                            "amount": 1
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "May": {
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                                      { "OwnedBy": "You" },
+                                      { "Type": "Land" }
+                                    ]
+                                  },
+                                  "as": "land"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "land" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

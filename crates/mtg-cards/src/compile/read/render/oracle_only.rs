@@ -54,6 +54,7 @@ mod c6_gap_wholes;
 mod c6_gl_causes;
 mod c6_gl_returns;
 mod c6_gl_wholes;
+mod c6_mr_writers;
 mod c6_sz_and_you;
 mod c6_sz_bodies;
 mod c6_sz_wholes;
@@ -294,11 +295,17 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c6_af(ability, texts);
     add_c6_sz(ability, texts);
     add_c6_gl(ability, texts);
+    add_c6_mr(ability, texts);
 }
 
 /// The wordings of the sixth sample of the names A to F; it runs last because it rewrites the texts of the others.
 fn add_c6_af(ability: &Ability, texts: &mut Vec<String>) {
     c6_af::c6_af_add(ability, texts);
+}
+
+/// Adds the wordings of the sixth sample of the names M to R; it runs last and edits what the others found.
+fn add_c6_mr(ability: &Ability, texts: &mut Vec<String>) {
+    c6_mr_writers::add(ability, texts);
 }
 
 /// The wordings of the dice, coins, votes and piles of the (r1at) pass.
