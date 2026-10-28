@@ -154,6 +154,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         if let Some(destroyed) = super::w2c_counts::w2c_destroyed_each(r) {
             return Some(destroyed);
         }
+        if let Some(distinct) = super::w2c_counts::w2c_distinct(r, false) {
+            return Some(distinct);
+        }
         let selector = phrase(r, Form::Count)?;
         // A group that no one holds stands on the battlefield.
         if !selector.0.iter().any(holds) {
@@ -277,6 +280,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
         Amount::Destroyed(_) => super::w2c_counts::w2c_destroyed_each_text(counted)?,
+        Amount::Distinct { .. } => super::w2c_counts::w2c_distinct_text(counted, false)?,
         _ => return None,
     })
 }

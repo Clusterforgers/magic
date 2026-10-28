@@ -1,0 +1,38 @@
+{
+  "oracle_id": "de3764b9-9572-4f5c-8c90-82dedec47557",
+  "name": "Celebrate the Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celebrate the Harvest",
+      "oracle_fingerprint": "f1c95911cb8885c5cfda7559fbb97e23",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Distinct": {
+                        "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "stat": "Power"
+                      }
+                    }
+                  },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

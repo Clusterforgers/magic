@@ -167,6 +167,9 @@ fn held(r: &mut Reader<'_>) -> Option<Amount> {
     if let Some(destroyed) = super::w2c_counts::w2c_destroyed_all(r) {
         return Some(destroyed);
     }
+    if let Some(distinct) = super::w2c_counts::w2c_distinct(r, true) {
+        return Some(distinct);
+    }
     if r.words("opponents you have") {
         return Some(Amount::Players(Ref::Opponents));
     }
@@ -184,7 +187,7 @@ fn held(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// The objects a count looks at: "creatures you control", "Forests on the battlefield", "cards in your hand", "creature
 /// cards in all graveyards".
-fn counted(r: &mut Reader<'_>) -> Option<Selector> {
+pub(super) fn counted(r: &mut Reader<'_>) -> Option<Selector> {
     if let Some(Selector(preds)) = r.attempt(|r| {
         let selector = phrase(r, Form::All)?;
         r.words("on the battlefield");
@@ -337,6 +340,8 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         }
         Amount::Count(of) => Some(format!("the number of {}", counted_text(of)?)),
         Amount::Players(Ref::Opponents) => Some("the number of opponents you have".to_owned()),
+        Amount::Distinct { .. } => super::w2c_counts::w2c_distinct_text(amount, true)
+            .map(|text| format!("the number of {text}")),
         Amount::Destroyed(_) => super::w2c_counts::w2c_destroyed_all_text(amount)
             .map(|text| format!("the number of {text}")),
         Amount::Party(Ref::You) => Some("the number of creatures in your party".to_owned()),
@@ -377,7 +382,7 @@ fn stat_text(stat: StatKind) -> Option<&'static str> {
 }
 
 /// What `counted` reads, written back.
-fn counted_text(selector: &Selector) -> Option<String> {
+pub(super) fn counted_text(selector: &Selector) -> Option<String> {
     let preds = &selector.0;
     let Some(at) = preds.iter().position(|pred| matches!(pred, Pred::In(_))) else {
         let text = phrase_text(selector, Form::All)?;

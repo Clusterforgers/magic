@@ -5,7 +5,7 @@
 //! them from being offered, so the error is not met in a game.
 
 use std::borrow::Cow;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
@@ -1177,6 +1177,7 @@ impl<'a> Scope<'a> {
             Amount::Devotion(colors) => self.devotion(colors)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
+            Amount::Distinct { of, stat } => self.w2c_distinct(of, *stat)?,
             Amount::CardTypes(of) => self.card_types_among(of)?,
             Amount::Players(who) => i64::try_from(self.players(who)?.len())
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,
@@ -1334,6 +1335,12 @@ impl<'a> Scope<'a> {
     }
 
     /// The life the resolving spell or ability has made players lose so far; 0 outside a resolution.
+    /// How many different values of the characteristic there are among the objects the selector matches.
+    fn w2c_distinct(&self, of: &Selector, stat: StatKind) -> Result<i64, ResolveError> {
+        let values: BTreeSet<i64> = self.stats(of, stat)?.into_iter().collect();
+        Ok(i64::try_from(values.len()).unwrap_or(i64::MAX))
+    }
+
     /// How many of the permanents the resolution destroyed so far match the selector as they last existed.
     fn w2c_destroyed(&self, of: &Selector) -> Result<i64, ResolveError> {
         let Some(resolving) = self.state.resolving.as_ref() else {

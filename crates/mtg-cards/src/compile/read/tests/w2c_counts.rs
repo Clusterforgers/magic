@@ -52,3 +52,57 @@ fn w2c_destroyed_this_way_reads_in_triggers(#[case] text: &str) {
 fn w2c_destroyed_near_misses_stay_unread(#[case] text: &str) {
     assert!(spell(text).is_none(), "{text}");
 }
+
+#[rstest]
+#[case::golden_ratio(
+    ClauseKind::Spell,
+    "Draw a card for each different power among creatures you control."
+)]
+#[case::celebrate_the_harvest(
+    ClauseKind::Spell,
+    "Search your library for up to X basic land cards, where X is the number of different powers among creatures you control. Put those cards onto the battlefield tapped, then shuffle."
+)]
+#[case::eris(
+    ClauseKind::Static,
+    "This spell costs {2} less to cast for each different mana value among instant and sorcery cards in your graveyard."
+)]
+#[case::dawnhart_wardens(
+    ClauseKind::Triggered,
+    "At the beginning of combat on your turn, if you control three or more creatures with different powers, creatures you control get +1/+0 until end of turn."
+)]
+#[case::stalwart_pathlighter(
+    ClauseKind::Triggered,
+    "At the beginning of combat on your turn, if you control three or more creatures with different powers, creatures you control gain indestructible until end of turn."
+)]
+#[case::redemption_choir(
+    ClauseKind::Triggered,
+    "Whenever this creature enters or attacks, if you control three or more creatures with different powers, return target permanent card with mana value 3 or less from your graveyard to the battlefield."
+)]
+fn w2c_distinct_values_read_and_write_back(#[case] kind: ClauseKind, #[case] text: &str) {
+    let json = serde_json::to_string(&golden(text, kind, false)).unwrap();
+    assert!(json.contains("Distinct"), "{text}: {json}");
+}
+
+#[rstest]
+#[case::no_among("Draw a card for each different power you control.")]
+#[case::toughness("Draw a card for each different toughness among creatures you control.")]
+#[case::singular_after_number(
+    "Draw cards equal to the number of different power among creatures you control."
+)]
+fn w2c_distinct_near_misses_stay_unread(#[case] text: &str) {
+    assert!(spell(text).is_none(), "{text}");
+}
+
+#[rstest]
+#[case::names(
+    "At the beginning of combat on your turn, if you control three or more creatures with different names, draw a card."
+)]
+#[case::fewer(
+    "At the beginning of combat on your turn, if you control three or fewer creatures with different powers, draw a card."
+)]
+fn w2c_coven_near_misses_stay_unread(#[case] text: &str) {
+    assert!(
+        clause(text, ClauseKind::Triggered, false).is_none(),
+        "{text}"
+    );
+}

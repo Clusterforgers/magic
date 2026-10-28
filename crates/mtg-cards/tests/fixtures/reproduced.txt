@@ -211,6 +211,7 @@ Cathartic Reunion
 Cathedral Acolyte
 Cavern Whisperer
 Cayth, Famed Mechanist
+Celebrate the Harvest
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
@@ -321,6 +322,7 @@ Dauthi Marauder
 Dawn to Dusk
 Dawn's Reflection
 Dawnglade Regent
+Dawnhart Wardens
 Deadbridge Goliath
 Deadeye Brawler
 Deadly Rollick
@@ -432,6 +434,7 @@ Epic Fight
 Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
+Eris, Roar of the Storm
 Etched Oracle
 Eternal Dragon
 Eternal Witness
@@ -566,6 +569,7 @@ Goblin Sharpshooter
 Goblin Spy
 Goblin War Buggy
 Goblin-town Flunkies
+Golden Ratio
 Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
@@ -1033,6 +1037,7 @@ Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
 Redcap Heelslasher
+Redemption Choir
 Redress Fate
 Reflecting Pool
 Reforge the Soul
@@ -1233,6 +1238,7 @@ Squirrel Nest
 Sram, Senior Edificer
 Staggering Insight
 Staggershock
+Stalwart Pathlighter
 Star Whale
 Starlit Sanctum
 Starscape Cleric

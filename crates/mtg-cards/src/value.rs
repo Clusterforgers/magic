@@ -334,6 +334,14 @@ pub enum Amount {
         /// The characteristic.
         stat: StatKind,
     },
+    /// How many different values of the characteristic there are among the objects that match the selector ("the number
+    /// of different powers among creatures you control", "three or more creatures with different powers").
+    Distinct {
+        /// The objects compared.
+        of: Selector,
+        /// The characteristic.
+        stat: StatKind,
+    },
     /// How many card types there are among the objects that match the selector.
     CardTypes(Selector),
     /// How many players the reference names: `Players(Opponents)` is the number of opponents.
@@ -449,6 +457,7 @@ enum Tagged {
     Devotion(Vec<Color>),
     Greatest { of: Selector, stat: StatKind },
     Total { of: Selector, stat: StatKind },
+    Distinct { of: Selector, stat: StatKind },
     CardTypes(Selector),
     Players(Ref),
     LowestLife(Ref),
@@ -507,6 +516,10 @@ enum TaggedRef<'a> {
         of: &'a Selector,
         stat: StatKind,
     },
+    Distinct {
+        of: &'a Selector,
+        stat: StatKind,
+    },
     CardTypes(&'a Selector),
     Players(&'a Ref),
     LowestLife(&'a Ref),
@@ -559,6 +572,7 @@ impl From<Tagged> for Amount {
             Tagged::HighestLife(who) => Amount::HighestLife(who),
             Tagged::LowestHand(who) => Amount::LowestHand(who),
             Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
+            Tagged::Distinct { of, stat } => Amount::Distinct { of, stat },
             Tagged::Destroyed(of) => Amount::Destroyed(of),
             Tagged::Kicks => Amount::Kicks,
             Tagged::Mutations(of) => Amount::Mutations(of),
@@ -608,6 +622,9 @@ impl Serialize for Amount {
             Amount::HighestLife(who) => TaggedRef::HighestLife(who).serialize(serializer),
             Amount::LowestHand(who) => TaggedRef::LowestHand(who).serialize(serializer),
             Amount::LifeLostThisWay => TaggedRef::LifeLostThisWay.serialize(serializer),
+            Amount::Distinct { of, stat } => {
+                TaggedRef::Distinct { of, stat: *stat }.serialize(serializer)
+            }
             Amount::Destroyed(of) => TaggedRef::Destroyed(of).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
@@ -811,6 +828,7 @@ mod tests {
     #[case::lowest_hand(Amount::LowestHand(Ref::EachPlayer), r#"{"LowestHand":"EachPlayer"}"#)]
     #[case::life_lost_this_way(Amount::LifeLostThisWay, r#""LifeLostThisWay""#)]
     #[case::destroyed_this_way(Amount::Destroyed(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Destroyed":[{"Type":"Creature"}]}"#)]
+    #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },

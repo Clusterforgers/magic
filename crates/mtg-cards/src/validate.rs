@@ -562,6 +562,7 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "Total");
                 self.at("of", |w| w.selector(of));
             }
+            Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
             Amount::Players(who) => self.player_amount("Players", who),

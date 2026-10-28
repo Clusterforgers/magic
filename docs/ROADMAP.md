@@ -29,7 +29,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Cast ways and zones: (c5e), (c2l3), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
-- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
+- Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2ea), (r2dge), (r2eba) a local run, (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5) affected-only checks.
@@ -168,7 +168,11 @@ The server is settled first, then the web is built once against the final types.
 
 ### Compiler wordings
 - [ ] (c10) Unread spell, trigger and activated wordings ranked by `mtg-cli coverage`: one piece per family left (quoted tokens, goad, counters, pump, manlands, graveyard, flicker, damage, draw and discard)
-- [~] (c10s) (c10s-counted-amounts) Counted amounts left: counts of another player, distinct values, mana spent, things destroyed this way, differences and "whichever is greater"; frees about 30 cards (Celebrate the Harvest, Wurmquake, Kaya's Wrath)
+- [ ] (c10s-a) Mana spent to cast a spell as an amount ("the amount of mana spent to cast this spell", "that spell"): Wurmquake, Manaform Hellkite, Prossh, Gyrus, Kurbis, Marath
+- [ ] (c10s-b) Differences and "whichever is greater" as amounts: Sandstone Oracle, Slithermuse, Hit the Mother Lode, Jaws of Defeat, Tales of the Ancestors, Prophet of the Scarab, Willowdusk
+- [ ] (c10s-c) Counts of another player ("the number of Islands target opponent controls", "creatures target player controls") and of what each player controlled that was destroyed (Deadly Tempest)
+- [ ] (c10s-d) Token counts and X/X tokens from a count ("a token for each nontoken creature destroyed this way", "an X/X token, where X is ..."): Blood Money, Ceaseless Conflict, Phyrexian Rebirth
+- [ ] (c10s-e) Coven and names left: a conditional cast permission (Augur of Autumn), "Then if" after a targeted step (Leinore), differently named tokens and different names (Gimbal, Sandsteppe War Riders, Neriv, Liliana's Contract)
 - [~] (r2de-a2) (r2de-a2-counters-any-removed) Counters of any kind removed: by an effect with a choice of kinds ("up to three counters from target permanent") and as a cost from a permanent the payer picks; frees about 8 cards (Glissa Sunslayer, Power Conduit, Fain, the Broker)
 - [ ] (r2de-a3) Counters from among permanents as a cost or effect, the counters of a permanent that left put on another, and "that many" of its counters; frees about 10 cards (Tayam, Iron Apprentice, Reyhan, Last of the Abzan)
 - [ ] (c10d) Top-of-library wordings left: reveals with a follow-up, each player's top cards, a land put from a look, places beneath the top X; frees about 20 cards (Risen Reef, Explorer's Scope, Unexpectedly Absent)

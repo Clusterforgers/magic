@@ -1,0 +1,54 @@
+{
+  "oracle_id": "918991a6-7321-419d-8f3d-150fe32d02d2",
+  "name": "Eris, Roar of the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eris, Roar of the Storm",
+      "oracle_fingerprint": "209ed28244a03d567b8beeceedfd44fa",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "per": {
+              "Distinct": {
+                "of": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "In": "Graveyard" },
+                  { "OwnedBy": "You" }
+                ],
+                "stat": "ManaValue"
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Prowess" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon", "Elemental"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Prowess" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
