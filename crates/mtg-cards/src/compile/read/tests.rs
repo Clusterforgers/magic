@@ -173,6 +173,8 @@ mod c10_uc;
 mod c10_xp_copy_until;
 mod c11a_ability_less;
 mod c11a_turn_costs;
+mod c11b_cast_target;
+mod c11b_once;
 mod c11c_counter_costs;
 mod c11c_had_counters;
 mod c11d_modes;

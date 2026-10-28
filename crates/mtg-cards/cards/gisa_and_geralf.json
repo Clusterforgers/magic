@@ -1,0 +1,30 @@
+{
+  "oracle_id": "20e94d0f-6887-45f8-a137-877011d786c6",
+  "name": "Gisa and Geralf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gisa and Geralf",
+      "oracle_fingerprint": "daf27249591af73a74878bf04eeb5447",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 4 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Zombie" }],
+                "from": "Graveyard",
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

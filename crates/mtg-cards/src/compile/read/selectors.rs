@@ -950,11 +950,12 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
 }
 
 /// The graveyards a card is taken from besides one's own: "from a graveyard", "from an opponent's graveyard", "from
-/// defending player's graveyard".
-const OTHER_GRAVEYARDS: [(&str, Option<Ref>); 3] = [
+/// defending player's graveyard", "from that player's graveyard" (the player of the event).
+const OTHER_GRAVEYARDS: [(&str, Option<Ref>); 4] = [
     ("from a graveyard", None),
     ("from an opponent's graveyard", Some(Ref::Opponents)),
     ("from defending player's graveyard", Some(Ref::Defending)),
+    ("from that player's graveyard", Some(Ref::Triggering)),
 ];
 
 /// The subtypes before "spell" in the singular: "Merfolk spell", "Vampire creature spell", "Faerie or Wizard permanent

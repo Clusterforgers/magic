@@ -546,6 +546,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     flash,
                     only,
                     play,
+                    once: false,
                 })
             }),
         trigger_pattern().prop_map(|cause| GameRule::TriggerAgain { cause }),
@@ -1018,6 +1019,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                         free,
                         play,
                         way,
+                        bind: None,
                         otherwise,
                     }
                 }),

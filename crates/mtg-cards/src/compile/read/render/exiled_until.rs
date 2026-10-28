@@ -30,6 +30,7 @@ impl Writer<'_> {
             free: true,
             play: false,
             way: None,
+            bind: None,
             otherwise: Vec::new(),
         };
         let to_the_bottom = Effect::Move {

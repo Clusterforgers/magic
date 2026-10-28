@@ -754,6 +754,10 @@ pub enum Effect {
         /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         way: Option<CastWay>,
+        /// The name the spell cast is bound to, as the object it is on the stack ("that spell"); nothing is bound when the
+        /// card is not cast or is played as a land.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
         /// Done when the card is not cast: the player declines, or nothing lets it be cast.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
@@ -1115,6 +1119,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             free: true,
             play: false,
             way: None,
+            bind: None,
             otherwise,
         },
         Effect::Move {
@@ -1187,6 +1192,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 flash: false,
                 only: Some(Ref::Bound(IMPULSE.to_owned())),
                 play: true,
+                once: false,
             }),
             duration,
         },

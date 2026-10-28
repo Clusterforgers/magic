@@ -97,6 +97,8 @@ pub(crate) enum Tally {
     C11aCreatureCast,
     /// An artifact spell cast (counted for the player).
     C11aArtifactCast,
+    /// A spell cast through a permission that works once each turn (counted for the permission's source).
+    C11bOnceUsed,
     /// Life gained, once for each event.
     Gained,
     /// An object declared as an attacker (counted for the object).

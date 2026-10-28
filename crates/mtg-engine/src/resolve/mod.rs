@@ -347,7 +347,9 @@ fn step_with(
         return Ok(Progress::Done(vec![blessing]));
     }
     // CR 608.2b: a spell or ability whose targets have all become illegal does nothing at all.
-    if resolving.position == START && scope.all_targets_illegal() {
+    // A first step that was answered already began the resolution: a card it cast left its zone, and the spell or ability
+    // goes on (CR 608.2g).
+    if resolving.position == START && resolving.journal.is_empty() && scope.all_targets_illegal() {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {
             object: object.id(),
             outcome: ResolutionOutcome::Fizzled,

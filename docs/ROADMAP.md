@@ -26,7 +26,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Ready pieces, grouped by the code they touch. A group runs one piece at a time, groups run side by side (about six agents at once); a piece is claimed with `[~]` and pushed before it starts, and `git merge main` plus the full `scripts/check.sh` end it.
 
 - Costs and casting: (g2e), (g5c), (g6d), (r2d), (r1va), (r1vb), (c1j), (c1k), (c1l), (c12f), (c13b), (c14a), (r2dgc-a).
-- Cast ways and zones: (c5e), (c2l3), (r2de-b), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
+- Cast ways and zones: (c5e), (c2l3), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2j), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s), (c10d), (c10e) and (c10r), (o2f), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
@@ -50,8 +50,8 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Counters and planeswalkers: counters on permanents and players, keyword counters, counters of any kind, counter costs on other permanents, "if it had counters on it", multiplied counters, loyalty abilities and the legend rule.
 - Attachments: Auras on permanents and players, Equipment, Reconfigure, living weapon, umbra armor and Aura grants.
 - Replacement and prevention: enters tapped or with counters, damage shields, regeneration, protection, death shields and conditional "instead" replacements.
-- Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive.
-- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
+- Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
+"- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge and Harmonize (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
@@ -145,9 +145,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c3d) The monarch cards still held back: "can't attack you", "the monarch controls", stun counters after a group's damage, a delayed attack on the monarch; frees about 6 cards (Fealty to the Realm, Okoye, Regal Sliver)
 - [ ] (c3b) Time counters on suspended cards and permanents, in the views of exiled cards too, and the blessing badge on the table
 - [ ] (c4e) Cards that read the crew record and crew events and wait on a wording, and a Reconfigure corpus card; frees about 10 cards (Smogbelcher Chariot, Mindlink Mech, The Fantasticar)
-- [ ] (c5e) The rest of the cipher and hideaway cards; frees about 7 cards (Hidden Strings, Arcane Heist, Shelldock Isle)
+- [ ] (c5e) The rest of the cipher and hideaway cards; frees about 6 cards (Hidden Strings, Shelldock Isle)
 - [ ] (c6d) Devour counts, the Phasing keyword and phase-out sentences, gift "instead" spells and entered-this-turn wordings; frees about 20 cards (Thromok, Oubliette, Out of Time)
-- [~] (r2de-b) (r2de-b-cast-permissions) Cast and play permissions left: once each turn, from its own graveyard or exile, exiled cards in a trigger, and the exile of such a spell; frees about 25 cards (Karador, Squee, the Immortal, Torrential Gearhulk)
+- [ ] (r2de-c) Cast permissions left: "Once each turn" on any turn, a spell cast through a permission exiled instead of a graveyard, a card cast from its own graveyard or exile, exiled cards cast in a trigger, spells chosen from a graveyard and cast free; frees about 20 cards (Kess, Dissident Mage, Squee, the Immortal, Dire Fleet Daredevil, Diviner of Mist)
 - [ ] (r2r) Alternative costs left: life or energy instead of mana, fixed mana, impending, X in madness, a paid madness cost as a condition; frees about 8 cards (Xander's Pact, Nashi, Fist of Suns)
 - [ ] (r1aug) Extra turns and phases: a loss at the extra turn's end step, its restrictions, attacks alone, combats with chosen attackers, extra-turn costs; frees about 20 cards (Final Fortune, Medomai, Moraug)
 

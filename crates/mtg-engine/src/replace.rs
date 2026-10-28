@@ -2096,6 +2096,7 @@ impl Pass<'_> {
                     free: true,
                     play: false,
                     way: None,
+                    bind: None,
                     otherwise: Vec::new(),
                 }],
                 bindings: Vec::new(),

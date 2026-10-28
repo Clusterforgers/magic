@@ -75,6 +75,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             flash: false,
             only: Some(Ref::Bound(card.clone())),
             play: true,
+            once: false,
         };
     let Some(words) = u32::try_from(*count).ok().and_then(count_word) else {
         return;
