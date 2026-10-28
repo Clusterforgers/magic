@@ -430,17 +430,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     before: cast_before(post, later),
                 });
                 found.extend(w9a_expended(post, later, *player, choices));
-                if super::w11c_crime::w11c_is_crime(post, *player, choices) {
-                    found.push(Happened::W11cCrime { player: *player });
-                }
+                found.extend(w11c_crime(post, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
-                if super::w11c_crime::w11c_is_crime(post, put.controller, &put.choices) {
-                    found.push(Happened::W11cCrime {
-                        player: put.controller,
-                    });
-                }
+                found.extend(w11c_crime(post, put.controller, &put.choices));
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::SpellCopied(copy) => {
@@ -497,6 +491,12 @@ fn cast_before(post: &GameState, later: &[Event]) -> u32 {
         .filter(|event| matches!(event, Event::SpellCast { .. }))
         .count();
     total.saturating_sub(u32::try_from(after).unwrap_or(u32::MAX).saturating_add(1))
+}
+
+/// The crime of a spell or ability `player` announced with `choices`, if it is one.
+fn w11c_crime(post: &GameState, player: PlayerId, choices: &Choices) -> Option<Happened> {
+    super::w11c_crime::w11c_is_crime(post, player, choices)
+        .then_some(Happened::W11cCrime { player })
 }
 
 /// The mana a cast of `player` spent, as the move of their turn's total of mana spent on spells: the total after the

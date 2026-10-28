@@ -1254,11 +1254,16 @@ impl<'a> Walker<'a> {
         }
     }
 
-    fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
-        self.uses("Trigger", &tag_of(pattern));
+    /// The numbers a trigger pattern needs: expend counts from 1.
+    fn w11c_pattern_numbers(&mut self, pattern: &TriggerPattern) {
         if let TriggerPattern::Expend { n: 0, .. } = pattern {
             self.problem("expend needs a number of at least 1");
         }
+    }
+
+    fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
+        self.uses("Trigger", &tag_of(pattern));
+        self.w11c_pattern_numbers(pattern);
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
