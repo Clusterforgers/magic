@@ -406,6 +406,12 @@ pub enum TriggerPattern {
         /// The Mount that becomes saddled.
         what: Selector,
     },
+    /// A permanent matching the selector is exerted (CR 701.43): "When you do" after "You may exert this creature as it
+    /// attacks", and "Whenever you exert a creature"; `Triggering` is the permanent exerted.
+    Exerted {
+        /// The permanent exerted.
+        what: Selector,
+    },
     /// A permanent matching the selector is turned face up ("when this creature is turned face up", CR 702.37e); `Triggering` is
     /// its controller.
     TurnedFaceUp {
