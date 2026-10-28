@@ -18,7 +18,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-pub(crate) use inline::run_inline;
+pub(crate) use inline::{run_inline, w5d_run_instead};
 pub(crate) use prim::lower;
 pub use value::{Bindings, ResolveError, Scope};
 pub(crate) use value::{CastTargets, zone_kind};

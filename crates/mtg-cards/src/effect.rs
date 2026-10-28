@@ -551,6 +551,11 @@ pub enum Effect {
         /// What is untapped.
         what: Ref,
     },
+    /// The controller chooses to tap or to untap the permanents ("tap or untap target permanent").
+    TapOrUntap {
+        /// What is tapped or untapped.
+        what: Ref,
+    },
     /// Phases permanents out (CR 702.26): they are treated as though they don't exist, with what is attached to them,
     /// until they phase in during their controller's next untap step.
     PhaseOut {

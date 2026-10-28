@@ -72,6 +72,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Reference engines: Forge, XMage and Magarena surveyed, and `mtg-cli forge-check` maps Forge's scripts to DSL verbs (`docs/reference-engines.md`).
 - Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser.
 - Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
+- Replacements that name their event: `Instead` steps read the replaced player, amount and source of damage, and "tap or untap" is a choice of the controller.
 
 ## M3 Card system
 
@@ -228,7 +229,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r3w5b) "any other target" in a mode (Special Move); re-propose Augury Adept, whose trigger leaves out "to a player"; re-check Éowyn, Shieldmaiden once (r3w1) lands
 - [ ] (r2ec) A specialist model: `mtg-cli export-training` writes card text and rules pairs from the hand-written cards and accepted proposals with a held-out split, decoding is limited to the DSL grammar, and a LoRA fine-tune with a short prompt replaces the 22K-token reference
 - [ ] (r2dge) The tail of the stored proposals: 32 unchecked, 14 invalid and 26 mismatched, mostly wrong proposals that need a rewrite; `mtg-cli check-rules --verbose` names each
-- [~] (r2dgf) (r2dgf-replacement-event) Tap or untap one target, and a replacement that names the event it replaces; frees about 6 cards (Tidal Force, Merrow Reejerey, Pariah, Ravenous Slime)
+- [ ] (r2dgh) A prevention that names its event: "prevent that damage and put that many +1/+1 counters on it" (Panther Habit, the shield of Gatta and Luzzu) and "prevent all but 1 of that damage" (Temple Altisaur)
+- [ ] (r2dgi) A token-creation replacement for one kind of token, "that many 4/4 white Angel creature tokens ... are created instead" (Divine Visitation), and the cost "Sacrifice another Vampire or Zombie" (Kalitas, Traitor of Ghet)
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 - [ ] (r1a) `mtg-cli forge-check` compares a Forge clause with the ability that stands for it and reads `Count$` amounts, `Valid*` filters and conditions (`docs/reference-engines.md`)
 - [ ] (r1b) The prompt of `mtg-cli propose` takes examples from Forge clause-script pairs fetched at run time; examples kept in the repository come from XMage with its MIT notice

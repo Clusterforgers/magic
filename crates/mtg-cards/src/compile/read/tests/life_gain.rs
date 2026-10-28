@@ -62,7 +62,6 @@ fn a_static_ability_can_hold_while_you_have_a_life_total(#[case] text: &str, #[c
     "If you would gain life while you have 10 or less life, you gain twice that much life instead."
 )]
 #[case::another_effect("If you would gain life, draw that many cards instead.")]
-#[case::lose_it("If an opponent would gain life, that player loses that much life instead.")]
 #[case::a_spell_wording("You gain that much life plus 1.")]
 #[case::one_opponent("Target opponent can't gain life.")]
 #[case::this_turn("Players can't gain life this turn.")]

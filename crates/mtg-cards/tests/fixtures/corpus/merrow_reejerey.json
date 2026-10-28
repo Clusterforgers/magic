@@ -1,0 +1,25 @@
+{
+  "id": "6ae8ea86-46c3-4855-92e9-7906e554becb",
+  "oracle_id": "6b7e6ae4-2ee1-44bf-ac93-79fc87494515",
+  "name": "Merrow Reejerey",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "layout": "normal",
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Merfolk Soldier",
+  "oracle_text": "Other Merfolk creatures you control get +1/+1.\nWhenever you cast a Merfolk spell, you may tap or untap target permanent.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "set": "lcc",
+  "collector_number": "165",
+  "digital": false,
+  "rarity": "uncommon"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "13e2658d-28d7-4e22-ad44-03ab92ff666d",
+  "oracle_id": "1b25e262-e2df-4768-b55e-1b7b8d3ee993",
+  "name": "Tidal Force",
+  "lang": "en",
+  "released_at": "2013-11-01",
+  "layout": "normal",
+  "mana_cost": "{5}{U}{U}{U}",
+  "cmc": 8.0,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "At the beginning of each upkeep, you may tap or untap target permanent.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "set": "c13",
+  "collector_number": "62",
+  "digital": false,
+  "rarity": "rare"
+}

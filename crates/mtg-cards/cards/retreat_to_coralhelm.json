@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c450f6b7-bb2a-4b8c-aec7-d27555137b63",
+  "name": "Retreat to Coralhelm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retreat to Coralhelm",
+      "oracle_fingerprint": "f5a6efbfe4dfa8754f5e5fb0d384d108",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }
+                      ]
+                    },
+                    { "effects": [{ "Scry": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

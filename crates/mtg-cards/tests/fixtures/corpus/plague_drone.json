@@ -1,0 +1,28 @@
+{
+  "id": "95df49ae-e75f-4d97-8323-ebb62ff1df33",
+  "oracle_id": "9552fc97-9e6d-4307-bf58-30bf956356bf",
+  "name": "Plague Drone",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "layout": "normal",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Flying\nRot Fly — If an opponent would gain life, that player loses that much life instead.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Rot Fly"
+  ],
+  "set": "40k",
+  "collector_number": "47",
+  "digital": false,
+  "rarity": "rare"
+}

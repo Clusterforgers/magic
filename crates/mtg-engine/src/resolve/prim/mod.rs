@@ -90,6 +90,7 @@ mod transform;
 mod untap;
 mod vote;
 mod w2f_any_counters;
+mod w5d_tap_or_untap;
 mod win_game;
 
 use mtg_cards::effect::Effect;
@@ -142,6 +143,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
         Effect::Untap { .. } => untap::run(cx, effect),
+        Effect::TapOrUntap { .. } => w5d_tap_or_untap::run(cx, effect),
         Effect::PhaseOut { .. } => phase_out::run(cx, effect),
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
@@ -220,7 +222,7 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"AddPhase":{"phases":["Combat","Main"]}},
+        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
@@ -251,7 +253,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 82, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 83, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -311,6 +313,7 @@ mod tests {
         "Effect.MultiplyCounters",
         "Effect.Tap",
         "Effect.Untap",
+        "Effect.TapOrUntap",
         "Effect.PhaseOut",
         "Effect.Attach",
         "Effect.Unattach",

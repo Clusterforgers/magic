@@ -165,6 +165,7 @@ const RUNS: &[&str] = &[
     "Effect.MultiplyCounters",
     "Effect.Tap",
     "Effect.Untap",
+    "Effect.TapOrUntap",
     "Effect.PhaseOut",
     "Effect.Attach",
     "Effect.Unattach",
@@ -377,6 +378,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventUpTo",
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
+    "ReplaceBy.Instead",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
     "ReplaceBy.Choose",
@@ -592,7 +594,9 @@ mod tests {
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
-    #[case::doing_something_instead("ReplaceBy.Instead", false)]
+    #[case::doing_something_instead("ReplaceBy.Instead", true)]
+    #[case::asking_in_place_of_an_event("ReplaceBy.Instead.Asks", false)]
+    #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
     #[case::states("Trigger.State", true)]
     #[case::exiling_the_source("Cost.ExileSelf", true)]

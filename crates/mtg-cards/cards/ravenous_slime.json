@@ -1,0 +1,49 @@
+{
+  "oracle_id": "4696decb-7bff-4c6b-8a7b-9ec324faefde",
+  "name": "Ravenous Slime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Slime",
+      "oracle_fingerprint": "a3ad4bcd326c7ba5fbb0b70b35cf8c11",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering" } },
+                {
+                  "PutCounters": {
+                    "on": "This",
+                    "counter": "+1/+1",
+                    "count": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

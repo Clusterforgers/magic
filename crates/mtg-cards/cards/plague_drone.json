@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9552fc97-9e6d-4307-bf58-30bf956356bf",
+  "name": "Plague Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Drone",
+      "oracle_fingerprint": "6cb02f276264bfcd3fd9d7fb69c09fba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "LifeGain": { "who": "Opponents" } },
+            "by": { "Instead": [{ "LoseLife": { "who": "Triggering", "amount": "Triggering" } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -602,8 +602,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::EntersPrepared
         | ReplaceBy::Riot
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
-        // Not run yet: a card that uses it is not Verified.
-        ReplaceBy::Instead(_) => false,
+        ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
     }
 }
 
@@ -1712,6 +1711,9 @@ impl Pass<'_> {
                 }
                 self.slots.remove(at);
             }
+            (ReplaceBy::Instead(effects), _) => {
+                self.w5d_instead(at, candidate, effects, &unit, applied);
+            }
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
                 self.scale(at, by, &applied);
             }
@@ -2800,6 +2802,8 @@ mod shields;
 
 #[cfg(test)]
 mod umbra;
+
+mod w5d_instead;
 
 #[cfg(test)]
 mod tests {

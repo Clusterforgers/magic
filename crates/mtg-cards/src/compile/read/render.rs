@@ -1255,6 +1255,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Exile { .. }
                 | Effect::Tap { .. }
                 | Effect::Untap { .. }
+                | Effect::TapOrUntap { .. }
                 | Effect::Goad { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
@@ -1966,6 +1967,7 @@ impl Writer<'_> {
             Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
             Effect::Tap { what } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
+            Effect::TapOrUntap { what } => format!("tap or untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),
             Effect::Goad { what } => format!("goad {}", self.object(what)?),
             Effect::Fight {
@@ -2075,6 +2077,7 @@ impl Writer<'_> {
             Effect::Destroy { .. }
             | Effect::Tap { .. }
             | Effect::Untap { .. }
+            | Effect::TapOrUntap { .. }
             | Effect::Goad { .. }
             | Effect::Fight { .. }
             | Effect::Regenerate { .. }
