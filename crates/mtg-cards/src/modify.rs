@@ -258,6 +258,14 @@ pub enum GameRule {
     },
     /// No more than this many creatures can attack each combat: a restriction on the whole declaration (CR 508.1c).
     AttackLimit(u32),
+    /// No more than `most` creatures can attack each player or planeswalker `at` names each combat ("no more than two
+    /// creatures can attack you each combat"): a restriction on the attacks at each of them (CR 508.1c).
+    AttackLimitAt {
+        /// The most creatures that can attack each of them together, at least one.
+        most: u32,
+        /// The players ("you") or planeswalkers ("~") it protects.
+        at: Ref,
+    },
     /// No more than this many creatures can block each combat: a restriction on the whole declaration (CR 509.1b).
     BlockLimit(u32),
     /// The spells can't be countered.
@@ -416,6 +424,10 @@ mod tests {
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
     #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
     #[case(GameRule::AttackLimit(1), r#"{"AttackLimit":1}"#)]
+    #[case(
+        GameRule::AttackLimitAt { most: 2, at: Ref::You },
+        r#"{"AttackLimitAt":{"most":2,"at":"You"}}"#
+    )]
     #[case(GameRule::BlockLimit(2), r#"{"BlockLimit":2}"#)]
     #[case(
         GameRule::CantGainLife(Ref::EachPlayer),

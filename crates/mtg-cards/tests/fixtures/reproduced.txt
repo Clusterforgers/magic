@@ -289,6 +289,7 @@ Courser of Kruphix
 Court of Grace
 Crack in Time
 Cram Session
+Crawlspace
 Creeping Tar Pit
 Crib Swap
 Crocanura
@@ -737,6 +738,7 @@ Jo Grant
 Jodah's Codex
 Join the Maestros
 Jolting Merfolk
+Judoon Enforcers
 Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient

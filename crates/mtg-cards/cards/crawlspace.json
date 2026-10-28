@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2296370c-fe34-4df6-92a5-260f1634bede",
+  "name": "Crawlspace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crawlspace",
+      "oracle_fingerprint": "3553e0e3a6dd20f487b124f91ec38383",
+      "abilities": [{ "Rule": { "rule": { "AttackLimitAt": { "most": 2, "at": "You" } } } }]
+    }
+  ]
+}

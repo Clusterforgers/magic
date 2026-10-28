@@ -2765,6 +2765,14 @@ impl Walker<'_> {
                     });
                 }
             }),
+            GameRule::AttackLimitAt { most, at } => self.at(tag, |w| {
+                if *most == 0 {
+                    w.problem("a limit on a declaration lets at least one creature in");
+                }
+                if !matches!(at, Ref::You | Ref::This) {
+                    w.at("at", |w| w.problem("a limit on the attacks protects you or this planeswalker"));
+                }
+            }),
             GameRule::AttackLimit(most) | GameRule::BlockLimit(most) => {
                 if *most == 0 {
                     self.at(tag, |w| w.problem("a limit on a declaration lets at least one creature in"));

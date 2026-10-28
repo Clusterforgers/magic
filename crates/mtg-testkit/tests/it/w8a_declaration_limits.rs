@@ -24,7 +24,7 @@ use crate::w7d_control_scenarios::w7d_oracle;
 type W8aResult = Result<(), ScriptError>;
 
 /// A 2/2 that attacks each combat if able.
-fn w8a_berserker(name: &str) -> Arc<CardDefinition> {
+pub(crate) fn w8a_berserker(name: &str) -> Arc<CardDefinition> {
     w7d_oracle(
         name,
         "{1}{R}",
@@ -54,7 +54,7 @@ fn w8a_required(result: &Result<Vec<Event>, ScriptError>) -> bool {
 }
 
 /// Answers passively until `seat` has a decision of the kind called `kind`.
-fn w8a_until(driver: &mut Driver, seat: usize, kind: &str) -> W8aResult {
+pub(crate) fn w8a_until(driver: &mut Driver, seat: usize, kind: &str) -> W8aResult {
     for _ in 0..300 {
         let decision = driver.decision()?.clone();
         if decision.player == pid(seat) && decision.kind.name() == kind {

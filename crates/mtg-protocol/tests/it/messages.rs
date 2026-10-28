@@ -267,6 +267,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
         }),
         DecisionKind::DeclareAttackers(AttackOptions {
             most: None,
+            most_at: Vec::new(),
             attackers: vec![AttackerOption::free(
                 a,
                 vec![AttackTarget::Player(PlayerId(1))],

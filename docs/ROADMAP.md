@@ -31,7 +31,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-c).
 - Triggers and keywords: (c6d-a), (c6d-b), (c6d-c), (c6d-d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
-- Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-b), (r2az-c).
+- Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-b), (r2az-c), (r2az-e), (r2az-f).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
@@ -63,7 +63,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
 - Vehicles and Mounts: crew, saddle and station, crewed and saddled events, the crew record of the turn and Vehicles animated by abilities.
 - Phasing and day and night: phased-out permanents in their own zone, life totals that can't change, player protection, day and night effects and conditions.
-- Statics: lords, characteristic-defining abilities, conditions, attack taxes in mana and life, "can't attack you or planeswalkers you control", blocker limits, limits on the whole attack and block declaration, player keywords, stay-tapped statics, grants outside the battlefield, group prevention, groups of spells that can't be countered and conditions on the attached permanent.
+- Statics: lords, characteristic-defining abilities, conditions, attack taxes in mana and life, "can't attack you or planeswalkers you control", blocker limits, limits on the whole attack and block declaration and on the attacks at one defender, player keywords, stay-tapped statics, grants outside the battlefield, group prevention, groups of spells that can't be countered and conditions on the attached permanent.
 - Mutate: merged permanents under copy effects, mutation counts, merged cards leaving to libraries and the command zone (`docs/engine.md`, Mutate).
 - Faces and copies: multi-face cards, transform, fuse, daybound, Sagas, Classes, flip cards, copiable values, token, spell and ability copies, copy groups and prepare cards.
 - Face-down objects: morph, megamorph, disguise, manifest and cloak with their compiler wordings and views.
@@ -183,8 +183,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c8ja) Life gain replaced by another effect (`ReplaceBy::Instead` in the engine): a loss instead, cards drawn instead, no life gained; frees about 6 cards (Tainted Remedy, Plague Drone, Nefarious Lich)
 - [ ] (c8jb) Prevention for "you and" a group, quoted static abilities given under a condition, and the Slivers' quoted abilities left (flip, becomes a type, top of library); frees about 20 cards (Rune of Flight, The Wanderer, Pulmonic Sliver)
 - [ ] (r1ab) The rest of the `Continuous` statics: types for spells and cards, every land type, a color added, group unions, "modified", attachment conditions; frees about 25 cards (Arcane Adaptation, Death Baron, Song of the Dryads)
-- [~] (r2az-c) (w10a-attack-limit-domain) Domain of another player and the effects around domain the compiler does not read: "lands they control", "lands that player controls", "discards a card for each", "unless its controller pays {1} for each", "look at the top X ... put up to two into your hand", "prevent the next X damage"; frees about 10 cards (Allied Strategies, Mask of Intolerance, Evasive Action, Shadow Prophecy)
-- [~] (r2az-d) (w10a-attack-limit-domain) "No more than N creatures can attack you each combat" (a limit on the attacks at one player or planeswalker): frees about 4 cards (Crawlspace, Judoon Enforcers, The Eternal Wanderer)
+- [ ] (r2az-c) Domain of another player and the effects around domain the compiler does not read: "lands they control" (the player of the sentence, read and written back), "lands that player controls" in an intervening "if", "discards a card for each", "unless its controller pays {1} for each", "look at the top X ... put up to two into your hand", "prevent the next X damage"; frees no precon card, about 8 corpus cards (Allied Strategies, Mask of Intolerance, Evasive Action, Shadow Prophecy)
+- [ ] (r2az-e) A limit on the attacks at you under a condition ("As long as ~ is tapped, no more than one creature can attack you each combat") and "each opponent can't block with more than one creature this combat": frees Mirri, Weatherlight Duelist
+- [ ] (r2az-f) The loyalty abilities of The Eternal Wanderer: exile until "that player's next end step" and "for each player, choose a creature that player controls ... sacrifices all creatures they control not chosen this way"
 - [ ] (r2bhd) Untaps in other players' untap steps and groups held through their next untap step; frees about 8 cards (Seedborn Muse, Unwinding Clock, Lorthos, the Tidemaker)
 - [ ] (r2u) Attached Auras and Equipment as a count, and attachments made by effects (any number, onto tokens, onto returned cards); frees about 15 cards (Kor Spiritdancer, Kemba, Goldwardens' Gambit)
 - [ ] (r2db-a) Several statics, or a player rule and statics, in one sentence, and hexproof from the Aura controller's opponents; frees about 6 cards (Tenza, Godo's Maul, Nighthowler, Sigarda, Heron's Grace)
