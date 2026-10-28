@@ -194,6 +194,7 @@ Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
 Cast Out
+Casualties of War
 Cathars' Crusade
 Cathartic Reunion
 Cathedral Acolyte
@@ -443,6 +444,7 @@ Famine
 Fanatic of Rhonas
 Far Wanderings
 Faramir, Steward of Gondor
+Farewell
 Favorable Winds
 Fear of Failed Tests
 Fearless Skald
@@ -454,6 +456,7 @@ Fertile Ground
 Fetid Heath
 Field Trip
 Fierce Guardianship
+Fiery Confluence
 Fiery Fall
 Fiery Temper
 Fight Rigging
@@ -683,6 +686,7 @@ Keep Watch
 Kemba's Banner
 Kenrith's Transformation
 Kessig Wolf Run
+Kill! Maim! Burn!
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
@@ -796,6 +800,7 @@ Mercurial Chemister
 Merfolk Branchwalker
 Merfolk Mistbinder
 Mesmeric Orb
+Methods of the Mighty
 Metropolis Reformer
 Midnight Banshee
 Migratory Greathorn
@@ -836,6 +841,7 @@ Mutavault
 Mycoloth
 Myr Retriever
 Myriad Landscape
+Mystic Confluence
 Mystic Gate
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
@@ -967,6 +973,7 @@ Radical Idea
 Raffine's Informant
 Rafter Demon
 Raging Goblinoids
+Rain of Thorns
 Rakdos Headliner
 Rakish Heir
 Rally the Ranks
@@ -1017,6 +1024,7 @@ Riders of Gavony
 Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
+Righteous Confluence
 Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
@@ -1028,6 +1036,7 @@ Rob the Archives
 Rocksteady, Mutant Marauder
 Rogue Refiner
 Rootborn Defenses
+Rootcast Apprenticeship
 Rope
 Rosheen Meanderer
 Rousing Refrain

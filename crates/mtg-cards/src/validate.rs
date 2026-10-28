@@ -2184,10 +2184,11 @@ impl Walker<'_> {
                 repeat,
                 at_random,
                 once_each_turn,
+                once_ever,
                 all_if,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
-                w.modal_flags(choose, *repeat, *at_random, *once_each_turn);
+                w.modal_flags(choose, *repeat, *at_random, (*once_each_turn, *once_ever));
                 if let Some(condition) = all_if {
                     w.uses("Effect", "Modal.AllIf");
                     w.at("all_if", |w| w.condition(condition));
@@ -2205,8 +2206,9 @@ impl Walker<'_> {
         choose: &Bounds,
         repeat: bool,
         at_random: bool,
-        once_each_turn: bool,
+        once: (bool, bool),
     ) {
+        let (once_each_turn, once_ever) = once;
         if at_random {
             self.uses("Effect", "Modal.AtRandom");
             let fixed = choose.max.as_ref() == Some(&choose.min)
@@ -2219,6 +2221,12 @@ impl Walker<'_> {
             self.uses("Effect", "Modal.OnceEachTurn");
             if repeat {
                 self.problem("a mode chosen once each turn cannot repeat");
+            }
+        }
+        if once_ever {
+            self.uses("Effect", "Modal.OnceEver");
+            if repeat || once_each_turn {
+                self.problem("a mode chosen once ever cannot repeat or be chosen once each turn");
             }
         }
     }

@@ -31,6 +31,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             repeat: false,
             at_random: false,
             once_each_turn: false,
+            once_ever: false,
             all_if: None,
             modes,
         },

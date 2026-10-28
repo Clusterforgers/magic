@@ -111,6 +111,8 @@ pub(crate) struct Modal<'a> {
     pub(crate) at_random: bool,
     /// A mode chosen earlier in the turn by this ability is not offered.
     pub(crate) once_each_turn: bool,
+    /// A mode chosen earlier by this ability, in any turn, is not offered.
+    pub(crate) once_ever: bool,
     /// Every mode may be chosen when this holds as the ability is announced.
     pub(crate) all_if: Option<&'a Condition>,
     /// The modes this ability chose earlier in the turn (read from the tally by the announcement).
@@ -127,6 +129,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 modes,
                 at_random,
                 once_each_turn,
+                once_ever,
                 all_if,
             },
         ] => Some(Modal {
@@ -135,6 +138,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             modes,
             at_random: *at_random,
             once_each_turn: *once_each_turn,
+            once_ever: *once_ever,
             all_if: all_if.as_ref(),
             used: Vec::new(),
         }),
@@ -234,7 +238,9 @@ pub(crate) fn mode_options(
         .modes
         .iter()
         .enumerate()
-        .filter(|(index, _)| !(modal.once_each_turn && modal.used.contains(index)))
+        .filter(|(index, _)| {
+            !((modal.once_each_turn || modal.once_ever) && modal.used.contains(index))
+        })
         .filter(|(_, mode)| is_legal(state, source, controller, mode, cause))
         .map(|(index, mode)| ModeOption {
             index,

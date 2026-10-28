@@ -87,7 +87,9 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     } else if is_activated(body) {
         ClauseKind::Activated
     } else if (body.starts_with("Choose ")
-        && (body.contains('\u{2014}') || body.ends_with(", you may choose both instead.")))
+        && (body.contains('\u{2014}')
+            || body.ends_with(", you may choose both instead.")
+            || body.ends_with(". You may choose the same mode more than once.")))
         || body == "Spree"
     {
         ClauseKind::Modal
@@ -297,6 +299,10 @@ mod tests {
     )]
     #[case::both_for_a_commander(
         "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n\u{2022} A.\n\u{2022} B.",
+        Modal
+    )]
+    #[case::c11d_three_with_repeats(
+        "Choose three. You may choose the same mode more than once.\n\u{2022} A.\n\u{2022} B.",
         Modal
     )]
     fn modal_spells(#[case] text: &str, #[case] expected: ClauseKind) {

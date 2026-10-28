@@ -24,9 +24,7 @@
                     },
                     {
                       "targets": [{ "what": "Player" }],
-                      "effects": [
-                        { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 3 } }
-                      ]
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
                     }
                   ]
                 }

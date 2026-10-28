@@ -26,3 +26,4 @@ mod proposal_names;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;
+mod c11d_probe;
