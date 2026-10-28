@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b30eae2a-bc1c-45a3-93ae-e1c30d26797c",
+  "name": "Glowing One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glowing One",
+      "oracle_fingerprint": "f59fbfcdfd23b0f23b7c3f929ea563ea",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": { "Other": "rad" }, "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Milled": { "what": [{ "Not": { "Type": "Land" } }] } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

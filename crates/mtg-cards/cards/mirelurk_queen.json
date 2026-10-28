@@ -1,0 +1,32 @@
+{
+  "oracle_id": "116ef9ea-d199-49b8-89c7-d61dd92711f5",
+  "name": "Mirelurk Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirelurk Queen",
+      "oracle_fingerprint": "441ae3de24e292ba50b1011da34ad895",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "rad" }, "count": 2 }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Milled": { "what": [{ "Not": { "Type": "Land" } }] } } },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

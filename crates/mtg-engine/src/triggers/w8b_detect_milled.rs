@@ -50,9 +50,7 @@ fn w8b_board(when: &str, top: &str) -> GameState {
             .chars()
             .enumerate()
             .map(|(n, c)| match c {
-                'L' => {
-                    Arc::new(CardDefinition::new(&format!("Land {n}")).with_type(CardType::Land))
-                }
+                'L' => Arc::new(CardDefinition::new(format!("Land {n}")).with_type(CardType::Land)),
                 _ => creature(&format!("Bear {n}"), 2, 2),
             })
             .collect();
