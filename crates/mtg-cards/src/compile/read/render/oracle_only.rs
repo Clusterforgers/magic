@@ -231,6 +231,9 @@ mod wheres;
 mod while_control;
 mod without_counter;
 mod you_create;
+mod w4a_if;
+mod w4a_if_conditions;
+mod w4a_if_instead;
 
 use crate::ability::Ability;
 
@@ -306,6 +309,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_c10_cen(ability, texts);
     add_c11g(ability, texts);
     add_c11f(ability, texts);
+    add_w4a(ability, texts);
+}
+
+/// Adds the wordings of the conditional steps (r3w1): "If X, Y.", "Y if X.", "Otherwise, Z.", "If you can't, Z.".
+fn add_w4a(ability: &Ability, texts: &mut Vec<String>) {
+    w4a_if::add(ability, texts);
 }
 
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.
