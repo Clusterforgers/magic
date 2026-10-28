@@ -1,0 +1,57 @@
+{
+  "oracle_id": "295fe873-ecb5-4d5e-a73c-3af6c478afc5",
+  "name": "Perch Protection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perch Protection",
+      "oracle_fingerprint": "783e0cdf079f5aeb4e624754b3245e5a",
+      "abilities": [
+        { "Keyword": { "Gift": "ExtraTurn" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 4
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    { "PhaseOut": { "what": { "Each": [{ "ControlledBy": "You" }] } } },
+                    {
+                      "Rule": {
+                        "rule": { "LifeTotalCantChange": "You" },
+                        "duration": "UntilYourNextTurn"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "PlayersHave": { "who": "You", "keyword": { "Protection": [] } } },
+                        "duration": "UntilYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
