@@ -227,13 +227,14 @@ mod uncounterable_group;
 mod unless;
 mod untap_lands;
 mod untapped_cost;
+mod w4a_if;
+mod w4a_if_conditions;
+mod w4a_if_instead;
+mod w4a_if_steps;
 mod wheres;
 mod while_control;
 mod without_counter;
 mod you_create;
-mod w4a_if;
-mod w4a_if_conditions;
-mod w4a_if_instead;
 
 use crate::ability::Ability;
 

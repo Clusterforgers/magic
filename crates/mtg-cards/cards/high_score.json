@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d81fc181-ecb0-43a5-88e8-c61aca3428d8",
+  "name": "High Score",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Score",
+      "oracle_fingerprint": "d1f2dd3a7468d2392d9d12bf93ebdf50",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Greatest": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Power"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": { "Greatest": { "of": [{ "Type": "Creature" }], "stat": "Power" } }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

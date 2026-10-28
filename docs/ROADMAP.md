@@ -212,7 +212,7 @@ The server is settled first, then the web is built once against the final types.
 
 ### Model-assisted reading
 - [ ] (r3) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
-- [~] (r3w1) (r3w1-if-writers) Writers for conditional effects ("If X, Y", "Otherwise", "If you can't") in triggers, spells, activated and loyalty abilities, so the stored proposals they unblock are accepted and promoted (24 abilities in the r3 samples)
+- [ ] (r3w1a) Conditional steps left: a card chosen at random (Deadbridge Chant), the top card revealed (Druidic Satchel), "remove all of them" with a named token (Replicating Ring), a bound token with a nested condition (Summoner's Sending), "choose target" before the condition (Meren of Clan Nel Toth), "that player gets two rad counters" (Vexing Radgull) and phasing with a rule until the next turn (Perch Protection)
 - [~] (r3w2) (r3w2-continuous-writers) Writers for `Continuous` effects (+X/+X until end of turn, gains a keyword, can't block, becomes) and the `AddKeyword` and `GrantAbility` modifications (28 abilities)
 - [~] (r3w3) (r3w3-may-pay-writers) Writers for "you may", "you may pay" and the reflexive "When you do" (18 abilities)
 - [~] (r3w4) (r3w4-delayed-repeat-writers) Writers for delayed triggers and "for each player or opponent" (`RepeatEach`) (19 abilities)

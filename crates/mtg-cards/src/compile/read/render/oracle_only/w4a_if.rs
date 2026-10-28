@@ -196,6 +196,10 @@ fn w4a_steps_texts(ability: &Ability, i: usize, steps: &[Effect]) -> Vec<String>
                 .then(|| lowered(inner))
         })
         .collect();
+    out.extend(super::w4a_if_steps::w4a_step_texts(
+        effects.get(..i).unwrap_or_default(),
+        steps,
+    ));
     out.sort();
     out.dedup();
     out

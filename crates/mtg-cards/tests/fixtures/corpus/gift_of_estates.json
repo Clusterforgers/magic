@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "561e1994-0b8d-436c-9934-41c486dc8ff8",
+  "oracle_id": "1bd70be6-752c-4ecb-a3e8-2bacec4b94fc",
+  "multiverse_ids": [
+    389536
+  ],
+  "mtgo_id": 55262,
+  "mtgo_foil_id": 55263,
+  "tcgplayer_id": 94224,
+  "cardmarket_id": 270525,
+  "name": "Gift of Estates",
+  "lang": "en",
+  "released_at": "2014-11-07",
+  "uri": "https://api.scryfall.com/cards/561e1994-0b8d-436c-9934-41c486dc8ff8",
+  "scryfall_uri": "https://scryfall.com/card/c14/73/gift-of-estates?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:34:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.jpg?1783938858",
+    "normal": "https://cards.scryfall.io/normal/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.jpg?1783938858",
+    "large": "https://cards.scryfall.io/large/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.jpg?1783938858",
+    "png": "https://cards.scryfall.io/png/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.png?1783938858",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.jpg?1783938858",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.jpg?1783938858",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.webp?1783938858",
+    "grid": "https://cards.scryfall.io/grid/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.webp?1783938858",
+    "display": "https://cards.scryfall.io/display/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.webp?1783938858",
+    "art": "https://cards.scryfall.io/art/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.webp?1783938858",
+    "crop": "https://cards.scryfall.io/crop/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.webp?1783938858",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/6/561e1994-0b8d-436c-9934-41c486dc8ff8.jpg?1783938858"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "If an opponent controls more lands than you, search your library for up to three Plains cards, reveal them, put them into your hand, then shuffle.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0980a6e2-eb78-4ad2-8396-cef08fce365e",
+  "set": "c14",
+  "set_name": "Commander 2014",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/0980a6e2-eb78-4ad2-8396-cef08fce365e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac14&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c14?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/561e1994-0b8d-436c-9934-41c486dc8ff8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1bd70be6-752c-4ecb-a3e8-2bacec4b94fc&unique=prints",
+  "collector_number": "73",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Hugh Jamieson",
+  "artist_ids": [
+    "ae735af7-4895-45e0-aeb5-58c82343942e"
+  ],
+  "illustration_id": "f4cf6604-5dde-47fd-9b54-c38f47d421a4",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5123,
+  "penny_rank": 9296,
+  "prices": {
+    "usd": "1.17",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.97",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=389536&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGift%2Bof%2BEstates",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGift%2Bof%2BEstates",
+    "edhrec": "https://edhrec.com/route/?cc=Gift+of+Estates"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F94224%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=270525&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/55262?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

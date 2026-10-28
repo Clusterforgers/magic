@@ -14,14 +14,18 @@ pub(super) fn w4a_instead_texts(
     others: &[String],
 ) -> Vec<String> {
     let (
-        [Effect::CreateToken {
-            count: Amount::Fixed(more),
-            ..
-        }],
-        [Effect::CreateToken {
-            count: Amount::Fixed(fewer),
-            ..
-        }],
+        [
+            Effect::CreateToken {
+                count: Amount::Fixed(more),
+                ..
+            },
+        ],
+        [
+            Effect::CreateToken {
+                count: Amount::Fixed(fewer),
+                ..
+            },
+        ],
     ) = (then, otherwise)
     else {
         return Vec::new();

@@ -64,11 +64,14 @@ fn w4a_compare(left: &Amount, op: Cmp, right: &Amount) -> Vec<String> {
         {
             w4a_more_than_you(of)
         }
-        (Amount::Greatest { of: yours, stat }, Cmp::Ge, Amount::Greatest { of: all, stat: other })
-            if stat == other =>
-        {
-            w4a_greatest(yours, all, *stat)
-        }
+        (
+            Amount::Greatest { of: yours, stat },
+            Cmp::Ge,
+            Amount::Greatest {
+                of: all,
+                stat: other,
+            },
+        ) if stat == other => w4a_greatest(yours, all, *stat),
         (Amount::Counters { on, counter }, _, Amount::Fixed(number)) => {
             let Some(kind) = kind_text(counter) else {
                 return Vec::new();
@@ -94,7 +97,12 @@ fn w4a_more_than_you(of: &Selector) -> Vec<String> {
 fn w4a_greatest(yours: &Selector, all: &Selector, stat: StatKind) -> Vec<String> {
     let mut mine = all.0.clone();
     mine.push(Pred::ControlledBy(Ref::You));
-    if yours.0 != mine || all.0.iter().any(|pred| matches!(pred, Pred::ControlledBy(_))) {
+    if yours.0 != mine
+        || all
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::ControlledBy(_)))
+    {
         return Vec::new();
     }
     let (Some(kind), Some(kinds), Some(stat)) = (
@@ -139,10 +147,14 @@ fn w4a_stat(of: &Ref, stat: StatKind, op: Cmp, right: &Amount) -> Vec<String> {
         return Vec::new();
     };
     let compared: Vec<String> = match (op, right) {
-        (Cmp::Le, Amount::Counters { on: Ref::You, counter }) => kind_text(counter)
-            .map(|kind| {
-                format!("is less than or equal to the number of {kind} counters you have")
-            })
+        (
+            Cmp::Le,
+            Amount::Counters {
+                on: Ref::You,
+                counter,
+            },
+        ) => kind_text(counter)
+            .map(|kind| format!("is less than or equal to the number of {kind} counters you have"))
             .into_iter()
             .collect(),
         (Cmp::Ge | Cmp::Le, Amount::Fixed(number)) => {

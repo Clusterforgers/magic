@@ -1,0 +1,46 @@
+{
+  "oracle_id": "24645d9e-5e6d-411d-be41-c2bd1659937f",
+  "name": "Primal Empathy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Empathy",
+      "oracle_fingerprint": "9c22c53f4393ff1c3a71eb6e630ec21c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Greatest": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Power"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": { "Greatest": { "of": [{ "Type": "Creature" }], "stat": "Power" } }
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "creature"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "creature" }, "counter": "+1/+1" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

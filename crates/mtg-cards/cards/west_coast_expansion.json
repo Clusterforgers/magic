@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2e1bf860-22b6-4d08-9b9f-88038cd1dd3f",
+  "name": "West Coast Expansion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "West Coast Expansion",
+      "oracle_fingerprint": "8d5837d2a2566219b1dbe7f26ba4bf12",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": "X" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": {
+                          "Each": [{ "Subtype": "Hero" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
