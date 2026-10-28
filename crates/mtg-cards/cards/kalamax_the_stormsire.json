@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b8501a37-23e4-4873-80cb-d1c0f6c95155",
+  "name": "Kalamax, the Stormsire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kalamax, the Stormsire",
+      "oracle_fingerprint": "308faf428b76a7035a416cdaedc2b09f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "Type": "Instant" }], "by": "You" } },
+                "nth": 1
+              }
+            },
+            "if": { "Matches": { "subject": "This", "selector": ["Tapped"] } },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCopied": { "what": [{ "Type": "Instant" }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

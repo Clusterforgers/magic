@@ -1,0 +1,165 @@
+{
+  "object": "card",
+  "id": "144cd9eb-9b15-40ce-8a48-919e72dbaa67",
+  "oracle_id": "bc9d75e7-1f64-4376-8e19-f6622ffbeb28",
+  "multiverse_ids": [
+    652138
+  ],
+  "mtgo_id": 132351,
+  "tcgplayer_id": 540768,
+  "cardmarket_id": 758518,
+  "name": "Vault 12: The Necropolis",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/144cd9eb-9b15-40ce-8a48-919e72dbaa67",
+  "scryfall_uri": "https://scryfall.com/card/pip/51/vault-12:-the-necropolis?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.jpg?1783912407",
+    "normal": "https://cards.scryfall.io/normal/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.jpg?1783912407",
+    "large": "https://cards.scryfall.io/large/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.jpg?1783912407",
+    "png": "https://cards.scryfall.io/png/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.png?1783912407",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.jpg?1783912407",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.jpg?1783912407",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.webp?1783912407",
+    "grid": "https://cards.scryfall.io/grid/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.webp?1783912407",
+    "display": "https://cards.scryfall.io/display/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.webp?1783912407",
+    "art": "https://cards.scryfall.io/art/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.webp?1783912407",
+    "crop": "https://cards.scryfall.io/crop/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.webp?1783912407",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/4/144cd9eb-9b15-40ce-8a48-919e72dbaa67.jpg?1783912407"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Each player gets three rad counters.\nII — Create X 2/2 black Zombie Mutant creature tokens, where X is the total number of rad counters among players.\nIII — Put two +1/+1 counters on each creature you control that's a Zombie or Mutant.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    },
+    {
+      "object": "related_card",
+      "id": "961d090c-9548-42e1-abd2-34ba225a46c2",
+      "component": "combo_piece",
+      "name": "Vault 12: The Necropolis",
+      "type_line": "Enchantment — Saga",
+      "uri": "https://api.scryfall.com/cards/961d090c-9548-42e1-abd2-34ba225a46c2"
+    },
+    {
+      "object": "related_card",
+      "id": "ba45bc9c-8257-43f8-9ba1-116b9fea90f4",
+      "component": "token",
+      "name": "Zombie Mutant",
+      "type_line": "Token Creature — Zombie Mutant",
+      "uri": "https://api.scryfall.com/cards/ba45bc9c-8257-43f8-9ba1-116b9fea90f4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/144cd9eb-9b15-40ce-8a48-919e72dbaa67/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abc9d75e7-1f64-4376-8e19-f6622ffbeb28&unique=prints",
+  "collector_number": "51",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nicholas Gregory",
+  "artist_ids": [
+    "a1bba8ff-63b4-4786-b1c4-f1bfe5d3ab1c"
+  ],
+  "illustration_id": "f4571ce0-0578-41ea-a72a-6219834ea417",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6676,
+  "preview": {
+    "source": "GameSpot",
+    "source_uri": "https://www.gamespot.com/articles/heres-the-full-magic-the-gathering-fallout-mutant-menace-commander-deck-list/1100-6521311/",
+    "previewed_at": "2024-02-22"
+  },
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": "4.96",
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": "1.07",
+    "tix": "1.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652138&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVault%2B12%253A%2BThe%2BNecropolis",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVault%2B12%253A%2BThe%2BNecropolis",
+    "edhrec": "https://edhrec.com/route/?cc=Vault+12%3A+The+Necropolis"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F540768%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758518&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132351?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

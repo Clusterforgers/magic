@@ -1,0 +1,46 @@
+{
+  "oracle_id": "39144f72-789e-457a-a7e7-862f90c34e15",
+  "name": "Felisa, Fang of Silverquill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felisa, Fang of Silverquill",
+      "oracle_fingerprint": "d6f7db0d78d525bf2e1efcf292a7e68d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Mentor" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "Matches": { "subject": "Triggering", "selector": ["HasAnyCounter"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Inkling",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Inkling"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "AnyCounters": "Triggering" },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

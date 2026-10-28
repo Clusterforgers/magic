@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1a1a16e5-ce4f-42b8-a1c6-05dd635d83cc",
+  "name": "Aether Snap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Snap",
+      "oracle_fingerprint": "11894b8565fd81edbe89e152f79919c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": { "Each": [] },
+                  "count": { "AnyCounters": { "Each": [] } }
+                }
+              },
+              { "Exile": { "what": { "Each": ["Token"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

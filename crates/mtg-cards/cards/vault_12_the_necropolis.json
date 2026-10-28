@@ -1,0 +1,63 @@
+{
+  "oracle_id": "bc9d75e7-1f64-4376-8e19-f6622ffbeb28",
+  "name": "Vault 12: The Necropolis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vault 12: The Necropolis",
+      "oracle_fingerprint": "a97de5801cb1d2a8f1e0ae718258f8dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "PutCounters": { "on": "EachPlayer", "counter": { "Other": "rad" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Mutant",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Mutant"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Counters": { "on": "EachPlayer", "counter": { "Other": "rad" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "AnyOf": [{ "Subtype": "Zombie" }, { "Subtype": "Mutant" }] }
+                    ]
+                  },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

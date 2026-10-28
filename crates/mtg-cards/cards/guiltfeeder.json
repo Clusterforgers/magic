@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0285bd20-f49e-48f7-8c8c-960f9fbe4d34",
+  "name": "Guiltfeeder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guiltfeeder",
+      "oracle_fingerprint": "79a28b7090475518623c96396541c03f",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Defending",
+                  "amount": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "Defending" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

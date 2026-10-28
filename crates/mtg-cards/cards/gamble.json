@@ -1,0 +1,23 @@
+{
+  "oracle_id": "a54f0869-94c8-42af-9080-166efb9486a4",
+  "name": "Gamble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gamble",
+      "oracle_fingerprint": "7f3697ff32402a6f739f9f84f13defda",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Discard": { "random": true } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

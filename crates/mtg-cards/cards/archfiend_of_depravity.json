@@ -1,0 +1,37 @@
+{
+  "oracle_id": "af247e2f-b271-4f5b-ab98-4579d2c17c21",
+  "name": "Archfiend of Depravity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archfiend of Depravity",
+      "oracle_fingerprint": "b8fc85f6f7283e0911405b0cead54d24",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "Opponents" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept",
+                  "rest_as": "rest"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "Triggering",
+                  "filter": [{ "Is": { "Bound": "rest" } }],
+                  "count": { "Count": [{ "Is": { "Bound": "rest" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

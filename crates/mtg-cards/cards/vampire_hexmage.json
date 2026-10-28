@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fcb2a95b-cef0-4b29-8b2b-538f380aff2b",
+  "name": "Vampire Hexmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Hexmage",
+      "oracle_fingerprint": "feff7152041289e987e0dc5d7e865d9f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": { "Target": 0 },
+                  "count": { "AnyCounters": { "Target": 0 } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
