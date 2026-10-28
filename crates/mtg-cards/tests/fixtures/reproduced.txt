@@ -685,6 +685,7 @@ Hunt the Weak
 Huntmaster Liger
 Hydra Broodmaster
 Icefeather Aven
+Ichor Rats
 Idyllic Beachfront
 Igneous Inspiration
 Ill-Tempered Cyclops
@@ -699,6 +700,7 @@ Impostor of the Sixth Pride
 Impulsive Pilferer
 Impulsivity
 Indulging Patrician
+Infectious Inquiry
 Inferno Project
 Inkwell Leviathan
 Insatiable Hemophage
@@ -866,6 +868,7 @@ Mausoleum Harpy
 Maverick Thopterist
 Mawloc
 Mayhem Patrol
+Megaton's Fate
 Megrim
 Memory Guardian
 Memory Plunder

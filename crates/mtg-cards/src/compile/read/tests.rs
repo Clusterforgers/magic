@@ -397,6 +397,7 @@ mod w6b_emblem;
 mod w6c_x_triggers;
 mod w6e_control;
 mod w7a_domain;
+mod w7b_player_counters;
 mod where_x;
 mod written_effects;
 mod x_after;
