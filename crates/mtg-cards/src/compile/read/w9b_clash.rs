@@ -15,19 +15,19 @@ pub(super) const W9B_CLASH: &str = "clash with an opponent";
 /// The words of the branch that repeats the steps before the clash.
 pub(super) const W9B_REPEAT: &str = "repeat this process";
 
-/// ". If you win, S": the effects of the win branch, or `None` for "repeat this process".
-fn w9b_branch(r: &mut Reader<'_>) -> Option<Option<Vec<Effect>>> {
+/// ". If you win, S": the effects of the win branch, none for "repeat this process".
+fn w9b_branch(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.punct('.').then_some(())?;
     r.need("if you win")?;
     r.punct(',').then_some(())?;
     if r.words(W9B_REPEAT) {
-        return Some(None);
+        return Some(Vec::new());
     }
     if let Some(damage) = r.attempt(w9b_controller_damage) {
-        return Some(Some(vec![damage]));
+        return Some(vec![damage]);
     }
     let effects = body(r)?;
-    (!effects.is_empty()).then_some(Some(effects))
+    (!effects.is_empty()).then_some(effects)
 }
 
 /// "~ deals 3 damage to that creature's controller": the controller of the one target of the sentences before.
@@ -57,12 +57,12 @@ pub(super) fn w9b_clash(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         lead
     };
     let branch = r.attempt(w9b_branch);
+    // Steps before the clash go only with "repeat this process", and a win branch only with no steps.
     let (win, until) = match branch {
-        Some(None) if !lead.is_empty() => (lead.clone(), true),
-        Some(None) => return None,
-        Some(Some(effects)) if lead.is_empty() => (effects, false),
         None => (Vec::new(), false),
-        Some(Some(_)) => return None,
+        Some(effects) if effects.is_empty() && !lead.is_empty() => (lead.clone(), true),
+        Some(effects) if !effects.is_empty() && lead.is_empty() => (effects, false),
+        Some(_) => return None,
     };
     let mut effects = lead;
     effects.push(Effect::Clash {

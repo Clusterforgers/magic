@@ -471,6 +471,7 @@ mod w7b_rad;
 mod w7c_incubate;
 mod w7d_control_scenarios;
 mod w7d_selector_scenarios;
+mod w9b_clash;
 mod walker_fuzz;
 mod wave_goodbye;
 mod win_effects;

@@ -19,7 +19,7 @@ fn w9b_top(cx: &Cx<'_>, player: PlayerId) -> Option<ObjectId> {
 fn w9b_value(cx: &Cx<'_>, card: ObjectId) -> u32 {
     cx.state()
         .object(card)
-        .map_or(0, |object| object.mana_value())
+        .map_or(0, crate::object::GameObject::mana_value)
 }
 
 /// The clash after the opponent is known: both reveal, each chooses top or bottom (the clashing player first), and the
@@ -115,7 +115,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     Ok(Run::Done {
         events,
-        bound: vec![(W9B_CLASHED.to_owned(), vec![Target::Player(opponent)])],
+        // A repeated clash keeps the opponent of the first, which "that player" names.
+        bound: if cx.resolving.bindings.contains_key(W9B_CLASHED) {
+            Vec::new()
+        } else {
+            vec![(W9B_CLASHED.to_owned(), vec![Target::Player(opponent)])]
+        },
         snapshots: Vec::new(),
         next: if won && *until && win.is_empty() {
             Next::Again
@@ -146,16 +151,16 @@ mod tests {
     const ME: PlayerId = PlayerId(0);
     const CLASH: &str = r#"{"Clash":{"win":[{"Draw":{}}]}}"#;
 
-    fn costed(cost: Option<&str>) -> Arc<CardDefinition> {
+    fn costed(cost: &str) -> Arc<CardDefinition> {
         let card = CardDefinition::new("Top").with_type(CardType::Creature);
         Arc::new(match cost {
-            Some(text) => card.with_mana_cost(ManaCost::parse(text).unwrap()),
-            None => card,
+            text if !text.is_empty() => card.with_mana_cost(ManaCost::parse(text).unwrap()),
+            _ => card,
         })
     }
 
     /// A game of `seats` players whose top cards cost what `tops` says (`None` in a slot: an empty library).
-    fn game(tops: &[Option<Option<&str>>]) -> GameState {
+    fn game(tops: &[Option<&str>]) -> GameState {
         let mut game = setup(
             vec![vec![]; tops.len()],
             (0..tops.len())
@@ -190,14 +195,14 @@ mod tests {
     }
 
     #[rstest]
-    #[case::greater(Some(Some("{3}")), Some(Some("{1}{R}")), true)]
-    #[case::tie(Some(Some("{2}")), Some(Some("{1}{R}")), false)]
-    #[case::smaller(Some(None), Some(Some("{U}")), false)]
-    #[case::against_none(Some(None), None, true)]
-    #[case::none_against_one(None, Some(None), false)]
+    #[case::greater(Some("{3}"), Some("{1}{R}"), true)]
+    #[case::tie(Some("{2}"), Some("{1}{R}"), false)]
+    #[case::smaller(Some(""), Some("{U}"), false)]
+    #[case::against_none(Some(""), None, true)]
+    #[case::none_against_one(None, Some(""), false)]
     fn the_greater_mana_value_wins(
-        #[case] mine: Option<Option<&str>>,
-        #[case] theirs: Option<Option<&str>>,
+        #[case] mine: Option<&str>,
+        #[case] theirs: Option<&str>,
         #[case] won: bool,
     ) {
         let game = game(&[mine, theirs]);
@@ -231,7 +236,7 @@ mod tests {
 
     #[test]
     fn each_player_is_asked_top_or_bottom_in_turn() {
-        let game = game(&[Some(Some("{3}")), Some(Some("{1}"))]);
+        let game = game(&[Some("{3}"), Some("{1}")]);
         let Run::Ask(first) = clash(&game, vec![], CLASH) else {
             panic!("asks")
         };
@@ -255,7 +260,7 @@ mod tests {
     #[case::three_seats(3)]
     #[case::four_seats(4)]
     fn the_opponent_is_chosen_among_several(#[case] seats: usize) {
-        let tops = vec![Some(Some("{1}")); seats];
+        let tops = vec![Some("{1}"); seats];
         let game = game(&tops);
         let Run::Ask(question) = clash(&game, vec![], CLASH) else {
             panic!("asks")
@@ -277,7 +282,7 @@ mod tests {
 
     #[test]
     fn a_won_clash_until_a_loss_with_no_list_runs_again() {
-        let game = game(&[Some(Some("{3}")), Some(None)]);
+        let game = game(&[Some("{3}"), Some("")]);
         let Run::Done { next, .. } =
             clash(&game, vec![keep(0), keep(1)], r#"{"Clash":{"until":true}}"#)
         else {
@@ -288,7 +293,7 @@ mod tests {
 
     #[test]
     fn another_effect_is_refused_by_name() {
-        let game = game(&[Some(None), Some(None)]);
+        let game = game(&[Some(""), Some("")]);
         let source = game.objects().find(|o| o.card().name == "Source").unwrap();
         let resolving = Resolving::begin(source.id());
         let cx = Cx {

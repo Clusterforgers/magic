@@ -941,12 +941,6 @@ fn written(
     while start < effects.len() {
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
-        if let Some((texts, used)) = writer.w9b_clash(&effects[start..]) {
-            unsplit(mask, start, used)?;
-            sentences.extend(texts);
-            start += used;
-            continue;
-        }
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.then_steps(&effects[start..]))
@@ -986,6 +980,7 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
+            .or_else(|| writer.w9b_clash(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
