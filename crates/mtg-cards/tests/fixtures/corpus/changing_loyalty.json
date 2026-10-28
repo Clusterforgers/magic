@@ -1,0 +1,27 @@
+{
+  "cmc": 2.0,
+  "collector_number": "23",
+  "color_identity": [
+    "B"
+  ],
+  "colors": [
+    "B"
+  ],
+  "digital": false,
+  "id": "5c2e30d4-98ab-46a7-87ab-1c36c43ab34a",
+  "keywords": [
+    "Replicate",
+    "Enchant",
+    "Flash"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "mana_cost": "{1}{B}",
+  "name": "Changing Loyalty",
+  "oracle_id": "cdfa9de4-7d7d-4638-8ac4-793ece6372dd",
+  "oracle_text": "Flash\nReplicate {2} (When you cast this spell, copy it for each time you paid its replicate cost. You may choose new targets for the copies. Copies become tokens.)\nEnchant creature\nWhen enchanted creature dies, return it to the battlefield under your control.",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "set": "soc",
+  "type_line": "Enchantment — Aura"
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cdfa9de4-7d7d-4638-8ac4-793ece6372dd",
+  "name": "Changing Loyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Changing Loyalty",
+      "oracle_fingerprint": "9f2b40fcd08e5dc412f07eea2c8b97cf",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Replicate": "{2}" } },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

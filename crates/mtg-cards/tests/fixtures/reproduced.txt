@@ -199,6 +199,7 @@ Challenger Troll
 Champion of Lambholt
 Champion's Helm
 Changeling Outcast
+Changing Loyalty
 Charmbreaker Devils
 Chartooth Cougar
 Chemister's Insight
@@ -260,6 +261,7 @@ Crystal Quarry
 Cultivate
 Curate
 Curse of Bounty
+Curse of Clinging Webs
 Curse of Conformity
 Curse of Disturbance
 Curse of Fool's Wisdom
@@ -449,6 +451,7 @@ Flowerfoot Swordmaster
 Fog
 Follow the Bodies
 Followed Footsteps
+Fool's Demise
 Forbidding Spirit
 Forced March
 Fork
@@ -849,6 +852,7 @@ Paradise Druid
 Parhelion Patrol
 Patagia Viper
 Path to Exile
+Patron of the Vein
 Peacewalker Colossus
 Peema Outrider
 Pentad Prism
