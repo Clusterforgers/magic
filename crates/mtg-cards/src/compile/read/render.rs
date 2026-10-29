@@ -427,6 +427,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = super::c11c_had_counters::c11c_had_wordings(&texts);
     texts.extend(more);
+    super::w13b_mill_rad::w13b_wordings(ability, &mut texts);
     graveyard_wordings(ability, &mut texts);
     produced_wordings(&mut texts);
     texts
@@ -1698,6 +1699,11 @@ impl Writer<'_> {
     /// "put a +1/+1 counter on ~", "remove two charge counters from target permanent", "move a
     /// +1/+1 counter from target creature onto ~".
     fn counters(&mut self, effect: &Effect) -> Option<String> {
+        if let Effect::RemoveCounters { from, .. } = effect
+            && let Some(lose) = super::w13b_mill_rad::w13b_loses_all_text(effect, *from != Ref::You)
+        {
+            return Some(format!("{} {lose}", self.player(from)?));
+        }
         Some(match effect {
             // A player gets counters: "target player gets four rad counters", "each opponent gets a poison counter".
             Effect::PutCounters { on, counter, count } if self.player_gets(on) => {

@@ -110,3 +110,26 @@ fn w8b_a_batch_over_several_libraries_triggers_once_and_counts_the_nonland_cards
     assert_eq!(found.len(), 1);
     assert_eq!(found[0].cause.amount, 1 + 3 + 2);
 }
+
+const W13B_PER_PLAYER: &str =
+    r#"{"Batch":{"Milled":{"what":[{"Type":"Creature"}],"per_player":true}}}"#;
+
+#[rstest]
+#[case::two_libraries(&[(ME, 2), (FOE, 4)], &[1, 2])]
+#[case::three_libraries(&[(ME, 2), (FOE, 4), (PlayerId(2), 3)], &[1, 2, 2])]
+#[case::lands_only_in_one(&[(ME, 1), (FOE, 3)], &[2])]
+fn w13b_a_per_player_batch_triggers_once_for_each_player_who_milled_creatures(
+    #[case] mills: &[(PlayerId, usize)],
+    #[case] counts: &[u32],
+) {
+    let pre = w8b_board(W13B_PER_PLAYER, "LCCL");
+    let events: Vec<Event> = mills
+        .iter()
+        .flat_map(|(who, count)| w8b_moves(&pre, *who, *count, ZoneCause::Milled))
+        .collect();
+    let found: Vec<u32> = fires(&pre, &events)
+        .iter()
+        .map(|t| t.cause.amount)
+        .collect();
+    assert_eq!(found, counts);
+}

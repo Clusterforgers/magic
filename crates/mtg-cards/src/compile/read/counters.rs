@@ -72,6 +72,9 @@ pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
         return Some(any);
     }
     let counter = kind(r)?;
+    if let Some(held) = super::w13b_mill_rad::w13b_you_have(r, &counter) {
+        return Some(held);
+    }
     r.need("counter on")?;
     (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(Amount::Counters {
         on: Ref::This,

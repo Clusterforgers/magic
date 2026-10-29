@@ -114,6 +114,8 @@ pub(crate) enum Tally {
     Discarded,
     /// A permanent put into a graveyard from the battlefield (counted for its owner, gravestorm).
     Graved,
+    /// A card put into a graveyard by a mill (counted for the card as it lies there: "a card that was milled this turn").
+    W13bMilled,
     /// A creature put into a graveyard from the battlefield, a token too (counted for its owner).
     Died,
     /// A nontoken creature put into a graveyard from the battlefield (counted for its owner).

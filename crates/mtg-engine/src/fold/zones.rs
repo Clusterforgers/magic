@@ -326,6 +326,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 tally_discard(state, player, *object);
             }
+            if *cause == ZoneCause::Milled {
+                w13b_tally_milled(state, *object);
+            }
             if *cause == ZoneCause::Adventure
                 && let Some(card) = state.objects.get_mut(object)
             {
@@ -393,6 +396,13 @@ fn card_drawn(
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }
     Ok(())
+}
+
+/// Counts the card `id` milled this turn while it lies in the graveyard it was milled into.
+fn w13b_tally_milled(state: &mut GameState, id: ObjectId) {
+    if let Some(reference) = state.object(id).map(GameObject::reference) {
+        state.tally_object(reference, None, Tally::W13bMilled);
+    }
 }
 
 /// Counts the card `id` among the discards of `player` this turn when it lies in a graveyard (mayhem, CR 702.190a), and

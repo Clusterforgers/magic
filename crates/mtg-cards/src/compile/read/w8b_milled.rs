@@ -9,11 +9,23 @@ use crate::effect::{Destination, Effect};
 use crate::refs::{Pred, Ref, Selector};
 use crate::trigger::TriggerPattern;
 
-/// "a nonland card" after "mills": the card a player mills.
+/// "a nonland card" after "mills": the card a player mills; "one or more creature cards": a batch for each player.
 pub(super) fn w8b_mills(r: &mut Reader<'_>, by: Ref) -> Option<TriggerPattern> {
+    if r.words("one or more") {
+        let what = w8b_card(phrase_in(r, Form::All, true)?)?;
+        return Some(TriggerPattern::Batch(Box::new(TriggerPattern::Milled {
+            what,
+            by,
+            per_player: true,
+        })));
+    }
     (r.word("a") || r.word("an")).then_some(())?;
     let what = w8b_card(phrase_in(r, Form::Subject, true)?)?;
-    Some(TriggerPattern::Milled { what, by })
+    Some(TriggerPattern::Milled {
+        what,
+        by,
+        per_player: false,
+    })
 }
 
 /// "nonland cards are milled" after "one or more": the cards milled together, by any player.
@@ -23,6 +35,7 @@ pub(super) fn w8b_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     Some(TriggerPattern::Batch(Box::new(TriggerPattern::Milled {
         what,
         by: Ref::EachPlayer,
+        per_player: false,
     })))
 }
 
@@ -77,8 +90,16 @@ fn w8b_card(what: Selector) -> Option<Selector> {
     plain.then_some(what)
 }
 
-/// "Whenever a player mills a nonland card".
-pub(super) fn w8b_text(what: &Selector, by: &Ref) -> Option<String> {
+/// "Whenever a player mills a nonland card": the text of a `Milled` pattern that is not for each player.
+pub(super) fn w8b_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::Milled {
+        what,
+        by,
+        per_player: false,
+    } = pattern
+    else {
+        return None;
+    };
     let card = filter_text(&w8b_card(what.clone())?, false)?;
     Some(format!(
         "Whenever {} {} {card}",
@@ -87,9 +108,13 @@ pub(super) fn w8b_text(what: &Selector, by: &Ref) -> Option<String> {
     ))
 }
 
-/// "Whenever one or more nonland cards are milled".
-pub(super) fn w8b_batch_text(what: &Selector, by: &Ref) -> Option<String> {
-    (*by == Ref::EachPlayer).then_some(())?;
+/// "Whenever one or more nonland cards are milled"; "Whenever a player mills one or more creature cards" for each player.
+pub(super) fn w8b_batch_text(what: &Selector, by: &Ref, per_player: bool) -> Option<String> {
     let cards = filter_text(&w8b_card(what.clone())?, true)?;
+    if per_player {
+        let player = player_verb(by, "mill")?;
+        return Some(format!("Whenever {player} one or more {cards}"));
+    }
+    (*by == Ref::EachPlayer).then_some(())?;
     Some(format!("Whenever one or more {cards} are milled"))
 }

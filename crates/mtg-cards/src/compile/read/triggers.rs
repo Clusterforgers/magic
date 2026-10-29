@@ -1431,7 +1431,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             player_verb(by, "sacrifice")?,
             subject_text(what)?
         )),
-        TriggerPattern::Milled { what, by } => super::w8b_milled::w8b_text(what, by),
+        TriggerPattern::Milled { .. } => super::w8b_milled::w8b_text(pattern),
         TriggerPattern::BecomesMonarch { who } => Some(format!(
             "Whenever {} the monarch",
             player_verb(who, "become")?
@@ -1629,11 +1629,15 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
             "Whenever one or more cards are put into your graveyard from your library".to_owned(),
         ),
         TriggerPattern::ZoneChange { what, from, to } => batches::zone_change(what, *from, *to),
-        TriggerPattern::Milled { what, by } => super::w8b_milled::w8b_batch_text(what, by),
         TriggerPattern::PhasedOut { what } => Some(format!(
             "Whenever one or more {} phase out",
             phrase_text(what, Form::All)?
         )),
+        TriggerPattern::Milled {
+            what,
+            by,
+            per_player,
+        } => super::w8b_milled::w8b_batch_text(what, by, *per_player),
         TriggerPattern::CountersPut { what, counter } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),

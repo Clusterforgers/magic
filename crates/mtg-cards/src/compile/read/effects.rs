@@ -255,6 +255,8 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
             .is_some()
         || r.attempt(|r| super::c6_au_dead::c6_au_exile_and(r, effects))
             .is_some()
+        || r.attempt(|r| super::w13b_mill_rad::w13b_milled_targets(r, effects))
+            .is_some()
 }
 
 /// "Counter target spell unless its controller pays {2}.", "You may draw a card unless that player
@@ -319,6 +321,9 @@ fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("you may")?;
     if let Some(life) = r.attempt(may_life) {
         return Some(life);
+    }
+    if let Some(got) = r.attempt(super::w13b_mill_rad::w13b_may_get) {
+        return Some(got);
     }
     IMPERATIVES
         .iter()
@@ -712,6 +717,10 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             who,
             amount: life(r)?,
         },
+        // "target player loses all rad counters".
+        "lose" | "loses" if r.lookahead(|r| r.word("all").then_some(())).is_some() => {
+            super::w13b_mill_rad::w13b_loses_all(r, who)?
+        }
         "lose" | "loses" => Effect::LoseLife {
             amount: match half_life(r, &who) {
                 Some(half) => half,

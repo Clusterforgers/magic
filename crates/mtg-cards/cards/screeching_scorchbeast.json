@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+  "name": "Screeching Scorchbeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Screeching Scorchbeast",
+      "oracle_fingerprint": "27b1e11842f63b8dabec4190f46fd9fc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "EachPlayer", "counter": { "Other": "rad" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Milled": { "what": [{ "Not": { "Type": "Land" } }] } } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie Mutant",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie", "Mutant"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "count": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

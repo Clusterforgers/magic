@@ -597,6 +597,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
+        | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
@@ -1770,25 +1771,40 @@ impl Pass<'_> {
                 self.slots[at].applied.clone_from(&applied);
                 self.pull_drawn_commander(at, *player, &applied);
             }
-            (ReplaceBy::Devour { .. }, Unit::Enter { object, controller }) => {
-                return self.devour(at, candidate, by, *object, *controller, applied);
-            }
-            (ReplaceBy::Riot, Unit::Enter { object, controller }) => {
-                return self.riot(at, *object, *controller, applied);
-            }
-            (ReplaceBy::RevealOrTapped(of), Unit::Enter { object, controller }) => {
-                return self.reveal_or_tapped(at, candidate, of, (*object, *controller), applied);
-            }
-            (ReplaceBy::DayIfNeither, Unit::Enter { .. }) => {
-                self.day_if_neither(at, applied);
-                return Ok(Applied::Done);
-            }
             (_, Unit::Enter { object, controller }) => {
-                return self.enter(at, candidate, by, *object, *controller, applied);
+                let entering = (*object, *controller);
+                return self.w13b_apply_enter(at, candidate, by, entering, applied);
             }
             _ => self.slots[at].applied = applied,
         }
         Ok(Applied::Done)
+    }
+
+    /// Applies the replacement `by` of `candidate` to the permanent `object` entering under `controller`.
+    fn w13b_apply_enter(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        by: &ReplaceBy,
+        (object, controller): (ObjectId, PlayerId),
+        applied: Vec<Origin>,
+    ) -> Result<Applied, EngineError> {
+        match by {
+            ReplaceBy::Devour { .. } => self.devour(at, candidate, by, object, controller, applied),
+            ReplaceBy::Riot => self.riot(at, object, controller, applied),
+            ReplaceBy::RevealOrTapped(of) => {
+                self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
+            }
+            ReplaceBy::TappedForCounters { counter, count } => {
+                let got = (counter, *count);
+                self.w13b_tapped_for_counters(at, candidate, got, (object, controller), applied)
+            }
+            ReplaceBy::DayIfNeither => {
+                self.day_if_neither(at, applied);
+                Ok(Applied::Done)
+            }
+            _ => self.enter(at, candidate, by, object, controller, applied),
+        }
     }
 
     /// The Aura's umbra armor saves the creature: its damage is removed in place of its destruction, and the Aura is
@@ -2807,6 +2823,8 @@ mod dredge;
 mod reveal;
 
 mod riot;
+
+mod w13b_tapped_for_counters;
 
 mod c6_blk_draw_step;
 

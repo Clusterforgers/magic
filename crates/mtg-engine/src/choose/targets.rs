@@ -323,7 +323,11 @@ pub(crate) fn options_for(
             way,
             ..Choices::default()
         };
-        let mut scope = Scope::announcing(state, controller, origin);
+        // A trigger's bounds may be its count ("up to X target creatures, where X is the number of cards milled").
+        let mut scope = match cause {
+            Some(cause) => Scope::triggered(state, controller, origin, cause),
+            None => Scope::announcing(state, controller, origin),
+        };
         scope.choices = &announced;
         Some(u32::try_from(scope.amount(amount).ok()?).unwrap_or(0))
     };

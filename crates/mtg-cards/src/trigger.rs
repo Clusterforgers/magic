@@ -167,7 +167,8 @@ pub enum TriggerPattern {
         by: Ref,
     },
     /// A card matching the selector is milled (CR 701.17): put from its owner's library into their graveyard by a mill,
-    /// never by a surveil or another move. The card is the one subject, so a batch of them triggers once.
+    /// never by a surveil or another move. The card is the one subject, so a batch of them triggers once, unless
+    /// `per_player` makes the owner a subject too.
     Milled {
         /// The card milled.
         what: Selector,
@@ -177,6 +178,10 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         by: Ref,
+        /// The player who milled is a subject, so a batch triggers once for each player ("whenever a player mills one
+        /// or more creature cards").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        per_player: bool,
     },
     /// A source deals damage to a player or a permanent.
     DealsDamage {
@@ -709,6 +714,14 @@ pub enum ReplaceBy {
     Choose(EntersChoice),
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
     PayLifeOrTapped(u32),
+    /// As the permanent enters, its controller may have it enter tapped; if they do, they get the counters ("you may have
+    /// this land enter tapped. If you do, you get two rad counters").
+    TappedForCounters {
+        /// The kind of counter the player gets.
+        counter: CounterKind,
+        /// How many.
+        count: u32,
+    },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.

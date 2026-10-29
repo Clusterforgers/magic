@@ -477,6 +477,7 @@ impl<'a> Walker<'a> {
             | Pred::Monstrous
             | Pred::Renowned
             | Pred::EnteredThisTurn
+            | Pred::MilledThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::Attacking
@@ -1301,7 +1302,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::SpellCast { what, by }
             | TriggerPattern::SpellCopied { what, by }
             | TriggerPattern::Sacrificed { what, by }
-            | TriggerPattern::Milled { what, by } => {
+            | TriggerPattern::Milled { what, by, .. } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
@@ -3042,6 +3043,7 @@ impl Walker<'_> {
             ReplaceBy::Tapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
+            | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
@@ -3060,6 +3062,9 @@ impl Walker<'_> {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
+            ReplaceBy::TappedForCounters { count: 0, .. } => {
+                self.problem("entering tapped for no counters is a plain choice");
+            }
             ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");

@@ -83,6 +83,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Monstrous => adjectives.push("monstrous".to_owned()),
             Pred::Renowned => adjectives.push("renowned".to_owned()),
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
+            Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {
                 tail.push("attacking enchanted player".to_owned());
@@ -387,7 +388,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (who, s) = who(by);
             (format!("{who} sacrifice{s} {}", subject(what)), false)
         }
-        TriggerPattern::Milled { what, by } => {
+        TriggerPattern::Milled { what, by, .. } => {
             let (who, s) = who(by);
             (format!("{who} mill{s} {}", subject(what)), false)
         }

@@ -85,6 +85,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Preventions that name their damage (counters for it, all but 1) and their shields, and token replacements for one kind of token.
 - X in triggers: an `{X}` paid in an effect and read by what follows it, the X of a cycling cost or a monstrosity in its trigger, and "up to X" targets.
 - Exert: the choice in the attack declaration, `Exerted` and `ExertEnded`, the untap step of the exerting player it skips and its "When you do" and "Whenever you exert a creature" triggers.
+- Mill and rad counters: mill triggers per card, per batch and per player, target bounds from a mill batch, cards milled this turn, the radiation rule, entering tapped for rad counters, costs reduced per rad counter and losing all rad counters.
 
 ## M3 Card system
 
@@ -166,8 +167,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2da-c-e1) The rooms of Dungeon of the Mad Mage, Tomb of Annihilation and Undercity the compiler does not read (Runestone Caverns, Mad Wizard's Lair, Veils of Fear, Sandfall Cell, Oubliette, Throne of the Dead Three), so those dungeons can be entered
 - [ ] (r2da-c-e2) The initiative (CR 725): the designation, "you take the initiative", venture into Undercity as it is taken and in its holder's upkeep, taken by combat damage, "if you have the initiative" (Seasoned Dungeoneer, Loot Dispute, Sarevok's Tome, From the Catacombs)
 - [ ] (r2da-c-e3) The venture cards that wait on another wording, and the player view of the dungeon and room (Radiant Solar, Thorough Investigation, Immovable Rod, Sefris of the Hidden Ways, Hama Pashar)
-- [~] (r2da-f) (w13b-mill-rad-leftovers) Mill leftovers: target bounds from the trigger's count ("each of up to X target creatures, where X is the number of nonland cards milled this way"), "Do this only once each turn" after a may, a batch per player ("whenever a player mills one or more creature cards") and "a card that was milled this turn"; frees about 5 cards (The Wise Mothman, Screeching Scorchbeast, Zellix, Sanity Flayer, Tato Farmer)
-- [~] (r2da-g) (w13b-mill-rad-leftovers) Rad leftovers: "costs {1} less to activate for each rad counter you have", "you may have this land enter tapped. If you do, you get two rad counters", "loses all rad counters" and "Choose one that hasn't been chosen"; frees about 2 cards (Mariposa Military Base, Survivor's Med Kit)
+- [ ] (r2da-h) "Do this only once each turn" after a may as its own limit: a declined may leaves the ability open for the turn (now read as a trigger limited to once each turn)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
 - [ ] (r2dga) Rules for the partners of accepted proposals, so both halves become corpus cards; frees about 8 cards (Ukkima, Stalking Shadow, Pippin, Warden of Isengard, Brallin, Skyshark Rider)
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background and a planeswalker commander, once their other text runs

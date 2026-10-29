@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4dde484a-8d5b-4eb6-ab4a-e30cc370431c",
+  "name": "Zellix, Sanity Flayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zellix, Sanity Flayer",
+      "oracle_fingerprint": "1e80dae0071b2d0d00283c33da5d7d0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "Milled": { "what": [{ "Type": "Creature" }], "per_player": true } }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Horror",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Horror"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

@@ -161,6 +161,8 @@ pub enum Pred {
     Saddled(Ref),
     /// Entered the battlefield this turn, from anywhere and under any control (a token made this turn included).
     EnteredThisTurn,
+    /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
+    MilledThisTurn,
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.

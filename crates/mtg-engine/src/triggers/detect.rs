@@ -1146,7 +1146,11 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             .then(|| cause(state, subjects))
         }
         (
-            TriggerPattern::Milled { what, by },
+            TriggerPattern::Milled {
+                what,
+                by,
+                per_player,
+            },
             Happened::Moved {
                 object: milled,
                 from: Zone::Library(owner),
@@ -1155,8 +1159,12 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             },
         ) => {
             let reference = object(*milled)?;
+            let mut subjects = vec![Target::Object(reference)];
+            if *per_player {
+                subjects.push(Target::Player(*owner));
+            }
             (scope.players(by).ok()?.contains(owner) && scope.selects(what, reference).ok()?)
-                .then(|| cause(state, vec![Target::Object(reference)]))
+                .then(|| cause(state, subjects))
         }
         (
             TriggerPattern::StepBegins { step, whose },

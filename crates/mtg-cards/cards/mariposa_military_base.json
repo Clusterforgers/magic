@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f1e03d99-024a-430b-9342-ffd2268bd103",
+  "name": "Mariposa Military Base",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mariposa Military Base",
+      "oracle_fingerprint": "95f508de76687dada180f5dfc5445d8f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "TappedForCounters": { "counter": { "Other": "rad" }, "count": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": { "Counters": { "on": "You", "counter": { "Other": "rad" } } }
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}
