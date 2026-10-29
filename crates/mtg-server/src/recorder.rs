@@ -22,6 +22,8 @@ pub(crate) struct Recorder {
     manual_play: bool,
     /// Fetches the pictures of the cards a game starts with; none without a picture cache.
     warmer: Option<Warmer>,
+    /// The oracle ids of the decks the game was made with, for a game whose seats do not choose.
+    deck_ids: Vec<String>,
 }
 
 impl Recorder {
@@ -39,20 +41,24 @@ impl Recorder {
             joined,
             manual_play,
             warmer: None,
+            deck_ids: Vec::new(),
         }
     }
 
-    /// The same recorder that starts the fetching of a game's pictures with `warmer` when the game starts.
+    /// The same recorder that starts the fetching of a game's pictures with `warmer` when the game
+    /// starts; `deck_ids` are the oracle ids of the decks it was made with.
     #[must_use]
-    pub(crate) fn with_warmer(mut self, warmer: Option<Warmer>) -> Recorder {
+    pub(crate) fn with_warmer(mut self, warmer: Option<Warmer>, deck_ids: Vec<String>) -> Recorder {
         self.warmer = warmer;
+        self.deck_ids = deck_ids;
         self
     }
 
-    /// Starts fetching the pictures of the cards with these oracle ids in the background.
-    pub(crate) fn warm_images(&self, oracle_ids: Vec<String>) {
+    /// Starts fetching the pictures of the cards in the background: those of the decks the seats
+    /// `chose`, else those of the decks the game was made with.
+    pub(crate) fn warm_images(&self, chosen: Option<Vec<String>>) {
         if let Some(warmer) = &self.warmer {
-            warmer.warm(oracle_ids);
+            warmer.warm(chosen.unwrap_or_else(|| self.deck_ids.clone()));
         }
     }
 
