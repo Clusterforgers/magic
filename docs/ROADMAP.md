@@ -46,6 +46,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Engine core: zones, turns, priority, stack, combat with forecast and block preview, bots with a repeat guard, `mtg-testkit`, and crowded tables of thousands of permanents.
 - Protocol and server: generated wire bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts, lobbies, open games and precons.
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank and leak tests (`docs/arena-flow.md`).
+- First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6, in real browsers (`web/e2e/precon-game.spec.ts`).
 - Web: the game UI with prompts for all eight decision kinds, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
 - Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
@@ -122,7 +123,10 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 The server is settled first, then the web is built once against the final types.
 
-- [~] (g0) (g0-smoke-game) Smoke test: two accounts play a precon game in real browsers from the lobby into the turns; every blocker found becomes a lettered roadmap line and the script stays as the first Playwright game
+- [ ] (g0a) The create form and the lobby deck chooser pick a precon and the Commander format, so `precon-game.spec.ts` (`startTable` makes the game with `POST /api/games` and `PUT .../deck`) plays from the UI alone; joins with (w1a) and (k2)
+- [ ] (g0b) A hand highlights only the cards the seat can pay for, and the payment prompt disables "Pay automatically" with its reason when the mana cannot cover the cost (manual pair, `failure-bo` page text: "That answer is not allowed: invalid payment" with the prompt left open)
+- [ ] (g0c) The hand fan keeps every card's name and cost readable at 1600x1000 (names cut off in `verified/17-bo-PayMana.png` and `four-seats/25-bo-turn-5-Priority.png`) and the turn splash never covers a prompt (`verified/17-bo-PayMana.png`)
+- [ ] (g0d) The log folds the "receives priority" and "passes priority" lines of a step into one line and a seat's priority windows with only mana abilities to use are passed (four seats: eight lines a step, `four-seats/25-bo-turn-5-Priority.png`; idle windows in 2 to 15 of 27 to 48 decisions)
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and cards put back; the payment prompt for X, restricted mana, convoke and delve
