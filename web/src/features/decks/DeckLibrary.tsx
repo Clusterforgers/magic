@@ -1,5 +1,12 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { CircleAlertIcon, LibraryIcon, PlusIcon, TriangleAlertIcon, UploadIcon } from 'lucide-react'
+import {
+  CircleAlertIcon,
+  LibraryIcon,
+  PlusIcon,
+  ShieldHalfIcon,
+  TriangleAlertIcon,
+  UploadIcon,
+} from 'lucide-react'
 import { useRef, useState } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
@@ -111,7 +118,11 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
             ) : null}
           </div>
           {state.status === 'unavailable' ? null : (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'ghost' })}>
+                <ShieldHalfIcon aria-hidden="true" />
+                Not validated cards
+              </Link>
               {newAction}
               {importAction}
             </div>

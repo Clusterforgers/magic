@@ -1,7 +1,7 @@
 // Goal: the precon browser's pure rules hold over tables: the status a deck gets from the server's state and `playable` flag and the words of its badge, the release date and commander lines, the search and the set and state filters (accents, several words, newest-first sets), the count line, and the copyable list, which holds one `Name: clause` line for each card that is not Verified and nothing else.
 import { describe, expect, it } from 'vitest'
 import { playRequest } from './play'
-import { board, cardLine, checked, preconItem, preconView, reason } from './fakePrecons'
+import { board, cardLine, checked, preconItem, preconView } from './fakePrecons'
 import {
   byHandCopies,
   checkLine,
@@ -139,33 +139,52 @@ describe('filterPrecons', () => {
 })
 
 describe('copyList', () => {
-  it('writes one `Name: clause` line for each card that is not Verified, in board order', () => {
-    const view = preconView(preconItem(), undefined, {
+  const texts = new Map([['oracle-kozilek', ['Draw two cards. Discard two cards.']]])
+  const clause = (text: string, start: number, end: number) => ({ face: 0, span: { start, end }, text })
+
+  it('writes a block for each card that is not Verified, in board order, quoting each clause once the texts are known', () => {
+    const view = preconView(preconItem({ name: 'Eldrazi Unbound' }), undefined, {
       boards: [
         board('commander', [cardLine('Ulalek')]),
         board('main', [
           cardLine('Sol Ring'),
           cardLine('Kozilek', 'partial', {
-            reasons: [reason('the discard is not implemented'), reason('the second mode is not implemented')],
+            reasons: [
+              clause('the draw is not implemented', 0, 15),
+              clause('the discard is not implemented', 16, 34),
+            ],
           }),
           cardLine('Thought-Knot Seer', 'manual'),
         ]),
         board('sideboard', [cardLine('Old Card', 'stale'), cardLine('Digital Card', 'unplayable')]),
       ],
     })
-    expect(copyList(view).split('\n')).toEqual([
-      'Kozilek: The discard is not implemented; The second mode is not implemented',
-      'Thought-Knot Seer: played by hand',
-      'Old Card: its text changed since the rules were written, so it is played by hand',
-      'Digital Card: the game cannot play it',
+    expect(copyList(view, texts).split('\n\n')).toEqual([
+      [
+        'Kozilek (Partial) - decks: Eldrazi Unbound',
+        '  - "Draw two cards.": The draw is not implemented',
+        '  - "Discard two cards.": The discard is not implemented',
+      ].join('\n'),
+      'Thought-Knot Seer (Manual) - decks: Eldrazi Unbound\n  - Played by hand',
+      'Old Card (Stale) - decks: Eldrazi Unbound\n  - Its text changed since the rules were written, so it is played by hand',
+      'Digital Card (Unplayable) - decks: Eldrazi Unbound\n  - The game cannot play it',
     ])
   })
 
+  it('writes the reasons alone while no text is known', () => {
+    const view = preconView(preconItem({ name: 'Eldrazi Unbound' }), [
+      cardLine('Kozilek', 'partial', { reasons: [clause('the draw is not implemented', 0, 14)] }),
+    ])
+    expect(copyList(view)).toBe('Kozilek (Partial) - decks: Eldrazi Unbound\n  - The draw is not implemented')
+  })
+
   it('names the face when a clause is not on the front', () => {
-    const view = preconView(preconItem(), [
+    const view = preconView(preconItem({ name: 'Eldrazi Unbound' }), [
       cardLine('Delver', 'partial', { reasons: [{ face: 1, span: { start: 0, end: 4 }, text: 'it flips' }] }),
     ])
-    expect(copyList(view)).toBe('Delver: Back face: it flips')
+    expect(copyList(view, new Map([['oracle-delver', ['Front', 'Flip it over']]]))).toBe(
+      'Delver (Partial) - decks: Eldrazi Unbound\n  - "Flip": Back face: it flips',
+    )
   })
 
   it('is empty when every card is Verified', () => {
