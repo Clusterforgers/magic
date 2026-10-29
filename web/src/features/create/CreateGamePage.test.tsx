@@ -130,18 +130,6 @@ describe('the form as first shown', () => {
     expect(players.getByText(/^Plains ×24, /)).toBeInTheDocument()
     expect(players.queryByText(/Mountain/)).toBeNull()
   })
-
-  it('keeps the format at Normal, behind Advanced, with Commander shown as coming soon', async () => {
-    const { user } = await openCreateForm()
-    await user.click(screen.getByText('Advanced'))
-    const normal = screen.getByRole('radio', { name: 'Normal' })
-    const commander = screen.getByRole('radio', { name: /Commander/ })
-    expect(normal).toBeChecked()
-    expect(commander).toBeDisabled()
-    expect(commander).toHaveAccessibleName(/coming soon/i)
-    await user.click(commander)
-    expect(normal).toBeChecked()
-  })
 })
 
 describe('the number of seats', () => {
@@ -209,7 +197,7 @@ describe('checking the form before asking', () => {
     expect(nameField()).toHaveAttribute('aria-invalid', 'true')
     expect(nameField()).toHaveAccessibleDescription(message)
     expect(screen.getByRole('alert')).toHaveTextContent(
-      'Fix your name or deck before the game can be created.',
+      'Fix your name, deck or house rules before the game can be created.',
     )
     expect(nameField()).toHaveFocus()
   })

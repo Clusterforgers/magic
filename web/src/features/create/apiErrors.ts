@@ -8,8 +8,9 @@ const OUT_OF_DATE =
 // A `Record` over every code, so adding a code to the client stops compiling here until it has a message.
 const MESSAGES: Record<ApiErrorCode, (error: ApiError) => string> = {
   invalid_request: () =>
-    'The server could not use those game settings. Check that there are 2 to 12 seats and that every seat has a name of 1 to 32 characters.',
-  unsupported_format: () => 'The server can only play Normal games for now. Commander is coming soon.',
+    'The server could not use those game settings. Check that there are 2 to 12 seats (2 to 6 in Commander), that every seat has a name of 1 to 32 characters and that the house rules are in range.',
+  unsupported_format: () =>
+    'The server does not know that format. Reload the page, then choose Commander or Normal again.',
   unknown_deck: () =>
     'One of the chosen decks is no longer on the server. Reload the page to get the current decks, then pick again.',
   forbidden_origin: () =>

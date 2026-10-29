@@ -4,7 +4,7 @@ import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import { GameContext } from '@/features/game/gameContext'
 import { Lobby } from '@/features/game/Lobby'
-import { lobbyApi, lobbyDecks, lobbyGame, LOBBY_FIXTURE_MARKER } from './lobbyGame'
+import { lobbyApi, lobbyDecks, lobbyGame, lobbyPrecons, LOBBY_FIXTURE_MARKER } from './lobbyGame'
 
 /**
  * `/dev/lobby?seats=4&ready=0,2&away=3&me=1&names=long&visibility=invite&nodeck=1&account=1`: the real lobby over a
@@ -12,17 +12,20 @@ import { lobbyApi, lobbyDecks, lobbyGame, LOBBY_FIXTURE_MARKER } from './lobbyGa
  * page plays (0 is the host, who gets the toggle, Remove and Close; any other seat gets Leave); `names=long` gives
  * every seat a name of 32 characters; `visibility=invite` makes the game invite only; `nodeck` lists the seats that
  * have chosen no deck yet; `account=1` makes this page a signed-in player, whose chooser lists stored decks beside the
- * built-in ones. Ready, the toggle, Remove and the choice of a deck work on the fixture as if a server answered them;
+ * built-in ones; `format=commander` makes it a Commander game and `rules=1` gives the game house rules. Ready, the toggle, Remove and the choice of a deck work on the fixture as if a server answered them;
  * Close and Leave go to Play.
  */
 export function DevLobbyRoute() {
-  const { seats, ready, away, me, names, visibility, nodeck, account } = useSearch({ from: '/dev/lobby' })
+  const { seats, ready, away, me, names, visibility, nodeck, account, format, rules } = useSearch({
+    from: '/dev/lobby',
+  })
   const game = useMemo(
-    () => lobbyGame({ seats, ready, away, me, names, visibility, nodeck }),
-    [seats, ready, away, me, names, visibility, nodeck],
+    () => lobbyGame({ seats, ready, away, me, names, visibility, nodeck, format, rules }),
+    [seats, ready, away, me, names, visibility, nodeck, format, rules],
   )
-  const api = useMemo(() => lobbyApi(game.session), [game])
+  const api = useMemo(() => lobbyApi(game.session, { format }), [game, format])
   const decks = useMemo(() => lobbyDecks(), [])
+  const precons = useMemo(() => lobbyPrecons(), [])
   const auth = useMemo(
     () =>
       createAuthStore({
@@ -41,7 +44,7 @@ export function DevLobbyRoute() {
         <p className="sr-only" data-fixture={LOBBY_FIXTURE_MARKER}>
           Development lobby with {seats} seats
         </p>
-        <Lobby api={api} decks={decks} token={undefined} />
+        <Lobby api={api} decks={decks} precons={precons} token={undefined} />
       </GameContext>
     </AuthContext>
   )
