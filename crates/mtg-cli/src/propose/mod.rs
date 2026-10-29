@@ -13,6 +13,7 @@ pub mod prompt;
 pub mod select;
 pub mod session;
 pub mod store;
+pub mod w19b_solved;
 
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
@@ -37,6 +38,7 @@ use model::{ModelClient, estimate_tokens};
 use outcome::ProposeReport;
 use session::{Context, Options, Session};
 use store::Store;
+use w19b_solved::W19bSolvedExamples;
 
 /// The model asked when `--model` is not given.
 pub const DEFAULT_MODEL: &str = "claude-sonnet-5-5";
@@ -69,9 +71,29 @@ pub fn propose_cards(
     store: &Store,
     progress: &Progress,
 ) -> Result<ProposeReport, CliError> {
-    let ctx = context(cards)?;
+    propose_in(
+        &context(cards)?,
+        cards,
+        targets,
+        client,
+        options,
+        store,
+        progress,
+    )
+}
+
+/// [`propose_cards`] with the context given, so that a run builds it once.
+pub fn propose_in(
+    ctx: &Context<'_>,
+    cards: &[PrintedCard],
+    targets: &[usize],
+    client: &dyn ModelClient,
+    options: &Options,
+    store: &Store,
+    progress: &Progress,
+) -> Result<ProposeReport, CliError> {
     let chosen: Vec<&PrintedCard> = targets.iter().filter_map(|at| cards.get(*at)).collect();
-    Session::new(&ctx, client, options, store, progress).run(&chosen)
+    Session::new(ctx, client, options, store, progress).run(&chosen)
 }
 
 /// What a run would send, without sending anything: the prompt of the first card and the estimated size of the run.
@@ -80,7 +102,16 @@ pub fn dry_run(
     targets: &[usize],
     options: &Options,
 ) -> Result<String, CliError> {
-    let ctx = context(cards)?;
+    dry_run_in(&context(cards)?, cards, targets, options)
+}
+
+/// [`dry_run`] with the context given.
+pub fn dry_run_in(
+    ctx: &Context<'_>,
+    cards: &[PrintedCard],
+    targets: &[usize],
+    options: &Options,
+) -> Result<String, CliError> {
     let Some(first) = targets.first().and_then(|at| cards.get(*at)) else {
         return Err(CliError::Config("no card is selected".into()));
     };
@@ -257,8 +288,9 @@ pub async fn run_command(
     };
     let targets = targets_of(&cards, args, within.as_ref())?;
     let options = options_of(args)?;
+    let ctx = w19b_context_of(db, &cards, args).await?;
     if args.dry_run {
-        return dry_run(&cards, &targets, &options);
+        return dry_run_in(&ctx, &cards, &targets, &options);
     }
     if targets.is_empty() {
         return Err(CliError::Config("no card is selected".into()));
@@ -271,7 +303,9 @@ pub async fn run_command(
         .collect();
     // The client blocks on the runtime, so the loop runs on a blocking thread.
     let report = tokio::task::spawn_blocking(move || {
-        propose_cards(&cards, &targets, &*client, &options, &store, &progress)
+        propose_in(
+            &ctx, &cards, &targets, &*client, &options, &store, &progress,
+        )
     })
     .await
     .map_err(|error| CliError::Config(format!("the run stopped: {error}")))??;
@@ -287,6 +321,21 @@ pub async fn run_command(
 async fn precon_oracle_ids(db: &Database) -> Result<BTreeSet<String>, CliError> {
     let ids = db.precons().oracle_ids().await?;
     Ok(ids.into_iter().map(|id| id.0).collect())
+}
+
+/// The context of a run; with `--solved-examples K` its examples are the K nearest solved cards of the database.
+async fn w19b_context_of(
+    db: &Database,
+    cards: &[PrintedCard],
+    args: &ProposeArgs,
+) -> Result<Context<'static>, CliError> {
+    let mut ctx = context(cards)?;
+    if args.solved_examples > 0 {
+        let solved =
+            W19bSolvedExamples::load(db, args.solved_examples, args.examples_train_only).await?;
+        ctx.examples = std::mem::take(&mut ctx.examples).w19b_with_solved(solved);
+    }
+    Ok(ctx)
 }
 
 /// Promotes the accepted proposals a run saved, into the `mtg-cards` crate directory `out`, as `promote` does.

@@ -58,6 +58,9 @@ pub enum Command {
     DslReference,
     /// Print the JSON schema of a rules file that `propose --schema` sends to an OpenAI-style server.
     DslSchema,
+    /// Write every `Verified` card as an (oracle text, rules) pair in JSON Lines, with a stable held-out split, for
+    /// `propose --solved-examples` and for training a model.
+    ExportPairs(ExportPairsArgs),
 }
 
 /// What `fetch` downloads.
@@ -267,6 +270,36 @@ pub struct ProposeArgs {
     /// directory follows), as `promote` does.
     #[arg(long, value_name = "DIR", num_args = 0..=1, default_missing_value = crate::w2a_promote::W2A_DEFAULT_OUT)]
     pub promote: Option<PathBuf>,
+
+    /// Show the K most similar solved cards (`Verified`, hand-written or compiled; `export-pairs` writes them) as the
+    /// examples instead of the hand-written ones of `--examples`; 0 keeps those.
+    #[arg(long, value_name = "K", default_value_t = 0)]
+    pub solved_examples: usize,
+
+    /// Take the solved examples only from the train part of the `export-pairs` split (its default percent and seed).
+    #[arg(long, requires = "solved_examples")]
+    pub examples_train_only: bool,
+}
+
+/// Options of `export-pairs`.
+#[derive(Debug, Args)]
+pub struct ExportPairsArgs {
+    /// The JSON Lines file to write.
+    #[arg(long, value_name = "FILE")]
+    pub out: PathBuf,
+
+    /// The share of the cards held out of training, by a stable hash of the oracle id.
+    #[arg(long, value_name = "N", default_value_t = crate::w19b_pairs::W19B_DEFAULT_HELD_OUT_PERCENT, value_parser = clap::value_parser!(u8).range(0..=100))]
+    pub held_out_percent: u8,
+
+    /// The seed of the split: the same seed holds out the same cards.
+    #[arg(long, value_name = "S", default_value_t = crate::w19b_pairs::W19B_DEFAULT_SEED)]
+    pub seed: u64,
+
+    /// Also print how often the DSL kinds of the nearest K train examples cover a held-out card's own (K = 3, 5, 8),
+    /// against K random examples; no model is asked.
+    #[arg(long)]
+    pub measure: bool,
 }
 
 /// Options of `promote`.

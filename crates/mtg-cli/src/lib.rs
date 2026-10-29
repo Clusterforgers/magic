@@ -22,6 +22,7 @@ pub mod pacer;
 pub mod progress;
 pub mod propose;
 pub mod status;
+pub mod w19b_pairs;
 pub mod w2a_promote;
 
 use args::{Cli, Command, Fetch};
@@ -129,6 +130,10 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::Propose(args) => propose::command(cli.database_url, &cache, &args, progress).await,
         Command::DslReference => Ok(mtg_cards::reference::dsl_reference().trim_end().to_owned()),
         Command::DslSchema => Ok(mtg_cards::reference::w3a_card_schema().to_string()),
+        Command::ExportPairs(args) => {
+            let db = connect(cli.database_url).await?;
+            w19b_pairs::w19b_export_pairs(&db, &args).await
+        }
     }
 }
 
