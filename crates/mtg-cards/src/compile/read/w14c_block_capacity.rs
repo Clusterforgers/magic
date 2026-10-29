@@ -2,8 +2,8 @@
 //! combat.": a static that lets its creatures block more than one attacker (CR 509.1a).
 
 use super::Reader;
-use super::statics::subject;
 use super::amounts::count_word;
+use super::statics::subject;
 use crate::ability::Ability;
 use crate::modify::Modification;
 use crate::refs::ZoneKind;

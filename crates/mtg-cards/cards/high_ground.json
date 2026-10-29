@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b59053d5-b5f2-44aa-a29c-7f3908d86577",
+  "name": "High Ground",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Ground",
+      "oracle_fingerprint": "cdb358c629a5a2d8568878c2a253babb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "BlocksAdditional": 1 }]
+          }
+        }
+      ]
+    }
+  ]
+}

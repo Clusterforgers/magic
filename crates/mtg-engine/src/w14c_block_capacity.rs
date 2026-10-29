@@ -8,8 +8,8 @@ use mtg_core::ids::ObjectId;
 
 use crate::combat::Attacker;
 use crate::decision::BlockOptions;
-use crate::error::IllegalAnswer;
 use crate::effects::Modification;
+use crate::error::IllegalAnswer;
 use crate::state::GameState;
 use crate::zones::Zone;
 

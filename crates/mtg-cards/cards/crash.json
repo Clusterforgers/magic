@@ -1,0 +1,20 @@
+{
+  "oracle_id": "562af5da-1080-46d2-8a38-71f06b7e8457",
+  "name": "Crash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crash",
+      "oracle_fingerprint": "344abfd0e700f4f5ed73da134af707a7",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Mountain" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

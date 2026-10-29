@@ -1168,8 +1168,9 @@ pub(super) fn statics(
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
-    let group =
+    let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
+    group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {
@@ -1245,16 +1246,6 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             per,
             condition,
         } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
-        Ability::FreeCast { cost: Some(_), .. } => {
-            super::w14c_alt_costs::w14c_alt_cost_texts(ability)
-        }
-        Ability::FreeCast {
-            condition: Some(held),
-            cost: None,
-        } => control_texts(held)
-            .into_iter()
-            .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))
-            .collect(),
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..

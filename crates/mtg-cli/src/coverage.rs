@@ -14,14 +14,7 @@ use crate::status::missing_table;
 /// The report on the precons the arguments select (all by default), as the text to print.
 pub async fn coverage(db: &Database, args: &CoverageArgs) -> Result<String, CliError> {
     let (cards, unmatched) = precon_cards(db, args.deck.as_deref()).await?;
-    let report = analyze(&cards, &mtg_engine::caps());
-    if std::env::var("W14C_DUMP").is_ok() {
-        for card in &report.cards {
-            let labels: Vec<String> = card.blockers.iter().map(|b| b.label()).collect();
-            eprintln!("W14C|{}|{}", card.name, labels.join(" ;; "));
-        }
-    }
-    let mut text = report.render(args.top);
+    let mut text = analyze(&cards, &mtg_engine::caps()).render(args.top);
     if unmatched > 0 {
         let _ = write!(
             text,

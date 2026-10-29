@@ -898,6 +898,17 @@ impl<'a> Walker<'a> {
         self.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost, required);
     }
 
+    /// A cast in place of the mana cost: its condition, read with no targets, and the cost paid instead, if any.
+    fn w14c_free_cast(&mut self, condition: Option<&Condition>, cost: Option<&Cost>) {
+        self.scope = Scope::new(&[], false);
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+        if let Some(cost) = cost {
+            self.w14c_alternative_cost(cost);
+        }
+    }
+
     /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
     /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
     fn w14c_alternative_cost(&mut self, cost: &Cost) {
@@ -2769,13 +2780,7 @@ impl Walker<'_> {
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
             Ability::FreeCast { condition, cost } => {
-                w.scope = Scope::new(&[], false);
-                if let Some(condition) = condition {
-                    w.at("condition", |w| w.condition(condition));
-                }
-                if let Some(cost) = cost {
-                    w.w14c_alternative_cost(cost);
-                }
+                w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {

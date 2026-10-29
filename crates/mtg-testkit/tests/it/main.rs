@@ -458,6 +458,7 @@ mod vote_fuzz;
 mod votes;
 mod w10a_attack_limit_at;
 mod w10b_phasing;
+mod w14c_proposal_pieces;
 mod w2b_read_ahead;
 mod w2c_destroyed;
 mod w2c_distinct;

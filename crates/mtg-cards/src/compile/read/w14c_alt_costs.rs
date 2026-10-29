@@ -41,14 +41,24 @@ fn w14c_paid(r: &mut Reader<'_>) -> Option<Cost> {
     (!cost.has_x() && !cost.0.is_empty()).then_some(cost)
 }
 
-/// The sentences of an alternative cost the reader reads, without the period.
+/// The sentences of a cast in place of the mana cost the readers read, without the period: an alternative cost, or the
+/// free cast under a condition ("if you control a commander, you may cast ~ without paying its mana cost").
 pub(super) fn w14c_alt_cost_texts(ability: &Ability) -> Vec<String> {
-    let Ability::FreeCast {
-        condition,
-        cost: Some(cost),
-    } = ability
-    else {
-        return Vec::new();
+    let (condition, cost) = match ability {
+        Ability::FreeCast {
+            condition: Some(held),
+            cost: None,
+        } => {
+            return control_texts(held)
+                .into_iter()
+                .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))
+                .collect();
+        }
+        Ability::FreeCast {
+            condition,
+            cost: Some(cost),
+        } => (condition, cost),
+        _ => return Vec::new(),
     };
     let body = if let [CostItem::Mana(mana)] = cost.0.as_slice() {
         format!("pay {mana}")
