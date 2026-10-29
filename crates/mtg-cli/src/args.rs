@@ -197,6 +197,28 @@ pub enum Provider {
     Openai,
 }
 
+/// How much a model that has an effort setting thinks before it answers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+pub enum Reasoning {
+    /// Little thinking: the fastest answers.
+    Low,
+    /// The usual amount.
+    Medium,
+    /// The most thinking: the slowest and longest answers.
+    High,
+}
+
+impl Reasoning {
+    /// The word the OpenAI-style `reasoning_effort` field takes.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Reasoning::Low => "low",
+            Reasoning::Medium => "medium",
+            Reasoning::High => "high",
+        }
+    }
+}
+
 /// Options of `propose`.
 #[derive(Debug, Args)]
 // Each flag is one independent command-line switch.
@@ -260,6 +282,12 @@ pub struct ProposeArgs {
     /// whose last try fails gets no proposal and `--resume` asks it again.
     #[arg(long, value_name = "N", default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=10))]
     pub retries: u32,
+
+    /// The reasoning effort of a model that has the setting (`gpt-oss`, o-series): sent as `reasoning_effort` to an
+    /// OpenAI-style server, which may reject or ignore it; the Anthropic provider never gets it. Default: not sent, so the
+    /// model uses its own.
+    #[arg(long, value_enum, value_name = "EFFORT")]
+    pub reasoning: Option<Reasoning>,
 
     /// How many cards are worked on at the same time; each card's repair rounds stay in order and the request and token
     /// budgets are shared. A local server answers that many requests at once only when it is set up to (Ollama:
@@ -721,8 +749,22 @@ mod tests {
     #[case::too_many_retries(&["--cards", "Opt", "--retries", "11"])]
     #[case::no_jobs(&["--cards", "Opt", "--jobs", "0"])]
     #[case::too_many_jobs(&["--cards", "Opt", "--jobs", "65"])]
+    #[case::an_unknown_effort(&["--cards", "Opt", "--reasoning", "extreme"])]
     fn propose_refuses_options_that_do_not_fit_together(#[case] args: &[&str]) {
         assert!(propose(args).is_err());
+    }
+
+    #[rstest]
+    #[case::not_given(&[], None)]
+    #[case::low(&["--reasoning", "low"], Some(Reasoning::Low))]
+    #[case::high(&["--reasoning", "high"], Some(Reasoning::High))]
+    fn propose_takes_a_reasoning_effort_only_when_asked(
+        #[case] extra: &[&str],
+        #[case] effort: Option<Reasoning>,
+    ) {
+        let mut line = vec!["--cards", "Opt", "--provider", "openai"];
+        line.extend_from_slice(extra);
+        assert_eq!(propose(&line).unwrap().reasoning, effort);
     }
 
     #[rstest]

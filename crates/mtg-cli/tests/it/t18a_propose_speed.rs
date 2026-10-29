@@ -8,6 +8,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 use mtg_cards::{PrintedCard, PrintedFace};
+use mtg_cli::args::Reasoning;
 use mtg_cli::progress::{Captured, Progress};
 use mtg_cli::propose::budget::Stop;
 use mtg_cli::propose::c11i_http::HttpConfig;
@@ -100,10 +101,20 @@ fn config(server: &Server, timeout: Duration, retries: u32) -> HttpConfig {
 }
 
 fn client(server: &Server, timeout: Duration, retries: u32) -> OpenAiClient {
+    reasoning_client(server, timeout, retries, None)
+}
+
+fn reasoning_client(
+    server: &Server,
+    timeout: Duration,
+    retries: u32,
+    reasoning: Option<Reasoning>,
+) -> OpenAiClient {
     let dialect = OpenAi {
         json_mode: true,
         schema: false,
         max_answer_tokens: 16_384,
+        reasoning,
     };
     OpenAiClient::new(
         dialect,
@@ -381,4 +392,24 @@ async fn a_status_line_comes_every_interval_and_at_the_end() {
         last.contains("2 requests") && last.contains("tok/s") && last.contains("cards/min"),
         "{last}"
     );
+}
+
+#[rstest]
+#[case::not_asked(None, None)]
+#[case::low(Some(Reasoning::Low), Some("low"))]
+#[case::high(Some(Reasoning::High), Some("high"))]
+#[tokio::test(flavor = "multi_thread")]
+async fn the_reasoning_effort_reaches_the_server_only_when_asked(
+    #[case] reasoning: Option<Reasoning>,
+    #[case] sent: Option<&str>,
+) {
+    let server = start(|seen: &Seen| chat_reply(seen, "{}")).await;
+    let client = reasoning_client(&server, Duration::from_secs(20), 0, reasoning);
+    tokio::task::spawn_blocking(move || client.complete(&request()))
+        .await
+        .unwrap_or_else(|e| panic!("the blocking task runs: {e}"))
+        .unwrap();
+
+    let body: Value = serde_json::from_slice(&server.log()[0].body).unwrap();
+    assert_eq!(body.get("reasoning_effort").and_then(Value::as_str), sent);
 }
