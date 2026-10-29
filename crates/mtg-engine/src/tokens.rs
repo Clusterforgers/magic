@@ -48,6 +48,26 @@ pub struct TokenCreated {
     pub copy_of: Option<ObjectRef>,
 }
 
+/// The batch without the tokens of a player who loses earlier in it: a replacement applied to the same state-based
+/// batch (Kalitas exiling a creature that dies as its controller loses) makes nothing for a player who left (CR 800.4a).
+pub(crate) fn without_departed_tokens(
+    events: Vec<crate::events::Event>,
+) -> Vec<crate::events::Event> {
+    use crate::events::Event;
+    let mut lost: Vec<PlayerId> = Vec::new();
+    events
+        .into_iter()
+        .filter(|event| match event {
+            Event::PlayerLost { player, .. } => {
+                lost.push(*player);
+                true
+            }
+            Event::TokenCreated(token) => !lost.contains(&token.controller),
+            _ => true,
+        })
+        .collect()
+}
+
 /// Folds the event: the token is a new object on the battlefield, tapped and attacking as the event says.
 pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), EngineError> {
     let id = event.object;

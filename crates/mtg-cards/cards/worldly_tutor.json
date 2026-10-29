@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e8863518-0bfa-49c3-8c6e-6c9116a81051",
+  "name": "Worldly Tutor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldly Tutor",
+      "oracle_fingerprint": "159c2194c3d4928d3cd7cfd85b64d11f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Creature" }], "reveal": true, "as": "found" } },
+              { "Shuffle": {} },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

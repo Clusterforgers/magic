@@ -1,0 +1,5 @@
+{"name":"Mana Vault","faces":[{"name":"Mana Vault","abilities":[
+ {"Static":{"affected":"This","mods":["DoesntUntap"]}},
+ {"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{4}","paid":[{"Untap":{"what":"This"}}]}}]}},
+ {"Triggered":{"when":{"StepBegins":{"step":"Draw","whose":"You"}},"if":{"Matches":{"subject":"This","selector":["Tapped"]}},"effects":[{"DealDamage":{"source":"This","to":"You","amount":1}}]}},
+ {"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless","Colorless"]}}}]}}]}]}

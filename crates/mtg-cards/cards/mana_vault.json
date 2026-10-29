@@ -1,0 +1,35 @@
+{
+  "oracle_id": "736892cb-a34b-4bb9-b56c-e26e3db207a2",
+  "name": "Mana Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Vault",
+      "oracle_fingerprint": "8a6a4f7a7efb7d044d8c160481536e3b",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{4}", "paid": [{ "Untap": { "what": "This" } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Tapped"] } },
+            "effects": [{ "DealDamage": { "source": "This", "to": "You", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless", "Colorless"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

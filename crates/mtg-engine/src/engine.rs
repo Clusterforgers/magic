@@ -428,7 +428,7 @@ impl Engine {
         match replace::process(&self.state, events, &journal)? {
             Processed::Events(events) => {
                 self.held = None;
-                self.fold_and_log(events)
+                self.fold_and_log(crate::tokens::without_departed_tokens(events))
             }
             Processed::Ask { decision, proposed } => {
                 self.held = Some(Held { proposed, journal });

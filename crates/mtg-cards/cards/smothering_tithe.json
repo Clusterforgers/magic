@@ -1,0 +1,27 @@
+{
+  "oracle_id": "153376c9-dffd-458c-8ce3-a4c8269bc4e9",
+  "name": "Smothering Tithe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smothering Tithe",
+      "oracle_fingerprint": "fa19de3be198e250d87d3733987fc065",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "unpaid": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

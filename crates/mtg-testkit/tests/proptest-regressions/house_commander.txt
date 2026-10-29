@@ -5,3 +5,4 @@
 # It is recommended to check this file in to source control so that
 # everyone who runs the test benefits from these saved cases.
 cc 4d29cbeb61992687e36e1b7192b018b5a483b7a7d2ee14f73619afb2e05b1cb8 # shrinks to house = HouseRules { starting_life: None, opening_hand_size: None, free_mulligans: None, mulligan_cap: None, skip_first_draw: None, max_hand_size: None, draw_step_cards: None, land_plays_per_turn: None, mana_burn: None, empty_library: None, turn_limit: None, winning_life: None, poison_threshold: None, attack_range: None, open_hands: None, revealed_library_top: None, opening_hand_smoothing: None, mulligan_style: None, commander_tax: None, commander_damage: None, deck: DeckRules { singleton: None, colour_identity: None, deck_size: Some(61), max_copies: None }, commanders_per_seat: None, handicaps: [] }, players = 4, seed = 4315
+cc 6b5ff18048575a3896e4a8ab342bdc28b05c1ac1069ea4c944b10f1452fe1951
