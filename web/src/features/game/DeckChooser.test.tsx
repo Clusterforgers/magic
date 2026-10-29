@@ -179,7 +179,7 @@ describe('selecting and choosing', () => {
     width(true)
     const { user, choose } = await open({ format: 'normal' })
     const first = await screen.findByRole('option', { name: /^Burn/ })
-    expect(first).toHaveAttribute('aria-selected', 'true')
+    await waitFor(() => expect(first).toHaveAttribute('aria-selected', 'true'))
     first.focus()
     await user.keyboard('{ArrowDown}')
     expect(option(/^Pauper Affinity/)).toHaveAttribute('aria-selected', 'true')
