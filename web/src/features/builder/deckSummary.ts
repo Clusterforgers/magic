@@ -67,7 +67,12 @@ export function groupLines(lines: readonly Line[], sort: SortKey): LineGroup[] {
       )
     }
     return [
-      { kind, label: KIND_LABEL[kind], count: inKind.reduce((sum, line) => sum + line.count, 0), lines: inKind },
+      {
+        kind,
+        label: KIND_LABEL[kind],
+        count: inKind.reduce((sum, line) => sum + line.count, 0),
+        lines: inKind,
+      },
     ]
   })
 }
@@ -111,7 +116,8 @@ export function handSentence(counts: Counts): string {
   const hand = byHand(counts)
   const { unplayable } = counts
   const cards = (n: number): string => `${n} ${n === 1 ? 'card' : 'cards'}`
-  if (hand === 0 && unplayable === 0) return counts.total === 0 ? 'No cards to count.' : 'The whole deck runs.'
+  if (hand === 0 && unplayable === 0)
+    return counts.total === 0 ? 'No cards to count.' : 'The whole deck runs.'
   return [
     hand === 0 ? null : `${cards(hand)} played by hand`,
     unplayable === 0 ? null : `${unplayable} cannot be played`,

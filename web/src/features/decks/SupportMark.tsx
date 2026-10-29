@@ -8,7 +8,10 @@ import { SUPPORT_LABEL } from './format'
 // Whole class names, so Tailwind can see them. `mark` is the pill: the state's text, a 12 % tint and a hairline edge in
 // its colour (tokens.test.ts holds the contrast). `edge` is the left edge of the line that carries the mark and
 // `decoration` the colour of the underline under the clauses a card preview leaves to the table.
-const LOOK: Record<Support, { Icon: LucideIcon; mark: string; edge: string; decoration: string; ring: string }> = {
+const LOOK: Record<
+  Support,
+  { Icon: LucideIcon; mark: string; edge: string; decoration: string; ring: string }
+> = {
   verified: {
     Icon: ShieldCheckIcon,
     mark: 'border-support-verified bg-support-verified/12 text-support-verified',

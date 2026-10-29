@@ -224,7 +224,9 @@ describe('the marker beside the name', () => {
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
     expect(deckPane().querySelector('[data-slot="check-counts"]')).toHaveTextContent(/ · as saved$/)
     await user.click(pane().getByRole('button', { name: 'Save' }))
-    await waitFor(() => expect(deckPane().querySelector('[data-marker]')).toHaveAttribute('data-marker', 'verified'))
+    await waitFor(() =>
+      expect(deckPane().querySelector('[data-marker]')).toHaveAttribute('data-marker', 'verified'),
+    )
     expect(deckPane().querySelector('[data-marker]')).toHaveAttribute('data-marker', 'verified')
     expect(deckPane().querySelector('[data-slot="check-counts"]')).not.toHaveTextContent('as saved')
   })

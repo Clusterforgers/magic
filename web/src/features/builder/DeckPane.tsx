@@ -28,7 +28,7 @@ import type { FindKind } from './CommanderSlot'
 import { hasRoom, linesIn, totalOf } from './deckEdit'
 import type { Draft } from './deckEdit'
 import { useDeckLook } from './deckLook'
-import { handCards, previewFromDraft } from './deckSummary'
+import { handCards, handSentence, previewFromDraft } from './deckSummary'
 import { HandList } from './HandList'
 import { cardsIn, identityOf } from './identity'
 import { LegalitySection } from './LegalitySection'
@@ -113,7 +113,7 @@ function Disclosure({
           aria-expanded={open}
           aria-controls={`${id}-body`}
           onClick={onToggle}
-          className="flex min-h-8 w-full items-center gap-1.5 rounded-sm py-1 text-left pointer-coarse:min-h-11"
+          className="flex min-h-8 w-full items-center gap-2 rounded-sm py-1 text-left pointer-coarse:min-h-11"
         >
           {open ? (
             <ChevronDownIcon aria-hidden="true" className="size-4" />
@@ -274,35 +274,35 @@ export function DeckPane({
               variant="link"
               size="sm"
               data-slot="hand-summary"
-              className="h-auto px-0 py-0.5 tabular-nums"
+              className="h-auto px-0 py-1 tabular-nums"
               onClick={showHand}
             >
               <HandIcon aria-hidden="true" />
-              {byHandCopies > 0
-                ? `${byHandCopies} ${byHandCopies === 1 ? 'card' : 'cards'} played by hand`
-                : `${counts.unplayable} cannot be played`}
+              {handSentence(counts)}
             </Button>
           ) : (
             <p data-slot="hand-summary" className="flex items-center gap-1 text-sm text-muted-foreground">
               <ShieldCheckIcon aria-hidden="true" className="size-4 text-support-verified" />
-              The whole deck runs
+              {handSentence(counts)}
             </p>
           )}
         </div>
         {total === 0 ? null : (
-          <CheckBar
-            counts={counts}
-            asSaved={asSaved}
-            status={check.status}
-            error={check.error}
-            source={check.source}
-            onRetry={check.retry}
-            issuesOnly={issuesOnly}
-            onIssuesOnly={setIssuesOnly}
-            sort={sort}
-            onSort={setSort}
-            leading={<LookToggle look={look} onChange={setLook} />}
-          />
+          <div className="max-lg:group-data-[part=stats]/pane:hidden">
+            <CheckBar
+              counts={counts}
+              asSaved={asSaved}
+              status={check.status}
+              error={check.error}
+              source={check.source}
+              onRetry={check.retry}
+              issuesOnly={issuesOnly}
+              onIssuesOnly={setIssuesOnly}
+              sort={sort}
+              onSort={setSort}
+              leading={<LookToggle look={look} onChange={setLook} />}
+            />
+          </div>
         )}
         {saveError === null ? null : (
           <Alert variant="destructive">

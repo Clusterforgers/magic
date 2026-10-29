@@ -42,6 +42,54 @@ beforeEach(() => {
   fixMarksClient.clear()
 })
 
+describe('FixMarkButton compact', () => {
+  const small = () => screen.getByRole('button', { name: 'Mark Sol Ring important to fix' })
+
+  function mountCompact(api: FixMarksApi) {
+    return render(<FixMarkButton compact oracleId={ORACLE} name="Sol Ring" api={api} />)
+  }
+
+  it('is an icon alone, named for the card, with no words and no note editor', async () => {
+    mountCompact(fakeApi())
+    await waitFor(() => expect(small()).toHaveAttribute('aria-disabled', 'false'))
+    expect(small()).toHaveTextContent('')
+    expect(small()).toHaveAttribute('title', 'Mark important to fix')
+    expect(small()).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('marks at once on a press, stays an icon, and takes the mark back with the next', async () => {
+    const api = fakeApi()
+    const user = userEvent.setup()
+    mountCompact(api)
+    await waitFor(() => expect(small()).toHaveAttribute('aria-disabled', 'false'))
+    await user.click(small())
+    expect(small()).toHaveAttribute('aria-pressed', 'true')
+    expect(small()).toHaveAttribute('title', 'Marked important to fix')
+    expect(screen.queryByRole('button', { name: /note/i })).toBeNull()
+    await waitFor(() => expect(api.mark).toHaveBeenCalledWith(ORACLE, null))
+    await user.click(small())
+    expect(small()).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('says why in an alert under the icon when the server refuses, and puts the mark back', async () => {
+    const api = fakeApi()
+    api.mark.mockRejectedValueOnce(new DeckError('internal', 500, 'boom'))
+    const user = userEvent.setup()
+    mountCompact(api)
+    await waitFor(() => expect(small()).toHaveAttribute('aria-disabled', 'false'))
+    await user.click(small())
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(small()).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('is not drawn for a visitor without a session', async () => {
+    const api = fakeApi()
+    api.list.mockRejectedValueOnce(new DeckError('unauthenticated', 401, 'sign in'))
+    mountCompact(api)
+    await waitFor(() => expect(screen.queryByRole('button')).toBeNull())
+  })
+})
+
 describe('FixMarkButton', () => {
   it('is an unpressed toggle for a card the account has not marked', async () => {
     mount(fakeApi())

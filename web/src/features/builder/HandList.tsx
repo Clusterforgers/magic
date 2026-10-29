@@ -1,5 +1,4 @@
 import { ShieldCheckIcon } from 'lucide-react'
-import { useId } from 'react'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
@@ -32,7 +31,7 @@ function Entry({
       data-support={support}
       className={cn('flex gap-3 rounded-lg border-l-4 py-1 pr-1 pl-2', supportEdge(support))}
     >
-      <CardPicture oracleId={card.oracle_id} name={card.name} size="small" alt="" className="w-16" />
+      <CardPicture oracleId={card.oracle_id} name={card.name} size="small" alt="" quiet className="w-16" />
       <div className="grid min-w-0 flex-1 content-start gap-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <button
@@ -73,19 +72,11 @@ function Entry({
  * it. A card the game cannot play at all is listed apart, since the deck cannot be taken with it.
  */
 export function HandList({ cards, onPreview, fixMarks }: HandListProps) {
-  const id = useId()
   const hand = cards.filter((entry) => entry.support !== 'unplayable')
   const blocked = cards.filter((entry) => entry.support === 'unplayable')
   const copies = (list: readonly HandCard[]): number => list.reduce((sum, entry) => sum + entry.count, 0)
   return (
-    <section aria-labelledby={`${id}-hand`} data-slot="hand-list" className="grid gap-2">
-      <h3
-        id={`${id}-hand`}
-        className="flex items-baseline justify-between gap-2 border-b pb-1 text-sm font-semibold"
-      >
-        Played by hand
-        <span className="font-normal text-muted-foreground tabular-nums">{copies(hand)}</span>
-      </h3>
+    <section aria-label="Played by hand" data-slot="hand-list" className="grid gap-2">
       {cards.length === 0 ? (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <ShieldCheckIcon aria-hidden="true" className="size-4 text-support-verified" />

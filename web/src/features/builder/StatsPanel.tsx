@@ -42,7 +42,9 @@ export function StatsPanel({ deck, counts, asSaved }: StatsPanelProps) {
     <section aria-label="Deck statistics" data-slot="deck-stats-panel" className="@container grid gap-4">
       <div className="grid gap-2" data-slot="support-summary">
         <SupportBar counts={counts} />
-        {asSaved ? <p className="text-xs text-muted-foreground">As saved; the changes are being checked.</p> : null}
+        {asSaved ? (
+          <p className="text-xs text-muted-foreground">As saved; the changes are being checked.</p>
+        ) : null}
       </div>
       <div className="grid gap-4 @md:grid-cols-2">
         <ManaCurve curve={stats.curve} />
@@ -54,7 +56,7 @@ export function StatsPanel({ deck, counts, asSaved }: StatsPanelProps) {
           <IdentityPips identity={identityOfDeck(deck)} />
         </div>
         {stats.colours.length === 0 ? null : <ColourCounts colours={stats.colours} />}
-        <p data-slot="land-count" className="grid gap-0.5 text-sm">
+        <p data-slot="land-count" className="grid gap-1 text-sm">
           <span className="text-xs font-medium">Lands and spells</span>
           <span className="tabular-nums">
             {stats.lands} {stats.lands === 1 ? 'land' : 'lands'}, {stats.spells}{' '}

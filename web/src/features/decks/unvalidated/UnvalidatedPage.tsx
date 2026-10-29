@@ -9,6 +9,7 @@ import { cardsApi } from '@/net/cards'
 import type { CardsApi } from '@/net/cards'
 import { decksApi } from '@/net/decks'
 import type { DecksApi } from '@/net/decks'
+import type { FixMarksApi } from '@/net/fixMarks'
 import { UnvalidatedView } from './UnvalidatedView'
 
 interface UnvalidatedPageProps {
@@ -18,6 +19,8 @@ interface UnvalidatedPageProps {
   api?: Pick<DecksApi, 'list' | 'get' | 'check'>
   /** The card endpoint the clauses are quoted from. */
   cards?: Pick<CardsApi, 'get'>
+  /** The fix-mark endpoints; with them each card gets a flag that marks it important to fix. */
+  fixMarks?: FixMarksApi
 }
 
 /**
@@ -25,7 +28,12 @@ interface UnvalidatedPageProps {
  * user's decks. Someone who is not signed in is sent to the sign-in form and back; a server without accounts has no
  * decks to check.
  */
-export function UnvalidatedPage({ deckId, api = decksApi, cards = cardsApi }: UnvalidatedPageProps) {
+export function UnvalidatedPage({
+  deckId,
+  api = decksApi,
+  cards = cardsApi,
+  fixMarks,
+}: UnvalidatedPageProps) {
   usePageTitle('Not validated cards')
   const status = useAuth((state) => state.status)
   const path = deckId === undefined ? '/decks/unvalidated' : `/decks/${deckId}/unvalidated`
@@ -73,6 +81,7 @@ export function UnvalidatedPage({ deckId, api = decksApi, cards = cardsApi }: Un
         key={deckId ?? '*'}
         api={api}
         cards={cards}
+        fixMarks={fixMarks}
         scope={deckId === undefined ? { kind: 'all' } : { kind: 'deck', id: deckId }}
       />
     </PageShell>

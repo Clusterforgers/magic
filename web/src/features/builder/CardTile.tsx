@@ -57,7 +57,13 @@ export function CardTile({ line, format, room, check, outside = null, actions, f
                   : outside !== null && 'ring-2 ring-destructive',
               )}
             >
-              <CardPicture oracleId={card.oracle_id} name={card.name} size="normal" alt="" className="w-full" />
+              <CardPicture
+                oracleId={card.oracle_id}
+                name={card.name}
+                size="normal"
+                alt=""
+                className="w-full"
+              />
             </span>
             <span className="mt-1 block truncate text-xs font-medium">{card.name}</span>
           </button>
@@ -84,7 +90,7 @@ export function CardTile({ line, format, room, check, outside = null, actions, f
       {issue ? <SupportMark support={check.support} className="justify-self-start" /> : null}
       {outside === null ? null : (
         <p data-slot="line-outside" className="flex items-start gap-1 text-xs text-destructive">
-          <TriangleAlertIcon aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+          <TriangleAlertIcon aria-hidden="true" className="mt-1 size-4 shrink-0" />
           <span className="sr-only">{outside}</span>
           <span aria-hidden="true" title={outside}>
             Outside identity

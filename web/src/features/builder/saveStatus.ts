@@ -33,7 +33,8 @@ export interface SaveInput {
 export function saveStatus({ dirty, saving, name, issues, format }: SaveInput): SaveStatus {
   if (saving) return { kind: 'saving', text: 'Saving…', blocker: 'A save is on its way.' }
   const problem = nameProblem(name)
-  if (dirty && problem !== null) return { kind: 'blocked', text: `Cannot save yet. ${problem}`, blocker: problem }
+  if (dirty && problem !== null)
+    return { kind: 'blocked', text: `Cannot save yet. ${problem}`, blocker: problem }
   if (!dirty) return { kind: 'saved', text: 'All changes saved.', blocker: null }
   const legality =
     issues === 0

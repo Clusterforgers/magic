@@ -52,12 +52,11 @@ export function PictureZone({
             id={`${id}-${group.kind}`}
             className="flex items-baseline justify-between gap-2 text-xs font-medium text-muted-foreground"
           >
-            {group.label}
-            <span className="tabular-nums">{group.count}</span>
+            {group.label} <span className="tabular-nums">{group.count}</span>
           </h4>
           <ul
             aria-label={`${ZONE_TITLE[zone]} ${group.label.toLowerCase()}`}
-            className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-2.5 gap-y-3 pt-1.5"
+            className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-x-3 gap-y-3 pt-2"
           >
             {group.lines.map((line) => (
               <CardTile

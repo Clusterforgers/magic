@@ -5,7 +5,7 @@ import type { DeckLook } from './deckLook'
 /** The choice of how the deck pane draws its cards: large pictures in groups by type, or the dense text list. */
 export function LookToggle({ look, onChange }: { look: DeckLook; onChange: (look: DeckLook) => void }) {
   return (
-    <div role="group" aria-label="Show cards as" className="inline-flex gap-1 rounded-lg bg-muted p-0.5">
+    <div role="group" aria-label="Show cards as" className="inline-flex gap-1 rounded-lg bg-muted p-1">
       <Button
         type="button"
         size="sm"

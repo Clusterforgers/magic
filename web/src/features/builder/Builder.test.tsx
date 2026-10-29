@@ -407,7 +407,12 @@ describe('the fit of the page', () => {
     expect(page()).toHaveAttribute('data-width', 'wide')
     const panes = searchPane().parentElement
     expect(panes).toBe(deckPane().parentElement)
-    expect(panes).toHaveClass('min-h-0', 'flex-1', 'lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]', 'grid-rows-[minmax(0,1fr)]')
+    expect(panes).toHaveClass(
+      'min-h-0',
+      'flex-1',
+      'lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]',
+      'grid-rows-[minmax(0,1fr)]',
+    )
     for (const element of [searchPane(), deckPane()]) expect(element).toHaveClass('min-h-0', 'flex-col')
   })
 

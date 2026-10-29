@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import { CardPicture } from '@/features/cards/CardPicture'
+import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { cn } from '@/lib/utils'
+import type { FixMarksApi } from '@/net/fixMarks'
 import { SupportMark, supportEdge } from '../SupportMark'
 import { ClauseList } from './ClauseList'
 import { clauseLines } from './model'
@@ -14,10 +16,12 @@ interface UnvalidatedCardProps {
   pending: boolean
   /** Name the decks that hold the card under its name. */
   showDecks: boolean
+  /** The fix-mark endpoints; with them the card gets a flag that marks it important to fix. */
+  fixMarks?: FixMarksApi
 }
 
 /** One card the game does not run whole: its picture, name and state, the decks that hold it and each unread clause. */
-export function UnvalidatedCard({ card, faces, pending, showDecks }: UnvalidatedCardProps) {
+export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks }: UnvalidatedCardProps) {
   return (
     <li
       data-card={card.oracleId}
@@ -29,6 +33,9 @@ export function UnvalidatedCard({ card, faces, pending, showDecks }: Unvalidated
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <p className="min-w-0 text-base font-semibold break-words">{card.name}</p>
           <SupportMark support={card.support} />
+          {fixMarks === undefined ? null : (
+            <FixMarkButton oracleId={card.oracleId} name={card.name} api={fixMarks} emphasis="prominent" />
+          )}
         </div>
         {showDecks ? (
           <p className="text-sm text-muted-foreground" data-slot="decks">

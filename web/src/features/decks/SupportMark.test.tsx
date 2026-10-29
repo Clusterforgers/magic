@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from './format'
-import { SupportGlyph, SupportMark, supportEdge } from './SupportMark'
+import { SupportGlyph, SupportMark, supportEdge, supportRing } from './SupportMark'
 
 const STATES: readonly Support[] = ['verified', 'partial', 'manual', 'stale', 'unplayable']
 
@@ -43,6 +43,16 @@ describe('SupportMark', () => {
   it('takes a class for placement', () => {
     const { container } = render(<SupportMark support="manual" className="ml-2" />)
     expect(container.querySelector('[data-support]')).toHaveClass('ml-2')
+  })
+})
+
+describe('supportRing', () => {
+  it.each(STATES)('draws the ring of a %s card in the colour of its state', (support) => {
+    expect(supportRing(support)).toBe(`ring-support-${support}`)
+  })
+
+  it('gives the five states five rings', () => {
+    expect(new Set(STATES.map(supportRing)).size).toBe(STATES.length)
   })
 })
 

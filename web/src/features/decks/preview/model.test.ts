@@ -4,10 +4,12 @@ import { cardHit, deckView, lineOf, reportCard, reportOf } from '@/features/deck
 import type { PreconView } from '@/protocol/generated'
 import {
   byHand,
+  colourCounts,
   CURVE_LAST,
   groupByKind,
   identityOfDeck,
   kindOf,
+  landCopies,
   manaCurve,
   previewFromDeck,
   previewFromPrecon,
@@ -147,6 +149,33 @@ describe('colour identity', () => {
     expect(identityOfDeck(deck)).toEqual(['W', 'U', 'G'])
     expect(identityOfDeck({ ...deck, commanders: [] })).toEqual(['R'])
     expect(identityOfDeck({ ...deck, commanders: [], cards: [] })).toEqual([])
+  })
+})
+
+describe('lands and colours', () => {
+  const deck = [
+    card('Forest', { typeLine: 'Basic Land — Forest', count: 30, identity: ['G'] }),
+    card('Bolt', { count: 4 }),
+    card('Gruul Charm', { identity: ['R', 'G'], count: 2 }),
+    card('Sol Ring', { typeLine: 'Artifact', identity: [], count: 1 }),
+    card('Command Tower', { typeLine: 'Land', identity: [], count: 1 }),
+  ]
+
+  it('counts the copies of the lands', () => {
+    expect(landCopies(deck)).toBe(31)
+    expect(landCopies([])).toBe(0)
+  })
+
+  it('counts the spells by colour in WUBRG order with colourless last, lands left out, a card of two colours under both', () => {
+    expect(colourCounts(deck)).toEqual([
+      { letter: 'R', count: 6 },
+      { letter: 'G', count: 2 },
+      { letter: 'C', count: 1 },
+    ])
+  })
+
+  it('names no colour for a deck of lands alone', () => {
+    expect(colourCounts(deck.slice(0, 1))).toEqual([])
   })
 })
 

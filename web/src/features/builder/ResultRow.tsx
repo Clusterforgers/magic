@@ -66,7 +66,7 @@ export function ResultRow({ card, draft, identity = null, onAdd, onPreview, fixM
               {card.name}
             </button>
           </HoverPicture>
-          <span className="flex shrink-0 items-center gap-1.5">
+          <span className="flex shrink-0 items-center gap-2">
             <ManaCost cost={card.mana_cost} />
             {issue ? <SupportGlyph support={card.support} className="relative z-10" /> : null}
           </span>

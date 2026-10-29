@@ -25,14 +25,14 @@ export function SaveBar({ status, onSave }: SaveBarProps) {
       <p
         id={id}
         className={cn(
-          'flex min-w-0 items-start gap-1.5 text-sm',
+          'flex min-w-0 items-start gap-2 text-sm',
           blocked ? 'text-destructive' : 'text-muted-foreground',
         )}
       >
         {blocked ? (
-          <CircleAlertIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <CircleAlertIcon aria-hidden="true" className="mt-1 size-4 shrink-0" />
         ) : status.kind === 'ready' ? (
-          <PencilIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <PencilIcon aria-hidden="true" className="mt-1 size-4 shrink-0" />
         ) : null}
         <span>{status.text}</span>
       </p>

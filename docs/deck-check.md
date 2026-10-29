@@ -52,6 +52,7 @@ The server runs the engine's check in the game's format when a seat chooses a de
 ## Highlighting
 
 - Deck list and builder: every card that is not `Verified` gets an icon, a word (Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The header counts them ("96 of 100 verified, 3 manual, 1 partial") with an "issues only" filter and a sort that puts them first.
+- Builder summary: the header says "N cards played by hand" (and how many cannot be played), a "Played by hand" list gives each such card with its state, reasons and a flag that marks it important to fix, and the save bar names what stands in the way of saving (legality issues never do).
 - Card preview: the oracle text with the unsupported clauses underlined and the reason beside it, and a "Mark important to fix" button for any card (`web.md`, Fix marks).
 - Not-validated list: `/decks/unvalidated` (every saved deck) and `/decks/$deckId/unvalidated` (one) list each card that is not `Verified` with its unread clauses, each the quoted span of the card's oracle text beside its plain reason, the decks that hold it, a filter by state and a "Copy as text" button; the cards of most decks come first, so the owner sees what to fix first (`web.md`). The precon details quote the same clauses.
 - Game: a card in play with manual text carries a small "manual" badge for every seat, and its prompt quotes only the unsupported clause.
