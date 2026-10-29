@@ -14,11 +14,13 @@ import { Route as DecksRouteImport } from './routes/decks'
 import { Route as GamesRouteImport } from './routes/games'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NewRouteImport } from './routes/new'
+import { Route as PreconsRouteImport } from './routes/precons'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
+import { Route as DevPreconsRouteImport } from './routes/dev.precons'
 import { Route as DevTableRouteImport } from './routes/dev.table'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
@@ -48,6 +50,11 @@ const NewRoute = NewRouteImport.update({
   path: '/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreconsRoute = PreconsRouteImport.update({
+  id: '/precons',
+  path: '/precons',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -73,6 +80,11 @@ const DevLobbyRoute = DevLobbyRouteImport.update({
   path: '/dev/lobby',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevPreconsRoute = DevPreconsRouteImport.update({
+  id: '/dev/precons',
+  path: '/dev/precons',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevTableRoute = DevTableRouteImport.update({
   id: '/dev/table',
   path: '/dev/table',
@@ -95,11 +107,13 @@ export interface FileRoutesByFullPath {
   '/games': typeof GamesRoute
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
+  '/precons': typeof PreconsRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
+  '/dev/precons': typeof DevPreconsRoute
   '/dev/table': typeof DevTableRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
@@ -110,11 +124,13 @@ export interface FileRoutesByTo {
   '/games': typeof GamesRoute
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
+  '/precons': typeof PreconsRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
+  '/dev/precons': typeof DevPreconsRoute
   '/dev/table': typeof DevTableRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
@@ -126,11 +142,13 @@ export interface FileRoutesById {
   '/games': typeof GamesRoute
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
+  '/precons': typeof PreconsRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
+  '/dev/precons': typeof DevPreconsRoute
   '/dev/table': typeof DevTableRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
@@ -143,11 +161,13 @@ export interface FileRouteTypes {
     | '/games'
     | '/login'
     | '/new'
+    | '/precons'
     | '/register'
     | '/settings'
     | '/decks/$deckId'
     | '/dev/builder'
     | '/dev/lobby'
+    | '/dev/precons'
     | '/dev/table'
     | '/game/$gameId'
     | '/join/$code'
@@ -158,11 +178,13 @@ export interface FileRouteTypes {
     | '/games'
     | '/login'
     | '/new'
+    | '/precons'
     | '/register'
     | '/settings'
     | '/decks/$deckId'
     | '/dev/builder'
     | '/dev/lobby'
+    | '/dev/precons'
     | '/dev/table'
     | '/game/$gameId'
     | '/join/$code'
@@ -173,11 +195,13 @@ export interface FileRouteTypes {
     | '/games'
     | '/login'
     | '/new'
+    | '/precons'
     | '/register'
     | '/settings'
     | '/decks_/$deckId'
     | '/dev/builder'
     | '/dev/lobby'
+    | '/dev/precons'
     | '/dev/table'
     | '/game/$gameId'
     | '/join/$code'
@@ -189,11 +213,13 @@ export interface RootRouteChildren {
   GamesRoute: typeof GamesRoute
   LoginRoute: typeof LoginRoute
   NewRoute: typeof NewRoute
+  PreconsRoute: typeof PreconsRoute
   RegisterRoute: typeof RegisterRoute
   SettingsRoute: typeof SettingsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   DevBuilderRoute: typeof DevBuilderRoute
   DevLobbyRoute: typeof DevLobbyRoute
+  DevPreconsRoute: typeof DevPreconsRoute
   DevTableRoute: typeof DevTableRoute
   GameGameIdRoute: typeof GameGameIdRoute
   JoinCodeRoute: typeof JoinCodeRoute
@@ -236,6 +262,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/precons': {
+      id: '/precons'
+      path: '/precons'
+      fullPath: '/precons'
+      preLoaderRoute: typeof PreconsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -271,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevLobbyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/precons': {
+      id: '/dev/precons'
+      path: '/dev/precons'
+      fullPath: '/dev/precons'
+      preLoaderRoute: typeof DevPreconsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/table': {
       id: '/dev/table'
       path: '/dev/table'
@@ -301,11 +341,13 @@ const rootRouteChildren: RootRouteChildren = {
   GamesRoute: GamesRoute,
   LoginRoute: LoginRoute,
   NewRoute: NewRoute,
+  PreconsRoute: PreconsRoute,
   RegisterRoute: RegisterRoute,
   SettingsRoute: SettingsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   DevBuilderRoute: DevBuilderRoute,
   DevLobbyRoute: DevLobbyRoute,
+  DevPreconsRoute: DevPreconsRoute,
   DevTableRoute: DevTableRoute,
   GameGameIdRoute: GameGameIdRoute,
   JoinCodeRoute: JoinCodeRoute,

@@ -126,10 +126,13 @@ const SUPPORTS: Record<Support, true> = {
 }
 const REASONS: Record<UnresolvedReason, true> = { unknown_card: true, ambiguous_name: true }
 
-const isState = (value: unknown): value is DeckState => isText(value) && Object.hasOwn(STATES, value)
-const isZone = (value: unknown): value is DeckZone => isText(value) && Object.hasOwn(ZONES, value)
+/** True for a deck state of the wire. */
+export const isState = (value: unknown): value is DeckState => isText(value) && Object.hasOwn(STATES, value)
+/** True for a deck zone of the wire. */
+export const isZone = (value: unknown): value is DeckZone => isText(value) && Object.hasOwn(ZONES, value)
 const isSource = (value: unknown): value is ImportSource => isText(value) && Object.hasOwn(SOURCES, value)
-const isSupport = (value: unknown): value is Support => isText(value) && Object.hasOwn(SUPPORTS, value)
+/** True for a support state of the wire. */
+export const isSupport = (value: unknown): value is Support => isText(value) && Object.hasOwn(SUPPORTS, value)
 const isReason = (value: unknown): value is UnresolvedReason => isText(value) && Object.hasOwn(REASONS, value)
 const isNullableText = (value: unknown): value is string | null => value === null || isText(value)
 
@@ -141,7 +144,8 @@ function readCounts(value: unknown): Counts | null {
   return { total, verified, partial, manual, stale, unplayable }
 }
 
-function readSummary(value: unknown): Summary | null {
+/** Reads the summary of a check; null when a field is missing or of another kind. */
+export function readSummary(value: unknown): Summary | null {
   if (!isRecord(value) || !isText(value.format) || !isState(value.state)) return null
   if (!isCount(value.issues) || !Array.isArray(value.zones)) return null
   const counts = readCounts(value.counts)
@@ -197,7 +201,8 @@ function readDeckView(body: unknown): DeckView | null {
   return body as DeckView
 }
 
-const isClause = (value: unknown): value is Reason =>
+/** True for a clause the game leaves to the table. */
+export const isClause = (value: unknown): value is Reason =>
   isRecord(value) &&
   isCount(value.face) &&
   isText(value.text) &&
