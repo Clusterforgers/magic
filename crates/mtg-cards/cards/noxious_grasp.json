@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b17f4960-9603-4a81-8dc8-e09e8b822357",
+  "name": "Noxious Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noxious Grasp",
+      "oracle_fingerprint": "986af5c682370e0a9a33e0a0580d232f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

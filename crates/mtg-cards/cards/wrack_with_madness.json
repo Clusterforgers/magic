@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c93c647e-0b9e-4a50-a519-42862d21a0f1",
+  "name": "Wrack with Madness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrack with Madness",
+      "oracle_fingerprint": "5b7399f86dfb2b575442c9854548b204",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

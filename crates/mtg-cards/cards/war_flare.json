@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7146eecb-8a79-467c-936e-f577e481cf59",
+  "name": "War Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Flare",
+      "oracle_fingerprint": "a53400a98ab0b7af7e6a772841d9da76",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

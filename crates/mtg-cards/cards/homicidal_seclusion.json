@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3bc51b45-1f96-4277-8b80-bb0a528c6ac2",
+  "name": "Homicidal Seclusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Homicidal Seclusion",
+      "oracle_fingerprint": "178ba327f6faead27db402e03ea0d0a9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }, { "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ba58f508-8036-496c-8a2f-c1e410165e93",
+  "name": "Repel Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repel Calamity",
+      "oracle_fingerprint": "0f8c09d5f52a2bd0c502765eba2f26a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                        { "Compare": { "stat": "Toughness", "op": "Ge", "to": 4 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

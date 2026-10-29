@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2aa040d2-35a1-4b1d-9542-395e1b8a9fd8",
+  "name": "Gloomlance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gloomlance",
+      "oracle_fingerprint": "00eb3b668c2d32aae9aa42b27ba8e4f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "Matches": {
+                          "subject": { "Target": 0 },
+                          "selector": [{ "Color": "Green" }]
+                        }
+                      },
+                      {
+                        "Matches": {
+                          "subject": { "Target": 0 },
+                          "selector": [{ "Color": "White" }]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Discard": { "who": { "ControllerOf": { "Target": 0 } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
