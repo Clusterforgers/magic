@@ -1,7 +1,15 @@
 // Goal: every card, printing, token and face maps to the server's picture endpoint at the size its drawn width needs, and an object the viewer may not see has no picture source.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView } from '@/protocol/generated'
-import { cardImageFallbackUrl, cardImageUrl, faceOf, imageSizeFor, imageSourceOf, showsBack } from './images'
+import {
+  cardImageFallbackUrl,
+  cardImageUrl,
+  faceOf,
+  imageSizeFor,
+  imageSourceOf,
+  missKeyOf,
+  showsBack,
+} from './images'
 import type { ImageSize, ImageSource } from './images'
 
 const ORACLE = '4b3f5c1e-0000-4000-8000-000000000001'
@@ -75,6 +83,29 @@ describe('cardImageUrl', () => {
     ],
   ])('%s', (_, source, face, size, url) => {
     expect(cardImageUrl(source, face, size)).toBe(url)
+  })
+})
+
+describe('missKeyOf', () => {
+  it('is the token URL without power and toughness, so a buffed token shares the miss of its printed self', () => {
+    const buffed: ImageSource = { ...soldier, power: 3, toughness: 3 }
+    expect(missKeyOf(soldier, 0, 'normal')).toBe(missKeyOf(buffed, 0, 'normal'))
+    expect(missKeyOf(soldier, 0, 'normal')).toBe(
+      '/api/images/token/0/normal?name=Soldier&type=Creature+%E2%80%94+Soldier&colors=W',
+    )
+  })
+
+  it.each<[string, ImageSource, number, ImageSize]>([
+    ['another face', { ...soldier }, 1, 'normal'],
+    ['another size', { ...soldier }, 0, 'small'],
+    ['another colour', { ...soldier, colors: ['R'] }, 0, 'normal'],
+    ['another name', { ...soldier, name: 'Knight' }, 0, 'normal'],
+  ])('differs for %s', (_, other, face, size) => {
+    expect(missKeyOf(other, face, size)).not.toBe(missKeyOf(soldier, 0, 'normal'))
+  })
+
+  it('is null for a printed card, whose miss is its own URL', () => {
+    expect(missKeyOf({ kind: 'card', identity: { oracle_id: ORACLE } }, 0, 'normal')).toBeNull()
   })
 })
 

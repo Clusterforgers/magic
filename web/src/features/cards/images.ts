@@ -51,6 +51,16 @@ export function cardImageUrl(source: ImageSource, face: number, size: ImageSize)
 }
 
 /**
+ * What a missing token picture is remembered under for the session: the URL without power and toughness. The server
+ * finds a token by its name and fits the other facts as far as it can, so a token it has no picture for has none at
+ * any power and toughness. Null for a printed card, whose miss is its own URL's.
+ */
+export function missKeyOf(source: ImageSource, face: number, size: ImageSize): string | null {
+  if (source.kind !== 'token') return null
+  return cardImageUrl({ ...source, power: null, toughness: null }, face, size)
+}
+
+/**
  * The picture asked for when a printing's own is missing: the card's (its oracle id), since a database without that
  * printing still has the card. Null for an oracle id or a token, which have nothing to fall back to.
  */

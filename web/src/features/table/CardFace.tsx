@@ -1,3 +1,4 @@
+import { CARD_CORNER } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
 import type { ImageSize } from '@/features/cards/images'
@@ -102,9 +103,36 @@ export function CardFace(props: CardFaceProps) {
       note={props.note}
       links={props.links}
     >
-      <TextFace {...props} stacked={false} />
+      {(status) => (
+        <TextFace {...props} stacked={false} card={status === 'failed' && source.kind === 'token'} />
+      )}
     </ImageFace>
   )
+}
+
+const PLATE = 'rounded-sm border border-foreground/30 bg-background/80'
+// A text face is plain, or drawn as a card where a token's picture is missing: a rounded frame in the card's colour,
+// plates for the name and the type line, a rules box and a boxed power/toughness.
+const PARTS = {
+  plain: {
+    body: 'rounded-md border-2',
+    name: 'px-1 pt-0.5',
+    type: 'px-1 text-muted-foreground',
+    rules: 'px-1',
+    stat: 'self-end rounded-tl-md bg-foreground px-1.5 text-background',
+  },
+  card: {
+    body: `${CARD_CORNER} border-[3px]`,
+    name: `mx-0.5 mt-0.5 px-1 ${PLATE}`,
+    type: `mx-0.5 px-1 ${PLATE}`,
+    rules: `mx-0.5 mb-0.5 px-1 py-px ${PLATE} bg-background/90`,
+    stat: 'mr-0.5 mb-0.5 self-end rounded-md border-2 border-foreground/70 bg-background px-1.5 text-foreground',
+  },
+}
+
+interface TextFaceProps extends CardFaceProps {
+  /** Draw it as a card: the face of a token whose picture the server has none of. */
+  card?: boolean
 }
 
 /**
@@ -123,8 +151,10 @@ export function TextFace({
   note,
   stacked = false,
   links,
-}: CardFaceProps) {
+  card = false,
+}: TextFaceProps) {
   const classes = SIZE[size]
+  const parts = PARTS[card ? 'card' : 'plain']
   const turned = object.permanent?.tapped === true && !upright
   const frame = frameOf(object)
   const full = size !== 'compact' && !turned
@@ -137,20 +167,24 @@ export function TextFace({
   const nameLines = nameLinesOf(turned, full, size)
   // A token whose picture is missing still looks like a card: the card back's colours, its name, "Token" and its type.
   const token = object.kind === 'Token'
+  // Only a token drawn as text is dark; one drawn as a card (its picture is missing) keeps its frame colour.
+  const dark = token && !card
   return (
     <span
       data-slot="card-face"
       data-frame={frame}
       data-turned={turned || undefined}
+      data-card-like={card || undefined}
       className={cn(
-        'relative flex w-(--card-w) flex-col overflow-hidden rounded-md border-2 text-left text-card-foreground ring-1 ring-foreground/15',
+        'relative flex w-(--card-w) flex-col overflow-hidden text-left text-card-foreground ring-1 ring-foreground/15',
+        parts.body,
         stacked ? PILE : 'shadow-sm',
         turned ? 'h-[calc(var(--card-w)*5/7)]' : 'h-(--card-h)',
         fit ? null : classes.vars,
-        token ? cn(TOKEN_BORDER[frame], 'bg-card-back text-white') : FRAME[frame],
+        dark ? cn(TOKEN_BORDER[frame], 'bg-card-back text-white') : FRAME[frame],
       )}
     >
-      <span className={cn(classes.name, 'px-1 pt-0.5 leading-tight font-semibold')}>
+      <span className={cn(classes.name, parts.name, 'leading-tight font-semibold')}>
         <span className={cn('block break-words hyphens-auto', nameLines)}>{object.name}</span>
       </span>
       {(full || (cost && !turned)) && object.mana_cost !== null ? (
@@ -166,7 +200,7 @@ export function TextFace({
         data-slot="card-art"
         className={cn(
           'mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm p-0.5',
-          token ? 'bg-black/25' : 'bg-foreground/5',
+          dark ? 'bg-black/25' : 'bg-foreground/5',
         )}
       >
         {chips.map(({ label, tone }) => (
@@ -234,17 +268,16 @@ export function TextFace({
       {full ? (
         <span
           data-slot="card-type-line"
-          className={cn(
-            classes.text,
-            'line-clamp-2 px-1 leading-tight',
-            token ? 'text-white/85' : 'text-muted-foreground',
-          )}
+          className={cn(classes.text, parts.type, 'line-clamp-2 leading-tight', dark && 'text-white/85')}
         >
           {token ? `Token ${typeLine(object)}` : typeLine(object)}
         </span>
       ) : null}
       {full && keywords !== null ? (
-        <span data-slot="card-keywords" className={cn(classes.text, 'line-clamp-2 px-1 leading-tight')}>
+        <span
+          data-slot="card-keywords"
+          className={cn(classes.text, parts.rules, 'line-clamp-2 leading-tight')}
+        >
           {keywords}
         </span>
       ) : null}
@@ -256,12 +289,10 @@ export function TextFace({
           data-modified={modified ?? undefined}
           className={cn(
             classes.name,
-            'self-end rounded-tl-md px-1.5 leading-snug font-bold text-background tabular-nums',
-            modified === 'up'
-              ? 'bg-support-verified'
-              : modified === 'down'
-                ? 'bg-destructive'
-                : 'bg-foreground',
+            parts.stat,
+            'leading-snug font-bold tabular-nums',
+            modified === 'up' && 'border-background bg-support-verified text-background',
+            modified === 'down' && 'border-background bg-destructive text-background',
           )}
         >
           {pt ?? loyalty}
