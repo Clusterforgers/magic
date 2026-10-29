@@ -19,6 +19,7 @@ import type {
 } from '@/protocol/generated'
 import { forecastScene, withBlockForecast } from './combatScene'
 import { assignDamage } from './damagePrompt'
+import { ANNOUNCE_PROMPTS } from './announcePrompts'
 import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
@@ -441,6 +442,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'commander-return': commanderReturn,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
+  ...ANNOUNCE_PROMPTS,
 }
 
 /**

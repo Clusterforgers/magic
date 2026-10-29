@@ -73,6 +73,10 @@ export function countsText(counts: Counts): string {
   return [`${counts.verified} of ${counts.total} verified`, ...parts].join(', ')
 }
 
+/** True when a check found a card the game does not run whole (partial, manual, stale or unplayable). */
+export const hasUnvalidated = (counts: Counts): boolean =>
+  counts.partial + counts.manual + counts.stale + counts.unplayable > 0
+
 /**
  * The line under a deck's name that explains its check state: how many cards need manual steps, what blocks it, or that
  * it was never checked. A verified deck, and one that changed since its check, need no line: its marker says so.

@@ -4,20 +4,32 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import type { PendingDecision } from '@/play/store'
 import type { Answer, DecisionKind, ObjectId } from '@/protocol/generated'
 import { decisionName } from '../turnText'
+import type { DecisionName } from '../turnText'
 import { ownDecision } from './ownDecision'
 import { PromptContext } from './PromptContext'
 import type { PromptApi, Selection } from './PromptContext'
+import { UnsupportedPrompt } from './PromptLayout'
 import { clockKind } from './clockText'
 import { PROMPTS } from './registry'
 import { ResponseClock } from './ResponseClock'
 
 const NOTHING: ReadonlySet<ObjectId> = new Set()
 
-/** Draws the prompt for `kind` with that kind's options. */
+/**
+ * The name of a decision kind: the key it came with, which is a kind of `PROMPTS` unless the server is newer than this
+ * client (a kind this version does not know).
+ */
+function kindName(kind: DecisionKind): string {
+  const [key] = Object.keys(kind)
+  return key !== undefined && Object.hasOwn(PROMPTS, key) ? decisionName(kind) : (key ?? 'Unknown')
+}
+
+/** Draws the prompt for `kind` with that kind's options; a kind that is not known gets the generic prompt. */
 function PromptFor({ kind }: { kind: DecisionKind }) {
-  const name = decisionName(kind)
+  const name = kindName(kind)
+  if (!Object.hasOwn(PROMPTS, name)) return <UnsupportedPrompt />
   // `PROMPTS` pairs each name with a component of that kind's options; a lookup by a runtime key cannot keep the pairing.
-  const Prompt = PROMPTS[name] as ComponentType<{ options: unknown }>
+  const Prompt = PROMPTS[name as DecisionName] as ComponentType<{ options: unknown }>
   return <Prompt options={(kind as Record<string, unknown>)[name]} />
 }
 
@@ -55,7 +67,7 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
     [session, id],
   )
 
-  const name = decisionName(decision.kind)
+  const name = kindName(decision.kind)
   const api = useMemo<PromptApi>(
     () => ({ id, name, decision, answer, selection }),
     [id, name, decision, answer, selection],

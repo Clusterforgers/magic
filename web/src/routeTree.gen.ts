@@ -18,12 +18,15 @@ import { Route as PreconsRouteImport } from './routes/precons'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
+import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidated'
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
 import { Route as DevTableRouteImport } from './routes/dev.table'
+import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
+import { Route as DecksDeckIdUnvalidatedRouteImport } from './routes/decks_.$deckId_.unvalidated'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +73,11 @@ const DecksDeckIdRoute = DecksDeckIdRouteImport.update({
   path: '/decks/$deckId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DecksUnvalidatedRoute = DecksUnvalidatedRouteImport.update({
+  id: '/decks_/unvalidated',
+  path: '/decks/unvalidated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevBuilderRoute = DevBuilderRouteImport.update({
   id: '/dev/builder',
   path: '/dev/builder',
@@ -90,6 +98,11 @@ const DevTableRoute = DevTableRouteImport.update({
   path: '/dev/table',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevUnvalidatedRoute = DevUnvalidatedRouteImport.update({
+  id: '/dev/unvalidated',
+  path: '/dev/unvalidated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GameGameIdRoute = GameGameIdRouteImport.update({
   id: '/game/$gameId',
   path: '/game/$gameId',
@@ -98,6 +111,11 @@ const GameGameIdRoute = GameGameIdRouteImport.update({
 const JoinCodeRoute = JoinCodeRouteImport.update({
   id: '/join/$code',
   path: '/join/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DecksDeckIdUnvalidatedRoute = DecksDeckIdUnvalidatedRouteImport.update({
+  id: '/decks_/$deckId_/unvalidated',
+  path: '/decks/$deckId/unvalidated',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -111,12 +129,15 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
+  '/decks/unvalidated': typeof DecksUnvalidatedRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/table': typeof DevTableRoute
+  '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
+  '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -128,12 +149,15 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
+  '/decks/unvalidated': typeof DecksUnvalidatedRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/table': typeof DevTableRoute
+  '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
+  '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -146,12 +170,15 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
+  '/decks_/unvalidated': typeof DecksUnvalidatedRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/table': typeof DevTableRoute
+  '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
+  '/decks_/$deckId_/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -165,12 +192,15 @@ export interface FileRouteTypes {
     | '/register'
     | '/settings'
     | '/decks/$deckId'
+    | '/decks/unvalidated'
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/table'
+    | '/dev/unvalidated'
     | '/game/$gameId'
     | '/join/$code'
+    | '/decks/$deckId/unvalidated'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -182,12 +212,15 @@ export interface FileRouteTypes {
     | '/register'
     | '/settings'
     | '/decks/$deckId'
+    | '/decks/unvalidated'
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/table'
+    | '/dev/unvalidated'
     | '/game/$gameId'
     | '/join/$code'
+    | '/decks/$deckId/unvalidated'
   id:
     | '__root__'
     | '/'
@@ -199,12 +232,15 @@ export interface FileRouteTypes {
     | '/register'
     | '/settings'
     | '/decks_/$deckId'
+    | '/decks_/unvalidated'
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
     | '/dev/table'
+    | '/dev/unvalidated'
     | '/game/$gameId'
     | '/join/$code'
+    | '/decks_/$deckId_/unvalidated'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,12 +253,15 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   SettingsRoute: typeof SettingsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
+  DecksUnvalidatedRoute: typeof DecksUnvalidatedRoute
   DevBuilderRoute: typeof DevBuilderRoute
   DevLobbyRoute: typeof DevLobbyRoute
   DevPreconsRoute: typeof DevPreconsRoute
   DevTableRoute: typeof DevTableRoute
+  DevUnvalidatedRoute: typeof DevUnvalidatedRoute
   GameGameIdRoute: typeof GameGameIdRoute
   JoinCodeRoute: typeof JoinCodeRoute
+  DecksDeckIdUnvalidatedRoute: typeof DecksDeckIdUnvalidatedRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -290,6 +329,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DecksDeckIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/decks_/unvalidated': {
+      id: '/decks_/unvalidated'
+      path: '/decks/unvalidated'
+      fullPath: '/decks/unvalidated'
+      preLoaderRoute: typeof DecksUnvalidatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/builder': {
       id: '/dev/builder'
       path: '/dev/builder'
@@ -318,6 +364,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevTableRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/unvalidated': {
+      id: '/dev/unvalidated'
+      path: '/dev/unvalidated'
+      fullPath: '/dev/unvalidated'
+      preLoaderRoute: typeof DevUnvalidatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/game/$gameId': {
       id: '/game/$gameId'
       path: '/game/$gameId'
@@ -330,6 +383,13 @@ declare module '@tanstack/react-router' {
       path: '/join/$code'
       fullPath: '/join/$code'
       preLoaderRoute: typeof JoinCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decks_/$deckId_/unvalidated': {
+      id: '/decks_/$deckId_/unvalidated'
+      path: '/decks/$deckId/unvalidated'
+      fullPath: '/decks/$deckId/unvalidated'
+      preLoaderRoute: typeof DecksDeckIdUnvalidatedRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -345,12 +405,15 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   SettingsRoute: SettingsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
+  DecksUnvalidatedRoute: DecksUnvalidatedRoute,
   DevBuilderRoute: DevBuilderRoute,
   DevLobbyRoute: DevLobbyRoute,
   DevPreconsRoute: DevPreconsRoute,
   DevTableRoute: DevTableRoute,
+  DevUnvalidatedRoute: DevUnvalidatedRoute,
   GameGameIdRoute: GameGameIdRoute,
   JoinCodeRoute: JoinCodeRoute,
+  DecksDeckIdUnvalidatedRoute: DecksDeckIdUnvalidatedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
