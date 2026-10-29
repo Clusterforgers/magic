@@ -1288,6 +1288,12 @@ fn noun_word(which: [bool; 5], plural: bool) -> Option<String> {
     })
 }
 
+/// The subtypes a predicate names as the noun, not the list of types a creature group says after it ("that's a Goblin or a
+/// Warrior").
+fn noun_subtypes<'a>(pred: &'a Pred, all: &[Pred], form: Form) -> Option<Vec<&'a str>> {
+    subtype_list(pred).filter(|_| !super::t17b_attached::is_kinds(pred, all, form))
+}
+
 /// The subtype names of a subtype or of an `AnyOf` of several.
 fn subtype_list(pred: &Pred) -> Option<Vec<&str>> {
     let list = match pred {
@@ -1395,9 +1401,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             } else {
                 zone = Some(place);
             }
-        } else if super::t17b_attached::is_kinds(pred, preds, form) {
-            suffixes.push(suffix_text(pred, form)?);
-        } else if let Some(listed) = subtype_list(pred) {
+        } else if let Some(listed) = noun_subtypes(pred, preds, form) {
             if !subtypes.is_empty() {
                 return None;
             }

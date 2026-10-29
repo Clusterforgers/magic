@@ -1019,7 +1019,7 @@ fn attachment(name: &str, kind: &str) -> Arc<CardDefinition> {
 /// (0 the card, 1 the other, none for unattached) each attachment is on.
 fn attached_board(
     card: Arc<CardDefinition>,
-    attachments: Vec<(Arc<CardDefinition>, Option<usize>)>,
+    attachments: &[(Arc<CardDefinition>, Option<usize>)],
 ) -> GameState {
     let mut board = vec![card, creature("Other", 2, 2)];
     board.extend(attachments.iter().map(|(attached, _)| Arc::clone(attached)));
@@ -1051,12 +1051,12 @@ fn a_count_of_auras_attached_to_the_card_follows_the_board(
     #[case] hosts: &[Option<usize>],
     #[case] expected: (i32, i32),
 ) {
-    let attachments = hosts
+    let attachments: Vec<_> = hosts
         .iter()
         .enumerate()
         .map(|(at, host)| (aura(&format!("Aura {at}")), *host))
         .collect();
-    let game = attached_board(dancer(FOR_EACH_AURA), attachments);
+    let game = attached_board(dancer(FOR_EACH_AURA), &attachments);
     assert_eq!(pump(&game, "Dancer"), Some(expected));
 }
 
@@ -1074,7 +1074,7 @@ fn a_group_named_by_its_attachment_is_the_creatures_that_hold_one(
     #[case] card: (i32, i32),
     #[case] other: (i32, i32),
 ) {
-    let attachments = attached
+    let attachments: Vec<_> = attached
         .iter()
         .enumerate()
         .map(|(at, (kind, host))| {
@@ -1086,7 +1086,7 @@ fn a_group_named_by_its_attachment_is_the_creatures_that_hold_one(
             (permanent, *host)
         })
         .collect();
-    let game = attached_board(dancer(ENCHANTED_GROUP), attachments);
+    let game = attached_board(dancer(ENCHANTED_GROUP), &attachments);
     assert_eq!(pump(&game, "Dancer"), Some(card));
     assert_eq!(pump(&game, "Other"), Some(other));
 }

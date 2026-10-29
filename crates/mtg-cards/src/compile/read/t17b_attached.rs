@@ -106,10 +106,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
                     _ => None,
                 })
                 .collect::<Option<_>>()?;
-            let (last, rest) = names.split_last()?;
+            let (tail, rest) = names.split_last()?;
             Some(match rest {
-                [one] => format!("that's {one} or {last}"),
-                _ => format!("that's {}, or {last}", rest.join(", ")),
+                [one] => format!("that's {one} or {tail}"),
+                _ => format!("that's {}, or {tail}", rest.join(", ")),
             })
         }
         _ => None,

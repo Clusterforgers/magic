@@ -26,17 +26,17 @@ fn auras_on(host: &str) -> String {
 #[rstest]
 #[case::enchanted_creatures_you_control(
     "Enchanted creatures you control get +2/+2.",
-    &format!(r#"{CREATURE},{AURA},{YOURS}"#),
+    &format!("{CREATURE},{AURA},{YOURS}"),
     &plus("2", "2")
 )]
 #[case::enchanted_creatures_with_a_keyword(
     "Enchanted creatures you control have shroud.",
-    &format!(r#"{CREATURE},{AURA},{YOURS}"#),
+    &format!("{CREATURE},{AURA},{YOURS}"),
     r#"{"AddKeyword":"Shroud"}"#
 )]
 #[case::equipped_creatures(
     "Equipped creatures you control get +1/+1.",
-    &format!(r#"{CREATURE},{EQUIPMENT},{YOURS}"#),
+    &format!("{CREATURE},{EQUIPMENT},{YOURS}"),
     &plus("1", "1")
 )]
 #[case::equipped_warriors(
@@ -46,7 +46,7 @@ fn auras_on(host: &str) -> String {
 )]
 #[case::every_enchanted_creature(
     "Each enchanted creature you control gets +1/+1.",
-    &format!(r#"{CREATURE},{AURA},{YOURS}"#),
+    &format!("{CREATURE},{AURA},{YOURS}"),
     &plus("1", "1")
 )]
 fn a_group_named_by_its_attachment(
