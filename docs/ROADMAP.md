@@ -37,7 +37,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
-- Playable first: "Views complete" (v1), then the web in this order, Commander first because it is the format the owner plays: card images (a1, a2), Commander at the table (k1), the table states, the manual-action menu, the prompts for the decision kinds, Commander in the builder (k2), the playtest polish (f1b), a four-seat Commander game in Playwright (k3), the deploy (d1) and the not-validated list (f1a). Coverage rounds and the Gate run beside it.
+- Playable first: "Views complete" (v1), then the web in this order, Commander first because it is the format the owner plays: card images (a1, a2), Commander at the table (k1), the table states, the manual-action menu, the prompts for the decision kinds, Commander in the builder (k2), the playtest polish (f1b), a four-seat Commander game in Playwright (k3), the deploy (d1) and the not-validated list. Coverage rounds and the Gate run beside it.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
 
 ## Done
@@ -50,9 +50,10 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6, in real browsers (`web/e2e/precon-game.spec.ts`).
 - Web: the game UI with prompts for all eight decision kinds, manual payment that the engine always accepts (several mana, sources that cost mana) and the number prompt for X with its total cost, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Popular-card edges: a delayed trigger reads the stats of its resolution's targets as they last were (Mana Drain), and no token is made for a player who loses in the same batch (CR 800.4a).
-- Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand, and one-click play.
+- Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand (each unread clause quoted beside its reason), and one-click play.
 - Table readability: the hand keeps every card's name and cost readable (one row down to 68 px, then rows that show each card's top, scrolling only past that), the turn band hangs above the prompt sheet, and the log folds a round of passes into one line of colour dots.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
+- Not-validated list: `/decks/unvalidated` and `/decks/$deckId/unvalidated` list the cards the game does not run whole with each unread clause quoted beside its reason, the decks that hold the card, a filter by state and a copyable text (`docs/web.md`).
 - Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
 - Changes of control: targets, groups, the enchanted permanent, one target for each opponent with the untap and keywords after it, an untap before the taking, a base size or a creature type for the turn, each player taking back what they own, exchanges of control and a targeting spell or ability countered unless its controller pays (`docs/engine.md`, `docs/cards-dsl.md`).
 - Abilities and characteristics: one ability reader, CR 613 in one pass, `GameRule` effects, state triggers and abilities that work from hands, graveyards, exile and the stack.
@@ -363,11 +364,11 @@ The server is settled first, then the web is built once against the final types.
 
 ## M7 Product
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
-- [~] (w1b) (f1a-unvalidated-list) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
 - [ ] (w2h) A seat that reloads or reconnects gets the game log back (`play/store.ts`): after a `Snapshot` the log reads "Nothing has happened yet."
-- [~] (f1a) (f1a-unvalidated-list) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
+- [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
+- [ ] (f1d) The builder links its check bar to `/decks/$deckId/unvalidated` (`docs/web.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
