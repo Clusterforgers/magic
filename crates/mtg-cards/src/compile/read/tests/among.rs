@@ -92,9 +92,6 @@ fn the_wordings_read_in_an_activated_ability() {
 }
 
 #[rstest]
-#[case::the_rest_in_the_hand(
-    "Look at the top five cards of your library. You may reveal a creature card from among them and put it into your hand. Put the rest into your hand."
-)]
 #[case::the_rest_on_top(
     "Look at the top five cards of your library. You may reveal a creature card from among them and put it into your hand. Put the rest on top of your library in any order."
 )]
@@ -103,9 +100,6 @@ fn the_wordings_read_in_an_activated_ability() {
 )]
 #[case::no_rest(
     "Look at the top five cards of your library. You may reveal a creature card from among them and put it into your hand."
-)]
-#[case::reveal_to_the_battlefield(
-    "Look at the top five cards of your library. You may reveal a creature card from among them and put it onto the battlefield. Put the rest into your graveyard."
 )]
 #[case::an_amount_that_is_not_a_number(
     "Look at the top X cards of your library. You may reveal a creature card from among them and put it into your hand. Put the rest on the bottom of your library in a random order."

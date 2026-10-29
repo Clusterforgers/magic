@@ -132,6 +132,7 @@ Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
+Belisarius Cawl
 Bespoke Battlewagon
 Big Mother Mouser
 Bighorner Rancher
@@ -175,7 +176,9 @@ Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
 Borderland Behemoth
+Boromir, Gondor's Hope
 Bosh, Iron Golem
+Bounty of Skemfar
 Brain Freeze
 Brainstorm
 Branchblight Stalker
@@ -576,6 +579,7 @@ Gemrazer
 General's Enforcer
 Generous Ent
 Genesis Storm
+Genesis Wave
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
@@ -684,6 +688,7 @@ Herald of the Host
 Hero of Bladehold
 Hero of Precinct One
 Hero's Heirloom
+Heroes' Podium
 Heronblade Elite
 Hexavus
 Hidden Dragonslayer
@@ -843,6 +848,7 @@ Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
 Loki, the Deceiver
+Loot, Exuberant Explorer
 Looter il-Kor
 Loran of the Third Path
 Lord of Extinction
@@ -1608,6 +1614,7 @@ Vow of Malice
 Vow of Torment
 Vow of Wildness
 Vulshok Splitter
+Wakanda Forever!
 Walking Ballista
 Wanderbrine Preacher
 Wandertale Mentor
