@@ -189,6 +189,7 @@ Brigid's Command
 Brimaz, Blight of Oreskos
 Brimstone Vandal
 Brion Stoutarm
+Brokers Hideout
 Bronzeplate Boar
 Broodbirth Viper
 Broodcaller Scourge
@@ -863,6 +864,7 @@ Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
 Machine God's Effigy
+Maestros Theater
 Mage Hunter
 Magistrate's Scepter
 Magmatic Insight
@@ -1001,6 +1003,7 @@ Oath of Gideon
 Oath of Jace
 Oathsworn Vampire
 Ob Nixilis, the Ascended
+Obscura Storefront
 Obscuring Haze
 Octomancer
 Octopus Umbra
@@ -1184,6 +1187,7 @@ Rishkar, Peema Renegade
 Rising Miasma
 Rite of Replication
 River of Tears
+Riveteers Overlook
 Riveteers Requisitioner
 Rob the Archives
 Rocksteady, Mutant Marauder

@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 95] = [
+const TEMPLATES: [Template; 96] = [
     super::w11b_phase::w11b_untap_then_phase_out,
     super::w7e_phase::w7e_phased_and_protected,
     super::w7e_phase::w7e_protected,
@@ -64,6 +64,7 @@ const TEMPLATES: [Template; 95] = [
     super::w2d_villainous::w2d_villainous,
     super::repeat::each_player,
     super::spent::sacrifice_unless,
+    super::w20b_reflexive::w20b_counter_then_fight,
     super::actions::fight,
     super::actions::bite,
     cast::free_cast_from_hand,
@@ -223,6 +224,11 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         return true;
     }
     if r.attempt(|r| payments::after_may(r, effects)).is_some() {
+        return true;
+    }
+    if r.attempt(|r| super::w20b_reflexive::w20b_when_you_do(r, effects))
+        .is_some()
+    {
         return true;
     }
     if r.attempt(|r| attackers::does_the_same(r, effects))

@@ -434,6 +434,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     graveyard_wordings(ability, &mut texts);
     produced_wordings(&mut texts);
     super::w15b_time::w15b_wordings(ability, &mut texts);
+    super::w20b_reflexive::w20b_wordings(ability, &mut texts);
     texts
 }
 
