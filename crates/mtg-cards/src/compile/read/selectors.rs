@@ -1604,7 +1604,7 @@ fn another(mut selector: Selector) -> Selector {
     selector
 }
 
-fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
+pub(super) fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
     if r.words("any target") {
         return Some(plain(Targetable::AnyTarget));
     }

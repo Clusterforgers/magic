@@ -1,4 +1,4 @@
-//! Goal: the checker repairs the slips of a model that the file and the printed text settle (ids and names of the card, the faces of the card, an unusable Manual span, an ability without effects, the half of a token's size the text prints, a target index shifted as a whole, `Triggering` for the one unused target), leaves every slip with more than one reading alone, and never lets a repair turn a wrong proposal into an accepted one. The rules are trimmed from stored proposals of the local model.
+//! Goal: the checker repairs the slips of a model that the file and the printed text settle (ids and names of the card, the faces of the card, an unusable Manual span, an ability without effects, the half of a token's size the text prints, a target index shifted as a whole, `Triggering` for the one unused target, a target declared from the printed phrase, an invented `X`), leaves every slip with more than one reading alone, and never lets a repair turn a wrong proposal into an accepted one. The rules are trimmed from stored proposals of the local model.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -12,7 +12,8 @@ use mtg_cards::support::{PrintedCard, PrintedFace};
 use rstest::rstest;
 
 use RepairClass::{
-    Faces, Identity, ManualSpan, NoEffect, TargetIndex, TokenSize, TriggeringTarget,
+    Faces, Identity, InventedX, ManualSpan, NoEffect, TargetDeclared, TargetIndex, TargetUnused,
+    TokenSize, TriggeringTarget,
 };
 
 /// A card as imported: the faces are `(name, type line, oracle text)`.
@@ -301,7 +302,7 @@ fn knights() -> PrintedCard {
     speaker(),
     TRIGGERED_WITH_UNUSED_TARGET,
     TriggeringTarget,
-    "never used"
+    ""
 )]
 #[case::targets_of_a_mode(bolt(), MODAL_SHIFTED, TargetIndex, "")]
 #[case::a_toughness_the_text_never_prints(
@@ -341,4 +342,43 @@ fn a_slip_with_no_single_reading_is_left_alone(
         "{}",
         report.render(false)
     );
+}
+
+const BOLT_UNDECLARED: &str = r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}]}]}"#;
+const BOLT_UNDECLARED_FOUR: &str = r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"to":{"Target":0},"amount":4}}]}}]}]}"#;
+const BOLT_X: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}]}]}"#;
+const BOLT_UNUSED_TARGET: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":"You","amount":3}}]}}]}]}"#;
+
+#[rstest]
+#[case::undeclared_target(BOLT_UNDECLARED, TargetDeclared)]
+#[case::invented_x(BOLT_X, InventedX)]
+fn a_repaired_proposal_is_judged_like_any_other(#[case] rules: &str, #[case] class: RepairClass) {
+    let report = judge(&bolt(), rules);
+    assert_eq!(classes(&report), [class]);
+    assert_eq!(
+        report.verdict(),
+        Verdict::Accepted,
+        "{}",
+        report.render(false)
+    );
+}
+
+#[test]
+fn a_repair_of_the_target_never_turns_a_wrong_amount_into_an_accepted_card() {
+    let report = judge(&bolt(), BOLT_UNDECLARED_FOUR);
+    assert_eq!(classes(&report), [TargetDeclared]);
+    assert_eq!(
+        report.verdict(),
+        Verdict::Mismatch,
+        "{}",
+        report.render(false)
+    );
+}
+
+#[test]
+fn a_target_the_text_names_is_not_dropped_for_being_unused() {
+    let report = judge(&bolt(), BOLT_UNUSED_TARGET);
+    assert!(!classes(&report).contains(&TargetUnused));
+    assert_eq!(report.verdict(), Verdict::Invalid);
+    assert!(has_problem(&report, "is never used"));
 }

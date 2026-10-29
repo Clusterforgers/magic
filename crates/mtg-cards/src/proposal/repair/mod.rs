@@ -5,17 +5,24 @@
 //! index shifted as a whole) or removes what carries no meaning (a `Manual` with an unusable span, an ability with
 //! no effect). The read-back against the printed text stays the only judge, so a wrong repair ends as a mismatch.
 
+mod controller;
+mod declare;
 mod effectless;
 mod faces;
 mod manual;
 mod targets;
+#[cfg(test)]
+mod tests;
+mod text;
 mod tokens;
+mod unused;
+mod x_cost;
 
 use std::fmt;
 
 use serde_json::Value;
 
-use crate::support::PrintedCard;
+use crate::support::{PrintedCard, PrintedFace};
 
 /// The class of slip a repair fixes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -34,6 +41,14 @@ pub enum RepairClass {
     TargetIndex,
     /// `Triggering` where the ability has a target no effect uses.
     TriggeringTarget,
+    /// A target the effects use and the ability does not declare.
+    TargetDeclared,
+    /// A declared target no effect uses.
+    TargetUnused,
+    /// `ControllerOf` around a player where a player is meant.
+    ControllerOfPlayer,
+    /// An `X` where the card prints none.
+    InventedX,
 }
 
 impl RepairClass {
@@ -47,8 +62,27 @@ impl RepairClass {
             RepairClass::TokenSize => "token size from the text",
             RepairClass::TargetIndex => "shifted target index",
             RepairClass::TriggeringTarget => "Triggering for the target",
+            RepairClass::TargetDeclared => "target declared from the text",
+            RepairClass::TargetUnused => "target no effect uses",
+            RepairClass::ControllerOfPlayer => "controller of a player",
+            RepairClass::InventedX => "X the card does not have",
         }
     }
+}
+
+/// The abilities that have effects and take targets.
+pub(super) const EFFECT_ABILITIES: [&str; 4] = ["Spell", "Triggered", "Activated", "Loyalty"];
+
+/// Where an ability stands in its face: what a repair reads the printed words of it with.
+pub(super) struct Site<'a> {
+    /// The printed face.
+    pub face: &'a PrintedFace,
+    /// How many abilities of the same kind come before it in the face.
+    pub nth: usize,
+    /// How many abilities of that kind the face has.
+    pub count: usize,
+    /// Where it is in the file, as a path.
+    pub at: &'a str,
 }
 
 /// One thing the checker fixed in a proposal before judging it.
@@ -82,17 +116,32 @@ pub(super) fn repair(value: &mut Value, printed: &PrintedCard) -> Vec<Repair> {
         let Some(abilities) = face.get_mut("abilities").and_then(Value::as_array_mut) else {
             continue;
         };
-        let text = printed
-            .faces
-            .get(index)
-            .map_or("", |shown| shown.oracle_text.as_str());
+        let shown = printed.faces.get(index);
+        let text = shown.map_or("", |shown| shown.oracle_text.as_str());
         let at = format!("faces[{index}]");
         effectless::repair(abilities, &at, &mut repairs);
         manual::repair(abilities, text, &at, &mut repairs);
+        let kinds: Vec<String> = abilities
+            .iter_mut()
+            .map(|ability| body_of(ability).map_or(String::new(), |(name, _)| name.to_owned()))
+            .collect();
         for (n, ability) in abilities.iter_mut().enumerate() {
             let at = format!("{at}.abilities[{n}]");
             tokens::repair(ability, text, &at, &mut repairs);
             targets::repair(ability, &at, &mut repairs);
+            controller::repair(ability, &at, &mut repairs);
+            if let Some(face) = shown {
+                let same = |name: &String| *name == kinds[n];
+                let site = Site {
+                    face,
+                    nth: kinds[..n].iter().filter(|name| same(name)).count(),
+                    count: kinds.iter().filter(|name| same(name)).count(),
+                    at: &at,
+                };
+                declare::repair(ability, &site, &mut repairs);
+                unused::repair(ability, &site, &mut repairs);
+                x_cost::repair(ability, &site, &mut repairs);
+            }
         }
     }
     repairs
