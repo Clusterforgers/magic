@@ -920,6 +920,13 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// "Cast this spell only ...": the condition is judged for the caster as the spell is announced.
+    fn w17c_cast_only(&mut self, condition: &Condition) {
+        self.uses("Ability", "CastOnly");
+        self.scope = Scope::new(&[], false);
+        self.at("condition", |w| w.condition(condition));
+    }
+
     /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
     /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
     fn w14c_alternative_cost(&mut self, cost: &Cost) {
@@ -2828,6 +2835,7 @@ impl Walker<'_> {
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
+            Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {

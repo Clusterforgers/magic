@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 39] = [
+const TEMPLATES: [Template; 40] = [
     super::w13b_mill_rad::w13b_tapped_for_counters,
     super::w9d_exert::w9d_exert,
     super::c11b_once::c11b_once,
@@ -82,6 +82,7 @@ const TEMPLATES: [Template; 39] = [
     free_cast,
     super::w14c_alt_costs::w14c_alt_cost,
     super::w14c_block_capacity::w14c_blocks_additional,
+    super::w17c_cast_only::w17c_cast_only,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -1173,6 +1174,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
     let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
     group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
+    group.extend(super::w17c_cast_only::w17c_cast_only_texts(ability));
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {
