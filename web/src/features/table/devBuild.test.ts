@@ -1,4 +1,4 @@
-// Goal: the production build contains nothing of the dev table and dev lobby fixtures (their marker text, card names and seat names are in no output file), while a build with DEV on does contain them, so the check could fail.
+// Goal: the production build contains nothing of the dev table, dev lobby and dev precons fixtures (their marker text, card names and seat names are in no output file), while a build with DEV on does contain them, so the check could fail.
 import { execFile } from 'node:child_process'
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -6,6 +6,7 @@ import { join } from 'node:path'
 import { promisify } from 'node:util'
 import { afterAll, describe, expect, it } from 'vitest'
 import { LOBBY_FIXTURE_MARKER } from '@/features/game/dev/lobbyGame'
+import { PRECONS_FIXTURE_MARKER } from '@/features/precons/dev/fixture'
 import { COMMANDERS } from './dev/cards'
 import { FIXTURE_MARKER } from './dev/fixture'
 
@@ -36,6 +37,7 @@ const FIXTURE_TRACES = [
   COMMANDERS[0].name,
   'Sakashima of a Thousand Faces',
   LOBBY_FIXTURE_MARKER,
+  PRECONS_FIXTURE_MARKER,
   'Wolfeschlegelsteinhausenbergerdo',
 ]
 const filesWith = (files: Map<string, string>, text: string): string[] =>
@@ -69,5 +71,7 @@ describe('the dev table route in a build', () => {
     expect(filesWith(development, COMMANDERS[0].name).length).toBeGreaterThan(0)
     const [lobby] = filesWith(development, LOBBY_FIXTURE_MARKER)
     expect(lobby).toMatch(/DevLobbyRoute/)
+    const [precons] = filesWith(development, PRECONS_FIXTURE_MARKER)
+    expect(precons).toMatch(/DevPreconsRoute/)
   }, 90_000)
 })

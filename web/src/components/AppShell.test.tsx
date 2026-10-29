@@ -45,19 +45,25 @@ describe('a notice another page left behind', () => {
 })
 
 describe('the main navigation', () => {
-  it('has the brand, Play and Create for a guest, and no Decks and no My games', async () => {
+  it('has the brand, Play, Precons and Create for a guest, and no Decks and no My games', async () => {
     await open()
     expect(screen.getByRole('link', { name: 'Magic' })).toHaveAttribute('href', '/')
     const links = within(mainNav()).getAllByRole('link')
-    expect(links.map((link) => link.textContent)).toEqual(['Play', 'Create'])
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/new'])
+    expect(links.map((link) => link.textContent)).toEqual(['Play', 'Precons', 'Create'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/precons', '/new'])
   })
 
-  it('adds Decks and My games, between Play and Create, for an account', async () => {
+  it('adds Decks and My games, between Precons and Create, for an account', async () => {
     await open('/', true)
     const links = within(mainNav()).getAllByRole('link')
-    expect(links.map((link) => link.textContent)).toEqual(['Play', 'Decks', 'My games', 'Create'])
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/decks', '/games', '/new'])
+    expect(links.map((link) => link.textContent)).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Create'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      '/',
+      '/precons',
+      '/decks',
+      '/games',
+      '/new',
+    ])
   })
 
   it('marks the page you are on, and only that one', async () => {
