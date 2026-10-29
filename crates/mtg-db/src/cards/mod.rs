@@ -1,5 +1,6 @@
 //! Card queries: lookup by id or name, fuzzy suggestions, filtered search and the name index.
 
+mod images;
 mod lookup;
 mod printings;
 mod search;
@@ -10,6 +11,7 @@ use mtg_import::resolve::CardIndex;
 use sqlx::PgPool;
 use uuid::Uuid;
 
+pub use images::{PrintingPictures, TokenPictures};
 pub use lookup::{MAX_SUGGESTIONS, NameSuggestion};
 pub use search::{
     CardPage, CardSearch, ColorFilter, ColorMatch, DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE, Page, SortKey,

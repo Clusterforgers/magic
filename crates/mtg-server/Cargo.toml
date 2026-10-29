@@ -17,12 +17,13 @@ argon2.workspace = true
 axum.workspace = true
 chrono.workspace = true
 getrandom.workspace = true
+reqwest.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
 sqlx.workspace = true
 thiserror.workspace = true
-tokio = { workspace = true, features = ["net", "signal"] }
+tokio = { workspace = true, features = ["fs", "net", "signal"] }
 tower-http.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
@@ -35,5 +36,6 @@ workspace = true
 mtg-testkit.workspace = true
 futures-util.workspace = true
 rstest.workspace = true
+tempfile.workspace = true
 tokio = { workspace = true, features = ["io-util", "test-util"] }
 tokio-tungstenite.workspace = true

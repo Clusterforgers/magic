@@ -38,6 +38,7 @@ use crate::config::{Retention, ServerConfig};
 use crate::demo::{self, DemoDeck};
 use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
+use crate::images::Warmer;
 use crate::join_code::JoinCode;
 use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
@@ -377,6 +378,11 @@ impl Registry {
         }
     }
 
+    /// What starts the fetching of a game's pictures; none without a card database.
+    pub(crate) fn warmer(&self) -> Option<Warmer> {
+        self.shared.cards.as_ref().and_then(CardSource::warmer)
+    }
+
     fn games(&self) -> MutexGuard<'_, HashMap<GameId, Entry>> {
         // Nothing here can leave the map half-updated, so a poisoned lock is still sound.
         self.shared
@@ -645,7 +651,8 @@ impl Registry {
             })
             .collect();
         records.insert(id, recipe, meta, &rows).await?;
-        let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()], false);
+        let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()], false)
+            .with_warmer(self.warmer());
         let spawned = spawn_named(
             id,
             setup,

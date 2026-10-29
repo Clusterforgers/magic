@@ -62,7 +62,7 @@ struct Search {
 
 /// The colors named by a `colors` or `identity` value: letters from WUBRG in any case, or `C` alone
 /// for colorless.
-fn colors_of(name: &str, value: &str) -> Result<ColorSet, ApiError> {
+pub(crate) fn colors_of(name: &str, value: &str) -> Result<ColorSet, ApiError> {
     let rule = || {
         invalid(format!(
             "{name} is made of the letters W, U, B, R and G, or C alone for colorless"

@@ -16,7 +16,7 @@ pub mod runs;
 pub use card_rules::{CardRulesRepo, NewRules, RuleCounts, RuleStamp, RulesVersion, StoredRules};
 pub use cards::{
     CardPage, CardRepo, CardSearch, ColorFilter, ColorMatch, IndexVersion, NameSuggestion, Page,
-    SortKey,
+    PrintingPictures, SortKey, TokenPictures,
 };
 pub use database::{Database, RowCounts};
 pub use decks::{CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck};

@@ -7,6 +7,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 
 use crate::game_id::GameId;
+use crate::images::Warmer;
 use crate::recipe::GameRecipe;
 use crate::records::{GameRecords, RecordError};
 
@@ -19,6 +20,8 @@ pub(crate) struct Recorder {
     joined: Vec<bool>,
     /// Whether the records showed the table as playing with manual cards when the recorder was made.
     manual_play: bool,
+    /// Fetches the pictures of the cards a game starts with; none without a picture cache.
+    warmer: Option<Warmer>,
 }
 
 impl Recorder {
@@ -35,6 +38,21 @@ impl Recorder {
             game,
             joined,
             manual_play,
+            warmer: None,
+        }
+    }
+
+    /// The same recorder that starts the fetching of a game's pictures with `warmer` when the game starts.
+    #[must_use]
+    pub(crate) fn with_warmer(mut self, warmer: Option<Warmer>) -> Recorder {
+        self.warmer = warmer;
+        self
+    }
+
+    /// Starts fetching the pictures of the cards with these oracle ids in the background.
+    pub(crate) fn warm_images(&self, oracle_ids: Vec<String>) {
+        if let Some(warmer) = &self.warmer {
+            warmer.warm(oracle_ids);
         }
     }
 
