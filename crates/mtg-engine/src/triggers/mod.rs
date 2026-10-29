@@ -22,6 +22,7 @@ mod queue;
 mod reads_x;
 mod state;
 mod w11c_crime;
+mod w15b_join;
 #[cfg(test)]
 mod w2e_detect;
 #[cfg(test)]

@@ -30,6 +30,7 @@ pub(super) fn zone_change(
                 your_cards(what)?
             ));
         }
+        (None, Some(ZoneKind::Exile)) => return super::w15b_time::w15b_exiled_batch_text(what),
         (Some(ZoneKind::Library), Some(ZoneKind::Graveyard)) => {
             return Some(format!(
                 "Whenever one or more {} are put into your graveyard from your library",

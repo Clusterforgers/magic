@@ -1149,6 +1149,11 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .flatten()
     {
         ability
+    } else if let Some(each) = (verb == "destroy")
+        .then(|| super::selectors::each(r))
+        .flatten()
+    {
+        each
     } else {
         object(r)?
     };

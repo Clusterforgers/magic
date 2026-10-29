@@ -377,6 +377,7 @@ mod votes;
 mod w10a_attack_limit_at;
 mod w11a_joins;
 mod w11b_phase;
+mod w15b_time;
 mod w11c_clash;
 mod w11c_crime;
 mod w11d_venture;
@@ -852,7 +853,6 @@ mod removal {
     #[case::unless_destroy("Destroy target creature unless its controller pays {3}.")]
     #[case::if_clause("Destroy target creature if it's attacking.")]
     #[case::a_second_target("Destroy target creature and target land.")]
-    #[case::each("Destroy each creature.")]
     #[case::that("Destroy target creature that was dealt damage this turn.")]
     #[case::an_ability_of_a_creature("Counter target activated ability of a creature.")]
     #[case::a_player("Destroy target player.")]
