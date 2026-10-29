@@ -142,6 +142,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (w3e) Scry and cards put back: top and bottom piles in order
 - [ ] (w3f) The payment prompt spends restricted mana by hand, read against `PayOptions.spend`
 - [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise
+- [ ] (w3i) A prompt kind the web has not built yet offers a way on (decline the optional cost, or cancel the cast), so a seat facing a gift spell such as Consumed by Greed is not left without a button
 - [ ] (w3h) The payment prompt exiles graveyard cards for delve
 - [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name yet
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
@@ -150,8 +151,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
 - [ ] (a2d) A token whose power or toughness changed keeps its picture: the token lookup matches the printed values, which the view does not carry
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
+- [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1b) The one-line pods of three and four seats draw each commander as a small picture beside the command zone chip, both of a partner pair, and pass the layout gate
 - [ ] (k1c) `/dev/table` screenshots of the four-seat Commander fixture (`commander-return` too) at 360, 390, 768, 1024, 1400, 1600x1000 and 1920 in both themes, with the layout gate and fit specs green
+- [ ] (k1d) The turn banner and the prompt bar never cover a battlefield row: at 1600x1000 in a four-seat game both lie over the opponents' permanents
+- [ ] (k1e) The divider between the commanders and the hand stays inside the hand dock (`HandDock.tsx` `hand-command`); at 1400x900 it rises about 30 px into the battlefield
 - [~] (k2) (k2-commander-builder) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
@@ -353,7 +357,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
 - [ ] (w1b) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
-- [~] (w2g) (ui-validate-1) `precon-game.spec.ts` plays out every time: two of six runs stopped in the game (a four-seat table with no decision answered for 25 s after a YesNo about Coral Atoll, and a two-seat table where no spell was cast in nine turns), neither in the create form, the chooser or the lobby
+- [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
+- [ ] (w2h) A seat that reloads or reconnects gets the game log back (`play/store.ts`): after a `Snapshot` the log reads "Nothing has happened yet."
 - [ ] (f1a) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
