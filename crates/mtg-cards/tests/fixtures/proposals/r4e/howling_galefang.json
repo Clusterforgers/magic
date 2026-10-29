@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f12c2b65-4a04-4fab-ae77-973fe5cc823d",
+  "name": "Howling Galefang",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Howling Galefang",
+      "oracle_fingerprint": "1ee3741ce9bfb5612947d208c6d3b36e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 10, "end": 91 }
+          }
+        }
+      ]
+    }
+  ]
+}

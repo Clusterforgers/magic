@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c664df64-0103-462b-a0f8-c483b152974a",
+  "name": "Bandage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bandage",
+      "oracle_fingerprint": "cfbb566ad6bb176fae40c1e59fd82423",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

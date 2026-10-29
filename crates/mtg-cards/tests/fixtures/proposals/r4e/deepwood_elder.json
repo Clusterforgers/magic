@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{X}{G}{G}"},"Tap",{"Discard":{}}],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"AddSubtype":"Forest"}]}}],"targets":[{"what":{"Object":[{"Type":"Land"}]},"bounds":{"min":{"Stat":{"of":"This","stat":"Power"} }}}]}}]} ]}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "bf5ceba2-9def-4ff4-9291-740ca90c1c4d",
+  "name": "Silkenfist Fighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silkenfist Fighter",
+      "oracle_fingerprint": "7bdbcf4ae4e0cd6e6c0ba5fd76da414b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

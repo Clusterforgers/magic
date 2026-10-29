@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1733777d-87fe-4975-b099-1ff803a721e8",
+  "name": "Unstoppable Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstoppable Ogre",
+      "oracle_fingerprint": "6036e27a33b7ce99796f35f181fc6128",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

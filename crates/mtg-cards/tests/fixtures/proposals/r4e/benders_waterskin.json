@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3bc46467-323f-4cbf-9d0a-f3d2ae3c3a34",
+  "name": "Bender's Waterskin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bender's Waterskin",
+      "oracle_fingerprint": "cabb8744577e91f373b584e96ecbe57d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 0, "end": 58 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

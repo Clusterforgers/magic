@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b1e6921e-e460-4e58-82b0-d98ee31c279d",
+  "name": "Accursed Centaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Accursed Centaur",
+      "oracle_fingerprint": "1fbcffa3c95ec6ff1a27aa5f5ef0a060",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

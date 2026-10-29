@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0bdebad7-a05e-439a-b5a9-241a2d09f943",
+  "name": "Riverguard's Reflexes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riverguard's Reflexes",
+      "oracle_fingerprint": "1903b4d5d9d232d1ff3548d7432d7dc0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

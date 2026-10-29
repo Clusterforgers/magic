@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Choose":{"as":"chosen","from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"count":{}}},{"Move":{"to":{"Library":{"place":"Top"}},"what":{"Bound":"chosen"}}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}}}]}]}

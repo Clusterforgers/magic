@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap","SacrificeSelf",{"Sacrifice":{"filter":[{"Type":"Land"}],"count":2}}],"effects":[{"Destroy":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking"]}}]} }]}]}

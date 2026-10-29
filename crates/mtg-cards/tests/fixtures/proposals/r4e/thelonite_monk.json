@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap",{"Sacrifice":{"filter":[{"Type":"Creature"},{"Color":"Green"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"Forever","mods":[{"AddSubtype":"Forest"}]}}],"targets":[{"what":{"Object":[{"Type":"Land"}]}}]} }]}]}

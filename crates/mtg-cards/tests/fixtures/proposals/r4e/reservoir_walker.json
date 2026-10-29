@@ -1,0 +1,2 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"GainLife":{"amount":3}},{"AddPhase":{"phases":["Main"]}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}} }]}
+   				 	  		 	] }

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":"{W}","effects":[{"Shield":{"by":{"PreventUpTo":1},"duration":"UntilEndOfTurn","when":{"Damage":{"to":"This"}}}}]} } ]}]}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "08c7a6f5-7e25-4f8d-9e4a-aec7248e45fa",
+  "name": "Talara's Battalion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Talara's Battalion",
+      "oracle_fingerprint": "a5b26814a4408f25cce826290da93f93",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "Cast this spell only if you've cast another green spell this turn.",
+            "span": { "start": 0, "end": 1 }
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c1882cb4-f69e-441e-8871-743ed636cad0",
+  "name": "Aarakocra Sneak",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aarakocra Sneak",
+      "oracle_fingerprint": "072fcff4ad268602cd68f16918be27c6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 7, "end": 58 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{1}{R}{G}"},{"TapPermanents":{ "filter":[] }},{"TapPermanents":{"filter":[]}}],"effects":[{"Exile":{"what":"This"}},{"Exile":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"HasKeyword":"Flying"}},{"AttackingPlayer":"You"}]}}]} } ]} ]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Subtype":"ChosenSubtype"}]},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":-3,"toughness":-3}}]}}]} }]}] }

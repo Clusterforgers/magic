@@ -1,0 +1,22 @@
+{
+  "oracle_id": "ce690da4-6d22-4013-aef3-596d331813e4",
+  "name": "Karplusan Wolverine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karplusan Wolverine",
+      "oracle_fingerprint": "ab63b184b17d2e03e6167de71b678f1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Triggered":{"effects":[{"Pay":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":2}}],"unpaid":[{"Sacrifice":{"filter":["This"]}}]}},{"Scry":{}}],"when":{"StepBegins":{"step":"Upkeep","whose":"You"}}} }]}] }

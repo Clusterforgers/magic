@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Pay":{"cost":[{"Discard":{"filter":[{"Type":"Creature"}]}},{"Discard":{"filter":[{"Type":"Creature"}]}}],"unpaid":[{"Sacrifice":{"filter":["This"]}}]}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}} }]}] }
