@@ -20,7 +20,7 @@ import {
   toPayment,
   withoutSpend,
 } from '../payment'
-import type { LifeSymbols, Spend } from '../payment'
+import type { LifeSymbols, Reach, Spend } from '../payment'
 import { PaymentSummary } from '../PaymentSummary'
 import { manaByPermanent } from '../priorityText'
 import { usePrompt } from '../PromptContext'
@@ -55,6 +55,10 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const { spell, cost, pool } = options
   const own = useOwnCardIds()
   const byPermanent = useMemo(() => manaByPermanent(options.sources), [options.sources])
+  const reach = useMemo<Reach>(
+    () => ({ sources: options.sources, maxLife: options.max_life }),
+    [options.sources, options.max_life],
+  )
   const named = useMemo(() => [spell, ...byPermanent.keys()], [spell, byPermanent])
   const names = usePlay(useShallow((state) => named.map((id) => state.objectsById[id]?.name)))
   const nameOf = (id: ObjectId): string =>
@@ -64,16 +68,16 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const autoReasonId = useId()
   const [choosing] = selection.ids
   const fitting = (id: ObjectId, given: readonly Spend[] = spends): ManaOption[] =>
-    fittingOptions(cost, pool, given, byPermanent.get(id) ?? [], life, options.sources)
+    fittingOptions(cost, pool, given, byPermanent.get(id) ?? [], life, reach)
   const choices = choosing === undefined ? [] : fitting(choosing)
   const chooser = choices.length > 1 ? choosing : undefined
 
   const legal = useMemo(
     () =>
       [...byPermanent.keys()].filter(
-        (id) => fittingOptions(cost, pool, spends, byPermanent.get(id) ?? [], life, options.sources).length > 0,
+        (id) => fittingOptions(cost, pool, spends, byPermanent.get(id) ?? [], life, reach).length > 0,
       ),
-    [byPermanent, cost, pool, spends, life, options.sources],
+    [byPermanent, cost, pool, spends, life, reach],
   )
   const taken = useMemo(
     () => spends.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source.object] : [])),
@@ -85,7 +89,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   )
 
   const canSpend = (mana: ManaType): boolean =>
-    allowed(cost, pool, spends, { kind: 'pool', mana }, life, options.sources)
+    allowed(cost, pool, spends, { kind: 'pool', mana }, life, reach)
   const owedNow = owed(cost, spends, life)
   const covered = covers(cost, spends, life)
   const lifeSwitches = lifeChoices(cost, spends, life, options.max_life)
@@ -100,7 +104,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const add = (spend: Spend): void => {
     // Checked against the latest payment, so two quick clicks cannot add what no longer fits.
     setChosen((now) =>
-      allowed(cost, pool, now.spends, spend, now.life, options.sources)
+      allowed(cost, pool, now.spends, spend, now.life, reach)
         ? { ...now, spends: [...now.spends, spend], note: `Added ${spendWords(spend, nameOf)}.` }
         : now,
     )
@@ -185,7 +189,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     life: hasLife ? { paid: paidLife, after: options.life - paidLife, may: lifeCanPay } : undefined,
   })
   const nothingChosen = spends.length === 0 && life.length === 0
-  const restCanBePaid = completable(cost, pool, spends, life, options.sources)
+  const restCanBePaid = completable(cost, pool, spends, life, reach)
   return (
     <PromptLayout text={text}>
       <PaymentSummary

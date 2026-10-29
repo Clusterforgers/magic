@@ -280,44 +280,59 @@ export function usableByHand(option: ManaOption): boolean {
   return (option.only?.length ?? 0) === 0
 }
 
+/** What is left to finish a payment with: every source of the decision and the most life it may take. */
+export interface Reach {
+  sources: readonly ManaOption[]
+  maxLife: number
+}
+
+/** `life` and every larger set of Phyrexian symbols paid with life within `maxLife`, the smallest first. */
+function lifeSupersets(cost: ManaCost, life: LifeSymbols, maxLife: number): LifeSymbols[] {
+  const open = cost.flatMap((symbol, index) => (canPayLife(symbol) && !life.includes(index) ? [index] : []))
+  let found: LifeSymbols[] = [life]
+  for (const index of open) found = [...found, ...found.map((set) => [...set, index])]
+  return found.filter((set) => lifeOf(set) <= Math.max(maxLife, lifeOf(life))).sort((a, b) => a.length - b.length)
+}
+
 /**
- * True when more of the floating mana and the `offered` sources not used yet can finish the payment so the engine
- * accepts it. Each permanent is used once; additions are tried in one order (a set, not a sequence), and a payment
- * with waste goes on only while a source that costs mana could still take the extra mana.
+ * True when more of the floating mana, the sources of `reach` not used yet and life for more Phyrexian symbols (within
+ * `maxLife`) can finish the payment so the engine accepts it. Each permanent is used once; additions are tried in one
+ * order (a set, not a sequence), and a payment with waste goes on only while a source that costs mana could still
+ * take the extra mana.
  */
 export function completable(
   cost: ManaCost,
   pool: ManaPool,
   spends: readonly Spend[],
   life: LifeSymbols,
-  offered: readonly ManaOption[],
+  reach: Reach,
 ): boolean {
   // The sources that cost mana come last, so the ones that fund them are tried before them.
-  const options = offered
+  const options = reach.sources
     .filter(usableByHand)
     .sort((a, b) => Number(costsMana(a)) - Number(costsMana(b)))
   let budget = SEARCH_BUDGET
-  const walk = (now: readonly Spend[], from: number, mana: number): boolean => {
+  const walk = (paid: LifeSymbols, now: readonly Spend[], from: number, mana: number): boolean => {
     budget -= 1
     if (budget < 0) return true
-    if (covers(cost, now, life)) return true
+    if (covers(cost, now, paid)) return true
     const used = new Set(now.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source.object] : [])))
     const sinks = options.some((option) => costsMana(option) && !used.has(option.source.object))
-    if (!sinks && candidates(cost, now, life).length === 0) return false
+    if (!sinks && candidates(cost, now, paid).length === 0) return false
     for (let kind = mana; kind < MANA_TYPES.length; kind += 1) {
       const type = MANA_TYPES[kind]
       if (type !== undefined && poolLeft(pool, now, type) > 0) {
-        if (walk([...now, { kind: 'pool', mana: type }], 0, kind)) return true
+        if (walk(paid, [...now, { kind: 'pool', mana: type }], 0, kind)) return true
       }
     }
     for (let at = from; at < options.length; at += 1) {
       const option = options[at]
       if (option === undefined || used.has(option.source.object) || !canFund(now, option)) continue
-      if (walk([...now, { kind: 'tap', option }], at + 1, MANA_TYPES.length)) return true
+      if (walk(paid, [...now, { kind: 'tap', option }], at + 1, MANA_TYPES.length)) return true
     }
     return false
   }
-  return walk(spends, 0, 0)
+  return lifeSupersets(cost, life, reach.maxLife).some((paid) => walk(paid, spends, 0, 0))
 }
 
 /**
@@ -360,7 +375,7 @@ export function poolLeft(pool: ManaPool, spends: readonly Spend[], mana: ManaTyp
 /**
  * True when `spend` may join the payment: floating mana is left for it, a permanent is tapped once (the engine would
  * tap it again for a second ability), a source that costs mana comes after the mana that pays for it, and nothing
- * is wasted. With `offered` (every source of the decision) "nothing is wasted" means the payment can still be
+ * is wasted. With `reach` (every source of the decision) "nothing is wasted" means the payment can still be
  * finished from what is left (`completable`); without it, that all the mana chosen has a place in the cost.
  */
 export function allowed(
@@ -369,7 +384,7 @@ export function allowed(
   spends: readonly Spend[],
   spend: Spend,
   life: LifeSymbols = [],
-  offered?: readonly ManaOption[],
+  reach?: Reach,
 ): boolean {
   if (spend.kind === 'pool' && poolLeft(pool, spends, spend.mana) <= 0) return false
   if (spend.kind === 'tap') {
@@ -379,9 +394,9 @@ export function allowed(
     if (!canFund(spends, spend.option)) return false
   }
   const next = [...spends, spend]
-  return offered === undefined
+  return reach === undefined
     ? candidates(cost, next, life).length > 0
-    : completable(cost, pool, next, life, offered)
+    : completable(cost, pool, next, life, reach)
 }
 
 /** What tells two abilities of one permanent apart for a payment: the mana they make and what they cost. */
@@ -395,12 +410,12 @@ export function fittingOptions(
   spends: readonly Spend[],
   abilities: readonly ManaOption[],
   life: LifeSymbols = [],
-  offered?: readonly ManaOption[],
+  reach?: Reach,
 ): ManaOption[] {
   const seen = new Set<string>()
   return abilities.filter((option) => {
     const key = optionKey(option)
-    if (seen.has(key) || !allowed(cost, pool, spends, { kind: 'tap', option }, life, offered)) return false
+    if (seen.has(key) || !allowed(cost, pool, spends, { kind: 'tap', option }, life, reach)) return false
     seen.add(key)
     return true
   })
