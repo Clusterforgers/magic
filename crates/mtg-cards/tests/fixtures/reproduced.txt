@@ -193,6 +193,7 @@ Bronzeplate Boar
 Broodbirth Viper
 Broodcaller Scourge
 Broodhatch Nantuko
+Brooding Saurian
 Broodstar
 Bubble Matrix
 Buried Alive
@@ -553,6 +554,7 @@ Four Knocks
 Franklin Richards, Ascendant
 Freyalise, Llanowar's Fury
 Frogtosser Banneret
+Frost Titan
 Fruit of Tizerus
 Fumigate
 Fungal Reaches
@@ -842,6 +844,7 @@ Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
+Loki's Scepter
 Loki, the Deceiver
 Looter il-Kor
 Loran of the Third Path
@@ -1529,6 +1532,7 @@ Traxos, Scourge of Kroog
 Treasure Cruise
 Treasure Hunt
 Tribal Flames
+Trostani Discordant
 Trove Tracker
 Troyan, Gutsy Explorer
 True Identity

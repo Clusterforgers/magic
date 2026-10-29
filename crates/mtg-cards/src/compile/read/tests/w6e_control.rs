@@ -86,10 +86,6 @@ fn w6e_the_steps_read_into_the_dsl() {
 )]
 #[case::three_to_exchange("Exchange control of three target creatures.", ClauseKind::Spell)]
 #[case::exchange_one("Exchange control of target creature.", ClauseKind::Spell)]
-#[case::each_player_owns(
-    "{T}: Each player gains control of all creatures they own.",
-    ClauseKind::Activated
-)]
 #[case::during_your_turn(
     "{T}: Draw a card. You can't activate this ability during your turn.",
     ClauseKind::Activated

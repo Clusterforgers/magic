@@ -19,7 +19,13 @@ pub(super) fn w20c_each_owner(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     };
     r.need("they own")?;
     let player = Ref::Bound(W20C_PLAYER.to_owned());
-    group.0.push(Pred::OwnedBy(player.clone()));
+    // After the card types and before the other parts, as the cards that hand-written files model it.
+    let at = group
+        .0
+        .iter()
+        .take_while(|pred| matches!(pred, Pred::Type(_)))
+        .count();
+    group.0.insert(at, Pred::OwnedBy(player.clone()));
     Some(vec![Effect::RepeatEach {
         over: Ref::EachPlayer,
         bind: W20C_PLAYER.to_owned(),
