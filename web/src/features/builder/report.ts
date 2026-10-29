@@ -48,10 +48,16 @@ export type SortKey = 'name' | 'issues'
 
 /** What to show of a zone's lines. */
 export interface Arrangement {
-  /** Leave out the lines whose card is verified. */
+  /** Leave out the lines whose card is verified and not flagged. */
   issuesOnly: boolean
   sort: SortKey
+  /** The lines (`lineKey`) the legality check names: they count as issues and come first. */
+  flagged?: ReadonlySet<string>
 }
+
+/** The key of a line in a zone, as the legality issues name it. */
+export const lineKey = (line: { zone: string; card: { oracle_id: string } }): string =>
+  `${line.zone}:${line.card.oracle_id}`
 
 /**
  * The lines to show, from `lines` already in name order: the issue lines alone when asked, and with `sort` `issues` the
@@ -60,9 +66,10 @@ export interface Arrangement {
 export function arrange(
   lines: readonly Line[],
   checks: ReadonlyMap<string, LineCheck>,
-  { issuesOnly, sort }: Arrangement,
+  { issuesOnly, sort, flagged }: Arrangement,
 ): Line[] {
-  const rank = (line: Line): number => RANK[checkOf(checks, line).support]
+  const rank = (line: Line): number =>
+    flagged?.has(lineKey(line)) === true ? -1 : RANK[checkOf(checks, line).support]
   const shown = issuesOnly ? lines.filter((line) => rank(line) < RANK.verified) : [...lines]
   return sort === 'issues' ? shown.sort((a, b) => rank(a) - rank(b)) : shown
 }
@@ -102,6 +109,19 @@ export function reasonLines(reasons: readonly Reason[]): ReasonLine[] {
 export interface LegalityLine {
   key: string
   text: string
+}
+
+/**
+ * The cards the report finds outside the commanders' colour identity, by `lineKey`, each with the report's sentence
+ * ("Lightning Bolt has R in its color identity, outside the commander's (WUBG)").
+ */
+export function outsideLines(issues: readonly Issue[]): ReadonlyMap<string, string> {
+  const found = new Map<string, string>()
+  for (const issue of issues) {
+    if (issue.code === 'color_identity' && issue.zone !== null && issue.oracle_id !== null)
+      found.set(`${issue.zone}:${issue.oracle_id}`, sentence(issue.message))
+  }
+  return found
 }
 
 /** The legality issues of a report as plain sentences, in the report's order. */

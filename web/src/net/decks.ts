@@ -164,7 +164,8 @@ function readListItem(item: unknown): DeckListItem | null {
   if (!isText(item.created_at) || !isText(item.updated_at) || !isState(item.state)) return null
   if (!isFlag(item.verified) || !isFlag(item.changed) || !isNullableText(item.checked_at)) return null
   const summary = readSummary(item.summary)
-  if (summary === null) return null
+  const commanders = readEach(item.commanders, readCardHit)
+  if (summary === null || commanders === null) return null
   return {
     id: item.id,
     name: item.name,
@@ -176,6 +177,7 @@ function readListItem(item: unknown): DeckListItem | null {
     changed: item.changed,
     checked_at: item.checked_at,
     summary,
+    commanders,
   }
 }
 

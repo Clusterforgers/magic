@@ -6,7 +6,7 @@ import {
   SearchXIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
@@ -31,6 +31,10 @@ interface SearchPaneProps {
   onAdd: (card: CardHit, zone: DeckZone) => void
   /** Opens the preview of a card from its name; `opener` is the control to return focus to. */
   onPreview: (card: CardHit, opener: HTMLElement) => void
+  /** The identity of the deck's commanders, or null while it has none: the filters then offer to stay within it and a hit outside it says so. */
+  commanderIdentity?: readonly string[] | null
+  /** A search the builder asks for (a slot looking for a partner): applied, and the box focused, each time `id` changes. */
+  seed?: { id: number; filters: SearchFilters } | null
   /** Sets the display of the pane (`flex` or `hidden`), which the page switches under the M breakpoint. */
   className?: string
 }
@@ -89,8 +93,26 @@ function Pager({ page, onGo, busy }: { page: CardSearchPage; onGo: (page: number
  * moment before a search is sent; Enter in the box adds the first hit to the main deck (or searches at once when the
  * hits are for older text). With nothing typed or chosen it says how to start instead of listing every card.
  */
-export function SearchPane({ api, draft, onAdd, onPreview, className }: SearchPaneProps) {
+export function SearchPane({
+  api,
+  draft,
+  onAdd,
+  onPreview,
+  commanderIdentity = null,
+  seed = null,
+  className,
+}: SearchPaneProps) {
   const [filters, setFilters] = useState<SearchFilters>(NO_FILTERS)
+  const [seeded, setSeeded] = useState(seed?.id ?? 0)
+  const box = useRef<HTMLInputElement>(null)
+  if (seed !== null && seed.id !== seeded) {
+    setSeeded(seed.id)
+    setFilters(seed.filters)
+  }
+  const seedId = seed?.id ?? 0
+  useEffect(() => {
+    if (seedId > 0) box.current?.focus()
+  }, [seedId])
   const search = useCardSearch(api, filters)
   const hintId = useId()
   const listRef = useRef<HTMLDivElement>(null)
@@ -164,7 +186,14 @@ export function SearchPane({ api, draft, onAdd, onPreview, className }: SearchPa
         className={cn('grid gap-1 transition-opacity duration-fast ease-out', busy && 'opacity-60')}
       >
         {shown.cards.map((card) => (
-          <ResultRow key={card.oracle_id} card={card} draft={draft} onAdd={onAdd} onPreview={onPreview} />
+          <ResultRow
+            key={card.oracle_id}
+            card={card}
+            draft={draft}
+            identity={commanderIdentity}
+            onAdd={onAdd}
+            onPreview={onPreview}
+          />
         ))}
       </ul>
     )
@@ -178,6 +207,7 @@ export function SearchPane({ api, draft, onAdd, onPreview, className }: SearchPa
           className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
         />
         <Input
+          ref={box}
           type="search"
           aria-label="Search cards"
           aria-describedby={hintId}
@@ -206,7 +236,7 @@ export function SearchPane({ api, draft, onAdd, onPreview, className }: SearchPa
           Enter adds the first card to the main deck.
         </p>
       </div>
-      <FilterBar filters={filters} onChange={setFilters} />
+      <FilterBar filters={filters} onChange={setFilters} commanderIdentity={commanderIdentity} />
       <p role="status" className="sr-only">
         {state.status === 'loading' ? 'Searching cards…' : null}
         {state.status === 'ready' ? `${state.page.total} cards found.` : null}

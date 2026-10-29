@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
+import { CircleAlertIcon } from 'lucide-react'
 import { PageShell } from '@/components/PageShell'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { describeDeckError, isSessionEnded } from '@/features/decks/errors'
 import { STATE_LABEL } from '@/features/decks/format'
@@ -25,10 +27,15 @@ import {
 } from './deckEdit'
 import type { Draft } from './deckEdit'
 import { CardPreview } from './CardPreview'
+import { judgeCommander } from './commanderCheck'
+import type { FindKind } from './CommanderSlot'
+import { cardsIn, identityOf } from './identity'
 import { DeckPane } from './DeckPane'
 import type { DeckActions } from './DeckPane'
 import { LeaveDialog } from './LeaveDialog'
 import { SearchPane } from './SearchPane'
+import { NO_FILTERS } from './search'
+import type { SearchFilters } from './search'
 import { useLiveCheck } from './useLiveCheck'
 import { useUnsavedGuard } from './useUnsavedGuard'
 import { ZONE_THE, ZONE_TO } from './zones'
@@ -100,8 +107,15 @@ export function Builder({ view, api, cards }: BuilderProps) {
   const opener = useRef<HTMLElement | null>(null)
   const nameRef = useRef<HTMLInputElement>(null)
   const savingRef = useRef(false)
+  // The commander being checked, the choice the check refused, and the search the slot asked for.
+  const [judging, setJudging] = useState<string | null>(null)
+  const [refusal, setRefusal] = useState<{ name: string; reason: string } | null>(null)
+  const [seed, setSeed] = useState<{ id: number; filters: SearchFilters } | null>(null)
+  const judgingRef = useRef(false)
 
   const dirty = !sameDeck(draft, stored.draft)
+  const commanders = draft.format === 'commander' ? cardsIn(draft.lines, 'commander') : []
+  const commanderIdentity = commanders.length === 0 ? null : identityOf(commanders)
   const check = useLiveCheck(api, { draft: stored.draft, report: stored.view.report }, draft)
   usePageTitle(`Edit ${stored.view.name}`)
   const blocker = useUnsavedGuard(dirty)
@@ -109,7 +123,45 @@ export function Builder({ view, api, cards }: BuilderProps) {
   const nameOf = (zone: DeckZone, oracleId: string): string =>
     lineIn(draft, zone, oracleId)?.card.name ?? 'The card'
 
+  // A card joins the command zone of a Commander deck only when the deck check accepts it there, alone or beside the
+  // commander already chosen; otherwise the reason is shown and nothing changes. `from` is the zone a move leaves.
+  async function chooseCommander(card: CardHit, from: DeckZone | null): Promise<void> {
+    if (judgingRef.current) return
+    judgingRef.current = true
+    setJudging(card.name)
+    setRefusal(null)
+    const verdict = await judgeCommander(api, draft, card)
+    judgingRef.current = false
+    setJudging(null)
+    if (!verdict.ok) {
+      setRefusal({ name: card.name, reason: verdict.reason })
+      setAnnouncement(`${card.name} cannot be a commander. ${verdict.reason}`)
+      return
+    }
+    setDraft((current) =>
+      from === null
+        ? addCard(current, card, 'commander')
+        : moveLine(current, from, card.oracle_id, 'commander', 1),
+    )
+    setAnnouncement(`${card.name} is now a commander.`)
+  }
+
+  function find(kind: FindKind): void {
+    const filters: SearchFilters =
+      kind === 'commander'
+        ? { ...NO_FILTERS, type: 'legendary creature' }
+        : kind === 'partner'
+          ? { ...NO_FILTERS, text: 'partner', type: 'legendary creature' }
+          : { ...NO_FILTERS, type: 'background' }
+    setSeed((current) => ({ id: (current?.id ?? 0) + 1, filters }))
+    setShown('search')
+  }
+
   function add(card: CardHit, zone: DeckZone): void {
+    if (zone === 'commander' && draft.format === 'commander') {
+      void chooseCommander(card, null)
+      return
+    }
     const next = addCard(draft, card, zone)
     if (next === draft) {
       setAnnouncement(`The deck is at its limit of ${MAX_DECK_CARDS} cards.`)
@@ -174,6 +226,11 @@ export function Builder({ view, api, cards }: BuilderProps) {
       setDraft((current) => removeLine(current, zone, id))
     },
     move: (zone, id, to, count) => {
+      const card = lineIn(draft, zone, id)?.card
+      if (to === 'commander' && draft.format === 'commander' && card !== undefined) {
+        void chooseCommander(card, zone)
+        return
+      }
       setAnnouncement(`Moved ${nameOf(zone, id)} to ${ZONE_TO[to]}.`)
       setDraft((current) => moveLine(current, zone, id, to, count))
     },
@@ -184,12 +241,26 @@ export function Builder({ view, api, cards }: BuilderProps) {
     <PageShell width="wide" className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:py-4">
       <h1 className="sr-only">Edit {stored.view.name}</h1>
       <ViewSwitch shown={shown} onChange={setShown} count={totalOf(draft)} />
+      {refusal === null ? null : (
+        <Alert variant="destructive" data-slot="commander-refusal">
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertTitle>{refusal.name} cannot be added as a commander</AlertTitle>
+          <AlertDescription>{refusal.reason}</AlertDescription>
+          <div className="mt-2">
+            <Button type="button" variant="outline" size="sm" onClick={() => setRefusal(null)}>
+              Dismiss
+            </Button>
+          </div>
+        </Alert>
+      )}
       <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
         <SearchPane
           api={cards}
           draft={draft}
           onAdd={add}
           onPreview={showPreview}
+          commanderIdentity={commanderIdentity}
+          seed={seed}
           className={cn(shown === 'search' ? 'flex' : 'hidden', 'lg:flex')}
         />
         <DeckPane
@@ -203,6 +274,8 @@ export function Builder({ view, api, cards }: BuilderProps) {
           saveError={saveError}
           nameRef={nameRef}
           actions={actions}
+          judging={judging}
+          onFind={find}
           className={cn(shown === 'deck' ? 'flex' : 'hidden', 'lg:flex')}
         />
       </div>

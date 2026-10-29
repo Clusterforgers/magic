@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { CardPicture } from '@/features/cards/CardPicture'
 import { timeSince } from '@/lib/timeSince'
 import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
@@ -42,6 +43,28 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
           </p>
           <DeckMarker state={deck.state} changed={deck.changed} />
         </div>
+        {deck.commanders.length === 0 ? null : (
+          <ul aria-label="Commanders" data-slot="commanders" className="flex flex-wrap gap-x-4 gap-y-2 py-1">
+            {deck.commanders.map((card) => (
+              <li
+                key={card.oracle_id}
+                data-commander={card.oracle_id}
+                className="flex min-w-0 items-center gap-2"
+              >
+                <CardPicture
+                  oracleId={card.oracle_id}
+                  name={card.name}
+                  size="small"
+                  alt=""
+                  className="w-10"
+                />
+                <span data-slot="card-name" className="min-w-0 text-sm font-medium [overflow-wrap:anywhere]">
+                  {card.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
         <p className="text-sm text-muted-foreground">
           {formatLabel(deck.format)} · {cardsText(deck.summary.counts.total)} · Saved{' '}
           <time dateTime={deck.updated_at} title={deck.updated_at}>

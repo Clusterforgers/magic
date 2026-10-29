@@ -1,5 +1,5 @@
 import { HoverPicture } from '@/features/cards/CardPicture'
-import { EllipsisVerticalIcon, MinusIcon, PlusIcon, Trash2Icon } from 'lucide-react'
+import { EllipsisVerticalIcon, MinusIcon, PlusIcon, Trash2Icon, TriangleAlertIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -35,6 +35,8 @@ interface LineRowProps {
   room: boolean
   /** What the deck check says of the card. */
   check: LineCheck
+  /** The check's sentence when the card lies outside the commanders' colour identity, else null. */
+  outside?: string | null
   actions: LineActions
 }
 
@@ -44,7 +46,7 @@ interface LineRowProps {
  * game cannot play by itself has an edge in its state's colour and, under the name, its mark and the reasons the check
  * gives.
  */
-export function LineRow({ line, format, room, check, actions }: LineRowProps) {
+export function LineRow({ line, format, room, check, outside = null, actions }: LineRowProps) {
   const { zone, card, count } = line
   const id = card.oracle_id
   const targets = zonesFor(format).filter((to) => to !== zone)
@@ -54,9 +56,10 @@ export function LineRow({ line, format, room, check, actions }: LineRowProps) {
     <li
       data-line={`${zone}:${id}`}
       data-support={check.support}
+      data-outside={outside !== null || undefined}
       className={cn(
         'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 rounded-lg border-l-4 px-1 py-1 hover:bg-accent sm:grid-cols-[auto_minmax(0,1fr)_auto_auto]',
-        issue ? supportEdge(check.support) : 'border-transparent',
+        issue ? supportEdge(check.support) : outside === null ? 'border-transparent' : 'border-destructive',
       )}
     >
       <div
@@ -167,6 +170,15 @@ export function LineRow({ line, format, room, check, actions }: LineRowProps) {
           )}
         </div>
       ) : null}
+      {outside === null ? null : (
+        <p
+          data-slot="line-outside"
+          className="order-5 col-span-full flex items-start gap-1 text-xs text-destructive sm:order-none sm:col-span-3 sm:col-start-2"
+        >
+          <TriangleAlertIcon aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+          {outside}
+        </p>
+      )}
     </li>
   )
 }

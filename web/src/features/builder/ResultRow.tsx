@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { CardHit, DeckZone } from '@/protocol/generated'
 import { copiesOf, hasRoom } from './deckEdit'
+import { outsideOf, outsideWords } from './identity'
 import type { Draft } from './deckEdit'
 import { ManaCost } from './ManaCost'
 import { ZONE_TITLE, zonesFor } from './zones'
@@ -19,6 +20,8 @@ import { ZONE_TITLE, zonesFor } from './zones'
 interface ResultRowProps {
   card: CardHit
   draft: Draft
+  /** The identity of the deck's commanders, or null while it has none; a card with colours outside it says so. */
+  identity?: readonly string[] | null
   onAdd: (card: CardHit, zone: DeckZone) => void
   /** Opens the preview of the card; `opener` is the control focus returns to. */
   onPreview: (card: CardHit, opener: HTMLElement) => void
@@ -29,7 +32,8 @@ interface ResultRowProps {
  * it opens the card's preview, and a menu beside it adds to the sideboard, the command zone or the companion slot. It
  * says how many copies the deck holds.
  */
-export function ResultRow({ card, draft, onAdd, onPreview }: ResultRowProps) {
+export function ResultRow({ card, draft, identity = null, onAdd, onPreview }: ResultRowProps) {
+  const outside = identity === null ? [] : outsideOf(card, identity)
   const describedBy = useId()
   const inDeck = copiesOf(draft, card.oracle_id)
   const full = !hasRoom(draft)
@@ -63,6 +67,11 @@ export function ResultRow({ card, draft, onAdd, onPreview }: ResultRowProps) {
           className="flex min-w-0 items-center justify-between gap-2 text-xs text-muted-foreground"
         >
           <span className="truncate">{card.type_line}</span>
+          {outside.length > 0 ? (
+            <span data-slot="outside-identity" className="shrink-0 font-medium text-destructive">
+              {outsideWords(outside)}
+            </span>
+          ) : null}
           {inDeck > 0 ? <span className="shrink-0 font-medium text-foreground">{inDeck} in deck</span> : null}
         </span>
         <button

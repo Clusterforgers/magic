@@ -98,7 +98,7 @@ pub struct DeckView {
 }
 
 /// A deck in the list of `GET /api/decks`.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 pub struct DeckListItem {
     /// The deck's id.
     pub id: String,
@@ -120,10 +120,12 @@ pub struct DeckListItem {
     pub checked_at: Option<String>,
     /// The counts of the deck checked now.
     pub summary: Summary,
+    /// The cards of the command zone, one per commander, for the list's pictures; empty for a deck without any.
+    pub commanders: Vec<CardHit>,
 }
 
 /// The answer of `GET /api/decks`: the account's decks, the most recently saved first.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
 pub struct DeckList {
     /// The decks.
     pub decks: Vec<DeckListItem>,

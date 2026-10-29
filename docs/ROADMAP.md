@@ -153,7 +153,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (k1b) The one-line pods of three and four seats draw each commander as a small picture beside the command zone chip, both of a partner pair, and pass the layout gate
 - [ ] (k1c) `/dev/table` screenshots of the four-seat Commander fixture (`commander-return` too) at 360, 390, 768, 1024, 1400, 1600x1000 and 1920 in both themes, with the layout gate and fit specs green
-- [~] (k2) (k2-commander-builder) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
+- [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
+- [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
+- [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes

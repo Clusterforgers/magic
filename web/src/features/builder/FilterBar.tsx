@@ -3,30 +3,55 @@ import { formatLabel } from '@/features/decks/format'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { identityWords, searchLetters } from './identity'
+import { DISC } from './discs'
+import { IdentityPips } from './IdentityPips'
 import { FILTER_FORMATS, IDENTITY_LETTERS, IDENTITY_NAME, manaValueProblem, toggleLetter } from './search'
 import type { SearchFilters } from './search'
-
-// Whole class names, so Tailwind can see them: the fill and the ink of each identity.
-const DISC: Readonly<Record<string, string>> = {
-  W: 'bg-mana-white text-on-mana-white',
-  U: 'bg-mana-blue text-on-mana-blue',
-  B: 'bg-mana-black text-on-mana-black',
-  R: 'bg-mana-red text-on-mana-red',
-  G: 'bg-mana-green text-on-mana-green',
-  C: 'bg-mana-colorless text-on-mana-colorless',
-}
 
 interface FilterBarProps {
   filters: SearchFilters
   onChange: (next: SearchFilters) => void
+  /** The identity of the commanders, when the deck has any: a switch then limits the search to it. */
+  commanderIdentity?: readonly string[] | null
+}
+
+function CommanderIdentitySwitch({
+  identity,
+  filters,
+  onChange,
+}: {
+  identity: readonly string[]
+  filters: SearchFilters
+  onChange: (next: SearchFilters) => void
+}) {
+  const letters = searchLetters(identity)
+  const on =
+    filters.identity.length === letters.length && letters.every((letter) => filters.identity.includes(letter))
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      aria-pressed={on}
+      aria-label={`Within the commander’s colours: ${identityWords(identity)}`}
+      data-slot="commander-identity"
+      className={cn('ml-auto', on && 'ring-2 ring-ring ring-offset-2 ring-offset-surface')}
+      onClick={() => onChange({ ...filters, identity: on ? [] : letters })}
+    >
+      Commander’s colours
+      <IdentityPips identity={identity} />
+    </Button>
+  )
 }
 
 /**
  * The filters under the search box: colour identity as six toggles, the type line, the mana value and the format. A
  * toggle that is on has a ring as well as `aria-pressed`, so colour is never the only sign.
  */
-export function FilterBar({ filters, onChange }: FilterBarProps) {
+export function FilterBar({ filters, onChange, commanderIdentity = null }: FilterBarProps) {
   const id = useId()
   const problem = manaValueProblem(filters.manaValue)
   return (
@@ -59,6 +84,9 @@ export function FilterBar({ filters, onChange }: FilterBarProps) {
             </button>
           )
         })}
+        {commanderIdentity === null ? null : (
+          <CommanderIdentitySwitch identity={commanderIdentity} filters={filters} onChange={onChange} />
+        )}
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-[3fr_2fr_3fr]">
         <div className="col-span-2 grid gap-1 sm:col-span-1">

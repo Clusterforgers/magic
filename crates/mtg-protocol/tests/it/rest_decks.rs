@@ -11,15 +11,34 @@ use mtg_cards::deck::{
 };
 use mtg_cards::support::Support;
 use mtg_protocol::rest::{
-    CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckList, DeckListItem,
-    ImportRequest, ImportSource, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS,
-    MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS, MAX_IMPORT_LINES,
-    PRECON_DECK_PREFIX, UnresolvedLine, UnresolvedReason,
+    CardColor, CardHit, CardImages, CardSuggestion, CheckRequest, DeckBody, DeckErrorCode,
+    DeckLineBody, DeckList, DeckListItem, ImportRequest, ImportSource, MAX_DECK_CARDS,
+    MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER,
+    MAX_IMPORT_CHARS, MAX_IMPORT_LINES, PRECON_DECK_PREFIX, UnresolvedLine, UnresolvedReason,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
 
 const ID: &str = "4457ed35-7c10-48c8-9776-456485fdf070";
+
+/// A commander as a deck list shows it.
+fn commander() -> CardHit {
+    let identity = vec![CardColor::W, CardColor::U, CardColor::B, CardColor::G];
+    CardHit {
+        oracle_id: ID.into(),
+        name: "Atraxa, Praetors' Voice".into(),
+        mana_cost: "{G}{W}{U}{B}".into(),
+        mana_value: 4.0,
+        type_line: "Legendary Creature \u{2014} Phyrexian Angel Horror".into(),
+        colors: identity.clone(),
+        color_identity: identity,
+        images: CardImages {
+            card: None,
+            faces: vec![None],
+        },
+        support: Support::Verified,
+    }
+}
 
 fn summary() -> Summary {
     let counts = Counts {
@@ -248,6 +267,7 @@ fn an_unresolved_line_and_a_list_item_have_the_documented_wire_shape() {
         changed: true,
         checked_at: Some("2026-10-19T12:00:00Z".into()),
         summary: summary(),
+        commanders: vec![commander()],
     };
     let value = serde_json::to_value(DeckList {
         decks: vec![item.clone()],
@@ -257,6 +277,14 @@ fn an_unresolved_line_and_a_list_item_have_the_documented_wire_shape() {
     assert_eq!(value["decks"][0]["verified"], false);
     assert_eq!(value["decks"][0]["changed"], true);
     assert_eq!(value["decks"][0]["summary"]["state"], "manual_play");
+    assert_eq!(
+        value["decks"][0]["commanders"][0]["name"],
+        "Atraxa, Praetors' Voice"
+    );
+    assert_eq!(
+        value["decks"][0]["commanders"][0]["color_identity"],
+        json!(["W", "U", "B", "G"])
+    );
     assert_eq!(
         serde_json::from_value::<DeckList>(value).unwrap().decks,
         [item]
