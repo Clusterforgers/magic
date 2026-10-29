@@ -195,6 +195,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(they);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
+    let looked = super::w20a_look_pick::w20a_wordings(&texts);
+    texts.extend(looked);
     let hand_first = super::w15c_clash::w15c_hand_first(&texts);
     texts.extend(hand_first);
     let incubated = w7c_then_incubate(&texts);
