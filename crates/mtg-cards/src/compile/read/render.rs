@@ -56,6 +56,9 @@ mod two_targets;
 mod untapped;
 mod w11c_clash;
 mod w15c_clash;
+mod w20c_counter;
+mod w20c_owners;
+mod w20c_taken;
 mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
@@ -2150,7 +2153,7 @@ impl Writer<'_> {
                 times,
                 paid,
                 unpaid,
-            } if times.is_one() => self.payment(who, cost, paid, unpaid)?,
+            } if times.is_one() => self.w20c_payment(who, cost, paid, unpaid)?,
             _ => return self.other_effect(effect),
         })
     }
@@ -2215,6 +2218,7 @@ impl Writer<'_> {
             .or_else(|| self.controller_search(effect))
             .or_else(|| self.control_for_good(effect))
             .or_else(|| self.w6e_exchanged(effect))
+            .or_else(|| Self::w20c_owners(effect))
     }
 
     /// The cast of the target during the resolution and the exile of that spell (`c11b_cast_target`).
@@ -2522,6 +2526,8 @@ impl Writer<'_> {
             .or_else(|| populated::text(effects))
             .or_else(|| revealed::text(effects))
             .or_else(|| self.mill_then_hand(effects))
+            .or_else(|| self.w20c_untapped_taken(effects))
+            .or_else(|| self.w20c_taken_changed(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.stolen(effects))
             .or_else(|| self.w6e_stolen(effects))
