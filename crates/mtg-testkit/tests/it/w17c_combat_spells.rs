@@ -70,7 +70,7 @@ fn w17c_the_spell_is_offered_only_in_combat(
     let trick = driver.state().zone(Zone::Hand(pid(0)))[0];
     let mut seen = Vec::new();
     for _ in 0..4000 {
-        if driver.state().turn().number() > 2 * seats as u32 + 1 {
+        if driver.state().turn().number() > 2 * u32::try_from(seats).unwrap() + 1 {
             break;
         }
         let decision = driver.decision()?.clone();
