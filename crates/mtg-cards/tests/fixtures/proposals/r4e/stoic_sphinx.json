@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d924c13e-f266-47b0-9711-ba9a9b9df1cb",
+  "name": "Stoic Sphinx",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stoic Sphinx",
+      "oracle_fingerprint": "ed4c83d7dca2991e79f35f249acff804",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 13, "end": 86 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasAttached": [{"Type":"Enchantment"}]}]},"mods":[{"AddKeyword":"Indestructible"}],"condition":{"Not":{"CastWith":"Free"}}}}]}] }

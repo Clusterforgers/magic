@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"effects":[{"Choose":{"as":"returned","from":{"Each":[{"Type":"Creature"},{"AnyOf":[{"Color":"White"},{"Color":"Blue"}]},{"ControlledBy":"You"}]},"count":{} }},{"Move":{"to":"Hand","what":{"Bound":"returned"}}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}}}] }]}

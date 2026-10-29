@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Counter":{"what":{"Target":0}}},{"If":{"condition":{"Matches":{"selector":[{"Named":"Jace, the Mind Sculptor"}],"subject":{"Target":0}}},"then":[{"Scry":{"count":2}}]}}],"targets":[{"what":{"Object":["Spell","Colorless"]}}]}}]}] }

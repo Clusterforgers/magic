@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Trample"},{"Replacement":{"by":{"WithCounters":{"count":2,"counter":"+1/+1"}},"when":{"Enters":{"what":["This"]}},"condition":{"Compare":{"left":{"Tallied":{"what":"CreaturesDied","who":"EachPlayer"}},"op":"Ge","right":1}}} }]} ]}

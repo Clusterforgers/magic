@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"effects":[{"Draw":{}}],"when":{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasAttached":[]}],"at_least":1}}}}]}] }

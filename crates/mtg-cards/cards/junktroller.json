@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6ef46fd7-82db-45d3-b02e-7312384577f3",
+  "name": "Junktroller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Junktroller",
+      "oracle_fingerprint": "3d1e2ce97231811610379a7e73ab2838",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

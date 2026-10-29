@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"Forever","mods":[{"SetController":"You"}]}},{"Untap":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Artifact"},{"Type":"Creature"}]}}]}}] } ]}

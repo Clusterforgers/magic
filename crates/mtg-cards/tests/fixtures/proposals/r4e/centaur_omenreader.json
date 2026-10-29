@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"CostModifier":{"applies_to":["Spell",{"Subtype":"Creature"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{2}","condition":{"Matches":{"selector":["Tapped"],"subject":"This"}}}}]}] }

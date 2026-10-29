@@ -1,0 +1,19 @@
+{
+  "oracle_id": "a3c35742-e306-49b6-b042-db4f685c6f86",
+  "name": "Aether Flash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Flash",
+      "oracle_fingerprint": "6ea092b5cb5dba42fbf36e0c9d057b75",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

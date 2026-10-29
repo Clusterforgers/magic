@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5e7e1b23-ac4b-4f95-9388-feb099d6779f",
+  "name": "Speedway Fanatic",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Speedway Fanatic",
+      "oracle_fingerprint": "5996ad108dbd199498564b3af45ee81a",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 6, "end": 89 }
+          }
+        }
+      ]
+    }
+  ]
+}

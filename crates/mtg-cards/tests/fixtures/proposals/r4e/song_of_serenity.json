@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},{"HasAttached":[{"HasKeyword":{"Enchant":[{"Type":"Creature"}]}}]},"DamagedThisTurn"]},"mods":["CantAttack","CantBlock"]}}]} ]}

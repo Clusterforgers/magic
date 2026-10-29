@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantAttack"],"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"AttackingPlayer":"You"}]},"op":"Ge","right":1}}}}]} ]}

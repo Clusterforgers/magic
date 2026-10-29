@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Sacrifice":{"filter":["This"]}}],"when":{"SpellCast":{"by":"You","what":[{"Type":"Creature"}]}}, "if":{"Compare":{"left":1,"op":"Eq","right":1}}}}]}] }

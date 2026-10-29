@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0904cc0e-e2c9-4a85-89c7-4254fd423bf8",
+  "name": "Blessing of the Nephilim",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blessing of the Nephilim",
+      "oracle_fingerprint": "19996cbff0529a17607c9de63b1bf757",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 17, "end": 70 }
+          }
+        }
+      ]
+    }
+  ]
+}

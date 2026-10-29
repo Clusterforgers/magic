@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Move":{"to":{"Library":{"place":"Top"}},"what":{"Target":0}}}, {"Move":{"to":{"Library":{"place":"Bottom"}},"what":{"Target":0}}}],"targets":[{"what":{"Either":[{"Object":[{"Type":"Artifact"}]},{"Object":[{"Type":"Creature"}]}]}}]}}]}]}

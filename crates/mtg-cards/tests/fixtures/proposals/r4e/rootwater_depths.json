@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["Blue","Black"]}}}]}}] }]}

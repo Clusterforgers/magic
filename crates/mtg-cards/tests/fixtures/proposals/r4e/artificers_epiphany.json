@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Draw":{"count":2}},{"If":{"condition":{"Compare":{"left":{"Count":["HasAnyCounter"]},"op":"Eq","right":0}},"then":[{"Discard":{}}]}}]} }]} ]}

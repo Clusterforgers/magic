@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bb9e77c0-eb94-4bba-9b71-1935be280b75",
+  "name": "Masako the Humorless",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Masako the Humorless",
+      "oracle_fingerprint": "6f7b8e76089f6dcad6df9cc194a3684c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 6, "end": 74 }
+          }
+        }
+      ]
+    }
+  ]
+}

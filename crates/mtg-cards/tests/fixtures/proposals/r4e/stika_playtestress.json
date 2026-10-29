@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Draw":{}}],"when":{"SpellCast":{"by":"You","what":[{"Subtype":"Playtest"}]}}, "limit":"OncePerTurn"}}]}]}

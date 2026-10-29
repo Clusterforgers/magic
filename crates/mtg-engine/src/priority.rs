@@ -368,7 +368,9 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .chain(ways::elsewhere(state, player))
         .filter(|id| {
-            !silenced && !w17b_forbidden && ways::castable_now(state, player, *id, &pool, &all_mana, life)
+            !silenced
+                && !w17b_forbidden
+                && ways::castable_now(state, player, *id, &pool, &all_mana, life)
         })
         .collect();
     // A special action: no stack, so no target or modes are needed (CR 116.2f).

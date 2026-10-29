@@ -14,11 +14,11 @@ use mtg_cards::value::CounterKind;
 use mtg_engine::choose::Target;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::effects::Duration;
+use mtg_engine::replay;
 use mtg_engine::rules::Rule;
 use mtg_engine::setup::PresetPermanent;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_engine::replay;
 use mtg_testkit::cards::{burn, creature, keyworded_creature, mountain, one_target};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario};
@@ -44,11 +44,20 @@ fn w17b_a_player_at_zero_life_plays_on_and_loses_when_the_herald_dies(#[case] se
     let scenario = Scenario::new(seats)
         .at(3, 0, Step::Main1)
         .life(0, 0)
-        .battlefield(0, [PresetPermanent::new(card("Herald of Eternal Dawn").unwrap()), PresetPermanent::new(mountain())])
+        .battlefield(
+            0,
+            [
+                PresetPermanent::new(card("Herald of Eternal Dawn").unwrap()),
+                PresetPermanent::new(mountain()),
+            ],
+        )
         .hand(0, [burn("Bolt", 6)]);
     let mut driver = Driver::from_scenario(scenario.clone()).unwrap();
     driver.pass_until(Step::Main1).unwrap();
-    assert!(alive(&driver, 0), "the Herald keeps its controller in the game");
+    assert!(
+        alive(&driver, 0),
+        "the Herald keeps its controller in the game"
+    );
     let herald = driver.target_named("Herald of Eternal Dawn").unwrap();
     driver.cast_at("Bolt", &[herald]).unwrap();
     while !driver.state().stack().is_empty() {
@@ -95,10 +104,18 @@ fn w17b_cards_in_graveyards_are_no_targets_under_ground_seal(
         scenario = scenario.battlefield_named(1, ["Ground Seal"]);
     }
     let driver = Driver::from_scenario(scenario).unwrap();
-    let spec = one_target(Targetable::Object(Selector(vec![Pred::In(ZoneKind::Graveyard)])));
+    let spec = one_target(Targetable::Object(Selector(vec![Pred::In(
+        ZoneKind::Graveyard,
+    )])));
     let source = driver.state().zone(Zone::Graveyard(pid(2)))[0];
     let targets = mtg_engine::choose::legal_targets(driver.state(), &spec, source, pid(0));
-    assert_eq!(targets.iter().filter(|t| matches!(t, Target::Object(_))).count(), legal);
+    assert_eq!(
+        targets
+            .iter()
+            .filter(|t| matches!(t, Target::Object(_)))
+            .count(),
+        legal
+    );
 }
 
 #[rstest]
@@ -143,15 +160,28 @@ fn w17b_combat_damage_by_toughness(
     #[case] lost: i32,
 ) {
     let blocked = keywords.contains(&Keyword::Trample);
-    let mut scenario = Scenario::new(2)
-        .at(3, 0, Step::Main1)
-        .battlefield(0, [PresetPermanent::new(keyworded_creature("Wall", 1, &[], 1, 5, keywords))]);
+    let mut scenario = Scenario::new(2).at(3, 0, Step::Main1).battlefield(
+        0,
+        [PresetPermanent::new(keyworded_creature(
+            "Wall",
+            1,
+            &[],
+            1,
+            5,
+            keywords,
+        ))],
+    );
     if blocked {
         scenario = scenario.battlefield(1, [PresetPermanent::new(creature("Chump", 1, &[], 1, 2))]);
     }
     let mut driver = Driver::from_scenario(scenario.clone()).unwrap();
     if rule {
-        driver.add_rule(Rule::ToughnessAssignsDamage(vec![pid(0)]), Duration::Forever).unwrap();
+        driver
+            .add_rule(
+                Rule::ToughnessAssignsDamage(vec![pid(0)]),
+                Duration::Forever,
+            )
+            .unwrap();
     }
     driver.pass_until(Step::DeclareAttackers).unwrap();
     driver.attack(&[("Wall", 1)]).unwrap();

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"PutCounters":{"counter":"+1/+1","on":"This"}}],"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Subtype":"Warrior"},{"ControlledBy":{"ControllerOf":"This"}},{"Targeting":[]},"Other"],"to":"Battlefield"}}}}]}]}

@@ -69,12 +69,15 @@ pub(super) fn w17b_texts(rule: &GameRule) -> Vec<String> {
             your_turn: true,
         } => W17B_CANT_CAST.to_owned(),
         GameRule::CountersRemain => {
-            "Counters remain on ~ as it moves to any zone other than a player's hand or library".to_owned()
+            "Counters remain on ~ as it moves to any zone other than a player's hand or library"
+                .to_owned()
         }
         GameRule::ToughnessAssignsDamage(Ref::You) => {
             format!("Each creature you control {W17B_TOUGHNESS}")
         }
-        GameRule::ToughnessAssignsDamage(Ref::EachPlayer) => format!("Each creature {W17B_TOUGHNESS}"),
+        GameRule::ToughnessAssignsDamage(Ref::EachPlayer) => {
+            format!("Each creature {W17B_TOUGHNESS}")
+        }
         _ => return Vec::new(),
     };
     vec![text]

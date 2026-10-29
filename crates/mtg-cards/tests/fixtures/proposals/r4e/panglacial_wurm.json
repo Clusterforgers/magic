@@ -1,0 +1,20 @@
+{
+  "oracle_id": "49d4aef7-d2d1-4f66-bc2a-79ec8cc96565",
+  "name": "Panglacial Wurm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Panglacial Wurm",
+      "oracle_fingerprint": "296ce6511cbc7303f935edcdcf7edfd0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 8, "end": 86 }
+          }
+        }
+      ]
+    }
+  ]
+}

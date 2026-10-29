@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"who":"Triggering"}}],"when":{"TappedForMana":{"what":[{"Subtype":"Forest"}]}}}}]}]}

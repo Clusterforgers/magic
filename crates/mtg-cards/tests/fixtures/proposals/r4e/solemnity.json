@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"by":"Prevent","when":{"CountersPut":{"on":"EachPlayer"}}}},{"Replacement":{"by":"Prevent","when":{"CountersPut":{}},"condition":{"Matches":{"selector":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Land"}]}],"subject":"This"}}} } ]} ]}
