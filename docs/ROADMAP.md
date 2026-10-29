@@ -260,7 +260,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
-- [~] (t18a) (t18a-propose-speed) `propose` sends requests in parallel (`--jobs N`), sets the reasoning effort of a model that has one (`--reasoning low|medium|high`), times out and retries a request so a stalled server never hangs a run, and prints tokens per second and cards per minute (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (t17a) `mtg-cli check-rules --gaps FILE` writes the ledger of everything that holds stored proposals back (missing writers by node kind, invalid and mismatch reasons, missing primitives), ranked by the cards each gap would free, weighted by popularity, so implementers take the largest gap first and a new writer verifies the stored proposals without a model call
 - [ ] (t17b) Writers for the continuous effects of spells and activated abilities, then for modified power and toughness and added keywords of statics; 51 stored local-model proposals wait on them (`docs/cards-dsl.md`, Model-assisted reading)
 - [~] (t15a) (t15a-popular-1) The 42 not-Verified cards among the 300 most popular Commander cards (`mtg-cli coverage --all --out`; Path of Ancestry, Mana Drain, Smothering Tithe, Sylvan Library, Force of Will, Mana Vault, The One Ring) read whole, or skipped with the missing piece as a lettered line
