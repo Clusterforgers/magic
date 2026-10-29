@@ -2372,6 +2372,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
+                if matches!(rule, GameRule::CountersRemain) {
+                    w.problem("counters remain on a card by a static ability, not by an effect");
+                }
             }),
             Effect::Crewed { .. }
             | Effect::BecomeDayNight { .. }
@@ -2932,11 +2935,26 @@ impl Walker<'_> {
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::CanBeCommander => {}
+            GameRule::GraveyardCardsUntargetable
+            | GameRule::CantLoseGame { .. }
+            | GameRule::CantCastSpells { .. }
+            | GameRule::ToughnessAssignsDamage(_)
+            | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
             GameRule::TriggerAgain { cause } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
                 self.at(tag, |w| w.at("cause", |w| w.trigger_pattern(cause)));
                 self.scope = saved;
             }
+        }
+    }
+
+    /// The players a rule about losing, casting or combat damage names.
+    fn w17b_rule(&mut self, tag: &str, rule: &GameRule) {
+        if let GameRule::CantLoseGame { who, .. }
+        | GameRule::CantCastSpells { who, .. }
+        | GameRule::ToughnessAssignsDamage(who) = rule
+        {
+            self.at(tag, |w| w.reference(who, Kind::Player));
         }
     }
 

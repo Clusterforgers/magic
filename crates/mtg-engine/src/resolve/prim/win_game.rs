@@ -23,11 +23,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .scope
         .players(who)?
         .into_iter()
-        .filter(|player| state.is_alive(*player))
+        .filter(|player| {
+            state.is_alive(*player) && !crate::w17b_statics::w17b_cant_win(state, *player)
+        })
         .collect();
     let events = state
         .turn_order_from(state.turn().active())
         .into_iter()
+        .filter(|player| !crate::w17b_statics::w17b_cant_lose(state, *player))
         .filter(|player| winners.iter().any(|winner| winner != player))
         .map(|player| Event::PlayerLost {
             player,

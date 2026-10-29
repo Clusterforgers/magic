@@ -47,8 +47,12 @@ fn losses(state: &GameState) -> Vec<Event> {
         .collect();
     let goal = state.ruleset().winning_life();
     let at_goal = |p: &Player| goal.is_some_and(|goal| p.life() >= goal);
-    let reached = own.iter().any(|(p, reason)| reason.is_none() && at_goal(p));
+    let reached = own.iter().any(|(p, reason)| {
+        reason.is_none() && at_goal(p) && !crate::w17b_statics::w17b_cant_win(state, p.id())
+    });
     own.into_iter()
+        // A player who can't lose stays in the game whatever they would lose for (CR 104.3).
+        .filter(|(p, _)| !crate::w17b_statics::w17b_cant_lose(state, p.id()))
         .filter_map(|(p, reason)| {
             let reason = reason
                 .or_else(|| (reached && !at_goal(p)).then_some(LossReason::OpponentReachedLife))?;
