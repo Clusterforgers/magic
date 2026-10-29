@@ -1,0 +1,43 @@
+{
+  "oracle_id": "14c3ff84-1e82-4606-a433-869fc52cc382",
+  "name": "Syr Konrad, the Grim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Syr Konrad, the Grim",
+      "oracle_fingerprint": "8a3f78050bb1da4b1e6ef2ffdcf4faec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": ["Other", { "Type": "Creature" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChangeExcept": {
+                    "what": [{ "Type": "Creature" }],
+                    "except": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                    "from": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        },
+        { "Activated": { "cost": "{1}{B}", "effects": [{ "Mill": { "who": "EachPlayer" } }] } }
+      ]
+    }
+  ]
+}

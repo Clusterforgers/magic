@@ -1,0 +1,3 @@
+{"name":"Mana Drain","faces":[{"name":"Mana Drain","abilities":[
+ {"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Counter":{"what":{"Target":0}}},
+  {"DelayedTrigger":{"when":{"AnyOf":[{"StepBegins":{"step":"Main1","whose":"You"}},{"StepBegins":{"step":"Main2","whose":"You"}}]},"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"times":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}}}]}}]}}]}]}

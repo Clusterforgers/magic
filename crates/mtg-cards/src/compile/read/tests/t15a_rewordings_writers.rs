@@ -100,3 +100,43 @@ const T15A_CITY_LANDS: &str = r#"{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"ef
 fn t15a_writes_the_oracle_wording(#[case] json: &str, #[case] clause: &str, #[case] reads: bool) {
     assert_eq!(t15a_written(json, clause), reads, "{clause}");
 }
+
+/// A trigger of three events whose second and third are given.
+fn t15a_konrad(second: &str, third: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"AnyOf":[{{"ZoneChange":{{"what":["Other",{{"Type":"Creature"}}],"from":"Battlefield","to":"Graveyard"}}}},{second},{third}]}},"effects":[{{"DealDamage":{{"to":"Opponents","amount":1}}}}]}}}}"#
+    )
+}
+
+const T15A_PUT: &str = r#"{"ZoneChangeExcept":{"what":[{"Type":"Creature"}],"except":"Battlefield","to":"Graveyard"}}"#;
+const T15A_LEAVES: &str =
+    r#"{"ZoneChange":{"what":[{"Type":"Creature"},{"OwnedBy":"You"}],"from":"Graveyard"}}"#;
+const T15A_LEAVES_LAND: &str =
+    r#"{"ZoneChange":{"what":[{"Type":"Land"},{"OwnedBy":"You"}],"from":"Graveyard"}}"#;
+const T15A_LEAVES_THEIRS: &str =
+    r#"{"ZoneChange":{"what":[{"Type":"Creature"},{"OwnedBy":"Opponents"}],"from":"Graveyard"}}"#;
+const T15A_KONRAD: &str = "Whenever another creature dies, or a creature card is put into a graveyard from anywhere other than the battlefield, or a creature card leaves your graveyard, ~ deals 1 damage to each opponent.";
+
+#[rstest]
+#[case::three_events(T15A_PUT, T15A_LEAVES, T15A_KONRAD, true)]
+#[case::another_card_type_leaves(T15A_PUT, T15A_LEAVES_LAND, T15A_KONRAD, false)]
+#[case::another_owner_leaves(T15A_PUT, T15A_LEAVES_THEIRS, T15A_KONRAD, false)]
+#[case::a_second_event_twice(T15A_PUT, T15A_PUT, T15A_KONRAD, false)]
+#[case::another_damage(
+    T15A_PUT,
+    T15A_LEAVES,
+    "Whenever another creature dies, or a creature card is put into a graveyard from anywhere other than the battlefield, or a creature card leaves your graveyard, ~ deals 2 damage to each opponent.",
+    false
+)]
+fn t15a_three_events_are_named_in_one_clause(
+    #[case] second: &str,
+    #[case] third: &str,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(
+        t15a_written(&t15a_konrad(second, third), clause),
+        reads,
+        "{clause}"
+    );
+}

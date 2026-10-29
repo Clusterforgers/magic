@@ -1,0 +1,2 @@
+{"name":"Smothering Tithe","faces":[{"name":"Smothering Tithe","abilities":[
+ {"Triggered":{"when":{"Drew":{"who":"Opponents"}},"effects":[{"Pay":{"who":"Triggering","cost":"{2}","unpaid":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}]}}]}]}

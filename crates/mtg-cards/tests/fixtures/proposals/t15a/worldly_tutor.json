@@ -1,0 +1,2 @@
+{"name":"Worldly Tutor","faces":[{"name":"Worldly Tutor","abilities":[
+ {"Spell":{"effects":[{"Search":{"filter":[{"Type":"Creature"}],"reveal":true,"as":"found"}},{"Shuffle":{}},{"Move":{"what":{"Bound":"found"},"to":{"Library":{"place":"Top"}}}}]}}]}]}

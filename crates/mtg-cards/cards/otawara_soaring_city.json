@@ -1,0 +1,58 @@
+{
+  "oracle_id": "e9b6a394-691c-425a-9307-76d8edc7375e",
+  "name": "Otawara, Soaring City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otawara, Soaring City",
+      "oracle_fingerprint": "f607b7add939569c1d04a6f463c49715",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{U}" },
+              "DiscardSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

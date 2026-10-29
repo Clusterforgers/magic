@@ -210,6 +210,7 @@ mod spells_cast_damage;
 mod standin;
 mod swaps;
 mod t15a_rewordings;
+mod t15a_three_events;
 mod tail_sentences;
 mod target_and;
 mod target_costs;
@@ -401,6 +402,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_w12a(ability, texts);
     add_w13a(ability, texts);
     add_w16a(ability, texts);
+    t15a_three_events::add(ability, texts);
     t15a_rewordings::add(texts);
 }
 
