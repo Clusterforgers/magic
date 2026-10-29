@@ -2,7 +2,10 @@ import { useDeferredValue } from 'react'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { DECISION_LABEL } from '../turnText'
+import type { DecisionName } from '../turnText'
+import { GenericAnswers } from './GenericAnswers'
 import { usePrompt } from './PromptContext'
+import { useGenericOffer } from './useGenericOffer'
 
 /** A polite live region whose words arrive after it is in the page, which is when screen readers announce them. */
 function LiveText({ children, className }: { children: ReactNode; className?: string }) {
@@ -35,7 +38,7 @@ export function PromptLayout({ text, children, compact = false }: PromptLayoutPr
   const { name } = usePrompt()
   const title = (
     <p data-slot="prompt-title" className="text-xs font-medium text-muted-foreground">
-      Your decision: {DECISION_LABEL[name]}
+      Your decision: {Object.hasOwn(DECISION_LABEL, name) ? DECISION_LABEL[name as DecisionName] : name}
     </p>
   )
   if (compact) {
@@ -66,7 +69,19 @@ export function PromptLayout({ text, children, compact = false }: PromptLayoutPr
   )
 }
 
-/** The prompt of a decision kind the interface cannot answer yet: it says so and offers no controls. */
+const UNSUPPORTED = 'This decision is not supported in the UI yet'
+
+/**
+ * The prompt of a decision kind the interface has no prompt for (and of a kind it does not know): it says so and
+ * offers the answers any decision has (`genericChoices`), so a player is never left without a button.
+ */
 export function UnsupportedPrompt() {
-  return <PromptLayout text="This decision is not supported in the UI yet" />
+  const offer = useGenericOffer()
+  return (
+    <PromptLayout
+      text={offer.choices.length === 0 ? UNSUPPORTED : `${UNSUPPORTED}. Choose an answer to go on.`}
+    >
+      <GenericAnswers offer={offer} />
+    </PromptLayout>
+  )
 }

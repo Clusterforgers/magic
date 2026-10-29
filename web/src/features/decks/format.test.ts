@@ -1,4 +1,4 @@
-// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 3 manual, 1 partial"), a deck's note counts what needs manual steps or what blocks it and leaves a changed deck to its marker, and an import summary counts cards per zone; the format list is the one the server checks.
+// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 3 manual, 1 partial"), a deck's note counts what needs manual steps or what blocks it and leaves a changed deck to its marker, and an import summary counts cards per zone; the format list is the one the server checks.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -10,11 +10,24 @@ import {
   countsText,
   DECK_FORMATS,
   formatLabel,
+  hasUnvalidated,
   importSummary,
   SOURCE_LABEL,
   STATE_LABEL,
   SUPPORT_LABEL,
 } from './format'
+
+describe('hasUnvalidated', () => {
+  it.each([
+    [{}, false],
+    [{ partial: 1 }, true],
+    [{ manual: 3 }, true],
+    [{ stale: 1 }, true],
+    [{ unplayable: 1 }, true],
+  ])('is decided by the counts %j: %s', (over, expected) => {
+    expect(hasUnvalidated(counts(over))).toBe(expected)
+  })
+})
 
 describe('formatLabel', () => {
   it.each([

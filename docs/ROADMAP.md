@@ -37,7 +37,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
-- Playable first: "Views complete" (v1), then the web in this order, Commander first because it is the format the owner plays: card images (a1, a2), Commander at the table (k1), the table states, the manual-action menu, the prompts for the decision kinds, Commander in the builder (k2), the playtest polish (f1b), a four-seat Commander game in Playwright (k3), the deploy (d1) and the not-validated list (f1a). Coverage rounds and the Gate run beside it.
+- Playable first: "Views complete" (v1), then the web in this order, Commander first because it is the format the owner plays: card images (a1, a2), Commander at the table (k1), the table states, the manual-action menu, the prompts for the decision kinds, Commander in the builder (k2), the playtest polish (f1b), a four-seat Commander game in Playwright (k3), the deploy (d1) and the not-validated list. Coverage rounds and the Gate run beside it.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
 
 ## Done
@@ -50,10 +50,11 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6, in real browsers (`web/e2e/precon-game.spec.ts`).
 - Web: the game UI with prompts for all eight decision kinds, manual payment that the engine always accepts (several mana, sources that cost mana) and the number prompt for X with its total cost, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Popular-card edges: a delayed trigger reads the stats of its resolution's targets as they last were (Mana Drain), and no token is made for a player who loses in the same batch (CR 800.4a).
-- Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand, and one-click play.
+- Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand (each unread clause quoted beside its reason), and one-click play.
 - Combat clicks: attack and block by clicking (the arrow says it, no label on the card, a second click undoes), the defender chosen on a pod, one-row combat prompts and the life after damage as a chip on the pod.
 - Table readability: the hand keeps every card's name and cost readable (one row down to 68 px, then rows that show each card's top, scrolling only past that), the turn band hangs above the prompt sheet, and the log folds a round of passes into one line of colour dots.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
+- Not-validated list: `/decks/unvalidated` and `/decks/$deckId/unvalidated` list the cards the game does not run whole with each unread clause quoted beside its reason, the decks that hold the card, a filter by state and a copyable text (`docs/web.md`).
 - Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
 - Changes of control: targets, groups, the enchanted permanent, one target for each opponent with the untap and keywords after it, an untap before the taking, a base size or a creature type for the turn, each player taking back what they own, exchanges of control and a targeting spell or ability countered unless its controller pays (`docs/engine.md`, `docs/cards-dsl.md`).
 - Abilities and characteristics: one ability reader, CR 613 in one pass, `GameRule` effects, state triggers and abilities that work from hands, graveyards, exile and the stack.
@@ -132,18 +133,16 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 The server is settled first, then the web is built once against the final types.
 
-- [~] (g0f) (g0f-idle-windows) A seat is passed for at a priority window with only mana abilities to use: `windows.rs` `asks` asks on `PriorityOptions.can_act` (`priority.rs` `can_act`: lands, castable spells, abilities that are not mana abilities, special actions; mana abilities never count), a held stop, Full Control or a yield, so the idle windows of the smoke runs (2 to 15 of 27 to 48 decisions per game) come from one of those: find which (a costly mana ability listed by `other_abilities`, a stop the seat holds) and pass the window as idle, with a test over the window table in `windows.rs`
 - [ ] (g0g) The hand dock holds hands of 9 to 16 cards in two rows below 1000 px of height: at 1400x900 a hand of 9 or more scrolls, since two rows need 150 px of cards (`HAND_CLAMP` in `layout.ts`, or more of the width from the controls dock beside it)
+- [ ] (g0h) The e2e driver counts an idle window as one with no legal hand card (`web/e2e/driver.ts` `drive`): count it only when no hand card, board object or command-zone card is legal, since the server asks exactly the seats that have a play (a Clue, an equip, a scry land, a commander to cast); in seeded four-seat bot games it asks 0 idle windows of 380 to 420 priority windows, 50 to 190 of them with abilities as the only play
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
-- [~] (w3b) (w3-prompts-a) The DivideAmount prompt: the total split among the targets, each at least one
-- [~] (w3c) (w3-prompts-a) The ChooseCosts prompt: the optional costs the player can pay, as toggles
 - [ ] (w3k) A replacement candidate carries the words of its own effect, so the ChooseReplacement prompt shows the one ability that applies instead of the whole card text (`ReplacementCandidate`)
 - [ ] (w3j) A scry is one screen: the engine asks the split and the order of both piles in one decision, so the player orders the top pile where the cards are split instead of in the two `OrderCards` that follow
 - [ ] (w3f) The payment prompt spends restricted mana by hand, read against `PayOptions.spend`
 - [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise
-- [ ] (w3i) A prompt kind the web has not built yet offers a way on (decline the optional cost, or cancel the cast), so a seat facing a gift spell such as Consumed by Greed is not left without a button
 - [ ] (w3h) The payment prompt exiles graveyard cards for delve
+- [ ] (w3l) `decisionName` (`turnText.ts`) names a decision kind the client does not know as Discard, so the waiting label and the clock words of a newer server's decision read wrong
 - [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name yet
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
@@ -164,8 +163,13 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pl2a) The forecast lists the life an attacker's controller gains (lifelink of an attacker) so its pod shows the "+N" chip too (`PlayerForecast` covers attacked seats only)
 - [ ] (pl2b) The tiles of focus mode and of the phone's strip show the life chip and take the defender click (only the pod does today)
 - [ ] (pl2c) A pending block's arrow takes the colour of the preview's outcome for its pair, as a declared block does
-- [ ] (pl2d) Run `layout.spec.ts` and `fit.spec.ts` for the attack and block prompts at the six sizes and read the chip and the bar in the six-size screenshots
+- [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
 - [~] (pl3) (mana-display) Mana shows what it is: the payment prompt's sources, the mana pool and the cards that make mana show the symbols and the amount each gives ({C}{C} for Sol Ring, one coloured symbol for a basic land)
+- [~] (pm1) (manual-anytime) Manual actions at any time: a seat applies a manual action to its cards (and counters and tapping to any permanent, life and player counters on itself) whenever it likes, on any turn, with a stack, whether or not the card is supported or the seat holds priority, so a card that does not do what it should is fixed by hand and an ability the engine does not play is played by hand (tokens, counters, damage, mana, draws, zone moves); the engine applies it between decisions, the log names it and replays reproduce it
+- [~] (lb1) (lobby-deck-view) The waiting-for-players page uses the width and clears up: seats and invite on one side, "Your deck" on the other with a chooser that shows the chosen deck in full (commanders, colours, card count, support summary, mana curve, the cards grouped by type as pictures, its not-validated cards), and a Ready button that always says why it is off
+- [~] (pn1) (no-seat-limit) No limit on the number of players for any format: the create form, the server and the engine accept any number of seats from two up, and the table lays out as many as there are
+- [ ] (fx1) A player marks a card the game does not run whole as important to fix (builder, deck page, lobby deck view, table card menu), the marks are stored per user and listed ranked by marks for the owner (`mtg-cli fix-marks`), and weigh in the gap ledger
+- [ ] (db1) The deck builder gets a user-experience pass: card pictures large enough to read, the deck grouped by type with counts, a stats panel (curve, colours, types), the full deck preview shared with the lobby, per-card "play by hand" and "fix this" controls, clear support marks
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [~] (ma1) (manual-menu) Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
@@ -372,11 +376,11 @@ The server is settled first, then the web is built once against the final types.
 
 ## M7 Product
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
-- [~] (w1b) (f1a-unvalidated-list) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
 - [ ] (w2h) A seat that reloads or reconnects gets the game log back (`play/store.ts`): after a `Snapshot` the log reads "Nothing has happened yet."
-- [~] (f1a) (f1a-unvalidated-list) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
+- [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
+- [ ] (f1d) The builder links its check bar to `/decks/$deckId/unvalidated` (`docs/web.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch

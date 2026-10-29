@@ -74,7 +74,7 @@ Hotkeys [community S8, S11, S15, S17]:
 
 ### 3. Auto-pass and Full Control
 
-- Arena "only stops if you have an available play" [community S11], "will automatically pass priority through your opponent's turn if you have nothing to play" [community S17] and passes the turn after a land drop with nothing else to do [community S12]. That is our `can_act`.
+- Arena "only stops if you have an available play" [community S11], "will automatically pass priority through your opponent's turn if you have nothing to play" [community S17] and passes the turn after a land drop with nothing else to do [community S12]. That is our `can_act`. A play is a land to drop, a spell to cast (from the hand, the command zone or elsewhere), an ability that is not a mana ability and can be paid, or a special action; a mana ability never is one, a filter land that costs mana included, and a Clue, an equip or a scry land is, so a seat that holds one is asked at each default window where it can use it, with nothing in its hand.
 - It never skips a decision that needs an answer (blocks [community S8], targets [community S19]), a stop you set [community S9] or Full Control.
 - Full Control: Ctrl holds priority for the phase and ends once you pass, Ctrl+Shift holds it until toggled [community S8, S10, S24]. It answers your own abilities and triggers, spends pool mana by hand, and overrides Auto Tap, Auto Order Triggered Abilities, Auto Choose Replacement Effect and Auto Assign Combat Damage [community S10, S13, S24].
 - The price of windows: Arena sometimes hands priority to a player who cannot answer, who then loses time, or the game, by not clicking [community S21].
