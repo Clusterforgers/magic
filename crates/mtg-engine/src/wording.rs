@@ -530,6 +530,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} becomes tapped", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::PhasedOut { what } => (
+            format!("{} phases out", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::PhasedIn { what } => (
+            format!("{} phases in", subject(what)),
+            what.0 == [Pred::This],
+        ),
         TriggerPattern::Untapped { what } => (
             format!("{} becomes untapped", subject(what)),
             what.0 == [Pred::This],

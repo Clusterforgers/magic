@@ -12,6 +12,11 @@ use crate::refs::{Ref, Selector};
 pub fn w7e_phase_out(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let what = match r.attempt(subject) {
         Some((what, _)) => what,
+        // "Untap target creature you control. It phases out ...": "it" is the one target named before.
+        None if r.targets.len() == 1 && r.lookahead(|r| r.word("it").then_some(())).is_some() => {
+            r.need("it")?;
+            Ref::Target(0)
+        }
         None => object(r)?,
     };
     let verb = if w7e_one(r, &what) {
@@ -20,7 +25,25 @@ pub fn w7e_phase_out(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "phase out"
     };
     r.need(verb)?;
-    Some(vec![Effect::PhaseOut { what }])
+    let noun = w7e_one_noun(r, &what);
+    let (duration, tapped) = super::w11b_phase::w11b_phase_tail(r, noun);
+    Some(vec![Effect::PhaseOut {
+        what,
+        duration,
+        tapped,
+    }])
+}
+
+/// The noun "that ..." names a single target by ("Tap that creature as it phases in this way").
+pub(super) fn w7e_one_noun(r: &Reader<'_>, what: &Ref) -> Option<&'static str> {
+    let Ref::Target(0) = what else {
+        return None;
+    };
+    let spec = r.targets.first().filter(|spec| spec.bounds.is_one())?;
+    let crate::refs::Targetable::Object(selector) = &spec.what else {
+        return None;
+    };
+    super::w11b_phase::w11b_noun(selector)
 }
 
 /// The sentence of Teferi's Protection, as the reader takes it and the writer gives it back.
@@ -51,6 +74,8 @@ pub fn w7e_phased_and_protected_text(effects: &[Effect]) -> Option<(String, usiz
     let [
         Effect::PhaseOut {
             what: Ref::Each(selector),
+            duration: None,
+            tapped: false,
         },
         rest @ ..,
     ] = effects

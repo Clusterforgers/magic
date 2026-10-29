@@ -616,6 +616,7 @@ impl<'a> Walker<'a> {
             Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
+            Amount::PhasedOut(of) => self.w2c_selector_amount("PhasedOut", of),
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
@@ -1349,6 +1350,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
+            | TriggerPattern::PhasedOut { what }
+            | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
             | TriggerPattern::Unblocked { what }
@@ -1356,10 +1359,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::CountersRemoved { what, .. } => {
                 self.at("what", |w| w.selector(what));
             }
-            TriggerPattern::Attached { what, to } => {
-                self.at("what", |w| w.selector(what));
-                self.at("to", |w| w.selector(to));
-            }
+            TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
             TriggerPattern::GroupAttacks { .. } | TriggerPattern::Chapter { .. } => {
                 self.w2e_counted(pattern);
             }
@@ -1370,6 +1370,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
         }
+    }
+
+    /// "is attached to": the attachment and what it is attached to.
+    fn w11b_attached(&mut self, what: &Selector, to: &Selector) {
+        self.at("what", |w| w.selector(what));
+        self.at("to", |w| w.selector(to));
     }
 
     /// The patterns that count: the attackers of a `GroupAttacks` and the number of a `Chapter`.
@@ -1934,6 +1940,15 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
+            Effect::PhaseOut {
+                what, duration, ..
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                // The engine phases them in when the source leaves the battlefield, and knows no other duration.
+                if let Some(duration) = duration.filter(|d| *d != Duration::WhileSourceOnBattlefield) {
+                    w.uses("PhaseOut", &format!("Duration.{}", tag_of(&duration)));
+                }
+            }
             Effect::Exile {
                 what,
                 bind,
@@ -1961,7 +1976,6 @@ impl Walker<'_> {
             | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }
-            | Effect::PhaseOut { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
             | Effect::Prepare { what }

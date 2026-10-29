@@ -603,7 +603,11 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('SpellResolved' in event) return line(`${n.card(event.SpellResolved.object)} resolves`)
   if ('PermanentTapped' in event) return quiet(`${n.card(event.PermanentTapped.object)} becomes tapped`)
   if ('PermanentUntapped' in event) return quiet(`${n.card(event.PermanentUntapped.object)} becomes untapped`)
-  if ('PermanentPhasedOut' in event) return line(`${n.card(event.PermanentPhasedOut.object)} phases out`)
+  if ('PermanentPhasedOut' in event) {
+    const { object, until } = event.PermanentPhasedOut
+    const held = until ? ` until ${n.card(until.id)} leaves the battlefield` : ''
+    return line(`${n.card(object)} phases out${held}`)
+  }
   if ('PermanentPhasedIn' in event) return line(`${n.card(event.PermanentPhasedIn.object)} phases in`)
   if ('ManaAdded' in event) {
     const { player, mana, source } = event.ManaAdded

@@ -342,11 +342,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
-        Event::PermanentPhasedOut {
-            object,
-            controller,
-            indirect,
-        } => crate::phasing::fold_out(state, *object, *controller, *indirect)?,
+        Event::PermanentPhasedOut { .. } => crate::phasing::w11b_fold_out_event(state, event)?,
         Event::PermanentPhasedIn { object } => crate::phasing::fold_in(state, *object)?,
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,

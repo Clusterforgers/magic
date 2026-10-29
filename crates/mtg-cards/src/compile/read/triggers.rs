@@ -70,6 +70,8 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
         | TriggerPattern::Untapped { what }
+        | TriggerPattern::PhasedOut { what }
+        | TriggerPattern::PhasedIn { what }
         | TriggerPattern::ZoneChange {
             what,
             to: Some(ZoneKind::Battlefield),
@@ -314,6 +316,11 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         )));
     }
     let what = phrase(r, Form::All)?;
+    if at_least == 1 && r.words("phase out") {
+        return Some(TriggerPattern::Batch(Box::new(TriggerPattern::PhasedOut {
+            what,
+        })));
+    }
     if r.word("attack") {
         return Some(TriggerPattern::GroupAttacks { what, at_least });
     }
@@ -750,6 +757,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::BecomesBlocked { what: what.clone() });
     } else if r.words("becomes tapped") {
         return Some(TriggerPattern::Tapped { what: what.clone() });
+    } else if r.words("phases out") || r.words("phase out") {
+        return Some(TriggerPattern::PhasedOut { what: what.clone() });
+    } else if r.words("phases in") || r.words("phase in") {
+        return Some(TriggerPattern::PhasedIn { what: what.clone() });
     } else if r.words("becomes untapped") {
         return Some(TriggerPattern::Untapped { what: what.clone() });
     } else if r.word("explores") {
@@ -1217,6 +1228,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
+        TriggerPattern::PhasedOut { what } => said(what, "phases out"),
+        TriggerPattern::PhasedIn { what } => said(what, "phases in"),
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
@@ -1556,6 +1569,10 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
         ),
         TriggerPattern::ZoneChange { what, from, to } => batches::zone_change(what, *from, *to),
         TriggerPattern::Milled { what, by } => super::w8b_milled::w8b_batch_text(what, by),
+        TriggerPattern::PhasedOut { what } => Some(format!(
+            "Whenever one or more {} phase out",
+            phrase_text(what, Form::All)?
+        )),
         TriggerPattern::CountersPut { what, counter } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),

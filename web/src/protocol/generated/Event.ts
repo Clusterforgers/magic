@@ -190,7 +190,15 @@ controller: PlayerId,
 /**
  * It went with the permanent it is attached to, and phases in with that permanent.
  */
-indirect?: boolean, } } | { "PermanentPhasedIn": { 
+indirect?: boolean, 
+/**
+ * It phases out until this permanent leaves the battlefield, and phases in then and not in an untap step.
+ */
+until?: ObjectRef, 
+/**
+ * It phases in tapped ("Tap that creature as it phases in this way").
+ */
+tapped?: boolean, } } | { "PermanentPhasedIn": { 
 /**
  * The permanent.
  */

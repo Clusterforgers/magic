@@ -291,6 +291,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
 
 /** The ways the pipeline's events that need more than one sentence differ, each next to its text. */
 const MORE: [Event, string][] = [
+  [
+    { PermanentPhasedOut: { object: 3, controller: 0, until: { id: 4, counter: 0 }, tapped: true } },
+    'Forest phases out until Lightning Bolt leaves the battlefield',
+  ],
   [{ Mutated: { object: 3, spell: 9, over: false, player: 1 } }, 'Bo mutates a creature under Forest'],
   [
     { ResolutionEnded: { object: 4, outcome: 'Fizzled' } },

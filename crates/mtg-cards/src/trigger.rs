@@ -241,6 +241,16 @@ pub enum TriggerPattern {
         /// The permanent.
         what: Selector,
     },
+    /// A permanent matching the selector phases out (CR 702.26); judged as it was before it phased out.
+    PhasedOut {
+        /// The permanent.
+        what: Selector,
+    },
+    /// A permanent matching the selector phases in (CR 702.26).
+    PhasedIn {
+        /// The permanent.
+        what: Selector,
+    },
     /// A permanent matching the selector is tapped for mana.
     TappedForMana {
         /// The permanent.

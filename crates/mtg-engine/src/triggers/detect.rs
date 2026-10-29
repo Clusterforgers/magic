@@ -113,6 +113,10 @@ enum Happened {
     Tapped { object: ObjectId },
     /// A permanent became untapped.
     Untapped { object: ObjectId },
+    /// A permanent phased out; judged as it was before (CR 702.26).
+    PhasedOut { object: ObjectId },
+    /// A permanent phased in.
+    PhasedIn { object: ObjectId },
     /// A player tapped a permanent for mana: once for the tap, whatever mana it made.
     TappedForMana { object: ObjectId, player: PlayerId },
     /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0), which held `before`
@@ -224,6 +228,7 @@ impl Happened {
                 from: Zone::Battlefield,
                 ..
             } | Happened::Exploited { .. }
+                | Happened::PhasedOut { .. }
         )
     }
 
@@ -803,6 +808,10 @@ fn about_players_and_permanents(
             found.push(Happened::Tapped { object: *object });
         }
         Event::PermanentUntapped { object } => found.push(Happened::Untapped { object: *object }),
+        Event::PermanentPhasedOut { object, .. } => {
+            found.push(Happened::PhasedOut { object: *object });
+        }
+        Event::PermanentPhasedIn { object } => found.push(Happened::PhasedIn { object: *object }),
         Event::ManaAdded {
             player,
             source: Some(source),
@@ -1388,7 +1397,9 @@ fn matching_permanents(
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
         }
         (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
-        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped }) => {
+        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped })
+        | (TriggerPattern::PhasedOut { what }, Happened::PhasedOut { object: tapped })
+        | (TriggerPattern::PhasedIn { what }, Happened::PhasedIn { object: tapped }) => {
             let tapped = object(*tapped)?;
             picks(what, tapped)?.then(|| cause(state, vec![Target::Object(tapped)]))
         }
@@ -1813,7 +1824,8 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
         Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
-        | Event::DayNightChanged { .. } => true,
+        | Event::DayNightChanged { .. }
+        | Event::PermanentPhasedOut { .. } => true,
         Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,
@@ -1855,6 +1867,8 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
             elsewhere(state, &together, &mut found, &mut used);
         }
     }
+    // A player who lost with the same events triggers nothing, though the state looked back at has them alive (CR 800.4a).
+    found.retain(|triggered| post.is_alive(triggered.controller));
     found
 }
 
@@ -2105,6 +2119,28 @@ mod tests {
             before.counter,
             "it is a new object in the graveyard now"
         );
+    }
+
+    #[rstest]
+    #[case::the_watcher_s_controller_lost(ME, 0)]
+    #[case::another_player_lost(FOE, 1)]
+    fn w11b_a_player_who_loses_with_the_deaths_triggers_nothing(
+        #[case] loser: PlayerId,
+        #[case] want: usize,
+    ) {
+        let observer = with(
+            "Observer",
+            vec![triggered(
+                r#"{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}}"#,
+            )],
+        );
+        let pre = board(observer);
+        let lost = Event::PlayerLost {
+            player: loser,
+            reason: crate::player::LossReason::ZeroLife,
+        };
+        let (post, found) = fire(&pre, &[lost, died(&pre, "Ogre")]);
+        assert_eq!(found.len(), want, "{:?}", who(&post, &found));
     }
 
     #[test]
