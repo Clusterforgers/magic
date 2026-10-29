@@ -88,6 +88,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Exert: the choice in the attack declaration, `Exerted` and `ExertEnded`, the untap step of the exerting player it skips and its "When you do" and "Whenever you exert a creature" triggers.
 - Mill and rad counters: mill triggers per card, per batch and per player, target bounds from a mill batch, cards milled this turn, the radiation rule, entering tapped for rad counters, costs reduced per rad counter and losing all rad counters.
 - Statics of the rules: cards in graveyards that can't be targeted, players who can't lose or win, opponents who can't cast on your turn, combat damage by toughness and counters that remain as a card changes zones.
+- Popularity coverage: `mtg-cli coverage --all` ranks the blockers of every Commander-legal card by the EDHREC rank of the cards they hold back, shows the Verified share by rank bucket and lists the cards of the top 2,000 that are not Verified (`docs/data-sources.md`).
 
 ## M3 Card system
 
@@ -114,6 +115,11 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ### Manual cards and views
 - [~] (v1) (v1-views-final) Views complete: every object state, the activatable abilities with cost and target wording, a spectator audience, and reveals moved to a hidden zone in one batch (`docs/protocol.md`)
+- [~] (v1a) (v1a-ability-wording) The activated abilities of an object in its view with their oracle wording (`ObjectView.activated`, the loyalty abilities' text), so a menu names what `PriorityOptions.abilities` offers
+- [~] (v1b) (v1a-ability-wording) A card revealed and moved to a hidden zone in one batch reaches every seat it was shown to as it was seen (`EventBatch.shown`), so the log names it
+- [~] (v1c) (v1c-spectator-printing) A spectator audience: `StateView::for_spectator` and `TableView.spectator`, so a client tells a spectator's view from a seat's without counting seats
+- [~] (v1d) (v1c-spectator-printing) The printing a deck line chose reaches the game (`DeckRef::Oracle` and the catalog), so `ObjectView.identity.printing_id` names it and the table draws that art
+- [~] (v1e) (v1c-spectator-printing) The city's blessing in the player view (`PlayerView.citys_blessing`, public), so the table shows the badge without reading events
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## M4 Commander
@@ -160,7 +166,6 @@ The server is settled first, then the web is built once against the final types.
 ### Target
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,450 of 6,429 precon cards, 69.2%; 83.5% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
-- [~] (t14a) (w22a-coverage-all) `mtg-cli coverage --all` ranks the blockers over every Commander-legal card, each weighted by its popularity rank (the Scryfall EDHREC rank), so a clause that serves several cards outside the precons is read first; the top 2,000 cards by rank are the first target (618 are not Verified)
 - [ ] (t14b) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often
 
 ### Mana and costs
@@ -258,6 +263,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
+- [~] (t15a) (t15a-popular-1) The 42 not-Verified cards among the 300 most popular Commander cards (`mtg-cli coverage --all --out`; Path of Ancestry, Mana Drain, Smothering Tithe, Sylvan Library, Force of Will, Mana Vault, The One Ring) read whole, or skipped with the missing piece as a lettered line
 - [~] (r3) (the local bulk run of gpt-oss:20b with --schema, run by the orchestrator) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (t9a-a) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and "~ or a creature it's paired with" triggers (Silverblade Paladin, Donna Noble, Breathkeeper Seraph)
 - [ ] (t9a-b) Plot as a special action from the hand and a free cast from exile on a later turn, with "plotting costs {M} less" (Lock and Load, Pyretic Charge, Doc Aurlock)

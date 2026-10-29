@@ -37,22 +37,27 @@ pub async fn audit(db: &Database, args: &AuditArgs) -> Result<String, CliError> 
 
 /// Every stored deck card, in name order.
 pub(crate) async fn stored_cards(db: &Database) -> Result<Vec<PrintedCard>, CliError> {
+    stored_cards_matching(db, &CardSearch::default()).await
+}
+
+/// The stored cards a search selects, in its order.
+pub(crate) async fn stored_cards_matching(
+    db: &Database,
+    search: &CardSearch,
+) -> Result<Vec<PrintedCard>, CliError> {
     let repo = db.cards();
     let mut cards = Vec::new();
     let mut page = Page::new(MAX_PAGE_SIZE, 0);
     loop {
-        let found = repo
-            .search(&CardSearch::default(), page)
-            .await
-            .map_err(|error| {
-                if missing_table(&error) {
-                    CliError::Config(
-                        "the schema is not applied yet; `mtg-cli ingest` applies it".into(),
-                    )
-                } else {
-                    CliError::Db(error)
-                }
-            })?;
+        let found = repo.search(search, page).await.map_err(|error| {
+            if missing_table(&error) {
+                CliError::Config(
+                    "the schema is not applied yet; `mtg-cli ingest` applies it".into(),
+                )
+            } else {
+                CliError::Db(error)
+            }
+        })?;
         if found.cards.is_empty() {
             return Ok(cards);
         }

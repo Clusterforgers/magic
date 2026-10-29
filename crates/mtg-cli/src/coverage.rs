@@ -8,8 +8,20 @@ use mtg_cards::{PrintedCard, PrintedFace};
 use mtg_db::{Card, Database, DeckBoard, PreconDeckSummary, StoredFace};
 
 use crate::args::CoverageArgs;
+use crate::cache::Cache;
+use crate::coverage_all::coverage_all;
 use crate::error::CliError;
 use crate::status::missing_table;
+
+/// The report the arguments ask for as the text to print: that of the precons, or with `--all` that of every
+/// Commander-legal card.
+pub async fn report(db: &Database, cache: &Cache, args: &CoverageArgs) -> Result<String, CliError> {
+    if args.all {
+        coverage_all(db, cache, args).await
+    } else {
+        coverage(db, args).await
+    }
+}
 
 /// The report on the precons the arguments select (all by default), as the text to print.
 pub async fn coverage(db: &Database, args: &CoverageArgs) -> Result<String, CliError> {

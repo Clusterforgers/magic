@@ -7,6 +7,7 @@ mod commands;
 mod common;
 mod compile;
 mod coverage;
+mod coverage_all;
 mod fetch_decks;
 mod fetch_printings;
 mod fetch_scryfall;

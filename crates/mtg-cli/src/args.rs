@@ -111,9 +111,19 @@ pub struct CoverageArgs {
     #[arg(long, value_name = "CODE_OR_NAME", value_parser = clap::builder::NonEmptyStringValueParser::new())]
     pub deck: Option<String>,
 
-    /// How many blockers each of the two rankings shows.
+    /// How many blockers each ranking shows.
     #[arg(long, value_name = "N", default_value_t = mtg_cards::coverage::DEFAULT_TOP)]
     pub top: usize,
+
+    /// Rank the blockers over every stored card legal in Commander instead of the precons, with a third ranking by the
+    /// popularity weight (1 / (EDHREC rank + 100), read from the cached Oracle Cards file) of the cards they hold back.
+    #[arg(long, conflicts_with = "deck")]
+    pub all: bool,
+
+    /// With `--all`: write the cards of the top 2,000 by rank that are not verified to this file, one
+    /// `rank<TAB>state<TAB>name<TAB>first blocker` line each.
+    #[arg(long, value_name = "FILE", requires = "all")]
+    pub out: Option<PathBuf>,
 }
 
 /// Options of `forge-check`.
@@ -562,6 +572,27 @@ mod tests {
             panic!("expected coverage");
         };
         assert_eq!((args.deck.as_deref(), args.top), (deck, top));
+        assert!(!args.all && args.out.is_none());
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "coverage", "--all"], None)]
+    #[case(&["mtg-cli", "coverage", "--all", "--top", "5"], None)]
+    #[case(&["mtg-cli", "coverage", "--all", "--out", "sweep.tsv"], Some("sweep.tsv"))]
+    fn coverage_all_options_land_in_their_fields(#[case] args: &[&str], #[case] out: Option<&str>) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::Coverage(args) = cli.command else {
+            panic!("expected coverage");
+        };
+        assert!(args.all);
+        assert_eq!(args.out.as_deref(), out.map(std::path::Path::new));
+    }
+
+    #[rstest]
+    #[case::out_needs_all(&["mtg-cli", "coverage", "--out", "sweep.tsv"])]
+    #[case::all_and_a_deck(&["mtg-cli", "coverage", "--all", "--deck", "C21"])]
+    fn coverage_all_refuses_what_does_not_go_with_it(#[case] args: &[&str]) {
+        assert!(Cli::try_parse_from(args).is_err());
     }
 
     fn propose(args: &[&str]) -> Result<ProposeArgs, clap::Error> {
