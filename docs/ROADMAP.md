@@ -124,9 +124,14 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 The server is settled first, then the web is built once against the final types.
 
 - [~] (g0) (g0-smoke-game) Smoke test: two accounts play a precon game in real browsers from the lobby into the turns; every blocker found becomes a lettered roadmap line and the script stays as the first Playwright game
+- [~] (g0a) (w2-lobby-commander) The create form and the lobby deck chooser pick a precon and the Commander format, so `precon-game.spec.ts` (`startTable` makes the game with `POST /api/games` and `PUT .../deck`) plays from the UI alone; joins with (w1a) and (k2)
+- [~] (g0b) (w3-payment) A hand highlights only the cards the seat can pay for, and the payment prompt disables "Pay automatically" with its reason when the mana cannot cover the cost (manual pair, `failure-bo` page text: "That answer is not allowed: invalid payment" with the prompt left open)
+- [~] (g0c) (w4-table-readability) The hand fan keeps every card's name and cost readable at 1600x1000 (names cut off in `verified/17-bo-PayMana.png` and `four-seats/25-bo-turn-5-Priority.png`) and the turn splash never covers a prompt (`verified/17-bo-PayMana.png`)
+- [~] (g0e) (w3-payment) Paying by hand cannot go wrong: the prompt keeps a source that would overpay or that needs mana made before it from being tapped, instead of the server refusing the confirm ("payment provides 4 mana but the cost is 3" with Sol Ring and two more sources; "the mana cost of ManaSource ... cannot be paid from the mana made before it"; both in runs with `autoPay: false`, whose seat now pays automatically in `precon-game.spec.ts`)
+- [~] (g0d) (w4-table-readability) The log folds the "receives priority" and "passes priority" lines of a step into one line and a seat's priority windows with only mana abilities to use are passed (four seats: eight lines a step, `four-seats/25-bo-turn-5-Priority.png`; idle windows in 2 to 15 of 27 to 48 decisions)
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
-- [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and cards put back; the payment prompt for X, restricted mana, convoke and delve
+- [~] (w3a) (w3-payment) Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and cards put back; the payment prompt for X, restricted mana, convoke and delve
 - [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name yet
 - [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
@@ -330,9 +335,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
 - [~] (B3) (w1-precons-web) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
 - [~] (w1a) (w1-precons-web) Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
-- [ ] House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
-- [ ] Precons as a third kind of deck in the lobby picker (`docs/server.md`, `docs/deck-check.md`)
-- [ ] (hr5c) The lobby picker shows each deck's verdict at the table before joining, through `POST /api/decks/check` (`docs/server.md`, Precons)
+- [~] (w2b) (w2-lobby-commander) House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
+- [~] (w2a) (w2-lobby-commander) Precons as a third kind of deck in the lobby picker (`docs/server.md`, `docs/deck-check.md`)
+- [~] (hr5c) (w2-lobby-commander) The lobby picker shows each deck's verdict at the table before joining, through `POST /api/decks/check` (`docs/server.md`, Precons)
 - [ ] (f1a) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
