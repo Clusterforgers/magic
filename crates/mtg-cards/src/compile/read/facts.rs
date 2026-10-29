@@ -39,6 +39,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(counter_this_turn))
         .or_else(|| r.attempt(died_under_you))
         .or_else(|| r.attempt(full_party))
+        .or_else(|| r.attempt(super::w21a_atoms::w21a_condition))
         .or_else(|| r.attempt(super::c4_hands::read))
 }
 
@@ -272,6 +273,9 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     };
     if *left == c10_any_noncreature_cast() && *op == Cmp::Ge && number == 1 {
         return vec![C10_ANY_NONCREATURE_CAST.to_owned()];
+    }
+    if let Some(text) = super::w21a_atoms::w21a_condition_text(left, *op, number) {
+        return vec![text];
     }
     let counted = |pattern: &dyn Fn(&str) -> String| -> Vec<String> {
         quantity_texts(number)

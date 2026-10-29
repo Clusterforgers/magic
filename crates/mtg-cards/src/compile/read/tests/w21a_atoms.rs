@@ -174,6 +174,29 @@ fn a_near_miss_of_an_atom_stays_unread(#[case] text: &str, #[case] form: Form) {
 }
 
 #[rstest]
+#[case::end_step(
+    "At the beginning of your end step, if a card left your graveyard this turn, draw a card.",
+    ClauseKind::Triggered
+)]
+#[case::each_end_step(
+    "At the beginning of each end step, if a card left your graveyard this turn, create a Treasure token.",
+    ClauseKind::Triggered
+)]
+fn a_card_that_left_your_graveyard_is_a_condition_of_the_turn(
+    #[case] text: &str,
+    #[case] kind: ClauseKind,
+) {
+    let read = clause(text, kind, false).unwrap_or_else(|| panic!("not read: {text}"));
+    let json = serde_json::to_string(&read).unwrap_or_default();
+    assert!(json.contains("CardsLeftGraveyard"), "{text}: {json}");
+    let wordings = render_variants(&read);
+    assert!(
+        wordings.iter().any(|written| same_text(written, text)),
+        "{text}: {wordings:?}"
+    );
+}
+
+#[rstest]
 #[case::grant_haste(
     "Modified creatures you control have haste.",
     ClauseKind::Static,

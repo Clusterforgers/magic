@@ -63,6 +63,31 @@ pub(super) fn w21a_place(
     Some((suffixes, Some(place)))
 }
 
+/// The tally a condition counts, as the turn's facts say it: "a card left your graveyard this turn".
+const W21A_LEFT_GRAVEYARD: &str = "a card left your graveyard this turn";
+
+/// "a card left your graveyard this turn": at least one card left the controller's graveyard this turn.
+pub(super) fn w21a_condition(r: &mut Reader<'_>) -> Option<crate::value::Condition> {
+    (r.words(W21A_LEFT_GRAVEYARD) || r.words("one or more cards left your graveyard this turn"))
+        .then(|| crate::value::Condition::Compare {
+            left: Amount::Tallied {
+                who: Ref::You,
+                what: crate::value::TurnTally::CardsLeftGraveyard,
+            },
+            op: Cmp::Ge,
+            right: Amount::Fixed(1),
+        })
+}
+
+/// The condition `w21a_condition` reads, written back.
+pub(super) fn w21a_condition_text(left: &Amount, op: Cmp, number: u32) -> Option<String> {
+    let counted = Amount::Tallied {
+        who: Ref::You,
+        what: crate::value::TurnTally::CardsLeftGraveyard,
+    };
+    (*left == counted && op == Cmp::Ge && number == 1).then(|| W21A_LEFT_GRAVEYARD.to_owned())
+}
+
 /// The zone of `w21a_graved` as it is said, from the zone the writer gave the card ("from your graveyard").
 pub(super) fn w21a_graved_text(zone: Option<&str>, plural: bool) -> Option<String> {
     let whose = match zone? {
