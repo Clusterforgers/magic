@@ -174,6 +174,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
 - [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12
 - [ ] (pn1c) The seat field builds a row per seat as it is typed: guard a count that would freeze the page (the server's ceiling is the 256 KiB create body, about 2,500 seats)
+- [~] (cr1) (create-fit) The Create a game page fits the layout gate at every size (1280x720 included) with the Create button in view
 - [ ] (db1) The deck builder gets a user-experience pass: card pictures large enough to read, the deck grouped by type with counts, a stats panel (curve, colours, types), the full deck preview shared with the lobby, per-card "play by hand" and "fix this" controls, clear support marks
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ma3) Shuffle, reveal and a note on a card as manual actions (`ManualAction::Shuffle`, `Reveal` and a note in the view), with entries in the card menu
