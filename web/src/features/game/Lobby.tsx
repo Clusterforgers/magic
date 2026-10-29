@@ -16,7 +16,9 @@ import { DeckChooser } from './DeckChooser'
 import { useGame, usePlay } from './gameContext'
 import { Invites } from './Invites'
 import { JoinInvite } from './JoinInvite'
-import { lobbyRows, mayReady, removable, summaryText } from './lobbyModel'
+import { lobbyRows, lobbyStatus, mayReady, removable, summaryText } from './lobbyModel'
+import type { ReadyFacts } from './lobbyModel'
+import { ReadyBar } from './ReadyBar'
 import { LobbyQuestion } from './LobbyQuestion'
 import { LobbyRules } from './LobbyRules'
 import { LobbySeatRow } from './LobbySeatRow'
@@ -39,7 +41,7 @@ export interface LobbyProps {
   /** The signed-in account's decks, for the deck chooser: the shared client in the app. */
   decks: DecksApi
   /** The precons for the deck chooser: the shared client in the app. */
-  precons?: Pick<PreconsApi, 'list'>
+  precons?: Pick<PreconsApi, 'list' | 'get'>
   /** This seat's token, or undefined when the page acts through the signed-in session. */
   token: string | undefined
 }
@@ -64,6 +66,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
     })),
   )
   const [refused, setRefused] = useState(false)
+  const [previewing, setPreviewing] = useState<ReadyFacts['previewing']>(null)
   const open = status === 'open'
   const host = seat === HOST_SEAT
   const known = lookup.game?.visibility
@@ -122,25 +125,43 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
     setRefused(!(ready ? session.notReady() : session.ready()))
   }
 
+  const summary = lobbyStatus(rows)
+  const format = gameFormat(tableFormat)
+
   // `grid-cols-1` is `minmax(0, 1fr)`: a long unbroken name or username may not stretch the column past the screen.
   return (
-    <PageShell className="grid grid-cols-1 gap-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Waiting for players</h1>
-        <p className="mt-1 text-base text-muted-foreground">
-          The game starts as soon as every seat has joined and pressed Ready.
-        </p>
-        {host && editable && visibility.shown !== undefined ? (
-          <VisibilityToggle shown={visibility.shown} control={visibility} busy={controls.busy} />
-        ) : (
-          <LobbyVisibility visibility={known} />
-        )}
-        <LobbyRules rules={tableRules} format={tableFormat} />
-      </div>
+    <PageShell
+      width="wide"
+      className="grid grid-cols-1 gap-6 min-[1000px]:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] min-[1000px]:grid-rows-[auto_1fr] min-[1000px]:items-start"
+    >
+      <div
+        data-slot="lobby-game"
+        className="grid min-w-0 grid-cols-1 gap-5 min-[1000px]:col-start-1 min-[1000px]:row-start-1"
+      >
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Waiting for players</h1>
+          <p data-slot="lobby-format" className="mt-1 text-base">
+            <span className="font-medium">{format === 'commander' ? 'Commander' : 'Normal'} game</span>
+            <span className="text-muted-foreground"> · {rows.length || seatCount || '?'} seats</span>
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            The game starts as soon as every seat has joined and pressed Ready.
+          </p>
+          <LobbyRules rules={tableRules} format={tableFormat} />
+          {host && editable && visibility.shown !== undefined ? (
+            <VisibilityToggle shown={visibility.shown} control={visibility} busy={controls.busy} />
+          ) : (
+            <LobbyVisibility visibility={known} />
+          )}
+        </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:items-start">
-        <div className="grid grid-cols-1 gap-6">
-          <section aria-labelledby="seats-title" className="grid grid-cols-1 gap-2">
+        <section
+          aria-labelledby="seats-title"
+          data-slot="lobby-status"
+          data-done={summary.done || undefined}
+          className="surface grid gap-3 p-4"
+        >
+          <div className="flex items-baseline justify-between gap-3">
             <h2
               id="seats-title"
               ref={seatsHeading}
@@ -149,134 +170,155 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
             >
               Seats
             </h2>
-            <ul aria-label="Seats" className="surface divide-y">
-              {rows.map((row) => (
-                <LobbySeatRow
-                  key={row.seat}
-                  row={row}
-                  account={accounts.bySeat.get(row.seat) ?? null}
-                  remove={
-                    host && editable && removable(row, HOST_SEAT, issued)
-                      ? {
-                          disabled: controls.busy,
-                          onPress: (opener) =>
-                            controls.ask({ kind: 'remove', seat: row.seat, name: row.name }, opener),
-                        }
-                      : undefined
-                  }
-                />
-              ))}
-            </ul>
-            <p data-slot="lobby-summary" className="text-sm [overflow-wrap:anywhere]">
-              {summaryText(rows)}
-            </p>
-            <p
-              data-slot="lobby-removed"
-              aria-live="polite"
-              aria-atomic="true"
-              className="text-sm [overflow-wrap:anywhere] empty:hidden"
-            >
-              {controls.removed}
-            </p>
-            {roster === null && lookup.game === null && lookup.failed ? (
-              <p className="text-xs text-muted-foreground">
-                Could not load the names and who is here. This page keeps trying.
-              </p>
-            ) : null}
-            {accounts.saved ? (
-              <p data-slot="seat-saved" className="text-xs break-words text-muted-foreground">
-                You are signed in as {accounts.me}. This seat is saved to your account, so you can rejoin it
-                from{' '}
-                <Link to="/games" className="font-medium text-foreground underline underline-offset-3">
-                  My games
-                </Link>{' '}
-                without the link.
-              </p>
-            ) : null}
-            {/* No role: the connection banner is the page's status, and a second one would make both ambiguous. */}
-            <p aria-live="polite" aria-atomic="true" className="sr-only" data-slot="lobby-announcement">
-              {announced}
-            </p>
-          </section>
-
-          {seat === null || !editable ? null : (
-            <DeckChooser
-              api={api}
-              decks={decks}
-              precons={precons}
-              game={game}
-              format={gameFormat(tableFormat)}
-              signedIn={signedIn}
-              current={mine?.deck}
-              ready={ready}
-              busy={controls.busy}
-              choice={deckChoice}
-            />
-          )}
-
-          <div className="grid justify-items-start gap-2">
-            <div className="flex flex-wrap items-center gap-3">
-              <Button
-                type="button"
-                size="lg"
-                variant={ready ? 'outline' : 'default'}
-                disabled={!open || controls.busy || needsDeck}
-                aria-describedby={needsDeck ? 'ready-reason' : undefined}
-                onClick={toggleReady}
-              >
-                {ready ? 'Not ready' : 'Ready'}
-              </Button>
-              {!editable ? null : host ? (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  data-slot="close-game"
-                  disabled={controls.busy}
-                  onClick={(event) => controls.ask({ kind: 'close' }, event.currentTarget)}
-                >
-                  Close game
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  data-slot="leave-game"
-                  disabled={controls.busy}
-                  onClick={(event) => controls.ask({ kind: 'leave' }, event.currentTarget)}
-                >
-                  Leave game
-                </Button>
-              )}
-            </div>
-            <p id="ready-reason" data-slot="ready-hint" className="text-sm text-muted-foreground">
-              {ready
-                ? 'You are ready. You can take it back until the game starts.'
-                : needsDeck
-                  ? 'Ready needs a deck. Choose one under Your deck.'
-                  : 'Press Ready when you are set to play.'}
-            </p>
-            {refused ? (
-              <Alert variant="destructive">
-                <CircleAlertIcon aria-hidden="true" />
-                <AlertDescription className="text-foreground">
-                  That did not go through because the connection is not open. Try again in a moment.
-                </AlertDescription>
-              </Alert>
-            ) : null}
-            {controls.stopped === null ? null : (
-              <Alert ref={note} tabIndex={-1} data-slot="lobby-stopped" className="outline-none">
-                <CircleAlertIcon aria-hidden="true" />
-                <AlertDescription className="text-foreground">{controls.stopped}</AlertDescription>
-              </Alert>
-            )}
+            <span data-slot="lobby-progress" className="text-sm text-muted-foreground tabular-nums">
+              {summary.ready} of {summary.seats} ready
+            </span>
           </div>
-        </div>
+          <div
+            aria-hidden="true"
+            className="h-1.5 overflow-hidden rounded-full bg-muted"
+            data-slot="lobby-progress-bar"
+          >
+            <span
+              className="block h-full rounded-full bg-support-verified transition-[width] duration-base ease-out"
+              style={{ width: `${summary.seats === 0 ? 0 : (summary.ready / summary.seats) * 100}%` }}
+            />
+          </div>
+          <p data-slot="lobby-headline" className="text-base font-medium">
+            {summary.headline}
+          </p>
+          <ul aria-label="Seats" className="divide-y rounded-lg border">
+            {rows.map((row) => (
+              <LobbySeatRow
+                key={row.seat}
+                row={row}
+                host={row.seat === HOST_SEAT}
+                account={accounts.bySeat.get(row.seat) ?? null}
+                remove={
+                  host && editable && removable(row, HOST_SEAT, issued)
+                    ? {
+                        disabled: controls.busy,
+                        onPress: (opener) =>
+                          controls.ask({ kind: 'remove', seat: row.seat, name: row.name }, opener),
+                      }
+                    : undefined
+                }
+              />
+            ))}
+          </ul>
+          <p data-slot="lobby-summary" className="text-sm text-muted-foreground [overflow-wrap:anywhere]">
+            {summaryText(rows)}
+          </p>
+          <p
+            data-slot="lobby-removed"
+            aria-live="polite"
+            aria-atomic="true"
+            className="text-sm [overflow-wrap:anywhere] empty:hidden"
+          >
+            {controls.removed}
+          </p>
+          {roster === null && lookup.game === null && lookup.failed ? (
+            <p className="text-xs text-muted-foreground">
+              Could not load the names and who is here. This page keeps trying.
+            </p>
+          ) : null}
+          {accounts.saved ? (
+            <p data-slot="seat-saved" className="text-xs break-words text-muted-foreground">
+              You are signed in as {accounts.me}. This seat is saved to your account, so you can rejoin it
+              from{' '}
+              <Link to="/games" className="font-medium text-foreground underline underline-offset-3">
+                My games
+              </Link>{' '}
+              without the link.
+            </p>
+          ) : null}
+          {/* No role: the connection banner is the page's status, and a second one would make both ambiguous. */}
+          <p aria-live="polite" aria-atomic="true" className="sr-only" data-slot="lobby-announcement">
+            {announced}
+          </p>
+        </section>
 
-        <div className="grid grid-cols-1 gap-6 empty:hidden">
-          {host ? <JoinInvite game={game} /> : null}
-          <Invites game={game} mine={seat} />
-        </div>
+        {host ? <JoinInvite game={game} /> : null}
+        <Invites game={game} mine={seat} />
       </div>
+
+      {/* On a phone this wrapper takes no box of its own, so the Ready bar can stick to the bottom of the page. */}
+      <div
+        data-slot="lobby-deck"
+        className="contents min-[1000px]:col-start-2 min-[1000px]:row-span-2 min-[1000px]:row-start-1 min-[1000px]:sticky min-[1000px]:top-6 min-[1000px]:flex min-[1000px]:h-[calc(100dvh-7.5rem)] min-[1000px]:min-h-[34rem] min-[1000px]:flex-col min-[1000px]:gap-3"
+      >
+        {seat === null || !editable ? null : (
+          <DeckChooser
+            api={api}
+            decks={decks}
+            precons={precons}
+            game={game}
+            format={format}
+            signedIn={signedIn}
+            current={mine?.deck}
+            ready={ready}
+            busy={controls.busy}
+            choice={deckChoice}
+            onPreview={setPreviewing}
+          />
+        )}
+        <ReadyBar
+          open={open}
+          busy={controls.busy}
+          ready={ready}
+          needsDeck={needsDeck}
+          previewing={previewing}
+          onToggle={toggleReady}
+        >
+          {refused ? (
+            <Alert variant="destructive">
+              <CircleAlertIcon aria-hidden="true" />
+              <AlertDescription className="text-foreground">
+                That did not go through because the connection is not open. Try again in a moment.
+              </AlertDescription>
+            </Alert>
+          ) : null}
+          {controls.stopped === null ? null : (
+            <Alert ref={note} tabIndex={-1} data-slot="lobby-stopped" className="outline-none">
+              <CircleAlertIcon aria-hidden="true" />
+              <AlertDescription className="text-foreground">{controls.stopped}</AlertDescription>
+            </Alert>
+          )}
+        </ReadyBar>
+      </div>
+
+      {/* After Ready in the reading order, so the one control that ends something is the last. */}
+      {!editable ? null : (
+        <div
+          data-slot="lobby-leave"
+          className="flex flex-wrap items-center gap-3 border-t pt-4 min-[1000px]:col-start-1 min-[1000px]:row-start-2"
+        >
+          {host ? (
+            <Button
+              type="button"
+              variant="destructive"
+              data-slot="close-game"
+              disabled={controls.busy}
+              onClick={(event) => controls.ask({ kind: 'close' }, event.currentTarget)}
+            >
+              Close game
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              data-slot="leave-game"
+              disabled={controls.busy}
+              onClick={(event) => controls.ask({ kind: 'leave' }, event.currentTarget)}
+            >
+              Leave game
+            </Button>
+          )}
+          <span className="text-sm text-muted-foreground">
+            {host ? 'Ends the game for everyone.' : 'Gives your seat back.'}
+          </span>
+        </div>
+      )}
 
       {controls.asking === null ? null : (
         <LobbyQuestion

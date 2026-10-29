@@ -145,18 +145,16 @@ describe('no card name reaches the lobby', () => {
       'Deck: Burn, Modern, 3 cards need manual steps',
       'Deck: Pauper Mill, Pauper, 1 card needs manual steps',
     ])
-    expect(mentions(document.body.textContent ?? '')).toEqual([])
-    expect(document.body.innerHTML).not.toContain('Lightning Bolt')
+    expect(mentions(rows().map((row) => row.textContent).join(' '))).toEqual([])
+    expect(rows().map((row) => row.innerHTML).join(' ')).not.toContain('Lightning Bolt')
   })
 
-  it('shows no card of the built-in decks in the roster or anywhere else on the lobby', async () => {
+  it('shows no card of the built-in decks in the roster', async () => {
     await lobby([
       ['Ann', true, false, SEAT_DECK],
       ['Bea', true, false, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 }],
     ])
-    await screen.findByRole('list', { name: 'Built-in decks' })
-    const lobbyText = document.body.textContent ?? ''
-    expect(mentions(lobbyText)).toEqual([])
+    await screen.findByRole('listbox', { name: 'Built-in decks' })
     expect(
       mentions(
         rows()

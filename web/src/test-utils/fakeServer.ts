@@ -36,6 +36,10 @@ export interface ServerScript {
   myDecks?: (call: FetchCall) => Response | Promise<Response>
   /** Answers `POST /api/decks/check`; gets the parsed JSON body. A deck whose whole list runs by default. */
   check?: (body: unknown, call: FetchCall) => Response | Promise<Response>
+  /** Answers `GET /api/decks/{id}`, a stored deck with its cards; a 404 by default. */
+  deckView?: (id: string, call: FetchCall) => Response | Promise<Response>
+  /** Answers `GET /api/precons/{code}`, a precon with its cards; a 404 by default. */
+  preconView?: (code: string, call: FetchCall) => Response | Promise<Response>
   /** Answers `GET /api/precons`; none by default. */
   precons?: (call: FetchCall) => Response | Promise<Response>
   /**
@@ -114,6 +118,12 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
       return script.myDecks?.(call) ?? jsonResponse(200, { decks: [] })
     }
     if (path === '/api/precons') return script.precons?.(call) ?? jsonResponse(200, { precons: [] })
+    const viewOf = /^\/api\/(decks|precons)\/([^/]+)$/.exec(path)
+    if (viewOf !== null && call.init?.method === undefined && viewOf[2] !== 'check') {
+      const id = decodeURIComponent(viewOf[2] ?? '')
+      const answer = viewOf[1] === 'decks' ? script.deckView?.(id, call) : script.preconView?.(id, call)
+      return answer ?? jsonResponse(404, { error: 'not_found', message: 'No such deck.' })
+    }
     if (path === '/api/decks/check' && call.init?.method === 'POST') {
       const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
       return script.check?.(body, call) ?? jsonResponse(200, reportOf([reportCard('Forest', { count: 60 })]))

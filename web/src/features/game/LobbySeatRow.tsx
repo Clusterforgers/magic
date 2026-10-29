@@ -24,6 +24,8 @@ interface LobbySeatRowProps {
   row: LobbyRow
   /** The username of the account sitting at the seat, when the signed-in user's list says so. */
   account: string | null
+  /** This seat made the game. */
+  host?: boolean
   /** The host's way to take this player out: present only on a seat that may be removed. */
   remove?: {
     /** A request is out, so the button waits. */
@@ -38,7 +40,7 @@ interface LobbySeatRowProps {
  * this page's own seat, and in words whether the seat is ready, not ready yet or not here. The words carry
  * everything the dot and the icon show. The host's rows of joined players also have a Remove button.
  */
-export function LobbySeatRow({ row, account, remove }: LobbySeatRowProps) {
+export function LobbySeatRow({ row, account, host = false, remove }: LobbySeatRowProps) {
   const state = seatState(row)
   const { label, Icon, tone } = STATES[state]
   return (
@@ -68,6 +70,7 @@ export function LobbySeatRow({ row, account, remove }: LobbySeatRowProps) {
               {row.name}
             </span>
             {row.you ? <Pill>you</Pill> : null}
+            {host ? <Pill data-slot="seat-host">host</Pill> : null}
             {account === null ? null : (
               <span
                 data-slot="seat-account"
