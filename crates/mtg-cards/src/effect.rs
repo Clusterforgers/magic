@@ -925,6 +925,9 @@ pub enum Effect {
         /// Clashes again after each won clash, `win` done before each ("If you win, repeat this process").
         #[serde(default, skip_serializing_if = "is_false")]
         until: bool,
+        /// The opponent clashed with ("clash with defending player"); an opponent the clashing player chooses when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        with: Option<Ref>,
     },
     /// Each player votes (CR 701.38), the controller first and the others in turn order. A vote on named choices binds
     /// each name to the players who voted for it; a vote on players or objects binds `bind` to those with the most votes,
@@ -1397,7 +1400,7 @@ mod tests {
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::clash_and_repeat(
-        Effect::Clash { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true },
+        Effect::Clash { who: Ref::You, win: vec![Effect::Draw { who: Ref::You, count: Amount::one() }], lose: Vec::new(), until: true, with: None },
         r#"{"Clash":{"win":[{"Draw":{}}],"until":true}}"#
     )]
     #[case::vote_on_two_names(

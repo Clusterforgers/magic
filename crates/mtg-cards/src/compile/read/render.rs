@@ -55,6 +55,7 @@ mod twins;
 mod two_targets;
 mod untapped;
 mod w11c_clash;
+mod w15c_clash;
 mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
@@ -194,6 +195,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(they);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
+    let hand_first = super::w15c_clash::w15c_hand_first(&texts);
+    texts.extend(hand_first);
     let incubated = w7c_then_incubate(&texts);
     texts.extend(incubated);
     let regenerating = regeneration_wordings(&texts);
@@ -992,6 +995,7 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
+            .or_else(|| writer.w15c_clash(&effects[start..]))
             .or_else(|| writer.w11c_clash(&effects[start..]))
             .or_else(|| writer.w9b_clash(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))

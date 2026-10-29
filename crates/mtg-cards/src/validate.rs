@@ -1323,6 +1323,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::CoinFlipWon { who }
+            | TriggerPattern::W15cClashWon { who }
             | TriggerPattern::DiceRolled { who, .. }
             | TriggerPattern::Amassed { who }
             | TriggerPattern::Surveilled { who }
@@ -1431,6 +1432,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::CoinFlipWon { .. }
+                | TriggerPattern::W15cClashWon { .. }
                 | TriggerPattern::DiceRolled { .. }
                 | TriggerPattern::Amassed { .. }
                 | TriggerPattern::Explored { .. }
@@ -2196,7 +2198,18 @@ impl Walker<'_> {
                 results,
             } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
             Effect::FlipCoin { who, win, lose, .. } => w.flip_coin(who, win, lose),
-            Effect::Clash { who, win, lose, .. } => w.w9b_clash(who, win, lose),
+            Effect::Clash {
+                who,
+                win,
+                lose,
+                with,
+                ..
+            } => {
+                if let Some(with) = with {
+                    w.at("with", |w| w.reference(with, Kind::Player));
+                }
+                w.w9b_clash(who, win, lose);
+            }
             Effect::VillainousChoice {
                 who, first, second, ..
             } => {

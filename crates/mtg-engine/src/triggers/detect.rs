@@ -174,6 +174,8 @@ enum Happened {
     Proliferated { player: PlayerId },
     /// A player won a coin flip.
     CoinFlipWon { player: PlayerId },
+    /// A player won a clash.
+    W15cClashWon { player: PlayerId },
     /// A player rolled a die: `first` for the first die of a roll, `highest` when it rolled its number of faces.
     DiceRolled {
         player: PlayerId,
@@ -903,6 +905,11 @@ fn about_players_and_permanents(
             first: c11e_first_die(look.earlier, *player),
             highest: result == sides,
         }),
+        Event::Clashed {
+            player, won: true, ..
+        } => {
+            found.push(Happened::W15cClashWon { player: *player });
+        }
         Event::CoinFlipped { player, won: true } => {
             found.push(Happened::CoinFlipWon { player: *player });
         }
@@ -1275,6 +1282,7 @@ fn matching_event(
         | (TriggerPattern::CompletedDungeon { who }, Happened::CompletedDungeon { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
         | (TriggerPattern::CoinFlipWon { who }, Happened::CoinFlipWon { player })
+        | (TriggerPattern::W15cClashWon { who }, Happened::W15cClashWon { player })
         | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)

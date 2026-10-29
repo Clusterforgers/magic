@@ -72,6 +72,7 @@ fn w11c_then_return(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             win: vec![w11c_on_top()],
             lose: Vec::new(),
             until: false,
+            with: None,
         },
         w11c_to_hand(),
     ])
@@ -88,6 +89,7 @@ fn w11c_hold(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         win: vec![w11c_held()],
         lose: Vec::new(),
         until: false,
+        with: None,
     }])
 }
 

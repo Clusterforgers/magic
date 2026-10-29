@@ -872,6 +872,7 @@ Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Marrow Chomper
+Marvo, Deep Operative
 Marwyn, the Nurturer
 Mask of Griselbrand
 Mask of Riddles
@@ -1211,6 +1212,7 @@ Savor the Moment
 Saw It Coming
 Sawtusk Demolisher
 Scatter to the Winds
+Scattering Stroke
 Scavenging Ooze
 Scheming Aspirant
 Scorn-Blade Berserker

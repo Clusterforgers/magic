@@ -1,0 +1,25 @@
+{
+  "id": "20652385-465f-408b-adea-13a14fb05642",
+  "oracle_id": "314a9604-34ec-4529-bd14-7b63be28669f",
+  "name": "Scattering Stroke",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmd",
+  "collector_number": "60",
+  "rarity": "uncommon",
+  "released_at": "2011-06-17",
+  "digital": false,
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Counter target spell. Clash with an opponent. If you win, at the beginning of your next main phase, you may add an amount of {C} equal to that spell's mana value. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Clash"
+  ]
+}

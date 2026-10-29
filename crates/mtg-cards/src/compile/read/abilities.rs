@@ -273,6 +273,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::CompletedDungeon { .. }
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::CoinFlipWon { .. }
+            | TriggerPattern::W15cClashWon { .. }
             | TriggerPattern::DiceRolled { .. }
             | TriggerPattern::Amassed { .. }
             | TriggerPattern::Bolstered { .. }

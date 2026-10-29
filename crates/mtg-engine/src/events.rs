@@ -816,6 +816,16 @@ pub enum Event {
         /// Its controller, who drew and discarded.
         player: PlayerId,
     },
+    /// A player clashed with an opponent (CR 701.23) after both revealed and placed their top cards; `won` when the
+    /// clashing player won.
+    Clashed {
+        /// Who clashed.
+        player: PlayerId,
+        /// The opponent clashed with.
+        opponent: PlayerId,
+        /// The clashing player won.
+        won: bool,
+    },
     /// A creature was exerted as it was declared an attacker (CR 701.43): it won't untap during the next untap step of
     /// `player`, who exerted it.
     Exerted {
@@ -992,6 +1002,7 @@ impl Event {
             | Event::Learned { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
+            | Event::Clashed { .. }
             | Event::Proliferated { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }

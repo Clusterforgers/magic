@@ -611,6 +611,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
     } else if verb == if third { "wins" } else { "win" } {
+        if r.words("a clash") {
+            return Some(TriggerPattern::W15cClashWon { who: by });
+        }
         r.need("a coin flip")?;
         Some(TriggerPattern::CoinFlipWon { who: by })
     } else if verb == if third { "rolls" } else { "roll" } {
@@ -1442,6 +1445,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::DayNightChanges { to } => Some(super::day_night::changes_text(*to)),
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
+        }
+        TriggerPattern::W15cClashWon { who } => {
+            Some(format!("Whenever {} a clash", player_verb(who, "win")?))
         }
         TriggerPattern::CoinFlipWon { who } => {
             Some(format!("Whenever {} a coin flip", player_verb(who, "win")?))
