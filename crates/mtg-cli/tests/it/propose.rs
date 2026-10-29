@@ -2,6 +2,7 @@
 
 use std::fs;
 use std::path::Path;
+use std::time::Duration;
 
 use mtg_cards::{PrintedCard, PrintedFace};
 use mtg_cli::progress::{Captured, Progress};
@@ -52,6 +53,8 @@ fn options() -> Options {
         resume: false,
         max_requests: 100,
         max_input_tokens: 50_000_000,
+        jobs: 1,
+        status_every: Duration::ZERO,
     }
 }
 

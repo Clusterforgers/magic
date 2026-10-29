@@ -2,7 +2,9 @@
 
 use std::fmt::Write as _;
 use std::net::SocketAddr;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
 use reqwest::Url;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -59,6 +61,8 @@ pub struct Reply {
     pub body: Vec<u8>,
     /// Send only this many body bytes, announce all of them and hang up.
     pub cut_after: Option<usize>,
+    /// Wait this long (on the runtime's clock) before sending anything, as a stalled or slow server does.
+    pub delay: Option<Duration>,
 }
 
 impl Reply {
@@ -74,6 +78,7 @@ impl Reply {
             headers: Vec::new(),
             body: Vec::new(),
             cut_after: None,
+            delay: None,
         }
     }
 
@@ -97,6 +102,13 @@ impl Reply {
         self.cut_after = Some(bytes);
         self
     }
+
+    /// Holds the answer back for `wait`.
+    #[must_use]
+    pub fn after(mut self, wait: Duration) -> Self {
+        self.delay = Some(wait);
+        self
+    }
 }
 
 /// Answers a request for `body` the way a file server does: whole, or from the offset a `Range` names.
@@ -117,6 +129,13 @@ pub fn serve_ranges(request: &Request, body: &[u8]) -> Reply {
     }
 }
 
+/// How many requests the server is working on, and the most it ever was.
+#[derive(Default)]
+struct Flight {
+    now: AtomicUsize,
+    peak: AtomicUsize,
+}
+
 type Handler = dyn Fn(&Request) -> Reply + Send + Sync;
 
 /// A listening socket that does not answer yet, so handlers can learn their own address.
@@ -129,6 +148,7 @@ pub struct Bound {
 pub struct Server {
     addr: SocketAddr,
     log: Arc<Mutex<Vec<Request>>>,
+    flight: Arc<Flight>,
     task: tokio::task::JoinHandle<()>,
 }
 
@@ -153,10 +173,17 @@ impl Bound {
     pub fn serve(self, handler: impl Fn(&Request) -> Reply + Send + Sync + 'static) -> Server {
         let handler: Arc<Handler> = Arc::new(handler);
         let log = Arc::new(Mutex::new(Vec::new()));
-        let task = tokio::spawn(accept_loop(self.listener, handler, log.clone()));
+        let flight = Arc::new(Flight::default());
+        let task = tokio::spawn(accept_loop(
+            self.listener,
+            handler,
+            log.clone(),
+            flight.clone(),
+        ));
         Server {
             addr: self.addr,
             log,
+            flight,
             task,
         }
     }
@@ -179,6 +206,11 @@ impl Server {
         self.log.lock().map(|log| log.clone()).unwrap_or_default()
     }
 
+    /// The most requests the server held at the same moment, from reading one to finishing its answer.
+    pub fn peak_in_flight(&self) -> usize {
+        self.flight.peak.load(Ordering::SeqCst)
+    }
+
     /// The requests whose path starts with `prefix`.
     pub fn hits(&self, prefix: &str) -> Vec<Request> {
         self.log()
@@ -194,23 +226,43 @@ impl Drop for Server {
     }
 }
 
-async fn accept_loop(listener: TcpListener, handler: Arc<Handler>, log: Arc<Mutex<Vec<Request>>>) {
+async fn accept_loop(
+    listener: TcpListener,
+    handler: Arc<Handler>,
+    log: Arc<Mutex<Vec<Request>>>,
+    flight: Arc<Flight>,
+) {
     loop {
         let Ok((stream, _)) = listener.accept().await else {
             return;
         };
-        tokio::spawn(answer(stream, handler.clone(), log.clone()));
+        tokio::spawn(answer(stream, handler.clone(), log.clone(), flight.clone()));
     }
 }
 
-async fn answer(mut stream: TcpStream, handler: Arc<Handler>, log: Arc<Mutex<Vec<Request>>>) {
+async fn answer(
+    mut stream: TcpStream,
+    handler: Arc<Handler>,
+    log: Arc<Mutex<Vec<Request>>>,
+    flight: Arc<Flight>,
+) {
     let Some(request) = read_request(&mut stream).await else {
         return;
     };
     if let Ok(mut log) = log.lock() {
         log.push(request.clone());
     }
+    let now = flight.now.fetch_add(1, Ordering::SeqCst) + 1;
+    flight.peak.fetch_max(now, Ordering::SeqCst);
     let reply = handler(&request);
+    if let Some(wait) = reply.delay {
+        tokio::time::sleep(wait).await;
+    }
+    send(&mut stream, &request, &reply).await;
+    flight.now.fetch_sub(1, Ordering::SeqCst);
+}
+
+async fn send(stream: &mut TcpStream, request: &Request, reply: &Reply) {
     let sends_body = request.method != "HEAD" && reply.status != 304;
     let mut head = format!(
         "HTTP/1.1 {} {}\r\nContent-Length: {}\r\nConnection: close\r\n",

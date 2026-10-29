@@ -12,12 +12,14 @@ pub mod outcome;
 pub mod prompt;
 pub mod select;
 pub mod session;
+pub mod status;
 pub mod store;
 pub mod w19b_solved;
 
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
+use std::time::Duration;
 
 use mtg_cards::PrintedCard;
 use mtg_cards::builtin;
@@ -39,6 +41,9 @@ use outcome::ProposeReport;
 use session::{Context, Options, Session};
 use store::Store;
 use w19b_solved::W19bSolvedExamples;
+
+/// The time between two status lines of a run.
+pub const STATUS_EVERY: Duration = Duration::from_secs(30);
 
 /// The model asked when `--model` is not given.
 pub const DEFAULT_MODEL: &str = "claude-sonnet-5-5";
@@ -170,11 +175,17 @@ pub fn options_of(args: &ProposeArgs) -> Result<Options, CliError> {
         resume: args.resume,
         max_requests: args.max_requests,
         max_input_tokens: args.max_input_tokens,
+        jobs: args.jobs,
+        status_every: STATUS_EVERY,
     })
 }
 
 /// What `--schema` with the Anthropic provider prints: that API takes no schema, so the flag does nothing there.
 pub const W3A_SCHEMA_IGNORED: &str = "--schema is ignored: only --provider openai sends a schema; the Anthropic API is asked as usual";
+
+/// What `--reasoning` with the Anthropic provider prints: only an OpenAI-style server is sent the effort.
+pub const T18A_REASONING_IGNORED: &str =
+    "--reasoning is ignored: only --provider openai sends a reasoning effort";
 
 /// The client of the provider the arguments name, reaching `api` (its address replaced by `--base-url`). The Anthropic
 /// key is required; a key for a local server is optional.
@@ -183,9 +194,11 @@ pub fn c11i_client_of(
     env: &dyn Fn(&str) -> Option<String>,
     api: &AnthropicConfig,
     progress: Progress,
-) -> Result<Box<dyn ModelClient + Send>, CliError> {
+) -> Result<Box<dyn ModelClient>, CliError> {
     let handle = tokio::runtime::Handle::current();
     let mut config = api.clone();
+    config.timeout = Duration::from_secs(args.request_timeout);
+    config.attempts = args.retries.saturating_add(1);
     Ok(match args.provider {
         Provider::Anthropic => {
             if let Some(base) = &args.base_url {
@@ -194,6 +207,9 @@ pub fn c11i_client_of(
             let key = ApiKey::from_env(env)?;
             if args.schema {
                 progress.line(W3A_SCHEMA_IGNORED);
+            }
+            if args.reasoning.is_some() {
+                progress.line(T18A_REASONING_IGNORED);
             }
             Box::new(AnthropicClient::new(key, &config, handle, progress)?)
         }
@@ -206,6 +222,7 @@ pub fn c11i_client_of(
                 json_mode: !args.no_json_mode,
                 schema: args.schema,
                 max_answer_tokens: args.max_answer_tokens,
+                reasoning: args.reasoning,
             };
             let key = c11i_openai::c11i_key_from_env(env);
             Box::new(OpenAiClient::new(dialect, key, &config, handle, progress)?)

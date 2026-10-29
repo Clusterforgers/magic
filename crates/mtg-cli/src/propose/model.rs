@@ -112,6 +112,12 @@ pub enum ModelError {
     /// The connection or the body failed.
     #[error("cannot reach the API: {0}")]
     Transport(String),
+    /// The API sent no complete answer within the time allowed (`--request-timeout`).
+    #[error("no complete answer within {} s (--request-timeout)", .after.as_secs_f64())]
+    Timeout {
+        /// The time allowed.
+        after: Duration,
+    },
     /// The server cannot be reached at all: nothing listens at the address, or the name does not resolve.
     #[error("cannot reach the model server at {endpoint}: {detail}; is it running?")]
     Unreachable {
@@ -154,7 +160,9 @@ impl ModelError {
             ModelError::Status { status, .. } => {
                 matches!(status, 408 | 409 | 425 | 429 | 500..=599)
             }
-            ModelError::Transport(_) | ModelError::Unreachable { .. } => true,
+            ModelError::Transport(_)
+            | ModelError::Timeout { .. }
+            | ModelError::Unreachable { .. } => true,
             _ => false,
         }
     }
@@ -181,8 +189,8 @@ impl ModelError {
     }
 }
 
-/// Something that answers requests. `propose` asks for one answer at a time.
-pub trait ModelClient {
+/// Something that answers requests. `propose` may ask from several threads at once (`--jobs`).
+pub trait ModelClient: Send + Sync {
     /// Sends the request and returns the model's answer.
     fn complete(&self, request: &Request) -> Result<Response, ModelError>;
 }

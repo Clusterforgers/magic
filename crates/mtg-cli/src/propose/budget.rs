@@ -23,6 +23,8 @@ pub struct Budget {
     requests: u32,
     repairs: u32,
     usage: Usage,
+    /// Estimated input tokens of the requests that are out and not yet answered.
+    reserved: u64,
 }
 
 impl Budget {
@@ -34,21 +36,29 @@ impl Budget {
             requests: 0,
             repairs: 0,
             usage: Usage::default(),
+            reserved: 0,
         }
     }
 
-    /// Counts the request when it fits, else says which budget it would pass. The estimate of its tokens is an upper one,
-    /// so what is spent never passes the budget.
+    /// Counts the request when it fits, else says which budget it would pass, and holds the estimate of its tokens (an
+    /// upper one) until [`Budget::release`]; what is spent plus what is held never passes the budget.
     pub fn admit(&mut self, request: &Request, repair: bool) -> Result<(), Stop> {
         if self.requests >= self.max_requests {
             return Err(Stop::Requests(self.max_requests));
         }
-        if self.usage.input_tokens + request.estimated_tokens() > self.max_input_tokens {
+        let estimated = request.estimated_tokens();
+        if self.usage.input_tokens + self.reserved + estimated > self.max_input_tokens {
             return Err(Stop::InputTokens(self.max_input_tokens));
         }
         self.requests += 1;
         self.repairs += u32::from(repair);
+        self.reserved += estimated;
         Ok(())
+    }
+
+    /// Gives back the estimate a request held, once it is answered or has failed.
+    pub fn release(&mut self, estimated: u64) {
+        self.reserved = self.reserved.saturating_sub(estimated);
     }
 
     /// Adds what an answered request cost.
@@ -119,12 +129,28 @@ mod tests {
             cache_read_tokens: 0,
             output_tokens: 5,
         });
+        budget.release(100);
         assert_eq!(
             budget.admit(&request(300), false),
             Err(Stop::InputTokens(150))
         );
         assert_eq!(budget.requests(), 1);
         assert!(budget.admit(&request(150), false).is_ok());
+    }
+
+    #[test]
+    fn requests_that_are_out_hold_their_estimate_until_they_are_released() {
+        // Three requests of 100 tokens do not fit 250 tokens at once, though nothing is spent yet.
+        let mut budget = Budget::new(10, 250);
+        assert!(budget.admit(&request(300), false).is_ok());
+        assert!(budget.admit(&request(300), false).is_ok());
+        assert_eq!(
+            budget.admit(&request(300), false),
+            Err(Stop::InputTokens(250))
+        );
+        budget.release(100);
+        assert!(budget.admit(&request(300), false).is_ok());
+        assert_eq!(budget.requests(), 3);
     }
 
     #[test]
