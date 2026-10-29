@@ -469,6 +469,7 @@ mod w14c_proposal_pieces;
 mod w15a_initiative;
 mod w15b_out_of_time;
 mod w15c_clash;
+mod w20c_control;
 mod w2b_read_ahead;
 mod w2c_destroyed;
 mod w2c_distinct;
