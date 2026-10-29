@@ -1,0 +1,33 @@
+{
+  "oracle_id": "60bc9cd2-2e03-4889-b1ef-fdab9a9a6d08",
+  "name": "Mirri, Weatherlight Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirri, Weatherlight Duelist",
+      "oracle_fingerprint": "9c691b1919236cef1feb6e23a288bbca",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "BlockLimitEach": { "most": 1, "who": "Opponents" } },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "AttackLimitAt": { "most": 1, "at": "You" } },
+            "condition": { "Matches": { "subject": "This", "selector": ["Tapped"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

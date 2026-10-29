@@ -1,0 +1,96 @@
+{
+  "oracle_id": "20a1671d-e8a4-4cf1-87a7-f2f6319f4b9e",
+  "name": "The Eternal Wanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Eternal Wanderer",
+      "oracle_fingerprint": "a69a04440b27125ba7d3aa9c8cc9a756",
+      "abilities": [
+        { "Rule": { "rule": { "AttackLimitAt": { "most": 1, "at": "This" } } } },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "StepBegins": { "step": "End", "whose": { "OwnerOf": { "Bound": "exiled" } } }
+                  },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Samurai",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Samurai"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "DoubleStrike" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Is": { "Bound": "rest" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "rest" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "db44fe95-6a32-4d6f-a32f-72491381f495",
+  "oracle_id": "60bc9cd2-2e03-4889-b1ef-fdab9a9a6d08",
+  "name": "Mirri, Weatherlight Duelist",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmm",
+  "collector_number": "347",
+  "rarity": "rare",
+  "released_at": "2023-08-04",
+  "digital": false,
+  "mana_cost": "{1}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Cat Warrior",
+  "oracle_text": "First strike\nWhenever Mirri attacks, each opponent can't block with more than one creature this combat.\nAs long as Mirri is tapped, no more than one creature can attack you each combat.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "First strike"
+  ]
+}
