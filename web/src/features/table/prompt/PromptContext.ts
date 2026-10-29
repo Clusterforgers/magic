@@ -17,8 +17,8 @@ export interface Selection {
 export interface PromptApi {
   /** The id the answer echoes; a new id gives the prompt a fresh start. */
   id: DecisionId
-  /** The kind's name, such as `Priority`. */
-  name: DecisionName
+  /** The kind's name, such as `Priority`; the key as sent for a kind this version does not know. */
+  name: DecisionName | (string & {})
   decision: Decision
   /**
    * Sends the answer, once: false when the connection refused it, when this decision was already answered, or when
