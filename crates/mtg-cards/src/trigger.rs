@@ -481,6 +481,17 @@ pub enum TriggerPattern {
         /// Which total of mana, from one.
         n: u32,
     },
+    /// A player commits a crime ("whenever you commit a crime"): they cast a spell, activate an ability or put a triggered
+    /// ability on the stack that targets an opponent, an object an opponent controls or a card in an opponent's graveyard;
+    /// `Triggering` is that player.
+    W11cCrime {
+        /// Who commits it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player surveils ("whenever you surveil"); `Triggering` is that player.
     Surveilled {
         /// Who surveils.

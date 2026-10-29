@@ -590,6 +590,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "expends" } else { "expend" } {
         let n = r.number().filter(|n| *n > 0)?;
         Some(TriggerPattern::Expend { who: by, n })
+    } else if verb == if third { "commits" } else { "commit" } {
+        r.need("a crime")?;
+        Some(TriggerPattern::W11cCrime { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
@@ -1331,6 +1334,9 @@ fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
     let (who, verb, n) = match pattern {
         TriggerPattern::Amassed { who } => (who, "amass", None),
         TriggerPattern::Expend { who, n } => (who, "expend", Some(*n)),
+        TriggerPattern::W11cCrime { who } => {
+            return Some(format!("Whenever {} a crime", player_verb(who, "commit")?));
+        }
         TriggerPattern::Bolstered { who } => (who, "bolster", None),
         TriggerPattern::Surveilled { who } => (who, "surveil", None),
         _ => return None,
@@ -1371,6 +1377,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::DiceRolled { who, highest } => c11e_rolled_text(who, *highest),
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }
+        | TriggerPattern::W11cCrime { .. }
         | TriggerPattern::Bolstered { .. }
         | TriggerPattern::Surveilled { .. } => w9a_player_action_text(pattern),
         TriggerPattern::LifeGained { who } => {

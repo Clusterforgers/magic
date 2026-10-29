@@ -67,6 +67,8 @@ enum Happened {
         nth: u32,
         before: u32,
     },
+    /// A player committed a crime (CR 700.13).
+    W11cCrime { player: PlayerId },
     /// A player's cast spent mana: the total of mana they spent to cast spells this turn went from `from` to `to`.
     Expended {
         player: PlayerId,
@@ -435,9 +437,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     before: cast_before(post, later),
                 });
                 found.extend(w9a_expended(post, later, *player, choices));
+                found.extend(w11c_crime(post, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
+                found.extend(w11c_crime(post, put.controller, &put.choices));
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::SpellCopied(copy) => {
@@ -494,6 +498,12 @@ fn cast_before(post: &GameState, later: &[Event]) -> u32 {
         .filter(|event| matches!(event, Event::SpellCast { .. }))
         .count();
     total.saturating_sub(u32::try_from(after).unwrap_or(u32::MAX).saturating_add(1))
+}
+
+/// The crime of a spell or ability `player` announced with `choices`, if it is one.
+fn w11c_crime(post: &GameState, player: PlayerId, choices: &Choices) -> Option<Happened> {
+    super::w11c_crime::w11c_is_crime(post, player, choices)
+        .then_some(Happened::W11cCrime { player })
 }
 
 /// The mana a cast of `player` spent, as the move of their turn's total of mana spent on spells: the total after the
@@ -1242,6 +1252,9 @@ fn matching_event(
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
+        (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {
+            by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
         (TriggerPattern::Expend { who, n }, Happened::Expended { player, from, to }) => {
             (by(who, player) && *from < *n && *n <= *to)
                 .then(|| counted(state, vec![Target::Player(*player)], 0))
