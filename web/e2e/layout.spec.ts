@@ -84,8 +84,8 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
       ...(primary === 'pass' ? { 'pass button': main } : {}),
       ...(primary === 'keep' ? { Keep: '[data-decision="Mulligan"] button' } : {}),
       ...(primary === 'prompt' ? { 'prompt button': '[data-slot="prompt-actions"] button' } : {}),
-      // The last card of the fan lies over no other card.
-      hand: '[data-region="hand"] ul li:last-child button[data-object-id]',
+      // The first card of the front row lies over no other card and is in view where the line scrolls.
+      hand: '[data-region="hand"] [data-slot="hand-slot"]:not([data-back]) button[data-object-id]',
       life: '[data-you] [data-slot="life"]',
     },
     exempt: TABLE_EXEMPT,
