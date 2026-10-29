@@ -3,6 +3,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DISC } from '@/features/builder/discs'
 import { cn } from '@/lib/utils'
@@ -17,7 +18,7 @@ export type ListState =
   | { status: 'ready'; entries: readonly DeckEntry[] }
 
 const SUPPORT_CHOICES: readonly { value: SupportFilter; label: string }[] = [
-  { value: 'all', label: 'All' },
+  { value: 'all', label: 'All decks' },
   { value: 'verified', label: 'Fully validated' },
   { value: 'hand', label: 'Has hand-played cards' },
 ]
@@ -180,21 +181,21 @@ export function DeckList({
               })}
             </div>
           ) : null}
-          <div role="group" aria-label="Support" className="flex flex-wrap gap-1">
+          <NativeSelect
+            aria-label="Support"
+            size="sm"
+            value={filter.support}
+            className="min-w-0 flex-1"
+            onChange={(event) =>
+              setFilter((was) => ({ ...was, support: event.target.value as SupportFilter }))
+            }
+          >
             {SUPPORT_CHOICES.map((choice) => (
-              <Button
-                key={choice.value}
-                type="button"
-                size="sm"
-                variant={filter.support === choice.value ? 'outline' : 'ghost'}
-                aria-pressed={filter.support === choice.value}
-                className={cn(filter.support === choice.value && 'border-primary')}
-                onClick={() => setFilter((was) => ({ ...was, support: choice.value }))}
-              >
+              <NativeSelectOption key={choice.value} value={choice.value}>
                 {choice.label}
-              </Button>
+              </NativeSelectOption>
             ))}
-          </div>
+          </NativeSelect>
         </div>
         <p
           data-slot="deck-count"

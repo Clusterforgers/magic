@@ -132,7 +132,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
   return (
     <PageShell
       width="wide"
-      className="grid grid-cols-1 gap-6 min-[1000px]:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] min-[1000px]:grid-rows-[auto_1fr] min-[1000px]:items-start"
+      className="grid grid-cols-1 gap-6 min-[1000px]:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] min-[1000px]:grid-rows-[auto_1fr] min-[1000px]:items-start"
     >
       <div
         data-slot="lobby-game"

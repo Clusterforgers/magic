@@ -18,7 +18,7 @@ export function ReadyBar({ onToggle, children, ...facts }: ReadyBarProps) {
   return (
     <div
       data-slot="ready-bar"
-      className="sticky bottom-0 z-10 -mx-4 grid gap-2 border-t bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 min-[1000px]:static min-[1000px]:mx-0 min-[1000px]:rounded-xl min-[1000px]:border min-[1000px]:bg-card min-[1000px]:px-4"
+      className="sticky bottom-0 z-10 -mx-4 grid gap-2 border-t bg-background px-4 py-3 sm:-mx-6 sm:px-6 min-[1000px]:static min-[1000px]:mx-0 min-[1000px]:rounded-xl min-[1000px]:border min-[1000px]:bg-card min-[1000px]:px-4"
     >
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <Button

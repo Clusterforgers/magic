@@ -30,12 +30,21 @@ interface Scene {
   chosenId?: string | null
 }
 
-async function open({ format = 'commander', switches = {}, signedIn = true, ready = false, current = null, chosenId = null }: Scene = {}) {
+async function open({
+  format = 'commander',
+  switches = {},
+  signedIn = true,
+  ready = false,
+  current = null,
+  chosenId = null,
+}: Scene = {}) {
   const choose = vi.fn()
   const choice: DeckChoice = { pending: null, chosenId, note: null, problem: null, choose }
   const auth = createAuthStore({
     api: { ...offlineAccounts, myGames: async () => [] },
-    initial: signedIn ? { status: 'signed-in', user: { id: 'u', username: 'Ada_L' } } : { status: 'unavailable' },
+    initial: signedIn
+      ? { status: 'signed-in', user: { id: 'u', username: 'Ada_L' } }
+      : { status: 'unavailable' },
   })
   await renderInRouter(
     <AuthContext value={auth}>
@@ -77,7 +86,9 @@ describe('the rows', () => {
     await open()
     const row = await screen.findByRole('option', { name: /Atraxa Superfriends/ })
     expect(row).toHaveTextContent(/Atraxa, Praetors’ Voice/)
-    expect(within(row).getByRole('img', { name: /Colour identity: White, Blue, Black and Green/ })).toBeInTheDocument()
+    expect(
+      within(row).getByRole('img', { name: /Colour identity: White, Blue, Black and Green/ }),
+    ).toBeInTheDocument()
     expect(screen.queryByRole('option', { name: /^Burn/ })).toBeNull()
     expect(screen.getByText('3 decks are in other formats and not shown.')).toBeInTheDocument()
   })
@@ -102,22 +113,26 @@ describe('search and filters', () => {
     const { user } = await open({ format: 'normal' })
     await screen.findByRole('option', { name: /^Burn/ })
     await user.type(screen.getByRole('searchbox'), query)
-    expect(screen.queryAllByRole('option').map((row) => row.getAttribute('data-deck-option'))).toHaveLength(names.length)
-    for (const name of names) expect(screen.getByRole('option', { name: new RegExp(name) })).toBeInTheDocument()
+    expect(screen.queryAllByRole('option').map((row) => row.getAttribute('data-deck-option'))).toHaveLength(
+      names.length,
+    )
+    for (const name of names)
+      expect(screen.getByRole('option', { name: new RegExp(name) })).toBeInTheDocument()
     if (names.length === 0) expect(screen.getByText('No deck matches.')).toBeInTheDocument()
   })
 
   it.each([
     ['Fully validated', ['Rakdos Midrange']],
     ['Has hand-played cards', ['Burn']],
-    ['All', ['Burn', 'Pauper Affinity', 'Rakdos Midrange']],
+    ['All decks', ['Burn', 'Pauper Affinity', 'Rakdos Midrange']],
   ])('filters by support: %s', async (label, names) => {
     width(true)
     const { user } = await open({ format: 'normal' })
     await screen.findByRole('option', { name: /^Burn/ })
-    await user.click(screen.getByRole('button', { name: label }))
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Support' }), label)
     expect(screen.getAllByRole('option').map((row) => row.textContent ?? '')).toHaveLength(names.length)
-    for (const name of names) expect(screen.getByRole('option', { name: new RegExp(`^${name}`) })).toBeInTheDocument()
+    for (const name of names)
+      expect(screen.getByRole('option', { name: new RegExp(`^${name}`) })).toBeInTheDocument()
   })
 
   it('filters by colour identity and clears the filters', async () => {
@@ -188,7 +203,9 @@ describe('selecting and choosing', () => {
     await waitFor(() => expect(use).toHaveAttribute('aria-disabled', 'true'))
     await user.click(use)
     expect(choose).not.toHaveBeenCalled()
-    expect(document.querySelector('[data-slot="deck-blocked"]')).toHaveTextContent(/not legal in this format/i)
+    expect(document.querySelector('[data-slot="deck-blocked"]')).toHaveTextContent(
+      /not legal in this format/i,
+    )
   })
 
   it('lists the cards of a built-in deck by name', async () => {
@@ -243,8 +260,14 @@ describe('states', () => {
 
   it('locks the deck while the seat is ready and keeps the list away', async () => {
     width(true)
-    await open({ ready: true, format: 'normal', current: { name: 'Burn', format: 'modern', manual_cards: 1 } })
-    expect(screen.getByText('Your deck is locked while you are ready. Press Not ready to change it.')).toBeInTheDocument()
+    await open({
+      ready: true,
+      format: 'normal',
+      current: { name: 'Burn', format: 'modern', manual_cards: 1 },
+    })
+    expect(
+      screen.getByText('Your deck is locked while you are ready. Press Not ready to change it.'),
+    ).toBeInTheDocument()
     expect(screen.queryByRole('listbox')).toBeNull()
     expect(deckFacts('stored-burn')).toBeDefined()
   })

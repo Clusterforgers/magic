@@ -23,7 +23,9 @@ const DECK: DeckPreviewProps['deck'] = {
   name: 'Dragons',
   source: 'Precon C18, Commander Deck',
   format: 'commander',
-  commanders: [card('The Ur-Dragon', { typeLine: 'Legendary Creature — Dragon', identity: ['W', 'U', 'B', 'R', 'G'] })],
+  commanders: [
+    card('The Ur-Dragon', { typeLine: 'Legendary Creature — Dragon', identity: ['W', 'U', 'B', 'R', 'G'] }),
+  ],
   cards: [
     card('Sol Ring', { typeLine: 'Artifact' }),
     card('Bolt', { count: 4 }),
@@ -73,7 +75,12 @@ describe('the deck preview', () => {
   it('groups the cards by type with counts, and marks the ones played by hand', () => {
     render(<DeckPreview deck={DECK} />)
     const groups = screen.getAllByRole('region').filter((region) => region.hasAttribute('data-group'))
-    expect(groups.map((group) => group.getAttribute('data-group'))).toEqual(['creature', 'instant', 'artifact', 'land'])
+    expect(groups.map((group) => group.getAttribute('data-group'))).toEqual([
+      'creature',
+      'instant',
+      'artifact',
+      'land',
+    ])
     const instants = screen.getByRole('region', { name: 'Instants' })
     expect(within(instants).getByRole('heading', { name: /Instants/ })).toHaveTextContent('4')
     expect(within(instants).getByRole('button', { name: '4 copies of Bolt' })).toBeInTheDocument()
@@ -81,7 +88,11 @@ describe('the deck preview', () => {
     const creatures = screen.getByRole('region', { name: 'Creatures' })
     const odd = within(creatures).getByRole('button', { name: 'Odd Dragon, played by hand' })
     expect(odd.querySelector('[data-slot="support-badge"]')).not.toBeNull()
-    expect(within(instants).getByRole('button', { name: '4 copies of Bolt' }).querySelector('[data-slot="support-badge"]')).toBeNull()
+    expect(
+      within(instants)
+        .getByRole('button', { name: '4 copies of Bolt' })
+        .querySelector('[data-slot="support-badge"]'),
+    ).toBeNull()
   })
 
   it('draws the mana curve and the type bars', () => {
@@ -89,7 +100,9 @@ describe('the deck preview', () => {
     const curve = screen.getByRole('list', { name: 'Spells by mana value' })
     expect(within(curve).getByRole('listitem', { name: 'Mana value 1: 5 cards' })).toBeInTheDocument()
     expect(within(curve).getByRole('listitem', { name: 'Mana value 5: 1 card' })).toBeInTheDocument()
-    expect(within(screen.getByRole('list', { name: 'Cards by type' })).getAllByRole('listitem')).toHaveLength(4)
+    expect(within(screen.getByRole('list', { name: 'Cards by type' })).getAllByRole('listitem')).toHaveLength(
+      4,
+    )
   })
 
   it.each([
@@ -103,7 +116,13 @@ describe('the deck preview', () => {
   })
 
   it('shows no legality line when the verdict is not known, and the actions under the header', () => {
-    render(<DeckPreview deck={DECK} legality={{ verdict: 'unknown', format: 'Commander' }} actions={<button>Use</button>} />)
+    render(
+      <DeckPreview
+        deck={DECK}
+        legality={{ verdict: 'unknown', format: 'Commander' }}
+        actions={<button>Use</button>}
+      />,
+    )
     expect(document.querySelector('[data-slot="legality"]')).toBeNull()
     expect(screen.getByRole('button', { name: 'Use' })).toBeInTheDocument()
   })

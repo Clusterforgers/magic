@@ -47,6 +47,7 @@ function Pictures({ entry, commanders }: { entry: DeckEntry; commanders: DeckEnt
           name={card.name}
           size="small"
           alt=""
+          quiet
           className="w-11 shadow-e1"
         />
       ))}

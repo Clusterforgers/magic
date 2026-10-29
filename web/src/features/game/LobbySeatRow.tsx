@@ -95,7 +95,7 @@ export function LobbySeatRow({ row, account, host = false, remove }: LobbySeatRo
         </span>
       </span>
       {/* Remove comes first so the state pills end at the same edge in every row; on a phone, where the name needs the width, the pill is above it. */}
-      <span className="flex shrink-0 flex-col-reverse items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
+      <span className="flex shrink-0 flex-col-reverse items-end gap-1">
         {remove === undefined ? null : (
           <Button
             type="button"

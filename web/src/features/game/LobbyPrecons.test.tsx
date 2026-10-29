@@ -99,26 +99,28 @@ async function openPrecons({
 }
 
 const names = (): string[] =>
-  [...screen.getByRole('list', { name: 'Precons' }).children].map(
-    (item) => item.querySelector('button')?.textContent ?? '',
-  )
+  screen.getAllByRole('option').map((item) => item.querySelector('span span')?.textContent ?? '')
+
+// Choose the way a player does: select the row, then press Use this deck.
+async function use(h: Awaited<ReturnType<typeof openPrecons>>, name: RegExp): Promise<void> {
+  await h.user.click(await screen.findByRole('option', { name }))
+  await h.user.click(await screen.findByRole('button', { name: 'Use this deck' }))
+}
 
 describe('the precons on offer', () => {
   it('lists the precons with a commander in a Commander game, and only a Commander tab', async () => {
     await openPrecons()
-    expect(await screen.findByRole('list', { name: 'Precons' })).toBeInTheDocument()
+    expect(await screen.findByRole('listbox', { name: 'Precons' })).toBeInTheDocument()
     expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Precons'])
     expect(names().map((text) => text.slice(0, 12))).toEqual(['Draconic Dom', 'Merciless Ra', 'Arcane Wizar'])
-    expect(document.querySelector('[data-slot="precon-count"]')).toHaveTextContent(
-      '3 precons for a Commander game.',
-    )
+    expect(document.querySelector('[data-slot="deck-count"]')).toHaveTextContent('3 decks')
   })
 
   it('lists the precons without a commander in a Normal game, after the built-in decks', async () => {
     const h = await openPrecons({ format: 'normal' })
     expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Built-in', 'Precons'])
     await h.user.click(screen.getByRole('tab', { name: 'Precons' }))
-    await screen.findByRole('list', { name: 'Precons' })
+    await screen.findByRole('listbox', { name: 'Precons' })
     expect(names()).toHaveLength(1)
     expect(names()[0]).toMatch(/^Mono White Starter/)
   })
@@ -134,35 +136,35 @@ describe('the precons on offer', () => {
     expect(names()[0]).toMatch(/^Merciless Rage/)
     await h.user.clear(search)
     await h.user.type(search, 'nothing like this')
-    expect(screen.queryByRole('list', { name: 'Precons' })).toBeNull()
-    expect(document.querySelector('[data-slot="precon-count"]')).toHaveTextContent('No precon matches.')
+    expect(screen.queryByRole('option')).toBeNull()
+    expect(document.querySelector('[data-slot="deck-count"]')).toHaveTextContent('No deck matches.')
   })
 
-  it('shows six at a time and the rest on request, checking only the ones shown and none while a search is typed', async () => {
+  it('lists every precon and checks only the one selected, once it has rested, and again for the next', async () => {
     const many = Array.from({ length: 15 }, (_, n) =>
       precon(`Deck ${String(n).padStart(2, '0')}`, 'c20', ['A']),
     )
     const h = await openPrecons({ precons: many })
-    await screen.findByRole('list', { name: 'Precons' })
-    expect(names()).toHaveLength(6)
+    await screen.findByRole('listbox', { name: 'Precons' })
+    expect(names()).toHaveLength(15)
     const asked = () => h.server.calls.filter((call) => call.url === '/api/decks/check').length
-    expect(asked()).toBe(0)
-    await waitFor(() => expect(asked()).toBe(6))
-    await screen.findAllByText('Whole deck runs')
-    await h.user.click(screen.getByRole('button', { name: 'Show more (9 left)' }))
-    expect(names()).toHaveLength(12)
-    await waitFor(() => expect(asked()).toBe(12))
-    await h.user.type(screen.getByRole('searchbox', { name: 'Search precons' }), 'Deck 14')
-    expect(names()).toHaveLength(1)
-    await waitFor(() => expect(asked()).toBe(13))
+    await waitFor(() => expect(asked()).toBe(1))
+    await h.user.click(screen.getByRole('option', { name: /Deck 07/ }))
+    await waitFor(() => expect(asked()).toBe(2))
   })
 
-  it('shows the table’s verdict on each precon, and a precon the table cannot take cannot be pressed', async () => {
+  it('shows the table’s verdict on the selected precon, and a precon the table cannot take cannot be used', async () => {
     const h = await openPrecons()
-    expect(await screen.findByRole('button', { name: /Draconic Domination.*Whole deck runs/ })).toBeEnabled()
-    expect(screen.getByRole('button', { name: /Merciless Rage.*4 cards played by hand/ })).toBeEnabled()
-    const blocked = screen.getByRole('button', { name: /Arcane Wizardry.*Cannot be taken/ })
-    expect(blocked).toHaveAttribute('aria-disabled', 'true')
+    expect(
+      await screen.findByRole('option', { name: /Draconic Domination.*Whole deck runs/ }),
+    ).toBeInTheDocument()
+    await h.user.click(screen.getByRole('option', { name: /Merciless Rage/ }))
+    expect(await screen.findByText('Legal in Commander')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Use this deck' })).toBeEnabled()
+    await h.user.click(screen.getByRole('option', { name: /Arcane Wizardry/ }))
+    expect(await screen.findByText('Not legal in Commander')).toBeInTheDocument()
+    const blocked = screen.getByRole('button', { name: 'Use this deck' })
+    await waitFor(() => expect(blocked).toHaveAttribute('aria-disabled', 'true'))
     expect(blocked).toHaveAccessibleDescription(/The deck has 99 cards, and a Commander deck needs 100\./)
     await h.user.click(blocked)
     expect(changesOf(h.server).filter((call) => call.method === 'PUT')).toEqual([])
@@ -175,7 +177,7 @@ describe('the precons on offer', () => {
           jsonResponse(200, { name: 'Draconic Domination', format: 'commander', manual_cards: 0 }),
       },
     })
-    await h.user.click(await screen.findByRole('button', { name: /Draconic Domination/ }))
+    await use(h, /Draconic Domination/)
     await h.settle()
     const put = changesOf(h.server).filter((call) => call.method === 'PUT')
     expect(put).toHaveLength(1)
@@ -197,7 +199,7 @@ describe('the precons on offer', () => {
     })
     expect(await screen.findByText(/too many requests/)).toBeInTheDocument()
     await h.user.click(screen.getByRole('button', { name: 'Try again' }))
-    expect(await screen.findByRole('list', { name: 'Precons' })).toBeInTheDocument()
+    expect(await screen.findByRole('listbox', { name: 'Precons' })).toBeInTheDocument()
   })
 })
 

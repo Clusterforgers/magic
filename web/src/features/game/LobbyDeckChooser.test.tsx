@@ -141,15 +141,23 @@ describe('the decks on offer', () => {
   it('gives a signed-in player their stored decks first, each with its support chip, and checks only the deck selected at this table', async () => {
     const h = await openChooser({ signedIn: true })
     const stored = await screen.findByRole('listbox', { name: 'Your decks' })
-    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Your decks', 'Built-in', 'Precons'])
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
+      'Your decks',
+      'Built-in',
+      'Precons',
+    ])
     expect([...stored.children].map((item) => item.getAttribute('data-deck-option'))).toEqual([
       'rakdos',
       'burn',
       'pauper',
     ])
-    expect(within(stored).getByRole('option', { name: /Rakdos Midrange.*Whole deck runs/ })).toBeInTheDocument()
+    expect(
+      within(stored).getByRole('option', { name: /Rakdos Midrange.*Whole deck runs/ }),
+    ).toBeInTheDocument()
     expect(within(stored).getByRole('option', { name: /Burn.*3 played by hand/ })).toBeInTheDocument()
-    expect(within(stored).getByRole('option', { name: /Pauper Affinity.*Cannot be taken/ })).toBeInTheDocument()
+    expect(
+      within(stored).getByRole('option', { name: /Pauper Affinity.*Cannot be taken/ }),
+    ).toBeInTheDocument()
     await waitFor(() => expect(checked(h).map((body) => body.deck)).toEqual(['rakdos']))
     expect(checked(h).every((body) => body.game === GAME_ID)).toBe(true)
   })
@@ -185,7 +193,9 @@ describe('the decks on offer', () => {
     await h.user.click(await screen.findByRole('option', { name: /Burn/ }))
     const link = await screen.findByRole('link', { name: 'Not validated cards' })
     expect(link).toHaveAttribute('href', '/decks/burn/unvalidated')
-    expect(await screen.findByRole('button', { name: '3 copies of Odd Card, played by hand' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('button', { name: '3 copies of Odd Card, played by hand' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: '57 copies of Forest' })).toBeInTheDocument()
   })
 

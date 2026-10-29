@@ -109,7 +109,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
     <article
       aria-labelledby={titleId}
       data-slot="deck-preview"
-      className={cn('grid min-w-0 content-start gap-5', className)}
+      className={cn('@container grid min-w-0 content-start gap-5', className)}
     >
       <header className="flex min-w-0 flex-wrap gap-4">
         {commanders.length === 0 ? null : (
@@ -204,7 +204,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
           </section>
 
           {stats.size === 0 ? null : (
-            <div className="grid gap-5 sm:grid-cols-2" data-slot="deck-stats">
+            <div className="grid gap-5 @md:grid-cols-2" data-slot="deck-stats">
               <ManaCurve curve={stats.curve} />
               <TypeBars types={stats.types} />
             </div>
@@ -226,11 +226,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
 /** What stands under the header while the cards load: the support line, the bars and a grid of cards. */
 export function DeckPreviewSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      data-slot="deck-preview-loading"
-      aria-busy="true"
-      className={cn('grid gap-5', className)}
-    >
+    <div data-slot="deck-preview-loading" aria-busy="true" className={cn('grid gap-5', className)}>
       <span className="sr-only">Loading the cards…</span>
       <Skeleton className="h-16" />
       <Skeleton className="h-24" />

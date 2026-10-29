@@ -170,7 +170,9 @@ describe('adapters', () => {
     })
     const data = previewFromDeck(view)
     expect(data.commanders.map((entry) => entry.name)).toEqual(['Atraxa'])
-    expect(data.cards.map((entry) => [entry.name, entry.count, entry.support])).toEqual([['Odd Card', 2, 'manual']])
+    expect(data.cards.map((entry) => [entry.name, entry.count, entry.support])).toEqual([
+      ['Odd Card', 2, 'manual'],
+    ])
     expect(data.cards[0]?.reasons).toEqual(['Resolve it by hand.'])
     expect(data.sideboard.map((entry) => entry.name)).toEqual(['Side Card'])
     expect(data.source).toBe('Your deck')
@@ -197,13 +199,29 @@ describe('adapters', () => {
         {
           board: 'commander',
           copies: 1,
-          cards: [{ name: 'The Ur-Dragon', count: 1, printing_id: null, card: cardHit('The Ur-Dragon'), support: 'verified', reasons: [] }],
+          cards: [
+            {
+              name: 'The Ur-Dragon',
+              count: 1,
+              printing_id: null,
+              card: cardHit('The Ur-Dragon'),
+              support: 'verified',
+              reasons: [],
+            },
+          ],
         },
         {
           board: 'main',
           copies: 2,
           cards: [
-            { name: 'Sol Ring', count: 1, printing_id: null, card: cardHit('Sol Ring'), support: 'verified', reasons: [] },
+            {
+              name: 'Sol Ring',
+              count: 1,
+              printing_id: null,
+              card: cardHit('Sol Ring'),
+              support: 'verified',
+              reasons: [],
+            },
             { name: 'Unknown', count: 1, printing_id: null, card: null, support: 'unplayable', reasons: [] },
           ],
         },

@@ -61,7 +61,7 @@ describe('/dev/lobby with decks', () => {
   it('lists the stored decks of a signed-in page with the built-in ones, and keeps a guest to the built-in ones', async () => {
     await visit('/dev/lobby?seats=3&me=1&nodeck=1&account=1')
     expect(
-      await screen.findByRole('list', { name: 'Your decks' }, { timeout: scaled(5000) }),
+      await screen.findByRole('listbox', { name: 'Your decks' }, { timeout: scaled(5000) }),
     ).toBeInTheDocument()
     expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
       'Your decks',
@@ -70,8 +70,8 @@ describe('/dev/lobby with decks', () => {
     ])
     cleanup()
     await visit('/dev/lobby?seats=3&me=1&nodeck=1')
-    expect(await screen.findByRole('list', { name: 'Built-in decks' })).toBeInTheDocument()
-    expect(screen.queryByRole('list', { name: 'Your decks' })).toBeNull()
+    expect(await screen.findByRole('listbox', { name: 'Built-in decks' })).toBeInTheDocument()
+    expect(screen.queryByRole('listbox', { name: 'Your decks' })).toBeNull()
   }, 20_000)
 
   it('shows the choice in the roster and opens Ready, and keeps Commander decks out of a Normal game', async () => {
@@ -79,9 +79,10 @@ describe('/dev/lobby with decks', () => {
     await visit('/dev/lobby?seats=3&me=1&nodeck=1&account=1')
     const ready = await screen.findByRole('button', { name: 'Ready' })
     expect(ready).toBeDisabled()
-    expect(await screen.findByRole('button', { name: /Burn/ })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Atraxa Superfriends/ })).toBeNull()
-    await user.click(screen.getByRole('button', { name: /Burn/ }))
+    expect(await screen.findByRole('option', { name: /Burn/ })).toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: /Atraxa Superfriends/ })).toBeNull()
+    await user.click(screen.getByRole('option', { name: /Burn/ }))
+    await user.click(await screen.findByRole('button', { name: 'Use this deck' }))
     await waitFor(() => expect(screen.getByRole('button', { name: 'Ready' })).toBeEnabled(), {
       timeout: scaled(5000),
     })
@@ -95,15 +96,16 @@ describe('/dev/lobby with decks', () => {
     await visit('/dev/lobby?seats=3&me=1&nodeck=1&account=1&format=commander&rules=1')
     const tabs = await screen.findAllByRole('tab')
     expect(tabs.map((tab) => tab.textContent)).toEqual(['Your decks', 'Precons'])
-    expect(await screen.findByRole('button', { name: /Atraxa Superfriends.*Whole deck runs/ })).toBeEnabled()
+    expect(
+      await screen.findByRole('option', { name: /Atraxa Superfriends.*Whole deck runs/ }),
+    ).toBeInTheDocument()
     await user.click(screen.getByRole('tab', { name: 'Precons' }))
-    expect(await screen.findByRole('button', { name: /Draconic Domination.*Whole deck runs/ })).toBeEnabled()
-    expect(screen.getByRole('button', { name: /Merciless Rage.*4 cards played by hand/ })).toBeEnabled()
-    expect(screen.getByRole('button', { name: /Arcane Wizardry.*Cannot be taken/ })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    )
-    expect(screen.queryByRole('button', { name: /Mono White Starter/ })).toBeNull()
+    expect(
+      await screen.findByRole('option', { name: /Draconic Domination.*Whole deck runs/ }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: /Merciless Rage.*1 played by hand/ })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: /Arcane Wizardry.*Cannot be taken/ })).toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: /Mono White Starter/ })).toBeNull()
     expect(await screen.findByText(/Starting life 30/)).toBeInTheDocument()
   }, 20_000)
 })
