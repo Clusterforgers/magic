@@ -13,6 +13,7 @@ import { ForecastMarks } from './combat/ForecastMarks'
 import { FxFloat } from './fx/FxFloat'
 import { useCardFx } from './fx/hooks'
 import { fxAttr, fxSide } from './fx/model'
+import { ManaStrip } from './ManaStrip'
 import { useManualMenu } from './manual/useManualMenu'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import { combatRoleIn } from './selectors'
@@ -118,6 +119,7 @@ export const Card = memo(function Card({
       {fx.map((entry) =>
         entry.kind === 'damaged' ? <FxFloat key={entry.token} kind="damaged" amount={entry.amount} /> : null,
       )}
+      <ManaStrip id={id} />
     </button>
   )
 })

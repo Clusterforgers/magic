@@ -5,6 +5,7 @@ import { usePlay } from '@/features/game/gameContext'
 import type { ManaOption, ManaType, ObjectId } from '@/protocol/generated'
 import { LIFE_PER_SYMBOL, manaWords } from '../../manaSymbols'
 import { ManaChoice } from '../ManaChoice'
+import { ManaSources } from '../ManaSources'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { payText, spendWords } from '../payText'
@@ -203,6 +204,9 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         onSpendPool={(mana) => add({ kind: 'pool', mana })}
         onRemove={removeAt}
         onClear={clear}
+        sources={
+          <ManaSources sources={byPermanent} nameOf={nameOf} legal={legal} taken={taken} onAct={act} />
+        }
         life={
           hasLife
             ? {

@@ -4,6 +4,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
+import { ManaPreviewLine } from './ManaStrip'
 import { PreviewCard } from './PreviewCard'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookText } from './combat/forecastText'
@@ -92,6 +93,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
             ))}
           </ul>
         )}
+        <ManaPreviewLine object={object} />
         {status.length === 0 ? null : <p>Status: {status.join(', ')}</p>}
         {fight === null ? null : <p>{fight}</p>}
         {outlook === null ? null : (
