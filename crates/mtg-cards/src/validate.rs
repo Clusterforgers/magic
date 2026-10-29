@@ -421,6 +421,19 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The predicate atoms of the open selector language, each a `Pred.<Name>` primitive the engine must run.
+    fn w21a_pred(&mut self, pred: &Pred) {
+        match pred {
+            Pred::Modified => self.uses("Pred", "Modified"),
+            Pred::FaceDown => self.uses("Pred", "FaceDown"),
+            Pred::TargetsPlayer(who) => {
+                self.uses("Pred", "TargetsPlayer");
+                self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
+            }
+            _ => self.uses("Pred", "GravedThisTurn"),
+        }
+    }
+
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) | Pred::AttackingPlayer(r) => {
@@ -452,6 +465,9 @@ impl<'a> Walker<'a> {
                 }
             }
             Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
+            Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
+                self.w21a_pred(pred);
+            }
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {

@@ -513,6 +513,10 @@ const RUNS: &[&str] = &[
     "Condition.InCombat",
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
+    "Pred.Modified",
+    "Pred.FaceDown",
+    "Pred.TargetsPlayer",
+    "Pred.GravedThisTurn",
 ];
 
 /// The capabilities of this engine.

@@ -254,7 +254,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
             "legendary" => Some(not(Pred::Supertype(Supertype::Legendary))),
             "basic" => Some(not(Pred::Supertype(Supertype::Basic))),
             "token" => Some(not(Pred::Token)),
-            _ => None,
+            _ => super::w21a_atoms::w21a_adjective(word),
         };
     }
     Some(match word {
@@ -272,7 +272,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
         "legendary" => Pred::Supertype(Supertype::Legendary),
         "basic" => Pred::Supertype(Supertype::Basic),
         "other" => Pred::Other,
-        _ => return None,
+        _ => return super::w21a_atoms::w21a_adjective(word),
     })
 }
 
@@ -320,7 +320,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::Commander => "noncommander".to_owned(),
             _ => return None,
         },
-        _ => return None,
+        _ => return super::w21a_atoms::w21a_adjective_text(pred),
     })
 }
 
@@ -644,6 +644,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         };
         Some(Pred::Compare { stat, op, to })
     })
+    .or_else(|| super::w21a_atoms::w21a_suffix(r))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -723,14 +724,15 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         | Pred::SharesType(_)
         | Pred::SharesColor(_)
         | Pred::HasAttached(_)
-        | Pred::AnyOf(_)) => w6d_shares::w6d_suffix_text(pred, form)?,
+        | Pred::AnyOf(_)) => w6d_shares::w6d_suffix_text(pred, form)
+            .or_else(|| super::w21a_atoms::w21a_suffix_text(pred, form))?,
         Pred::HasAnyCounter if form.plural() => "with counters on them".to_owned(),
         Pred::HasAnyCounter => "with a counter on it".to_owned(),
         Pred::Not(inner) => match &**inner {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
             Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),
             Pred::EnteredThisTurn => "that didn't enter this turn".to_owned(),
-            _ => return None,
+            _ => return super::w21a_atoms::w21a_suffix_text(pred, form),
         },
         Pred::Compare {
             stat: StatKind::ManaValue,
@@ -741,7 +743,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             stat,
             op,
             to: to @ Amount::Counters { .. },
-        } => format!(
+        } if super::w15b_time::w15b_at_most_counters_text(*op, to).is_some() => format!(
             "with {} {}",
             stat_name(*stat)?,
             super::w15b_time::w15b_at_most_counters_text(*op, to)?
@@ -750,7 +752,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),
                 Amount::X => "X".to_owned(),
-                _ => return None,
+                _ => return super::w21a_atoms::w21a_suffix_text(pred, form),
             };
             let tail = match op {
                 Cmp::Le => " or less",
@@ -760,7 +762,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             };
             format!("with {} {number}{tail}", stat_name(*stat)?)
         }
-        _ => return None,
+        _ => return super::w21a_atoms::w21a_suffix_text(pred, form),
     })
 }
 
@@ -962,6 +964,11 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     }
     if r.words(graveyard) || (in_zone && r.words("in your graveyard")) {
         return Some(vec![Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
+    }
+    if form != Form::Count
+        && let Some(graved) = r.attempt(super::w21a_atoms::w21a_graved)
+    {
+        return Some(graved);
     }
     if form == Form::Count {
         return None;
@@ -1462,6 +1469,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         [token, spell, card, commander_noun, bare],
         plural,
     ));
+    let (suffixes, zone) = super::w21a_atoms::w21a_place(suffixes, zone, plural)?;
     words.extend(without_list(suffixes));
     words.extend(zone);
     Some(words.join(" "))

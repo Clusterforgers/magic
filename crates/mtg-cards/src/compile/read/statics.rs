@@ -1094,6 +1094,7 @@ fn cost_modifier_texts(
     subjects
         .into_iter()
         .flat_map(|subject| cost_sentences(&subject, applies_to, change, mana, per, condition))
+        .flat_map(|sentence| super::w21a_atoms::w21a_colored_only(sentence, change, mana))
         .collect()
 }
 

@@ -135,6 +135,7 @@ mod w14c_alt_costs;
 mod w14c_block_capacity;
 mod w15b_time;
 mod w15c_clash;
+mod w21a_atoms;
 mod w2b_you_and;
 mod w2c_counts;
 mod w2d_villainous;
