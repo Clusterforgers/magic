@@ -2068,6 +2068,10 @@ impl Writer<'_> {
                 let subject = self.player(who)?;
                 format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
             }
+            Effect::Incubate { who, .. } if *who != Ref::You => {
+                let subject = self.player(who)?;
+                format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
+            }
             Effect::Move {
                 what,
                 to: Destination::Hand,

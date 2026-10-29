@@ -57,6 +57,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         state.rules_cache.reset();
     }
     w2c_note_destroyed(state, event);
+    w14b_note_exiled(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -529,6 +530,25 @@ fn w2c_note_destroyed(state: &mut GameState, event: &Event) {
     };
     if let Some(resolving) = state.resolving.as_mut() {
         resolving.destroyed.push(was);
+    }
+}
+
+/// A permanent exiled while a spell or ability resolves is kept, as the object it was, for "exiled this way".
+fn w14b_note_exiled(state: &mut GameState, event: &Event) {
+    let Event::ZoneChanged {
+        object,
+        from: Zone::Battlefield,
+        to: Zone::Exile,
+        ..
+    } = event
+    else {
+        return;
+    };
+    let Some(was) = state.object(*object).map(GameObject::reference) else {
+        return;
+    };
+    if let Some(resolving) = state.resolving.as_mut() {
+        resolving.w14b_exiled.push(was);
     }
 }
 

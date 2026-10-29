@@ -480,6 +480,9 @@ fn w2e_cycled(r: &mut Reader<'_>, by: Ref) -> Option<TriggerPattern> {
 
 /// The spell of a cast or a copy, "an instant or sorcery spell", without the noun: the pattern is about a spell already.
 fn w2e_spell(r: &mut Reader<'_>) -> Option<Vec<Pred>> {
+    if let Some(spell) = super::w14b_or_spell::w14b_read(r) {
+        return Some(spell);
+    }
     let mut spell = subject(r)?.0;
     if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
         return None;

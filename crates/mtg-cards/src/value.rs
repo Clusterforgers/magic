@@ -251,6 +251,9 @@ pub enum TurnTally {
     CreaturesDiedUnder,
     /// The same without the tokens ("for each nontoken creature that died under your control this turn").
     NontokenCreaturesDiedUnder,
+    /// The Phyrexians put into a graveyard from the battlefield while the players read controlled them ("if a Phyrexian died
+    /// under your control this turn"), tokens included. Added up over the players.
+    PhyrexiansDiedUnder,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -366,6 +369,9 @@ pub enum Amount {
     /// existed ("for each creature destroyed this way", "creatures you controlled that were destroyed this way"); tokens
     /// count, and a permanent regenerated or indestructible was not destroyed.
     Destroyed(Selector),
+    /// How many permanents the resolving spell or ability has exiled from the battlefield so far that matched the selector
+    /// as they last existed ("the number of creatures exiled this way"); tokens count.
+    Exiled(Selector),
     /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
     /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
     Kicks,
@@ -470,6 +476,7 @@ enum Tagged {
     LowestHand(Ref),
     LifeLostThisWay,
     Destroyed(Selector),
+    Exiled(Selector),
     Kicks,
     Mutations(Ref),
     Promised,
@@ -533,6 +540,7 @@ enum TaggedRef<'a> {
     LowestHand(&'a Ref),
     LifeLostThisWay,
     Destroyed(&'a Selector),
+    Exiled(&'a Selector),
     Kicks,
     Mutations(&'a Ref),
     Promised,
@@ -581,6 +589,7 @@ impl From<Tagged> for Amount {
             Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
             Tagged::Distinct { of, stat } => Amount::Distinct { of, stat },
             Tagged::Destroyed(of) => Amount::Destroyed(of),
+            Tagged::Exiled(of) => Amount::Exiled(of),
             Tagged::Kicks => Amount::Kicks,
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
@@ -634,6 +643,7 @@ impl Serialize for Amount {
                 TaggedRef::Distinct { of, stat: *stat }.serialize(serializer)
             }
             Amount::Destroyed(of) => TaggedRef::Destroyed(of).serialize(serializer),
+            Amount::Exiled(of) => TaggedRef::Exiled(of).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
@@ -837,6 +847,7 @@ mod tests {
     #[case::lowest_hand(Amount::LowestHand(Ref::EachPlayer), r#"{"LowestHand":"EachPlayer"}"#)]
     #[case::life_lost_this_way(Amount::LifeLostThisWay, r#""LifeLostThisWay""#)]
     #[case::destroyed_this_way(Amount::Destroyed(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Destroyed":[{"Type":"Creature"}]}"#)]
+    #[case::exiled_this_way(Amount::Exiled(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Exiled":[{"Type":"Creature"}]}"#)]
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
     #[case::c11e_the_other_result(Amount::DieResult(DieResult::Other), r#"{"DieResult":"Other"}"#)]
     #[case::counters(

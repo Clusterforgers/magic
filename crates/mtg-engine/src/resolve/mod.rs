@@ -75,6 +75,8 @@ pub struct Resolving {
     pub(crate) rolled: Vec<u32>,
     /// The permanents the resolution has destroyed so far, as the objects they were, which "destroyed this way" reads.
     pub(crate) destroyed: Vec<ObjectRef>,
+    /// The permanents the resolution has exiled so far, as the objects they were, which "exiled this way" reads.
+    pub(crate) w14b_exiled: Vec<ObjectRef>,
     /// The X announced as a payment in the resolution was made ("you may pay {X}{R}. If you do"), which the effects after it read.
     pub(crate) w6c_paid_x: Option<u32>,
 }
@@ -91,6 +93,7 @@ impl Resolving {
             lost: 0,
             rolled: Vec::new(),
             destroyed: Vec::new(),
+            w14b_exiled: Vec::new(),
             w6c_paid_x: None,
         }
     }

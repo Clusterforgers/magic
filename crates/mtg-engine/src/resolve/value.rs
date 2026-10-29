@@ -312,13 +312,15 @@ impl<'a> Scope<'a> {
             | TurnTally::CreaturesDied
             | TurnTally::NontokenCreaturesDied
             | TurnTally::CreaturesDiedUnder
-            | TurnTally::NontokenCreaturesDiedUnder => {
+            | TurnTally::NontokenCreaturesDiedUnder
+            | TurnTally::PhyrexiansDiedUnder => {
                 let kind = match what {
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,
                     TurnTally::CreaturesDiedUnder => Tally::DiedUnder,
                     TurnTally::NontokenCreaturesDiedUnder => Tally::DiedNontokenUnder,
+                    TurnTally::PhyrexiansDiedUnder => Tally::W14bPhyrexianDiedUnder,
                     _ => Tally::DiedNontoken,
                 };
                 let total: u32 = self
@@ -1264,6 +1266,7 @@ impl<'a> Scope<'a> {
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
+            Amount::Exiled(of) => self.w14b_exiled(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::Devoured => self.w7e_devoured(),
@@ -1451,6 +1454,20 @@ impl<'a> Scope<'a> {
         let mut found = 0i64;
         for destroyed in &resolving.destroyed {
             if self.selects(of, *destroyed)? {
+                found += 1;
+            }
+        }
+        Ok(found)
+    }
+
+    /// How many of the permanents the resolution exiled match the selector as they last existed.
+    fn w14b_exiled(&self, of: &Selector) -> Result<i64, ResolveError> {
+        let Some(resolving) = self.state.resolving.as_ref() else {
+            return Ok(0);
+        };
+        let mut found = 0i64;
+        for exiled in &resolving.w14b_exiled {
+            if self.selects(of, *exiled)? {
                 found += 1;
             }
         }

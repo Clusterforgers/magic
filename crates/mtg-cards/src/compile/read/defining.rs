@@ -348,7 +348,7 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         }
         Amount::Distinct { .. } => super::w2c_counts::w2c_distinct_text(amount, true)
             .map(|text| format!("the number of {text}")),
-        Amount::Destroyed(_) => super::w2c_counts::w2c_destroyed_all_text(amount)
+        Amount::Destroyed(_) | Amount::Exiled(_) => super::w2c_counts::w2c_destroyed_all_text(amount)
             .map(|text| format!("the number of {text}")),
         Amount::Party(Ref::You) => Some("the number of creatures in your party".to_owned()),
         Amount::Mutations(Ref::This) => {

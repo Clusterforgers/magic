@@ -616,6 +616,7 @@ impl<'a> Walker<'a> {
             Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
+            Amount::Exiled(of) => self.w2c_selector_amount("Exiled", of),
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
