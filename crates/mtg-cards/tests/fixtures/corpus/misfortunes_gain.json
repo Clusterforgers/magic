@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "6f93d6da-ee3c-4823-a20b-75db832f1f9d",
+  "oracle_id": "01b778d7-0965-48ab-a81f-e29f8a233d07",
+  "multiverse_ids": [
+    201288
+  ],
+  "mtgo_id": 33792,
+  "mtgo_foil_id": 33793,
+  "name": "Misfortune's Gain",
+  "lang": "en",
+  "released_at": "2009-09-07",
+  "uri": "https://api.scryfall.com/cards/6f93d6da-ee3c-4823-a20b-75db832f1f9d",
+  "scryfall_uri": "https://scryfall.com/card/me3/21/misfortunes-gain?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:30:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.jpg?1783942241",
+    "normal": "https://cards.scryfall.io/normal/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.jpg?1783942241",
+    "large": "https://cards.scryfall.io/large/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.jpg?1783942241",
+    "png": "https://cards.scryfall.io/png/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.png?1783942241",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.jpg?1783942241",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.jpg?1783942241",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.webp?1783942241",
+    "grid": "https://cards.scryfall.io/grid/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.webp?1783942241",
+    "display": "https://cards.scryfall.io/display/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.webp?1783942241",
+    "art": "https://cards.scryfall.io/art/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.webp?1783942241",
+    "crop": "https://cards.scryfall.io/crop/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.webp?1783942241",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/f/6f93d6da-ee3c-4823-a20b-75db832f1f9d.jpg?1783942241"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Destroy target creature. Its owner gains 4 life.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set": "me3",
+  "set_name": "Masters Edition III",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b65fb1f2-4768-4c70-8fdf-30a069ad592e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6f93d6da-ee3c-4823-a20b-75db832f1f9d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A01b778d7-0965-48ab-a81f-e29f8a233d07&unique=prints",
+  "collector_number": "21",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "The mourning families of commanders and generals were often given land, valuables, or money to compensate for their losses.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jiaming",
+  "artist_ids": [
+    "54d82a8b-8eac-43da-8131-ff5858d1ccae"
+  ],
+  "illustration_id": "7047befb-5239-460c-b020-3ba6f8421bc3",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31105,
+  "penny_rank": 17540,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=201288&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMisfortune%2527s%2BGain",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMisfortune%2527s%2BGain",
+    "edhrec": "https://edhrec.com/route/?cc=Misfortune%27s+Gain"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DMisfortune%2527s%2BGain%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Misfortune%27s+Gain&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/33792?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

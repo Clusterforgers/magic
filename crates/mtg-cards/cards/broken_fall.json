@@ -1,0 +1,20 @@
+{
+  "oracle_id": "79791c7f-dd33-406a-8c2e-6b722abd5161",
+  "name": "Broken Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broken Fall",
+      "oracle_fingerprint": "8f48ae995a65ee3954e88d6f7246181a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ReturnToHand": { "filter": ["This"] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

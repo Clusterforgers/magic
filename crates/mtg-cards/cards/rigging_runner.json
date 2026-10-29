@@ -1,0 +1,27 @@
+{
+  "oracle_id": "72b600e3-d671-4279-8ca6-9a3d6e774b53",
+  "name": "Rigging Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rigging Runner",
+      "oracle_fingerprint": "5e773666fe49d27dfbdea846a56c5e84",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

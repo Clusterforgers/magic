@@ -1,0 +1,27 @@
+{
+  "oracle_id": "be1fc2cf-00b8-424f-b683-3743fba285c9",
+  "name": "Festerhide Boar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Festerhide Boar",
+      "oracle_fingerprint": "1c8898a52c8ae384ad16d1416c4258e7",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
