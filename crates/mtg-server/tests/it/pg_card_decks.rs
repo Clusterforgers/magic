@@ -85,7 +85,11 @@ async fn a_deck_of_oracle_ids_becomes_the_definitions_the_corpus_gives(pool: PgP
     let deck = CardSource::new(pool).deck(&deck_ids()).await.unwrap();
     assert_eq!(deck.len(), 60);
     for (position, (made, name)) in deck.iter().zip(deck_names()).enumerate() {
-        assert_eq!(**made, *card(name).unwrap(), "{name} at {position}");
+        // The server names the card it read; the rest is what the corpus gives.
+        let mut made = (**made).clone();
+        assert!(made.identity.take().is_some(), "{name} names its card");
+        made.faces.iter_mut().for_each(|face| face.identity = None);
+        assert_eq!(made, *card(name).unwrap(), "{name} at {position}");
     }
     assert!(
         Arc::ptr_eq(&deck[0], &deck[39]),

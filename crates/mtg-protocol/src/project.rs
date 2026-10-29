@@ -341,6 +341,7 @@ impl ObjectView {
             } else {
                 Vec::new()
             },
+            identity: card.identity.clone().filter(|_| printed),
         })
     }
 
@@ -375,6 +376,7 @@ impl ObjectView {
             copy: None,
             merged: Vec::new(),
             manual: Vec::new(),
+            identity: None,
         }
     }
 }
