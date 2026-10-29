@@ -33,6 +33,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-b), (r2az-c), (r2az-g).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
+- Card sweeps run on the free local model (`propose` with `--jobs`, `--reasoning low`, `--solved-examples 5`, in popularity order); Claude agents implement what the sweeps and `coverage --all` show missing (writers, primitives) and the web.
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
@@ -146,7 +147,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
 - [~] (a2) (a2-card-images-web) The table, hand, stack, preview, deck builder and lobby draw the real card image, unaltered as Scryfall's image terms require, with tapped state, counters, attachments, loyalty and support marks over it, with `/dev/table` screenshots at six sizes in both themes (`docs/web.md`)
-- [ ] (k1) Commander at the table: each commander in the command zone with its cast count and tax, casting it from there with the tax in the cast options, the choice to return it to the command zone, and commander damage on every pod with the lethal amount, with `/dev/table` screenshots of a four-seat game at six sizes in both themes
+- [~] (k1) (k1-commander-table) Commander at the table: each commander in the command zone with its cast count and tax, casting it from there with the tax in the cast options, the choice to return it to the command zone, and commander damage on every pod with the lethal amount, with `/dev/table` screenshots of a four-seat game at six sizes in both themes
 - [ ] (k2) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
@@ -261,6 +262,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
+- [~] (t18a) (t18a-propose-speed) `propose` sends requests in parallel (`--jobs N`), sets the reasoning effort of a model that has one (`--reasoning low|medium|high`), times out and retries a request so a stalled server never hangs a run, and prints tokens per second and cards per minute (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (t17a) `mtg-cli check-rules --gaps FILE` writes the ledger of everything that holds stored proposals back (missing writers by node kind, invalid and mismatch reasons, missing primitives), ranked by the cards each gap would free, weighted by popularity, so implementers take the largest gap first and a new writer verifies the stored proposals without a model call
 - [ ] (t17b) Writers for the continuous effects of spells and activated abilities, then for modified power and toughness and added keywords of statics; 51 stored local-model proposals wait on them (`docs/cards-dsl.md`, Model-assisted reading)
 - [~] (t15a) (t15a-popular-1) The 42 not-Verified cards among the 300 most popular Commander cards (`mtg-cli coverage --all --out`; Path of Ancestry, Mana Drain, Smothering Tithe, Sylvan Library, Force of Will, Mana Vault, The One Ring) read whole, or skipped with the missing piece as a lettered line
