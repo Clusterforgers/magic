@@ -22,7 +22,6 @@ import { LobbyRules } from './LobbyRules'
 import { LobbySeatRow } from './LobbySeatRow'
 import { LobbyVisibility } from './LobbyVisibility'
 import { useDeckChoice } from './useDeckChoice'
-import { useLobbyRules } from './useLobbyRules'
 import { useLobbyAnnouncement } from './useLobbyAnnouncement'
 import { useLobbyControls } from './useLobbyControls'
 import type { LobbyApi } from './useLobbyControls'
@@ -69,7 +68,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
   const host = seat === HOST_SEAT
   const known = lookup.game?.visibility
   const tableFormat = lookup.game?.format ?? 'normal'
-  const tableRules = useLobbyRules(api, game, known)
+  const tableRules = lookup.game?.house_rules
   const controls = useLobbyControls({ api, game, token, started: lookup.game?.started === true })
   const visibility = useVisibility({
     api,

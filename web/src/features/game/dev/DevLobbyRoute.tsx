@@ -23,7 +23,7 @@ export function DevLobbyRoute() {
     () => lobbyGame({ seats, ready, away, me, names, visibility, nodeck, format, rules }),
     [seats, ready, away, me, names, visibility, nodeck, format, rules],
   )
-  const api = useMemo(() => lobbyApi(game.session, { format, rules }), [game])
+  const api = useMemo(() => lobbyApi(game.session, { format }), [game, format])
   const decks = useMemo(() => lobbyDecks(), [])
   const precons = useMemo(() => lobbyPrecons(), [])
   const auth = useMemo(

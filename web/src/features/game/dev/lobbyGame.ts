@@ -157,6 +157,7 @@ export function lobbyGame(options: DevLobbySearch): GameContextValue {
     result: null,
     visibility: options.visibility ?? 'public',
     format: options.format ?? 'normal',
+    ...(options.rules === true ? { house_rules: DEV_RULES } : {}),
   }
   return { game: 'dev-lobby', session, lookup: { game, missing: false, failed: false } }
 }
@@ -186,25 +187,8 @@ function setDeck(session: Session, seat: number, deck: SeatDeck): void {
  * roster as the server's next `Lobby` message would. A deck is chosen after a short wait and shows in the roster; the
  * Commander deck is refused with its issues, as a Normal game refuses it. Close and Leave then take the page to Play.
  */
-export function lobbyApi(session: Session, options: Pick<DevLobbySearch, 'format' | 'rules'> = {}): LobbyApi {
+export function lobbyApi(session: Session, options: Pick<DevLobbySearch, 'format'> = {}): LobbyApi {
   return {
-    listLobbies: async () => ({
-      games: [
-        {
-          game: 'dev-lobby',
-          host: 'Ada',
-          format: options.format ?? 'normal',
-          ...(options.rules === true ? { house_rules: DEV_RULES } : {}),
-          manual_play: false,
-          filled: 2,
-          total: 4,
-          created_at: '2026-10-10T09:00:00Z',
-          age_secs: 30,
-        },
-      ],
-      etag: null,
-      fetchedAt: 0,
-    }),
     setVisibility: async (_game, visibility) => visibility,
     closeGame: async () => undefined,
     leaveGame: async () => undefined,

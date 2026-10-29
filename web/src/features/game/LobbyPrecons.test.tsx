@@ -59,11 +59,13 @@ interface Scene {
   precons?: PreconListItem[]
   script?: ServerScript
   visibility?: string
+  rules?: HouseRules
 }
 
 async function openPrecons({
   format = 'commander',
   precons = PRECONS,
+  rules,
   script = {},
   visibility = 'public',
 }: Scene = {}) {
@@ -85,6 +87,7 @@ async function openPrecons({
           result: null,
           visibility,
           manual_play: false,
+          ...(rules === undefined ? {} : { house_rules: rules }),
         }),
       ...script,
     },
@@ -197,39 +200,24 @@ describe('the precons on offer', () => {
 
 describe('the house rules in the lobby', () => {
   const RULES: HouseRules = { starting_life: 30, free_mulligans: 1, mulligan_style: 'vancouver' }
-  const row = (rules?: HouseRules) => ({
-    games: [
-      {
-        game: '8f2c1a52-31de-4c77-9a35-0d1d3f6a7b10',
-        host: 'Ana',
-        format: 'commander',
-        ...(rules === undefined ? {} : { house_rules: rules }),
-        manual_play: false,
-        filled: 2,
-        total: 4,
-        created_at: '2026-10-10T09:00:00Z',
-        age_secs: 5,
-      },
-    ],
-  })
 
-  it('names the rules of a listed game that differ from the format’s own', async () => {
-    await openPrecons({ script: { lobbies: () => jsonResponse(200, row(RULES)) } })
-    const line = await screen.findByText(/House rules:/)
-    expect(line.parentElement).toHaveTextContent('Starting life 30 · Vancouver mulligan')
-    expect(line.parentElement).not.toHaveTextContent('free mulligan')
-  })
+  it.each(['public', 'invite'])(
+    'names the rules of a %s game that differ from the format’s own',
+    async (visibility) => {
+      await openPrecons({ rules: RULES, visibility })
+      const line = await screen.findByText(/House rules:/)
+      expect(line.parentElement).toHaveTextContent('Starting life 30 · Vancouver mulligan')
+      // One free mulligan is Commander's own.
+      expect(line.parentElement).not.toHaveTextContent('free mulligan')
+    },
+  )
 
-  it('says nothing for a game that plays by its format’s rules', async () => {
-    const h = await openPrecons({ script: { lobbies: () => jsonResponse(200, row({ starting_life: 40 })) } })
+  it.each([
+    ['rules equal to the format’s own', { starting_life: 40 } as HouseRules | undefined],
+    ['no rules', undefined],
+  ])('says nothing for a game with %s', async (_what, rules) => {
+    const h = await openPrecons({ rules })
     await h.settle()
-    expect(document.querySelector('[data-slot="lobby-rules"]')).toBeNull()
-  })
-
-  it('asks nothing of an invite-only game, which the browser does not list', async () => {
-    const h = await openPrecons({ visibility: 'invite' })
-    await h.settle()
-    expect(h.server.calls.some((call) => call.url === '/api/lobbies')).toBe(false)
     expect(document.querySelector('[data-slot="lobby-rules"]')).toBeNull()
   })
 })

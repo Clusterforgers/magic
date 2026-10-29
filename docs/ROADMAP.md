@@ -340,7 +340,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
 - [~] (B3) (w1-precons-web) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
 - [~] (w1a) (w1-precons-web) Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
-- [ ] (w2c) The lobby of an invite-only game names the house rules: `GET /api/games/{id}` carries `house_rules` and `useLobbyRules` reads the lookup instead of the game browser's row (`docs/server.md`, `docs/web.md`, House rules)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2e) The create form and the lobby chooser (Your decks, Built-in, Precons; blocked and checking rows) read well at 360, 390, 768, 1400 and 1920 px in both themes, with `/dev/lobby?format=commander&rules=1&account=1` screenshots reviewed and `layout.spec.ts` gating the new form
 - [ ] (w2f) Run `precon-game.spec.ts` (create form, chooser, join, Ready on a database with cards and precons) and the specs that now pick Normal on the create form (`accounts`, `settings`, `layout`, `lobby-controls`) green twice
