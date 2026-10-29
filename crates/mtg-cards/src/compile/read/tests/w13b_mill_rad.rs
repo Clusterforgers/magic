@@ -83,10 +83,7 @@ fn w13b_reads_and_writes_back(#[case] text: &str, #[case] kind: ClauseKind, #[ca
     "{5}, {T}: Draw a card. This ability costs {1} less to activate for each +1/+1 counter you have.",
     ClauseKind::Activated
 )]
-#[case::loses_all_object_counters(
-    "Target player loses all +1/+1 counters.",
-    ClauseKind::Spell
-)]
+#[case::loses_all_object_counters("Target player loses all +1/+1 counters.", ClauseKind::Spell)]
 fn w13b_near_misses_stay_unread(#[case] text: &str, #[case] kind: ClauseKind) {
     assert_eq!(clause(text, kind, false), None, "{text}");
 }
@@ -98,5 +95,8 @@ fn w13b_a_camel_case_word_is_a_name_where_a_sentence_opens() {
         Token::Name("RadAway".into())
     );
     assert_eq!(tokenize("Draw a card.")[0], Token::Word("draw".into()));
-    assert!(!matches!(tokenize("Non-Elf creatures get -2/-2.")[0], Token::Name(_)));
+    assert!(!matches!(
+        tokenize("Non-Elf creatures get -2/-2.")[0],
+        Token::Name(_)
+    ));
 }

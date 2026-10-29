@@ -67,7 +67,10 @@ pub(super) fn w13b_you_have(r: &mut Reader<'_>, counter: &CounterKind) -> Option
 /// "rad counter you have": what "for each" counts for the counters of a kind you hold.
 pub(super) fn w13b_you_have_text(counter: &CounterKind) -> Option<String> {
     super::w7b_player_counters::w7b_player_kind(counter).then_some(())?;
-    Some(format!("{} counter you have", counters::kind_text(counter)?))
+    Some(format!(
+        "{} counter you have",
+        counters::kind_text(counter)?
+    ))
 }
 
 /// "You may have this land enter tapped. If you do, you get two rad counters.": the entry its controller may tap for
@@ -134,7 +137,10 @@ pub(super) fn w13b_loses_all_text(effect: &Effect, third: bool) -> Option<String
     (on == from && kind == counter && super::w7b_player_counters::w7b_player_kind(counter))
         .then_some(())?;
     let verb = if third { "loses" } else { "lose" };
-    Some(format!("{verb} all {} counters", counters::kind_text(counter)?))
+    Some(format!(
+        "{verb} all {} counters",
+        counters::kind_text(counter)?
+    ))
 }
 
 /// "in a graveyard" before "that was milled this turn": a card in any graveyard, which the next words narrow.
