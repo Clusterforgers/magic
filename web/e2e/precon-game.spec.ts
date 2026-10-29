@@ -251,7 +251,7 @@ test.describe('real precon decks', () => {
           shots,
           [
             { blocks: true, autoPay: true, yields: false, mulligans: true },
-            { blocks: false, autoPay: false, yields: false, mulligans: true },
+            { blocks: false, autoPay: true, yields: false, mulligans: true },
           ],
           run,
         )
