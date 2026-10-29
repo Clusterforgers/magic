@@ -18,6 +18,7 @@ import type { CombatRole, Frame, Links } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
+import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
@@ -203,6 +204,7 @@ export function TextFace({
           dark ? 'bg-black/25' : 'bg-foreground/5',
         )}
       >
+        <ByHandMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
         {chips.map(({ label, tone }) => (
           <span
             key={label}

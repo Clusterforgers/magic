@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useShallow } from 'zustand/react/shallow'
@@ -8,19 +8,15 @@ import type { CounterKind, ManualAction } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
 import { playerOf } from '../selectors'
 import { ManualForm } from './ManualForm'
+import { ByHandList } from './ByHand'
+import { ByHandPanel } from './ByHandPanel'
 import { createMenuStore, ManualMenuContext, useMenuStore, useMenuTarget } from './menuStore'
 import type { MenuTarget } from './menuStore'
 import { GAME_OVER, manualMenu, OUT_OF_GAME } from './offers'
 import type { Ask, ManualGroup, ManualItem } from './offers'
+import { containerOf, useCloseOutside, usePlaced, useReturnFocus } from './popup'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
-const MARGIN = 8
-
-/** Where the menu of a card is drawn: inside the dialog the card sits in, else on the page. */
-function containerOf(target: MenuTarget): Element {
-  return target.opener?.closest('[role="dialog"]') ?? document.body
-}
-
 function focusables(panel: HTMLElement): HTMLElement[] {
   return [...panel.querySelectorAll<HTMLElement>('[role="menuitem"]')]
 }
@@ -139,12 +135,7 @@ function Panel({ target }: { target: MenuTarget }) {
   }, [gone, store])
 
   // The menu takes the focus and gives it back to the card that asked.
-  useEffect(() => {
-    const { opener } = target
-    return () => {
-      if (opener?.isConnected === true) opener.focus({ preventScroll: true })
-    }
-  }, [target])
+  useReturnFocus(target)
   useEffect(() => {
     const element = panel.current
     if (element === null) return
@@ -155,30 +146,8 @@ function Panel({ target }: { target: MenuTarget }) {
         : element.querySelector<HTMLElement>('[data-autofocus]')
     first?.focus({ preventScroll: true })
   }, [ask, gone])
-  useEffect(() => {
-    const away = (event: PointerEvent): void => {
-      if (event.target instanceof Node && panel.current?.contains(event.target) !== true) store?.close()
-    }
-    document.addEventListener('pointerdown', away, true)
-    return () => document.removeEventListener('pointerdown', away, true)
-  }, [store])
-
-  // Placed at the point asked for, then moved by what the browser shows so that it lies inside the window.
-  useLayoutEffect(() => {
-    const element = panel.current
-    if (element === null) return
-    const place = (left: number, top: number): void => {
-      element.style.setProperty('--mx', `${left}px`)
-      element.style.setProperty('--my', `${top}px`)
-    }
-    place(target.x, target.y)
-    const box = element.getBoundingClientRect()
-    if (box.width === 0) return
-    const left = Math.max(MARGIN, Math.min(target.x, window.innerWidth - box.width - MARGIN))
-    const top = Math.max(MARGIN, Math.min(target.y, window.innerHeight - box.height - MARGIN))
-    // A container that moves its fixed children (a dialog) shifts them by its own corner.
-    place(left + (target.x - box.left), top + (target.y - box.top))
-  }, [target, ask])
+  useCloseOutside(panel, store)
+  usePlaced(panel, target, ask)
 
   if (menu === null || input === null) return null
 
@@ -270,13 +239,7 @@ function Panel({ target }: { target: MenuTarget }) {
             className="mt-1 grid max-h-28 gap-1 overflow-y-auto rounded-md bg-muted px-2 py-1.5"
           >
             <p className="text-xs font-medium">By hand</p>
-            <ul className="grid gap-1 text-xs">
-              {menu.clauses.map((clause) => (
-                <li key={clause.text}>
-                  <q>{clause.text}</q> <span className="text-muted-foreground">{clause.reason}</span>
-                </li>
-              ))}
-            </ul>
+            <ByHandList clauses={menu.clauses} className="text-xs" />
           </section>
         )}
         {error === undefined ? null : (
@@ -294,8 +257,13 @@ function Panel({ target }: { target: MenuTarget }) {
 export function ManualMenuHost() {
   const target = useMenuTarget()
   if (target === null) return null
+  const key = `${target.kind ?? 'menu'}:${target.id}:${target.x}:${target.y}`
   return createPortal(
-    <Panel key={`${target.id}:${target.x}:${target.y}`} target={target} />,
+    target.kind === 'clauses' ? (
+      <ByHandPanel key={key} target={target} />
+    ) : (
+      <Panel key={key} target={target} />
+    ),
     containerOf(target),
   )
 }

@@ -1,6 +1,6 @@
 /** The log lines of manual actions: the sentence of an action and the events of its change that the sentence already tells. */
 import type { LogEntry } from '@/play/store'
-import type { Event, EventView, ManualAction, Zone } from '@/protocol/generated'
+import type { Event, EventView, ManualAction, ObjectId, Zone } from '@/protocol/generated'
 import { describeHiddenManual, describeManual } from '../eventText'
 import type { EventNames } from '../eventText'
 
@@ -94,23 +94,38 @@ const QUOTE_CHARS = 160
 const quoted = (text: string): string =>
   `“${text.length > QUOTE_CHARS ? `${text.slice(0, QUOTE_CHARS - 1)}…` : text}”`
 
-/**
- * What a resolved spell or a played land leaves to the table: the clauses of its rules the engine does not run,
- * quoted, so the seat sees what to apply by hand at the moment it can. Null for any other event and for a card
- * without such clauses (or one whose clauses the viewer does not know).
- */
-export function byHandLine(event: EventView, names: EventNames): string | null {
+/** The card an event puts in front of the table, and whether it is cast and still to resolve; null for any other event. */
+function momentOf(event: EventView): { id: ObjectId; cast: boolean } | null {
   if (!('Public' in event) || typeof event.Public === 'string') return null
   const { Public: shown } = event
-  const id =
-    'SpellResolved' in shown
-      ? shown.SpellResolved.object
-      : 'LandPlayed' in shown
-        ? shown.LandPlayed.object
-        : null
-  const clauses = id === null ? [] : (names.clauses?.(id) ?? [])
-  if (id === null || clauses.length === 0) return null
-  return `${names.card(id)} has rules to apply by hand: ${clauses.map(quoted).join('; ')}`
+  if ('SpellCast' in shown) return { id: shown.SpellCast.object, cast: true }
+  if ('SpellResolved' in shown) return { id: shown.SpellResolved.object, cast: false }
+  if ('LandPlayed' in shown) return { id: shown.LandPlayed.object, cast: false }
+  if ('ZoneChanged' in shown) {
+    const { object, to } = shown.ZoneChanged
+    return to === 'Battlefield' ? { id: object, cast: false } : null
+  }
+  if ('ManualAction' in shown) {
+    const { action } = shown.ManualAction
+    return 'Move' in action && action.Move.to === 'Battlefield'
+      ? { id: action.Move.object, cast: false }
+      : null
+  }
+  return null
+}
+
+/**
+ * What a card leaves to the table when it is cast, resolves, is played or enters the battlefield (by an effect or by
+ * hand): the clauses of its rules the engine does not run, quoted, so the seat sees what to apply by hand at the
+ * moment it can. A permanent spell enters as it resolves, so it is told there and not again. Null for any other event
+ * and for a card without such clauses (or one whose clauses the viewer does not know).
+ */
+export function byHandLine(event: EventView, names: EventNames): string | null {
+  const moment = momentOf(event)
+  const clauses = moment === null ? [] : (names.clauses?.(moment.id) ?? [])
+  if (moment === null || clauses.length === 0) return null
+  const when = moment.cast ? ' when it resolves' : ''
+  return `${names.card(moment.id)} has rules to apply by hand${when}: ${clauses.map(quoted).join('; ')}`
 }
 
 /** The sentence of a manual action (or of the hidden twin of a move) as the viewer reads it. */

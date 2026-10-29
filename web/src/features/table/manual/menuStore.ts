@@ -2,9 +2,14 @@
 import { createContext, useContext, useSyncExternalStore } from 'react'
 import type { ObjectId } from '@/protocol/generated'
 
+/** What a card asks to show: the menu of manual actions, or the list of its clauses left to the table. */
+export type MenuKind = 'menu' | 'clauses'
+
 /** The menu on show: the card, the point it opens at (viewport pixels) and the element that asked, which gets the focus back. */
 export interface MenuTarget {
   id: ObjectId
+  /** `menu` when left out. */
+  kind?: MenuKind
   x: number
   y: number
   opener: HTMLElement | null
@@ -36,7 +41,8 @@ export function createMenuStore(): MenuStore {
     },
     // A second request for the same card at the same place (a key and the contextmenu event it causes) changes nothing.
     open(next) {
-      if (target?.id === next.id && target.x === next.x && target.y === next.y) return
+      if (target?.id === next.id && target.kind === next.kind && target.x === next.x && target.y === next.y)
+        return
       set(next)
     },
     close: () => {

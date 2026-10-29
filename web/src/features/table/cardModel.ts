@@ -376,8 +376,13 @@ export function statusWords(object: ObjectView, role: CombatRole | null, links: 
   return words
 }
 
-/** Everything a screen reader needs from a card face. */
-export function cardLabel(object: ObjectView, role: CombatRole | null, links: Links = {}): string {
+/** Everything a screen reader needs from a card face; `listKey` is the key that lists the clauses left to the table. */
+export function cardLabel(
+  object: ObjectView,
+  role: CombatRole | null,
+  links: Links = {},
+  listKey?: string,
+): string {
   const parts = [object.name]
   if (object.mana_cost !== null) {
     parts.push(
@@ -394,5 +399,12 @@ export function cardLabel(object: ObjectView, role: CombatRole | null, links: Li
   parts.push(...object.abilities.map(abilityWords))
   parts.push(...statusWords(object, role, links))
   parts.push(...counterWords(object), ...linkWords(links))
+  if ((object.manual ?? []).length > 0) {
+    parts.push(
+      listKey === undefined
+        ? 'some rules are played by hand'
+        : `some rules are played by hand, press ${listKey} to read them`,
+    )
+  }
   return parts.join(', ')
 }

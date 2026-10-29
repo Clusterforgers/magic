@@ -321,6 +321,64 @@ describe('rules left to the table', () => {
   it('adds nothing where the viewer is told no clauses', () => {
     expect(fold([pub({ SpellResolved: { object: 2 } })])).toEqual(['Grizzly Bears resolves'])
   })
+
+  const QUOTE = '“Gain 2 life.”'
+  const ENTERS = `Grizzly Bears has rules to apply by hand: ${QUOTE}`
+  const CAST = `Grizzly Bears has rules to apply by hand when it resolves: ${QUOTE}`
+
+  it.each<[string, EventView[], string[]]>([
+    ['a spell cast', [pub({ SpellCast: { player: 1, object: 2 } })], ['Bo casts Grizzly Bears', CAST]],
+    ['a spell resolving', [pub({ SpellResolved: { object: 2 } })], ['Grizzly Bears resolves', ENTERS]],
+    ['a land played', [pub({ LandPlayed: { player: 1, object: 2 } })], [expect.any(String), ENTERS]],
+    [
+      'a card put onto the battlefield by an effect',
+      [pub({ ZoneChanged: { object: 2, from: { Graveyard: 1 }, to: 'Battlefield', cause: 'Moved' } })],
+      [expect.any(String), ENTERS],
+    ],
+    [
+      'a card moved onto the battlefield by hand, after the sentence of the move',
+      [
+        action({ Move: { object: 2, to: 'Battlefield' } }),
+        pub({ ZoneChanged: { object: 2, from: { Hand: 1 }, to: 'Battlefield', cause: 'Moved' } }),
+      ],
+      ['Bo moves Grizzly Bears from the hand to the battlefield (by hand)', ENTERS],
+    ],
+  ])('quotes the clauses of %s, once', (_name, events, expected) => {
+    expect(lines(events)).toEqual(expected)
+  })
+
+  it('tells a permanent spell at the cast and again as it resolves and enters, not a third time', () => {
+    const told = lines([pub({ SpellCast: { player: 1, object: 2 } }), pub({ SpellResolved: { object: 2 } })])
+    expect(told.filter((line) => line.includes('rules to apply by hand'))).toEqual([CAST, ENTERS])
+  })
+
+  it.each([
+    [
+      'a card moved to a graveyard',
+      pub({ ZoneChanged: { object: 2, from: 'Stack', to: { Graveyard: 1 }, cause: 'Moved' } }),
+    ],
+    [
+      'a card moved to the hand',
+      pub({ ZoneChanged: { object: 2, from: 'Battlefield', to: { Hand: 1 }, cause: 'Moved' } }),
+    ],
+    ['a card without clauses cast', pub({ SpellCast: { player: 1, object: 3 } })],
+    [
+      'a card without clauses entering',
+      pub({ ZoneChanged: { object: 3, from: { Hand: 1 }, to: 'Battlefield', cause: 'Moved' } }),
+    ],
+    ['a card moved by hand to a graveyard', action({ Move: { object: 2, to: 'Graveyard' } })],
+  ])('adds no line for %s', (_name, event) => {
+    expect(lines([event]).filter((line) => line.includes('rules to apply by hand'))).toEqual([])
+  })
+
+  it('keeps the keys of the lines apart for a card cast, resolved and entered', () => {
+    const folded = foldLog(
+      log([pub({ SpellCast: { player: 1, object: 2 } }), pub({ SpellResolved: { object: 2 } })]),
+      withClauses,
+      { seats: [0, 1] },
+    )
+    expect(new Set(folded.map((line) => line.seq)).size).toBe(folded.length)
+  })
 })
 
 describe('a viewer who cannot see the card', () => {

@@ -14,6 +14,7 @@ import { FxFloat } from './fx/FxFloat'
 import { useCardFx } from './fx/hooks'
 import { fxAttr, fxSide } from './fx/model'
 import { ManaStrip } from './ManaStrip'
+import { BY_HAND_KEY, clausesOf } from './manual/clauses'
 import { useManualMenu } from './manual/useManualMenu'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import { combatRoleIn } from './selectors'
@@ -79,6 +80,8 @@ export const Card = memo(function Card({
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true
   const attached = object.attached_to !== undefined || object.attached_player !== undefined
+  // The key that lists the clauses left to the table is the card's own, so its spoken name says so.
+  const listKey = manual.onKeyDown !== undefined && clausesOf(object).length > 0 ? BY_HAND_KEY : undefined
   const markWords =
     highlight === undefined || (pressable && highlight === 'selected') ? '' : `, ${MARK_WORDS[highlight]}`
   const words = note === undefined ? markWords : `${markWords}, ${note.words}`
@@ -96,11 +99,12 @@ export const Card = memo(function Card({
       data-fx={fxAttr(fx)}
       data-fx-side={fxSide(fx)}
       aria-label={
-        cardLabel(object, role, links) +
+        cardLabel(object, role, links, listKey?.toUpperCase()) +
         (extra === undefined ? '' : `, ${extra}`) +
         words +
         outlookWords(outlook)
       }
+      aria-keyshortcuts={listKey}
       aria-pressed={highlight === undefined || !pressable ? undefined : highlight === 'selected'}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
