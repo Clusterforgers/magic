@@ -10,30 +10,9 @@ use mtg_cli::coverage_all::coverage_all;
 use mtg_cli::error::CliError;
 use mtg_cli::ingest::{IngestOptions, ingest};
 use mtg_db::Database;
-use serde_json::Value;
 use sqlx::PgPool;
 
-use common::{fixture, fixture_cache, gzip, progress, put_scryfall};
-
-/// The oracle fixture with these ranks (by card name) in place of its own, as the cached Oracle Cards file.
-fn put_ranks(cache: &Cache, ranks: &[(&str, Option<u32>)]) {
-    let mut cards: Value = serde_json::from_slice(&fixture("scryfall_oracle_cards.json"))
-        .unwrap_or_else(|e| panic!("the oracle fixture reads: {e}"));
-    for card in cards.as_array_mut().into_iter().flatten() {
-        let rank = ranks
-            .iter()
-            .find(|(name, _)| card["name"] == *name)
-            .and_then(|(_, rank)| *rank);
-        card["edhrec_rank"] = rank.map_or(Value::Null, Value::from);
-    }
-    let bytes = serde_json::to_vec(&cards).unwrap_or_else(|e| panic!("the cards write: {e}"));
-    put_scryfall(
-        cache,
-        "oracle_cards",
-        "oracle-cards-ranked.json.gz",
-        &gzip(&bytes),
-    );
-}
+use common::{fixture_cache, progress, put_ranks};
 
 /// A database with the card fixtures and a cache whose file ranks Sol Ring 1, Arcane Signet 2, Lightning Bolt 6, Forest 50,
 /// Jace 300 and, though they are not legal in Commander, Little Girl 4 and the Goblin token 5.

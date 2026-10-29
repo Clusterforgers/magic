@@ -99,6 +99,26 @@ pub fn put_scryfall(cache: &Cache, kind: &str, file_name: &str, bytes: &[u8]) {
         .unwrap_or_else(|e| panic!("manifest saves: {e}"));
 }
 
+/// The oracle fixture with these ranks (by card name) in place of its own, as the cached Oracle Cards file.
+pub fn put_ranks(cache: &Cache, ranks: &[(&str, Option<u32>)]) {
+    let mut cards: Value = serde_json::from_slice(&fixture("scryfall_oracle_cards.json"))
+        .unwrap_or_else(|e| panic!("the oracle fixture reads: {e}"));
+    for card in cards.as_array_mut().into_iter().flatten() {
+        let rank = ranks
+            .iter()
+            .find(|(name, _)| card["name"] == *name)
+            .and_then(|(_, rank)| *rank);
+        card["edhrec_rank"] = rank.map_or(Value::Null, Value::from);
+    }
+    let bytes = serde_json::to_vec(&cards).unwrap_or_else(|e| panic!("the cards write: {e}"));
+    put_scryfall(
+        cache,
+        "oracle_cards",
+        "oracle-cards-ranked.json.gz",
+        &gzip(&bytes),
+    );
+}
+
 /// Writes an MTGJSON deck file into the cache and records it in the manifest.
 pub fn put_deck(cache: &Cache, name: &str, bytes: &[u8]) {
     cache

@@ -12,6 +12,7 @@ mod fetch_decks;
 mod fetch_printings;
 mod fetch_scryfall;
 mod forge_check;
+mod gaps;
 mod ingest;
 mod ingest_printings;
 mod propose;
