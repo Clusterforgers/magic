@@ -298,7 +298,7 @@ describe('Pay automatically and Pay the rest for me with life', () => {
     const { lifeSwitches, user, answer, text } = renderPay(
       payOptions('{W/P}', '', { life: 2, auto_available: false }),
     )
-    expect(screen.queryByRole('button', { name: 'Pay automatically' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeDisabled()
     expect(text()).toBe(
       'Pay 1 white or 2 life for Selesnya Evangel. Choose a land or other mana source to use its mana, pay 2 life for a Phyrexian symbol.',
     )

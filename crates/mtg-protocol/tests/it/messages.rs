@@ -374,6 +374,8 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             except: Vec::new(),
             text: String::new(),
             can_cancel: false,
+            cost: None,
+            per_x: 0,
         }),
         DecisionKind::ChooseNumber(NumberOptions {
             source: b,
@@ -382,6 +384,8 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             except: vec![2],
             text: "Choose a value for X.".into(),
             can_cancel: true,
+            cost: None,
+            per_x: 0,
         }),
         DecisionKind::DivideAmount(DivideOptions {
             source: b,

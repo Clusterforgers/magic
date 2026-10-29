@@ -76,7 +76,11 @@ async function precons(browser: Browser): Promise<{ verified: PreconListItem[]; 
     const byManual = [...playable].sort(
       (a, b) => b.summary.counts.manual - a.summary.counts.manual || a.code.localeCompare(b.code),
     )
-    return { verified: byRatio, manual: byManual }
+    // E2E_PRECONS names the manual pair by code ("c21-silverquill-statement,sld-odds-and-ends") to replay a finding.
+    const named = (process.env['E2E_PRECONS'] ?? '').split(',').filter((code) => code !== '')
+    const pinned = named.flatMap((code) => playable.filter((precon) => precon.code === code))
+    const replay = named.length > 0 && pinned.length === named.length
+    return { verified: byRatio, manual: replay ? pinned : byManual }
   } finally {
     await context.close()
   }
@@ -251,7 +255,8 @@ test.describe('real precon decks', () => {
           shots,
           [
             { blocks: true, autoPay: true, yields: false, mulligans: true },
-            { blocks: false, autoPay: true, yields: false, mulligans: true },
+            // The second seat pays by hand: the prompt offers only sources that can finish the payment.
+            { blocks: false, autoPay: false, yields: false, mulligans: true },
           ],
           run,
         )

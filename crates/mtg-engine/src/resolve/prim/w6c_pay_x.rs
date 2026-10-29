@@ -68,6 +68,8 @@ pub(super) fn announced<'a>(
                 except: Vec::new(),
                 text: "Choose a value for X.".to_owned(),
                 can_cancel: false,
+                cost: None,
+                per_x: 0,
             }),
         })),
         Some((_, other)) => Err(ResolveError::Invalid(format!(

@@ -1,9 +1,11 @@
-/** Goal: the client's idea of a valid payment is exactly the engine's, for plain, hybrid and Phyrexian costs: for many costs and choices of life, a payment can be built from fitting additions in any order if and only if a symbol-by-symbol check accepts it, what is owed is the cost minus what is covered (a hybrid symbol stays hybrid until mana meets it), life is only paid within the life total and when the mana chosen still fits, and a permanent or floating mana is never used twice. */
+/** Goal: the client's idea of a valid payment is exactly the engine's, for plain, hybrid and Phyrexian costs: for many costs and choices of life, a payment can be built from fitting additions in any order if and only if a symbol-by-symbol check accepts it, what is owed is the cost minus what is covered (a hybrid symbol stays hybrid until mana meets it), life is only paid within the life total and when the mana chosen still fits, and a permanent or floating mana is never used twice; sources that make several mana, cost mana (paid only from mana made before them), sacrifice or make restricted mana are read as the engine reads them, a source is offered only while the payment can still be finished, and taking a pick back drops the sources it paid for. */
 import { describe, expect, it } from 'vitest'
-import type { ManaCost, ManaType } from '@/protocol/generated'
+import type { ManaCost, ManaOption, ManaType } from '@/protocol/generated'
 import { cost, manaOfLetter, poolOf, source } from '@/test-utils/mana'
 import { shapeOf } from '../manaSymbols'
 import {
+  completable,
+  withoutSpend,
   allowed,
   covers,
   fits,
@@ -482,5 +484,115 @@ describe('the payment on the wire', () => {
     [[1, 2], 4],
   ])('pays 2 life for each symbol life pays: %j is %i', (life, paid) => {
     expect(toPayment(taps('G'), life).life).toBe(paid)
+  })
+})
+
+/** Sources as precons have them, each on a permanent of its own id. */
+const SOURCES = {
+  plains: (id: number): ManaOption => source(id, 'W'),
+  island: (id: number): ManaOption => source(id, 'U'),
+  swamp: (id: number): ManaOption => source(id, 'B'),
+  mountain: (id: number): ManaOption => source(id, 'R'),
+  forest: (id: number): ManaOption => source(id, 'G'),
+  solRing: (id: number): ManaOption => ({ ...source(id, 'C'), count: 2 }),
+  /** Orzhov Signet: {1}, {T}: add {W}{B}. */
+  signet: (id: number): ManaOption => ({ ...source(id, 'W'), also: ['Black'], cost: cost('{1}') }),
+  /** Mystic Gate's {W/U}, {T}: add {W}{W}. */
+  gate: (id: number): ManaOption => ({ ...source(id, 'W'), count: 2, cost: cost('{W/U}') }),
+  /** Graven Cairns's {B/R}, {T}: add {B}{B}. */
+  cairns: (id: number): ManaOption => ({ ...source(id, 'B'), count: 2, cost: cost('{B/R}') }),
+  /** A Prism's {1}, {T}: add one white. */
+  prism: (id: number): ManaOption => ({ ...source(id, 'W'), cost: cost('{1}') }),
+  /** Orzhov Basilica: {T}: add {W}{B}. */
+  basilica: (id: number): ManaOption => ({ ...source(id, 'W'), also: ['Black'] }),
+  treasure: (id: number): ManaOption => ({ ...source(id, 'B'), sacrifice: true }),
+  /** Mishra's Workshop: mana only for artifact spells. */
+  workshop: (id: number): ManaOption => ({
+    ...source(id, 'C'),
+    count: 3,
+    only: [{ Spell: { types: ['Artifact'] } }],
+  }),
+} satisfies Record<string, (id: number) => ManaOption>
+type SourceName = keyof typeof SOURCES
+
+/** The sources named, on permanents 1, 2, 3 and on, in that order. */
+const sourcesOf = (names: readonly SourceName[]): ManaOption[] =>
+  names.map((name, at) => SOURCES[name](at + 1))
+const tapsOf = (names: readonly SourceName[]): Spend[] =>
+  sourcesOf(names).map((option) => ({ kind: 'tap', option }))
+const only = <T>(value: T | undefined): T => {
+  if (value === undefined) throw new Error('a test names a source it does not list')
+  return value
+}
+
+describe('sources that make several mana or cost mana', () => {
+  it.each<[string, string, SourceName[], LifeSymbols, boolean]>([
+    ['Sol Ring pays two generic', '{2}', ['solRing'], [], true],
+    ['Sol Ring overpays one generic', '{1}', ['solRing'], [], false],
+    ['Sol Ring and a land pay three', '{3}', ['solRing', 'forest'], [], true],
+    ['Sol Ring and two lands overpay three', '{3}', ['solRing', 'forest', 'plains'], [], false],
+    ['a Signet paid by a land', '{W}{B}', ['plains', 'signet'], [], true],
+    ['a Signet listed before its land', '{W}{B}', ['signet', 'plains'], [], true],
+    ['a Signet with nothing to pay it', '{W}{B}', ['signet'], [], false],
+    ['a Signet and its land are two mana, not three', '{1}{W}{B}', ['plains', 'signet'], [], false],
+    ['a Signet, its land and one more', '{1}{W}{B}', ['plains', 'signet', 'swamp'], [], true],
+    ['a filter land paid by an Island', '{W}{W}', ['island', 'gate'], [], true],
+    ['a filter land cannot take red', '{W}{W}', ['mountain', 'gate'], [], false],
+    ['a filter land turns red into black', '{B}{B}', ['mountain', 'cairns'], [], true],
+    ['a bounceland pays two colours', '{W}{B}', ['basilica'], [], true],
+    ['a bounceland pays a colour and generic', '{1}{W}', ['basilica'], [], true],
+    ['a bounceland overpays one colour', '{W}', ['basilica'], [], false],
+    ['a Treasure pays its colour', '{B}', ['treasure'], [], true],
+    ['hybrid from a Signet', '{W/B}{W/B}', ['swamp', 'signet'], [], true],
+    ['hybrid from a filter land', '{W/U}{W/U}', ['island', 'gate'], [], true],
+    ['Phyrexian with life and Sol Ring', '{2}{W/P}', ['solRing'], [1], true],
+    ['Phyrexian with life and a Signet overpays', '{1}{W/P}', ['plains', 'signet'], [1], false],
+    ['Phyrexian paid by a Signet', '{B}{W/P}', ['swamp', 'signet'], [], true],
+    ['a Prism that could be left out is spare', '{1}', ['forest', 'prism'], [], false],
+    ['a Prism that changes the colour is needed', '{W}', ['forest', 'prism'], [], true],
+  ])('%s: %s covered by %j is %s', (_what, text, names, life, expected) => {
+    expect(covers(cost(text), tapsOf(names), life)).toBe(expected)
+  })
+
+  it.each<[string, string, SourceName[], SourceName[], SourceName, boolean]>([
+    ['a Signet before the mana that pays it', '{W}{B}', [], ['plains', 'signet'], 'signet', false],
+    ['a Signet after its land', '{W}{B}', ['plains'], ['plains', 'signet'], 'signet', true],
+    ['Sol Ring for one generic', '{1}', [], ['solRing', 'forest'], 'solRing', false],
+    ['Sol Ring for two generic', '{2}', [], ['solRing', 'forest'], 'solRing', true],
+    ['a land after Sol Ring paid two', '{2}', ['solRing'], ['solRing', 'forest'], 'forest', false],
+    ['restricted mana is not offered by hand', '{3}', [], ['workshop'], 'workshop', false],
+    ['an Island that leaves a blue no one makes', '{U}{U}', [], ['island', 'forest'], 'island', false],
+    ['red that only a filter land can take', '{B}{B}', [], ['mountain', 'cairns'], 'mountain', true],
+    ['red with no filter land to take it', '{B}{B}', [], ['mountain', 'swamp'], 'mountain', false],
+    ['the filter land after the red', '{B}{B}', ['mountain'], ['mountain', 'cairns'], 'cairns', true],
+    ['a Treasure when a land would do', '{B}', [], ['swamp', 'treasure'], 'treasure', true],
+  ])('%s: %s, chosen %j of %j, %s offered is %s', (_what, text, chosen, all, next, expected) => {
+    const options = sourcesOf(all)
+    const spends: Spend[] = chosen.map((name) => ({ kind: 'tap', option: only(options[all.indexOf(name)]) }))
+    const option = only(options[all.indexOf(next)])
+    const reach = { sources: options, maxLife: 0 }
+    expect(allowed(cost(text), poolOf(''), spends, { kind: 'tap', option }, [], reach)).toBe(expected)
+  })
+
+  it.each<[string, string, SourceName[], string, number, boolean]>([
+    ['enough lands', '{1}{W}', ['plains', 'forest'], '', 0, true],
+    ['too little mana', '{3}', ['plains', 'forest'], '', 0, false],
+    ['floating mana finishes it', '{3}', ['plains', 'forest'], 'R', 0, true],
+    ['life finishes a Phyrexian symbol', '{1}{B/P}', ['forest'], '', 2, true],
+    ['life the payment may not take', '{1}{B/P}', ['forest'], '', 0, false],
+    ['a Signet chain', '{1}{W}{B}', ['plains', 'signet', 'swamp'], '', 0, true],
+    ['only restricted mana', '{3}', ['workshop'], '', 0, false],
+  ])('completable: %s (%s from %j, pool %s, %i life)', (_what, text, names, floating, maxLife, expected) => {
+    const reach = { sources: sourcesOf(names), maxLife }
+    expect(completable(cost(text), poolOf(floating), [], [], reach)).toBe(expected)
+  })
+
+  it.each<[string, SourceName[], number, number[]]>([
+    ['taking back the land drops the Signet it paid for', ['plains', 'signet', 'swamp'], 0, [3]],
+    ['taking back the Signet keeps the lands', ['plains', 'signet', 'swamp'], 1, [1, 3]],
+    ['taking back a land the Signet does not need', ['plains', 'swamp', 'signet'], 1, [1, 3]],
+  ])('%s', (_what, names, index, kept) => {
+    const left = withoutSpend(tapsOf(names), index)
+    expect(left.map((spend) => (spend.kind === 'tap' ? spend.option.source.object : 0))).toEqual(kept)
   })
 })
