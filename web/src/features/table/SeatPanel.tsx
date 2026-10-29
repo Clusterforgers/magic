@@ -1,24 +1,26 @@
 import { Crosshair } from 'lucide-react'
-import { memo } from 'react'
+import { memo, useRef } from 'react'
 import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { describeLoss } from '@/features/game/outcome'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
-import { CardRow } from './CardRow'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
-import type { CardBox } from './CardRow'
+import { cornerHeight } from './cornerFit'
 import { useDefender } from './combat/defender'
 import type { DefenderState } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { ManaPool } from './ManaPool'
+import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
 import { ACTIVE_EDGE, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
 import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
 import { describeMulligan } from './turnText'
+import { useBoxHeight } from './useBoxHeight'
+import { SeatCorner } from './SeatCorner'
 import { ZoneButton } from './ZoneButton'
 
 interface SeatPanelProps {
@@ -42,9 +44,6 @@ function pickOnClick(pick: () => void): (event: MouseEvent<HTMLElement>) => void
     pick()
   }
 }
-
-/** The box of a commander in the pod: the smallest card the fit engine draws. */
-const COMMAND_BOX: CardBox = { width: 44, height: 62 }
 
 interface LifeProps {
   seat: PlayerId
@@ -88,12 +87,18 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   )
   const chips = useCommanderChips(seat)
   const defender = useDefender(seat)
+  const commanderGame = usePlay((state) => state.view?.format.toLowerCase() === 'commander')
+  // The blocks above the corner: its room is the column less these (the column is measured by `PodColumn`).
+  const above = useRef<HTMLDivElement>(null)
+  const aboveHeight = useBoxHeight(above)
+  const room = usePodRoom()
   if (player === undefined) return null
   const graveyard = player.graveyard.cards ?? NO_IDS
   const commanders = player.command.cards ?? NO_IDS
   // Your own commanders wait at the end of the hand dock, where they are cast; the pod keeps their chips.
-  const shown = flags.you ? NO_IDS : commanders
-  const partners = shown.length > 1
+  const drawn = flags.you ? NO_IDS : commanders
+  const taxOnCards = chips.tax.filter((chip) => drawn.includes(chip.key))
+  const taxLoose = chips.tax.filter((chip) => !drawn.includes(chip.key))
   const counts = podCounts(player, exile.length)
   const eliminated = player.lost !== null
   const marks = {
@@ -206,51 +211,49 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         defenderClass(defender.state),
       )}
     >
-      <header className="flex items-center justify-between gap-2">
-        <div className="grid min-w-0 gap-0.5">
-          {name}
-          {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-          <div data-slot="mana-slot" className="min-h-5">
-            {mana}
+      {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
+      <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
+        <header className="flex items-center justify-between gap-2">
+          <div className="grid min-w-0 gap-0.5">
+            {name}
+            {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
+            <div data-slot="mana-slot" className="min-h-5">
+              {mana}
+            </div>
           </div>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <LifeForecast seat={seat} />
+            <Life seat={seat} life={player.life} as="p" className="text-life" />
+          </div>
+        </header>
+        {words === '' ? null : <p className="sr-only">{words}</p>}
+        <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">
+          {notes}
         </div>
-        <div className="flex shrink-0 items-center gap-1.5">
-          <LifeForecast seat={seat} />
-          <Life seat={seat} life={player.life} as="p" className="text-life" />
-        </div>
-      </header>
-      {words === '' ? null : <p className="sr-only">{words}</p>}
-      <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">
-        {notes}
-      </div>
-      <div className="flex gap-2">
-        <div
-          role="group"
-          aria-label={`${owner}'s zones`}
-          className={cn('grid min-w-0 flex-1 content-start gap-1', partners ? 'grid-cols-1' : 'grid-cols-2')}
-        >
-          <CountChip zone="hand" count={counts.hand} />
-          <CountChip zone="library" count={counts.library} />
-          <ZoneButton zone="graveyard" owner={owner} ids={graveyard} />
-          <ZoneButton zone="exile" owner={owner} ids={exile} />
-          {counts.command > 0 ? <ZoneButton zone="command" owner={owner} ids={commanders} /> : null}
-        </div>
-        {shown.length === 0 ? null : (
-          <CardRow
-            ids={shown}
-            label={`${owner}'s command zone`}
-            size="compact"
-            box={COMMAND_BOX}
-            className={cn('shrink-0 content-start', partners && 'flex-col')}
+        <div data-slot="pod-counts" className="flex flex-wrap gap-1">
+          <CountChip zone="hand" count={counts.hand} density="line" />
+          <CountChip zone="library" count={counts.library} density="line" />
+          {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
+          <DamageChips
+            chips={chips.damage}
+            density="line"
+            compact={chips.damage.length === 1}
+            className="max-w-full"
           />
-        )}
-      </div>
-      {chips.tax.length + chips.damage.length === 0 ? null : (
-        <div data-slot="commander-chips" className="flex flex-wrap gap-1">
-          <TaxChips chips={chips.tax} density="panel" className="max-w-full" />
-          <DamageChips chips={chips.damage} density="panel" className="max-w-full" />
+          <TaxChips chips={taxLoose} density="line" className="max-w-full" />
         </div>
-      )}
+      </div>
+      <SeatCorner
+        owner={owner}
+        graveyard={graveyard}
+        exile={exile}
+        commanders={commanders}
+        inDock={flags.you}
+        commandSlot={commanderGame && (player.commanders?.length ?? 0) > 0}
+        tax={taxOnCards}
+        height={cornerHeight(room.height, aboveHeight)}
+        card={room.card}
+      />
     </section>
   )
 })

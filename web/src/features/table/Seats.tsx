@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react'
+import { memo, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
@@ -6,11 +6,13 @@ import { Battlefield } from './Battlefield'
 import type { CardSize } from './cardSize'
 import { POD_COLUMN_PX } from './layout'
 import type { PodPlace, SeatPlan } from './layout'
+import { PodRoomContext } from './podRoom'
 import { SeatPanel } from './SeatPanel'
 import { SeatTile } from './SeatTile'
 import { useBoardFade } from './useBoardFade'
 import { useEdgeFade } from './useEdgeFade'
 import { useLeadInView } from './useLeadInView'
+import { useContentBox } from './useZoneFit'
 
 interface SeatAreaProps {
   seat: PlayerId
@@ -21,10 +23,16 @@ interface SeatAreaProps {
   pod: PodPlace
 }
 
-/** The pod of a seat as a column beside its board. It fits the zone at the sizes of the design; a window shorter than that scrolls it inside. */
-function PodColumn({ seat }: { seat: PlayerId }) {
+/**
+ * The pod of a seat as a column beside its board. Its corner draws pictures sized by the column's height and by the
+ * cards `card` px wide of the board beside it; a column too short for the least picture scrolls its chips inside.
+ */
+function PodColumn({ seat, card }: { seat: PlayerId; card: number | null }) {
   const column = useRef<HTMLDivElement>(null)
   useEdgeFade(column)
+  const box = useContentBox(column)
+  const height = box?.height ?? null
+  const room = useMemo(() => ({ height, card }), [height, card])
   return (
     <div
       ref={column}
@@ -32,7 +40,9 @@ function PodColumn({ seat }: { seat: PlayerId }) {
       style={{ width: POD_COLUMN_PX } as CSSProperties}
       className="fade-scroll min-h-0 shrink-0"
     >
-      <SeatPanel seat={seat} />
+      <PodRoomContext.Provider value={room}>
+        <SeatPanel seat={seat} />
+      </PodRoomContext.Provider>
     </div>
   )
 }
@@ -40,16 +50,18 @@ function PodColumn({ seat }: { seat: PlayerId }) {
 /** One seat: its pod and its battlefield, side by side or one over the other. */
 export const SeatArea = memo(function SeatArea({ seat, size, facing, pod }: SeatAreaProps) {
   const aside = pod === 'aside'
+  // The creatures' card width of the board, which the pod's corner follows.
+  const [card, setCard] = useState<number | null>(null)
   return (
     <div
       data-slot="seat-area"
       data-seat-area={seat}
       className={cn('flex min-h-0 min-w-0 flex-1 gap-2', aside ? 'flex-row' : 'flex-col')}
     >
-      {pod === 'aside' ? <PodColumn seat={seat} /> : null}
+      {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
       {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
       {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" /> : null}
-      <Battlefield seat={seat} size={size} facing={facing} />
+      <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />
       {pod === 'line' && facing === 'near' ? <SeatPanel seat={seat} variant="line" /> : null}
     </div>
   )

@@ -104,6 +104,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Deck builder views: the deck as pictures grouped by type (or the dense list), a stats disclosure (support counts, lands, colours, curve, types), a Played by hand list with each card's reasons, a save bar that says what blocks saving, and the fix-mark flag on deck lines, tiles, search hits and the not-validated list (`docs/web.md`, `/decks/$deckId`).
 - Commander at the table: commander cards and tax chips in the pods, commander damage per source with the lethal amount, casting from the command zone in the hand dock with the tax, the return choice and commander damage in the log (`docs/web.md`).
 - Manual actions at the table: a menu on every card (right click, long press, `m`, the Menu key, Shift+F10) of the actions the protocol allows, the clauses a card leaves to the table in the menu and quoted in the log, and every manual action as a log line with who took it (`docs/web.md`, Manual menu).
+- Seat corner: a pod column draws its commanders, graveyard and exile as card pictures with their counts, sized by the lane card and the column's room (`SeatCorner`, `cornerFit.ts`), and the duel opponent's column no longer scrolls at 1440x900.
 - Table lanes: every board draws lands, creatures and other permanents in fixed lanes, mirrored for opponents, at the largest card size that fits (`laneFit.ts`), with `/dev/table?board=duel` and `board=heavy` and a layout gate rule for lanes.
 - Card sizes: the board rows split by what each board holds, your creatures the largest cards, opponents at four fifths of yours or more, lands fanned in piles where that buys size, a thinner strip and hand dock (`boardSplit.ts`, duel board 150/120 px at 1440x900).
 
@@ -163,7 +164,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (k1b) The one-line pods of three and four seats draw each commander as a small picture beside the command zone chip, both of a partner pair, and pass the layout gate
+- [ ] (k1b) The one-line pods of three and four seats draw each commander (both of a partner pair), the graveyard and the exile as small pictures beside their chips, and pass the layout gate
 - [ ] (k1g) The layout gate and the fit spec also sweep 360, 768, 1400 and 1600x1000 (only the six design sizes today)
 - [ ] (k1h) A tall prompt sheet on a phone (`commander-return` at 360x740, a 182 px overhang) keeps the opponents' tile strip and board in view: the sheet's height is held to what leaves them room
 - [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
@@ -175,7 +176,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
 - [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
 - [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
-- [~] (pl1c) (seat-corner) A seat's corner beside its lanes draws the commanders, the top card of the graveyard and the exile as pictures with their counts, in place of the pod chips
+- [ ] (pl1e) The opponent's pod column draws its corner as pictures at 1366x768 and below too: the hand and library chips join the name row, so the column leaves the 62 px a 44 px picture needs (it keeps its chips and scrolls there today)
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2a) The forecast lists the life an attacker's controller gains (lifelink of an attacker) so its pod shows the "+N" chip too (`PlayerForecast` covers attacked seats only)
 - [ ] (pl2b) The tiles of focus mode and of the phone's strip show the life chip and take the defender click (only the pod does today)
