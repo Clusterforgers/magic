@@ -86,6 +86,8 @@ pub enum Rule {
     CantDraw(Vec<PlayerId>),
     /// The players can't search libraries.
     CantSearch(Vec<PlayerId>),
+    /// The players may vote an additional time (CR 701.38d).
+    VoteAgain(Vec<PlayerId>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
     /// The players play with the top card of their library revealed.
@@ -296,6 +298,7 @@ pub(crate) struct RulesInForce {
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
+    vote_again: BTreeSet<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
@@ -446,6 +449,7 @@ impl RulesInForce {
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
@@ -609,6 +613,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
@@ -672,6 +677,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
+        | Rule::VoteAgain(players)
         | Rule::SkipExtraTurns(players)
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
@@ -795,6 +801,7 @@ static NONE: RulesInForce = RulesInForce {
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
+    vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
@@ -1052,6 +1059,11 @@ pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
         .get(&player)
         .copied()
         .unwrap_or_default()
+}
+
+/// Whether `player` may vote an additional time while voting (CR 701.38d).
+pub fn w17c_votes_again(state: &GameState, player: PlayerId) -> bool {
+    state.rules().vote_again.contains(&player)
 }
 
 /// Whether `player` can't search libraries: the one place a search reads this rule.
