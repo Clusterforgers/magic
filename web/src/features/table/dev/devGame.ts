@@ -81,8 +81,18 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
     disconnect: () => undefined,
     ready: () => false,
     notReady: () => false,
-    answer() {
-      if (store.getState().pending === null) return false
+    answer(given) {
+      const { pending, log, seat } = store.getState()
+      if (pending === null) return false
+      // A manual action changes nothing here but the log, and the seat keeps priority, as the engine has it.
+      if (typeof given === 'object' && 'Priority' in given) {
+        const action = given.Priority
+        if (typeof action === 'object' && 'Manual' in action) {
+          const event = { Public: { ManualAction: { player: seat ?? 0, action: action.Manual } } } as const
+          store.setState({ log: [...log, { seq: (log.at(-1)?.seq ?? -1) + 1, event }] })
+          return true
+        }
+      }
       store.setState({ pending: null, preview: null, clock: null })
       return true
     },
@@ -151,6 +161,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   rules?: true
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
+  /** Gives the viewer a plain priority decision (nothing to play) when no prompt is named, so manual actions can be taken. */
+  holding?: true
   /** The stops the viewer holds from the start; none when left out. */
   stops?: Stop[]
   /** The Full Control mode the viewer holds from the start; off when left out. */
@@ -182,7 +194,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
       : { ...moment, view: { ...moment.view, turn: { ...moment.view.turn, step: options.step } } }
   const fixture =
     options.rules === true ? { ...stepped, view: { ...stepped.view, house_rules: DEV_TABLE_RULES } } : stepped
-  store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
+  const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
+  store.setState(fixtureState(fixture, shown))
   if (options.stops !== undefined) store.setState({ stops: options.stops })
   if (options.fullControl !== undefined) store.setState({ fullControl: options.fullControl })
   // A seat that is already yielding faces no priority decision, only the line that says it is passing.

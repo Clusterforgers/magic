@@ -8,11 +8,13 @@ import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 
 const LogLine = memo(function LogLine({ line }: { line: FoldedLine }) {
-  const { text, minor, passed, spoken } = line
+  const { text, minor, passed, spoken, manual } = line
   return (
     <li
+      data-manual={manual}
       className={cn(
         'px-1 py-0.5',
+        manual === true && 'border-l-2 border-primary/50',
         minor && 'text-muted-foreground',
         passed.length > 0 && 'flex items-center gap-1.5',
       )}
@@ -49,7 +51,16 @@ export function LogPanel() {
     ),
   )
   const lines = useMemo(
-    () => foldLog(log, { seat, card: (id) => objects[id]?.name || 'a card' }, { seats, players }),
+    () =>
+      foldLog(
+        log,
+        {
+          seat,
+          card: (id) => objects[id]?.name || 'a card',
+          clauses: (id) => objects[id]?.manual?.map((clause) => clause.text) ?? [],
+        },
+        { seats, players },
+      ),
     [log, objects, seat, seats, players],
   )
   const scroller = useRef<HTMLDivElement>(null)

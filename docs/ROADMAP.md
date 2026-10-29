@@ -98,6 +98,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Card images: the server serves the picture of a card, printing or token from a disk cache that fills from the Scryfall CDN under the politeness rules, and warms the pictures of a starting game in the background (`docs/server.md`, Pictures).
 - Card images in the web: table cards, hand, stack and preview draw the picture with the state over it, the builder through the same endpoints, and "Card images" in the table menu turns them off (`docs/web.md`, Card images).
 - Commander at the table: commander cards and tax chips in the pods, commander damage per source with the lethal amount, casting from the command zone in the hand dock with the tax, the return choice and commander damage in the log (`docs/web.md`).
+- Manual actions at the table: a menu on every card (right click, long press, `m`, the Menu key, Shift+F10) of the actions the protocol allows, the clauses a card leaves to the table in the menu and quoted in the log, and every manual action as a log line with who took it (`docs/web.md`, Manual menu).
 
 ## M3 Card system
 
@@ -167,7 +168,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (fx1) A player marks a card the game does not run whole as important to fix (builder, deck page, lobby deck view, table card menu), the marks are stored per user and listed ranked by marks for the owner (`mtg-cli fix-marks`), and weigh in the gap ledger
 - [ ] (db1) The deck builder gets a user-experience pass: card pictures large enough to read, the deck grouped by type with counts, a stats panel (curve, colours, types), the full deck preview shared with the lobby, per-card "play by hand" and "fix this" controls, clear support marks
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [~] (ma1) (manual-menu) Manual actions on any card: a menu and log entries
+- [ ] (ma2) A seat that holds a card with manual clauses is asked at its main phases and at the end step with an empty stack: `windows::verdict` passes for a seat whose `can_act` is false (rules 5 and 6), and `can_act` ignores manual clauses, so a Manual card played by hand gets no priority decision unless the seat holds a stop or Full Control (the menu offers "Ask me at the next window" meanwhile)
+- [ ] (ma3) Shuffle, reveal and a note on a card as manual actions (`ManualAction::Shuffle`, `Reveal` and a note in the view), with entries in the card menu
+- [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
+- [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs
+- [ ] (ma6) A card with manual clauses shows them on the card face in a way a touch or keyboard reaches (the hand mark's tooltip does not), beside the menu's "By hand" block
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
 - [ ] Playwright games with corpus decks that ask every decision kind
 - [ ] (c5h) The table's event text has a line for the rule `MustAttackPlayers` (Encore) instead of the generic trigger line
