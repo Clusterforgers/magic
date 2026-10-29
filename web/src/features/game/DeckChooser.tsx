@@ -185,7 +185,7 @@ export function DeckChooser({
           ) : null}
         </>
       ) : (
-        <div className="grid min-h-0 flex-1 gap-4 min-[1000px]:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]">
+        <div className="grid min-h-0 flex-1 gap-4 min-[1000px]:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)] min-[1280px]:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]">
           <Tabs
             value={shown}
             onValueChange={(value) => {

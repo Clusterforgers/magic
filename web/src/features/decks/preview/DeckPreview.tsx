@@ -131,7 +131,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
             ))}
           </ul>
         )}
-        <div className="grid min-w-[12rem] flex-1 content-start gap-2">
+        <div className="grid min-w-0 flex-1 basis-44 content-start gap-2">
           <div className="grid gap-0.5">
             <h3 id={titleId} className="text-lg leading-tight font-semibold [overflow-wrap:anywhere]">
               {deck.name}
