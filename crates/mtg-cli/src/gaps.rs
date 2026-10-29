@@ -7,7 +7,7 @@ use std::collections::BTreeSet;
 use std::fmt::Write as _;
 use std::path::Path;
 
-use mtg_cards::proposal::{ClauseState, Report, Verdict};
+use mtg_cards::proposal::{ClauseState, RepairClass, Report, Verdict};
 use mtg_cards::support::{Clause, Support};
 
 use crate::check_rules::Checked;
@@ -40,6 +40,8 @@ pub enum Kind {
     Mismatch,
     /// A clause the engine does not run, so the card is not `Verified`.
     MissingPrimitive,
+    /// A repair the checker made before it judged the file; it holds nothing back.
+    Repaired,
 }
 
 impl Kind {
@@ -50,6 +52,7 @@ impl Kind {
             Kind::Invalid => "invalid",
             Kind::Mismatch => "mismatch",
             Kind::MissingPrimitive => "missing-primitive",
+            Kind::Repaired => "repaired",
         }
     }
 }
@@ -323,6 +326,61 @@ pub fn rank(held: &[Held]) -> Vec<Gap> {
     gaps
 }
 
+/// A row for each class of repair the checker made: the cards it repaired (`blocked`), those among them that nothing holds
+/// back now (`freed`) and the popularity weight of those. A card with several proposals counts once for a class.
+pub fn repair_rows(checked: &Checked, popularity: &Popularity) -> Vec<Gap> {
+    let mut classes: BTreeMap<RepairClass, Vec<(&str, f64, bool)>> = BTreeMap::new();
+    let mut seen: BTreeSet<(RepairClass, &str)> = BTreeSet::new();
+    for (report, subject) in checked.reports.iter().zip(&checked.subjects) {
+        let free = blockers(report, &subject.names).is_empty();
+        let weight = popularity.rank(&subject.oracle_id).map_or(0.0, weight_of);
+        for class in report.repairs.iter().map(|repair| repair.class) {
+            if seen.insert((class, subject.oracle_id.as_str())) {
+                classes
+                    .entry(class)
+                    .or_default()
+                    .push((report.card.as_str(), weight, free));
+            }
+        }
+    }
+    let mut rows: Vec<Gap> = classes
+        .into_iter()
+        .map(|(class, mut cards)| {
+            cards.sort_by(|a, b| b.2.cmp(&a.2).then(b.1.total_cmp(&a.1)).then(a.0.cmp(b.0)));
+            let freed = cards.iter().filter(|card| card.2);
+            Gap {
+                blocker: Blocker {
+                    kind: Kind::Repaired,
+                    reason: class.word().to_owned(),
+                },
+                blocked: cards.len(),
+                freed: freed.clone().count(),
+                weight: freed.fold(0.0, |sum, card| sum + card.1),
+                marks: 0,
+                examples: cards
+                    .iter()
+                    .take(EXAMPLES)
+                    .map(|card| card.0.to_owned())
+                    .collect(),
+            }
+        })
+        .collect();
+    rows.sort_by(|a, b| b.blocked.cmp(&a.blocked).then(a.blocker.cmp(&b.blocker)));
+    rows
+}
+
+/// The repairs as one line: the cards repaired for each class.
+fn repaired_line(rows: &[Gap]) -> Option<String> {
+    if rows.is_empty() {
+        return None;
+    }
+    let parts: Vec<String> = rows
+        .iter()
+        .map(|row| format!("{} {}", row.blocked, row.blocker.reason))
+        .collect();
+    Some(format!("repaired before judging: {}", parts.join(", ")))
+}
+
 /// A field of the TSV: a tab or a line break is a space.
 fn field(text: &str) -> String {
     text.replace(['\t', '\r', '\n'], " ")
@@ -434,9 +492,15 @@ pub async fn write_ledger(
 ) -> Result<String, CliError> {
     let held = held_cards(checked, popularity, marks.unwrap_or(&Marks::new()));
     let gaps = rank(&held);
+    let repaired = repair_rows(checked, popularity);
+    let every: Vec<Gap> = gaps
+        .iter()
+        .cloned()
+        .chain(repaired.iter().cloned())
+        .collect();
     let (file, top) = match marks {
-        Some(_) => (tsv_marked(&gaps), table_marked(&gaps, TOP)),
-        None => (tsv(&gaps), table(&gaps, TOP)),
+        Some(_) => (tsv_marked(&every), table_marked(&gaps, TOP)),
+        None => (tsv(&every), table(&gaps, TOP)),
     };
     tokio::fs::write(path, file)
         .await
@@ -448,6 +512,9 @@ pub async fn write_ledger(
         gaps.len(),
         path.display()
     );
+    if let Some(line) = repaired_line(&repaired) {
+        let _ = write!(text, "\n{line}");
+    }
     if !checked.written.is_empty() {
         let _ = write!(text, "\n{} rules files written", checked.written.len());
     }

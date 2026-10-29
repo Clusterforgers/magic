@@ -11,18 +11,31 @@ use crate::support::{PrintedCard, oracle_fingerprint};
 /// Why the checker leaves a clause to the table.
 const OPEN_REASON: &str = "the proposed rules do not cover this clause";
 
-/// Reads the JSON of a proposal as a `Card`: the oracle id, the name and the face names that are left out come from the
-/// imported card, and the status is a placeholder that `finish` replaces.
-pub(super) fn parse(text: &str, printed: &PrintedCard, file: &str) -> Result<Card, LoadError> {
+/// Reads the text of a proposal as a JSON object.
+pub(super) fn read(text: &str, file: &str) -> Result<Value, LoadError> {
     let problem = |message: String| LoadError {
         file: file.to_owned(),
         path: String::new(),
         message,
     };
-    let mut value: Value =
+    let value: Value =
         serde_json::from_str(text).map_err(|error| problem(format!("not JSON: {error}")))?;
+    if value.is_object() {
+        Ok(value)
+    } else {
+        Err(problem("a rules file is a JSON object".to_owned()))
+    }
+}
+
+/// Reads the (repaired) JSON object of a proposal as a `Card`: the oracle id, the name and the face names that are left
+/// out come from the imported card, and the status is a placeholder that `finish` replaces.
+pub(super) fn parse(
+    mut value: Value,
+    printed: &PrintedCard,
+    file: &str,
+) -> Result<Card, LoadError> {
     let Some(object) = value.as_object_mut() else {
-        return Err(problem("a rules file is a JSON object".to_owned()));
+        return parse_json(file, &value.to_string());
     };
     object
         .entry("oracle_id")
