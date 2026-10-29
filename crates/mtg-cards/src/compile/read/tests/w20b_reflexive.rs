@@ -1,4 +1,4 @@
-//! Goal: the reflexive "When you do," reads into the steps that exist (an `If` of `Performed` after a sacrifice, the next steps after a surveil or a scry, the `paid` steps of a payment that choose a target), a counter and a fight read as one sentence, each reads back as the printed text, and a link with no step to depend on, a follow-up that is no sentence or a fight of another creature stays with the table.
+//! Goal: the reflexive "When you do," reads into the steps that exist (an `If` of `Performed` after a sacrifice, the next steps after a surveil or a scry when they choose no target, the `paid` steps of a payment that choose a target), a counter and a fight read as one sentence, each reads back as the printed text, and a link with no step to depend on, a reflexive target after a step that is no payment, a follow-up that is no sentence or a fight of another creature stays with the table.
 use super::*;
 
 /// The sentences of the reflexive family, each written back as the card prints it.
@@ -15,16 +15,12 @@ use super::*;
     "Whenever ~ attacks, sacrifice it. When you do, draw a card.",
     r#""If":{"condition":"Performed""#
 )]
-#[case::surveil_then_return(
-    "When ~ enters, surveil 4. When you do, you may return target nonland permanent an opponent controls to its owner's hand.",
-    r#""Surveil":{"count":4}"#
-)]
 #[case::surveil_then_draw(
     "When ~ enters, surveil 2. When you do, draw a card.",
     r#""Surveil":{"count":2}"#
 )]
-#[case::scry_then_damage(
-    "When ~ enters, scry 2. When you do, ~ deals 3 damage to any target.",
+#[case::scry_then_draw(
+    "When ~ enters, scry 2. When you do, draw a card.",
     r#""Scry":{"count":2}"#
 )]
 #[case::payment_then_damage(
@@ -74,6 +70,13 @@ fn w20b_existing_links_still_read(#[case] text: &str) {
 #[case::nothing_before_the_link("Whenever ~ attacks, when you do, draw a card.")]
 #[case::counter_on_another(
     "Whenever ~ attacks, put a +1/+1 counter on target creature you control, then it fights up to one target creature defending player controls."
+)]
+#[case::surveil_then_a_target(
+    "When ~ enters, surveil 4. When you do, you may return target nonland permanent an opponent controls to its owner's hand."
+)]
+#[case::scry_then_a_target("When ~ enters, scry 2. When you do, ~ deals 3 damage to any target.")]
+#[case::sacrifice_then_a_target(
+    "Whenever ~ attacks, sacrifice it. When you do, ~ deals 3 damage to any target."
 )]
 #[case::sacrifice_then_when_without_comma("When ~ enters, sacrifice it. When you do draw a card.")]
 fn w20b_other_links_stay_with_the_table(#[case] text: &str) {

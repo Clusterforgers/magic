@@ -72,7 +72,7 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let paid = one_sentence(r);
     r.x_free = x_free;
     let mut paid = paid?;
-    // A reflexive trigger is worded "When you do" only when it chooses a target (CR 603.12).
+    // Only a "When you do" whose steps choose a target reads here; the other reflexive wordings stay unread.
     (!reflexive || super::w20b_reflexive::w20b_uses_target(&paid)).then_some(())?;
     if let Some(amount) = &counted {
         paid = super::c10_pa_pay_x::c10_pa_put_in(r, paid, amount);

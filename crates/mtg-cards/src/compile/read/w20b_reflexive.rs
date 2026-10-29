@@ -1,6 +1,7 @@
 //! The reflexive "When you do," (CR 603.12) read into the steps that exist: after "sacrifice it" the follow-up is an `If`
 //! of `Performed`, after "surveil N" and "scry N" (done at once) it is the next steps, and after "you may pay {C}" or
-//! "you may sacrifice a creature" it is the `paid` steps when they choose a target. "Put a +1/+1 counter on ~, then it
+//! "you may sacrifice a creature" it is the `paid` steps when they choose a target. After a sacrifice, surveil or scry a "When you do" whose steps choose
+//! a target stays unread. "Put a +1/+1 counter on ~, then it
 //! fights up to one target creature" is the two steps in one sentence. The writer adds the wordings to `variants`.
 
 use super::effects::sentence;
@@ -31,10 +32,8 @@ fn w20b_link_of(step: &Effect) -> Option<W20bLink> {
 /// "When you do, S." after "sacrifice it", "surveil 4" or "scry 2": every sentence that follows is the reflexive trigger.
 pub(super) fn w20b_when_you_do(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()> {
     let link = w20b_link_of(effects.last()?)?;
-    // A sacrifice also reads "If you do", which the reflexive wording replaces when the follow-up chooses a target.
-    let said =
-        r.words("when you do") || (matches!(link, W20bLink::Performed) && r.words("if you do"));
-    said.then_some(())?;
+    let reflexive = r.words("when you do");
+    (reflexive || (matches!(link, W20bLink::Performed) && r.words("if you do"))).then_some(())?;
     r.punct(',').then_some(())?;
     let mut then = Vec::new();
     loop {
@@ -43,6 +42,9 @@ pub(super) fn w20b_when_you_do(r: &mut Reader<'_>, effects: &mut Vec<Effect>) ->
             break;
         }
     }
+    // A target of the reflexive trigger would be chosen with the ability, before the step, and a missing one would remove
+    // the step too (CR 603.3d).
+    (!reflexive || !w20b_uses_target(&then)).then_some(())?;
     match link {
         W20bLink::Performed => effects.push(Effect::If {
             condition: Condition::Performed,
@@ -121,7 +123,7 @@ pub(super) fn w20b_wordings(ability: &Ability, texts: &mut Vec<String>) {
             if text.matches(". If you do, ").count() == 1 {
                 linked.push(text.replacen(". If you do, ", ". When you do, ", 1));
             }
-        } else if w20b_has_keyword_action_link(effects) {
+        } else if w20b_has_keyword_action_link(effects) && !w20b_uses_target(effects) {
             linked.extend(w20b_after_action(text, "surveil "));
             linked.extend(w20b_after_action(text, "scry "));
         }
@@ -184,7 +186,12 @@ fn w20b_sacrifice_texts(ability: &Ability) -> Vec<String> {
     let mut texts = Vec::new();
     for first in variants(&head) {
         for body in variants(&tail) {
-            for link in ["When you do, ", "If you do, "] {
+            let links: &[&str] = if w20b_uses_target(then) {
+                &["If you do, "]
+            } else {
+                &["When you do, ", "If you do, "]
+            };
+            for link in links {
                 texts.push(format!("{first} {link}{}", w20b_lowered(&body)));
             }
         }
