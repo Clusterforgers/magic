@@ -8,6 +8,7 @@ import { startSession } from '@/test-utils/harness'
 import { renderLiveTable } from '@/test-utils/tableHarness'
 import { transcripts } from '@/test-utils/transcripts'
 import type { Transcript } from '@/test-utils/transcripts'
+import { foldLog } from './logFold'
 import { zoneLabel } from './podFigures'
 import { describeMulligan } from './turnText'
 
@@ -86,7 +87,12 @@ function expectScreenToMatch(container: HTMLElement, state: PlayState, step: str
   )
   const log = within(container).getByRole('log', { name: 'Game log' })
   if (state.log.length === 0) expect(log, step).toHaveTextContent('Nothing has happened yet.')
-  else expect(log.querySelectorAll('li'), `${step}: log`).toHaveLength(state.log.length)
+  else {
+    // A round of passes is one line, and a seat receiving priority none: the count is that of the folded log.
+    const seats = view.players.filter((each) => each.lost === null).map((each) => each.seat)
+    const folded = foldLog(state.log, { seat: String, card: String }, { seats })
+    expect(log.querySelectorAll('li'), `${step}: log`).toHaveLength(folded.length)
+  }
   const decision = container.querySelector('[data-slot="decision-line"]')?.textContent ?? ''
   expect(decision.startsWith('Your decision: '), `${step}: decision "${decision}"`).toBe(
     state.pending !== null,
