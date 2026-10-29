@@ -127,6 +127,20 @@ describe('what is marked', () => {
     },
   )
 
+  it.each([
+    ['none of them', []],
+    ['one of three', [spell2]],
+    ['two of three', [spell1, spell3]],
+  ])('highlights in the hand only the spells the game says can be paid for: %s', async (_name, castable) => {
+    const { marks, card, user, answer } = renderPriority(options({ castable }))
+    for (const spell of [spell1, spell2, spell3]) {
+      const can = castable.includes(spell)
+      expect(marks().get(spell)).toBe(can ? 'legal' : 'dimmed')
+      await user.click(card(spell))
+      if (!can) expect(answer).not.toHaveBeenCalledWith({ Priority: { CastSpell: spell } })
+    }
+  })
+
   it('marks nothing of an opponent, the stack, a graveyard or a command zone', () => {
     const { marks } = renderPriority(options({ playable_lands: [play1], castable: [spell1] }))
     const marked = new Set(marks().keys())
