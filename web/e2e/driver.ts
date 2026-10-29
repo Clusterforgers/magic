@@ -15,21 +15,23 @@ export interface Style {
   autoPay: boolean
   /** In a priority window with nothing to play press "End turn" (the server passes for the rest of the turn); otherwise continue. */
   yields: boolean
+  /** Take a mulligan on an opening hand with fewer than two or more than five lands; otherwise always keep. */
+  mulligans?: boolean
 }
 
-interface Card {
+export interface Card {
   id: string
   label: string
   land: boolean
 }
 
-interface Control {
+export interface Control {
   label: string
   disabled: boolean
 }
 
 /** What one decision prompt shows, read in a single step so it cannot change halfway. */
-interface Seen {
+export interface Seen {
   over: false
   /** The decision kind: `data-decision`. */
   kind: string
@@ -94,8 +96,14 @@ export class Run {
   /** Times each seat (by name) pressed "End turn" to have the server pass for it until the turn ended. */
   readonly yields = new Map<string, number>()
   readonly trail: string[] = []
+  /** The card each seat (by name) last played or cast, so that a cancelled cast can be remembered. */
+  readonly lastPlay = new Map<string, string>()
+  /** Cards whose cast was cancelled (no legal target, a cost that cannot be met): the driver does not try them again. */
+  readonly skip = new Set<string>()
   /** Set by the first loop that fails, so the other stops instead of waiting out the stall limit. */
   failure: Error | null = null
+  /** Set by a hook to end every seat's loop at its next decision, for a run that plays some turns and not to the end. */
+  done = false
   private lastProgress = Date.now()
 
   readonly maxSteps: number
@@ -147,6 +155,7 @@ const POLL_MS = 2_000
 
 async function nextDecision(player: Player, answered: string | null, run: Run): Promise<Observed> {
   for (;;) {
+    if (run.done) return { over: true }
     run.check(player)
     try {
       const handle = await player.page.waitForFunction(
@@ -189,16 +198,51 @@ const card = (page: Page, id: string): Locator => page.locator(`button[data-obje
 const enabled = (seen: Seen, label: string): boolean =>
   seen.buttons.some((control) => control.label === label && !control.disabled)
 
+/**
+ * Presses one of the payment prompt's "pay for me" buttons. The server refuses a payment the seat's mana cannot make
+ * ("That answer is not allowed") and the prompt stays, so a prompt that is still the same after two seconds is
+ * backed out of with "Cancel casting".
+ */
+async function payFor(page: Page, label: string, id: string, done: string): Promise<string> {
+  await button(page, label).click()
+  const moved = await page
+    .waitForFunction(
+      (was) => document.querySelector('[data-decision-id]')?.getAttribute('data-decision-id') !== was,
+      id,
+      { timeout: 2_000 },
+    )
+    .then(
+      () => true,
+      () => false,
+    )
+  if (moved) return done
+  await button(page, 'Cancel casting').click()
+  return 'cancels casting, the server refused the payment'
+}
+
 /** Each decision kind's answer; the string says what was done, for the trail. */
 const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
-  async Mulligan({ player }) {
+  async Mulligan({ player, style, seen }) {
+    // A hand of real decks can have no land at all, and a game on it plays nothing: such a hand (or one that is all
+    // lands) goes back, as a player would do.
+    if (style.mulligans && enabled(seen, 'Mulligan')) {
+      const labels = await player.page
+        .locator(`ul[aria-label="${player.name}'s hand"] button[data-object-id]`)
+        .evaluateAll((cards) => cards.map((element) => element.getAttribute('aria-label') ?? ''))
+      const lands = labels.filter((label) => /\bLand\b/.test(label)).length
+      if (labels.length > 0 && (lands < 2 || lands > 5)) {
+        await button(player.page, 'Mulligan').click()
+        return `takes a mulligan: ${lands} lands in ${labels.length} cards`
+      }
+    }
     await button(player.page, 'Keep').click()
     return 'keeps the opening hand'
   },
 
   async Priority({ player, style, seen, run }) {
     // Lands first, so the mana is there for the creature that follows; with nothing to play, go on.
-    const play = seen.hand.find((candidate) => candidate.land) ?? seen.hand[0]
+    const open = seen.hand.filter((candidate) => !run.skip.has(candidate.id))
+    const play = open.find((candidate) => candidate.land) ?? open[0]
     if (play === undefined) {
       if (style.yields && (await endTurn(player.page).count()) > 0) {
         await endTurn(player.page).click()
@@ -208,6 +252,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       await primary(player.page).click()
       return 'continues'
     }
+    run.lastPlay.set(player.name, play.id)
     await card(player.page, play.id).click()
     return `${play.land ? 'plays' : 'casts'} ${named(play)}`
   },
@@ -215,8 +260,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   async PayMana({ player, style, seen }) {
     const { page } = player
     if (style.autoPay && enabled(seen, 'Pay automatically')) {
-      await button(page, 'Pay automatically').click()
-      return 'pays automatically'
+      return payFor(page, 'Pay automatically', seen.id, 'pays automatically')
     }
     // By hand: tap the first source the prompt offers until "Confirm payment" lights up.
     let now: Seen | null = seen
@@ -229,7 +273,15 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       const source = now.board[0]
       if (source === undefined) break
       await card(page, source.id).click()
-      await card(page, source.id).and(page.locator('[aria-pressed="true"]')).waitFor()
+      // A land that makes more than one kind of mana asks which: a coloured choice is taken before a colourless one.
+      const pressed = card(page, source.id).and(page.locator('[aria-pressed="true"]'))
+      const choices = page.locator('[data-slot="mana-choice"] button')
+      await pressed.or(choices.first()).first().waitFor()
+      if (await choices.first().isVisible()) {
+        const coloured = page.locator('[data-slot="mana-choice"] button:not([aria-label*="colorless" i])')
+        await ((await coloured.count()) > 0 ? coloured : choices).first().click()
+        await pressed.waitFor()
+      }
       tapped.push(named(source))
       now = await seeNow(player)
     }
@@ -237,8 +289,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     const rest =
       now !== null && enabled(now, 'Pay the rest for me') ? 'Pay the rest for me' : 'Pay automatically'
     if (now !== null && enabled(now, rest)) {
-      await button(page, rest).click()
-      return 'pays automatically (nothing left to tap by hand)'
+      return payFor(page, rest, seen.id, 'pays automatically (nothing left to tap by hand)')
     }
     await button(page, 'Cancel casting').click()
     return 'cancels casting, the cost could not be met'
@@ -277,6 +328,72 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
 
   Discard: chooseCards,
   BottomCards: chooseCards,
+
+  // The questions of real cards. A prompt the web has not built yet ("ChooseNumber") is not here: the run fails on it
+  // with the prompt's words, which is the finding.
+  async ChooseTargets({ player }) {
+    const { page } = player
+    const legal = prompt(page).locator('[data-slot="legal-targets"] button')
+    const confirm = button(page, 'Confirm targets')
+    const count = await legal.count()
+    if (count === 0) {
+      await prompt(page)
+        .getByRole('button', { name: /^Cancel the (spell|ability)$/ })
+        .click()
+      return 'has no legal target and cancels'
+    }
+    const names: string[] = []
+    for (let index = 0; index < count; index += 1) {
+      await legal.nth(index).click()
+      names.push(((await legal.nth(index).textContent()) ?? '').trim())
+      if (await confirm.isEnabled()) break
+    }
+    await confirm.click()
+    return `targets ${names.join(', ')}`
+  },
+
+  async YesNo({ player }) {
+    await prompt(player.page).getByRole('button', { name: 'Yes', exact: true }).click()
+    return 'says yes'
+  },
+
+  async ChooseMode({ player }) {
+    const { page } = player
+    await prompt(page).locator('[data-slot="mode-list"] button').first().click()
+    // A single-mode choice answers at once; a multi-mode choice is confirmed.
+    const confirm = button(page, 'Confirm modes')
+    if ((await confirm.count()) > 0 && (await confirm.isEnabled())) await confirm.click()
+    return 'takes the first mode'
+  },
+
+  async ChooseOption({ player }) {
+    await prompt(player.page).locator('[data-slot="option-list"] button').first().click()
+    return 'takes the first option'
+  },
+
+  async ChooseCards({ player }) {
+    // As few cards as the prompt allows: none for a scry or a "may", the minimum for a discard-like choice.
+    const confirm = button(player.page, 'Confirm')
+    const picks = prompt(player.page).locator('button[data-candidate]')
+    const total = await picks.count()
+    let chosen = 0
+    while (chosen < total && !(await confirm.isEnabled())) {
+      await picks.nth(chosen).click()
+      chosen += 1
+    }
+    await confirm.click()
+    return `chooses ${chosen} of ${total} cards`
+  },
+
+  async OrderCards({ player }) {
+    await button(player.page, 'Confirm order').click()
+    return 'keeps the order of the cards'
+  },
+
+  async OrderTriggers({ player }) {
+    await button(player.page, 'Confirm order').click()
+    return 'keeps the order of the triggers'
+  },
 }
 
 /** Discard and BottomCards: toggle as many offered cards as the prompt counts ("0 of 2 chosen"), then Confirm. */
@@ -290,12 +407,20 @@ async function chooseCards({ player, seen }: Turn): Promise<string> {
   return `${seen.kind === 'Discard' ? 'discards' : 'bottoms'} ${chosen.map(named).join(', ') || 'nothing'}`
 }
 
-/** Answers this seat's decisions until the game-over screen shows. */
-async function drive(player: Player, style: Style, run: Run): Promise<void> {
+/** What a spec may do around each decision of a run that does not play to the end. */
+export interface Hooks {
+  /** Called with the decision a seat is about to answer, before it is; screenshots and the end of the run go here. */
+  before?(player: Player, seen: Seen, run: Run): Promise<void>
+}
+
+/** Answers this seat's decisions until the game-over screen shows or a hook sets `run.done`. */
+async function drive(player: Player, style: Style, run: Run, hooks: Hooks): Promise<void> {
   let answered: string | null = null
   for (;;) {
     const seen = await nextDecision(player, answered, run)
     if (seen.over) return
+    await hooks.before?.(player, seen, run)
+    if (run.done) return
     // A priority window that offers no land and no spell can be passed and nothing else; only a stop or Full Control asks for it.
     if (seen.kind === 'Priority' && seen.hand.length === 0) {
       run.idle.set(player.name, (run.idle.get(player.name) ?? 0) + 1)
@@ -303,8 +428,13 @@ async function drive(player: Player, style: Style, run: Run): Promise<void> {
     }
     const answer = ANSWERS[seen.kind]
     if (answer === undefined)
-      throw new Error(`${player.name} faces ${seen.kind}, which the driver cannot answer`)
-    run.step(player.name, seen.kind, `#${seen.id} ${await answer({ player, style, seen, run })}`)
+      throw new Error(
+        `${player.name} faces ${seen.kind} (${seen.text}; buttons: ${seen.buttons.map((b) => b.label).join(' | ')}), which the driver cannot answer`,
+      )
+    const line = await answer({ player, style, seen, run })
+    const tried = run.lastPlay.get(player.name)
+    if (/cancel/.test(line) && tried !== undefined) run.skip.add(tried)
+    run.step(player.name, seen.kind, `#${seen.id} ${line}`)
     answered = seen.id
   }
 }
@@ -313,11 +443,12 @@ async function drive(player: Player, style: Style, run: Run): Promise<void> {
 export async function playToTheEnd(
   seats: readonly { player: Player; style: Style }[],
   run: Run,
+  hooks: Hooks = {},
 ): Promise<void> {
   await Promise.all(
     seats.map(async ({ player, style }) => {
       try {
-        await drive(player, style, run)
+        await drive(player, style, run, hooks)
       } catch (error) {
         const failure = error instanceof Error ? error : new Error(String(error))
         run.failure ??= failure
