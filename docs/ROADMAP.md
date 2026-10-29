@@ -276,7 +276,7 @@ The server is settled first, then the web is built once against the final types.
 ### Tooling
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
 - [ ] (t5a) The Postgres lock covers only the `sqlx::test` tests: the other tests of `mtg-server` and `mtg-cli` run outside it (one full check: 398 s under the lock, 1,087 s waiting for it)
-- [~] (t5b) (w13c-testkit-seconds) The `mtg-testkit` `it` binary needs fewer test-seconds (9,310 over 15,155 tests in 460 modules, 22% in fuzz modules): shared per-test setup and a smaller default game count for diffs that cannot change engine behaviour
+- [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds: over 90% is `Engine::apply` (`priority_options` with `castable_as_is` and `provided_here` 36%, `triggers::detect` 24%, `layers::compute` 14%, whole-object clones), the testkit harness is about 7%, so the next cut is in the engine; building `mtg-cards` at opt-level 3 and mimalloc in the testkit save about 5% of test CPU and slow every rebuild, so they are not adopted
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load
 - [ ] (t3c) DSL amounts for what an earlier effect did and for the mana value a cost took, and a partner by creature type (Foul-Tongue Shriek, Nahiri's Sacrifice, The Knight of Land Drops)
 - [ ] The expected X symbols in `x_cards.rs` of `mtg-testkit` are derived from the card list, so a new X card edits no test
