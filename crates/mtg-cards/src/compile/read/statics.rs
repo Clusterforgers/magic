@@ -732,6 +732,9 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         {
             return Some(form);
         }
+        if let Some(lost) = r.attempt(|r| super::lost_abilities::form(r, plural)) {
+            return Some(lost);
+        }
         predicate_mods(r, plural)
     });
     r.x_free = x_free;
@@ -1887,6 +1890,9 @@ pub(super) fn predicate(
     itself: bool,
     conditional: bool,
 ) -> Option<String> {
+    if let Some(lost) = super::lost_abilities::text(mods, plural) {
+        return Some(lost);
+    }
     match mods {
         [Modification::CantAttack, Modification::CantBlock] => {
             return Some("can't attack or block".to_owned());

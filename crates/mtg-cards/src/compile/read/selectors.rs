@@ -584,6 +584,13 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
     }
+    // The creature the sentence before acted on: "tapped creature its controller controls".
+    if let Some(it) = r.it.clone()
+        && matches!(it, Ref::Attached | Ref::Target(_))
+        && r.words("its controller controls")
+    {
+        return Some(Pred::ControlledBy(Ref::ControllerOf(Box::new(it))));
+    }
     if r.words("the monarch controls") || (r.at_monarch && r.words("that player controls")) {
         return Some(Pred::ControlledBy(Ref::Monarch));
     }
@@ -700,6 +707,11 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::DamagedBy(Ref::This) => "dealt damage by ~ this turn".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
+        Pred::ControlledBy(Ref::ControllerOf(host))
+            if matches!(**host, Ref::Attached | Ref::Target(_)) =>
+        {
+            "its controller controls".to_owned()
+        }
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
         Pred::ControlledBy(Ref::Target(0)) => "target player controls".to_owned(),

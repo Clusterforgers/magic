@@ -360,6 +360,11 @@ pub enum Event {
     CombatEnded,
     /// All damage marked on permanents was removed.
     DamageCleared,
+    /// A creature was removed from combat (CR 506.4): it no longer attacks or blocks.
+    RemovedFromCombat {
+        /// The creature.
+        object: ObjectId,
+    },
     /// A permanent regenerated instead of being destroyed (CR 701.19): it was tapped, lost its damage and left combat.
     Regenerated {
         /// The permanent.
@@ -1085,6 +1090,7 @@ impl Event {
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }
             | Event::PermanentPhasedIn { object }
+            | Event::RemovedFromCombat { object }
             | Event::Regenerated { object }
             | Event::DamageRemoved { object }
             | Event::CardDrawn { object, .. }

@@ -74,6 +74,7 @@ mod proliferate;
 mod put_counters;
 mod regenerate;
 mod remove_counters;
+mod remove_from_combat;
 mod repeat_each;
 mod reveal;
 mod reveal_until;
@@ -198,6 +199,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
+        Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
         Effect::If { .. } => if_then::run(cx, effect),
@@ -378,6 +380,7 @@ mod tests {
         "Effect.ExchangeControl",
         "Effect.Rule",
         "Effect.Regenerate",
+        "Effect.RemoveFromCombat",
         "Effect.Shield",
         "Effect.DelayedTrigger",
         "Effect.If",

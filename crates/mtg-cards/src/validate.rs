@@ -2408,6 +2408,7 @@ impl Walker<'_> {
                 }
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Shield {
                 when,
                 by,

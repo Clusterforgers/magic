@@ -232,6 +232,7 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSource",
     "Effect.Rule",
     "Effect.Regenerate",
+    "Effect.RemoveFromCombat",
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
@@ -703,6 +704,7 @@ mod tests {
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
     #[case::regenerating("Effect.Regenerate", true)]
+    #[case::leaving_combat("Effect.RemoveFromCombat", true)]
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]

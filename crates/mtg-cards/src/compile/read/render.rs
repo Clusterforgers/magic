@@ -423,6 +423,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
     texts.extend(more);
+    let more = super::leave_combat::wordings(&texts);
+    texts.extend(more);
     let mut counted = where_x::wordings(ability);
     counted.extend(super::c10_pa_pay_x::c10_pa_wordings(ability));
     counted.extend(super::c10_pa_monstrous::c10_pa_wordings(ability));
@@ -1304,6 +1306,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Untap { .. }
                 | Effect::TapOrUntap { .. }
                 | Effect::Goad { .. }
+                | Effect::RemoveFromCombat { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
                 | Effect::Move { .. }
@@ -2030,6 +2033,9 @@ impl Writer<'_> {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
+            Effect::RemoveFromCombat { what } => {
+                format!("remove {} from combat", self.object(what)?)
+            }
             Effect::Counter { what } => format!("counter {}", self.object(what)?),
             _ => return None,
         })
@@ -2139,6 +2145,7 @@ impl Writer<'_> {
             | Effect::TapOrUntap { .. }
             | Effect::Goad { .. }
             | Effect::Fight { .. }
+            | Effect::RemoveFromCombat { .. }
             | Effect::Regenerate { .. }
             | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
