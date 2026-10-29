@@ -17,6 +17,10 @@ export interface Style {
   yields: boolean
   /** Take a mulligan on an opening hand with fewer than two or more than five lands; otherwise always keep. */
   mulligans?: boolean
+  /** The players to attack, most wanted first: with several defenders the seat attacks the first of them that is one; otherwise the table's own pick. */
+  aim?: readonly string[]
+  /** The name of this seat's commander: once it was cast and stands on the battlefield at the seat's turn, it goes back to the command zone through the manual menu, so that it is cast again and pays the tax. */
+  recall?: string
 }
 
 export interface Card {
@@ -55,7 +59,7 @@ type Observed = { over: true } | Seen
  * Runs in the page. Gives the game-over screen, or the decision prompt unless its id is `answered`, or null while
  * there is neither. A prompt marks its cards before it is drawn (layout effects), so a read between two tasks is whole.
  */
-function look(arg: { me: string; answered: string | null }): Observed | null {
+export function look(arg: { me: string; answered: string | null }): Observed | null {
   if (document.querySelector('#over-title') !== null) return { over: true }
   const root = document.querySelector<HTMLElement>('[data-decision]')
   const id = root?.dataset['decisionId']
@@ -78,7 +82,8 @@ function look(arg: { me: string; answered: string | null }): Observed | null {
     banner: document.querySelector('[data-slot="banner"]')?.textContent ?? '',
     text,
     buttons: Array.from(root.querySelectorAll('button')).map((button) => ({
-      label: (button.textContent ?? '').trim(),
+      // The accessible name, as `getByRole` reads it: the combat bar's buttons show "All" and are named "Attack with all".
+      label: (button.getAttribute('aria-label') ?? button.textContent ?? '').trim(),
       disabled: button.disabled || button.getAttribute('aria-disabled') === 'true',
     })),
     hand: legal(`ul[aria-label="${arg.me}'s hand"]`),
@@ -87,12 +92,19 @@ function look(arg: { me: string; answered: string | null }): Observed | null {
   }
 }
 
+/**
+ * A priority window with nothing to play: no card of the hand, no commander in the command zone and no ability on the
+ * battlefield is legal, so it can be passed and nothing else. The server asks only a seat with a stop or Full Control.
+ */
+export const isIdle = (seen: Seen): boolean =>
+  seen.kind === 'Priority' && seen.hand.length === 0 && seen.command.length === 0 && seen.board.length === 0
+
 /** The state shared by both seats' loops: the step budget, the stall clock and the trail kept for a failure. */
 export class Run {
   steps = 0
   /** Decisions answered, by kind. */
   readonly kinds = new Map<string, number>()
-  /** Priority windows each seat (by name) was asked about with no land and no spell to offer; a seat with no stop and Full Control off is asked none. */
+  /** Priority windows each seat (by name) was asked about with no card, commander or ability to play; a seat with no stop and Full Control off is asked none. */
   readonly idle = new Map<string, number>()
   /** Where each seat (by name) was asked those windows, as the turn banner says it. */
   readonly idleAt = new Map<string, string[]>()
@@ -101,6 +113,10 @@ export class Run {
   readonly trail: string[] = []
   /** The card each seat (by name) last played or cast, so that a cancelled cast can be remembered. */
   readonly lastPlay = new Map<string, string>()
+  /** The turn each seat (by name) last cast its commander from the command zone in. */
+  readonly castOn = new Map<string, number>()
+  /** The seats (by name) that sent their commander back by hand (`Style.recall`). */
+  readonly recalled = new Set<string>()
   /** Cards whose cast was cancelled (no legal target, a cost that cannot be met): the driver does not try them again. */
   readonly skip = new Set<string>()
   /** Set by the first loop that fails, so the other stops instead of waiting out the stall limit. */
@@ -186,6 +202,20 @@ interface Turn {
   run: Run
 }
 
+/** The turn number of a banner such as "Ada's turn · 5 · End step". */
+export const turnOf = (banner: string): number => Number(/ · (\d+) · /.exec(banner)?.[1] ?? 0)
+
+/** Waits up to `ms` for the decision shown now to satisfy `ready`; returns it, or null when it did not in time. */
+async function watch(player: Player, ready: (seen: Seen) => boolean, ms = 3_000): Promise<Seen | null> {
+  const end = Date.now() + ms
+  for (;;) {
+    const seen = await seeNow(player)
+    if (seen !== null && ready(seen)) return seen
+    if (Date.now() > end) return null
+    await player.page.waitForTimeout(100)
+  }
+}
+
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
 const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
@@ -223,6 +253,37 @@ async function payFor(page: Page, label: string, id: string, done: string): Prom
   return 'cancels casting, the server refused the payment'
 }
 
+/**
+ * With several defenders, picks the first of `wanted` the "Attack at" list offers and returns its name; null when the
+ * list is not there (one defender) or offers none of them, which leaves the table's pick.
+ */
+export async function aimAt(page: Page, wanted: readonly string[]): Promise<string | null> {
+  const list = prompt(page).getByLabel('Attack at')
+  if (wanted.length === 0 || (await list.count()) === 0) return null
+  const offered = await list.locator('option').allTextContents()
+  const name = wanted.find((candidate) => offered.includes(candidate))
+  if (name === undefined) return null
+  await list.selectOption({ label: name })
+  return name
+}
+
+/**
+ * Sends the commander `name` from the battlefield back to the command zone with the card's manual menu (a right
+ * click, Move to, Command zone). Returns false while the commander is not on the battlefield.
+ */
+async function recallCommander(player: Player, name: string): Promise<boolean> {
+  const { page } = player
+  const commander = page
+    .locator(
+      `section[aria-label="${player.name}'s battlefield"] button[data-object-id][aria-label^="${name}"]`,
+    )
+    .first()
+  if ((await commander.count()) === 0) return false
+  await commander.click({ button: 'right' })
+  await page.locator('[data-item="move-Command"]').click()
+  return true
+}
+
 /** Each decision kind's answer; the string says what was done, for the trail. */
 const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   async Mulligan({ player, style, seen }) {
@@ -242,7 +303,24 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     return 'keeps the opening hand'
   },
 
-  async Priority({ player, style, seen, run }) {
+  async Priority({ player, style, seen: first, run }) {
+    let seen = first
+    const turn = turnOf(seen.banner)
+    let recalled = ''
+    const castOn = run.castOn.get(player.name)
+    if (
+      style.recall !== undefined &&
+      !run.recalled.has(player.name) &&
+      castOn !== undefined &&
+      turn > castOn &&
+      seen.banner.startsWith('Your turn') &&
+      (await recallCommander(player, style.recall))
+    ) {
+      run.recalled.add(player.name)
+      recalled = `sends ${style.recall} back to the command zone, `
+      // The prompt marks the commander in the command zone again if it can be cast; give the table a moment to say so.
+      seen = (await watch(player, (now) => now.command.length > 0)) ?? seen
+    }
     // Lands first, so the mana is there for the creature that follows, then a commander; with nothing to play, go on.
     const open = seen.hand.filter((candidate) => !run.skip.has(candidate.id))
     const commander = seen.command.find((candidate) => !run.skip.has(candidate.id))
@@ -251,14 +329,15 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       if (style.yields && (await endTurn(player.page).count()) > 0) {
         await endTurn(player.page).click()
         run.yields.set(player.name, (run.yields.get(player.name) ?? 0) + 1)
-        return 'ends the turn'
+        return `${recalled}ends the turn`
       }
       await primary(player.page).click()
-      return 'continues'
+      return `${recalled}continues`
     }
     run.lastPlay.set(player.name, play.id)
+    if (play === commander) run.castOn.set(player.name, turn)
     await card(player.page, play.id).click()
-    return `${play.land ? 'plays' : 'casts'} ${named(play)}`
+    return `${recalled}${play.land ? 'plays' : 'casts'} ${named(play)}`
   },
 
   async PayMana({ player, style, seen }) {
@@ -300,14 +379,15 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     return 'cancels casting, the cost could not be met'
   },
 
-  async DeclareAttackers({ player, seen }) {
+  async DeclareAttackers({ player, style, seen }) {
     if (!enabled(seen, 'Attack with all')) {
       await button(player.page, 'No attack').click()
       return 'has nothing to attack with'
     }
+    const at = await aimAt(player.page, style.aim ?? [])
     await button(player.page, 'Attack with all').click()
     await button(player.page, 'Confirm attack').click()
-    return 'attacks with everything'
+    return `attacks ${at ?? 'with everything'}`
   },
 
   async DeclareBlockers({ player, style, seen }) {
@@ -318,8 +398,14 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     // Every blocker goes on the first attacker; two or more on one attacker make its controller split the damage.
     for (const blocker of seen.board) {
       await card(player.page, blocker.id).click()
-      // The picker lists one button per attacker this creature may block, then Cancel.
-      await player.page.locator('[data-slot="attacker-picker"]').getByRole('button').first().click()
+      // With several attackers the picker lists one button per attacker this creature may block, then Cancel; with
+      // one the click blocks it at once and there is no picker.
+      const picker = player.page.locator('[data-slot="attacker-picker"]')
+      const asked = await picker.waitFor({ state: 'visible', timeout: 1_000 }).then(
+        () => true,
+        () => false,
+      )
+      if (asked) await picker.getByRole('button').first().click()
     }
     await button(player.page, 'Confirm blocks').click()
     return `blocks with ${seen.board.map(named).join(', ')}`
@@ -375,11 +461,23 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
 
   async ChooseMode({ player }) {
     const { page } = player
-    await prompt(page).locator('[data-slot="mode-list"] button').first().click()
-    // A single-mode choice answers at once; a multi-mode choice is confirmed.
+    const modes = prompt(page).locator('[data-slot="mode-list"] button')
     const confirm = button(page, 'Confirm modes')
-    if ((await confirm.count()) > 0 && (await confirm.isEnabled())) await confirm.click()
-    return 'takes the first mode'
+    const total = await modes.count()
+    // The first modes that can be taken, until Confirm lights up: a single-mode choice answers at once, "choose two"
+    // takes two, and a mode with no legal target is passed over.
+    for (let index = 0; index < total; index += 1) {
+      const mode = modes.nth(index)
+      if (!(await mode.isEnabled())) continue
+      await mode.click()
+      if ((await confirm.count()) === 0) return `takes mode ${index + 1}`
+      if (await confirm.isEnabled()) {
+        await confirm.click()
+        return `takes modes up to ${index + 1}`
+      }
+    }
+    await button(page, 'Cancel the spell').click()
+    return 'cancels the spell, too few modes can be taken'
   },
 
   async ChooseOption({ player }) {
@@ -448,8 +546,7 @@ async function drive(player: Player, style: Style, run: Run, hooks: Hooks): Prom
     if (seen.over) return
     await hooks.before?.(player, seen, run)
     if (run.done) return
-    // A priority window that offers no land and no spell can be passed and nothing else; only a stop or Full Control asks for it.
-    if (seen.kind === 'Priority' && seen.hand.length === 0) {
+    if (isIdle(seen)) {
       run.idle.set(player.name, (run.idle.get(player.name) ?? 0) + 1)
       run.idleAt.set(player.name, [...(run.idleAt.get(player.name) ?? []), seen.banner])
     }

@@ -26,6 +26,18 @@ export type Theme = (typeof THEMES)[number]
 /** The smallest text in px: the 11 px card label of the type scale. */
 export const TEXT_FLOOR = 11
 
+/**
+ * What the table scrolls or clips on purpose: the art of a card is a picture of a card, and the strip of opponents, the
+ * chips of the stack and the hand scroll inside their own box where the width is short (docs/ui-design.md, Table
+ * layout).
+ */
+export const TABLE_EXEMPT = [
+  '[data-slot="card-face"]',
+  '[data-slot="tile-strip"]',
+  '[data-slot="stack-chips"] ol',
+  '[data-slot="hand-fan"]',
+]
+
 /** A size as the tables print it: `1280x720`. */
 export const sizeName = (size: Size): string => `${size.width}x${size.height}`
 

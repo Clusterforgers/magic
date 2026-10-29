@@ -8,6 +8,8 @@ export interface Player {
   context: BrowserContext
   /** Uncaught exceptions in the page so far; the UI should never throw, so the driver fails on the first. */
   errors: string[]
+  /** The page's console errors other than failed loads, for the specs that look; unset where not collected. */
+  consoleErrors?: string[]
 }
 
 /** What a seat asks for in the create form: a name and the id of a built-in deck. */

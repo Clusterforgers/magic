@@ -47,7 +47,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Engine core: zones, turns, priority, stack, combat with forecast and block preview, bots with a repeat guard, `mtg-testkit`, and crowded tables of thousands of permanents.
 - Protocol and server: generated wire bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts, lobbies, open games and precons.
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank and leak tests (`docs/arena-flow.md`).
-- First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6, in real browsers (`web/e2e/precon-game.spec.ts`).
+- First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6 (`web/e2e/precon-game.spec.ts`); four accounts play four Commander precons from the lobby through mulligans, casts from the command zone with their tax and commander damage to a winner (`web/e2e/commander-four.spec.ts`), in real browsers.
 - Web: the game UI with prompts for all eight decision kinds, manual payment that the engine always accepts (several mana, sources that cost mana) and the number prompt for X with its total cost, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Popular-card edges: a delayed trigger reads the stats of its resolution's targets as they last were (Mana Drain), and no token is made for a player who loses in the same batch (CR 800.4a).
 - Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand (each unread clause quoted beside its reason), and one-click play.
@@ -146,7 +146,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 The server is settled first, then the web is built once against the final types.
 
 - [ ] (g0g) The hand dock holds hands of 9 to 16 cards in two rows below 1000 px of height: at 1400x900 a hand of 9 or more scrolls, since two rows need 150 px of cards (`HAND_CLAMP` in `layout.ts`, or more of the width from the controls dock beside it)
-- [ ] (g0h) The e2e driver counts an idle window as one with no legal hand card (`web/e2e/driver.ts` `drive`): count it only when no hand card, board object or command-zone card is legal, since the server asks exactly the seats that have a play (a Clue, an equip, a scry land, a commander to cast); in seeded four-seat bot games it asks 0 idle windows of 380 to 420 priority windows, 50 to 190 of them with abilities as the only play
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] (w3k) A replacement candidate carries the words of its own effect, so the ChooseReplacement prompt shows the one ability that applies instead of the whole card text (`ReplacementCandidate`)
@@ -169,7 +168,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
 - [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
-- [~] (k3) (commander-e2e) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
+- [ ] (k3a) `MTG_SEED` sets the server's `fixed_seed` (now only tests set it), so an e2e game replays exactly; `commander-four.spec.ts` and `precon-game.spec.ts` pin it
+- [ ] (k3b) The lobby chooser keeps the preview and "Use this deck" on the deck selected before a search hides it: with Precons searched for "Token Triumph" the list holds one row and the preview shows "Calling All Angels"; select the first visible row
+- [ ] (k3c) A commander damage chip reads "A commander" when the viewer has no object for it ("3 of 21 commander damage from A commander", seen next to chips that name Daxos and Emmara in a four-seat game): commanders are public, so `damageChips` names them from the card, not from `objectsById`
+- [ ] (k3d) A four-seat precon game asks a seat 3 to 54 priority windows in which no hand card, commander or battlefield ability is marked legal ("Your turn · 12 · Precombat main" three times in a row, then "Postcombat main"): find what the server offers there (a cast from the graveyard or exile, an ability the prompt does not mark) and mark it, or pass for the seat (`commander-four.spec.ts` prints them as "idle windows of ...")
 - [ ] (ts2) An Aura, Equipment or Fortification is drawn tucked under or beside its host and moves with it: the host's row holds its attachments right behind it and the fit counts the overlap (the marks and chips exist; the layout is the zones agent's)
 - [ ] (ts3) `groupPermanents` keeps apart permanents that differ in copy (and of what), shown face, face down, merge, prepared, level and the player an Aura enchants, so a copy never hides inside a stack of its original's tokens
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
