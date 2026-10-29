@@ -538,6 +538,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
   }
   if ('Explored' in event) return line(`${n.card(event.Explored.object)} explores`)
   if ('Connived' in event) return line(`${n.card(event.Connived.object)} connives`)
+  if ('Exerted' in event) return line(`${n.card(event.Exerted.object)} is exerted`)
+  if ('ExertEnded' in event) return line(`${n.card(event.ExertEnded.object)} is no longer exerted`)
   if ('Amassed' in event) return line(`${n.seat(event.Amassed.player)} amasses`)
   if ('Monstrous' in event) return line(`${n.card(event.Monstrous.object)} becomes monstrous`)
   if ('Devoured' in event) return line(`${n.card(event.Devoured.object)} devours ${event.Devoured.count}`)

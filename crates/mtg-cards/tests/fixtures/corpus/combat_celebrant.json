@@ -1,0 +1,27 @@
+{
+  "id": "28b63c3d-2e55-4343-b49a-11fa602ec473",
+  "oracle_id": "5e15ff93-99a0-4000-918e-4bd2c257188d",
+  "name": "Combat Celebrant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "akh",
+  "collector_number": "125",
+  "rarity": "mythic",
+  "released_at": "2017-04-28",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "If this creature hasn't been exerted this turn, you may exert it as it attacks. When you do, untap all other creatures you control and after this phase, there is an additional combat phase. (An exerted creature won't untap during your next untap step.)",
+  "power": "4",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Exert"
+  ]
+}

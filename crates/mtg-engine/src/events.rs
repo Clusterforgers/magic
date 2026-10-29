@@ -799,6 +799,21 @@ pub enum Event {
         /// Its controller, who drew and discarded.
         player: PlayerId,
     },
+    /// A creature was exerted as it was declared an attacker (CR 701.43): it won't untap during the next untap step of
+    /// `player`, who exerted it.
+    Exerted {
+        /// The creature exerted.
+        object: ObjectId,
+        /// The player who exerted it.
+        player: PlayerId,
+    },
+    /// The untap step of `player` used up their exert of the permanent (CR 701.43c), whether it untapped or not.
+    ExertEnded {
+        /// The permanent exerted.
+        object: ObjectId,
+        /// The player whose untap step it was.
+        player: PlayerId,
+    },
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -1039,6 +1054,8 @@ impl Event {
             | Event::CardDiscarded { object, .. }
             | Event::Explored { object, .. }
             | Event::Connived { object, .. }
+            | Event::Exerted { object, .. }
+            | Event::ExertEnded { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
             | Event::Devoured { object, .. }

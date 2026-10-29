@@ -1263,15 +1263,16 @@ impl<'a> Walker<'a> {
         }
     }
 
-    fn expend_count(&mut self, pattern: &TriggerPattern) {
+    /// Notes the primitive a trigger pattern uses and refuses an expend of nothing.
+    fn w11a_pattern_used(&mut self, pattern: &TriggerPattern) {
+        self.uses("Trigger", &tag_of(pattern));
         if let TriggerPattern::Expend { n: 0, .. } = pattern {
             self.problem("expend needs a number of at least 1");
         }
     }
 
     fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
-        self.uses("Trigger", &tag_of(pattern));
-        self.expend_count(pattern);
+        self.w11a_pattern_used(pattern);
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }

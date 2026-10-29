@@ -32,6 +32,7 @@ fn crowd(seats: usize, size: u64, mana: u32) -> Decision {
             defenders: defenders.clone(),
             tax: tax.clone(),
             life: Vec::new(),
+            exert: false,
         })
         .collect();
     let options = AttackOptions {

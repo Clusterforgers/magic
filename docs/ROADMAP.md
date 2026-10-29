@@ -82,6 +82,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Replacements that name their event: `Instead` steps read the replaced player, amount and source of damage, and "tap or untap" is a choice of the controller.
 - Preventions that name their damage (counters for it, all but 1) and their shields, and token replacements for one kind of token.
 - X in triggers: an `{X}` paid in an effect and read by what follows it, the X of a cycling cost or a monstrosity in its trigger, and "up to X" targets.
+- Exert: the choice in the attack declaration, `Exerted` and `ExertEnded`, the untap step of the exerting player it skips and its "When you do" and "Whenever you exert a creature" triggers.
 
 ## M3 Card system
 
@@ -131,6 +132,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
 - [ ] Playwright games with corpus decks that ask every decision kind
 - [ ] (c5h) The table's event text has a line for the rule `MustAttackPlayers` (Encore) instead of the generic trigger line
+- [ ] (c5i) The attack prompt offers the exert of a creature that may be exerted (`AttackerOption.exert`, `Answer::DeclareExerting`) and the table marks an exerted permanent
 
 ## M6 Coverage
 
@@ -156,13 +158,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [ ] (r2da-c-a) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
-- [~] (r2da-c-c) (w9d-exert) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
+- [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Oasis Ritualist, Fervent Paincaster)
 - [~] (r2da-c-f) (w11c-crimes-forecast-clash) Crimes: a turn tally of targeting an opponent, their permanents, spells or graveyard cards, "whenever you commit a crime" and "whenever an opponent commits a crime" (Bandit's Haul, Patrolling Peacemaker)
 - [~] (r2da-c-g) (w11c-crimes-forecast-clash) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
 - [~] (r2da-c-h) (w11c-crimes-forecast-clash) Clash wordings not read: "clash, then return ... If you win, ... instead", "that player's next untap step", a delayed mana of the countered spell, "whenever you win a clash" (Whirlpool Whelm, Pollen Lullaby, Scattering Stroke, Marvo, Deep Operative)
 - [~] (r2da-c-e) (w11d-venture) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
-- [~] (r2da-c-i) (w11a-exert-engine) Exert wordings not read: "it can't be blocked this turn and you scry 1", "untap all other creatures you control and after this phase, there is an additional combat phase" (Clockwork Droid, Combat Celebrant)
-- [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Oasis Ritualist, Fervent Paincaster)
 - [ ] (r2da-f) Mill leftovers: target bounds from the trigger's count ("each of up to X target creatures, where X is the number of nonland cards milled this way"), "Do this only once each turn" after a may, a batch per player ("whenever a player mills one or more creature cards") and "a card that was milled this turn"; frees about 5 cards (The Wise Mothman, Screeching Scorchbeast, Zellix, Sanity Flayer, Tato Farmer)
 - [ ] (r2da-g) Rad leftovers: "costs {1} less to activate for each rad counter you have", "you may have this land enter tapped. If you do, you get two rad counters", "loses all rad counters" and "Choose one that hasn't been chosen"; frees about 2 cards (Mariposa Military Base, Survivor's Med Kit)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)

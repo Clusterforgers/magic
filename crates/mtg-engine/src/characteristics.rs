@@ -205,11 +205,11 @@ pub(crate) fn goaders(held: &Held) -> impl Iterator<Item = PlayerId> + '_ {
 }
 
 /// Whether an effect that applies to `id` says it does not untap during its controller's untap step: the one place the
-/// untap step reads this restriction.
+/// untap step reads this restriction. An exert of the controller holds it too (CR 701.43c).
 pub(crate) fn doesnt_untap(state: &GameState, id: ObjectId) -> bool {
     restricted(state, id, |modification| {
         matches!(modification, Modification::DoesntUntap)
-    })
+    }) || crate::w11a_exert::w11a_held(state, id)
 }
 
 /// Whether an effect that applies to `id` says it can't block: the one place the block rules read this restriction.

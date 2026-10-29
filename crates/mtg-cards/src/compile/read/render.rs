@@ -410,6 +410,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = joined::wordings(&texts);
     texts.extend(more);
+    let more = super::w11a_joins::w11a_wordings(&texts);
+    texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
     texts.extend(more);
     let mut counted = where_x::wordings(ability);

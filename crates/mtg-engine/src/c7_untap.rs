@@ -12,7 +12,8 @@ use crate::zones::Zone;
 
 /// The `EffectExpired` events of the untap step of `active`: each effect that lasts through the next untap step and
 /// holds down a permanent `active` controls is used up by this step, whether that permanent is tapped or not. The
-/// untap of the step reads the effects before these events remove them.
+/// untap of the step reads the effects before these events remove them. The exerts of `active` end with them
+/// (`ExertEnded`, `w11a_exert`).
 pub(crate) fn c7_untap_spent(state: &GameState, active: PlayerId) -> Vec<Event> {
     let mut spent: Vec<_> = state
         .zone(Zone::Battlefield)
@@ -37,5 +38,6 @@ pub(crate) fn c7_untap_spent(state: &GameState, active: PlayerId) -> Vec<Event> 
     spent
         .into_iter()
         .map(|id| Event::EffectExpired { id })
+        .chain(crate::w11a_exert::w11a_spent(state, active))
         .collect()
 }

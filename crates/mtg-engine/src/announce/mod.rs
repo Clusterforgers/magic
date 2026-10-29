@@ -61,7 +61,7 @@ pub(crate) enum What {
     /// A triggered ability that waits in the queue; its targets are chosen as it goes on the stack (CR 603.3d).
     Trigger(Box<PendingTrigger>),
     /// An attack declared whose cost is not paid yet (CR 508.1h); only its payment is asked (`attack_tax`).
-    Attack(Vec<(ObjectId, AttackTarget)>),
+    Attack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
 }
 
 /// One step of the announcement, named by the rule of CR 601.2 it carries out.
@@ -509,7 +509,7 @@ fn source_of(what: &What) -> ObjectId {
         What::Spell(spell) => *spell,
         What::Ability(ability) => ability.object,
         What::Trigger(waiting) => waiting.trigger.source.id,
-        What::Attack(attackers) => attackers.first().map_or(ObjectId(0), |(object, _)| *object),
+        What::Attack(attackers, _) => attackers.first().map_or(ObjectId(0), |(object, _)| *object),
     }
 }
 
@@ -522,7 +522,7 @@ fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
             .map(|(_, rules)| rules),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
-        What::Attack(_) => None,
+        What::Attack(..) => None,
     }
 }
 
@@ -542,7 +542,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         special,
         needs,
     } = pending;
-    if let What::Attack(attackers) = what {
+    if let What::Attack(attackers, _) = what {
         return crate::attack_tax::next(state, *player, attackers);
     }
     if let Some(special) = special

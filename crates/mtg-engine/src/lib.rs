@@ -50,6 +50,7 @@ mod spell_keywords;
 mod spend_tests;
 mod steps;
 mod w10a_attack_limits_at;
+mod w11a_exert;
 mod w7b_rad;
 mod w8a_declaration_limits;
 mod ways;

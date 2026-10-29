@@ -253,6 +253,7 @@ Clever Lumimancer
 Cliffgate
 Clifftop Lookout
 Clive's Hideaway
+Clockwork Droid
 Clone
 Clone Legion
 Cloud Sprite
@@ -269,6 +270,7 @@ Collective Unconscious
 Colonel Autumn
 Colossal Plow
 Colossus Hammer
+Combat Celebrant
 Command Tower
 Commander's Insignia
 Commence the Endgame
@@ -589,6 +591,7 @@ Glimpse of Freedom
 Glint-Sleeve Artisan
 Glissa Sunslayer
 Glorious Anthem
+Glorybringer
 Glowing One
 Glowstone Recluse
 Gluttonous Cyclops
