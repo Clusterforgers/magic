@@ -35,7 +35,7 @@ fn w15b_the_war_doctor_attack_reads_with_its_shield() {
 
 #[rstest]
 #[case::greater(
-    "Destroy each nonland permanent with mana value greater than the number of time counters on ~."
+    "Destroy each nonland permanent with mana value greater than the number of time counters on ~ squared."
 )]
 #[case::graveyard_from_anywhere_of_others(
     "Whenever one or more other cards are put into a graveyard from anywhere, draw a card."
