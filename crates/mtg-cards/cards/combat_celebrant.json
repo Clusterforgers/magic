@@ -14,9 +14,7 @@
             "effects": [
               {
                 "Untap": {
-                  "what": {
-                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
-                  }
+                  "what": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
                 }
               },
               { "AddPhase": { "phases": ["Combat"] } }
