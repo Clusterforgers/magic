@@ -234,6 +234,7 @@ mod tests {
                     state,
                 })
                 .collect(),
+            repairs: Vec::new(),
             strays: Vec::new(),
             support: support.map(|support| SupportRecord {
                 oracle_id: "id".into(),
