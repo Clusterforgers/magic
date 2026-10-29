@@ -14,10 +14,12 @@ export const NO_MARKS: CardMarks = new Map()
 
 /**
  * What a prompt says on a card: `words` for a screen reader, a short `label` drawn on the face only where the state has
- * no arrow or ring of its own (an attacker that still needs blockers), and `cue` for the card a click flow waits on.
+ * no arrow or ring of its own (an attacker that still needs blockers), `hint` drawn on the card's foot only while it is
+ * hovered or focused (why a hand card cannot be played), and `cue` for the card a click flow waits on.
  */
 export interface CardNote {
   label?: string
+  hint?: string
   words: string
   cue?: 'active'
 }
@@ -29,7 +31,7 @@ export type CardNotes = ReadonlyMap<ObjectId, CardNote>
 export const NO_NOTES: CardNotes = new Map()
 
 const sameNote = (a: CardNote, b: CardNote): boolean =>
-  a.label === b.label && a.words === b.words && a.cue === b.cue
+  a.label === b.label && a.hint === b.hint && a.words === b.words && a.cue === b.cue
 
 /** Every card of `own` dimmed, then the `legal` ones legal and the `selected` ones selected (they may lie outside `own`). */
 export function markCards(
