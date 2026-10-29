@@ -54,10 +54,12 @@ export function LogPanel() {
   )
   const scroller = useRef<HTMLDivElement>(null)
   const following = useRef(true)
+  // Keyed on the newest line, not the count: a full log (`LOG_LIMIT`) keeps its length while lines arrive.
+  const newest = lines.at(-1)?.seq
   useLayoutEffect(() => {
     const element = scroller.current
     if (element !== null && following.current) element.scrollTop = element.scrollHeight
-  }, [lines.length])
+  }, [newest])
   return (
     <div
       ref={scroller}

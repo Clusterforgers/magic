@@ -308,7 +308,11 @@ test.describe('real precon decks', () => {
         players,
         6,
         shots,
-        [{ blocks: true, autoPay: true, yields: false, mulligans: true }],
+        // Every other seat pays by hand, so mana rocks and lands of two colours are tapped through the prompt too.
+        [
+          { blocks: true, autoPay: true, yields: false, mulligans: true },
+          { blocks: false, autoPay: false, yields: false, mulligans: true },
+        ],
         run,
       )
       console.log(`four seats: ${decks.map((d) => d.code).join(', ')}: ${played.run.summary()}`)

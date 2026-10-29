@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CardImage } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
-import { cardImageUrl, faceOf, imageSourceOf } from '@/features/cards/images'
+import { cardImageFallbackUrl, cardImageUrl, faceOf, imageSourceOf } from '@/features/cards/images'
 import { useCardDetail } from '@/features/builder/useCardDetail'
 import { cn } from '@/lib/utils'
 import { cardsApi } from '@/net/cards'
@@ -46,6 +46,7 @@ export function PreviewCard({ object, role, size, api = cardsApi }: PreviewCardP
       {flips && shown !== own ? (
         <CardImage
           src={cardImageUrl(source, shown, 'large')}
+          fallback={cardImageFallbackUrl(source, shown, 'large')}
           alt={faces[shown]?.name ?? object.name}
           eager
           className={cn('block aspect-[5/7] w-(--card-w)', SIZE[size].vars)}

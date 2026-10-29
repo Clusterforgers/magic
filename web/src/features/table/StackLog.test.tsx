@@ -2,7 +2,7 @@
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { MAX_CHAT_CHARS } from '@/play/session'
-import { appendChat, appendLog } from '@/play/store'
+import { appendChat, appendLog, LOG_LIMIT } from '@/play/store'
 import { indexById } from '@/play/view'
 import type { EventView } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
@@ -209,6 +209,19 @@ describe('log panel', () => {
       scroller.dispatchEvent(new Event('scroll'))
     })
     say('ccc')
+    expect(scroller.scrollTop).toBe(1000)
+  })
+
+  it('still follows once the log is full and a new line pushes the oldest out', () => {
+    const turns = (from: number, count: number): EventView[] =>
+      Array.from({ length: count }, (_, i) => ({ Public: { TurnBegan: { number: from + i, active: 0 } } }))
+    const { update } = renderTable({ seats: 2, ui: <LogPanel /> })
+    update(() => ({ log: appendLog([], 0, turns(1, LOG_LIMIT)) }))
+    const scroller = log()
+    Object.defineProperty(scroller, 'scrollHeight', { configurable: true, value: 1000 })
+    scroller.scrollTop = 0
+    update((state) => ({ log: appendLog(state.log, LOG_LIMIT, turns(LOG_LIMIT + 1, 1)) }))
+    expect(within(log()).getAllByRole('listitem')).toHaveLength(LOG_LIMIT)
     expect(scroller.scrollTop).toBe(1000)
   })
 })

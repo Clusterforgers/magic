@@ -32,11 +32,12 @@ function shallowSame(a: Record<string, unknown>, b: Record<string, unknown>): bo
   return keys.length === Object.keys(a).length && keys.every((key) => Object.is(a[key], b[key]))
 }
 
-// The field lists below are spelled out on purpose: a field added to a generated type stops compiling here
-// until it is shared too, instead of silently losing its identity.
+// Each copy starts from `next`, so every field arrives, the optional ones too (commanders, identity, counters); the
+// fields listed after it keep the identity of an unchanged part.
 function sharePlayer(previous: PlayerView, next: PlayerView): PlayerView {
   if (sameJson(previous, next)) return previous
   return {
+    ...next,
     seat: next.seat,
     life: next.life,
     lost: keep(previous.lost, next.lost),
@@ -61,6 +62,7 @@ function sharePlayers(previous: PlayerView[], next: PlayerView[]): PlayerView[] 
 
 function shareTable(previous: TableView, next: TableView): TableView {
   return {
+    ...next,
     viewer: next.viewer,
     format: next.format,
     stage: next.stage,

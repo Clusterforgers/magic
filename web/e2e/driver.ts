@@ -43,6 +43,8 @@ export interface Seen {
   buttons: Control[]
   /** Cards of this seat's hand the prompt marks legal. */
   hand: Card[]
+  /** This seat's commanders in the command zone the prompt marks legal (cast from the end of the hand dock). */
+  command: Card[]
   /** Cards on this seat's battlefield the prompt marks legal. */
   board: Card[]
 }
@@ -80,6 +82,7 @@ function look(arg: { me: string; answered: string | null }): Observed | null {
       disabled: button.disabled || button.getAttribute('aria-disabled') === 'true',
     })),
     hand: legal(`ul[aria-label="${arg.me}'s hand"]`),
+    command: legal(`ul[aria-label="${arg.me}'s commanders in the command zone"]`),
     board: legal(`section[aria-label="${arg.me}'s battlefield"]`),
   }
 }
@@ -240,9 +243,10 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   },
 
   async Priority({ player, style, seen, run }) {
-    // Lands first, so the mana is there for the creature that follows; with nothing to play, go on.
+    // Lands first, so the mana is there for the creature that follows, then a commander; with nothing to play, go on.
     const open = seen.hand.filter((candidate) => !run.skip.has(candidate.id))
-    const play = open.find((candidate) => candidate.land) ?? open[0]
+    const commander = seen.command.find((candidate) => !run.skip.has(candidate.id))
+    const play = open.find((candidate) => candidate.land) ?? commander ?? open[0]
     if (play === undefined) {
       if (style.yields && (await endTurn(player.page).count()) > 0) {
         await endTurn(player.page).click()
@@ -353,8 +357,19 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   },
 
   async YesNo({ player }) {
-    await prompt(player.page).getByRole('button', { name: 'Yes', exact: true }).click()
-    return 'says yes'
+    // A question only No answers (a payment that cannot be made) disables Yes.
+    const yes = prompt(player.page).getByRole('button', { name: 'Yes', exact: true })
+    if ((await yes.count()) > 0 && (await yes.isEnabled())) {
+      await yes.click()
+      return 'says yes'
+    }
+    const back = prompt(player.page).getByRole('button', { name: 'Return to the command zone' })
+    if ((await back.count()) > 0) {
+      await back.click()
+      return 'returns the commander'
+    }
+    await prompt(player.page).getByRole('button', { name: 'No', exact: true }).click()
+    return 'says no'
   },
 
   async ChooseMode({ player }) {
@@ -383,6 +398,17 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     }
     await confirm.click()
     return `chooses ${chosen} of ${total} cards`
+  },
+
+  async ChooseNumber({ player }) {
+    // One more than the prompt starts on (X = 1 for an X spell), when the prompt allows it.
+    const more = prompt(player.page).getByRole('button', { name: 'More', exact: true })
+    if ((await more.count()) > 0 && (await more.isEnabled())) await more.click()
+    const confirm = prompt(player.page).locator('[data-slot="number-confirm"]')
+    if (await confirm.isDisabled()) await prompt(player.page).getByRole('button', { name: 'Less' }).click()
+    const value = await prompt(player.page).locator('input').first().inputValue()
+    await confirm.click()
+    return `chooses ${value}`
   },
 
   async OrderCards({ player }) {

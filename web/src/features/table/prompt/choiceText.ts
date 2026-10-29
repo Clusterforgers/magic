@@ -18,6 +18,9 @@ export function askerWords(name: string | undefined): string {
 /** What a screen reader is told after a yes-or-no question. */
 export const YES_NO_KEYS = 'Press Y for yes or N for no.'
 
+/** The key of a question that only No answers. */
+export const NO_KEY = 'Press N for no.'
+
 /** The yes-or-no question: the engine's words after the asker, else a plain one. */
 export function yesNoSentence(asker: string, text: string): string {
   return `${asker}: ${text === '' ? 'do you want to do this?' : text}`

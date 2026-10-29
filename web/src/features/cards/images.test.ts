@@ -1,7 +1,7 @@
 // Goal: every card, printing, token and face maps to the server's picture endpoint at the size its drawn width needs, and an object the viewer may not see has no picture source.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView } from '@/protocol/generated'
-import { cardImageUrl, faceOf, imageSizeFor, imageSourceOf, showsBack } from './images'
+import { cardImageFallbackUrl, cardImageUrl, faceOf, imageSizeFor, imageSourceOf, showsBack } from './images'
 import type { ImageSize, ImageSource } from './images'
 
 const ORACLE = '4b3f5c1e-0000-4000-8000-000000000001'
@@ -75,6 +75,20 @@ describe('cardImageUrl', () => {
     ],
   ])('%s', (_, source, face, size, url) => {
     expect(cardImageUrl(source, face, size)).toBe(url)
+  })
+})
+
+describe('cardImageFallbackUrl', () => {
+  it.each<[string, ImageSource, string | null]>([
+    [
+      'a printing falls back to its card',
+      { kind: 'card', identity: { oracle_id: 'o-1', printing_id: 'p-1' } },
+      '/api/images/oracle/o-1/1/normal',
+    ],
+    ['a card by oracle id has none', { kind: 'card', identity: { oracle_id: 'o-1' } }, null],
+    ['a token has none', { kind: 'token', name: 'Soldier', type: 'Creature — Soldier', colors: ['W'] }, null],
+  ])('%s', (_case, source, url) => {
+    expect(cardImageFallbackUrl(source, 1, 'normal')).toBe(url)
   })
 })
 
