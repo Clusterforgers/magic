@@ -33,7 +33,8 @@ const PILE = 'shadow-[2px_2px_0_0_var(--color-border-strong),4px_4px_0_0_var(--c
 // artist line; under a turned one they use the room its upright box leaves, since its art box is too low for them.
 const ART_BOX = {
   upright: 'top-[11%] right-[7%] left-[7%] max-h-[44%]',
-  turned: 'top-full right-0 left-0 h-[calc(var(--card-h)-var(--card-w)*5/7)] justify-center overflow-hidden pt-0.5 [&>span]:py-px [&>span]:leading-none',
+  turned:
+    'top-full right-0 left-0 h-[calc(var(--card-h)-var(--card-w)*5/7)] justify-center overflow-x-visible overflow-y-clip [&>span]:max-w-none [&>span]:py-px [&>span]:leading-none [&>span]:whitespace-nowrap',
 }
 // The power/toughness or loyalty box at the bottom right, which lies at the bottom left once turned.
 const STAT_BOX = { upright: 'right-[3%] bottom-[2.5%]', turned: 'bottom-[3%] left-[2.5%]' }
@@ -61,11 +62,18 @@ function Overlay({ object, role, size, turned, note, links }: OverlayProps) {
       <span
         className={cn(
           'absolute flex flex-wrap content-start gap-0.5',
-          turned ? ART_BOX.turned : cn(ART_BOX.upright, 'overflow-hidden'),
+          turned ? ART_BOX.turned : cn(ART_BOX.upright, 'overflow-x-visible overflow-y-clip'),
         )}
       >
         {labels.map((label) => (
-          <span key={label} className={cn(CHIP, 'bg-foreground font-medium text-background', text)}>
+          <span
+            key={label}
+            className={cn(
+              CHIP,
+              'max-w-none bg-foreground font-medium whitespace-nowrap text-background',
+              text,
+            )}
+          >
             {label}
           </span>
         ))}
@@ -73,7 +81,11 @@ function Overlay({ object, role, size, turned, note, links }: OverlayProps) {
           <span
             key={`counter-${label}`}
             data-slot="card-counter"
-            className={cn(CHIP, 'border border-foreground bg-background font-semibold text-foreground', text)}
+            className={cn(
+              CHIP,
+              'max-w-none border border-foreground bg-background font-semibold whitespace-nowrap text-foreground',
+              text,
+            )}
           >
             {label}
           </span>
