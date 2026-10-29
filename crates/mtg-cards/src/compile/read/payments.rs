@@ -65,14 +65,15 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .then_some(cost)?
     };
     r.sentence_end().then_some(())?;
-    r.need("if you do")?;
-    r.punct(',').then_some(())?;
+    let reflexive = super::w20b_reflexive::w20b_payment_link(r)?;
     // The X the payer announces is the X of the sentence after "if you do".
     let x_free = r.x_free;
     r.x_free |= x_paid;
     let paid = one_sentence(r);
     r.x_free = x_free;
     let mut paid = paid?;
+    // A reflexive trigger is worded "When you do" only when it chooses a target (CR 603.12).
+    (!reflexive || super::w20b_reflexive::w20b_uses_target(&paid)).then_some(())?;
     if let Some(amount) = &counted {
         paid = super::c10_pa_pay_x::c10_pa_put_in(r, paid, amount);
     }

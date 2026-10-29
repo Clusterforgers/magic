@@ -103,6 +103,19 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     }
 }
 
+/// Whether the characters can be those of an ability word: letters, a space, an apostrophe, a hyphen, "!" and a digit
+/// after a hyphen ("Nitro-9").
+fn w20b_ability_letters(word: &str) -> bool {
+    let mut before = ' ';
+    word.chars().all(|c| {
+        let fits = c.is_alphabetic()
+            || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!')
+            || (c.is_ascii_digit() && matches!(before, '-' | '0'..='9'));
+        before = c;
+        fits
+    })
+}
+
 /// The byte length of an ability word and its dash ("Landfall — "), when the line starts with one.
 pub(super) fn ability_word_len(line: &str) -> Option<usize> {
     const DASH: &str = " \u{2014} ";
@@ -110,9 +123,7 @@ pub(super) fn ability_word_len(line: &str) -> Option<usize> {
     let word = line.get(..at)?;
     let is_word = word.chars().next().is_some_and(char::is_uppercase)
         && word.chars().count() <= 40
-        && word
-            .chars()
-            .all(|c| c.is_alphabetic() || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!'))
+        && w20b_ability_letters(word)
         && !word.starts_with("Choose");
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)
