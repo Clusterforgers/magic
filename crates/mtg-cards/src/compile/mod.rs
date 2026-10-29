@@ -31,6 +31,11 @@ pub use read::{
     render_variants, same_text, static_pair_texts, without_header, written_variants,
 };
 
+/// Reads a dungeon room's text as a clause of this kind, with no face of its own.
+pub fn w11d_room_clause(text: &str, kind: ClauseKind) -> Option<Ability> {
+    read::clause_with(text, kind, false, &read::Own::default())
+}
+
 /// One clause of a face's oracle text, read or not.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Clause {

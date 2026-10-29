@@ -26,7 +26,7 @@ pub(super) fn read(
             ways::granted(state, *spell, granted.free, granted.way)
         }
         (What::Spell(spell), None) => ways::of(state, player, *spell),
-        (What::Ability(_) | What::Trigger(_) | What::Attack(_), _) => Vec::new(),
+        (What::Ability(_) | What::Trigger(_) | What::Attack(..), _) => Vec::new(),
     }
 }
 

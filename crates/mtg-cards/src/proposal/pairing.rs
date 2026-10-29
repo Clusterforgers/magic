@@ -72,6 +72,8 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
+        // Exert is a sentence of the card ("You may exert this creature as it attacks."), read by the static templates.
+        Ability::Keyword(Keyword::Exert { .. }) => &[ClauseKind::Keyword, ClauseKind::Static],
         Ability::Keyword(_) => &[ClauseKind::Keyword],
         Ability::Manual { .. } => &[],
     }

@@ -606,6 +606,8 @@ mod tests {
                 object: wolf,
                 controller: ME,
                 indirect: false,
+                until: None,
+                tapped: false,
             },
         )
         .unwrap();

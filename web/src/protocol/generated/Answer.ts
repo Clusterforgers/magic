@@ -19,4 +19,12 @@ import type { YesNoChoice } from "./YesNoChoice";
 /**
  * A player's answer to the pending decision.
  */
-export type Answer = { "Mulligan": MulliganChoice } | { "BottomCards": Array<ObjectId> } | { "Priority": PriorityAction } | { "PayMana": PayChoice } | { "DeclareAttackers": Array<[ObjectId, AttackTarget]> } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice };
+export type Answer = { "Mulligan": MulliganChoice } | { "BottomCards": Array<ObjectId> } | { "Priority": PriorityAction } | { "PayMana": PayChoice } | { "DeclareAttackers": Array<[ObjectId, AttackTarget]> } | { "DeclareExerting": { 
+/**
+ * Attackers and what each attacks.
+ */
+attackers: Array<[ObjectId, AttackTarget]>, 
+/**
+ * The attackers exerted, each offered with `AttackerOption::exert`.
+ */
+exert: Array<ObjectId>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice };

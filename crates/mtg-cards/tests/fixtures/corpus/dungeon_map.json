@@ -1,0 +1,24 @@
+{
+  "id": "028506ad-ad36-44e5-b488-d038e2d2445f",
+  "oracle_id": "20f1bba5-d398-4d6e-a76a-75e29df42aec",
+  "name": "Dungeon Map",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afr",
+  "collector_number": "242",
+  "rarity": "uncommon",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {C}.\n{3}, {T}: Venture into the dungeon. Activate only as a sorcery. (Enter the first room or advance to the next room.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Venture into the dungeon"
+  ],
+  "produced_mana": [
+    "C"
+  ]
+}

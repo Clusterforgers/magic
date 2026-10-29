@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "d4800a7d-c229-4ced-97ff-0e58645d58d6",
+  "oracle_id": "c753e9e3-9374-4e3c-8622-94576a8c1da3",
+  "multiverse_ids": [
+    489773
+  ],
+  "mtgo_id": 82234,
+  "tcgplayer_id": 218925,
+  "cardmarket_id": 486089,
+  "name": "Oubliette",
+  "lang": "en",
+  "released_at": "2020-08-07",
+  "uri": "https://api.scryfall.com/cards/d4800a7d-c229-4ced-97ff-0e58645d58d6",
+  "scryfall_uri": "https://scryfall.com/card/2xm/100/oubliette?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:09:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.jpg?1783930177",
+    "normal": "https://cards.scryfall.io/normal/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.jpg?1783930177",
+    "large": "https://cards.scryfall.io/large/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.jpg?1783930177",
+    "png": "https://cards.scryfall.io/png/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.png?1783930177",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.jpg?1783930177",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.jpg?1783930177",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.webp?1783930177",
+    "grid": "https://cards.scryfall.io/grid/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.webp?1783930177",
+    "display": "https://cards.scryfall.io/display/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.webp?1783930177",
+    "art": "https://cards.scryfall.io/art/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.webp?1783930177",
+    "crop": "https://cards.scryfall.io/crop/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.webp?1783930177",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/4/d4800a7d-c229-4ced-97ff-0e58645d58d6.jpg?1783930177"
+  },
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, target creature phases out until this enchantment leaves the battlefield. Tap that creature as it phases in this way. (Auras and Equipment phase out with it. While permanents are phased out, they're treated as though they don't exist.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "372dafe8-b5d1-4b81-998f-3ae96b59498a",
+  "set": "2xm",
+  "set_name": "Double Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/372dafe8-b5d1-4b81-998f-3ae96b59498a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2xm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2xm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d4800a7d-c229-4ced-97ff-0e58645d58d6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac753e9e3-9374-4e3c-8622-94576a8c1da3&unique=prints",
+  "collector_number": "100",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Pavelec",
+  "artist_ids": [
+    "1431bdd4-c187-40ea-847a-e1dcd835598a"
+  ],
+  "illustration_id": "f892ea52-b417-48b9-90fa-d28103693bb1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3978,
+  "preview": {
+    "source": "Tolarian Community College",
+    "source_uri": "https://www.youtube.com/watch?v=ruEzqA8gqf0",
+    "previewed_at": "2020-07-28"
+  },
+  "prices": {
+    "usd": "2.73",
+    "usd_foil": "3.37",
+    "usd_etched": null,
+    "eur": "2.31",
+    "eur_foil": "2.07",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489773&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOubliette",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOubliette",
+    "edhrec": "https://edhrec.com/route/?cc=Oubliette"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F218925%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=486089&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/82234?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

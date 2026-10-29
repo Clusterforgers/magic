@@ -84,8 +84,23 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [{ CoinFlipped: { player: 1, won: true } }, 'Bo wins a coin flip'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
+  Ventured: [
+    {
+      Ventured: {
+        player: 1,
+        object: 9,
+        dungeon: 'Lost Mine of Phandelver',
+        room: 0,
+        room_name: 'Cave Entrance',
+      },
+    },
+    'Bo ventures into Cave Entrance (Lost Mine of Phandelver)',
+  ],
+  DungeonCompleted: [{ DungeonCompleted: { player: 1, object: 9 } }, 'Bo completes a dungeon'],
   Explored: [{ Explored: { object: 3, player: 1 } }, 'Forest explores'],
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
+  Exerted: [{ Exerted: { object: 3, player: 1 } }, 'Forest is exerted'],
+  ExertEnded: [{ ExertEnded: { object: 3, player: 1 } }, 'Forest is no longer exerted'],
   Amassed: [{ Amassed: { object: 3, player: 1 } }, 'Bo amasses'],
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
   Devoured: [{ Devoured: { object: 3, count: 2 } }, 'Forest devours 2'],
@@ -289,6 +304,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
 
 /** The ways the pipeline's events that need more than one sentence differ, each next to its text. */
 const MORE: [Event, string][] = [
+  [
+    { PermanentPhasedOut: { object: 3, controller: 0, until: { id: 4, counter: 0 }, tapped: true } },
+    'Forest phases out until Lightning Bolt leaves the battlefield',
+  ],
   [{ Mutated: { object: 3, spell: 9, over: false, player: 1 } }, 'Bo mutates a creature under Forest'],
   [
     { ResolutionEnded: { object: 4, outcome: 'Fizzled' } },

@@ -67,6 +67,8 @@ enum Happened {
         nth: u32,
         before: u32,
     },
+    /// A player committed a crime (CR 700.13).
+    W11cCrime { player: PlayerId },
     /// A player's cast spent mana: the total of mana they spent to cast spells this turn went from `from` to `to`.
     Expended {
         player: PlayerId,
@@ -113,6 +115,10 @@ enum Happened {
     Tapped { object: ObjectId },
     /// A permanent became untapped.
     Untapped { object: ObjectId },
+    /// A permanent phased out; judged as it was before (CR 702.26).
+    PhasedOut { object: ObjectId },
+    /// A permanent phased in.
+    PhasedIn { object: ObjectId },
     /// A player tapped a permanent for mana: once for the tap, whatever mana it made.
     TappedForMana { object: ObjectId, player: PlayerId },
     /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0), which held `before`
@@ -151,6 +157,14 @@ enum Happened {
     Surveilled { player: PlayerId, nth: u32 },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
+    /// A player ventured into `room` of the dungeon `object`.
+    Ventured {
+        player: PlayerId,
+        object: ObjectId,
+        room: u8,
+    },
+    /// A player completed a dungeon.
+    CompletedDungeon { player: PlayerId },
     /// The game became day or night, which it was `from` (neither at the first change).
     DayNightChanged {
         from: Option<DayNight>,
@@ -170,6 +184,8 @@ enum Happened {
     Explored { object: ObjectId, player: PlayerId },
     /// A creature connived.
     Connived { object: ObjectId, player: PlayerId },
+    /// A creature was exerted by a player (CR 701.43).
+    Exerted { object: ObjectId, player: PlayerId },
     /// A player amassed.
     Amassed { player: PlayerId },
     /// A creature became monstrous.
@@ -222,6 +238,7 @@ impl Happened {
                 from: Zone::Battlefield,
                 ..
             } | Happened::Exploited { .. }
+                | Happened::PhasedOut { .. }
         )
     }
 
@@ -428,9 +445,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     before: cast_before(post, later),
                 });
                 found.extend(w9a_expended(post, later, *player, choices));
+                found.extend(w11c_crime(post, *player, choices));
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
+                found.extend(w11c_crime(post, put.controller, &put.choices));
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::SpellCopied(copy) => {
@@ -487,6 +506,12 @@ fn cast_before(post: &GameState, later: &[Event]) -> u32 {
         .filter(|event| matches!(event, Event::SpellCast { .. }))
         .count();
     total.saturating_sub(u32::try_from(after).unwrap_or(u32::MAX).saturating_add(1))
+}
+
+/// The crime of a spell or ability `player` announced with `choices`, if it is one.
+fn w11c_crime(post: &GameState, player: PlayerId, choices: &Choices) -> Option<Happened> {
+    super::w11c_crime::w11c_is_crime(post, player, choices)
+        .then_some(Happened::W11cCrime { player })
 }
 
 /// The mana a cast of `player` spent, as the move of their turn's total of mana spent on spells: the total after the
@@ -801,6 +826,10 @@ fn about_players_and_permanents(
             found.push(Happened::Tapped { object: *object });
         }
         Event::PermanentUntapped { object } => found.push(Happened::Untapped { object: *object }),
+        Event::PermanentPhasedOut { object, .. } => {
+            found.push(Happened::PhasedOut { object: *object });
+        }
+        Event::PermanentPhasedIn { object } => found.push(Happened::PhasedIn { object: *object }),
         Event::ManaAdded {
             player,
             source: Some(source),
@@ -844,6 +873,14 @@ fn about_players_and_permanents(
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
+        Event::Ventured(ventured) => found.push(Happened::Ventured {
+            player: ventured.player,
+            object: ventured.object,
+            room: ventured.room,
+        }),
+        Event::DungeonCompleted { player, .. } => {
+            found.push(Happened::CompletedDungeon { player: *player });
+        }
         Event::DayNightChanged { to } => found.push(Happened::DayNightChanged {
             from: look
                 .earlier
@@ -930,6 +967,10 @@ fn about_players_and_permanents(
             player: *player,
         }),
         Event::Explored { object, player } => found.push(Happened::Explored {
+            object: *object,
+            player: *player,
+        }),
+        Event::Exerted { object, player } => found.push(Happened::Exerted {
             object: *object,
             player: *player,
         }),
@@ -1210,6 +1251,16 @@ fn matching_event(
             )
         }
         (
+            TriggerPattern::Ventured { who, room },
+            Happened::Ventured {
+                player,
+                object,
+                room: entered,
+            },
+        ) => (by(who, player)
+            && room.is_none_or(|room| room == *entered && scope.source.id == *object))
+        .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        (
             TriggerPattern::DiceRolled { who, highest },
             Happened::DiceRolled {
                 player,
@@ -1221,12 +1272,16 @@ fn matching_event(
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
+        | (TriggerPattern::CompletedDungeon { who }, Happened::CompletedDungeon { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
         | (TriggerPattern::CoinFlipWon { who }, Happened::CoinFlipWon { player })
         | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
+        (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {
+            by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
         (TriggerPattern::Expend { who, n }, Happened::Expended { player, from, to }) => {
             (by(who, player) && *from < *n && *n <= *to)
                 .then(|| counted(state, vec![Target::Player(*player)], 0))
@@ -1290,6 +1345,13 @@ fn matching_permanents(
         | (
             TriggerPattern::Connived { what },
             Happened::Connived {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Exerted { what },
+            Happened::Exerted {
                 object: actor,
                 player,
             },
@@ -1375,7 +1437,9 @@ fn matching_permanents(
                 .then(|| cause(state, vec![Target::Player(*player), Target::Object(actor)]))
         }
         (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
-        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped }) => {
+        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped })
+        | (TriggerPattern::PhasedOut { what }, Happened::PhasedOut { object: tapped })
+        | (TriggerPattern::PhasedIn { what }, Happened::PhasedIn { object: tapped }) => {
             let tapped = object(*tapped)?;
             picks(what, tapped)?.then(|| cause(state, vec![Target::Object(tapped)]))
         }
@@ -1800,7 +1864,8 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
         Event::CreatureDied { .. }
         | Event::CardDiscarded { .. }
-        | Event::DayNightChanged { .. } => true,
+        | Event::DayNightChanged { .. }
+        | Event::PermanentPhasedOut { .. } => true,
         Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
         Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
         _ => false,
@@ -1842,6 +1907,8 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
             elsewhere(state, &together, &mut found, &mut used);
         }
     }
+    // A player who lost with the same events triggers nothing, though the state looked back at has them alive (CR 800.4a).
+    found.retain(|triggered| post.is_alive(triggered.controller));
     found
 }
 
@@ -1991,6 +2058,7 @@ mod tests {
     #[case::becoming_untapped(r#"{"Untapped":{"what":[]}}"#)]
     #[case::exploring(r#"{"Explored":{"what":[]}}"#)]
     #[case::conniving(r#"{"Connived":{"what":[]}}"#)]
+    #[case::exerting(r#"{"Exerted":{"what":[]}}"#)]
     #[case::tapping_for_mana(r#"{"TappedForMana":{"what":[]}}"#)]
     #[case::blocking(r#"{"Blocks":{"what":[]}}"#)]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":[]}}"#)]
@@ -2091,6 +2159,28 @@ mod tests {
             before.counter,
             "it is a new object in the graveyard now"
         );
+    }
+
+    #[rstest]
+    #[case::the_watcher_s_controller_lost(ME, 0)]
+    #[case::another_player_lost(FOE, 1)]
+    fn w11b_a_player_who_loses_with_the_deaths_triggers_nothing(
+        #[case] loser: PlayerId,
+        #[case] want: usize,
+    ) {
+        let observer = with(
+            "Observer",
+            vec![triggered(
+                r#"{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}}"#,
+            )],
+        );
+        let pre = board(observer);
+        let lost = Event::PlayerLost {
+            player: loser,
+            reason: crate::player::LossReason::ZeroLife,
+        };
+        let (post, found) = fire(&pre, &[lost, died(&pre, "Ogre")]);
+        assert_eq!(found.len(), want, "{:?}", who(&post, &found));
     }
 
     #[test]

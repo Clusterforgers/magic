@@ -367,7 +367,10 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
                 .map(|only| vec![only])
                 .or_else(|| goaded_defenders(state, object, &allowed))
                 .unwrap_or(allowed);
-            Some(AttackerOption::free(object, defenders))
+            Some(AttackerOption {
+                exert: crate::w11a_exert::w11a_may_exert(state, object),
+                ..AttackerOption::free(object, defenders)
+            })
         })
         .collect::<Vec<_>>();
     let mut options = AttackOptions {

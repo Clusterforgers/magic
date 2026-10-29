@@ -61,7 +61,7 @@ fn chosen_before(ctx: &Ctx<'_>, ever: bool) -> Vec<usize> {
             .state
             .object(address.object)
             .map(|source| (source.reference(), address.source, address.ability)),
-        What::Spell(_) | What::Attack(_) => None,
+        What::Spell(_) | What::Attack(..) => None,
     };
     let Some((source, origin, ability)) = key else {
         return Vec::new();

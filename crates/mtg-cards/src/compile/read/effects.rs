@@ -40,7 +40,8 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 90] = [
+const TEMPLATES: [Template; 92] = [
+    super::w11b_phase::w11b_untap_then_phase_out,
     super::w7e_phase::w7e_phased_and_protected,
     super::w7e_phase::w7e_protected,
     super::w7e_phase::w7e_phase_out,
@@ -55,6 +56,7 @@ const TEMPLATES: [Template; 90] = [
     super::c6_blk_aura::c6_blk_aura_manifest,
     modal::modal,
     super::chance::flip,
+    super::w11c_clash::w11c_clash,
     super::w9b_clash::w9b_clash,
     super::chance::roll,
     super::vote::named,
@@ -246,6 +248,8 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         }
     }
     r.attempt(|r| super::joined::and_you(r, effects)).is_some()
+        || r.attempt(|r| super::w11a_joins::w11a_and_after(r, effects))
+            .is_some()
         || r.attempt(|r| super::joined::then_you(r, effects)).is_some()
         || r.attempt(|r| super::w8b_then::w8b_then(r, effects))
             .is_some()
@@ -428,6 +432,15 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The name the cards put back are bound to.
 pub const BACK: &str = "back";
 
+/// The rest of "venture into the dungeon" (CR 701.49) after the verb.
+fn w11d_venture(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    r.need("into the dungeon")?;
+    Some(Effect::Venture {
+        who,
+        undercity: false,
+    })
+}
+
 /// One step of "you" that begins with its verb: "scry 1", "draw a card", "mill three cards".
 pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
     let who = Ref::You;
@@ -441,6 +454,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             count: points(r)?,
         },
         "proliferate" => Effect::Proliferate { who },
+        "venture" => w11d_venture(r, who)?,
         "time" if r.words("travel") => Effect::TimeTravel { who },
         "learn" => Effect::Learn { who },
         "planeswalk" => Effect::Planechase {
@@ -722,6 +736,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             r.need("the monarch")?;
             Effect::BecomeMonarch { who }
         }
+        "venture" | "ventures" => w11d_venture(r, who)?,
         "shuffle" | "shuffles" => {
             r.need(if who == Ref::You {
                 "your library"

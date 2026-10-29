@@ -254,6 +254,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
         | Amount::Destroyed(_)
+        | Amount::PhasedOut(_)
         | Amount::DieResult(_)
         | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
@@ -315,6 +316,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Performed => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
+        | Condition::CompletedDungeon(who)
         | Condition::CitysBlessing(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }

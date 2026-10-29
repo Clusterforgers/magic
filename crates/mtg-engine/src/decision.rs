@@ -273,6 +273,11 @@ pub struct AttackerOption {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(AttackTarget, u32)>>", optional))]
     pub life: Vec<(AttackTarget, u32)>,
+    /// It may be exerted as it attacks (CR 701.43): the declaration names it with `Answer::DeclareExerting`. Left out
+    /// while it may not.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub exert: bool,
 }
 
 impl AttackerOption {
@@ -283,6 +288,7 @@ impl AttackerOption {
             defenders,
             tax: Vec::new(),
             life: Vec::new(),
+            exert: false,
         }
     }
 
@@ -609,6 +615,13 @@ pub enum Answer {
     PayMana(PayChoice),
     /// Attackers and what each attacks; empty means no attack.
     DeclareAttackers(Vec<(ObjectId, AttackTarget)>),
+    /// Attackers and what each attacks, and the creatures among them exerted as they attack (CR 701.43).
+    DeclareExerting {
+        /// Attackers and what each attacks.
+        attackers: Vec<(ObjectId, AttackTarget)>,
+        /// The attackers exerted, each offered with `AttackerOption::exert`.
+        exert: Vec<ObjectId>,
+    },
     /// Pairs of (blocker, attacker blocked); empty means no blocks.
     DeclareBlockers(Vec<(ObjectId, ObjectId)>),
     /// Damage per blocker.
@@ -647,7 +660,7 @@ impl Answer {
             Answer::BottomCards(_) => "bottom-cards",
             Answer::Priority(_) => "priority",
             Answer::PayMana(_) => "pay-mana",
-            Answer::DeclareAttackers(_) => "declare-attackers",
+            Answer::DeclareAttackers(_) | Answer::DeclareExerting { .. } => "declare-attackers",
             Answer::DeclareBlockers(_) => "declare-blockers",
             Answer::AssignDamage(_) => "assign-damage",
             Answer::Discard(_) => "discard",

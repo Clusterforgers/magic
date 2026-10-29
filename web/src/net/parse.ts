@@ -278,7 +278,13 @@ function isTableView(value: unknown): value is TableView {
   )
 }
 
-const OBJECT_KINDS: Record<ObjectKind, true> = { Card: true, Token: true, Ability: true, Emblem: true }
+const OBJECT_KINDS: Record<ObjectKind, true> = {
+  Card: true,
+  Token: true,
+  Ability: true,
+  Emblem: true,
+  Dungeon: true,
+}
 
 // A card, token, ability or emblem; the server leaves the field out for a card, and the other two fields out when empty.
 function isObjectKindInfo(value: Record<string, unknown>): boolean {

@@ -373,6 +373,8 @@ mod tests {
                 object: source.id,
                 controller: ME,
                 indirect: false,
+                until: None,
+                tapped: false,
             },
         )
         .unwrap();

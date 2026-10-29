@@ -32,6 +32,8 @@ pub enum ObjectKind {
     Ability,
     /// An emblem in its owner's command zone (CR 114).
     Emblem,
+    /// A dungeon in its owner's command zone (CR 309).
+    Dungeon,
 }
 
 impl ObjectKind {
@@ -131,6 +133,10 @@ pub struct Phasing {
     pub controller: PlayerId,
     /// It phased out because the permanent it is attached to did (CR 702.26g), so it phases in with that permanent.
     pub indirect: bool,
+    /// It phases in when this permanent leaves the battlefield (CR 610.3 by analogy), and not in an untap step.
+    pub until: Option<ObjectRef>,
+    /// It phases in tapped.
+    pub tapped: bool,
 }
 
 /// Whether a permanent is phased out. A phased-in permanent adds nothing to the hash of the game.
@@ -181,6 +187,8 @@ pub struct PermanentState {
     pub(crate) merged: Option<Merged>,
     /// Set while the permanent is phased out (CR 702.26); it keeps everything else it had.
     pub(crate) phased: PhasedState,
+    /// The players who exerted it, whose next untap step it skips (CR 701.43c).
+    pub(crate) exerted: crate::w11a_exert::W11aExerted,
 }
 
 impl PermanentState {
@@ -214,7 +222,13 @@ impl PermanentState {
             copy: None,
             merged: None,
             phased: PhasedState::default(),
+            exerted: crate::w11a_exert::W11aExerted::default(),
         }
+    }
+
+    /// The players who exerted the permanent and whose next untap step it skips (CR 701.43c).
+    pub fn exerted(&self) -> &[PlayerId] {
+        self.exerted.players()
     }
 
     /// How the permanent is phased out, or `None` while it is phased in (CR 702.26).

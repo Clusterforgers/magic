@@ -1016,6 +1016,7 @@ mod tests {
         "Keyword.Outlast",
         "Keyword.Saddle",
         "Keyword.Saddled",
+        "Keyword.Exert",
         "Keyword.Station",
         "Keyword.Myriad",
         "Keyword.Squad",

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "84b08b55-0623-4202-98c6-1756d3c1bb8f",
+  "name": "Bandit's Haul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bandit's Haul",
+      "oracle_fingerprint": "67a742e9790ac49d86f5d4c99cb97e1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "loot" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "loot" }, "count": 2 } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

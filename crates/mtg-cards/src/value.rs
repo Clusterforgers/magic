@@ -366,6 +366,9 @@ pub enum Amount {
     /// existed ("for each creature destroyed this way", "creatures you controlled that were destroyed this way"); tokens
     /// count, and a permanent regenerated or indestructible was not destroyed.
     Destroyed(Selector),
+    /// How many permanents the resolving spell or ability has phased out so far that match the selector ("for each
+    /// creature that phased out this way"); what phased out with them as attachments counts too.
+    PhasedOut(Selector),
     /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
     /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
     Kicks,
@@ -470,6 +473,7 @@ enum Tagged {
     LowestHand(Ref),
     LifeLostThisWay,
     Destroyed(Selector),
+    PhasedOut(Selector),
     Kicks,
     Mutations(Ref),
     Promised,
@@ -533,6 +537,7 @@ enum TaggedRef<'a> {
     LowestHand(&'a Ref),
     LifeLostThisWay,
     Destroyed(&'a Selector),
+    PhasedOut(&'a Selector),
     Kicks,
     Mutations(&'a Ref),
     Promised,
@@ -581,6 +586,7 @@ impl From<Tagged> for Amount {
             Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
             Tagged::Distinct { of, stat } => Amount::Distinct { of, stat },
             Tagged::Destroyed(of) => Amount::Destroyed(of),
+            Tagged::PhasedOut(of) => Amount::PhasedOut(of),
             Tagged::Kicks => Amount::Kicks,
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
@@ -634,6 +640,7 @@ impl Serialize for Amount {
                 TaggedRef::Distinct { of, stat: *stat }.serialize(serializer)
             }
             Amount::Destroyed(of) => TaggedRef::Destroyed(of).serialize(serializer),
+            Amount::PhasedOut(of) => TaggedRef::PhasedOut(of).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
@@ -736,6 +743,8 @@ pub enum Condition {
     /// A player the reference names is the monarch (CR 724): any of them when it names several, so `EachPlayer` is "there is a
     /// monarch" and its `Not` "there is no monarch".
     Monarch(Ref),
+    /// A player the reference names has completed a dungeon this game (CR 309.7, "if you've completed a dungeon").
+    CompletedDungeon(Ref),
     /// A player the reference names was the monarch as the turn began: the designation they held before anything in the
     /// turn changed it ("if you were the monarch as the turn began").
     MonarchAtTurnStart(Ref),

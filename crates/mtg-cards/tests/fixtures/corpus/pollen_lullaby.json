@@ -1,0 +1,25 @@
+{
+  "id": "5d033d41-2b64-4b9b-98d2-d32bb21f080f",
+  "oracle_id": "1f64d70d-ea38-4419-be91-8b68aab3401e",
+  "name": "Pollen Lullaby",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cmd",
+  "collector_number": "26",
+  "rarity": "uncommon",
+  "released_at": "2011-06-17",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Prevent all combat damage that would be dealt this turn. Clash with an opponent. If you win, creatures that player controls don't untap during the player's next untap step. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Clash"
+  ]
+}

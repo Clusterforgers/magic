@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b75c3902-633e-4d24-acde-d7a9cc8f466e",
+  "name": "Glorybringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorybringer",
+      "oracle_fingerprint": "c7bf6a93ffdfeeab76047cd8df0fa4f0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        { "Keyword": { "Exert": {} } },
+        {
+          "Triggered": {
+            "when": { "Exerted": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Dragon" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
