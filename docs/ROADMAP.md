@@ -148,7 +148,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
 - [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
-- [ ] (a2d) A token whose power or toughness changed keeps its picture: the token lookup matches the printed values, which the view does not carry
+- [~] (a2d) (token-picture) A token whose power or toughness changed keeps its picture: the token lookup matches the printed values, which the view does not carry
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1b) The one-line pods of three and four seats draw each commander as a small picture beside the command zone chip, both of a partner pair, and pass the layout gate
@@ -159,6 +159,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [~] (ts1) (table-states) Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
+- [~] (pl1) (table-lanes) The battlefield draws each seat's permanents in lanes by type (lands, creatures, other permanents such as artifacts, enchantments and planeswalkers) with the command zone, graveyard and exile in their own corner, and sizes the cards to fill the room a board has: at two seats a card is large and easy to read, at four seats still legible, with the layout gate and fit specs green
+- [~] (pl2) (combat-clicks) Attacking and blocking by clicking: a click on a creature attacks (the arrow says so, no label on the card), a second click takes it back; to block, click your creature and then the attacker it blocks (one click when only one attacker can be blocked), a second click undoes; the prompt sheet is compact, and the life each seat would have after damage shows as a small chip on its pod without taking room
+- [~] (pl3) (mana-display) Mana shows what it is: the payment prompt's sources, the mana pool and the cards that make mana show the symbols and the amount each gives ({C}{C} for Sol Ring, one coloured symbol for a basic land)
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [~] (ma1) (manual-menu) Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
