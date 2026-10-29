@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { CheckIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DeckPreview, DeckPreviewSkeleton } from '@/features/decks/preview/DeckPreview'
@@ -163,14 +164,14 @@ export function DeckPane({
       actions={actions}
       notValidated={
         ready === null ? undefined : entry.kind === 'own' ? (
-          <a
-            href={`/decks/${encodeURIComponent(entry.id)}/unvalidated`}
+          <Link
+            to="/decks/$deckId/unvalidated"
+            params={{ deckId: entry.id }}
             target="_blank"
-            rel="noopener"
             className="font-medium text-foreground underline underline-offset-3"
           >
             Not validated cards
-          </a>
+          </Link>
         ) : (
           <NotValidatedDialog deck={ready} />
         )
