@@ -50,6 +50,15 @@ export function cardImageUrl(source: ImageSource, face: number, size: ImageSize)
   return `/api/images/token/${at}/${size}?${query.toString()}`
 }
 
+/**
+ * The picture asked for when a printing's own is missing: the card's (its oracle id), since a database without that
+ * printing still has the card. Null for an oracle id or a token, which have nothing to fall back to.
+ */
+export function cardImageFallbackUrl(source: ImageSource, face: number, size: ImageSize): string | null {
+  if (source.kind !== 'card' || source.identity.printing_id === undefined) return null
+  return cardImageUrl({ kind: 'card', identity: { oracle_id: source.identity.oracle_id } }, face, size)
+}
+
 const LETTER: Record<Color, CardColor> = { White: 'W', Blue: 'U', Black: 'B', Red: 'R', Green: 'G' }
 
 /**

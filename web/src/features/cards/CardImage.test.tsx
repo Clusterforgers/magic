@@ -62,6 +62,27 @@ describe('CardImage', () => {
     expect(knownStatus(SRC, now + RETRY_AFTER_MS + 1)).toBe('loading')
   })
 
+  it.each<['load' | 'error', string, boolean]>([
+    ['load', 'loaded', false],
+    ['error', 'failed', true],
+  ])('asks for the fallback once the printing is missing; on %s it is %s', (event, status, textFace) => {
+    const FALLBACK = '/api/images/oracle/card/0/small'
+    const { container } = render(
+      <CardImage src="/api/images/printing/p/0/small" fallback={FALLBACK} alt="Grizzly Bears">
+        <span>text face</span>
+      </CardImage>,
+    )
+    act(() => fireEvent.error(screen.getByRole('img', { hidden: true })))
+    const img = screen.getByRole('img', { hidden: true })
+    expect(img).toHaveAttribute('src', FALLBACK)
+    act(() => {
+      if (event === 'load') fireEvent.load(img)
+      else fireEvent.error(img)
+    })
+    expect(container.querySelector('[data-slot="card-image"]')).toHaveAttribute('data-status', status)
+    expect(screen.queryByText('text face') !== null).toBe(textFace)
+  })
+
   it('draws a neutral back with a name when given one', () => {
     render(<CardBack label="Face-down card" />)
     expect(screen.getByRole('img', { name: 'Face-down card' })).toBeInTheDocument()

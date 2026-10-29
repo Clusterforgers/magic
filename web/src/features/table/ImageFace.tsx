@@ -2,7 +2,7 @@ import { Hand } from 'lucide-react'
 import { createContext, useContext } from 'react'
 import type { ReactNode } from 'react'
 import { CardBack, CardImage } from '@/features/cards/CardImage'
-import { cardImageUrl, faceOf } from '@/features/cards/images'
+import { cardImageFallbackUrl, cardImageUrl, faceOf } from '@/features/cards/images'
 import type { ImageSize, ImageSource } from '@/features/cards/images'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
@@ -166,6 +166,7 @@ interface ImageFaceProps extends Omit<OverlayProps, 'turned'> {
 /** A card drawn as its picture over its text face, with the state over both. */
 export function ImageFace({ source, box, turned, stacked, imageSize, children, ...overlay }: ImageFaceProps) {
   const src = cardImageUrl(source, faceOf(overlay.object), imageSize)
+  const fallback = cardImageFallbackUrl(source, faceOf(overlay.object), imageSize)
   return (
     <span
       data-slot="card-picture"
@@ -180,6 +181,7 @@ export function ImageFace({ source, box, turned, stacked, imageSize, children, .
     >
       <CardImage
         src={src}
+        fallback={fallback}
         alt={overlay.object.name}
         turned={turned}
         className="size-full"

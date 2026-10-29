@@ -33,6 +33,8 @@ interface CardImageProps {
   src: string | null
   /** The card's name; "" for a picture that repeats a name said beside it. */
   alt: string
+  /** The picture asked for once `src` is missing (`cardImageFallbackUrl`); the text face stays when both are. */
+  fallback?: string | null
   /** The text face under the picture: shown while it loads, when it is missing and when pictures are off. */
   children?: ReactNode
   /** State drawn over a loaded picture, never into it. */
@@ -51,7 +53,8 @@ interface CardImageProps {
  * text face shows and no broken-image icon ever does.
  */
 export function CardImage({
-  src,
+  src: asked,
+  fallback = null,
   alt,
   children,
   overlay,
@@ -60,7 +63,12 @@ export function CardImage({
   eager = false,
 }: CardImageProps) {
   const [seen, setSeen] = useState<{ src: string; status: ImageStatus } | null>(null)
-  const status: ImageStatus | null = src === null ? null : seen?.src === src ? seen.status : knownStatus(src)
+  const statusOf = (url: string): ImageStatus => (seen?.src === url ? seen.status : knownStatus(url))
+  const src =
+    asked !== null && fallback !== null && fallback !== asked && statusOf(asked) === 'failed'
+      ? fallback
+      : asked
+  const status: ImageStatus | null = src === null ? null : statusOf(src)
   const settle = (next: ImageStatus) => {
     if (src === null) return
     if (next === 'loaded') loaded.add(src)
