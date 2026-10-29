@@ -1,7 +1,7 @@
-// Goal: with a link for every seat switched on under Advanced the form is the earlier one, a name and a deck for each of 2 to 12 seats added and removed with what was typed kept, and it asks for an invite-only game that holds every seat; switching it off gives the simple form back with what was typed.
+// Goal: with a link for every seat switched on under Advanced the form is the earlier one, a name and a deck for each of any number of seats added and removed with what was typed kept, and it asks for an invite-only game that holds every seat; switching it off gives the simple form back with what was typed.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { MAX_SEATS, MIN_SEATS } from '@/lib/limits'
+import { MIN_SEATS } from '@/lib/limits'
 import { must } from '@/test-utils/batches'
 import { chooseSeatLinks, openCreateForm } from '@/test-utils/createForm'
 import { DECKS } from '@/test-utils/decks'
@@ -11,7 +11,7 @@ const deckField = (seat: number) => screen.getByLabelText(`Deck for seat ${seat}
 const button = (name: string | RegExp) => screen.getByRole('button', { name })
 const seatRow = (seat: number) => within(must(deckField(seat).closest('li')))
 
-const seatCounts = Array.from({ length: MAX_SEATS - MIN_SEATS + 1 }, (_, i) => MIN_SEATS + i)
+const seatCounts = [2, 3, 4, 8, 12, 13, 24, 64]
 
 async function openLinks() {
   const page = await openCreateForm()
@@ -26,7 +26,7 @@ describe('switching it on', () => {
     expect(nameField(2)).toHaveValue('Player 2')
     expect(deckField(1)).toHaveValue('mono-green')
     expect(deckField(2)).toHaveValue('mono-red')
-    expect(screen.getByText('2 of 12 seats')).toBeInTheDocument()
+    expect(screen.getByText('2 seats')).toBeInTheDocument()
     expect(screen.queryByRole('group', { name: 'Visibility' })).toBeNull()
     expect(screen.queryByLabelText('Your name')).toBeNull()
     expect(screen.getByRole('checkbox', { name: 'Give every seat its own link' })).toBeChecked()
@@ -46,7 +46,7 @@ describe('switching it on', () => {
     await user.click(button('Add seat'))
     await user.click(screen.getByRole('checkbox', { name: 'Give every seat its own link' }))
     expect(screen.getByLabelText('Your name')).toHaveValue('Ana')
-    expect(screen.getByLabelText('Seats')).toHaveValue('3')
+    expect(screen.getByLabelText('Seats')).toHaveValue(3)
     expect(screen.getByRole('group', { name: 'Visibility' })).toBeInTheDocument()
   })
 })
@@ -55,7 +55,7 @@ describe('the number of seats', () => {
   it.each(seatCounts)('sends exactly the documented request for %i seats, every seat held', async (count) => {
     const { server, user } = await openLinks()
     for (let seat = MIN_SEATS; seat < count; seat += 1) await user.click(button('Add seat'))
-    expect(screen.getByText(`${count} of 12 seats`)).toBeInTheDocument()
+    expect(screen.getByText(`${count} seats`)).toBeInTheDocument()
     await user.click(button('Create game'))
     await waitFor(() => expect(server.creates).toHaveLength(1))
     expect(server.creates[0]).toEqual({
@@ -69,13 +69,13 @@ describe('the number of seats', () => {
     expect(await screen.findByRole('heading', { name: 'Game created' })).toBeInTheDocument()
   })
 
-  it('stops offering more seats at 12 and fewer than 2', async () => {
+  it('never stops offering more seats, and stops at 2 when removing', async () => {
     const { user } = await openLinks()
     expect(button('Remove seat 1')).toBeDisabled()
     expect(button('Remove seat 2')).toBeDisabled()
-    for (let seat = MIN_SEATS; seat < MAX_SEATS; seat += 1) await user.click(button('Add seat'))
-    expect(button('Add seat')).toBeDisabled()
-    expect(screen.getAllByRole('heading', { name: /^Seat \d+$/ })).toHaveLength(12)
+    for (let seat = MIN_SEATS; seat < 14; seat += 1) await user.click(button('Add seat'))
+    expect(button('Add seat')).toBeEnabled()
+    expect(screen.getAllByRole('heading', { name: /^Seat \d+$/ })).toHaveLength(14)
     expect(button('Remove seat 1')).toBeEnabled()
   })
 

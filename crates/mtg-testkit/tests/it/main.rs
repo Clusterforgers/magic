@@ -314,6 +314,7 @@ mod monarch_wordings;
 mod morph;
 mod morph_fuzz;
 mod move_fuzz;
+mod many_seats;
 mod mulligan;
 mod multiply_counters;
 mod multiply_fuzz;

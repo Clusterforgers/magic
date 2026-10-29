@@ -23,6 +23,16 @@ export async function openCreateForm(script: ServerScript = {}, format: GameForm
   return { server, user, ...view }
 }
 
+/** Types a seat count into the Seats field, as a person does: the old text goes, then the digits. */
+export async function typeSeats(
+  user: ReturnType<typeof userEvent.setup>,
+  count: number | string,
+): Promise<void> {
+  const field = screen.getByLabelText('Seats')
+  await user.clear(field)
+  await user.type(field, String(count))
+}
+
 /** Opens Advanced and asks for a link for every seat, the earlier way of making a game. */
 export async function chooseSeatLinks(user: ReturnType<typeof userEvent.setup>): Promise<void> {
   // A link per seat is a Normal-format flow.

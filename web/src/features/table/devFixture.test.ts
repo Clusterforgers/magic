@@ -88,10 +88,16 @@ describe('buildFixture', () => {
     ).toBe(true)
   })
 
-  it('names the seats and keeps its numbers inside the 2 to 12 the game allows', () => {
+  it('names the seats and keeps at least two, with no most', () => {
     expect(buildFixture({ seats: 3 }).names).toEqual(NAMES.slice(0, 3))
     expect(buildFixture({ seats: 1 }).view.players).toHaveLength(2)
-    expect(buildFixture({ seats: 40 }).view.players).toHaveLength(12)
+    expect(buildFixture({ seats: 40 }).view.players).toHaveLength(40)
+  })
+
+  it.each([13, 24, 40, 64])('gives each of %i seats a name of its own', (seats) => {
+    const { names, view } = buildFixture({ seats })
+    expect(view.players).toHaveLength(seats)
+    expect(new Set(names).size).toBe(seats)
   })
 
   it('can be made smaller for quick tests', () => {

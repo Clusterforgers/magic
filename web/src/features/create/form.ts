@@ -1,7 +1,7 @@
 /** The create-game form as plain data: defaults, edits, the server's own checks, and the request body. */
 import { requestRules, rulesFromTexts } from '@/lib/houseRules'
 import type { GameFormat, RuleTexts } from '@/lib/houseRules'
-import { COMMANDER_POD, MAX_COMMANDER_SEATS, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS } from '@/lib/limits'
+import { COMMANDER_POD, MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
 import type { CreateGameRequest, DeckInfo } from '@/net/api'
 import type { Visibility } from '@/protocol/generated'
 
@@ -31,11 +31,6 @@ export interface SeatProblems {
   name: string | null
   deck: string | null
 }
-
-/** The DOM id of seat `id`'s name field; the form focuses it after the seat is added. */
-/** The most seats a game of `format` holds. */
-export const maxSeats = (format: GameFormat): number =>
-  format === 'commander' ? MAX_COMMANDER_SEATS : MAX_SEATS
 
 /** The seats a new game of `format` starts with. */
 export const startSeats = (format: GameFormat): number => (format === 'commander' ? COMMANDER_POD : MIN_SEATS)
@@ -89,9 +84,15 @@ export function defaultDraft(
   return host === undefined || first === undefined ? draft : editSeat(draft, first.id, { name: host })
 }
 
-/** The form with one more seat, or as it was when it is full. */
+/** The count a typed text names, or null when it is not a whole number from `MIN_SEATS` up. */
+export function seatsTyped(text: string): number | null {
+  const count = Number(text)
+  return text.trim() !== '' && Number.isInteger(count) && count >= MIN_SEATS ? count : null
+}
+
+/** The form with one more seat. */
 export function addSeat(draft: Draft, decks: readonly DeckInfo[]): Draft {
-  return draft.seats.length >= maxSeats(draft.format) ? draft : withSeat(draft, decks)
+  return withSeat(draft, decks)
 }
 
 /** The form without seat `id`, or as it was when only `MIN_SEATS` are left. */
@@ -100,9 +101,10 @@ export function removeSeat(draft: Draft, id: number): Draft {
   return { ...draft, seats: draft.seats.filter((seat) => seat.id !== id) }
 }
 
-/** The form with `count` seats (kept between `MIN_SEATS` and `MAX_SEATS`): new ones at the end, or the last ones gone. */
+/** The form with `count` seats (at least `MIN_SEATS`, no most): new ones at the end, or the last ones gone. A count that is not a number leaves it as it was. */
 export function resizeSeats(draft: Draft, decks: readonly DeckInfo[], count: number): Draft {
-  const target = Math.min(maxSeats(draft.format), Math.max(MIN_SEATS, Math.trunc(count)))
+  if (!Number.isFinite(count)) return draft
+  const target = Math.max(MIN_SEATS, Math.trunc(count))
   if (target === draft.seats.length) return draft
   let next = draft
   while (next.seats.length < target) next = withSeat(next, decks)
@@ -121,7 +123,7 @@ export function chooseVisibility(draft: Draft, visibility: Visibility): Draft {
 
 /**
  * The form in another format. The seat count follows: a count the old format started with becomes the new format's, any
- * other stays or is cut to the new format's most. A link per seat is the earlier Normal flow, so it ends; the rules
+ * other stays. A link per seat is the earlier Normal flow, so it ends; the rules
  * typed stay with the form.
  */
 export function chooseFormat(draft: Draft, decks: readonly DeckInfo[], format: GameFormat): Draft {

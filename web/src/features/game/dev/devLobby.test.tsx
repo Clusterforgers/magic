@@ -4,6 +4,7 @@ import { act, cleanup, render, screen, waitFor, within } from '@testing-library/
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { clearFlash } from '@/lib/flash'
+import { COMPACT_LIST_FROM_SEATS } from '../seatListShape'
 import { fixtureRoster, LOBBY_FIXTURE_MARKER } from './lobbyGame'
 import { parseDevLobbySearch } from './lobbySearch'
 
@@ -62,10 +63,12 @@ describe('parseDevLobbySearch', () => {
     expect(parseDevLobbySearch(search)).toEqual(expected)
   })
 
+  it.each([13, 24, 99])('reads %i seats as they are: a game has no most', (seats) => {
+    expect(parseDevLobbySearch({ seats }).seats).toBe(seats)
+  })
+
   it.each([
     [{ seats: 1 }, 4],
-    [{ seats: 13 }, 4],
-    [{ seats: 99 }, 4],
     [{ seats: 'many' }, 4],
     [{ seats: 2.5 }, 4],
     [{ seats: -3 }, 4],
@@ -113,6 +116,18 @@ describe('/dev/lobby in development', () => {
     expect(states()).toEqual(['waiting', 'waiting', 'waiting', 'waiting'])
     expect(document.querySelector(`[data-fixture="${LOBBY_FIXTURE_MARKER}"]`)).not.toBeNull()
   }, 10_000)
+
+  it.each([2, 12, 13, 24, 64])(
+    'lists every one of %i seats, scrolling the list from 13 up',
+    async (seats) => {
+      await visit(`/dev/lobby?seats=${seats}`)
+      await screen.findByRole('heading', { name: 'Waiting for players' })
+      expect(seatRows()).toHaveLength(seats)
+      const list = screen.getByRole('list', { name: 'Seats' })
+      expect(list.classList.contains('overflow-y-auto')).toBe(seats >= COMPACT_LIST_FROM_SEATS)
+    },
+    20_000,
+  )
 
   it.each([
     ['?seats=2&ready=1', ['waiting', 'ready']],
@@ -204,7 +219,7 @@ describe('/dev/lobby in development', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('You closed the game.')
   })
 
-  it.each(['?seats=99', '?seats=1', '?seats=abc', '?ready=zz&away=!', '?me=40&seats=3'])(
+  it.each(['?seats=1', '?seats=abc', '?ready=zz&away=!', '?me=40&seats=3'])(
     'ignores the nonsense in %s',
     async (search) => {
       await visit(`/dev/lobby${search}`)

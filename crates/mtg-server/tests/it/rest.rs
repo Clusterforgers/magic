@@ -6,7 +6,7 @@ use crate::net;
 use std::collections::BTreeSet;
 
 use mtg_server::join_code::JoinCode;
-use mtg_server::{BODY_LIMIT, MAX_NAME_CHARS, ServerConfig};
+use mtg_server::{BODY_LIMIT, GAME_BODY_LIMIT, MAX_NAME_CHARS, ServerConfig};
 use net::{TestServer, bot_config};
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -26,6 +26,12 @@ fn many(count: usize) -> String {
     game_with(&seats)
 }
 
+/// A Commander game of `count` seats, none with a deck yet.
+fn commander(count: usize) -> String {
+    let seats: Vec<Value> = (0..count).map(|i| json!({ "name": format!("P{i}") })).collect();
+    json!({ "format": "commander", "seats": seats }).to_string()
+}
+
 fn keys(value: &Value) -> BTreeSet<&str> {
     value
         .as_object()
@@ -41,8 +47,13 @@ async fn server() -> TestServer {
 
 #[rstest]
 #[case::two_seats(many(2), 201, "")]
+#[case::three_seats(many(3), 201, "")]
+#[case::four_seats(many(4), 201, "")]
+#[case::eight_seats(many(8), 201, "")]
 #[case::twelve_seats(many(12), 201, "")]
-#[case::thirteen_seats(many(13), 400, "invalid_request")]
+#[case::thirteen_seats(many(13), 201, "")]
+#[case::twenty_four_seats(many(24), 201, "")]
+#[case::sixty_four_seats(many(64), 201, "")]
 #[case::one_seat(many(1), 400, "invalid_request")]
 #[case::no_seats(many(0), 400, "invalid_request")]
 #[case::all_decks(game_with(&[seat("A", "mono-green"), seat("B", "mono-red"), seat("C", "mono-white")]), 201, "")]
@@ -60,8 +71,10 @@ async fn server() -> TestServer {
 #[case::deck_case_matters(game_with(&[seat("A", "Mono-Green"), seat("Bo", "mono-red")]), 400, "unknown_deck")]
 #[case::a_format_nobody_serves(json!({"format":"modern","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "unsupported_format")]
 #[case::commander_seats_choose_their_decks_later(json!({"format":"commander","seats":[{"name":"A"},{"name":"B"}]}).to_string(), 201, "")]
-#[case::commander_has_six_seats(json!({"format":"commander","seats":(0..6).map(|n| json!({"name": format!("P{n}")})).collect::<Vec<_>>()}).to_string(), 201, "")]
-#[case::commander_has_no_seventh_seat(json!({"format":"commander","seats":(0..7).map(|n| json!({"name": format!("P{n}")})).collect::<Vec<_>>()}).to_string(), 400, "invalid_request")]
+#[case::commander_has_six_seats(commander(6), 201, "")]
+#[case::commander_has_a_seventh_seat(commander(7), 201, "")]
+#[case::commander_has_twenty_four_seats(commander(24), 201, "")]
+#[case::commander_has_sixty_four_seats(commander(64), 201, "")]
 #[case::commander_needs_two_seats(json!({"format":"commander","seats":[{"name":"A"}]}).to_string(), 400, "invalid_request")]
 #[case::format_case_matters(json!({"format":"Normal","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "unsupported_format")]
 #[case::no_format(json!({"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
@@ -102,9 +115,9 @@ async fn server() -> TestServer {
 #[case::empty_object(String::from("{}"), 400, "invalid_request")]
 #[case::deeply_nested("[".repeat(BODY_LIMIT), 400, "invalid_request")]
 #[case::deeply_nested_object("{\"a\":".repeat(BODY_LIMIT / 5), 400, "invalid_request")]
-#[case::exactly_the_limit(format!("{}{}", many(2), " ".repeat(BODY_LIMIT - many(2).len())), 201, "")]
-#[case::one_byte_over(format!("{}{}", many(2), " ".repeat(BODY_LIMIT + 1 - many(2).len())), 413, "payload_too_large")]
-#[case::far_over(format!("{}{}", many(2), " ".repeat(40 * BODY_LIMIT)), 413, "payload_too_large")]
+#[case::exactly_the_limit(format!("{}{}", many(2), " ".repeat(GAME_BODY_LIMIT - many(2).len())), 201, "")]
+#[case::one_byte_over(format!("{}{}", many(2), " ".repeat(GAME_BODY_LIMIT + 1 - many(2).len())), 413, "payload_too_large")]
+#[case::far_over(format!("{}{}", many(2), " ".repeat(40 * GAME_BODY_LIMIT)), 413, "payload_too_large")]
 #[tokio::test]
 async fn creating_a_game_validates_every_request(
     #[case] body: String,
@@ -179,7 +192,7 @@ async fn bodies_that_are_not_text_or_that_never_stop_are_refused() {
     );
 
     // A chunked body of unknown length is cut off at the limit as well.
-    let chunk = " ".repeat(BODY_LIMIT + 1);
+    let chunk = " ".repeat(GAME_BODY_LIMIT + 1);
     let raw = format!(
         "POST /api/games HTTP/1.1\r\nHost: x\r\nConnection: close\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\n{:x}\r\n{chunk}\r\n0\r\n\r\n",
         chunk.len()

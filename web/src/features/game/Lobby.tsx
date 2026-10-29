@@ -7,6 +7,7 @@ import { PageShell } from '@/components/PageShell'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
+import { cn } from '@/lib/utils'
 import { loadInvites } from '@/lib/invites'
 import { gameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
@@ -21,6 +22,7 @@ import { LobbyQuestion } from './LobbyQuestion'
 import { LobbyRules } from './LobbyRules'
 import { LobbySeatRow } from './LobbySeatRow'
 import { LobbyVisibility } from './LobbyVisibility'
+import { seatListClasses } from './seatListShape'
 import { useDeckChoice } from './useDeckChoice'
 import { useLobbyAnnouncement } from './useLobbyAnnouncement'
 import { useLobbyControls } from './useLobbyControls'
@@ -149,7 +151,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
             >
               Seats
             </h2>
-            <ul aria-label="Seats" className="surface divide-y">
+            <ul aria-label="Seats" className={cn('surface divide-y', seatListClasses(rows.length))}>
               {rows.map((row) => (
                 <LobbySeatRow
                   key={row.seat}

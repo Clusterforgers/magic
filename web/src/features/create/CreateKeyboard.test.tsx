@@ -85,7 +85,7 @@ describe('the form with a link for every seat', () => {
     screen.getByRole('button', { name: 'Add seat' }).focus()
     await user.keyboard('{Enter}')
     expect(screen.getByLabelText('Name for seat 3')).toHaveFocus()
-    expect(screen.getByText('3 of 12 seats')).toBeInTheDocument()
+    expect(screen.getByText('3 seats')).toBeInTheDocument()
   })
 
   it('removes a seat with Space and keeps focus on the seat that took its place', async () => {

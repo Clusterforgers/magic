@@ -20,7 +20,7 @@ export const MAX_DEV_PREVIEW_MS = 10_000
 
 /** The address parameters of `/dev/table`. */
 export interface DevSearch {
-  /** How many seats the fixture table has, 2 to 12; 4 when missing or wrong. */
+  /** How many seats the fixture table has, 2 or more; 4 when missing or wrong. */
   seats: number
   /** The layout to open in; the default for the seat count when missing. */
   mode?: TableMode
@@ -65,7 +65,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
       ? search.slow
       : undefined
   return {
-    seats: seats === undefined || seats < 2 || seats > 12 ? 4 : seats,
+    seats: seats === undefined || seats < 2 ? 4 : seats,
     mode,
     focus: focus === undefined || focus < 0 ? undefined : focus,
     prompt: typeof search.prompt === 'string' ? search.prompt : undefined,

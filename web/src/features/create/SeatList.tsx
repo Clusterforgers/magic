@@ -1,6 +1,5 @@
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { MAX_SEATS } from '@/lib/limits'
 import type { DeckInfo } from '@/net/api'
 import { SeatFields } from './SeatFields'
 import type { Draft, SeatDraft, SeatProblems } from './form'
@@ -24,7 +23,7 @@ export function SeatList({ draft, decks, problems, onEdit, onAdd, onRemove }: Se
           Seats
         </h2>
         <p className="text-sm text-muted-foreground" aria-live="polite">
-          {draft.seats.length} of {MAX_SEATS} seats
+          {draft.seats.length} seats
         </p>
       </div>
       <ol className="grid gap-3">
@@ -42,7 +41,7 @@ export function SeatList({ draft, decks, problems, onEdit, onAdd, onRemove }: Se
         ))}
       </ol>
       <div>
-        <Button type="button" variant="outline" disabled={draft.seats.length >= MAX_SEATS} onClick={onAdd}>
+        <Button type="button" variant="outline" onClick={onAdd}>
           <Plus aria-hidden="true" />
           Add seat
         </Button>

@@ -26,8 +26,9 @@ use crate::server::AppState;
 pub const BODY_LIMIT: usize = 16 * 1024;
 /// Fewest seats in a game.
 pub const MIN_SEATS: usize = 2;
-/// Most seats in a game.
-pub const MAX_SEATS: usize = 12;
+/// Largest body of `POST /api/games`, in bytes. It is the one ceiling on a game's seats: a seat is a
+/// few dozen bytes of the request, and nothing else bounds their number (a seat is a `u64` index).
+pub const GAME_BODY_LIMIT: usize = 256 * 1024;
 /// Longest seat name, in characters.
 pub const MAX_NAME_CHARS: usize = 32;
 /// Longest part of a parser message echoed to the client, in characters.
@@ -339,7 +340,7 @@ pub(crate) async fn create_game(
         return Err(ApiError::unavailable());
     }
     let headers = request.headers().clone();
-    let body = read_json::<NewGame>(request).await?;
+    let body = read_json_limited::<NewGame>(request, GAME_BODY_LIMIT).await?;
     let (names, options) = validate(&body)?;
     let host = app.auth().session_user(&headers).await?.map(|user| user.id);
     let mut decks = Vec::with_capacity(names.len());
@@ -471,10 +472,9 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
         ));
     };
     let count = body.seats.len();
-    let most = format.max_seats();
-    if !(MIN_SEATS..=most).contains(&count) {
+    if count < MIN_SEATS {
         return Err(ApiError::invalid(format!(
-            "a game needs {MIN_SEATS} to {most} seats, got {count}"
+            "a game needs at least {MIN_SEATS} seats, got {count}"
         )));
     }
     let held = body.held.unwrap_or(count);

@@ -25,6 +25,12 @@ export const FIXTURE_MARKER = 'dev-table-fixture-8e1c'
 /** The names the fixture gives its seats, in seat order. */
 export const NAMES = ['Alice', 'Bo', 'Cy', 'Dee', 'Eli', 'Fay', 'Gus', 'Hana', 'Ivo', 'Jun', 'Kit', 'Lena']
 
+/** The name of seat `seat`: the list first, then the same names numbered again for as many seats as there are. */
+export function nameOf(seat: number): string {
+  const name = NAMES[seat % NAMES.length] ?? `Seat ${seat + 1}`
+  return seat < NAMES.length ? name : `${name} ${Math.floor(seat / NAMES.length) + 1}`
+}
+
 /** What to build. */
 export interface FixtureOptions {
   /** 2 to 12. */
@@ -103,7 +109,7 @@ function commanderDamage(
 
 /** Builds a table of `seats` seats; the same options always give the same table. */
 export function buildFixture(options: FixtureOptions): Fixture {
-  const seats = Math.min(12, Math.max(2, Math.floor(options.seats)))
+  const seats = Math.max(2, Math.floor(options.seats))
   const viewer = options.viewer ?? 0
   const active = options.active ?? (viewer + 1) % seats
   const defender = active === viewer ? (viewer + 1) % seats : viewer
@@ -275,7 +281,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     combat_forecast: null,
     result: null,
   }
-  const names = NAMES.slice(0, seats)
+  const names = Array.from({ length: seats }, (_, seat) => nameOf(seat))
   const log = buildLog({ names, viewer, active, defender, cards, attackers, blockers, stack })
   const chat: ChatLine[] = [
     { from: active, text: 'Attacking with the whole squad.' },

@@ -119,7 +119,7 @@ async function startTable(
   await host.page.goto('/new')
   await expect(host.page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
   await expect(host.page.getByRole('radio', { name: /^Commander/ })).toBeChecked()
-  await host.page.getByLabel('Seats').selectOption(String(accounts.length))
+  await host.page.getByLabel('Seats').fill(String(accounts.length))
   await host.page.getByText('Invite only', { exact: true }).click()
   await expect(host.page.getByRole('radio', { name: 'Invite only' })).toBeChecked()
   await host.page.getByRole('button', { name: 'Create game' }).click()
