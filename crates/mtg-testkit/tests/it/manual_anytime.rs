@@ -374,6 +374,7 @@ fn refusals_leave_the_engine_as_it_was() {
     let mut driver = table();
     let mine = find(&driver, Zone::Battlefield, "Mine");
     let theirs = find(&driver, Zone::Battlefield, "Theirs");
+    let hidden = find(&driver, Zone::Hand(pid(1)), "Foe card");
     let land = find(&driver, Zone::Battlefield, "Mountain");
     let hash = driver.engine().state_hash();
     let length = driver.engine().events().len();
@@ -384,6 +385,17 @@ fn refusals_leave_the_engine_as_it_was() {
                 delta: -1,
             },
             ManualRefusal::NotYours,
+        ),
+        (
+            ManualAction::Damage {
+                source: hidden,
+                target: DamageTarget::Player(pid(0)),
+                amount: 1,
+            },
+            ManualRefusal::WrongZone {
+                object: hidden,
+                zone: Zone::Hand(pid(1)),
+            },
         ),
         (
             ManualAction::Damage {

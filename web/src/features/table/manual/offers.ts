@@ -311,7 +311,11 @@ function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | n
   const { object, seat } = input
   const items: ManualItem[] = []
   if (object.owner === seat || object.controller === seat) {
-    items.push({ key: 'damage', label: 'Deal damage…', ask: 'damage', unavailable: off })
+    // A card in a hand or library would name itself to every seat as the source.
+    const kind = zoneKind(object.zone)
+    if (kind !== 'hand' && kind !== 'library') {
+      items.push({ key: 'damage', label: 'Deal damage…', ask: 'damage', unavailable: off })
+    }
     items.push({ key: 'mana', label: 'Add mana…', ask: 'mana', unavailable: off })
   }
   if (zoneKind(object.zone) === 'battlefield' && object.types.includes('Creature')) {

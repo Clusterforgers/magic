@@ -105,7 +105,7 @@ describe('which groups and entries a card offers', () => {
           'move-LibraryBottom',
           'move-Command',
         ],
-        effect: ['damage', 'mana'],
+        effect: ['mana'],
         token: ['token'],
         other: OTHER,
       },

@@ -35,6 +35,13 @@ pub(crate) fn damage(
     if dealer.owner() != player && dealer.controller() != player {
         return Err(ManualRefusal::NotYours);
     }
+    // A card in a hidden zone would be named to every seat as the source of the damage.
+    if matches!(dealer.zone(), Zone::Hand(_) | Zone::Library(_)) {
+        return Err(ManualRefusal::WrongZone {
+            object: source,
+            zone: dealer.zone(),
+        });
+    }
     match target {
         DamageTarget::Player(who) => {
             if !state.is_alive(who) {

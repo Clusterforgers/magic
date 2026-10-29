@@ -390,7 +390,7 @@ pub enum ManualAction {
     },
     /// A card of the seat deals damage to a player or to a creature, planeswalker or battle, as its ability would.
     Damage {
-        /// The card that deals it, in any zone.
+        /// The card that deals it, in a zone every seat sees.
         source: ObjectId,
         /// Who or what is dealt it.
         target: DamageTarget,
