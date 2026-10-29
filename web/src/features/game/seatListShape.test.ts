@@ -13,7 +13,7 @@ describe('seatListClasses', () => {
       const classes = seatListClasses(seats).split(' ')
       expect(classes).toContain('overflow-y-auto')
       expect(classes.some((name) => name.startsWith('max-h-'))).toBe(true)
-      expect(classes).toContain('[&>li]:py-1.5')
+      expect(classes).toContain('[&>li]:py-2')
     },
   )
 

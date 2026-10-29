@@ -657,7 +657,7 @@ async fn releasing_frees_the_account_for_a_seat_of_the_game() {
 #[case::a_player_removes_the_host(2, 0, Err(TableError::NotAllowed))]
 #[case::the_host_cannot_leave_its_own_seat(0, 0, Err(TableError::NotClaimed))]
 #[case::an_open_seat(0, 3, Err(TableError::NotClaimed))]
-#[case::a_seat_the_table_does_not_have(0, 7, Err(TableError::NotClaimed))]
+#[case::a_seat_the_table_does_not_have(0, 7, Err(TableError::NotFound))]
 #[tokio::test]
 async fn only_the_holder_and_the_host_release_and_only_claimed_seats(
     #[case] by: usize,

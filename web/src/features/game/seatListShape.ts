@@ -4,7 +4,7 @@
 export const COMPACT_LIST_FROM_SEATS = 13
 
 /** Classes that make the seat list compact: a box that scrolls and rows with less air. */
-const COMPACT_LIST = 'max-h-[60dvh] overflow-y-auto [&>li]:py-1.5'
+const COMPACT_LIST = 'max-h-[60dvh] overflow-y-auto [&>li]:py-2'
 
 /** The extra classes of the seat list for `seatCount` seats; none for a short list. */
 export function seatListClasses(seatCount: number): string {

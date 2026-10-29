@@ -91,7 +91,6 @@ describe('/game/$gameId', () => {
     ['only a seat', '#seat=1'],
     ['only a token', `#token=${tokenOf(1)}`],
     ['a seat that is not a number', `#seat=x&token=${tokenOf(1)}`],
-    ['a seat past the last', `#seat=12&token=${tokenOf(1)}`],
     ['an empty token', '#seat=1&token='],
   ])('asks for the seat link when the fragment has %s', async (_what, fragment) => {
     await visit(`/game/${GAME}${fragment}`)
@@ -106,6 +105,12 @@ describe('/game/$gameId', () => {
       `ws://localhost:3000/ws/${GAME}/${tokenOf(1)}`,
     ])
     expect(document.body.innerHTML).not.toContain(tokenOf(1))
+  })
+
+  it('connects for a seat past the twelfth, since a table has no most seats', async () => {
+    await visit(`/game/${GAME}#seat=12&token=${tokenOf(1)}`)
+    expect(await screen.findByRole('heading', { name: 'Connecting to the game…' })).toBeInTheDocument()
+    expect(RecordingSocket.opened).toHaveLength(1)
   })
 
   it('opens one socket when React mounts everything twice', async () => {
