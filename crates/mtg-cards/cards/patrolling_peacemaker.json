@@ -1,0 +1,25 @@
+{
+  "oracle_id": "aa44171d-1c76-40a7-82fc-5ef2abbca647",
+  "name": "Patrolling Peacemaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patrolling Peacemaker",
+      "oracle_fingerprint": "a99a891d870b052899f46253ab1ff6b8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "Opponents" } },
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

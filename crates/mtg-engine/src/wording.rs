@@ -436,6 +436,18 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
         }
+        TriggerPattern::Ventured {
+            who: by,
+            room: None,
+        } => {
+            let (name, s) = who(by);
+            (format!("{name} venture{s} into the dungeon"), false)
+        }
+        TriggerPattern::Ventured { room: Some(_), .. } => ("you enter this room".to_owned(), false),
+        TriggerPattern::CompletedDungeon { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} complete{s} a dungeon"), false)
+        }
         TriggerPattern::BecomesMonarch { who: by } => {
             let (name, s) = who(by);
             (format!("{name} become{s} the monarch"), false)
@@ -471,6 +483,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 format!("{name} amass{}", if s.is_empty() { "" } else { "es" }),
                 false,
             )
+        }
+        TriggerPattern::W11cCrime { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} commit{s} a crime"), false)
         }
         TriggerPattern::Expend { who: by, n } => {
             let (name, s) = who(by);
@@ -528,6 +544,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         }
         TriggerPattern::Tapped { what } => (
             format!("{} becomes tapped", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::PhasedOut { what } => (
+            format!("{} phases out", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::PhasedIn { what } => (
+            format!("{} phases in", subject(what)),
             what.0 == [Pred::This],
         ),
         TriggerPattern::Untapped { what } => (
@@ -1446,6 +1470,14 @@ mod tests {
     #[case::a_player_wins_a_flip(r#"{"CoinFlipWon":{}}"#, "Whenever a player wins a coin flip")]
     #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
     #[case::you_bolster(r#"{"Bolstered":{"who":"You"}}"#, "Whenever you bolster")]
+    #[case::w11c_you_commit_a_crime(
+        r#"{"W11cCrime":{"who":"You"}}"#,
+        "Whenever you commit a crime"
+    )]
+    #[case::w11c_an_opponent_commits_a_crime(
+        r#"{"W11cCrime":{"who":"Opponents"}}"#,
+        "Whenever an opponent commits a crime"
+    )]
     #[case::you_expend(r#"{"Expend":{"who":"You","n":4}}"#, "Whenever you expend 4")]
     #[case::an_opponent_expends(
         r#"{"Expend":{"who":"Opponents","n":8}}"#,

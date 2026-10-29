@@ -481,9 +481,9 @@ fn announcement(
             choice: Choice::YesNo(true),
         }]),
         Some(Pending {
-            what: What::Attack(attackers),
+            what: What::Attack(attackers, exert),
             ..
-        }) => Ok(crate::attack_tax::made(state, player, attackers)),
+        }) => Ok(crate::attack_tax::made(state, player, attackers, exert)),
         Some(Pending {
             what: What::Trigger(_),
             ..

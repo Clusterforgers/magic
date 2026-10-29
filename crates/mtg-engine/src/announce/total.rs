@@ -131,7 +131,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
             }
             _ => Some(Printed::new(None, Vec::new(), 0)),
         },
-        What::Trigger(_) | What::Attack(_) => Some(Printed::new(None, Vec::new(), 0)),
+        What::Trigger(_) | What::Attack(..) => Some(Printed::new(None, Vec::new(), 0)),
     }
 }
 

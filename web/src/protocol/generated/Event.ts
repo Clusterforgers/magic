@@ -43,6 +43,7 @@ import type { Surveilled } from "./Surveilled";
 import type { Target } from "./Target";
 import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
+import type { W11dVentured } from "./W11dVentured";
 import type { Zone } from "./Zone";
 import type { ZoneCause } from "./ZoneCause";
 
@@ -190,7 +191,15 @@ controller: PlayerId,
 /**
  * It went with the permanent it is attached to, and phases in with that permanent.
  */
-indirect?: boolean, } } | { "PermanentPhasedIn": { 
+indirect?: boolean, 
+/**
+ * It phases out until this permanent leaves the battlefield, and phases in then and not in an untap step.
+ */
+until?: ObjectRef, 
+/**
+ * It phases in tapped ("Tap that creature as it phases in this way").
+ */
+tapped?: boolean, } } | { "PermanentPhasedIn": { 
 /**
  * The permanent.
  */
@@ -609,7 +618,15 @@ player: PlayerId, } } | { "CitysBlessingGained": {
 /**
  * Who got it.
  */
-player: PlayerId, } } | { "Learned": { 
+player: PlayerId, } } | { "Ventured": W11dVentured } | { "DungeonCompleted": { 
+/**
+ * Who completed it.
+ */
+player: PlayerId, 
+/**
+ * The dungeon.
+ */
+object: ObjectId, } } | { "Learned": { 
 /**
  * Who learned.
  */
@@ -780,6 +797,22 @@ player: PlayerId, } } | { "Connived": {
 object: ObjectId, 
 /**
  * Its controller, who drew and discarded.
+ */
+player: PlayerId, } } | { "Exerted": { 
+/**
+ * The creature exerted.
+ */
+object: ObjectId, 
+/**
+ * The player who exerted it.
+ */
+player: PlayerId, } } | { "ExertEnded": { 
+/**
+ * The permanent exerted.
+ */
+object: ObjectId, 
+/**
+ * The player whose untap step it was.
  */
 player: PlayerId, } } | { "DayNightChanged": { 
 /**

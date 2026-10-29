@@ -536,11 +536,20 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const { player, won } = event.CoinFlipped
     return line(`${n.seat(player)} ${won ? 'wins' : 'loses'} a coin flip`)
   }
+  if ('Ventured' in event) {
+    const v = event.Ventured
+    return line(`${n.seat(v.player)} ventures into ${v.room_name} (${v.dungeon})`)
+  }
+  if ('DungeonCompleted' in event) {
+    return line(`${n.seat(event.DungeonCompleted.player)} completes a dungeon`)
+  }
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)
   }
   if ('Explored' in event) return line(`${n.card(event.Explored.object)} explores`)
   if ('Connived' in event) return line(`${n.card(event.Connived.object)} connives`)
+  if ('Exerted' in event) return line(`${n.card(event.Exerted.object)} is exerted`)
+  if ('ExertEnded' in event) return line(`${n.card(event.ExertEnded.object)} is no longer exerted`)
   if ('Amassed' in event) return line(`${n.seat(event.Amassed.player)} amasses`)
   if ('Monstrous' in event) return line(`${n.card(event.Monstrous.object)} becomes monstrous`)
   if ('Devoured' in event) return line(`${n.card(event.Devoured.object)} devours ${event.Devoured.count}`)
@@ -604,7 +613,11 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('SpellResolved' in event) return line(`${n.card(event.SpellResolved.object)} resolves`)
   if ('PermanentTapped' in event) return quiet(`${n.card(event.PermanentTapped.object)} becomes tapped`)
   if ('PermanentUntapped' in event) return quiet(`${n.card(event.PermanentUntapped.object)} becomes untapped`)
-  if ('PermanentPhasedOut' in event) return line(`${n.card(event.PermanentPhasedOut.object)} phases out`)
+  if ('PermanentPhasedOut' in event) {
+    const { object, until } = event.PermanentPhasedOut
+    const held = until ? ` until ${n.card(until.id)} leaves the battlefield` : ''
+    return line(`${n.card(object)} phases out${held}`)
+  }
   if ('PermanentPhasedIn' in event) return line(`${n.card(event.PermanentPhasedIn.object)} phases in`)
   if ('ManaAdded' in event) {
     const { player, mana, source } = event.ManaAdded

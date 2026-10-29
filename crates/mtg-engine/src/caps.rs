@@ -50,6 +50,8 @@ const RUNS: &[&str] = &[
     "Trigger.Discarded",
     "Trigger.Tapped",
     "Trigger.Untapped",
+    "Trigger.PhasedOut",
+    "Trigger.PhasedIn",
     "Trigger.TappedForMana",
     "Trigger.Blocks",
     "Trigger.BecomesBlocked",
@@ -66,6 +68,7 @@ const RUNS: &[&str] = &[
     "Trigger.DiceRolled",
     "Trigger.Explored",
     "Trigger.Connived",
+    "Trigger.Exerted",
     "Trigger.Amassed",
     "Trigger.BecomesMonstrous",
     "Trigger.BecomesRenowned",
@@ -78,6 +81,7 @@ const RUNS: &[&str] = &[
     "Trigger.Adapted",
     "Trigger.Bolstered",
     "Trigger.Expend",
+    "Trigger.W11cCrime",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
     "Trigger.Batch",
@@ -93,6 +97,7 @@ const RUNS: &[&str] = &[
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
     "Amount.Destroyed",
+    "Amount.PhasedOut",
     "Amount.Distinct",
     "Amount.DieResult",
     "Cost.Tap",
@@ -197,6 +202,10 @@ const RUNS: &[&str] = &[
     "Effect.Learn",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
+    "Effect.Venture",
+    "Trigger.Ventured",
+    "Trigger.CompletedDungeon",
+    "Condition.CompletedDungeon",
     "Effect.CreateEmblem",
     "Condition.Monarch",
     "Condition.MonarchAtTurnStart",
@@ -443,6 +452,7 @@ const RUNS: &[&str] = &[
     "Keyword.Outlast",
     "Keyword.Saddle",
     "Keyword.Saddled",
+    "Keyword.Exert",
     "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
@@ -841,6 +851,7 @@ mod tests {
     #[case::proliferating_triggers("Trigger.Proliferated", true)]
     #[case::exploring_triggers("Trigger.Explored", true)]
     #[case::conniving_triggers("Trigger.Connived", true)]
+    #[case::exerted_triggers("Trigger.Exerted", true)]
     #[case::amassing_triggers("Trigger.Amassed", true)]
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
     #[case::becoming_crewed_triggers("Trigger.BecomesCrewed", true)]
@@ -850,6 +861,7 @@ mod tests {
     #[case::adapting_triggers("Trigger.Adapted", true)]
     #[case::bolstering_triggers("Trigger.Bolstered", true)]
     #[case::expend_triggers("Trigger.Expend", true)]
+    #[case::w11c_crime_triggers("Trigger.W11cCrime", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
@@ -920,6 +932,7 @@ mod tests {
     #[case::outlast("Keyword.Outlast", true)]
     #[case::saddle("Keyword.Saddle", true)]
     #[case::saddled("Keyword.Saddled", true)]
+    #[case::exert("Keyword.Exert", true)]
     #[case::station("Keyword.Station", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::riot("Keyword.Riot", true)]

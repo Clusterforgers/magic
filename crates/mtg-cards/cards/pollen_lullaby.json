@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1f64d70d-ea38-4419-be91-8b68aab3401e",
+  "name": "Pollen Lullaby",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pollen Lullaby",
+      "oracle_fingerprint": "e1f837d481e85d01079b7c03a67f20d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Clash": {
+                  "win": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "clashed" } }
+                          ]
+                        },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

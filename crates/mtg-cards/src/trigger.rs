@@ -241,6 +241,16 @@ pub enum TriggerPattern {
         /// The permanent.
         what: Selector,
     },
+    /// A permanent matching the selector phases out (CR 702.26); judged as it was before it phased out.
+    PhasedOut {
+        /// The permanent.
+        what: Selector,
+    },
+    /// A permanent matching the selector phases in (CR 702.26).
+    PhasedIn {
+        /// The permanent.
+        what: Selector,
+    },
     /// A permanent matching the selector is tapped for mana.
     TappedForMana {
         /// The permanent.
@@ -319,6 +329,28 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         by: Ref,
+    },
+    /// A player ventures into the dungeon ("whenever you venture into the dungeon"), or, with `room`, enters that room
+    /// of the dungeon that is the source (a room ability, CR 309.4c); `Triggering` is that player.
+    Ventured {
+        /// Who ventures.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The room of the source dungeon, as an index into its rooms.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        room: Option<u8>,
+    },
+    /// A player completes a dungeon ("whenever you complete a dungeon", CR 309.7); `Triggering` is that player.
+    CompletedDungeon {
+        /// Who completes it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
     },
     /// A player becomes the monarch ("whenever you become the monarch"); `Triggering` is that player.
     BecomesMonarch {
@@ -470,6 +502,17 @@ pub enum TriggerPattern {
         who: Ref,
         /// Which total of mana, from one.
         n: u32,
+    },
+    /// A player commits a crime ("whenever you commit a crime"): they cast a spell, activate an ability or put a triggered
+    /// ability on the stack that targets an opponent, an object an opponent controls or a card in an opponent's graveyard;
+    /// `Triggering` is that player.
+    W11cCrime {
+        /// Who commits it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
     },
     /// A player surveils ("whenever you surveil"); `Triggering` is that player.
     Surveilled {

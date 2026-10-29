@@ -1,0 +1,71 @@
+{
+  "name": "Undercity",
+  "undercity": true,
+  "rooms": [
+    {
+      "name": "Secret Entrance",
+      "text": "Search your library for a basic land card, reveal it, put it into your hand, then shuffle.",
+      "leads_to": [
+        "Forge",
+        "Lost Well"
+      ]
+    },
+    {
+      "name": "Forge",
+      "text": "Put two +1/+1 counters on target creature.",
+      "leads_to": [
+        "Trap!",
+        "Arena"
+      ]
+    },
+    {
+      "name": "Lost Well",
+      "text": "Scry 2.",
+      "leads_to": [
+        "Arena",
+        "Stash"
+      ]
+    },
+    {
+      "name": "Trap!",
+      "text": "Target player loses 5 life.",
+      "leads_to": [
+        "Archives"
+      ]
+    },
+    {
+      "name": "Arena",
+      "text": "Goad target creature.",
+      "leads_to": [
+        "Archives",
+        "Catacombs"
+      ]
+    },
+    {
+      "name": "Stash",
+      "text": "Create a Treasure token.",
+      "leads_to": [
+        "Catacombs"
+      ]
+    },
+    {
+      "name": "Archives",
+      "text": "Draw a card.",
+      "leads_to": [
+        "Throne of the Dead Three"
+      ]
+    },
+    {
+      "name": "Catacombs",
+      "text": "Create a 4/1 black Skeleton creature token with menace.",
+      "leads_to": [
+        "Throne of the Dead Three"
+      ]
+    },
+    {
+      "name": "Throne of the Dead Three",
+      "text": "Reveal the top ten cards of your library. Put a creature card from among them onto the battlefield with three +1/+1 counters on it. It gains hexproof until your next turn. Then shuffle.",
+      "leads_to": []
+    }
+  ]
+}

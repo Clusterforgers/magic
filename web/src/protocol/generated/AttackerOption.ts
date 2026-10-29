@@ -24,4 +24,9 @@ tax?: Array<[AttackTarget, ManaCost]>,
  * The life it costs to attack each defender that an effect taxes in life ("pays 2 life for each of those
  * creatures"), paid as the attack is declared. Left out while no defender costs life.
  */
-life?: Array<[AttackTarget, number]>, };
+life?: Array<[AttackTarget, number]>, 
+/**
+ * It may be exerted as it attacks (CR 701.43): the declaration names it with `Answer::DeclareExerting`. Left out
+ * while it may not.
+ */
+exert?: boolean, };

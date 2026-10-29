@@ -23,7 +23,7 @@ pub(crate) enum Outcome {
     /// Start casting this spell; its announcement and payment are decided next.
     BeginCast(ObjectId),
     /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
-    BeginAttack(Vec<(ObjectId, AttackTarget)>),
+    BeginAttack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
     /// Start activating this ability; its announcement is decided next.
     BeginActivation(AbilityRef),
     /// Start suspending this card from the hand: the payment of its suspend cost is decided next.
@@ -54,6 +54,19 @@ pub(crate) enum Outcome {
     CancelCast,
     /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).
     DropTrigger,
+}
+
+/// A declaration of attackers checked against its options, with the creatures it exerts (CR 508.1, 701.43).
+fn w11a_declare(
+    state: &GameState,
+    player: mtg_core::ids::PlayerId,
+    options: &crate::decision::AttackOptions,
+    attackers: Vec<(ObjectId, AttackTarget)>,
+    exert: Vec<ObjectId>,
+) -> Result<Outcome, EngineError> {
+    check_attackers(options, &attackers)?;
+    crate::w11a_exert::w11a_check_exert(options, &attackers, &exert)?;
+    attack_tax::declare(state, player, attackers, exert)
 }
 
 /// Whether a yes-or-no question outside any resolution is one the game itself asks: about a commander or a mutating spell.
@@ -100,8 +113,10 @@ pub(crate) fn handle(
             cast::pay_answer(state, player, options, choice, pending)
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
-            check_attackers(options, &attackers)?;
-            attack_tax::declare(state, player, attackers)
+            w11a_declare(state, player, options, attackers, Vec::new())
+        }
+        (DecisionKind::DeclareAttackers(options), Answer::DeclareExerting { attackers, exert }) => {
+            w11a_declare(state, player, options, attackers, exert)
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
             check_blockers(state, options, &blocks)?;

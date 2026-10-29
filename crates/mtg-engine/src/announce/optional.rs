@@ -374,7 +374,7 @@ fn source_of(ctx: &Ctx<'_>) -> Option<ObjectRef> {
     match ctx.what {
         What::Trigger(waiting) => Some(waiting.trigger.source),
         What::Ability(ability) => ctx.state.object(ability.object).map(GameObject::reference),
-        What::Spell(_) | What::Attack(_) => None,
+        What::Spell(_) | What::Attack(..) => None,
     }
 }
 

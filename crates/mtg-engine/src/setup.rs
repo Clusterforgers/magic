@@ -298,6 +298,7 @@ fn preset_state(
         copy: None,
         merged: None,
         phased: crate::object::PhasedState::default(),
+        exerted: crate::w11a_exert::W11aExerted::default(),
     }
 }
 
@@ -457,6 +458,7 @@ impl GameState {
             day_night: None,
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),
+            w11d: crate::w11d_dungeon::W11dDungeons::default(),
             commanders: Commanders::of(commander_ids),
             companions,
         };
