@@ -141,6 +141,54 @@ describe('domRects', () => {
     expect(found.has('card:6')).toBe(false)
   })
 
+  /** A zone that clips (a board's scrolling zone), with a card in it at `card`, and the pod of seat 1 as the stand-in. */
+  function clipped(zone: Rect, card: Rect) {
+    const { table, origin } = page()
+    child(table, 'section', { 'data-seat': '1' }, { x: 100, y: 100, width: 300, height: 100 })
+    const area = child(table, 'div', {}, zone)
+    area.style.overflowX = 'hidden'
+    area.style.overflowY = 'auto'
+    child(area, 'button', { 'data-object-id': '7' }, card)
+    return origin
+  }
+
+  it('stands in the controller for a card that a clipping ancestor cuts off, where the card lies over something else', () => {
+    // The zone is squeezed to no room: its card is in the page, laid out over the viewer's own pod.
+    const origin = clipped(
+      { x: 100, y: 300, width: 400, height: 0 },
+      { x: 110, y: 320, width: 44, height: 62 },
+    )
+    const found = domRects.measure([{ kind: 'card', id: 7, seat: 1 }], origin)
+    expect(found.get('card:7')).toEqual({ x: 0, y: 50, width: 300, height: 100 })
+  })
+
+  it('stands in the controller for a card scrolled out of its zone, and keeps a card that shows in part', () => {
+    const zone = { x: 100, y: 300, width: 400, height: 100 }
+    const out = clipped(zone, { x: 110, y: 410, width: 44, height: 62 })
+    expect(domRects.measure([{ kind: 'card', id: 7, seat: 1 }], out).get('card:7')?.y).toBe(50)
+    document.body.replaceChildren()
+    const partly = clipped(zone, { x: 110, y: 380, width: 44, height: 62 })
+    expect(domRects.measure([{ kind: 'card', id: 7, seat: 1 }], partly).get('card:7')).toEqual({
+      x: 10,
+      y: 330,
+      width: 44,
+      height: 62,
+    })
+  })
+
+  it('leaves a card alone where no ancestor clips', () => {
+    const { table, origin } = page()
+    const area = child(table, 'div', {}, { x: 100, y: 300, width: 400, height: 0 })
+    area.style.overflowY = 'visible'
+    child(area, 'button', { 'data-object-id': '7' }, { x: 110, y: 320, width: 44, height: 62 })
+    expect(domRects.measure([card(7)], origin).get('card:7')).toEqual({
+      x: 10,
+      y: 270,
+      width: 44,
+      height: 62,
+    })
+  })
+
   it('only looks inside the table around the overlay', () => {
     const { origin } = page()
     const stray = document.createElement('button')
