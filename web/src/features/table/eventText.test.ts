@@ -823,6 +823,13 @@ describe('events with more than one shape', () => {
       ruleEffect({ CantSearch: [0, 1, 2] }, 'WhileSourceOnBattlefield', { id: 6, counter: 0 }),
       "Ana, Bo and Cy can't search libraries while Jace Beleren stays",
     ],
+    [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
+    [ruleEffect({ CantLoseGame: { who: [0], winless: [1] } }, 'Forever'), "Ana can't lose the game"],
+    [ruleEffect({ CantCastSpells: { who: [1, 2], turn: 0 } }, 'Forever'), "Bo and Cy can't cast spells"],
+    [
+      ruleEffect({ ToughnessAssignsDamage: [0] }, 'Forever'),
+      'Creatures of Ana deal combat damage by toughness',
+    ],
     [
       ruleEffect({ RevealTop: [2] }, 'UntilEndOfTurn'),
       'Cy play with the top card of their library revealed until end of turn',

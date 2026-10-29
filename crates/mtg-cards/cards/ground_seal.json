@@ -1,0 +1,20 @@
+{
+  "oracle_id": "13f6f960-ef79-4f2c-8874-90fe9e77099e",
+  "name": "Ground Seal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ground Seal",
+      "oracle_fingerprint": "d394b8e73cc0d1cc6d7105d5920de517",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        { "Rule": { "rule": "GraveyardCardsUntargetable" } }
+      ]
+    }
+  ]
+}

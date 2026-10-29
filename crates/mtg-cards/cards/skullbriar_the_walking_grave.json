@@ -1,0 +1,21 @@
+{
+  "oracle_id": "088ac883-6f44-4046-bf19-81c7fd952e55",
+  "name": "Skullbriar, the Walking Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullbriar, the Walking Grave",
+      "oracle_fingerprint": "6a26db471c1209f8845d2f4263c3bc95",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        { "Rule": { "rule": "CountersRemain" } }
+      ]
+    }
+  ]
+}

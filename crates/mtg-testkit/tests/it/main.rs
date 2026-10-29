@@ -58,6 +58,7 @@ mod c4_party;
 mod c4_party_fuzz;
 mod c4_prepare_triggers;
 mod c4_skipped_turns;
+mod w17b_statics;
 mod c5_dice_piles;
 mod c6_au_dead_card;
 mod c6_blk_aura;

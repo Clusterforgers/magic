@@ -81,4 +81,20 @@ objects: Array<ObjectRef>,
 /**
  * Where they go instead.
  */
-to: unknown, } };
+to: unknown, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+/**
+ * The players who can't lose.
+ */
+who: Array<PlayerId>, 
+/**
+ * The players who can't win.
+ */
+winless: Array<PlayerId>, } } | { "CantCastSpells": { 
+/**
+ * The players who can't cast spells.
+ */
+who: Array<PlayerId>, 
+/**
+ * The player during whose turns they can't; every turn when absent.
+ */
+turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> };

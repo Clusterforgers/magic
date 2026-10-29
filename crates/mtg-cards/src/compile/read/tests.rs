@@ -189,6 +189,7 @@ mod c4_group_writers;
 mod c4_move_writers;
 mod c4_party_writers;
 mod c4_phases;
+mod w17b_statics;
 mod c4_prepare_writers;
 mod c4_sz_writers;
 mod c4_writers;
