@@ -206,6 +206,18 @@ impl Driver {
         self.answer(Answer::Priority(PriorityAction::Manual(action)))
     }
 
+    /// `player` takes a manual action out of band (`Engine::manual`), whoever the decision belongs to, and the invariants
+    /// are checked.
+    pub fn manual_by(
+        &mut self,
+        player: PlayerId,
+        action: &ManualAction,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let events = self.engine.manual(player, action)?;
+        self.checker.observe_engine(&self.engine)?;
+        Ok(events)
+    }
+
     /// The player holding priority plays the named land from hand.
     pub fn play_land(&mut self, name: &str) -> Result<Vec<Event>, ScriptError> {
         let (_, options) = self.priority()?;

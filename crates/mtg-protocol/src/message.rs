@@ -4,6 +4,7 @@
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::forecast::CombatForecast;
+use mtg_engine::manual::ManualAction;
 use mtg_engine::state::GameResult;
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision};
@@ -161,6 +162,15 @@ pub enum ClientMessage {
     Chat {
         /// The text.
         text: String,
+    },
+    /// Does something by hand at any time, whoever the pending decision belongs to (a seat in the game only).
+    ///
+    /// The server applies it between decisions, answers a refusal with `Error{IllegalAnswer}` and shows the change to
+    /// the table as an event batch that starts with `ManualAction`; a pending decision the change alters is sent again
+    /// with a new id and the clock it had. Never answers or passes the pending decision.
+    Manual {
+        /// What the seat does.
+        action: ManualAction,
     },
     /// The player gives up.
     Concede,

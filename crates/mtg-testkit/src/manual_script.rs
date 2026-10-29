@@ -6,7 +6,9 @@ use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
 use mtg_engine::GameState;
+use mtg_engine::combat::DamageTarget;
 use mtg_engine::manual::{
     CommonToken, CustomToken, ManualAction, ManualToken, ManualZone, check as legal,
 };
@@ -40,6 +42,26 @@ impl ManualScript {
             rng: GameRng::substream(seed, 90_000),
             every: every as u64,
         }
+    }
+
+    /// A script for out-of-band actions (`Engine::manual`) at one decision in `every`, of any kind and any seat, drawn
+    /// apart from [`new`](ManualScript::new).
+    pub fn anytime(seed: u64, every: usize) -> Self {
+        ManualScript {
+            rng: GameRng::substream(seed, 90_001),
+            every: every as u64,
+        }
+    }
+
+    /// A seat still in the game, drawn at random.
+    pub fn seat(&mut self, state: &GameState) -> Option<PlayerId> {
+        let alive: Vec<PlayerId> = state
+            .players()
+            .iter()
+            .filter(|p| p.is_in_game())
+            .map(|p| p.id())
+            .collect();
+        self.pick(&alive)
     }
 
     /// Whether the priority decision now gets a manual action.
@@ -97,7 +119,7 @@ impl ManualScript {
 
     fn candidate(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
         let nothing = ManualAction::Draw { count: 1 };
-        match self.rng.below(14) {
+        match self.rng.below(17) {
             0..=2 => {
                 let mine = Self::objects(state, player, Scope::Mine);
                 let to = self.zone();
@@ -163,12 +185,42 @@ impl ManualScript {
                     _ => nothing,
                 }
             }
-            _ => {
+            13 => {
                 let mine = Self::objects(state, player, Scope::Mine);
                 self.pick(&mine)
                     .map_or(nothing, |object| ManualAction::Unattach { object })
             }
+            14 => self.damage(state, player).unwrap_or(nothing),
+            15 => ManualAction::AddMana {
+                mana: [ManaType::Red, ManaType::Green, ManaType::Colorless][self.rng.index(3)],
+                count: u32::try_from(self.rng.below(3)).unwrap_or(0) + 1,
+            },
+            _ => {
+                let table = Self::objects(state, player, Scope::Battlefield);
+                let (power, toughness) = (self.delta(), self.delta());
+                self.pick(&table)
+                    .map_or(nothing, |object| ManualAction::Pump {
+                        object,
+                        power,
+                        toughness,
+                    })
+            }
         }
+    }
+
+    /// Damage from a card of the seat to a random player or permanent.
+    fn damage(&mut self, state: &GameState, player: PlayerId) -> Option<ManualAction> {
+        let source = self.pick(&Self::objects(state, player, Scope::Mine))?;
+        let target = if self.rng.below(2) == 0 {
+            DamageTarget::Player(self.seat(state)?)
+        } else {
+            DamageTarget::Object(self.pick(&Self::objects(state, player, Scope::Battlefield))?)
+        };
+        Some(ManualAction::Damage {
+            source,
+            target,
+            amount: u32::try_from(self.rng.below(4)).unwrap_or(0) + 1,
+        })
     }
 
     fn token(&mut self) -> ManualToken {

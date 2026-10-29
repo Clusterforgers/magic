@@ -179,6 +179,39 @@ impl Engine {
         self.finish(checkpoint, result)
     }
 
+    /// Applies `player`'s manual action out of band, whoever the pending decision belongs to (`manual.rs`).
+    ///
+    /// The action is checked like `PriorityAction::Manual`, committed through the replacement step and trigger
+    /// detection, and the engine advances again: state-based actions run where the rules check them, and the pending
+    /// decision is recomputed from the new state (a cast in progress keeps its answers and asks its next question
+    /// again). Refused while a replacement question holds a batch (`ManualRefusal::Settling`), before the first turn,
+    /// for a seat out of the game and once the game is over. On error the engine is untouched.
+    pub fn manual(
+        &mut self,
+        player: PlayerId,
+        action: &crate::manual::ManualAction,
+    ) -> Result<Vec<Event>, EngineError> {
+        use crate::error::IllegalAnswer;
+        use crate::manual::{ManualRefusal, events};
+        let refused = |refusal: ManualRefusal| EngineError::from(IllegalAnswer::Manual(refusal));
+        if self.decision.is_none() {
+            return Err(EngineError::NoDecision);
+        }
+        if !self.state.is_alive(player) {
+            return Err(EngineError::NotInGame(player));
+        }
+        if self.state.stage() != crate::state::Stage::Turns {
+            return Err(refused(ManualRefusal::NotStarted));
+        }
+        if self.held.is_some() {
+            return Err(refused(ManualRefusal::Settling));
+        }
+        let made = events(&self.state, player, action).map_err(refused)?;
+        let checkpoint = self.checkpoint();
+        let result = self.commit(made).and_then(|()| self.advance());
+        self.finish(checkpoint, result)
+    }
+
     /// Notes the current position so that the steps taken after it can be undone with [`restore`](Engine::restore).
     pub fn checkpoint(&self) -> Checkpoint {
         Checkpoint {

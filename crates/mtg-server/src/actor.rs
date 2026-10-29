@@ -285,6 +285,9 @@ impl<S: EventStore> GameActor<S> {
                         if self.expire().await.is_err() {
                             return;
                         }
+                        if self.flush_deferred().await.is_err() {
+                            return;
+                        }
                         continue;
                     }
                 },
@@ -293,6 +296,9 @@ impl<S: EventStore> GameActor<S> {
                 return;
             };
             if self.handle(command).await.is_err() {
+                return;
+            }
+            if self.flush_deferred().await.is_err() {
                 return;
             }
             self.announce_departures();
@@ -406,6 +412,7 @@ impl<S: EventStore> GameActor<S> {
             }
             ClientMessage::Preview { decision, answer } => self.preview(seat, decision, &answer),
             ClientMessage::Concede => return self.concede(seat).await,
+            ClientMessage::Manual { action } => return self.manual(seat, action).await,
             ClientMessage::AutoPass { enabled } => return self.set_auto_pass(seat, enabled).await,
             ClientMessage::Yield { until } => return self.set_yield(seat, until).await,
             ClientMessage::CancelYield => self.cancel_yield(seat),

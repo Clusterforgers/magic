@@ -1,6 +1,7 @@
 //! Playing: answers and concessions become persisted, projected batches for every connected seat.
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::manual::ManualAction;
 use mtg_engine::{Answer, EngineError, Event, GameState};
 use mtg_protocol::{
     DecisionId, ErrorCode, EventBatch, ProtocolError, ServerMessage, project_events,
@@ -73,6 +74,39 @@ impl<S: EventStore> GameActor<S> {
                 self.refuse(seat, rejection);
                 Ok(())
             }
+        }
+    }
+
+    /// Applies `seat`'s manual action out of band, or keeps it until a replacement question is answered.
+    pub(crate) async fn manual(
+        &mut self,
+        seat: PlayerId,
+        action: ManualAction,
+    ) -> Result<(), Fatal> {
+        let Phase::Running(running) = &mut self.phase else {
+            self.refuse(seat, not_started());
+            return Ok(());
+        };
+        match running.manual(seat, action) {
+            Ok(Some(step)) => self.publish(step).await,
+            Ok(None) => Ok(()),
+            Err(rejection) => {
+                self.refuse(seat, rejection);
+                Ok(())
+            }
+        }
+    }
+
+    /// Applies the manual actions that waited for a replacement question, once it is answered.
+    pub(crate) async fn flush_deferred(&mut self) -> Result<(), Fatal> {
+        loop {
+            let Phase::Running(running) = &mut self.phase else {
+                return Ok(());
+            };
+            let Some((seat, action)) = running.take_deferred() else {
+                return Ok(());
+            };
+            self.manual(seat, action).await?;
         }
     }
 
