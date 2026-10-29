@@ -2426,17 +2426,22 @@ impl Writer<'_> {
                     format!("{} ventures into {into}", self.player(who)?)
                 }
             }
-            Effect::BecomeMonarch { who } => format!(
-                "{} {} the monarch",
-                self.player(who)?,
-                if *who == Ref::You {
-                    "become"
-                } else {
-                    "becomes"
-                }
-            ),
+            Effect::BecomeMonarch { .. } | Effect::TakeInitiative { .. } => {
+                return self.w15a_designation(effect);
+            }
             _ => return self.module_effect(effect),
         })
+    }
+
+    /// "you become the monarch", "you take the initiative".
+    fn w15a_designation(&mut self, effect: &Effect) -> Option<String> {
+        let (who, verb, designation) = match effect {
+            Effect::BecomeMonarch { who } => (who, "become", "the monarch"),
+            Effect::TakeInitiative { who } => (who, "take", "the initiative"),
+            _ => return None,
+        };
+        let s = if *who == Ref::You { "" } else { "s" };
+        Some(format!("{} {verb}{s} {designation}", self.player(who)?))
     }
 
     /// "return ~ from your graveyard to the battlefield", "shuffle ~ into its owner's library".

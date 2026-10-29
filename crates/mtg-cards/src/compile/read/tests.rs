@@ -387,6 +387,7 @@ mod w14a_leftovers;
 mod w14b_incubate;
 mod w14c_alt_costs;
 mod w14c_block_capacity;
+mod w15a_initiative;
 mod w15b_time;
 mod w15c_clash;
 mod w2b_each_of;

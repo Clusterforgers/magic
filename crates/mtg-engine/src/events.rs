@@ -664,6 +664,13 @@ pub enum Event {
         /// The dungeon.
         object: ObjectId,
     },
+    /// A player took the initiative (CR 725); `object` stands for it in their command zone.
+    InitiativeTaken {
+        /// Who took it.
+        player: PlayerId,
+        /// The initiative's object.
+        object: ObjectId,
+    },
     /// A player learned (CR 701.48): the discard and the draw are the events that follow it.
     Learned {
         /// Who learned.
@@ -1103,7 +1110,8 @@ impl Event {
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
             | Event::CardParted { permanent: object, .. }
-            | Event::ObjectLeftGame { object } => vec![*object],
+            | Event::ObjectLeftGame { object }
+            | Event::InitiativeTaken { object, .. } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()

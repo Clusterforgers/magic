@@ -449,6 +449,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} complete{s} a dungeon"), false)
         }
+        TriggerPattern::TakesInitiative { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} take{s} the initiative"), false)
+        }
         TriggerPattern::BecomesMonarch { who: by } => {
             let (name, s) = who(by);
             (format!("{name} become{s} the monarch"), false)

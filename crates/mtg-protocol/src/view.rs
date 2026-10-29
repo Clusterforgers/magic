@@ -316,6 +316,10 @@ pub struct TurnView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub monarch: Option<PlayerId>,
+    /// The player who has the initiative (CR 725); left out while nobody has it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub initiative: Option<PlayerId>,
 }
 
 /// Who holds priority and who has passed in this round.

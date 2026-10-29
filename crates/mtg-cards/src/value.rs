@@ -753,6 +753,8 @@ pub enum Condition {
     /// A player the reference names is the monarch (CR 724): any of them when it names several, so `EachPlayer` is "there is a
     /// monarch" and its `Not` "there is no monarch".
     Monarch(Ref),
+    /// A player the reference names has the initiative (CR 725, "if you have the initiative").
+    Initiative(Ref),
     /// A player the reference names has completed a dungeon this game (CR 309.7, "if you've completed a dungeon").
     CompletedDungeon(Ref),
     /// A player the reference names was the monarch as the turn began: the designation they held before anything in the

@@ -626,6 +626,14 @@ player: PlayerId,
 /**
  * The dungeon.
  */
+object: ObjectId, } } | { "InitiativeTaken": { 
+/**
+ * Who took it.
+ */
+player: PlayerId, 
+/**
+ * The initiative's object.
+ */
 object: ObjectId, } } | { "Learned": { 
 /**
  * Who learned.

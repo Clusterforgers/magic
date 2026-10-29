@@ -62,7 +62,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Clash: the clash with an opponent or the defending player, its win branch, "repeat this process" and "whenever you win a clash", read and written by the compiler.
 - Crimes: "whenever you commit a crime" and "whenever an opponent commits a crime" on targeting another player, what they control or their graveyard.
 - Clash wordings: a won clash that may put the returned creature on top instead, and the clashed player's creatures held through their next untap step.
-- Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
+- Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch, the city's blessing and the initiative.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge, Harmonize and Read ahead (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
 - Vehicles and Mounts: crew, saddle and station, crewed and saddled events, the crew record of the turn and Vehicles animated by abilities.
@@ -164,9 +164,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Carnelian Orb of Dragonkind, Oasis Ritualist, Fervent Paincaster)
 - [ ] (r2da-c-k) A delayed trigger reads the targets of the resolution that set it up by last known information: "at the beginning of your next main phase, you may add an amount of {C} equal to that spell's mana value" after a won clash (Scattering Stroke)
 - [ ] (r2da-c-g) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
-- [~] (r2da-c-e1) (w15a-dungeons-initiative) The rooms of Dungeon of the Mad Mage, Tomb of Annihilation and Undercity the compiler does not read (Runestone Caverns, Mad Wizard's Lair, Veils of Fear, Sandfall Cell, Oubliette, Throne of the Dead Three), so those dungeons can be entered
-- [~] (r2da-c-e2) (w15a-dungeons-initiative) The initiative (CR 725): the designation, "you take the initiative", venture into Undercity as it is taken and in its holder's upkeep, taken by combat damage, "if you have the initiative" (Seasoned Dungeoneer, Loot Dispute, Sarevok's Tome, From the Catacombs)
-- [~] (r2da-c-e3) (w15a-dungeons-initiative) The venture cards that wait on another wording, and the player view of the dungeon and room (Radiant Solar, Thorough Investigation, Immovable Rod, Sefris of the Hidden Ways, Hama Pashar)
+- [ ] (r2da-c-e4) Mad Wizard's Lair: "draw three cards and reveal them. You may cast one of them without paying its mana cost" with the drawn cards bound, so Dungeon of the Mad Mage is offered
+- [ ] (r2da-c-e5) The initiative cards: "the player who has the initiative" as a reference (Loot Dispute), "add {C}{C} instead" if you have the initiative (Sarevok's Tome), Seasoned Dungeoneer's attack trigger, From the Catacombs
+- [ ] (r2da-c-e3) The venture cards that wait on another wording, and the player view of the dungeon and room (Radiant Solar, Thorough Investigation, Immovable Rod, Sefris of the Hidden Ways, Hama Pashar)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
 - [ ] (r2dga) Rules for the partners of accepted proposals, so both halves become corpus cards; frees about 8 cards (Ukkima, Stalking Shadow, Pippin, Warden of Isengard, Brallin, Skyshark Rider)
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background and a planeswalker commander, once their other text runs

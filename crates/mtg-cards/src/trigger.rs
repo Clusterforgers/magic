@@ -357,6 +357,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player takes the initiative (CR 725); `Triggering` is that player.
+    TakesInitiative {
+        /// Who takes it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player becomes the monarch ("whenever you become the monarch"); `Triggering` is that player.
     BecomesMonarch {
         /// Who becomes it.

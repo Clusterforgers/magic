@@ -209,6 +209,7 @@ fn combat_damage(state: &GameState, pass: DamagePass) -> Progress {
     }
     let mut events = damage_events(state, pass);
     events.extend(crate::monarch::taken_by_combat(state, &events));
+    events.extend(crate::w15a_initiative::w15a_taken_by_combat(state, &events));
     events.push(grant(state));
     Progress::Events(events)
 }
