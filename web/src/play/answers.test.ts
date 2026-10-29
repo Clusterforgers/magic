@@ -140,11 +140,7 @@ describe('the other actions', () => {
     ['ready', (s) => s.ready(), { type: 'Ready' }],
     ['notReady', (s) => s.notReady(), { type: 'NotReady' }],
     ['concede', (s) => s.concede(), { type: 'Concede' }],
-    [
-      'manual',
-      (s) => s.manual({ Tap: { object: 7 } }),
-      { type: 'Manual', action: { Tap: { object: 7 } } },
-    ],
+    ['manual', (s) => s.manual({ Tap: { object: 7 } }), { type: 'Manual', action: { Tap: { object: 7 } } }],
     ['chat', (s) => s.chat('  good luck  '), { type: 'Chat', text: 'good luck' }],
     ['resync', (s) => s.resync(), { type: 'Resync' }],
   ]

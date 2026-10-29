@@ -381,10 +381,7 @@ export function damageTargets(
     if (object.types.some((type) => DAMAGEABLE.includes(type))) found.push(object)
   }
   found.sort((a, b) => a.name.localeCompare(b.name) || a.id - b.id)
-  return [
-    ...seats.map((player) => ({ Player: player })),
-    ...found.map((object) => ({ Object: object.id })),
-  ]
+  return [...seats.map((player) => ({ Player: player })), ...found.map((object) => ({ Object: object.id }))]
 }
 
 /** A damage target as the value of a form field, and back. */
