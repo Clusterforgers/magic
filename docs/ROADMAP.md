@@ -175,7 +175,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
 - [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
 - [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
-- [ ] (pl1c) A seat's corner beside its lanes draws the commanders, the top card of the graveyard and the exile as pictures with their counts, in place of the pod chips
+- [~] (pl1c) (seat-corner) A seat's corner beside its lanes draws the commanders, the top card of the graveyard and the exile as pictures with their counts, in place of the pod chips
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2a) The forecast lists the life an attacker's controller gains (lifelink of an attacker) so its pod shows the "+N" chip too (`PlayerForecast` covers attacked seats only)
 - [ ] (pl2b) The tiles of focus mode and of the phone's strip show the life chip and take the defender click (only the pod does today)
