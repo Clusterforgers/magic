@@ -1,0 +1,26 @@
+{
+  "id": "af0fd1ff-3398-45df-b934-07a6b6497998",
+  "oracle_id": "e3444fcf-70ed-4d6e-aea9-030af15cad56",
+  "name": "Throes of Chaos",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "257",
+  "rarity": "uncommon",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4,
+  "type_line": "Sorcery",
+  "oracle_text": "Cascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)\nRetrace (You may cast this card from your graveyard by discarding a land card in addition to paying its other costs.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Retrace",
+    "Cascade"
+  ]
+}

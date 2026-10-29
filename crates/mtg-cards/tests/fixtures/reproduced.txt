@@ -732,6 +732,7 @@ Inspired Sphinx
 Inspiring Statuary
 Intelligence Bobblehead
 Into the Roil
+Into the Time Vortex
 Intrepid Rabbit
 Invading Manticore
 Invisible Force Field
@@ -1494,6 +1495,7 @@ Thriving Grove
 Thriving Heath
 Thriving Isle
 Thriving Moor
+Throes of Chaos
 Throne of the High City
 Thunder-Thrash Elder
 Thunderclap Drake

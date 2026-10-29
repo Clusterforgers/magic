@@ -1,0 +1,12 @@
+{
+  "oracle_id": "ad9d969e-def5-45a3-b65b-0c776f62ef0e",
+  "name": "Into the Time Vortex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Time Vortex",
+      "oracle_fingerprint": "5be715d06f797384aa7607a2ecd35a59",
+      "abilities": [{ "Keyword": "Cascade" }, { "Keyword": "Rebound" }]
+    }
+  ]
+}

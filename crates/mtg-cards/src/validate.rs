@@ -3412,6 +3412,14 @@ fn type_words(type_line: &str) -> (Vec<&str>, Vec<&str>) {
     )
 }
 
+/// Whether an instant or sorcery does something as it is cast with no `Spell` ability: a keyword line of cascade alone
+/// (Into the Time Vortex, Throes of Chaos) cascades and then resolves with nothing to do.
+pub(crate) fn w17a_casting_does_something(abilities: &[Ability]) -> bool {
+    abilities
+        .iter()
+        .any(|ability| matches!(ability, Ability::Keyword(Keyword::Cascade)))
+}
+
 /// The problems of a card file against the imported card: names, fingerprints, keywords and the
 /// printed characteristics its abilities rely on.
 pub(crate) fn check_printed(
@@ -3578,7 +3586,11 @@ fn check_face_printed(
             w.problem("a Spell ability belongs to an instant or sorcery");
         });
     }
-    if is_spell && !has_spell && status == ImplStatus::Full {
+    if is_spell
+        && !has_spell
+        && status == ImplStatus::Full
+        && !w17a_casting_does_something(&face.abilities)
+    {
         walker.at("abilities", |w| {
             w.problem("an instant or sorcery needs a Spell ability");
         });
