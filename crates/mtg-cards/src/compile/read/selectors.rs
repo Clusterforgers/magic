@@ -272,6 +272,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
         "legendary" => Pred::Supertype(Supertype::Legendary),
         "basic" => Pred::Supertype(Supertype::Basic),
         "other" => Pred::Other,
+        "enchanted" | "equipped" => return super::t17b_attached::adjective(word, form),
         _ => return super::w21a_atoms::w21a_adjective(word),
     })
 }
@@ -320,6 +321,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::Commander => "noncommander".to_owned(),
             _ => return None,
         },
+        Pred::HasAttached(_) => return super::t17b_attached::adjective_text(pred, form),
         _ => return super::w21a_atoms::w21a_adjective_text(pred),
     })
 }
@@ -542,6 +544,9 @@ pub(super) fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
 
 /// What may follow the noun: who controls it, a keyword or a number it has.
 pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    if let Some(pred) = r.attempt(|r| super::t17b_attached::suffix(r, form)) {
+        return Some(pred);
+    }
     if r.words("you control") {
         return Some(Pred::ControlledBy(Ref::You));
     }
@@ -676,6 +681,9 @@ fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
 }
 
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
+    if let Some(text) = super::t17b_attached::suffix_text(pred, form) {
+        return Some(text);
+    }
     Some(match pred {
         Pred::Compare {
             stat,
@@ -1387,6 +1395,8 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             } else {
                 zone = Some(place);
             }
+        } else if super::t17b_attached::is_kinds(pred, preds, form) {
+            suffixes.push(suffix_text(pred, form)?);
         } else if let Some(listed) = subtype_list(pred) {
             if !subtypes.is_empty() {
                 return None;

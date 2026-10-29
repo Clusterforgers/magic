@@ -40,6 +40,7 @@ impl Scope<'_> {
             Pred::XInCost => Self::w6d_x_in_cost(seen),
             Pred::Goaded => self.w6d_goaded(seen),
             Pred::HasAttached(attached) => self.w6d_has_attached(attached, seen)?,
+            Pred::AttachedTo(host) => self.w6d_attached_to(host, seen)?,
             _ => false,
         })
     }
@@ -104,6 +105,20 @@ impl Scope<'_> {
                     None => !goaded_by(self.state, card.id()).is_empty(),
                 }
         })
+    }
+
+    /// Whether the object is a permanent on the battlefield attached to one of the objects the reference names.
+    fn w6d_attached_to(&self, host: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
+        let Some(card) = seen.card.filter(|_| seen.zone == Zone::Battlefield) else {
+            return Ok(false);
+        };
+        let Some(attached_to) = self.state.host_of(card.id()) else {
+            return Ok(false);
+        };
+        Ok(self
+            .objects(host)?
+            .into_iter()
+            .any(|named| named.id == attached_to))
     }
 
     /// Whether a permanent that matches the selector is attached to the object, which is still on the battlefield.

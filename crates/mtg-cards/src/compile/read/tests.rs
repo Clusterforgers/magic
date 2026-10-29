@@ -354,6 +354,7 @@ mod sz_writers;
 mod t15a_alt_costs;
 mod t15a_rewordings_writers;
 mod t16a_named_abilities;
+mod t17b_attached;
 mod t17b_writers;
 mod tail_alone;
 mod tail_pairs;

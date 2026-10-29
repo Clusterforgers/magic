@@ -998,3 +998,95 @@ fn a_clone_gathers_its_own_effects_and_an_event_drops_them() {
         "the copy was made before the Totem left"
     );
 }
+
+fn aura(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Enchantment)
+            .with_subtype("Aura"),
+    )
+}
+
+fn attachment(name: &str, kind: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_subtype(kind),
+    )
+}
+
+/// Seat 0's board: a card with the static ability, a second creature and the attachments; `hosts` says which creature
+/// (0 the card, 1 the other, none for unattached) each attachment is on.
+fn attached_board(
+    card: Arc<CardDefinition>,
+    attachments: Vec<(Arc<CardDefinition>, Option<usize>)>,
+) -> GameState {
+    let mut board = vec![card, creature("Other", 2, 2)];
+    board.extend(attachments.iter().map(|(attached, _)| Arc::clone(attached)));
+    let mut setup = crate::fixtures::setup(vec![vec![], vec![]], vec![board, vec![]]);
+    for (at, (_, host)) in attachments.iter().enumerate() {
+        setup.players[0].battlefield[2 + at].attached_to = host.map(|host| (0, host));
+    }
+    GameState::from_setup(&setup).unwrap()
+}
+
+const FOR_EACH_AURA: &str = r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":{"Times":{"by":2,"of":{"Count":[{"Subtype":"Aura"},{"AttachedTo":"This"}]}}},"toughness":{"Times":{"by":2,"of":{"Count":[{"Subtype":"Aura"},{"AttachedTo":"This"}]}}}}}]}}"#;
+
+fn dancer(rule: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Dancer")
+            .with_type(CardType::Creature)
+            .with_power_toughness(2, 2)
+            .with_rules(rules(rule)),
+    )
+}
+
+#[rstest]
+#[case::no_aura(&[], (2, 2))]
+#[case::one_on_the_card(&[Some(0)], (4, 4))]
+#[case::two_on_the_card(&[Some(0), Some(0)], (6, 6))]
+#[case::one_on_another_creature_does_not_count(&[Some(1), Some(0)], (4, 4))]
+#[case::an_unattached_one_does_not_count(&[None], (2, 2))]
+fn a_count_of_auras_attached_to_the_card_follows_the_board(
+    #[case] hosts: &[Option<usize>],
+    #[case] expected: (i32, i32),
+) {
+    let attachments = hosts
+        .iter()
+        .enumerate()
+        .map(|(at, host)| (aura(&format!("Aura {at}")), *host))
+        .collect();
+    let game = attached_board(dancer(FOR_EACH_AURA), attachments);
+    assert_eq!(pump(&game, "Dancer"), Some(expected));
+}
+
+const ENCHANTED_GROUP: &str = r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"HasAttached":[{"Subtype":"Aura"}]},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":2,"toughness":2}}]}}"#;
+
+#[rstest]
+#[case::the_card_is_enchanted(&[("Aura", Some(0))], (4, 4), (2, 2))]
+#[case::the_other_is_enchanted(&[("Aura", Some(1))], (2, 2), (4, 4))]
+#[case::both_are_enchanted(&[("Aura", Some(0)), ("Aura", Some(1))], (4, 4), (4, 4))]
+#[case::two_auras_pump_once(&[("Aura", Some(1)), ("Aura", Some(1))], (2, 2), (4, 4))]
+#[case::an_equipment_is_not_an_aura(&[("Equipment", Some(1))], (2, 2), (2, 2))]
+#[case::an_unattached_aura_enchants_nothing(&[("Aura", None)], (2, 2), (2, 2))]
+fn a_group_named_by_its_attachment_is_the_creatures_that_hold_one(
+    #[case] attached: &[(&str, Option<usize>)],
+    #[case] card: (i32, i32),
+    #[case] other: (i32, i32),
+) {
+    let attachments = attached
+        .iter()
+        .enumerate()
+        .map(|(at, (kind, host))| {
+            let permanent = if *kind == "Aura" {
+                aura(&format!("Attachment {at}"))
+            } else {
+                attachment(&format!("Attachment {at}"), kind)
+            };
+            (permanent, *host)
+        })
+        .collect();
+    let game = attached_board(dancer(ENCHANTED_GROUP), attachments);
+    assert_eq!(pump(&game, "Dancer"), Some(card));
+    assert_eq!(pump(&game, "Other"), Some(other));
+}

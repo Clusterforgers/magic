@@ -116,6 +116,7 @@ mod statics;
 mod stations;
 pub(super) mod subtypes;
 mod t15a_alt_costs;
+mod t17b_attached;
 #[cfg(test)]
 mod tests;
 mod token_binds;

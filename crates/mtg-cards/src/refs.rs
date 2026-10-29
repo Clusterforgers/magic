@@ -151,6 +151,9 @@ pub enum Pred {
     /// Has a permanent attached to it that matches the selector ("enchanted": `[{"Subtype":"Aura"}]`, "enchanted by an
     /// Aura you control", "equipped").
     HasAttached(Selector),
+    /// Is a permanent attached to one of the objects the reference names ("Aura attached to it", "Equipment attached to
+    /// equipped creature").
+    AttachedTo(Ref),
     /// Is a card exiled face down by one of the permanents the reference names, which has not left since (hideaway, CR 702.75a).
     ExiledWith(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).
