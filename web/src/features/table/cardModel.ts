@@ -225,6 +225,37 @@ export function counterLabels(object: ObjectView): string[] {
     .map(([kind, count]) => (count === 1 ? counterName(kind) : `${counterName(kind)} ×${count}`))
 }
 
+/** A counter as a small chip on a picture: the kind's symbol and how many, tinted for the kinds that move power and toughness. */
+export interface CounterChip {
+  key: string
+  /** The kind's symbol: "+1/+1", "−1/−1", a skull for poison, a bolt for charge, else its name. */
+  symbol: string
+  count: number
+  tone: 'up' | 'down' | 'plain'
+}
+
+const COUNTER_SYMBOL: Partial<Record<string, string>> = {
+  '+1/+1': '+1/+1',
+  '-1/-1': '−1/−1',
+  poison: '☠',
+  charge: '⚡',
+}
+
+/** The counters of a permanent as chips, loyalty left to the stat box. */
+export function counterChips(object: ObjectView): CounterChip[] {
+  return countersOf(object)
+    .filter(([kind]) => kind !== 'loyalty')
+    .map(([kind, count]) => {
+      const name = counterName(kind)
+      return {
+        key: name,
+        symbol: COUNTER_SYMBOL[name] ?? name,
+        count,
+        tone: kind === '+1/+1' ? 'up' : kind === '-1/-1' ? 'down' : 'plain',
+      }
+    })
+}
+
 /** The same counters in words, loyalty included, for a screen reader: "2 +1/+1 counters", "loyalty 3". */
 export function counterWords(object: ObjectView): string[] {
   return countersOf(object).map(([kind, count]) =>
@@ -234,12 +265,16 @@ export function counterWords(object: ObjectView): string[] {
   )
 }
 
-/** What a permanent is attached to and what is attached to it, by name. */
+/** What a permanent is attached to, copies or shows as another face, and what is attached to it, by name. */
 export interface Links {
-  /** The permanent an Aura or Equipment is attached to. */
+  /** What an Aura or Equipment is attached to: a permanent, or the player a Curse enchants. */
   host?: string | undefined
   /** The permanents attached to it. */
   attached?: readonly string[] | undefined
+  /** The object it is a copy of, while the viewer can see that object. */
+  copyOf?: string | undefined
+  /** The front face of a card the permanent shows as another face. */
+  frontFace?: string | undefined
 }
 
 /** "attached to Grizzly Bears" for an Aura or Equipment; "Pacifism and Bonesplitter attached" for its host. */
@@ -260,29 +295,84 @@ export function abilityWords(ability: AbilityDef): string {
   return `Tap: add ${ability.Mana.produces.toLowerCase()} mana`
 }
 
-/** The short labels of a permanent's state, as drawn on the card face. */
-export function statusLabels(object: ObjectView, role: CombatRole | null): string[] {
-  const labels: string[] = []
-  const state = object.permanent
-  if (state?.tapped === true) labels.push('Tapped')
-  if (state?.summoning_sick === true) labels.push('Sick')
-  if (state !== null && state.damage > 0) labels.push(`${state.damage} dmg`)
-  if (role === 'attacking') labels.push('Attacking')
-  if (role === 'blocked') labels.push('Blocked')
-  if (role === 'blocking') labels.push('Blocking')
-  return labels
+/** How a state chip reads: plain, or a warning. */
+export type ChipTone = 'plain' | 'danger'
+
+/** What a state chip is about: a picture gives each kind its own place and size. */
+export type ChipKind = 'tapped' | 'sick' | 'damage' | 'role' | 'identity'
+
+/** One short state of a permanent, as a chip on its face. */
+export interface StatusChip {
+  label: string
+  tone: ChipTone
+  kind: ChipKind
 }
 
-/** The same state in full words, for a screen reader and the preview. */
-export function statusWords(object: ObjectView, role: CombatRole | null): string[] {
+/** Whether the damage marked on a permanent is as much as its toughness, which is above zero: it will be destroyed. */
+export function isLethal(object: ObjectView): boolean {
+  const damage = object.permanent?.damage ?? 0
+  return damage > 0 && object.toughness !== null && object.toughness > 0 && damage >= object.toughness
+}
+
+/** Whether a permanent shows the back of its card: transformed, flipped, melded or a modal double-faced card cast as its back. */
+export function showsBackFace(object: ObjectView): boolean {
+  return object.zone === 'Battlefield' && (object.face ?? 0) > 0
+}
+
+/** The cards a merged permanent holds; 1 for any other object. */
+const mergedCount = (object: ObjectView): number => object.merged?.length ?? 1
+
+/** The chips of a permanent's state, as drawn on the card face. */
+export function statusChips(object: ObjectView, role: CombatRole | null): StatusChip[] {
+  const chips: StatusChip[] = []
+  const add = (kind: ChipKind, label: string, tone: ChipTone = 'plain'): void => {
+    chips.push({ label, tone, kind })
+  }
+  const state = object.permanent
+  if (state?.tapped === true) add('tapped', 'Tapped')
+  if (state?.summoning_sick === true) add('sick', 'Sick')
+  if (state !== null && state.damage > 0) {
+    add('damage', `${state.damage} dmg`, isLethal(object) ? 'danger' : 'plain')
+  }
+  if (role === 'attacking') add('role', 'Attacking')
+  if (role === 'blocked') add('role', 'Blocked')
+  if (role === 'blocking') add('role', 'Blocking')
+  if (object.face_down === true) add('identity', 'Face down')
+  if (showsBackFace(object)) add('identity', 'Back face')
+  if (object.copy !== undefined) add('identity', 'Copy')
+  if (mergedCount(object) > 1) add('identity', `Merged ×${mergedCount(object)}`)
+  if (state?.prepared === true) add('identity', 'Prepared')
+  if (state?.level !== undefined) add('identity', `Level ${state.level}`)
+  return chips
+}
+
+/** The short labels of a permanent's state, as drawn on the card face. */
+export function statusLabels(object: ObjectView, role: CombatRole | null): string[] {
+  return statusChips(object, role).map((chip) => chip.label)
+}
+
+/** The same state in full words, for a screen reader and the preview; `links` names what a copy copies. */
+export function statusWords(object: ObjectView, role: CombatRole | null, links: Links = {}): string[] {
   const words: string[] = []
   const state = object.permanent
   if (state?.tapped === true) words.push('tapped')
   if (state?.summoning_sick === true) words.push('summoning sick')
-  if (state !== null && state.damage > 0) words.push(`${state.damage} damage`)
+  if (state !== null && state.damage > 0) {
+    words.push(`${state.damage} damage${isLethal(object) ? ', enough to destroy it' : ''}`)
+  }
   if (role === 'attacking') words.push('attacking')
   if (role === 'blocked') words.push('attacking, blocked')
   if (role === 'blocking') words.push('blocking')
+  if (object.face_down === true) words.push('face down')
+  if (showsBackFace(object)) {
+    words.push(links.frontFace === undefined ? 'back face' : `back face of ${links.frontFace}`)
+  }
+  if (object.copy !== undefined) words.push(links.copyOf === undefined ? 'copy' : `copy of ${links.copyOf}`)
+  if (mergedCount(object) > 1) {
+    words.push(`merged from ${(object.merged ?? []).map((part) => part.name).join(', ')}`)
+  }
+  if (state?.prepared === true) words.push('prepared')
+  if (state?.level !== undefined) words.push(`level ${state.level}`)
   return words
 }
 
@@ -302,7 +392,7 @@ export function cardLabel(object: ObjectView, role: CombatRole | null, links: Li
   }
   parts.push(...keywordNames(object).map((name) => name.toLowerCase()))
   parts.push(...object.abilities.map(abilityWords))
-  parts.push(...statusWords(object, role))
+  parts.push(...statusWords(object, role, links))
   parts.push(...counterWords(object), ...linkWords(links))
   return parts.join(', ')
 }

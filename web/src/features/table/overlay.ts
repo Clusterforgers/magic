@@ -37,12 +37,20 @@ function direction(pairs: readonly (readonly [number, number])[]): Modified {
 
 /**
  * The badge a picture needs: the current power/toughness (or a planeswalker's loyalty) when it differs from the
- * printed one, marked up or down; a plain one when the printed value is a star or cannot be known; none while it is
- * asked for or when the picture shows the right number.
+ * printed one, marked up or down; a plain one when the printed value is a star or cannot be known, and always for a
+ * token, whose picture cannot be compared with anything; none while it is asked for or when the picture shows the
+ * right number.
  */
 export function statBadge(object: ObjectView, printed: Printed, loyalty: number | null): StatBadge | null {
-  if (printed === 'loading' || printed === 'none') return null
+  if (printed === 'loading') return null
   const { power, toughness } = object
+  // A token and a face-down creature have no printed card to compare with, so their real numbers show plainly.
+  const plain =
+    power !== null && toughness !== null
+      ? ({ kind: 'pt', text: `${power}/${toughness}`, modified: null } as const)
+      : null
+  if (object.face_down === true) return plain
+  if (printed === 'none') return object.kind === 'Token' ? plain : null
   if (power !== null && toughness !== null) {
     const text = `${power}/${toughness}`
     if (printed === 'unavailable') return { kind: 'pt', text, modified: null }

@@ -185,7 +185,7 @@ describe('statusLabels and statusWords', () => {
   it.each([
     [{ tapped: true }, null, ['Tapped'], ['tapped']],
     [{ summoning_sick: true }, null, ['Sick'], ['summoning sick']],
-    [{ damage: 2 }, null, ['2 dmg'], ['2 damage']],
+    [{ damage: 1 }, null, ['1 dmg'], ['1 damage']],
     [{}, 'attacking', ['Attacking'], ['attacking']],
     [{}, 'blocked', ['Blocked'], ['attacking, blocked']],
     [{}, 'blocking', ['Blocking'], ['blocking']],
