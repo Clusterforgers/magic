@@ -34,12 +34,15 @@ fn w15b_the_war_doctor_attack_reads_with_its_shield() {
 }
 
 #[rstest]
-#[case::greater("Destroy each nonland permanent with mana value greater than the number of time counters on ~.")]
+#[case::greater(
+    "Destroy each nonland permanent with mana value greater than the number of time counters on ~."
+)]
 #[case::graveyard_from_anywhere_of_others(
     "Whenever one or more other cards are put into a graveyard from anywhere, draw a card."
 )]
-#[case::exile_from_a_zone("Whenever one or more other cards are put into exile from your graveyard, draw a card.")]
+#[case::exile_from_a_zone(
+    "Whenever one or more other cards are put into exile from your graveyard, draw a card."
+)]
 fn w15b_near_misses_stay_unread(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");
 }
-

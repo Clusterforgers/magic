@@ -56,11 +56,13 @@ fn w15b_exiled_cards(other: bool) -> Selector {
 pub(super) fn w15b_exiled_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let other = r.word("other");
     r.need("cards are put into exile from anywhere")?;
-    Some(TriggerPattern::Batch(Box::new(TriggerPattern::ZoneChange {
-        what: w15b_exiled_cards(other),
-        from: None,
-        to: Some(ZoneKind::Exile),
-    })))
+    Some(TriggerPattern::Batch(Box::new(
+        TriggerPattern::ZoneChange {
+            what: w15b_exiled_cards(other),
+            from: None,
+            to: Some(ZoneKind::Exile),
+        },
+    )))
 }
 
 /// The writer of `w15b_exiled_batch`, from the group of a batch of moves into exile.
@@ -120,7 +122,10 @@ fn w15b_destroy_each(ability: &Ability, texts: &mut Vec<String>) {
             continue;
         };
         let mut said = Vec::new();
-        for (long, short) in [("Destroy all", "Destroy each"), ("destroy all", "destroy each")] {
+        for (long, short) in [
+            ("Destroy all", "Destroy each"),
+            ("destroy all", "destroy each"),
+        ] {
             let (long, short) = (format!("{long} {all}"), format!("{short} {each}"));
             said.extend(
                 texts

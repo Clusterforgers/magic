@@ -13,9 +13,9 @@ use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::object::GameObject;
-use mtg_engine::{PresetPermanent, replay};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
+use mtg_engine::{PresetPermanent, replay};
 use mtg_testkit::cards::{cost, forest, free_creature, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, tapped, with_counters};
@@ -93,7 +93,10 @@ fn w15b_out_of_time_holds_every_creature_until_its_last_time_counter_goes(
 ) -> Result<(), ScriptError> {
     let scenario = Scenario::new(seats)
         .hand_named(0, ["Out of Time"])
-        .battlefield(0, w15b_with_lands(tapped(free_creature("Ogre", 3, 3)), plains))
+        .battlefield(
+            0,
+            w15b_with_lands(tapped(free_creature("Ogre", 3, 3)), plains),
+        )
         .battlefield(1, [ready(free_creature("Wolf", 3, 3))]);
     let mut driver = Driver::from_scenario(w15b_libraries(scenario, seats))?;
     driver.cast_tapping("Out of Time", &["Plains", "Plains", "Plains"])?;
@@ -114,7 +117,10 @@ fn w15b_out_of_time_holds_every_creature_until_its_last_time_counter_goes(
         assert_eq!(w15b_zone(&driver, name), Zone::Battlefield, "{name}");
     }
     let ogre = driver.state().object(w15b_named(&driver, "Ogre")).unwrap();
-    assert!(!ogre.permanent().unwrap().tapped(), "untapped before it phased out");
+    assert!(
+        !ogre.permanent().unwrap().tapped(),
+        "untapped before it phased out"
+    );
     w15b_replays(&driver);
     Ok(())
 }
@@ -168,7 +174,11 @@ fn w15b_the_war_doctor_exiles_the_creature_its_attack_trigger_kills(
     driver.pass_until(Step::DeclareAttackers)?;
     driver.attack(&[("The War Doctor", 1)])?;
     w15b_resolve(&mut driver, Some("Wolf"))?;
-    assert_eq!(w15b_zone(&driver, "Wolf"), Zone::Exile, "exiled instead of dying");
+    assert_eq!(
+        w15b_zone(&driver, "Wolf"),
+        Zone::Exile,
+        "exiled instead of dying"
+    );
     assert_eq!(
         w15b_counters(&driver, "The War Doctor"),
         4,
@@ -218,7 +228,11 @@ fn w15b_cards_exiled_together_from_several_zones_trigger_the_war_doctor_once(
     for name in ["Wolf", "Grizzly Bears", "Llanowar Elves"] {
         assert_eq!(w15b_zone(&driver, name), Zone::Exile, "{name}");
     }
-    assert_eq!(w15b_counters(&driver, "The War Doctor"), 1, "one batch, one trigger");
+    assert_eq!(
+        w15b_counters(&driver, "The War Doctor"),
+        1,
+        "one batch, one trigger"
+    );
     w15b_replays(&driver);
     Ok(())
 }
