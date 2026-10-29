@@ -432,6 +432,34 @@ fn c8_vote_a_won_flip_triggers_for_the_players_the_pattern_names(
     }
 }
 
+#[rstest]
+#[case::i_win(r#"{"W15cClashWon":{"who":"You"}}"#, ME, FOE, true, 1)]
+#[case::i_lose(r#"{"W15cClashWon":{"who":"You"}}"#, ME, FOE, false, 0)]
+#[case::they_win_not_me(r#"{"W15cClashWon":{"who":"You"}}"#, FOE, ME, true, 0)]
+#[case::anyone_wins(r#"{"W15cClashWon":{}}"#, FOE, ME, true, 1)]
+#[case::a_flip_is_no_clash(r#"{"CoinFlipWon":{}}"#, ME, FOE, true, 0)]
+fn w15c_a_won_clash_triggers_for_the_clashing_player_the_pattern_names(
+    #[case] when: &str,
+    #[case] player: PlayerId,
+    #[case] opponent: PlayerId,
+    #[case] won: bool,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let found = fires(
+        &pre,
+        &[Event::Clashed {
+            player,
+            opponent,
+            won,
+        }],
+    );
+    assert_eq!(found.len(), expected);
+    if expected == 1 {
+        assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);
+    }
+}
+
 /// Dice rolled in one step by the players of `rolls` as (player, result) on d6.
 fn c11e_rolls(rolls: &[(PlayerId, u32)]) -> Vec<Event> {
     rolls

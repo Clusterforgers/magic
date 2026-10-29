@@ -798,7 +798,19 @@ object: ObjectId,
 /**
  * Its controller, who drew and discarded.
  */
-player: PlayerId, } } | { "Exerted": { 
+player: PlayerId, } } | { "Clashed": { 
+/**
+ * Who clashed.
+ */
+player: PlayerId, 
+/**
+ * The opponent clashed with.
+ */
+opponent: PlayerId, 
+/**
+ * The clashing player won.
+ */
+won: boolean, } } | { "Exerted": { 
 /**
  * The creature exerted.
  */

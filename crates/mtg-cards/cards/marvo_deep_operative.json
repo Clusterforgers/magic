@@ -1,0 +1,42 @@
+{
+  "oracle_id": "317ab0b3-1163-4893-a881-4c397feb213d",
+  "name": "Marvo, Deep Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marvo, Deep Operative",
+      "oracle_fingerprint": "eee99d3050ad4697bf703ff1cd48736b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Clash": { "with": "Defending" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "W15cClashWon": { "who": "You" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 8 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

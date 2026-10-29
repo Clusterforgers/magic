@@ -572,6 +572,8 @@ Errors name the file and the path inside it; all are collected.
 
 **Clash wordings.** `compile/read/w11c_clash.rs` (written back by `render/w11c_clash.rs`) reads "Clash with an opponent, then return target creature to its owner's hand. If you win, you may put that creature on top of its owner's library instead." as a clash whose win branch may put the one target on top of its owner's library, then the return, which finds the moved creature gone (CR 400.7); and "If you win, creatures that player controls don't untap during the player's next untap step." as a `Continuous` `DoesntUntap` over the creatures `ControlledBy(Bound("clashed"))` until `NextUntapStep`.
 
+**Clash with a named opponent and clash triggers.** `Clash.with` names the opponent instead of a choice: "clash with defending player" is `with: Defending` (`compile/read/w15c_clash.rs`, written back by `render/w15c_clash.rs`, tests in `tests/w15c_clash.rs`). "Whenever you win a clash" (also "a player", "an opponent") is `TriggerPattern::W15cClashWon { who }` (`Trigger.W15cClashWon`). "you may cast a spell from your hand with mana value 8 or less without paying its mana cost" (the limit after the hand, also after "Then") reads as the free cast of the other order.
+
 **Crimes.** "Whenever you commit a crime" and "whenever an opponent commits a crime" read as `Trigger::W11cCrime { who }` (`Trigger.W11cCrime`), with "This ability triggers only once each turn." as its limit.
 
 ## Model-assisted reading

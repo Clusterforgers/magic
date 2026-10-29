@@ -404,6 +404,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player wins a clash ("whenever you win a clash", CR 701.23); `Triggering` is that player.
+    W15cClashWon {
+        /// Who wins the clash.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player amasses ("whenever you amass"); `Triggering` is that player.
     Amassed {
         /// Who amasses.

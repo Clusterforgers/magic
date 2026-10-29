@@ -65,6 +65,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
     "Trigger.CoinFlipWon",
+    "Trigger.W15cClashWon",
     "Trigger.DiceRolled",
     "Trigger.Explored",
     "Trigger.Connived",

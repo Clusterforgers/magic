@@ -322,6 +322,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Learned { .. }
         | Event::DieRolled { .. }
         | Event::CoinFlipped { .. }
+        | Event::Clashed { .. }
         | Event::Proliferated { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
@@ -896,6 +897,11 @@ mod tests {
                 player: OWNER,
                 sides: 20,
                 result: 7,
+            },
+            Event::Clashed {
+                player: OWNER,
+                opponent: OTHER,
+                won: false,
             },
             Event::CoinFlipped {
                 player: OTHER,
