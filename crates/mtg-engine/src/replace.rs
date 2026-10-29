@@ -140,7 +140,9 @@ pub fn process(
         .iter()
         .filter_map(|slot| match &slot.item {
             Item::Tokens(run) => run.iter().map(|token| token.object.get()).max(),
-            Item::One(_) => None,
+            // An ability the batch puts on the stack or another object it makes already holds its id (an activation
+            // whose sacrifice a replacement turns into a token); the ids an event names below the next are old ones.
+            Item::One(event) => event.touched_objects().iter().map(|id| id.get()).max(),
         })
         .fold(step.next_id, |all, id| all.max(id + 1));
     match step.run()? {
