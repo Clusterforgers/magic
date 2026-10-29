@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"amount":4,"to":{"Target":0}}},{"Rule":{"duration":"WhileSourceOnBattlefield","rule":{"DamageCantBePrevented":{"source":[{"Targeting":[]}]} }}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]} }] } ]}

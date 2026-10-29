@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Tap":{"what":{"Each":[{"Subtype":"Land"},{"ControlledBy":{"ControllerOf":"Triggering"}}]}}}],"when":{"ZoneChange":{"what":[{"Type":"Land"}],"to":"Battlefield"}}}}]}]}

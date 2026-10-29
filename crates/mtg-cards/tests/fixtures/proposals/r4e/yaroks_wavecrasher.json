@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Pay":{"cost":[{"ReturnToHand":{"filter":["Other",{"Type":"Creature"}]}}]}},{"Pay":{"cost":[{"ReturnToHand":{"filter":["Other",{"Type":"Creature"}]}}]}},{"Pay":{"cost":[{"ReturnToHand":{"filter":["Other",{"Type":"Creature"}]}}]}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}}}]}
+
+  												  				] }

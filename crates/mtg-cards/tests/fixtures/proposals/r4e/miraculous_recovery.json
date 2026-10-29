@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Move":{"to":{"Battlefield":{}},"what":{"Target":0}}},{"PutCounters":{"counter":"+1/+1","on":{"Target":0},"count":1}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}]}}]}]}

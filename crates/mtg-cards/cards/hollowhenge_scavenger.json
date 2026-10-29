@@ -1,0 +1,26 @@
+{
+  "oracle_id": "60116231-cc54-4c74-b3d9-74e517182f1f",
+  "name": "Hollowhenge Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollowhenge Scavenger",
+      "oracle_fingerprint": "b8a726ec772963f2ba5d7334a07a288a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

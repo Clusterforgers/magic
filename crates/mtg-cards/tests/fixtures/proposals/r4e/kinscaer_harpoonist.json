@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"effects":[{"May":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"RemoveKeyword":"Flying"}]}}]} }],"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}]} }]}] }

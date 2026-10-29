@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"ReturnToHand":{"filter":["This"]}}],"effects":[{"Regenerate":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]} } ]} ]}

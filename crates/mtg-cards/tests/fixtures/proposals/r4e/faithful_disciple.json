@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e5391540-78e3-4ca8-a207-37c606722065",
+  "name": "Faithful Disciple",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Faithful Disciple",
+      "oracle_fingerprint": "89bd1b71968860ee9739b435d5295f67",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 10, "end": 87 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{2}{W}"},{"TapPermanents":{"filter":[]}}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":0,"toughness":2}}]}}]} }]}]}

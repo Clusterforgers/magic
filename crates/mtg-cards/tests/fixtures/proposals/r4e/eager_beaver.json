@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"May":{"effects":[{"Tap":{"what":{"Target":0}}}]}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"In":"Battlefield"}]}}]}}]}]}

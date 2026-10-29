@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Counter":{"what":{"Target":0}}},{"Draw":{"count":{"Stat":{"of":{"Target":0},"stat":"ManaValue"}}} }],"targets":[{"what":{"Object":["Spell","ChosenColor","ChosenSubtype"]}}]} }]}] }

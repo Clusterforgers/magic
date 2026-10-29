@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},{"AnyOf":[{"Subtype":"Barbarian"},{"Subtype":"Warrior"},{"Subtype":"Berserker"}]}]},"mods":[{"ModifyPT":{"power":2,"toughness":2}},{"AddKeyword":"Haste"}]}}]}] }

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Move":{"to":"Hand","what":{"Target":0}}}],"targets":[{"what":{"Object":[{"AnyOf":["Spell",{"Type":"Creature"}]}]}}]}}]}] }

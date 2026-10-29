@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7695b61a-8d44-44b1-9783-ea3114111c3e",
+  "name": "Master Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master Healer",
+      "oracle_fingerprint": "3f4a1646f52965df2989b5a054eb7e65",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 4 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

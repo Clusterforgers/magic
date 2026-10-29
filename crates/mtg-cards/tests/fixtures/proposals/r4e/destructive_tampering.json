@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Modal":{"modes":[{"effects":[{"Destroy":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Artifact"}]}}]},{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":["CantBlock"]}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"HasKeyword":"Flying"}}]}}]}]}}]} } ]} ]}

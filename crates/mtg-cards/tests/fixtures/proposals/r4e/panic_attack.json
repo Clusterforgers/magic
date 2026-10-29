@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":["CantBlock"]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0},"divide":null}]} }]}] }
