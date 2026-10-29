@@ -224,7 +224,7 @@ Blank values are no filter; an unknown parameter or a malformed value is 400 `in
 
 | Endpoint | Behaviour |
 |---|---|
-| `GET /api/decks` | `DeckList {decks}`, the most recently saved first: id, name, format, timestamps, the derived `state`, `verified`, `changed`, `checked_at` and the `summary` of the check of the moment. |
+| `GET /api/decks` | `DeckList {decks}`, the most recently saved first: id, name, format, timestamps, the derived `state`, `verified`, `changed`, `checked_at` and the `summary` of the check of the moment, and the `commanders` (the `CardHit` of each command-zone card, for the list's pictures). |
 | `POST /api/decks` | `{name, format, notes, cards: [{zone, oracle_id, printing_id?, count}]}` stores a deck: 201 `DeckView`. |
 | `GET /api/decks/{id}` | `DeckView`: the lines (each a card as a search hit, in the art of the chosen printing), the `check` stored at the last save, the `report` of the moment and the derived `state`, `verified` and `changed`. |
 | `PUT /api/decks/{id}` | Replaces name, format, notes and every line in one transaction, runs the check again: 200 `DeckView`. |

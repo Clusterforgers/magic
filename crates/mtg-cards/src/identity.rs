@@ -328,6 +328,8 @@ mod tests {
     #[case::mana_spent_to_cast(costing("{1}").with_rules(rules(r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"If":{"condition":{"Not":{"ManaSpent":"Green"}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#)), "G")]
     #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]
     #[case::reminder_text_is_no_rules_text(costing("{1}").with_manual("Flash (You may cast this for {W}.)", "not run"), "")]
+    #[case::devoid_keeps_the_identity_of_its_cost(costing("{3}{U}{R}").with_rules(rules(r#"{"Keyword":"Devoid"}"#)), "UR")]
+    #[case::hybrid_phyrexian_and_a_cost_together(costing("{1}{G/W}{B/P}").with_rules(rules(r#"{"Keyword":"Devoid"}"#)), "WBG")]
     fn a_definition_names_its_color_identity(#[case] card: CardDefinition, #[case] expected: &str) {
         assert_eq!(card.color_identity(), colors(expected));
     }

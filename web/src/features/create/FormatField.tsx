@@ -1,3 +1,4 @@
+import { formatRuleWords } from '@/lib/houseRules'
 import type { GameFormat } from '@/lib/houseRules'
 
 const FORMATS: readonly { value: GameFormat; name: string; words: string }[] = [
@@ -44,6 +45,12 @@ export function FormatField({ value, onChange }: FormatFieldProps) {
           </label>
         ))}
       </div>
+      {value === 'commander' ? (
+        <p data-slot="format-rules" className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">Commander rules: </span>
+          {formatRuleWords('commander').join(' · ')}. Change any of them under House rules.
+        </p>
+      ) : null}
     </fieldset>
   )
 }

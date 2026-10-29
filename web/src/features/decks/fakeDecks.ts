@@ -54,6 +54,7 @@ export const deckItem = (over: Partial<DeckListItem> = {}): DeckListItem => ({
   changed: false,
   checked_at: '2026-10-17T12:00:00Z',
   summary: summary(),
+  commanders: [],
   ...over,
 })
 

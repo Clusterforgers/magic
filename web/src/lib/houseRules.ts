@@ -562,3 +562,21 @@ export function describeRules(rules: HouseRules | undefined, format: string): st
   const handicaps = rules.handicaps?.length ?? 0
   return handicaps === 0 ? named : [...named, `Handicaps for ${plural(handicaps, 'player')}`]
 }
+
+/**
+ * The rules `format` plays by that a game's house rules can change, named as the lobby names a change: "Starting life
+ * 40", "1 free mulligan", "Commander tax 2", "Commander damage 21". A rule the other format plays the same, or that
+ * this one does not set, is left out.
+ */
+export function formatRuleWords(format: GameFormat): string[] {
+  const other: GameFormat = format === 'commander' ? 'normal' : 'commander'
+  const words: string[] = []
+  for (const spec of RULES) {
+    const own = spec.formats.includes(format) ? spec.fallback(format) : ''
+    const rules: HouseRules = {}
+    if (own === '' || spec.apply(rules, own) !== null) continue
+    const phrase = spec.phrase(rules, other)
+    if (phrase !== null) words.push(phrase)
+  }
+  return words
+}

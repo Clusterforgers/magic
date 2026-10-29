@@ -392,6 +392,24 @@ async fn a_saved_clean_deck_is_verified_and_reads_back_whole(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = false)]
+async fn the_list_shows_the_commanders_of_each_deck(pool: PgPool) {
+    let server = start(&pool).await;
+    let ann = register_ann(&server).await;
+    create(&server, &ann, &modern()).await;
+    create(&server, &ann, &commander()).await;
+
+    let list = ann.get(server.addr, "/api/decks").await.json();
+    let decks = list["decks"].as_array().unwrap();
+    let by_name = |name: &str| decks.iter().find(|deck| deck["name"] == name).unwrap();
+    assert_eq!(by_name("Green Burn")["commanders"], json!([]));
+    let commanders = by_name("Beast Mode")["commanders"].as_array().unwrap();
+    assert_eq!(commanders.len(), 1);
+    assert_eq!(commanders[0]["name"], "Questing Beast");
+    assert_eq!(commanders[0]["color_identity"], json!(["G"]));
+    assert!(commanders[0]["images"].is_object());
+}
+
+#[sqlx::test(migrations = false)]
 async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register_ann(&server).await;

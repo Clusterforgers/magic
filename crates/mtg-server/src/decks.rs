@@ -15,7 +15,7 @@ use axum::extract::{Path, Query, Request, State};
 use axum::http::header::{CONTENT_DISPOSITION, CONTENT_TYPE};
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
-use mtg_cards::deck::{DeckReport, StoredCheck, marker};
+use mtg_cards::deck::{DeckReport, DeckZone, StoredCheck, marker};
 use mtg_core::house::HouseRules;
 use mtg_db::{CreateDeckError, DeckDraft, DeckId, DeckRepo, StoredDeck};
 use mtg_import::decklist::ExportFormat;
@@ -147,7 +147,14 @@ fn deck_view(loaded: &Loaded, deck: &StoredDeck) -> DeckView {
 }
 
 fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
-    let report = loaded.report(&deck.format, &lines_of(deck));
+    let lines = lines_of(deck);
+    let report = loaded.report(&deck.format, &lines);
+    let commanders = lines
+        .iter()
+        .filter(|line| line.zone == DeckZone::Commander)
+        .filter_map(|line| loaded.view(line))
+        .map(|view| view.card)
+        .collect();
     let check = stored_check(deck);
     let mark = marker(check.as_ref(), &report);
     DeckListItem {
@@ -161,6 +168,7 @@ fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
         changed: mark.changed,
         checked_at: check.map(|check| check.checked_at),
         summary: report.summary,
+        commanders,
     }
 }
 

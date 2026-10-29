@@ -111,7 +111,7 @@ describe('adding', () => {
       'Companion',
     ])
     await user.click(screen.getByRole('menuitem', { name: 'Commander' }))
-    expect(copies('Giant Growth', 'commander')).toBe(1)
+    await waitFor(() => expect(deckPane().querySelector('[data-commander="oracle-growth"]')).not.toBeNull())
   })
 
   it('says aloud what was added', async () => {

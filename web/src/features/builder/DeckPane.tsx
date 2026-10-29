@@ -13,12 +13,15 @@ import { cardsText, DECK_FORMATS, formatLabel } from '@/features/decks/format'
 import { cn } from '@/lib/utils'
 import type { DeckState, DeckZone } from '@/protocol/generated'
 import { CheckBar } from './CheckBar'
+import { CommanderSlot } from './CommanderSlot'
+import type { FindKind } from './CommanderSlot'
 import { hasRoom, linesIn, totalOf } from './deckEdit'
 import type { Draft } from './deckEdit'
+import { cardsIn, identityOf } from './identity'
 import { LegalitySection } from './LegalitySection'
 import { LineRow } from './LineRow'
 import type { LineActions } from './LineRow'
-import { arrange, checkOf, checksOf } from './report'
+import { arrange, checkOf, checksOf, lineKey, outsideLines } from './report'
 import type { SortKey } from './report'
 import type { LiveCheck } from './useLiveCheck'
 import { ZONE_TITLE, ZONES } from './zones'
@@ -46,6 +49,10 @@ interface DeckPaneProps {
   saveError: { message: string; sessionEnded: boolean; deckId: string } | null
   nameRef: Ref<HTMLInputElement>
   actions: DeckActions
+  /** The card whose choice as a commander is being checked, if one is. */
+  judging?: string | null
+  /** Sets the card search to look for a commander, partner or Background. */
+  onFind?: (kind: FindKind) => void
   /** Sets the display of the pane (`flex` or `hidden`), which the page switches under the M breakpoint. */
   className?: string
 }
@@ -67,6 +74,8 @@ export function DeckPane({
   saveError,
   nameRef,
   actions,
+  judging = null,
+  onFind = () => undefined,
   className,
 }: DeckPaneProps) {
   const id = useId()
@@ -78,13 +87,17 @@ export function DeckPane({
   const asSaved = check.source === 'saved' && check.status !== 'current'
   const total = totalOf(draft)
   const room = hasRoom(draft)
+  // A Commander deck keeps its command zone in the slot above the lines; any other format lists a stray one as a zone.
+  const slot = draft.format === 'commander'
   const zones: readonly DeckZone[] = ZONES.filter(
-    (zone) =>
-      zone === 'main' || totalOf(draft, zone) > 0 || (zone === 'commander' && draft.format === 'commander'),
+    (zone) => zone === 'main' || (totalOf(draft, zone) > 0 && !(slot && zone === 'commander')),
   )
+  const outsideByLine = useMemo(() => outsideLines(report.legality), [report.legality])
+  const flagged = useMemo(() => new Set(outsideByLine.keys()), [outsideByLine])
+  const commanders = linesIn(draft, 'commander')
   const arranged = zones.map((zone) => ({
     zone,
-    lines: arrange(linesIn(draft, zone), checks, { issuesOnly, sort }),
+    lines: arrange(linesIn(draft, zone), checks, { issuesOnly, sort, flagged }),
   }))
   // With only the issues shown, a zone without any has nothing to list.
   const shown = issuesOnly ? arranged.filter(({ lines }) => lines.length > 0) : arranged
@@ -180,6 +193,18 @@ export function DeckPane({
             The deck is at its limit of 250 cards.
           </p>
         )}
+        {slot ? (
+          <CommanderSlot
+            lines={commanders}
+            identity={identityOf(cardsIn(commanders, 'commander'))}
+            outside={outsideByLine.size}
+            judging={judging}
+            checkOf={(line) => checkOf(checks, line)}
+            onRemove={(card) => actions.remove('commander', card.oracle_id)}
+            onPreview={actions.preview}
+            onFind={onFind}
+          />
+        ) : null}
       </header>
       <div className="min-h-0 flex-1 p-3 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
         {total === 0 ? (
@@ -223,6 +248,7 @@ export function DeckPane({
                           format={draft.format}
                           room={room}
                           check={checkOf(checks, line)}
+                          outside={outsideByLine.get(lineKey(line)) ?? null}
                           actions={actions}
                         />
                       ))}

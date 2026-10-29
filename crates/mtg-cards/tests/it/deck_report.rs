@@ -50,6 +50,12 @@ const fn spec(n: u32, name: &'static str, type_line: &'static str, identity: &'s
 }
 
 fn specs() -> Vec<Spec> {
+    let mut all = base_specs();
+    all.extend(pairing_specs());
+    all
+}
+
+fn base_specs() -> Vec<Spec> {
     vec![
         spec(1, "Forest", "Basic Land \u{2014} Forest", "G"),
         spec(2, "Island", "Basic Snow Land \u{2014} Island", "U"),
@@ -144,6 +150,48 @@ fn specs() -> Vec<Spec> {
                 "G",
             )
         },
+    ]
+}
+
+/// Cards for the pairing rules beyond Partner and the identity of hybrid and colorless commanders.
+fn pairing_specs() -> Vec<Spec> {
+    vec![
+        // Its {G/W} hybrid symbol puts both colors in the identity.
+        spec(
+            19,
+            "Rhys the Redeemed",
+            "Legendary Creature \u{2014} Elf Warrior",
+            "WG",
+        ),
+        Spec {
+            keywords: &["Friends forever"],
+            ..spec(20, "Friend One", "Legendary Creature \u{2014} Human", "G")
+        },
+        Spec {
+            keywords: &["Friends forever"],
+            ..spec(21, "Friend Two", "Legendary Creature \u{2014} Human", "U")
+        },
+        Spec {
+            keywords: &["Doctor's companion"],
+            ..spec(
+                22,
+                "Companion Example",
+                "Legendary Creature \u{2014} Human",
+                "G",
+            )
+        },
+        spec(
+            23,
+            "Doctor Example",
+            "Legendary Creature \u{2014} Time Lord Doctor",
+            "U",
+        ),
+        spec(
+            24,
+            "Colorless Legend",
+            "Legendary Artifact Creature \u{2014} Golem",
+            "",
+        ),
     ]
 }
 
@@ -271,6 +319,65 @@ fn sixty(extra: &[DeckLine]) -> Vec<DeckLine> {
         line(Main, "Forest", 98),
     ],
     vec![]
+)]
+#[case::friends_forever(
+    vec![
+        line(Commander, "Friend One", 1),
+        line(Commander, "Friend Two", 1),
+        line(Main, "Forest", 49),
+        line(Main, "Island", 49),
+    ],
+    vec![]
+)]
+#[case::friends_forever_and_partner_do_not_mix(
+    vec![
+        line(Commander, "Friend One", 1),
+        line(Commander, "Tymna the Weaver", 1),
+        line(Main, "Forest", 98),
+    ],
+    vec![IssueCode::CommanderPair]
+)]
+#[case::a_doctors_companion_and_a_time_lord_doctor(
+    vec![
+        line(Commander, "Companion Example", 1),
+        line(Commander, "Doctor Example", 1),
+        line(Main, "Forest", 49),
+        line(Main, "Island", 49),
+    ],
+    vec![]
+)]
+#[case::a_time_lord_doctor_needs_the_companion(
+    vec![
+        line(Commander, "Doctor Example", 1),
+        line(Commander, "Friend Two", 1),
+        line(Main, "Island", 98),
+    ],
+    vec![IssueCode::CommanderPair]
+)]
+#[case::a_hybrid_commander_allows_both_its_colors(
+    vec![
+        line(Commander, "Rhys the Redeemed", 1),
+        line(Main, "Forest", 98),
+        line(Main, "Sol Ring", 1),
+    ],
+    vec![]
+)]
+#[case::a_hybrid_commander_refuses_a_third_color(
+    vec![
+        line(Commander, "Rhys the Redeemed", 1),
+        line(Main, "Forest", 97),
+        line(Main, "Sol Ring", 1),
+        line(Main, "Island", 1),
+    ],
+    vec![IssueCode::ColorIdentity]
+)]
+#[case::a_colorless_commander_refuses_every_color(
+    vec![
+        line(Commander, "Colorless Legend", 1),
+        line(Main, "Forest", 98),
+        line(Main, "Sol Ring", 1),
+    ],
+    vec![IssueCode::ColorIdentity]
 )]
 #[case::two_commanders_without_partner(
     vec![
