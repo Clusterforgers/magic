@@ -9,12 +9,13 @@ use std::time::Duration;
 
 use mtg_cards::{PrintedCard, PrintedFace};
 use mtg_cli::progress::{Captured, Progress};
+use mtg_cli::propose::budget::Stop;
 use mtg_cli::propose::c11i_http::HttpConfig;
 use mtg_cli::propose::c11i_openai::{OpenAi, OpenAiClient};
 use mtg_cli::propose::model::{Message, ModelClient, ModelError, Request};
 use mtg_cli::propose::outcome::ProposeReport;
-use mtg_cli::propose::propose_cards;
 use mtg_cli::propose::session::Options;
+use mtg_cli::propose::{dry_run, propose_cards};
 use mtg_cli::propose::{select, store::Store};
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -84,6 +85,8 @@ fn options() -> Options {
         resume: false,
         max_requests: 100,
         max_input_tokens: 50_000_000,
+        jobs: 1,
+        ..Options::default()
     }
 }
 
@@ -250,4 +253,132 @@ async fn a_card_that_times_out_is_a_failure_the_run_goes_past_and_resume_asks_ag
     let asked: Vec<String> = server.log()[before..].iter().map(card_in).collect();
     assert_eq!(asked, ["Drake 00"]);
     assert_eq!(saved(dir.path()).len(), 3);
+}
+
+/// A server that answers every card with `FLYING` after `wait`.
+async fn slow_server(wait: Duration) -> Server {
+    start(move |seen: &Seen| chat_reply(seen, FLYING).after(wait)).await
+}
+
+/// Every saved file of a run by name, with its text.
+fn contents(dir: &Path) -> Vec<(String, String)> {
+    let mut found = Vec::new();
+    for name in saved(dir) {
+        let text = std::fs::read_to_string(dir.join("out").join(&name)).unwrap_or_default();
+        found.push((name, text));
+    }
+    found
+}
+
+#[rstest]
+#[case::one_at_a_time(1)]
+#[case::two(2)]
+#[case::four(4)]
+#[tokio::test(flavor = "multi_thread")]
+async fn jobs_cards_are_in_flight_at_once_and_never_more(#[case] jobs: u32) {
+    let dir = tempfile::tempdir().unwrap();
+    let server = slow_server(Duration::from_millis(250)).await;
+    let client = Arc::new(client(&server, Duration::from_secs(20), 0));
+    let options = Options { jobs, ..options() };
+    let (report, _) = run(dir.path(), drakes(8), client, options).await;
+
+    assert_eq!(report.tally.verified, 8);
+    assert_eq!(server.log().len(), 8);
+    assert_eq!(server.peak_in_flight(), jobs as usize);
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn the_files_of_a_parallel_run_are_those_of_a_sequential_one() {
+    let (one, four) = (tempfile::tempdir().unwrap(), tempfile::tempdir().unwrap());
+    for (dir, jobs) in [(one.path(), 1), (four.path(), 4)] {
+        let server = slow_server(Duration::from_millis(20)).await;
+        let client = Arc::new(client(&server, Duration::from_secs(20), 0));
+        let options = Options { jobs, ..options() };
+        run(dir, drakes(10), client, options).await;
+    }
+    let (sequential, parallel) = (contents(one.path()), contents(four.path()));
+    assert_eq!(sequential.len(), 10);
+    assert_eq!(sequential, parallel);
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn the_request_budget_is_shared_and_stops_the_run_exactly_at_the_limit() {
+    let dir = tempfile::tempdir().unwrap();
+    let server = slow_server(Duration::from_millis(50)).await;
+    let client = Arc::new(client(&server, Duration::from_secs(20), 0));
+    let options = Options {
+        jobs: 4,
+        max_requests: 5,
+        ..options()
+    };
+    let (report, log) = run(dir.path(), drakes(12), client, options).await;
+
+    assert_eq!(server.log().len(), 5, "the budget is never passed");
+    assert_eq!((report.tally.verified, report.tally.not_run), (5, 7));
+    assert_eq!(report.budget.requests(), 5);
+    assert_eq!(report.stopped, Some(Stop::Requests(5)));
+    assert!(log.text().contains("5/12 cards done"), "{}", log.text());
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn requests_in_flight_hold_their_tokens_against_the_input_budget() {
+    let dir = tempfile::tempdir().unwrap();
+    let server = slow_server(Duration::from_millis(300)).await;
+    let client = Arc::new(client(&server, Duration::from_secs(20), 0));
+    let cards = drakes(8);
+    let text = dry_run(&cards, &[0], &options()).unwrap();
+    let estimate: u64 = text
+        .lines()
+        .find_map(|line| line.strip_prefix("estimated input tokens of the first request: "))
+        .and_then(|rest| rest.split(' ').next())
+        .and_then(|digits| digits.parse().ok())
+        .unwrap_or_else(|| panic!("the dry run states the estimate:\n{text}"));
+    // Room for two requests by their estimates; all four workers ask at the same moment.
+    let options = Options {
+        jobs: 4,
+        max_input_tokens: estimate * 2 + estimate / 4,
+        ..options()
+    };
+    let (report, _) = run(dir.path(), cards, client, options.clone()).await;
+
+    assert_eq!(
+        server.log().len(),
+        2,
+        "two were in flight when the budget was reached"
+    );
+    assert_eq!((report.tally.verified, report.tally.not_run), (2, 6));
+    assert!(report.budget.usage().input_tokens <= options.max_input_tokens);
+    assert_eq!(
+        report.stopped,
+        Some(Stop::InputTokens(options.max_input_tokens))
+    );
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_status_line_comes_every_interval_and_at_the_end() {
+    let dir = tempfile::tempdir().unwrap();
+    let server = slow_server(Duration::from_millis(500)).await;
+    let client = Arc::new(client(&server, Duration::from_secs(20), 0));
+    let options = Options {
+        status_every: Duration::from_millis(100),
+        ..options()
+    };
+    let (_, log) = run(dir.path(), drakes(2), client, options).await;
+
+    let text = log.text();
+    let lines: Vec<&str> = text.lines().filter(|l| l.starts_with("status: ")).collect();
+    assert!(lines.len() >= 4, "{text}");
+    assert!(
+        lines[0].contains("0/2 cards done") && lines[0].contains("ETA unknown"),
+        "{text}"
+    );
+    let last = lines[lines.len() - 1];
+    assert!(
+        last.contains("2/2 cards done, 0 failed; Verified 2,"),
+        "{last}"
+    );
+    assert!(
+        last.contains("2 requests") && last.contains("tok/s") && last.contains("cards/min"),
+        "{last}"
+    );
 }

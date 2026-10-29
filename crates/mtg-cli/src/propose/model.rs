@@ -189,8 +189,8 @@ impl ModelError {
     }
 }
 
-/// Something that answers requests. `propose` asks for one answer at a time.
-pub trait ModelClient {
+/// Something that answers requests. `propose` may ask from several threads at once (`--jobs`).
+pub trait ModelClient: Send + Sync {
     /// Sends the request and returns the model's answer.
     fn complete(&self, request: &Request) -> Result<Response, ModelError>;
 }

@@ -1,7 +1,12 @@
 //! The loop of a run: for each card ask the model, check the answer, send one repair round when the checker rejects it,
-//! and keep what is accepted.
+//! and keep what is accepted. `--jobs` cards are in flight at once; they share one budget and one set of stop rules.
 
 use std::collections::BTreeSet;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::mpsc::{self, RecvTimeoutError};
+use std::sync::{Mutex, MutexGuard, PoisonError};
+use std::thread;
+use std::time::{Duration, Instant};
 
 use mtg_cards::load::Library;
 use mtg_cards::proposal::{Report, check};
@@ -12,6 +17,7 @@ use super::examples::ExampleIndex;
 use super::model::{ModelClient, ModelError, Request, Response};
 use super::outcome::{Outcome, ProposeReport, Tally};
 use super::prompt::{card_prompt, extract_json, first_request, repair_request};
+use super::status::status_line;
 use super::store::Store;
 use crate::error::CliError;
 use crate::progress::Progress;
@@ -46,6 +52,10 @@ pub struct Options {
     pub max_requests: u32,
     /// The most input tokens.
     pub max_input_tokens: u64,
+    /// How many cards are worked on at the same time (at least 1).
+    pub jobs: u32,
+    /// The time between two status lines while the run goes on; zero prints only the last one.
+    pub status_every: Duration,
 }
 
 /// What the model said and the checker's report of it.
@@ -56,20 +66,36 @@ struct Attempt {
 
 /// Why a request got no answer.
 enum Asked {
-    /// The budget refused; the session remembers which.
+    /// The budget refused; the shared state remembers which.
     Budget,
     Failed(ModelError),
 }
 
-/// One run over a list of cards.
+/// How a card ended and how many requests it took.
+struct Finished {
+    outcome: Outcome,
+    requests: u32,
+}
+
+/// What the workers of a run share, behind one lock: the budget and the stop rules are checked and updated together.
+struct Shared {
+    budget: Budget,
+    stopped: Option<Stop>,
+    tally: Tally,
+    /// Cards in a row, in the order they finished, that got no answer.
+    failures: usize,
+    /// The error that ends the run; the first one stays.
+    error: Option<CliError>,
+}
+
+/// One run over a list of cards: `jobs` workers take the cards in order, and the rounds of one card stay sequential.
 pub struct Session<'a> {
     ctx: &'a Context<'a>,
     client: &'a dyn ModelClient,
     options: &'a Options,
     store: &'a Store,
     progress: &'a Progress,
-    budget: Budget,
-    stopped: Option<Stop>,
+    shared: Mutex<Shared>,
 }
 
 impl<'a> Session<'a> {
@@ -87,92 +113,192 @@ impl<'a> Session<'a> {
             options,
             store,
             progress,
-            budget: Budget::new(options.max_requests, options.max_input_tokens),
-            stopped: None,
+            shared: Mutex::new(Shared {
+                budget: Budget::new(options.max_requests, options.max_input_tokens),
+                stopped: None,
+                tally: Tally::default(),
+                failures: 0,
+                error: None,
+            }),
         }
     }
 
-    /// Asks about each card in turn until the cards or the budget are spent.
-    pub fn run(mut self, cards: &[&PrintedCard]) -> Result<ProposeReport, CliError> {
-        let mut tally = Tally::default();
-        let mut failures = 0;
-        for card in cards {
-            if self.options.resume && self.store.has(&card.name) {
-                tally.skipped += 1;
-                continue;
-            }
-            let before = self.budget.requests();
-            let outcome = if self.stopped.is_some() {
-                Outcome::NotRun
-            } else {
-                self.card(card)?
+    /// Asks about the cards with `options.jobs` workers until the cards or the budget are spent, printing a status line
+    /// every `options.status_every` and at the end.
+    pub fn run(self, cards: &[&PrintedCard]) -> Result<ProposeReport, CliError> {
+        let (work, skipped): (Vec<&PrintedCard>, Vec<&PrintedCard>) = cards
+            .iter()
+            .partition(|card| !(self.options.resume && self.store.has(&card.name)));
+        self.state().tally.skipped = skipped.len();
+        let total = work.len();
+        let jobs = usize::try_from(self.options.jobs)
+            .unwrap_or(1)
+            .clamp(1, total.max(1));
+        let started = Instant::now();
+        let next = AtomicUsize::new(0);
+        let (this, work_ref, next_ref) = (&self, &work, &next);
+        let (finish, ticks) = mpsc::channel::<()>();
+        let panicked = thread::scope(|scope| {
+            let ticker = scope.spawn(move || this.tick(&ticks, total, started));
+            let workers: Vec<_> = (0..jobs)
+                .map(|_| scope.spawn(move || this.work(work_ref, next_ref)))
+                .collect();
+            let ended: Vec<bool> = workers
+                .into_iter()
+                .map(|worker| worker.join().is_err())
+                .collect();
+            drop(finish);
+            ticker.join().is_err() || ended.contains(&true)
+        });
+        self.progress.line(self.status(total, started.elapsed()));
+        let shared = self
+            .shared
+            .into_inner()
+            .unwrap_or_else(PoisonError::into_inner);
+        match shared.error {
+            Some(error) => Err(error),
+            None if panicked => Err(CliError::Config("a worker of the run stopped".into())),
+            None => Ok(ProposeReport {
+                model: self.options.model.clone(),
+                tally: shared.tally,
+                budget: shared.budget,
+                stopped: shared.stopped,
+                out: self.store.dir().to_path_buf(),
+            }),
+        }
+    }
+
+    fn state(&self) -> MutexGuard<'_, Shared> {
+        self.shared.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+
+    /// The status line of the run so far.
+    fn status(&self, total: usize, elapsed: Duration) -> String {
+        let state = self.state();
+        status_line(&state.tally, &state.budget, total, elapsed)
+    }
+
+    /// Prints the status line every `status_every` until the workers are done (the sender is dropped); zero prints none.
+    fn tick(&self, ticks: &mpsc::Receiver<()>, total: usize, started: Instant) {
+        let every = self.options.status_every;
+        if every.is_zero() {
+            return;
+        }
+        while let Err(RecvTimeoutError::Timeout) = ticks.recv_timeout(every) {
+            self.progress.line(self.status(total, started.elapsed()));
+        }
+    }
+
+    /// One worker: takes the next card until none is left or the run has an error.
+    fn work(&self, cards: &[&PrintedCard], next: &AtomicUsize) {
+        while self.state().error.is_none() {
+            let Some(card) = cards.get(next.fetch_add(1, Ordering::SeqCst)) else {
+                return;
             };
-            if let Outcome::Failed(message) = &outcome {
-                failures += 1;
-                if failures >= FAILURES_IN_A_ROW {
-                    return Err(CliError::Config(format!(
-                        "{failures} cards in a row got no answer; the last: {message}"
-                    )));
-                }
+            let finished = if self.state().stopped.is_some() {
+                Ok(Finished {
+                    outcome: Outcome::NotRun,
+                    requests: 0,
+                })
             } else {
-                failures = 0;
-            }
-            tally.add(&outcome);
-            if outcome != Outcome::NotRun {
-                let why = match &outcome {
-                    Outcome::Failed(message) => format!(": {message}"),
-                    _ => String::new(),
-                };
-                self.progress.line(format_args!(
-                    "{}: {} ({} requests){why}",
-                    card.name,
-                    outcome.word(),
-                    self.budget.requests() - before
-                ));
+                self.card(card)
+            };
+            match finished {
+                Ok(finished) => self.finish(card, &finished),
+                Err(error) => {
+                    let mut state = self.state();
+                    if state.error.is_none() {
+                        state.error = Some(error);
+                    }
+                }
             }
         }
-        Ok(ProposeReport {
-            model: self.options.model.clone(),
-            tally,
-            budget: self.budget,
-            stopped: self.stopped,
-            out: self.store.dir().to_path_buf(),
-        })
+    }
+
+    /// Counts a finished card, ends the run after too many failures in a row, and prints the card's line.
+    fn finish(&self, card: &PrintedCard, finished: &Finished) {
+        let mut state = self.state();
+        if let Outcome::Failed(message) = &finished.outcome {
+            state.failures += 1;
+            if state.failures >= FAILURES_IN_A_ROW && state.error.is_none() {
+                state.error = Some(CliError::Config(format!(
+                    "{} cards in a row got no answer; the last: {message}",
+                    state.failures
+                )));
+            }
+        } else {
+            state.failures = 0;
+        }
+        state.tally.add(&finished.outcome);
+        drop(state);
+        if finished.outcome != Outcome::NotRun {
+            let why = match &finished.outcome {
+                Outcome::Failed(message) => format!(": {message}"),
+                _ => String::new(),
+            };
+            self.progress.line(format_args!(
+                "{}: {} ({} requests){why}",
+                card.name,
+                finished.outcome.word(),
+                finished.requests
+            ));
+        }
     }
 
     /// One card: ask, check, and repair once when the checker rejects the answer.
-    fn card(&mut self, printed: &PrintedCard) -> Result<Outcome, CliError> {
+    fn card(&self, printed: &PrintedCard) -> Result<Finished, CliError> {
+        let mut requests = 0;
         let near = self.ctx.examples.nearest(printed, self.options.examples);
         let first = first_request(
             &self.options.model,
             &self.ctx.system,
             card_prompt(printed, &near),
         );
-        let answer = match self.ask(&first, false) {
+        let answer = match self.ask(&first, false, &mut requests) {
             Ok(answer) => answer,
-            Err(Asked::Budget) => return Ok(Outcome::NotRun),
-            Err(Asked::Failed(error)) => return unanswered(error),
+            Err(Asked::Budget) => {
+                return Ok(Finished {
+                    outcome: Outcome::NotRun,
+                    requests,
+                });
+            }
+            Err(Asked::Failed(error)) => {
+                return Ok(Finished {
+                    outcome: unanswered(error)?,
+                    requests,
+                });
+            }
         };
         let mut attempt = self.judge(printed, &answer.text);
         if Outcome::of(&attempt.report).is_repairable() {
             let repair = repair_request(&first, &answer.text, &attempt.report);
-            match self.ask(&repair, true) {
+            match self.ask(&repair, true, &mut requests) {
                 Ok(second) => attempt = self.judge(printed, &second.text),
-                // The first answer stands as it is; the run ends.
+                // The first answer stands as it is.
                 Err(Asked::Budget | Asked::Failed(_)) => {}
             }
         }
-        self.keep(printed, &attempt)
+        Ok(Finished {
+            outcome: self.keep(printed, &attempt)?,
+            requests,
+        })
     }
 
-    /// Sends a request when the budget allows it.
-    fn ask(&mut self, request: &Request, repair: bool) -> Result<Response, Asked> {
-        if let Err(stop) = self.budget.admit(request, repair) {
-            self.stopped = Some(stop);
-            return Err(Asked::Budget);
+    /// Sends a request when the budget allows it; the tokens it may cost stay reserved while it is out.
+    fn ask(&self, request: &Request, repair: bool, requests: &mut u32) -> Result<Response, Asked> {
+        {
+            let mut state = self.state();
+            if let Err(stop) = state.budget.admit(request, repair) {
+                state.stopped.get_or_insert(stop);
+                return Err(Asked::Budget);
+            }
         }
-        let response = self.client.complete(request).map_err(Asked::Failed)?;
-        self.budget.record(response.usage);
+        *requests += 1;
+        let result = self.client.complete(request);
+        let mut state = self.state();
+        state.budget.release(request.estimated_tokens());
+        let response = result.map_err(Asked::Failed)?;
+        state.budget.record(response.usage);
         Ok(response)
     }
 

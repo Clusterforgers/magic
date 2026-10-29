@@ -12,6 +12,7 @@ pub mod outcome;
 pub mod prompt;
 pub mod select;
 pub mod session;
+pub mod status;
 pub mod store;
 pub mod w19b_solved;
 
@@ -40,6 +41,9 @@ use outcome::ProposeReport;
 use session::{Context, Options, Session};
 use store::Store;
 use w19b_solved::W19bSolvedExamples;
+
+/// The time between two status lines of a run.
+pub const STATUS_EVERY: Duration = Duration::from_secs(30);
 
 /// The model asked when `--model` is not given.
 pub const DEFAULT_MODEL: &str = "claude-sonnet-5-5";
@@ -171,6 +175,8 @@ pub fn options_of(args: &ProposeArgs) -> Result<Options, CliError> {
         resume: args.resume,
         max_requests: args.max_requests,
         max_input_tokens: args.max_input_tokens,
+        jobs: args.jobs,
+        status_every: STATUS_EVERY,
     })
 }
 
@@ -184,7 +190,7 @@ pub fn c11i_client_of(
     env: &dyn Fn(&str) -> Option<String>,
     api: &AnthropicConfig,
     progress: Progress,
-) -> Result<Box<dyn ModelClient + Send>, CliError> {
+) -> Result<Box<dyn ModelClient>, CliError> {
     let handle = tokio::runtime::Handle::current();
     let mut config = api.clone();
     config.timeout = Duration::from_secs(args.request_timeout);

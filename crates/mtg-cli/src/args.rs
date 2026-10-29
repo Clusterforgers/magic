@@ -261,6 +261,12 @@ pub struct ProposeArgs {
     #[arg(long, value_name = "N", default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=10))]
     pub retries: u32,
 
+    /// How many cards are worked on at the same time; each card's repair rounds stay in order and the request and token
+    /// budgets are shared. A local server answers that many requests at once only when it is set up to (Ollama:
+    /// `OLLAMA_NUM_PARALLEL`); the paid API accepts them.
+    #[arg(long, value_name = "N", default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..=64))]
+    pub jobs: u32,
+
     /// The most requests to send (a repair round is a request).
     #[arg(long, value_name = "N", default_value_t = 100)]
     pub max_requests: u32,
@@ -713,22 +719,28 @@ mod tests {
     #[case::an_empty_name(&["--cards", ""])]
     #[case::a_zero_timeout(&["--cards", "Opt", "--request-timeout", "0"])]
     #[case::too_many_retries(&["--cards", "Opt", "--retries", "11"])]
+    #[case::no_jobs(&["--cards", "Opt", "--jobs", "0"])]
+    #[case::too_many_jobs(&["--cards", "Opt", "--jobs", "65"])]
     fn propose_refuses_options_that_do_not_fit_together(#[case] args: &[&str]) {
         assert!(propose(args).is_err());
     }
 
     #[rstest]
-    #[case::defaults(&[], 600, 2)]
-    #[case::given(&["--request-timeout", "90", "--retries", "0"], 90, 0)]
-    fn propose_takes_a_request_timeout_and_a_retry_count(
+    #[case::defaults(&[], 600, 2, 1)]
+    #[case::given(&["--request-timeout", "90", "--retries", "0", "--jobs", "4"], 90, 0, 4)]
+    fn propose_takes_a_request_timeout_a_retry_count_and_jobs(
         #[case] extra: &[&str],
         #[case] timeout: u64,
         #[case] retries: u32,
+        #[case] jobs: u32,
     ) {
         let mut line = vec!["--cards", "Opt"];
         line.extend_from_slice(extra);
         let args = propose(&line).unwrap();
-        assert_eq!((args.request_timeout, args.retries), (timeout, retries));
+        assert_eq!(
+            (args.request_timeout, args.retries, args.jobs),
+            (timeout, retries, jobs)
+        );
     }
 
     #[test]
