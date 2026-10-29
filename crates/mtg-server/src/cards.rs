@@ -13,7 +13,7 @@ use mtg_cards::assemble::Assembled;
 use mtg_cards::deck::{CardFacts, Legality};
 use mtg_cards::load::{GeneratedRules, Library};
 use mtg_cards::support::SupportRecord;
-use mtg_cards::{Caps, CardDefinition, PrintedCard, PrintedFace, builtin};
+use mtg_cards::{Caps, CardDefinition, CardIdentity, PrintedCard, PrintedFace, builtin};
 use mtg_core::mana::ManaType;
 use mtg_db::codec::legality_keyword;
 use mtg_db::{Card, Database, DbError, IndexVersion, RulesVersion, StoredFace};
@@ -61,6 +61,19 @@ fn printed_face(face: &StoredFace) -> PrintedFace {
             .map(|color| ManaType::from(color).symbol().to_string())
             .collect(),
     }
+}
+
+/// `definition` named as the card `oracle_id`, on the card and on each of its faces, so a view can say which card it is.
+pub(crate) fn identified(mut definition: CardDefinition, oracle_id: &str) -> CardDefinition {
+    let identity = CardIdentity {
+        oracle_id: oracle_id.to_owned(),
+        printing_id: None,
+    };
+    for face in &mut definition.faces {
+        face.identity = Some(identity.clone());
+    }
+    definition.identity = Some(identity);
+    definition
 }
 
 /// A stored card (the import record as the `cards` table keeps it) as the strings assembly reads.
@@ -315,11 +328,10 @@ impl CardSource {
     /// The definitions of the distinct cards of `ids`, by id.
     pub async fn catalog(&self, ids: &[String]) -> Result<Catalog, CatalogError> {
         let assembled = self.assemble(ids).await?;
-        Ok(Catalog::new(
-            assembled
-                .into_iter()
-                .map(|(id, card)| (id, Arc::new(card.definition))),
-        ))
+        Ok(Catalog::new(assembled.into_iter().map(|(id, card)| {
+            let definition = identified(card.definition, &id);
+            (id, Arc::new(definition))
+        })))
     }
 
     /// The cards of a deck of oracle ids in deck order, copies sharing one definition.
@@ -339,5 +351,37 @@ impl CardSource {
             return Ok(Catalog::default());
         }
         self.catalog(&ids).await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a card the server reads for a game names its oracle id on the card and on each face, and keeps its deck fingerprint.
+    #![allow(clippy::unwrap_used, clippy::expect_used)]
+
+    use mtg_cards::definition::Layout;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::recipe::DeckFingerprint;
+
+    #[rstest]
+    #[case::one_face(0)]
+    #[case::two_faces(2)]
+    fn a_card_and_each_face_name_the_oracle_id(#[case] faces: usize) {
+        let mut card = CardDefinition::new("Twin");
+        if faces > 0 {
+            let each = (0..faces).map(|i| CardDefinition::new(format!("Face {i}")));
+            card = card.with_faces(Layout::ModalDfc, each.collect());
+        }
+        let before = DeckFingerprint::of(&[Arc::new(card.clone())]).unwrap();
+        let named = identified(card, "abc");
+        let expected = Some(CardIdentity {
+            oracle_id: "abc".to_owned(),
+            printing_id: None,
+        });
+        assert_eq!(named.identity, expected);
+        assert!(named.faces.iter().all(|face| face.identity == expected));
+        assert_eq!(DeckFingerprint::of(&[Arc::new(named)]).unwrap(), before);
     }
 }

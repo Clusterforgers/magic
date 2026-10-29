@@ -35,5 +35,5 @@ pub mod vanilla;
 pub mod w11d_dungeon;
 
 pub use assemble::{Assembled, assemble};
-pub use definition::{AbilityDef, CardDefinition, ManaAbility, ManualClause};
+pub use definition::{AbilityDef, CardDefinition, CardIdentity, ManaAbility, ManualClause};
 pub use support::{Caps, PrintedCard, PrintedFace};

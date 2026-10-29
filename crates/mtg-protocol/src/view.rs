@@ -5,7 +5,7 @@
 
 use mtg_cards::ability::LoyaltyCost;
 use mtg_cards::value::CounterKind;
-use mtg_cards::{AbilityDef, ManualClause};
+use mtg_cards::{AbilityDef, CardIdentity, ManualClause};
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::house::HouseRules;
@@ -179,6 +179,12 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ManualClause>>", optional)]
     pub manual: Vec<ManualClause>,
+    /// Which printed card the object shows, for a client to find its image and rules text: the card of the face in use or
+    /// of the copy effect. Left out for a token, an ability, a card the game has no record of, and a face-down object to a
+    /// seat that may not look at it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub identity: Option<CardIdentity>,
 }
 
 /// Whether a flag is off, so serialization can leave it out (serde hands over a reference).

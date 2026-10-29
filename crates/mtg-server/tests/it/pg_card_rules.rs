@@ -336,16 +336,19 @@ async fn a_compiled_card_has_its_abilities_and_a_rules_file_wins_over_its_row(po
         .deck(&[id_of(GROWTH)])
         .await
         .unwrap();
-    assert_eq!(*compiled[0], *card(GROWTH).unwrap(), "what the file says");
+    let mut made = (*compiled[0]).clone();
+    assert!(
+        made.identity.take().is_some(),
+        "the server names the card it read"
+    );
+    assert_eq!(made, *card(GROWTH).unwrap(), "what the file says");
 
     // With the file back, a row that says something else loses to it.
     make_it_plus_four(&pool).await;
     let deck = CardSource::new(pool).deck(&[id_of(GROWTH)]).await.unwrap();
-    assert_eq!(
-        *deck[0],
-        *card(GROWTH).unwrap(),
-        "the hand-written file wins"
-    );
+    let mut made = (*deck[0]).clone();
+    made.identity = None;
+    assert_eq!(made, *card(GROWTH).unwrap(), "the hand-written file wins");
 }
 
 #[sqlx::test(migrations = false)]
