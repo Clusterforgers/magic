@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 35] = [
+const TEMPLATES: [Template; 36] = [
     super::w9d_exert::w9d_exert,
     super::c11b_once::c11b_once,
     super::c8_eg_cast_itself::c8_eg_cast_itself,
@@ -78,6 +78,7 @@ const TEMPLATES: [Template; 35] = [
     super::untap_rules::doesnt_untap,
     evasion::block_only,
     free_cast,
+    super::w14c_alt_costs::w14c_alt_cost,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -197,6 +198,7 @@ fn free_cast(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("without paying its mana cost")?;
     Some(Ability::FreeCast {
         condition: Some(condition),
+        cost: None,
     })
 }
 
@@ -1242,8 +1244,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             per,
             condition,
         } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
+        Ability::FreeCast { cost: Some(_), .. } => {
+            super::w14c_alt_costs::w14c_alt_cost_texts(ability)
+        }
         Ability::FreeCast {
             condition: Some(held),
+            cost: None,
         } => control_texts(held)
             .into_iter()
             .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))

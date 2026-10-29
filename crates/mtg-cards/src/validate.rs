@@ -898,6 +898,33 @@ impl<'a> Walker<'a> {
         self.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost, required);
     }
 
+    /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
+    /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
+    fn w14c_alternative_cost(&mut self, cost: &Cost) {
+        self.at("cost", |w| w.cost(cost));
+        if cost.0.is_empty() {
+            self.problem("an alternative cost names what is paid; leave it out for a free cast");
+        }
+        if cost.has_x() {
+            self.problem("an alternative cost has no X");
+        }
+        let by_the_source = cost.0.iter().any(|item| {
+            matches!(
+                item,
+                CostItem::Tap
+                    | CostItem::Untap
+                    | CostItem::SacrificeSelf
+                    | CostItem::ExileSelf
+                    | CostItem::DiscardSelf
+                    | CostItem::OneOf(_)
+            )
+        });
+        if by_the_source {
+            self.problem("an alternative cost is paid by the caster with no choice and not by the spell itself");
+        }
+        self.parts_a_spell_cost_does_not_pay("Ability", "FreeCast.Cost", cost, false);
+    }
+
     /// The parts of the cost of a keyword of a spell (kicker, buyback, entwine, flashback, evoke, madness) that the
     /// announcement of the spell does not pay: counters removed from the source, which a card in a hand or a graveyard
     /// has none of, and an amount that is the X announced, which the cost of a spell does not count. They are named
@@ -2739,10 +2766,13 @@ impl Walker<'_> {
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
-            Ability::FreeCast { condition } => {
+            Ability::FreeCast { condition, cost } => {
                 w.scope = Scope::new(&[], false);
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
+                }
+                if let Some(cost) = cost {
+                    w.w14c_alternative_cost(cost);
                 }
             }
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
