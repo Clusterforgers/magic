@@ -17,7 +17,7 @@ use super::tokens::Reader;
 use super::triggers::article;
 use crate::effect::{Destination, Effect, Order, Place};
 use crate::refs::{Bounds, Pred, Ref, Selector, ZoneKind};
-use crate::value::{Amount, Cmp, CounterKind, StatKind};
+use crate::value::{Amount, Cmp, StatKind};
 
 /// The cards looked at.
 fn w20a_top() -> Ref {
@@ -99,18 +99,20 @@ fn w20a_mixed(r: &mut Reader<'_>) -> Option<Pred> {
         subtype(r).map(|name| Pred::Subtype(Subtype(name)))
     }
     let mut preds = vec![item(r)?];
+    let mut commas = 0;
     loop {
-        let more = r.attempt(|r| {
-            let comma = r.punct(',');
-            r.word("or").then_some(())?;
-            item(r).map(|pred| (comma, pred))
-        });
-        let Some((comma, pred)) = more else { break };
-        preds.push(pred);
-        if comma != (preds.len() > 2) {
-            return None;
+        let comma = r.punct(',');
+        let or = r.word("or");
+        (comma || or).then_some(())?;
+        preds.push(item(r)?);
+        commas += usize::from(comma);
+        if or {
+            break;
         }
     }
+    // "A or B" has no comma; a longer list has one before each item after the first.
+    let expected = if preds.len() == 2 { 0 } else { preds.len() - 1 };
+    (commas == expected).then_some(())?;
     let types = preds.iter().filter(|pred| matches!(pred, Pred::Type(_)));
     let names = preds.iter().filter(|pred| matches!(pred, Pred::Subtype(_)));
     (preds.len() > 1 && types.count() > 0 && names.count() > 0).then_some(Pred::AnyOf(preds))
@@ -251,10 +253,10 @@ fn w20a_destination(r: &mut Reader<'_>) -> Option<Destination> {
     r.need("onto the battlefield")?;
     let tapped = r.word("tapped");
     let counter = r.attempt(|r| {
-        (r.words("with a") || r.words("with an")).then_some(())?;
-        let name = r.take_word()?.to_owned();
-        r.need("counter on it")?;
-        Some((CounterKind::Other(name), 1))
+        r.need("with")?;
+        let counted = super::counters::counters(r)?;
+        r.need("on it")?;
+        Some(counted)
     });
     Some(Destination::Battlefield {
         tapped,
@@ -280,8 +282,10 @@ fn w20a_destination_text(to: &Destination) -> Option<String> {
             }
             match counters.as_slice() {
                 [] => {}
-                [(CounterKind::Other(name), 1)] => {
-                    let _ = write!(text, " with {} {name} counter on it", article(name));
+                [(kind, number)] => {
+                    let counted =
+                        super::counters::text(kind, &Amount::Fixed(i32::try_from(*number).ok()?))?;
+                    let _ = write!(text, " with {counted} on it");
                 }
                 _ => return None,
             }
@@ -599,10 +603,13 @@ pub fn w20a_sequence(effects: &[Effect]) -> Option<(String, usize)> {
 
 /// "You may put up to one land card from among them" for "You may put a land card from among them".
 fn w20a_up_to_one(text: &str) -> Option<String> {
-    let at = text.find("You may put a")?;
-    let after = &text[at + "You may put a".len()..];
-    let after = after.strip_prefix('n').unwrap_or(after);
-    Some(format!("{}You may put up to one{after}", &text[..at]))
+    const LEAD: &str = "You may put ";
+    let at = text.find(LEAD)?;
+    let after = &text[at + LEAD.len()..];
+    let after = after
+        .strip_prefix("an ")
+        .or_else(|| after.strip_prefix("a "))?;
+    Some(format!("{}You may put up to one {after}", &text[..at]))
 }
 
 /// The last two takes in one sentence: "..., and up to one Elf card from among them into your hand".

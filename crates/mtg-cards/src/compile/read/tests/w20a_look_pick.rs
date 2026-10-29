@@ -142,6 +142,14 @@ fn w20a_takes_from_among_the_top_cards_read_and_write_back(
     "When you cast this spell, reveal the top X cards of your library. You may put a nonland permanent card with mana value X or less from among them onto the battlefield. Then shuffle the rest into your library.",
     ClauseKind::Triggered
 )]
+#[case::mixed_list_of_three(
+    "Look at the top four cards of your library. You may reveal a Knight, Equipment, or artifact card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+    ClauseKind::Spell
+)]
+#[case::plus_one_counter(
+    "Reveal the top four cards of your library. You may put a creature card from among them onto the battlefield with a +1/+1 counter on it. Put the rest into your graveyard.",
+    ClauseKind::Spell
+)]
 #[case::rest_in_the_hand_after_an_exile(
     "Look at the top five cards of your library. Put any number of permanent cards from among them onto the battlefield and the rest into your hand. Exile ~.",
     ClauseKind::Spell
