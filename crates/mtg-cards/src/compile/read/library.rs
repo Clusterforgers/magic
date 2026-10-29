@@ -662,9 +662,9 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
         }
         [Effect::Search { .. }, ..] => search_sequence(effects, &Ref::You),
         [Effect::RevealUntil { .. }, ..] => super::reveal_until::sequence(effects),
-        [Effect::LookAtTop { .. }, ..] => {
-            look_sequence(effects).or_else(|| super::among::sequence(effects))
-        }
+        [Effect::LookAtTop { .. }, ..] => look_sequence(effects)
+            .or_else(|| super::among::sequence(effects))
+            .or_else(|| super::w20a_look_pick::w20a_sequence(effects)),
         _ => None,
     }
 }
