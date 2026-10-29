@@ -130,7 +130,9 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing }: Bat
     <section
       aria-label={`${owner}'s battlefield`}
       data-battlefield-seat={seat}
-      className="relative flex min-h-0 min-w-0 flex-1 flex-col"
+      // Clips its zone, which cannot be shorter than its padding: a board squeezed to no room (a tall prompt sheet
+      // under it) shows no sliver of a card.
+      className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
     >
       <div
         ref={zone}

@@ -1,4 +1,4 @@
-// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered; the game-over screen of a real game fits the window too.
+// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock; the game-over screen of a real game fits the window too.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
@@ -38,6 +38,10 @@ interface Look {
   areas: Record<string, Box | null>
   /** The things that must be in view, by name. */
   things: Record<string, { box: Box; free: boolean } | null>
+  /** Battlefield cards in view that the prompt sheet or the turn banner lies over (a card's name and the box that covers it). */
+  covered: string[]
+  /** How far the divider after the commanders in the hand dock stands above the dock; 0 or less is inside it, null without one. */
+  dividerRise: number | null
 }
 
 /** What each thing is, as a selector. A prompt's controls are in the dock; the hand is the first card of the row nothing lies over. */
@@ -78,11 +82,55 @@ function readPage(arg: { things: Record<string, string>; areas: string[] }): Loo
     const top = document.elementFromPoint((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2)
     things[name] = { box: rect, free: top !== null && element.contains(top) }
   }
+  // A card is in view where no scrolling or clipping ancestor cuts it off; what lies over one is what hides it.
+  const inView = (element: Element): Box | null => {
+    let { left, top, right, bottom } = element.getBoundingClientRect()
+    for (let parent = element.parentElement; parent !== null; parent = parent.parentElement) {
+      const style = getComputedStyle(parent)
+      if (!/auto|scroll|hidden|clip/.test(style.overflow + style.overflowX + style.overflowY)) continue
+      const clip = parent.getBoundingClientRect()
+      left = Math.max(left, clip.left)
+      top = Math.max(top, clip.top)
+      right = Math.min(right, clip.right)
+      bottom = Math.min(bottom, clip.bottom)
+    }
+    return right > left && bottom > top ? { left, top, right, bottom } : null
+  }
+  const covered: string[] = []
+  if (arg.areas.length > 0) {
+    const lids = ['[data-slot="shared-sheet"]', '[data-slot="turn-banner"]']
+      .map((selector) => document.querySelector(selector))
+      .filter((element): element is Element => element !== null)
+      // A banner that is not drawn (faded out) lies over nothing.
+      .filter((element) => Number(getComputedStyle(element).opacity) > 0)
+    for (const card of document.querySelectorAll('[data-slot="battlefield-zone"] button[data-object-id]')) {
+      const seen = inView(card)
+      if (seen === null) continue
+      for (const lid of lids) {
+        const over = lid.getBoundingClientRect()
+        if (
+          Math.min(seen.right, over.right) - Math.max(seen.left, over.left) > 1 &&
+          Math.min(seen.bottom, over.bottom) - Math.max(seen.top, over.top) > 1
+        ) {
+          covered.push(
+            `${card.getAttribute('aria-label') ?? 'a card'} under the ${lid.getAttribute('data-slot')}`,
+          )
+        }
+      }
+    }
+  }
+  const divider = document.querySelector('[data-slot="hand-command"]')
+  const dock = document.querySelector('[data-area="hand"]')
   return {
     inner: { width: window.innerWidth, height: window.innerHeight },
     scroll: { width: root.scrollWidth, height: root.scrollHeight, y: window.scrollY, x: window.scrollX },
     areas,
     things,
+    covered,
+    dividerRise:
+      divider === null || dock === null
+        ? null
+        : dock.getBoundingClientRect().top - divider.getBoundingClientRect().top,
   }
 }
 
@@ -133,6 +181,10 @@ async function expectFits(page: Page, size: Size, needs: readonly Thing[], where
           if (thing === null || thing === undefined) problems.push(`${name} is missing`)
           else if (!inside(thing.box, look)) problems.push(`${name} is outside the window`)
           else if (!thing.free) problems.push(`${name} is covered`)
+        }
+        problems.push(...look.covered.slice(0, 3))
+        if (look.dividerRise !== null && look.dividerRise > 0.5) {
+          problems.push(`the divider of the commanders rises ${look.dividerRise}px over the battlefield`)
         }
         return problems
       },

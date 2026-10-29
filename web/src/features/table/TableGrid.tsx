@@ -84,7 +84,8 @@ export function TableGrid({
         className="grid min-h-0 min-w-0 bg-table"
       >
         <Area area="bar">{bar}</Area>
-        <Area area="opponents" className="p-2">
+        {/* The prompt sheet of the shared strip grows up into this area; its room is kept free (`useSheetOverhang`). */}
+        <Area area="opponents" className="px-2 pt-2 pb-[calc(0.5rem+var(--sheet-overhang,0px))]">
           {opponents}
         </Area>
         <Area area="shared" className="px-2">
