@@ -2033,9 +2033,6 @@ impl Writer<'_> {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
-            Effect::RemoveFromCombat { what } => {
-                format!("remove {} from combat", self.object(what)?)
-            }
             Effect::Counter { what } => format!("counter {}", self.object(what)?),
             _ => return None,
         })
@@ -2145,7 +2142,6 @@ impl Writer<'_> {
             | Effect::TapOrUntap { .. }
             | Effect::Goad { .. }
             | Effect::Fight { .. }
-            | Effect::RemoveFromCombat { .. }
             | Effect::Regenerate { .. }
             | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
@@ -2215,10 +2211,19 @@ impl Writer<'_> {
     }
 
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
+    /// "remove enchanted creature from combat".
+    fn left_combat(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::RemoveFromCombat { what } = effect else {
+            return None;
+        };
+        Some(format!("remove {} from combat", self.object(what)?))
+    }
+
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.graveyard_exile(effect)
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
+            .or_else(|| self.left_combat(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
             .or_else(|| all_graveyards::text(effect))

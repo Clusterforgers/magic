@@ -183,6 +183,7 @@ fn remove_damage(
     Ok(perm)
 }
 
+#[allow(clippy::too_many_lines)]
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::AttackersDeclared { attackers, .. } => {

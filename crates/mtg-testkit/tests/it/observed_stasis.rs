@@ -184,9 +184,9 @@ fn the_enchanted_creature_has_lost_every_ability() -> Result<(), ScriptError> {
     driver.cast_at("Observed Stasis", &[raider])?;
     settle(&mut driver)?;
     let id = raider_id(&driver);
-    assert!(abilities_of(driver.state(), id).is_empty());
+    assert_eq!(abilities_of(driver.state(), id).len(), 0);
     assert!(!has_keyword(driver.state(), id, &Keyword::Flying));
-    assert!(driver.offered_abilities("Raider")?.is_empty());
+    assert_eq!(driver.offered_abilities("Raider")?.len(), 0);
     Ok(())
 }
 
@@ -226,7 +226,7 @@ fn everything_comes_back_when_the_aura_leaves_the_battlefield() -> Result<(), Sc
     let raider = driver.target_named("Raider")?;
     driver.cast_at("Observed Stasis", &[raider])?;
     settle(&mut driver)?;
-    assert!(abilities_of(driver.state(), raider_id(&driver)).is_empty());
+    assert_eq!(abilities_of(driver.state(), raider_id(&driver)).len(), 0);
     // The active player passes, and the other seat destroys the Aura.
     driver.pass()?;
     let aura = driver.target_named("Observed Stasis")?;
@@ -237,7 +237,7 @@ fn everything_comes_back_when_the_aura_leaves_the_battlefield() -> Result<(), Sc
     assert!(has_keyword(driver.state(), id, &Keyword::Flying));
     // Its activated ability is offered again, and it does not return to the combat it was removed from.
     assert_eq!(driver.offered_abilities("Raider")?.len(), 1);
-    assert!(attacking(&driver).is_empty());
+    assert_eq!(attacking(&driver).len(), 0);
     driver.idle_until(4, Step::DeclareAttackers)?;
     assert!(attack_offers(&driver).contains(&"Raider".to_owned()));
     Ok(())

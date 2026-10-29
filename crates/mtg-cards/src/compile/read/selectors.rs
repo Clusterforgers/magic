@@ -540,6 +540,14 @@ pub(super) fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
     }
 }
 
+/// "its controller controls" for the creature the sentence before acted on: "tapped creature its controller controls".
+fn its_controller(r: &mut Reader<'_>) -> Option<Pred> {
+    let it = r.it.clone()?;
+    matches!(it, Ref::Attached | Ref::Target(_)).then_some(())?;
+    r.words("its controller controls").then_some(())?;
+    Some(Pred::ControlledBy(Ref::ControllerOf(Box::new(it))))
+}
+
 /// What may follow the noun: who controls it, a keyword or a number it has.
 pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("you control") {
@@ -584,12 +592,8 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
     }
-    // The creature the sentence before acted on: "tapped creature its controller controls".
-    if let Some(it) = r.it.clone()
-        && matches!(it, Ref::Attached | Ref::Target(_))
-        && r.words("its controller controls")
-    {
-        return Some(Pred::ControlledBy(Ref::ControllerOf(Box::new(it))));
+    if let Some(pred) = its_controller(r) {
+        return Some(pred);
     }
     if r.words("the monarch controls") || (r.at_monarch && r.words("that player controls")) {
         return Some(Pred::ControlledBy(Ref::Monarch));
