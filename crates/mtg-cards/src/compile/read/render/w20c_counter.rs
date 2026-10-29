@@ -25,9 +25,6 @@ impl Writer<'_> {
         paid: &[Effect],
         unpaid: &[Effect],
     ) -> Option<String> {
-        let Ref::ControllerOf(of) = who else {
-            return None;
-        };
         let [CostItem::Mana(mana)] = cost.0.as_slice() else {
             return None;
         };
@@ -39,7 +36,7 @@ impl Writer<'_> {
         else {
             return None;
         };
-        (**of == Ref::Triggering && paid.is_empty()).then_some(())?;
+        (*who == Ref::Triggering && paid.is_empty()).then_some(())?;
         Some(format!(
             "counter that spell or ability unless its controller pays {mana}"
         ))

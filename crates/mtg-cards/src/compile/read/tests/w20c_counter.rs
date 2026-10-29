@@ -33,7 +33,7 @@ fn w20c_the_payment_reads_into_the_dsl() {
     };
     assert_eq!(
         serde_json::to_string(&effects).unwrap_or_default(),
-        r#"[{"Pay":{"who":{"ControllerOf":"Triggering"},"cost":"{2}","unpaid":[{"Counter":{"what":"Triggering"}}]}}]"#
+        r#"[{"Pay":{"who":"Triggering","cost":"{2}","unpaid":[{"Counter":{"what":"Triggering"}}]}}]"#
     );
 }
 

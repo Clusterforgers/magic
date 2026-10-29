@@ -15,7 +15,7 @@
             "effects": [
               {
                 "Pay": {
-                  "who": { "ControllerOf": "Triggering" },
+                  "who": "Triggering",
                   "cost": "{2}",
                   "unpaid": [{ "Counter": { "what": "Triggering" } }]
                 }
