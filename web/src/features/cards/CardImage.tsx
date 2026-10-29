@@ -50,10 +50,17 @@ interface CardImageProps {
  * cropped, recoloured or marked; the state over it is a separate layer. Until it loads, and whenever it is missing, the
  * text face shows and no broken-image icon ever does.
  */
-export function CardImage({ src, alt, children, overlay, className, turned = false, eager = false }: CardImageProps) {
+export function CardImage({
+  src,
+  alt,
+  children,
+  overlay,
+  className,
+  turned = false,
+  eager = false,
+}: CardImageProps) {
   const [seen, setSeen] = useState<{ src: string; status: ImageStatus } | null>(null)
-  const status: ImageStatus | null =
-    src === null ? null : seen?.src === src ? seen.status : knownStatus(src)
+  const status: ImageStatus | null = src === null ? null : seen?.src === src ? seen.status : knownStatus(src)
   const settle = (next: ImageStatus) => {
     if (src === null) return
     if (next === 'loaded') loaded.add(src)

@@ -17,8 +17,20 @@ const soldier: ImageSource = {
 
 describe('cardImageUrl', () => {
   it.each<[string, ImageSource, number, ImageSize, string]>([
-    ['oracle front', { kind: 'card', identity: { oracle_id: ORACLE } }, 0, 'small', `/api/images/oracle/${ORACLE}/0/small`],
-    ['oracle back', { kind: 'card', identity: { oracle_id: ORACLE } }, 1, 'large', `/api/images/oracle/${ORACLE}/1/large`],
+    [
+      'oracle front',
+      { kind: 'card', identity: { oracle_id: ORACLE } },
+      0,
+      'small',
+      `/api/images/oracle/${ORACLE}/0/small`,
+    ],
+    [
+      'oracle back',
+      { kind: 'card', identity: { oracle_id: ORACLE } },
+      1,
+      'large',
+      `/api/images/oracle/${ORACLE}/1/large`,
+    ],
     [
       'printing wins',
       { kind: 'card', identity: { oracle_id: ORACLE, printing_id: PRINTING } },
@@ -26,7 +38,13 @@ describe('cardImageUrl', () => {
       'normal',
       `/api/images/printing/${PRINTING}/0/normal`,
     ],
-    ['bad face floors to 0', { kind: 'card', identity: { oracle_id: ORACLE } }, -2, 'png', `/api/images/oracle/${ORACLE}/0/png`],
+    [
+      'bad face floors to 0',
+      { kind: 'card', identity: { oracle_id: ORACLE } },
+      -2,
+      'png',
+      `/api/images/oracle/${ORACLE}/0/png`,
+    ],
     [
       'token',
       soldier,
@@ -36,12 +54,25 @@ describe('cardImageUrl', () => {
     ],
     [
       'colorless token without p/t',
-      { kind: 'token', name: 'Treasure', type: 'Artifact — Treasure', colors: [], power: null, toughness: null },
+      {
+        kind: 'token',
+        name: 'Treasure',
+        type: 'Artifact — Treasure',
+        colors: [],
+        power: null,
+        toughness: null,
+      },
       0,
       'small',
       '/api/images/token/0/small?name=Treasure&type=Artifact+%E2%80%94+Treasure&colors=C',
     ],
-    ['escapes ids', { kind: 'card', identity: { oracle_id: 'a/b' } }, 0, 'small', '/api/images/oracle/a%2Fb/0/small'],
+    [
+      'escapes ids',
+      { kind: 'card', identity: { oracle_id: 'a/b' } },
+      0,
+      'small',
+      '/api/images/oracle/a%2Fb/0/small',
+    ],
   ])('%s', (_, source, face, size, url) => {
     expect(cardImageUrl(source, face, size)).toBe(url)
   })
@@ -82,15 +113,30 @@ const object = (over: Partial<ObjectView>): ObjectView => ({
 
 describe('imageSourceOf', () => {
   it.each<[string, Partial<ObjectView>, ImageSource | null, boolean]>([
-    ['identified card', { identity: { oracle_id: ORACLE } }, { kind: 'card', identity: { oracle_id: ORACLE } }, false],
+    [
+      'identified card',
+      { identity: { oracle_id: ORACLE } },
+      { kind: 'card', identity: { oracle_id: ORACLE } },
+      false,
+    ],
     [
       'token by its facts',
       { kind: 'Token', name: 'Soldier', subtypes: ['Soldier'], colors: ['White'], power: 1, toughness: 1 },
       soldier,
       false,
     ],
-    ['face-down to another seat', { face_down: true, name: '', types: [], subtypes: [], colors: [] }, null, true],
-    ['face-down to its controller', { face_down: true, identity: { oracle_id: ORACLE } }, { kind: 'card', identity: { oracle_id: ORACLE } }, false],
+    [
+      'face-down to another seat',
+      { face_down: true, name: '', types: [], subtypes: [], colors: [] },
+      null,
+      true,
+    ],
+    [
+      'face-down to its controller',
+      { face_down: true, identity: { oracle_id: ORACLE } },
+      { kind: 'card', identity: { oracle_id: ORACLE } },
+      false,
+    ],
     ['hidden card', { name: '' }, null, true],
     ['ability on the stack', { kind: 'Ability' }, null, false],
     ['card with no record', {}, null, false],

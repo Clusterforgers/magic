@@ -5,6 +5,7 @@ import type { ObjectId } from '@/protocol/generated'
 import { Card } from './Card'
 import type { CardSize } from './cardSize'
 import { CardStack } from './CardStack'
+import { CardWidthContext } from './ImageFace'
 import { GhostCard } from './fx/GhostCard'
 import { withGhosts } from './fx/ghosts'
 import { NO_GHOSTS } from './fx/model'
@@ -115,70 +116,72 @@ export function CardRow({
   const fit = box !== undefined
   const spaced = fit && gap !== undefined
   return (
-    <ul
-      ref={list}
-      role="list"
-      aria-label={label}
-      // A row holding only ghosts has nothing to announce.
-      aria-hidden={ids.length === 0 || undefined}
-      onFocus={roving.onFocus}
-      onKeyDown={onKeyDown}
-      style={style}
-      className={cn(
-        // A fitted row keeps the gaps `fit.ts` counts (6 px across, 4 px between lines); the zone around it has the padding.
-        spaced ? 'flex gap-0' : fit ? 'flex gap-x-1.5 gap-y-1' : 'flex gap-1.5 p-1',
-        single ? 'overflow-x-auto' : 'flex-wrap',
-        className,
-      )}
-    >
-      {items.map((item) => {
-        if (typeof item !== 'number') {
-          return <GhostCard key={`ghost-${item.token}`} ghost={item} size={size} fit={fit} />
-        }
-        const entry = entryOf.get(item)
-        const tabbable = item === roving.current
-        const itemClass = cn(
-          'flex',
-          spaced && 'relative hover:z-10 focus-within:z-10 [&:not(:first-child)]:ml-(--card-gap)',
-        )
-        if (entry !== undefined && !entry.open) {
+    <CardWidthContext.Provider value={width ?? null}>
+      <ul
+        ref={list}
+        role="list"
+        aria-label={label}
+        // A row holding only ghosts has nothing to announce.
+        aria-hidden={ids.length === 0 || undefined}
+        onFocus={roving.onFocus}
+        onKeyDown={onKeyDown}
+        style={style}
+        className={cn(
+          // A fitted row keeps the gaps `fit.ts` counts (6 px across, 4 px between lines); the zone around it has the padding.
+          spaced ? 'flex gap-0' : fit ? 'flex gap-x-1.5 gap-y-1' : 'flex gap-1.5 p-1',
+          single ? 'overflow-x-auto' : 'flex-wrap',
+          className,
+        )}
+      >
+        {items.map((item) => {
+          if (typeof item !== 'number') {
+            return <GhostCard key={`ghost-${item.token}`} ghost={item} size={size} fit={fit} />
+          }
+          const entry = entryOf.get(item)
+          const tabbable = item === roving.current
+          const itemClass = cn(
+            'flex',
+            spaced && 'relative hover:z-10 focus-within:z-10 [&:not(:first-child)]:ml-(--card-gap)',
+          )
+          if (entry !== undefined && !entry.open) {
+            return (
+              <li key={item} className={itemClass}>
+                <CardStack
+                  id={item}
+                  count={entry.ids.length}
+                  size={size}
+                  fit={fit}
+                  tabbable={tabbable}
+                  onOpen={toggle}
+                />
+              </li>
+            )
+          }
+          // The first member of an open stack carries the chip that closes it, unless a prompt needs every member.
+          const closes = entry !== undefined && !entry.held && entry.ids[0] === item
           return (
-            <li key={item} className={itemClass}>
-              <CardStack
-                id={item}
-                count={entry.ids.length}
-                size={size}
-                fit={fit}
-                tabbable={tabbable}
-                onOpen={toggle}
-              />
+            <li
+              key={item}
+              data-stack-open={entry !== undefined && entry.ids[0] === item ? entry.ids.length : undefined}
+              className={cn(itemClass, closes && 'relative')}
+            >
+              <Card id={item} size={size} fit={fit} tabbable={tabbable} />
+              {closes ? (
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  aria-label={`Close the stack of ${entry.ids.length}`}
+                  aria-expanded={true}
+                  onClick={() => toggle(item)}
+                  className="absolute -bottom-1 -left-1 rounded-full bg-foreground px-1.5 text-[0.6875rem] leading-4 font-semibold text-background tabular-nums ring-2 ring-primary"
+                >
+                  ×{entry.ids.length}
+                </button>
+              ) : null}
             </li>
           )
-        }
-        // The first member of an open stack carries the chip that closes it, unless a prompt needs every member.
-        const closes = entry !== undefined && !entry.held && entry.ids[0] === item
-        return (
-          <li
-            key={item}
-            data-stack-open={entry !== undefined && entry.ids[0] === item ? entry.ids.length : undefined}
-            className={cn(itemClass, closes && 'relative')}
-          >
-            <Card id={item} size={size} fit={fit} tabbable={tabbable} />
-            {closes ? (
-              <button
-                type="button"
-                tabIndex={-1}
-                aria-label={`Close the stack of ${entry.ids.length}`}
-                aria-expanded={true}
-                onClick={() => toggle(item)}
-                className="absolute -bottom-1 -left-1 rounded-full bg-foreground px-1.5 text-[0.6875rem] leading-4 font-semibold text-background tabular-nums ring-2 ring-primary"
-              >
-                ×{entry.ids.length}
-              </button>
-            ) : null}
-          </li>
-        )
-      })}
-    </ul>
+        })}
+      </ul>
+    </CardWidthContext.Provider>
   )
 }
