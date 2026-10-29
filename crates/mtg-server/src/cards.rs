@@ -76,6 +76,46 @@ pub(crate) fn identified(mut definition: CardDefinition, oracle_id: &str) -> Car
     definition
 }
 
+/// `card` as the printing `printing_id` of its card, on the card and on each face.
+fn printed_as(card: &CardDefinition, printing_id: &str) -> CardDefinition {
+    let mut printed = card.clone();
+    for identity in printed
+        .faces
+        .iter_mut()
+        .map(|face| &mut face.identity)
+        .chain([&mut printed.identity])
+        .flatten()
+    {
+        identity.printing_id = Some(printing_id.to_owned());
+    }
+    printed
+}
+
+/// `cards` with the printing each position names, as the deck line that holds the card chose it. Copies of one card in
+/// one printing share a definition; a position with no printing, or a card with no identity, keeps its card. The
+/// printing is a label for the table's art: the rules, the fingerprint and the game state do not see it.
+pub(crate) fn with_printings(
+    cards: &[Arc<CardDefinition>],
+    printings: &[Option<String>],
+) -> Vec<Arc<CardDefinition>> {
+    let mut made: BTreeMap<(String, String), Arc<CardDefinition>> = BTreeMap::new();
+    cards
+        .iter()
+        .enumerate()
+        .map(|(at, card)| {
+            let printing = printings.get(at).and_then(Option::as_deref);
+            let (Some(printing), Some(identity)) = (printing, card.identity.as_ref()) else {
+                return Arc::clone(card);
+            };
+            let key = (identity.oracle_id.clone(), printing.to_owned());
+            Arc::clone(
+                made.entry(key)
+                    .or_insert_with(|| Arc::new(printed_as(card, printing))),
+            )
+        })
+        .collect()
+}
+
 /// A stored card (the import record as the `cards` table keeps it) as the strings assembly reads.
 pub fn printed_card(card: &Card) -> PrintedCard {
     PrintedCard {
@@ -383,5 +423,59 @@ mod tests {
         assert_eq!(named.identity, expected);
         assert!(named.faces.iter().all(|face| face.identity == expected));
         assert_eq!(DeckFingerprint::of(&[Arc::new(named)]).unwrap(), before);
+    }
+
+    fn named(oracle_id: &str, faces: usize) -> Arc<CardDefinition> {
+        let mut card = CardDefinition::new(oracle_id);
+        if faces > 0 {
+            let each = (0..faces).map(|i| CardDefinition::new(format!("Face {i}")));
+            card = card.with_faces(Layout::ModalDfc, each.collect());
+        }
+        Arc::new(identified(card, oracle_id))
+    }
+
+    fn printing(card: &CardDefinition) -> Option<&str> {
+        card.identity.as_ref()?.printing_id.as_deref()
+    }
+
+    #[rstest]
+    #[case::none_named(&[], &[None, None, None])]
+    #[case::all_none(&[None, None, None], &[None, None, None])]
+    #[case::one_printing_for_the_copies(&[Some("p"), Some("p"), None], &[Some("p"), Some("p"), None])]
+    #[case::two_printings_of_one_card(&[Some("p"), Some("q"), Some("p")], &[Some("p"), Some("q"), Some("p")])]
+    #[case::a_short_list_leaves_the_rest(&[Some("p")], &[Some("p"), None, None])]
+    fn a_position_takes_the_printing_its_line_chose(
+        #[case] asked: &[Option<&str>],
+        #[case] wanted: &[Option<&str>],
+        #[values(0, 2)] faces: usize,
+    ) {
+        let cards = vec![named("a", faces); 3];
+        let asked: Vec<Option<String>> = asked.iter().map(|p| p.map(str::to_owned)).collect();
+        let printed = with_printings(&cards, &asked);
+        let got: Vec<Option<&str>> = printed.iter().map(|card| printing(card)).collect();
+        assert_eq!(got, wanted);
+        for (card, wanted) in printed.iter().zip(wanted) {
+            let identity = card.identity.as_ref().unwrap();
+            assert_eq!(identity.oracle_id, "a");
+            assert!(card.faces.iter().all(|face| face.identity == card.identity));
+            assert_eq!(identity.printing_id.as_deref(), *wanted);
+        }
+        // Copies in one printing share a definition, and the fingerprint does not see the printing.
+        assert!(Arc::ptr_eq(&printed[0], &printed[0]));
+        if wanted[0].is_some() && wanted[0] == wanted[2] {
+            assert!(Arc::ptr_eq(&printed[0], &printed[2]));
+        }
+        assert_eq!(
+            DeckFingerprint::of(&printed).unwrap(),
+            DeckFingerprint::of(&cards).unwrap()
+        );
+    }
+
+    #[test]
+    fn a_card_with_no_identity_keeps_to_itself() {
+        let bare = Arc::new(CardDefinition::new("Bare"));
+        let printed = with_printings(std::slice::from_ref(&bare), &[Some("p".to_owned())]);
+        assert!(Arc::ptr_eq(&printed[0], &bare));
+        assert_eq!(printed[0].identity, None);
     }
 }

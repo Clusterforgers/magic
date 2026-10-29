@@ -116,7 +116,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Manual cards and views
 - [~] (v1a) (v1a-ability-wording) The activated abilities of an object in its view with their oracle wording (`ObjectView.activated`, the loyalty abilities' text), so a menu names what `PriorityOptions.abilities` offers
 - [~] (v1b) (v1a-ability-wording) A card revealed and moved to a hidden zone in one batch reaches every seat it was shown to as it was seen (`EventBatch.shown`), so the log names it
-- [~] (v1d) (v1c-spectator-printing) The printing a deck line chose reaches the game (`DeckRef::Oracle` and the catalog), so `ObjectView.identity.printing_id` names it and the table draws that art
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## M4 Commander

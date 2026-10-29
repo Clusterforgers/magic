@@ -53,6 +53,7 @@ mod pg_seat_decks;
 mod pg_store;
 mod pg_user_games;
 mod pg_visibility;
+mod printing_recipe;
 mod question_clocks;
 mod reconnect;
 mod registry;
