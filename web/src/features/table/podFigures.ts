@@ -13,6 +13,23 @@ export const ZONE_NAME: Record<ZoneKey, string> = {
   command: 'Command zone',
 }
 
+/** The name of a zone in a picture too narrow for the whole word. */
+export const ZONE_SHORT: Record<ZoneKey, string> = {
+  hand: 'Hand',
+  library: 'Lib',
+  graveyard: 'Grave',
+  exile: 'Exile',
+  command: 'Cmd',
+}
+
+/** From this picture width (px) the label of an empty zone is written out; under it the short form fits. */
+export const FULL_LABEL_MIN_PX = 60
+
+/** The label of an empty zone's outline: its name, or the short form in a picture too narrow for it. */
+export function emptyLabel(zone: ZoneKey, width: number): string {
+  return width >= FULL_LABEL_MIN_PX ? ZONE_NAME[zone] : ZONE_SHORT[zone]
+}
+
 /** "1 card" or "7 cards". */
 export function cardCount(count: number): string {
   return count === 1 ? '1 card' : `${count} cards`

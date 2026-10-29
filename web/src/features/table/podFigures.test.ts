@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { PlayerView } from '@/protocol/generated'
 import {
   cardCount,
+  emptyLabel,
   chipZones,
   podCounts,
   podState,
@@ -144,5 +145,19 @@ describe('seatHue', () => {
 
   it('is the same for a seat wherever it is asked', () => {
     expect(seatHue(3)).toBe(seatHue(3))
+  })
+})
+
+describe('the label of an empty zone', () => {
+  it.each<[ZoneKey, number, string]>([
+    ['graveyard', 44, 'Grave'],
+    ['graveyard', 59, 'Grave'],
+    ['graveyard', 60, 'Graveyard'],
+    ['graveyard', 92, 'Graveyard'],
+    ['exile', 44, 'Exile'],
+    ['command', 48, 'Cmd'],
+    ['command', 74, 'Command zone'],
+  ])('writes the %s at %i px as %s', (zone, width, label) => {
+    expect(emptyLabel(zone, width)).toBe(label)
   })
 })

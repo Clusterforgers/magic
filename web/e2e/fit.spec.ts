@@ -282,6 +282,76 @@ test.describe('the development table with 40 permanents a seat', () => {
     }
   })
 
+  test('draws each seat’s corner as pictures of 44 px or more, and the opponent’s pod column does not scroll at 1440x900 and 1920x1080', async ({
+    page,
+  }) => {
+    await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&prompt=priority&turn=you`)
+    await page.locator(THINGS.primary).waitFor()
+    // The pod column of a seat: whether it scrolls, how its corner is drawn and the pictures in it.
+    const read = () =>
+      page.evaluate(() => {
+        const read = (seat: number) => {
+          const column = document.querySelector(`[data-slot="pod-column"]:has([data-seat="${seat}"])`)
+          if (column === null) return null
+          const box = column.getBoundingClientRect()
+          const corner = column.querySelector('[data-slot="seat-corner"]')
+          const pictures =
+            corner === null
+              ? []
+              : [...corner.querySelectorAll('button[data-zone], [data-slot="corner-commander"]')]
+          const rects = pictures.map((picture) => picture.getBoundingClientRect())
+          return {
+            scrolls: column.scrollHeight > column.clientHeight + 1,
+            corner: corner !== null,
+            pictures: pictures.length,
+            narrowest: rects.length === 0 ? null : Math.min(...rects.map((rect) => Math.round(rect.width))),
+            lowest: rects.length === 0 ? null : Math.min(...rects.map((rect) => Math.round(rect.height))),
+            inside: rects.every(
+              (rect) =>
+                rect.left >= box.left - 0.5 &&
+                rect.right <= box.right + 0.5 &&
+                rect.bottom <= box.bottom + 0.5,
+            ),
+          }
+        }
+        return { opponent: read(1), you: read(0) }
+      })
+    for (const [width, height] of [
+      [1920, 1080],
+      [1440, 900],
+    ] as const) {
+      await page.setViewportSize({ width, height })
+      await expect
+        .poll(async () => (await read()).opponent?.corner, {
+          message: `${width}x${height}: the opponent's corner`,
+        })
+        .toBe(true)
+      const { opponent, you } = await read()
+      // The commander, the graveyard and the exile of the opponent; the graveyard and the exile of yours.
+      expect(opponent, `${width}x${height}: the opponent's pod`).toMatchObject({
+        scrolls: false,
+        inside: true,
+        pictures: 3,
+      })
+      expect(opponent?.narrowest, `${width}x${height}: the opponent's pictures`).toBeGreaterThanOrEqual(44)
+      expect(opponent?.lowest, `${width}x${height}: the opponent's pictures`).toBeGreaterThanOrEqual(62)
+      expect(you, `${width}x${height}: your pod`).toMatchObject({ scrolls: false, inside: true, pictures: 2 })
+      expect(you?.narrowest, `${width}x${height}: your pictures`).toBeGreaterThanOrEqual(44)
+    }
+    // Where the column is too short for the least picture, the chips are back and nothing is drawn under 44 px.
+    for (const size of SIZES) {
+      await page.setViewportSize({ width: size.width, height: size.height })
+      await page.waitForTimeout(250)
+      const { opponent } = await read()
+      if (opponent === null || !opponent.corner) continue
+      expect(
+        opponent.narrowest,
+        `${size.width}x${size.height}: the opponent's pictures`,
+      ).toBeGreaterThanOrEqual(44)
+      expect(opponent.inside, `${size.width}x${size.height}: the pictures are inside the column`).toBe(true)
+    }
+  })
+
   test('fits with a table of twelve seats in focus mode', async ({ page }) => {
     await page.goto(`${DEV_WEB_URL}/dev/table?seats=12&prompt=priority&turn=you`)
     await page.locator(THINGS.primary).waitFor()

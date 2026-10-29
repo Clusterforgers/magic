@@ -255,18 +255,21 @@ describe('graveyard and exile', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it.each<Variant>(VARIANTS)('keeps an empty graveyard as a disabled chip in the %s pod', (variant) => {
-    show(
-      1,
-      (view) => {
-        must(view.players[1]).graveyard = { count: 0, cards: [] }
-      },
-      variant,
-    )
-    const button = within(panel('Bo')).getByRole('button', { name: 'Graveyard 0 cards' })
-    expect(button).toBeDisabled()
-    expect(button).toHaveTextContent('0')
-  })
+  it.each<Variant>(VARIANTS)(
+    'keeps an empty graveyard as a disabled chip (the panel: a labelled outline) in the %s pod',
+    (variant) => {
+      show(
+        1,
+        (view) => {
+          must(view.players[1]).graveyard = { count: 0, cards: [] }
+        },
+        variant,
+      )
+      const button = within(panel('Bo')).getByRole('button', { name: 'Graveyard 0 cards' })
+      expect(button).toBeDisabled()
+      expect(button).toHaveTextContent(variant === 'line' ? '0' : 'Grave')
+    },
+  )
 
   it('counts only the exiled cards the seat owns', () => {
     renderTable({
@@ -353,7 +356,7 @@ describe('the panel', () => {
     show(0)
     const pod = panel('Alice (you)')
     expect(pod).toHaveClass('grid-cols-[minmax(0,1fr)]', 'min-w-0')
-    const chips = must(pod.querySelector<HTMLElement>('[data-slot="commander-chips"]'))
+    const chips = must(pod.querySelector<HTMLElement>('[data-slot="pod-counts"]'))
     const texts = [...chips.querySelectorAll<HTMLElement>('[data-slot^="commander-"] > .truncate')]
     expect(texts.length).toBeGreaterThan(1)
     for (const text of texts) expect(text).toHaveClass('truncate')

@@ -15,6 +15,8 @@ type Objects = Readonly<Record<ObjectId, ObjectView>>
 export interface CommanderChip {
   key: number
   text: string
+  /** The figure alone, for a corner with no room for a name: "+4" for tax, "14/21" for damage. */
+  figure: string
   words: string
   level?: DamageLevel
 }
@@ -44,6 +46,7 @@ export function taxChips(player: PlayerView | undefined, objects: Objects): Comm
       {
         key: commander.object,
         text: commanders.length > 1 ? `${shortName(name)} · ${text}` : text,
+        figure: commander.tax > 0 ? `+${commander.tax}` : `${commander.casts}×`,
         words: taxWords(name, commander),
       },
     ]
@@ -60,6 +63,7 @@ export function damageChips(player: PlayerView | undefined, objects: Objects): C
       return {
         key: entry.commander,
         text: `${shortName(name)} ${damageFraction(entry.damage, lethal)}`,
+        figure: damageFraction(entry.damage, lethal),
         words: damageWords(name, entry.damage, lethal),
         level: damageLevel(entry.damage, lethal),
       }
@@ -80,10 +84,12 @@ interface ChipsProps {
   chips: readonly CommanderChip[]
   density: ChipDensity
   className?: string
+  /** Write the figure alone ("14/21"); the name stays in the chip's spoken name and tooltip. */
+  compact?: boolean
 }
 
 /** Tax chips, each an image named in words ("Atraxa: cast 2 times from the command zone, tax 4 mana"). */
-export function TaxChips({ chips, density, className }: ChipsProps) {
+export function TaxChips({ chips, density, className, compact = false }: ChipsProps) {
   return chips.map((chip) => (
     <span
       key={chip.key}
@@ -100,14 +106,14 @@ export function TaxChips({ chips, density, className }: ChipsProps) {
     >
       <Crown aria-hidden="true" className="size-3.5 shrink-0" />
       <span aria-hidden="true" className="truncate tabular-nums">
-        {chip.text}
+        {compact ? chip.figure : chip.text}
       </span>
     </span>
   ))
 }
 
 /** Commander damage chips, toned by how close each is to lethal and named in words. */
-export function DamageChips({ chips, density, className }: ChipsProps) {
+export function DamageChips({ chips, density, className, compact = false }: ChipsProps) {
   return chips.map((chip) => {
     const level = chip.level ?? 'plain'
     return (
@@ -128,7 +134,7 @@ export function DamageChips({ chips, density, className }: ChipsProps) {
       >
         <Swords aria-hidden="true" className="size-3.5 shrink-0" />
         <span aria-hidden="true" className="truncate tabular-nums">
-          {chip.text}
+          {compact ? chip.figure : chip.text}
         </span>
       </span>
     )

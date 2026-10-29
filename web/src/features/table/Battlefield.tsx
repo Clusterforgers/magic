@@ -112,6 +112,8 @@ interface BattlefieldProps {
   size: CardSize
   /** `near` is the viewer's own side, `far` an opponent's: the bands mirror each other top to bottom. */
   facing: 'near' | 'far'
+  /** Told the creatures' card width of the fit in px (null before the zone is measured), which the seat's corner follows. */
+  onCardWidth?: (width: number | null) => void
 }
 
 /**
@@ -122,7 +124,7 @@ interface BattlefieldProps {
  * as it needs each one. The zone fits the largest card at which every lane fits its box (`layoutSeat`); what cannot
  * fit even at the smallest card scrolls inside, with the edge fade and a count of the boxes below.
  */
-export const Battlefield = memo(function Battlefield({ seat, size, facing }: BattlefieldProps) {
+export const Battlefield = memo(function Battlefield({ seat, size, facing, onCardWidth }: BattlefieldProps) {
   const owner = useSeatNamer()(seat)
   const grouped = useContext(TableOptionsContext).stacks ?? STACKS_BY_DEFAULT
   const stacks = usePlay(useStable((state) => battlefieldStacks(state, seat, grouped)))
@@ -151,6 +153,10 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing }: Bat
     })
   }, [])
   const { fit } = layout
+  const cardWidth = fit?.cardWidth ?? null
+  useLayoutEffect(() => {
+    onCardWidth?.(cardWidth)
+  }, [onCardWidth, cardWidth])
   // Before the zone is measured every lane is drawn in the two-band shape at its own size.
   const bands = useMemo<readonly (readonly (LanePlace | RowKind)[])[]>(() => {
     if (fit !== null) return fit.bands.map((band) => band.lanes)

@@ -251,9 +251,11 @@ export function buildFixture(options: FixtureOptions): Fixture {
     [pick(INSTANTS, 0), viewer],
   ]
   const stack = stackSpells.map(([template, caster]) => add(template, caster, 'Stack').id)
-  const exile = [viewer, active, (viewer + 2) % seats].map(
-    (owner, index) => add(pick(INSTANTS, index + 3), owner, 'Exile').id,
-  )
+  // The duel board shows the opponent's corner with an exile of two.
+  const exileOwners = duel
+    ? [viewer, (viewer + 1) % seats, (viewer + 1) % seats]
+    : [viewer, active, (viewer + 2) % seats]
+  const exile = exileOwners.map((owner, index) => add(pick(INSTANTS, index + 3), owner, 'Exile').id)
 
   // The shared battlefield lists one seat's permanent after another's, as entering the game over time would.
   const lanes = cards.map((mine) => [...mine.lands, ...mine.creatures, ...mine.others])
