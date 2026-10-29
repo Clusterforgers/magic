@@ -3,7 +3,7 @@ use super::*;
 
 #[test]
 fn w13b_probe2() {
-    let a = ability(r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"May":{"effects":[{"PutCounters":{"on":"You","counter":{"Other":"rad"},"count":2}}]}}]}}"#);
+    let a = ability(r#"{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"Type":"Land"},{"In":"Graveyard"},"MilledThisTurn"]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{"tapped":true,"under":"You"}}}}]}}"#);
     eprintln!("{:?}", render_variants(&a));
 }
 
@@ -18,6 +18,10 @@ fn w13b_probe() {
         ("{1}, {T}: Target player mills three cards.", ClauseKind::Activated),
         ("Landfall — Whenever a land you control enters, you may get two rad counters.", ClauseKind::Triggered),
         ("{T}: Put target land card in a graveyard that was milled this turn onto the battlefield tapped under your control.", ClauseKind::Activated),
+        ("{T}: Put target land card in a graveyard onto the battlefield tapped under your control.", ClauseKind::Activated),
+        ("{T}: Put target land card from a graveyard onto the battlefield tapped under your control.", ClauseKind::Activated),
+        ("{T}: Put target creature card from a graveyard onto the battlefield under your control.", ClauseKind::Activated),
+        ("{T}: Put target creature card in a graveyard that entered this turn onto the battlefield under your control.", ClauseKind::Activated),
         ("You may have this land enter tapped. If you do, you get two rad counters.", ClauseKind::Static),
         ("{5}, {T}: Draw a card. This ability costs {1} less to activate for each rad counter you have.", ClauseKind::Activated),
         ("{5}, {T}: Draw a card.", ClauseKind::Activated),

@@ -468,6 +468,7 @@ impl<'a> Walker<'a> {
             | Pred::Monstrous
             | Pred::Renowned
             | Pred::EnteredThisTurn
+            | Pred::MilledThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::Attacking

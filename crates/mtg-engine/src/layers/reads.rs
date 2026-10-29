@@ -187,6 +187,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Monstrous
         | Pred::Renowned
         | Pred::EnteredThisTurn
+        | Pred::MilledThisTurn
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
         | Pred::Attacking

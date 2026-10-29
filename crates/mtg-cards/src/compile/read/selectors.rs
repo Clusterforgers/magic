@@ -558,6 +558,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
         return Some(Pred::EnteredThisTurn);
     }
+    if r.words(super::w13b_mill_rad::W13B_MILLED_THIS_TURN) {
+        return Some(Pred::MilledThisTurn);
+    }
     if r.words("that attacked this turn") {
         return Some(Pred::AttackedThisTurn);
     }
@@ -687,6 +690,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
         Pred::EnteredThisTurn => "that entered this turn".to_owned(),
+        Pred::MilledThisTurn => "that was milled this turn".to_owned(),
         Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
@@ -949,6 +953,9 @@ fn zone_suffix(r: &mut Reader<'_>, form: Form) -> Option<Vec<Pred>> {
     }
     if form == Form::Count {
         return None;
+    }
+    if let Some(milled) = r.attempt(super::w13b_mill_rad::w13b_in_a_graveyard) {
+        return Some(milled);
     }
     // The graveyard of any player, or of the one the phrase names.
     OTHER_GRAVEYARDS

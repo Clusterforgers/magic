@@ -7,7 +7,7 @@ use super::selectors::{Form, phrase, phrase_in};
 use super::tokens::Reader;
 use crate::ability::{Ability, Limit};
 use crate::effect::Effect;
-use crate::refs::{Bounds, Ref, TargetSpec, Targetable};
+use crate::refs::{Bounds, Pred, Ref, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::{ReplaceBy, TriggerPattern};
 use crate::value::{Amount, CounterKind};
 
@@ -137,12 +137,29 @@ pub(super) fn w13b_loses_all_text(effect: &Effect, third: bool) -> Option<String
     Some(format!("{verb} all {} counters", counters::kind_text(counter)?))
 }
 
+/// "in a graveyard" before "that was milled this turn": a card in any graveyard, which the next words narrow.
+pub(super) fn w13b_in_a_graveyard(r: &mut Reader<'_>) -> Option<Vec<Pred>> {
+    r.need("in a graveyard")?;
+    r.lookahead(|r| r.words(W13B_MILLED_THIS_TURN).then_some(()))?;
+    Some(vec![Pred::In(ZoneKind::Graveyard)])
+}
+
+/// The words of `Pred::MilledThisTurn`.
+pub(super) const W13B_MILLED_THIS_TURN: &str = "that was milled this turn";
+
 /// The wordings these leftovers add to the ones `texts` holds for `ability`.
 pub(super) fn w13b_wordings(ability: &Ability, texts: &mut Vec<String>) {
     for text in texts.iter_mut() {
         // The counters by word are written with their subject ("you get"), which "you may" already says.
         if text.contains("you may you get ") {
             *text = text.replace("you may you get ", "you may get ");
+        }
+        // A card milled this turn lies "in a graveyard", said before when it was milled.
+        if text.contains(" that was milled this turn from a graveyard ") {
+            *text = text.replace(
+                " that was milled this turn from a graveyard ",
+                " in a graveyard that was milled this turn ",
+            );
         }
     }
     w13b_once_wordings(ability, texts);
