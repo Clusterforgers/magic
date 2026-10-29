@@ -63,7 +63,7 @@ function Check({ precon }: { precon: PreconListItem }) {
     <div className="grid justify-items-start gap-1">
       <PreconBadge precon={precon} id={statusId(precon)} />
       {statusOf(precon) === 'blocked' ? (
-        <span className="text-xs text-muted-foreground">Details list what stops it.</span>
+        <span className="text-xs whitespace-nowrap text-muted-foreground">Details list what stops it.</span>
       ) : null}
     </div>
   )

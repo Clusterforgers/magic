@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
-import { legalityLines } from '@/features/builder/report'
+import { legalityLines, sentence } from '@/features/builder/report'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { cn } from '@/lib/utils'
 import type { PreconBoard, PreconListItem, PreconView } from '@/protocol/generated'
@@ -116,8 +116,10 @@ function Board({ board, onlyHand }: { board: PreconBoard; onlyHand: boolean }) {
             </div>
             {card.support === 'verified' ? null : (
               <p className="text-sm break-words text-muted-foreground">
-                <span className="font-medium text-foreground">Played by hand: </span>
-                {clausesText(card.support, card.reasons)}
+                {card.reasons.length > 0 ? (
+                  <span className="font-medium text-foreground">Played by hand: </span>
+                ) : null}
+                {sentence(clausesText(card.support, card.reasons))}
               </p>
             )}
           </li>

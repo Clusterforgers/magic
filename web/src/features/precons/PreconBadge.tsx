@@ -1,5 +1,4 @@
 import { DeckStateBadge } from '@/features/decks/DeckStateBadge'
-import { cn } from '@/lib/utils'
 import type { DeckState, PreconListItem } from '@/protocol/generated'
 import { statusOf, statusWords } from './format'
 import type { PreconStatus } from './format'
@@ -30,7 +29,7 @@ export function PreconBadge({
       id={id}
       label={statusWords(precon)}
       data-precon-status={status}
-      className={cn('h-auto min-h-6 whitespace-normal', className)}
+      className={className}
     />
   )
 }

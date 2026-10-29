@@ -169,6 +169,7 @@ export function fixtureView(code: string): PreconView | null {
         board('commander', [cardLine('Kalamax, the Stormsire')]),
         board('main', [
           cardLine('Unplayable Card 1', 'unplayable'),
+          cardLine('Manual Card 1', 'manual'),
           cardLine('Island', 'verified', { count: 40 }),
         ]),
         board('sideboard', [cardLine('Wish Target', 'manual')]),
