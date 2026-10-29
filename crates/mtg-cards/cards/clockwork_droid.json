@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0aa875dc-89ae-4e7a-b10d-aadde8e2b95c",
+  "name": "Clockwork Droid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clockwork Droid",
+      "oracle_fingerprint": "89214ea47709cdbcd636d911d8ffd7e1",
+      "abilities": [
+        { "Keyword": { "Exert": {} } },
+        {
+          "Triggered": {
+            "when": { "Exerted": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "68b2e74b-933b-4285-963b-dda3a986a914",
+  "oracle_id": "84b08b55-0623-4202-98c6-1756d3c1bb8f",
+  "name": "Bandit's Haul",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otj",
+  "collector_number": "240",
+  "rarity": "uncommon",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Whenever you commit a crime, put a loot counter on this artifact. This ability triggers only once each turn. (Targeting opponents, anything they control, and/or cards in their graveyards is a crime.)\n{T}: Add one mana of any color.\n{2}, {T}, Remove two loot counters from this artifact: Draw a card.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

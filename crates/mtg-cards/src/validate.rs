@@ -617,6 +617,7 @@ impl<'a> Walker<'a> {
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
             Amount::Exiled(of) => self.w2c_selector_amount("Exiled", of),
+            Amount::PhasedOut(of) => self.w2c_selector_amount("PhasedOut", of),
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
             Amount::LowestLife(who) => self.player_amount("LowestLife", who),
@@ -719,6 +720,10 @@ impl<'a> Walker<'a> {
                 if self.after != After::Condition {
                     self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
                 }
+            }
+            Condition::CompletedDungeon(who) => {
+                self.uses("Condition", "CompletedDungeon");
+                self.at("CompletedDungeon", |w| w.reference(who, Kind::Player));
             }
             Condition::Monarch(who) => {
                 self.uses("Condition", "Monarch");
@@ -1264,15 +1269,16 @@ impl<'a> Walker<'a> {
         }
     }
 
-    fn expend_count(&mut self, pattern: &TriggerPattern) {
+    /// Notes the primitive a trigger pattern uses and refuses an expend of nothing.
+    fn w11a_pattern_used(&mut self, pattern: &TriggerPattern) {
+        self.uses("Trigger", &tag_of(pattern));
         if let TriggerPattern::Expend { n: 0, .. } = pattern {
             self.problem("expend needs a number of at least 1");
         }
     }
 
     fn trigger_pattern(&mut self, pattern: &TriggerPattern) {
-        self.uses("Trigger", &tag_of(pattern));
-        self.expend_count(pattern);
+        self.w11a_pattern_used(pattern);
         match pattern {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
@@ -1284,9 +1290,6 @@ impl<'a> Walker<'a> {
             | TriggerPattern::AttacksPlayerOrPlaneswalker { what, at } => {
                 self.at("what", |w| w.selector(what));
                 self.at("at", |w| w.reference(at, Kind::Player));
-            }
-            TriggerPattern::PlayerAttacked { who } => {
-                self.at("who", |w| w.reference(who, Kind::Player));
             }
             TriggerPattern::PlayerAttacks { by, at } => {
                 self.at("by", |w| w.reference(by, Kind::Player));
@@ -1316,13 +1319,17 @@ impl<'a> Walker<'a> {
             TriggerPattern::LifeGained { who }
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
+            | TriggerPattern::Ventured { who, .. }
+            | TriggerPattern::PlayerAttacked { who }
+            | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::CoinFlipWon { who }
             | TriggerPattern::DiceRolled { who, .. }
             | TriggerPattern::Amassed { who }
             | TriggerPattern::Surveilled { who }
             | TriggerPattern::Bolstered { who }
-            | TriggerPattern::Expend { who, .. } => {
+            | TriggerPattern::Expend { who, .. }
+            | TriggerPattern::W11cCrime { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             TriggerPattern::Drew { who, what } => {
@@ -1349,6 +1356,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
             | TriggerPattern::Untapped { what }
+            | TriggerPattern::PhasedOut { what }
+            | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
             | TriggerPattern::Unblocked { what }
@@ -1356,10 +1365,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::CountersRemoved { what, .. } => {
                 self.at("what", |w| w.selector(what));
             }
-            TriggerPattern::Attached { what, to } => {
-                self.at("what", |w| w.selector(what));
-                self.at("to", |w| w.selector(to));
-            }
+            TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
             TriggerPattern::GroupAttacks { .. } | TriggerPattern::Chapter { .. } => {
                 self.w2e_counted(pattern);
             }
@@ -1370,6 +1376,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
         }
+    }
+
+    /// "is attached to": the attachment and what it is attached to.
+    fn w11b_attached(&mut self, what: &Selector, to: &Selector) {
+        self.at("what", |w| w.selector(what));
+        self.at("to", |w| w.selector(to));
     }
 
     /// The patterns that count: the attackers of a `GroupAttacks` and the number of a `Chapter`.
@@ -1415,6 +1427,8 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
+                | TriggerPattern::Ventured { .. }
+                | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::CoinFlipWon { .. }
@@ -1434,6 +1448,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Adapted { .. }
                 | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::Expend { .. }
+                | TriggerPattern::W11cCrime { .. }
                 | TriggerPattern::Surveilled { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
@@ -1934,6 +1949,15 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
+            Effect::PhaseOut {
+                what, duration, ..
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                // The engine phases them in when the source leaves the battlefield, and knows no other duration.
+                if let Some(duration) = duration.filter(|d| *d != Duration::WhileSourceOnBattlefield) {
+                    w.uses("PhaseOut", &format!("Duration.{}", tag_of(&duration)));
+                }
+            }
             Effect::Exile {
                 what,
                 bind,
@@ -1961,7 +1985,6 @@ impl Walker<'_> {
             | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }
-            | Effect::PhaseOut { what }
             | Effect::Transform { what }
             | Effect::Flip { what }
             | Effect::Prepare { what }
@@ -2093,6 +2116,7 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
+            | Effect::Venture { who, .. }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
             | Effect::Exploit { who } => {
@@ -3291,6 +3315,13 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
 /// The problems of a card file by itself, with `tokens` the ids of the predefined tokens.
 pub(crate) fn check_card(card: &Card, tokens: &BTreeSet<String>) -> Vec<Problem> {
     walk(card, tokens).problems
+}
+
+/// The problems of a dungeon room's ability, with `tokens` the ids of the predefined tokens.
+pub(crate) fn w11d_check_room(ability: &Ability, tokens: &BTreeSet<String>) -> Vec<Problem> {
+    let mut walker = Walker::new(tokens);
+    walker.ability(ability);
+    walker.problems
 }
 
 /// The problems of a predefined token by itself.

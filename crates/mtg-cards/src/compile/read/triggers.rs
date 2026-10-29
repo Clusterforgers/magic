@@ -70,6 +70,8 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
         | TriggerPattern::Untapped { what }
+        | TriggerPattern::PhasedOut { what }
+        | TriggerPattern::PhasedIn { what }
         | TriggerPattern::ZoneChange {
             what,
             to: Some(ZoneKind::Battlefield),
@@ -314,6 +316,11 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         )));
     }
     let what = phrase(r, Form::All)?;
+    if at_least == 1 && r.words("phase out") {
+        return Some(TriggerPattern::Batch(Box::new(TriggerPattern::PhasedOut {
+            what,
+        })));
+    }
     if r.word("attack") {
         return Some(TriggerPattern::GroupAttacks { what, at_least });
     }
@@ -497,6 +504,54 @@ pub(super) fn w2g_next_spell(r: &mut Reader<'_>) -> Option<Selector> {
 }
 
 /// "you cast a creature spell", "an opponent casts a spell", "you sacrifice a Clue".
+/// "you venture into the dungeon" or "you complete a dungeon" after the player and the verb (CR 701.49, 309.7).
+fn w11d_dungeon_event(r: &mut Reader<'_>, verb: &str, by: Ref) -> Option<TriggerPattern> {
+    if verb.starts_with("venture") {
+        r.need("into the dungeon")?;
+        Some(TriggerPattern::Ventured {
+            who: by,
+            room: None,
+        })
+    } else {
+        r.need("a dungeon")?;
+        Some(TriggerPattern::CompletedDungeon { who: by })
+    }
+}
+
+/// The patterns `w11d_dungeon_event` reads, written back.
+fn w11d_dungeon_text(pattern: &TriggerPattern) -> Option<String> {
+    match pattern {
+        TriggerPattern::Ventured { who, room: None } => Some(format!(
+            "Whenever {} into the dungeon",
+            player_verb(who, "venture")?
+        )),
+        TriggerPattern::CompletedDungeon { who } => Some(format!(
+            "Whenever {} a dungeon",
+            player_verb(who, "complete")?
+        )),
+        _ => None,
+    }
+}
+
+/// "draw a card", "draw your second card each turn": the card draws of a player.
+fn draw_event(r: &mut Reader<'_>, by: Ref, whose: &str) -> Option<TriggerPattern> {
+    if let Some(nth) = each_turn(r, "card", whose) {
+        let event = TriggerPattern::Drew {
+            who: by,
+            what: Selector::default(),
+        };
+        return Some(TriggerPattern::Nth {
+            event: Box::new(event),
+            nth,
+        });
+    }
+    r.need("a card")?;
+    Some(TriggerPattern::Drew {
+        who: by,
+        what: Selector::default(),
+    })
+}
+
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
@@ -520,21 +575,7 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         r.need("life")?;
         Some(first_time(r, TriggerPattern::LifeLost { who: by }))
     } else if verb == if third { "draws" } else { "draw" } {
-        if let Some(nth) = each_turn(r, "card", whose) {
-            let event = TriggerPattern::Drew {
-                who: by,
-                what: Selector::default(),
-            };
-            return Some(TriggerPattern::Nth {
-                event: Box::new(event),
-                nth,
-            });
-        }
-        r.need("a card")?;
-        Some(TriggerPattern::Drew {
-            who: by,
-            what: Selector::default(),
-        })
+        draw_event(r, by, whose)
     } else if verb == if third { "discards" } else { "discard" } {
         r.need("a card")?;
         Some(TriggerPattern::Discarded {
@@ -549,6 +590,10 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(first_time(r, TriggerPattern::Surveilled { who: by }))
     } else if verb == if third { "creates" } else { "create" } {
         tokens_created(r, &by)
+    } else if verb == if third { "ventures" } else { "venture" }
+        || verb == if third { "completes" } else { "complete" }
+    {
+        w11d_dungeon_event(r, verb, by)
     } else if verb == if third { "becomes" } else { "become" } {
         r.need("the monarch")?;
         Some(TriggerPattern::BecomesMonarch { who: by })
@@ -586,6 +631,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "expends" } else { "expend" } {
         let n = r.number().filter(|n| *n > 0)?;
         Some(TriggerPattern::Expend { who: by, n })
+    } else if verb == if third { "commits" } else { "commit" } {
+        r.need("a crime")?;
+        Some(TriggerPattern::W11cCrime { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
@@ -753,6 +801,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::BecomesBlocked { what: what.clone() });
     } else if r.words("becomes tapped") {
         return Some(TriggerPattern::Tapped { what: what.clone() });
+    } else if r.words("phases out") || r.words("phase out") {
+        return Some(TriggerPattern::PhasedOut { what: what.clone() });
+    } else if r.words("phases in") || r.words("phase in") {
+        return Some(TriggerPattern::PhasedIn { what: what.clone() });
     } else if r.words("becomes untapped") {
         return Some(TriggerPattern::Untapped { what: what.clone() });
     } else if r.word("explores") {
@@ -1013,6 +1065,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(no_monarch())
     } else if r.words("you have the city's blessing") {
         Some(Condition::CitysBlessing(Ref::You))
+    } else if r.words("you've completed a dungeon") {
+        Some(Condition::CompletedDungeon(Ref::You))
     } else {
         super::day_night::condition(r)
     }
@@ -1036,6 +1090,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
             "an opponent was the monarch as the turn began".to_owned()
         }
         Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
+        Condition::CompletedDungeon(Ref::You) => "you've completed a dungeon".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
         _ => return super::day_night::condition_text(condition),
     })
@@ -1220,6 +1275,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
+        TriggerPattern::PhasedOut { what } => said(what, "phases out"),
+        TriggerPattern::PhasedIn { what } => said(what, "phases in"),
         TriggerPattern::Explored { what } => said(what, "explores"),
         TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::BecomesMonstrous { what } => said(what, "becomes monstrous"),
@@ -1321,12 +1378,43 @@ fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
     let (who, verb, n) = match pattern {
         TriggerPattern::Amassed { who } => (who, "amass", None),
         TriggerPattern::Expend { who, n } => (who, "expend", Some(*n)),
+        TriggerPattern::W11cCrime { who } => {
+            return Some(format!("Whenever {} a crime", player_verb(who, "commit")?));
+        }
         TriggerPattern::Bolstered { who } => (who, "bolster", None),
         TriggerPattern::Surveilled { who } => (who, "surveil", None),
         _ => return None,
     };
     let n = n.map(|n| format!(" {n}")).unwrap_or_default();
     Some(format!("Whenever {}{n}", player_verb(who, verb)?))
+}
+
+/// "Whenever you are attacked", "whenever a player attacks you with one or more creatures".
+fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
+    match pattern {
+        TriggerPattern::PlayerAttacked { who } => {
+            let (subject, be) = match who {
+                Ref::You => ("you", "are"),
+                Ref::Opponents => ("an opponent", "is"),
+                Ref::EachPlayer => ("a player", "is"),
+                Ref::AttachedPlayer => ("enchanted player", "is"),
+                _ => return None,
+            };
+            Some(format!("Whenever {subject} {be} attacked"))
+        }
+        TriggerPattern::PlayerAttacks { by, at } => {
+            let at = match at {
+                Ref::You => "you",
+                Ref::AttachedPlayer => "enchanted player",
+                _ => return None,
+            };
+            Some(format!(
+                "Whenever {} {at} with one or more creatures",
+                player_verb(by, "attack")?
+            ))
+        }
+        _ => None,
+    }
 }
 
 /// The event as the card words it, from "When" to the end of the event.
@@ -1351,6 +1439,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             "Whenever {} the monarch",
             player_verb(who, "become")?
         )),
+        TriggerPattern::Ventured { .. } | TriggerPattern::CompletedDungeon { .. } => {
+            w11d_dungeon_text(pattern)
+        }
         TriggerPattern::DayNightChanges { to } => Some(super::day_night::changes_text(*to)),
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
@@ -1361,6 +1452,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::DiceRolled { who, highest } => c11e_rolled_text(who, *highest),
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }
+        | TriggerPattern::W11cCrime { .. }
         | TriggerPattern::Bolstered { .. }
         | TriggerPattern::Surveilled { .. } => w9a_player_action_text(pattern),
         TriggerPattern::LifeGained { who } => {
@@ -1380,26 +1472,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             player_verb(by, "discard")?
         )),
         TriggerPattern::Cycled { what, by } => cycled_text(what, by),
-        TriggerPattern::PlayerAttacked { who } => {
-            let (subject, be) = match who {
-                Ref::You => ("you", "are"),
-                Ref::Opponents => ("an opponent", "is"),
-                Ref::EachPlayer => ("a player", "is"),
-                Ref::AttachedPlayer => ("enchanted player", "is"),
-                _ => return None,
-            };
-            Some(format!("Whenever {subject} {be} attacked"))
-        }
-        TriggerPattern::PlayerAttacks { by, at } => {
-            let at = match at {
-                Ref::You => "you",
-                Ref::AttachedPlayer => "enchanted player",
-                _ => return None,
-            };
-            Some(format!(
-                "Whenever {} {at} with one or more creatures",
-                player_verb(by, "attack")?
-            ))
+        TriggerPattern::PlayerAttacked { .. } | TriggerPattern::PlayerAttacks { .. } => {
+            player_attack_text(pattern)
         }
         TriggerPattern::TappedForMana { what, by } => tapped_for_mana_text(what, by),
         TriggerPattern::CountersPut { what, counter } => {
@@ -1559,6 +1633,10 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
         ),
         TriggerPattern::ZoneChange { what, from, to } => batches::zone_change(what, *from, *to),
         TriggerPattern::Milled { what, by } => super::w8b_milled::w8b_batch_text(what, by),
+        TriggerPattern::PhasedOut { what } => Some(format!(
+            "Whenever one or more {} phase out",
+            phrase_text(what, Form::All)?
+        )),
         TriggerPattern::CountersPut { what, counter } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),

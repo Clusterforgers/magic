@@ -31,6 +31,15 @@ pub(crate) fn token_spec(id: &str) -> Option<crate::card::TokenSpec> {
         .map(|file| file.token)
 }
 
+/// The ids of the predefined tokens: the stems of the embedded files under `cards/tokens/`.
+pub(crate) fn w11d_token_ids() -> std::collections::BTreeSet<String> {
+    FILES
+        .iter()
+        .filter_map(|(path, _)| path.strip_prefix("cards/tokens/")?.strip_suffix(".json"))
+        .map(str::to_owned)
+        .collect()
+}
+
 /// The library of the embedded files, loaded and validated on first use. The tests of this crate
 /// load it, so an error here means the crate was built from files they would have refused.
 pub fn library() -> Result<&'static Library, &'static LoadErrors> {

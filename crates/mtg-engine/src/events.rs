@@ -210,6 +210,14 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         indirect: bool,
+        /// It phases out until this permanent leaves the battlefield, and phases in then and not in an untap step.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        until: Option<ObjectRef>,
+        /// It phases in tapped ("Tap that creature as it phases in this way").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        tapped: bool,
     },
     /// A permanent phased in (CR 702.26): it exists again, as the same object, with everything it had.
     PermanentPhasedIn {
@@ -647,6 +655,15 @@ pub enum Event {
         /// Who got it.
         player: PlayerId,
     },
+    /// A player ventured into the dungeon (CR 701.49).
+    Ventured(Box<crate::w11d_dungeon::W11dVentured>),
+    /// A player completed a dungeon, which leaves the game (CR 309.7).
+    DungeonCompleted {
+        /// Who completed it.
+        player: PlayerId,
+        /// The dungeon.
+        object: ObjectId,
+    },
     /// A player learned (CR 701.48): the discard and the draw are the events that follow it.
     Learned {
         /// Who learned.
@@ -797,6 +814,21 @@ pub enum Event {
         /// The creature that connived.
         object: ObjectId,
         /// Its controller, who drew and discarded.
+        player: PlayerId,
+    },
+    /// A creature was exerted as it was declared an attacker (CR 701.43): it won't untap during the next untap step of
+    /// `player`, who exerted it.
+    Exerted {
+        /// The creature exerted.
+        object: ObjectId,
+        /// The player who exerted it.
+        player: PlayerId,
+    },
+    /// The untap step of `player` used up their exert of the permanent (CR 701.43c), whether it untapped or not.
+    ExertEnded {
+        /// The permanent exerted.
+        object: ObjectId,
+        /// The player whose untap step it was.
         player: PlayerId,
     },
     /// The game became day or night (CR 726).
@@ -956,6 +988,7 @@ impl Event {
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
+            | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
@@ -1011,6 +1044,7 @@ impl Event {
                 .collect(),
             Event::TokenCreated(token) => vec![token.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
+            Event::Ventured(ventured) => vec![ventured.object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
@@ -1039,6 +1073,8 @@ impl Event {
             | Event::CardDiscarded { object, .. }
             | Event::Explored { object, .. }
             | Event::Connived { object, .. }
+            | Event::Exerted { object, .. }
+            | Event::ExertEnded { object, .. }
             | Event::Amassed { object, .. }
             | Event::Monstrous { object, .. }
             | Event::Devoured { object, .. }

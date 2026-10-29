@@ -123,14 +123,34 @@ pub fn apply_answer(
         };
         let smaller = match (&decision.kind, &answer) {
             (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
-                smaller_attack(options, attackers)
+                smaller_attack(options, attackers).map(Answer::DeclareAttackers)
             }
+            (
+                DecisionKind::DeclareAttackers(options),
+                Answer::DeclareExerting { attackers, exert },
+            ) => smaller_attack(options, attackers).map(|smaller| {
+                let exert = exert
+                    .iter()
+                    .copied()
+                    .filter(|object| smaller.iter().any(|(attacker, _)| attacker == object))
+                    .collect();
+                w11a_declaration(smaller, exert)
+            }),
             _ => None,
         };
         match smaller {
-            Some(smaller) => answer = Answer::DeclareAttackers(smaller),
+            Some(smaller) => answer = smaller,
             None => return Err(refused),
         }
+    }
+}
+
+/// The answer that declares `attackers` and exerts `exert`: a plain declaration while nothing is exerted.
+pub fn w11a_declaration(attackers: Attack, exert: Vec<ObjectId>) -> Answer {
+    if exert.is_empty() {
+        Answer::DeclareAttackers(attackers)
+    } else {
+        Answer::DeclareExerting { attackers, exert }
     }
 }
 
@@ -411,9 +431,7 @@ impl RandomBot {
             }
             DecisionKind::Priority(options) => Answer::Priority(self.priority(options)),
             DecisionKind::PayMana(options) => Answer::PayMana(self.pay_for(options, paying_attack)),
-            DecisionKind::DeclareAttackers(options) => {
-                Answer::DeclareAttackers(self.attack(options))
-            }
+            DecisionKind::DeclareAttackers(options) => self.w11a_attack_answer(options),
             DecisionKind::DeclareBlockers(options) => {
                 let mut blocks = Vec::new();
                 for option in &options.blockers {
@@ -576,6 +594,29 @@ impl RandomBot {
     /// more than the player surely has (CR 508.1h) is cut back to what it can pay ([`within_budget`]). After backing
     /// out of the payment of an attack the declaration comes back and the bot does only what the rules require, so
     /// backing out ends the step.
+    /// A declaration of attackers chosen at random, with the attackers it exerts.
+    fn w11a_attack_answer(&mut self, options: &AttackOptions) -> Answer {
+        let attackers = self.attack(options);
+        let exert = self.w11a_exert(options, &attackers);
+        w11a_declaration(attackers, exert)
+    }
+
+    /// The attackers it exerts: each that may be exerted, at random; no draw from the generator for a declaration
+    /// with none, so games without exert play as before.
+    fn w11a_exert(&mut self, options: &AttackOptions, attackers: &Attack) -> Vec<ObjectId> {
+        attackers
+            .iter()
+            .map(|(object, _)| *object)
+            .filter(|object| {
+                options
+                    .attackers
+                    .iter()
+                    .any(|option| option.object == *object && option.exert)
+            })
+            .filter(|_| self.rng.below(2) == 0)
+            .collect()
+    }
+
     fn attack(&mut self, options: &AttackOptions) -> Attack {
         if self.taxed == Taxed::BackedOut {
             self.taxed = Taxed::Idle;

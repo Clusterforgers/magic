@@ -50,6 +50,7 @@ mod spell_keywords;
 mod spend_tests;
 mod steps;
 mod w10a_attack_limits_at;
+mod w11a_exert;
 mod w7b_rad;
 mod w8a_declaration_limits;
 mod ways;
@@ -104,6 +105,7 @@ pub mod state;
 pub mod tokens;
 pub mod triggers;
 pub mod turn;
+pub mod w11d_dungeon;
 pub mod w6b_emblems;
 pub mod zones;
 

@@ -269,12 +269,15 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::LifeGained { .. }
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::BecomesMonarch { .. }
+            | TriggerPattern::Ventured { .. }
+            | TriggerPattern::CompletedDungeon { .. }
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::CoinFlipWon { .. }
             | TriggerPattern::DiceRolled { .. }
             | TriggerPattern::Amassed { .. }
             | TriggerPattern::Bolstered { .. }
             | TriggerPattern::Expend { .. }
+            | TriggerPattern::W11cCrime { .. }
             | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }

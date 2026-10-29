@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c753e9e3-9374-4e3c-8622-94576a8c1da3",
+  "name": "Oubliette",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oubliette",
+      "oracle_fingerprint": "d7bb1333c060732338ea0823147bae13",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PhaseOut": {
+                  "what": { "Target": 0 },
+                  "duration": "WhileSourceOnBattlefield",
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

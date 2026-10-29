@@ -1267,6 +1267,7 @@ impl<'a> Scope<'a> {
             Amount::LifeLostThisWay => self.life_lost_this_way(),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
             Amount::Exiled(of) => self.w14b_exiled(of)?,
+            Amount::PhasedOut(of) => self.w11b_phased(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::Devoured => self.w7e_devoured(),
@@ -1276,12 +1277,7 @@ impl<'a> Scope<'a> {
             Amount::Tallied { who, what } => self.tallied(who, *what)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
             Amount::Party(who) => self.party(who)?,
-            Amount::StartingLife(who) => self
-                .players(who)?
-                .into_iter()
-                .map(|player| i64::from(self.state.ruleset().starting_life(player)))
-                .min()
-                .unwrap_or(0),
+            Amount::StartingLife(who) => self.w14b_starting_life(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -1474,6 +1470,30 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// "for each creature that phased out this way": the permanents the resolution phased out that match the selector.
+    fn w11b_phased(&self, of: &Selector) -> Result<i64, ResolveError> {
+        let Some(resolving) = self.state.resolving.as_ref() else {
+            return Ok(0);
+        };
+        let mut found = 0i64;
+        for phased in &resolving.w11b_phased {
+            if self.selects(of, *phased)? {
+                found += 1;
+            }
+        }
+        Ok(found)
+    }
+
+    /// The lowest starting life total among the players a reference names; 0 for none.
+    fn w14b_starting_life(&self, who: &Ref) -> Result<i64, ResolveError> {
+        Ok(self
+            .players(who)?
+            .into_iter()
+            .map(|player| i64::from(self.state.ruleset().starting_life(player)))
+            .min()
+            .unwrap_or(0))
+    }
+
     fn life_lost_this_way(&self) -> i64 {
         i64::from(
             self.state
@@ -1582,6 +1602,19 @@ impl<'a> Scope<'a> {
         self.state.turn().step().phase() == crate::turn::Phase::Combat
     }
 
+    /// Whether a player `who` names holds the designation of the condition: has completed a dungeon, is the monarch,
+    /// was it as the turn began, or has the city's blessing.
+    fn w11d_designation(&self, condition: &Condition, who: &Ref) -> Result<bool, ResolveError> {
+        let began = self.state.monarch_at_turn_start();
+        Ok(self.players(who)?.iter().any(|player| match condition {
+            Condition::CompletedDungeon(_) => self.state.w11d_completed(*player) > 0,
+            // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
+            Condition::Monarch(_) => self.state.monarch() == Some(*player),
+            Condition::MonarchAtTurnStart(_) => began == Some(*player),
+            _ => self.state.has_citys_blessing(*player),
+        }))
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -1630,23 +1663,10 @@ impl<'a> Scope<'a> {
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
-            Condition::Monarch(who) => {
-                let players = self.players(who)?;
-                // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
-                players
-                    .iter()
-                    .any(|player| self.state.monarch() == Some(*player))
-            }
-            Condition::MonarchAtTurnStart(who) => {
-                let began = self.state.monarch_at_turn_start();
-                self.players(who)?
-                    .iter()
-                    .any(|player| began == Some(*player))
-            }
-            Condition::CitysBlessing(who) => self
-                .players(who)?
-                .iter()
-                .any(|player| self.state.has_citys_blessing(*player)),
+            Condition::CompletedDungeon(who)
+            | Condition::Monarch(who)
+            | Condition::MonarchAtTurnStart(who)
+            | Condition::CitysBlessing(who) => self.w11d_designation(condition, who)?,
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),

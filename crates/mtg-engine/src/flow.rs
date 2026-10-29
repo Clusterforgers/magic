@@ -59,6 +59,11 @@ fn next_in_turns(state: &GameState) -> Progress {
     if !returning.is_empty() {
         return Progress::Events(returning);
     }
+    // So does a permanent phased out until a permanent leaves (Oubliette).
+    let released = crate::phasing::w11b_releases(state);
+    if !released.is_empty() {
+        return Progress::Events(released);
+    }
     let actions = sba::check(state);
     if !actions.is_empty() {
         return Progress::Events(actions);

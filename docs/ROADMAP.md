@@ -29,7 +29,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Cast ways and zones: (c5e), (c2l3a) to (c2l3c), (r2de-c), (n2b) face-down objects, (n1d3) meld, (r1ap), (r2q).
 - Triggers and keywords: (c6d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-c).
-- Triggers and keywords: (c6d-b), (c6d-c), (c6d-d), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
+- Triggers and keywords: (c6d-c), (c6d-d), (c6d-e), (c6d-f), (c4e), (c3b), (c3d), (c2g), (c2d), (c13h), (r2ja), (r2jb), (r2ad), (n1d6) day and night wordings, (o2c).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-b), (r2az-c), (r2az-e), (r2az-f).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
@@ -60,11 +60,13 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Incubate: the Incubator token with its Phyrexian back face, another player who incubates, the permanents exiled this way and the Phyrexians that died, read and written by the compiler.
 - Expend: the trigger on the turn's Nth mana spent on spells, read and written by the compiler.
 - Clash: the clash with an opponent, its win branch and "repeat this process", read and written by the compiler.
+- Crimes: "whenever you commit a crime" and "whenever an opponent commits a crime" on targeting another player, what they control or their graveyard.
+- Clash wordings: a won clash that may put the returned creature on top instead, and the clashed player's creatures held through their next untap step.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
 - Keywords: combat, evasion and characteristic keywords, keyword actions, cast ways, upkeep and death keywords, Cipher, Hideaway, Emerge, Harmonize and Read ahead (`docs/engine.md`).
 - Keywords given to spells: convoke, improvise, delve and affinity from statics; offered helpers never take what the additional cost takes.
 - Vehicles and Mounts: crew, saddle and station, crewed and saddled events, the crew record of the turn and Vehicles animated by abilities.
-- Phasing and day and night: phased-out permanents in their own zone, life totals that can't change, player protection, day and night effects and conditions.
+- Phasing and day and night: phased-out permanents in their own zone, life totals that can't change, player protection, phase-outs held until a source leaves, phase-out and phase-in triggers, day and night effects and conditions.
 - Statics: lords, characteristic-defining abilities, conditions, attack taxes in mana and life, "can't attack you or planeswalkers you control", blocker limits, limits on the whole attack and block declaration and on the attacks at one defender, player keywords, stay-tapped statics, grants outside the battlefield, group prevention, groups of spells that can't be countered and conditions on the attached permanent.
 - Mutate: merged permanents under copy effects, mutation counts, merged cards leaving to libraries and the command zone (`docs/engine.md`, Mutate).
 - Faces and copies: multi-face cards, transform, fuse, daybound, Sagas, Classes, flip cards, copiable values, token, spell and ability copies, copy groups and prepare cards.
@@ -82,6 +84,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Replacements that name their event: `Instead` steps read the replaced player, amount and source of damage, and "tap or untap" is a choice of the controller.
 - Preventions that name their damage (counters for it, all but 1) and their shields, and token replacements for one kind of token.
 - X in triggers: an `{X}` paid in an effect and read by what follows it, the X of a cycling cost or a monstrosity in its trigger, and "up to X" targets.
+- Exert: the choice in the attack declaration, `Exerted` and `ExertEnded`, the untap step of the exerting player it skips and its "When you do" and "Whenever you exert a creature" triggers.
 
 ## M3 Card system
 
@@ -131,11 +134,12 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
 - [ ] Playwright games with corpus decks that ask every decision kind
 - [ ] (c5h) The table's event text has a line for the rule `MustAttackPlayers` (Encore) instead of the generic trigger line
+- [ ] (c5i) The attack prompt offers the exert of a creature that may be exerted (`AttackerOption.exert`, `Answer::DeclareExerting`) and the table marks an exerted permanent
 
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,368 of 6,429 precon cards, 67.9%; 82.9% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,386 of 6,429 precon cards, 68.2%; 83.0% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
@@ -155,13 +159,12 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3a) Plot: the special action from a hand, the plotted card cast free as a sorcery on a later turn, plot cost reductions; frees about 4 cards (Lock and Load, Pyretic Charge)
 - [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
-- [~] (r2da-c-c) (w9d-exert) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
-- [~] (r2da-c-f) (w11c-crimes-forecast-clash) Crimes: a turn tally of targeting an opponent, their permanents, spells or graveyard cards, "whenever you commit a crime" and "whenever an opponent commits a crime" (Bandit's Haul, Patrolling Peacemaker)
-- [~] (r2da-c-g) (w11c-crimes-forecast-clash) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
-- [~] (r2da-c-h) (w11c-crimes-forecast-clash) Clash wordings not read: "clash, then return ... If you win, ... instead", "that player's next untap step", a delayed mana of the countered spell, "whenever you win a clash" (Whirlpool Whelm, Pollen Lullaby, Scattering Stroke, Marvo, Deep Operative)
-- [~] (r2da-c-e) (w11d-venture) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
-- [~] (r2da-c-i) (w11a-exert-engine) Exert wordings not read: "it can't be blocked this turn and you scry 1", "untap all other creatures you control and after this phase, there is an additional combat phase" (Clockwork Droid, Combat Celebrant)
 - [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Oasis Ritualist, Fervent Paincaster)
+- [ ] (r2da-c-g) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
+- [ ] (r2da-c-i) Clash leftovers: "at the beginning of your next main phase, you may add {C} equal to that spell's mana value", "clash with defending player" and "whenever you win a clash" (Scattering Stroke, Marvo, Deep Operative)
+- [ ] (r2da-c-e1) The rooms of Dungeon of the Mad Mage, Tomb of Annihilation and Undercity the compiler does not read (Runestone Caverns, Mad Wizard's Lair, Veils of Fear, Sandfall Cell, Oubliette, Throne of the Dead Three), so those dungeons can be entered
+- [ ] (r2da-c-e2) The initiative (CR 725): the designation, "you take the initiative", venture into Undercity as it is taken and in its holder's upkeep, taken by combat damage, "if you have the initiative" (Seasoned Dungeoneer, Loot Dispute, Sarevok's Tome, From the Catacombs)
+- [ ] (r2da-c-e3) The venture cards that wait on another wording, and the player view of the dungeon and room (Radiant Solar, Thorough Investigation, Immovable Rod, Sefris of the Hidden Ways, Hama Pashar)
 - [~] (r2da-f) (w13b-mill-rad-leftovers) Mill leftovers: target bounds from the trigger's count ("each of up to X target creatures, where X is the number of nonland cards milled this way"), "Do this only once each turn" after a may, a batch per player ("whenever a player mills one or more creature cards") and "a card that was milled this turn"; frees about 5 cards (The Wise Mothman, Screeching Scorchbeast, Zellix, Sanity Flayer, Tato Farmer)
 - [~] (r2da-g) (w13b-mill-rad-leftovers) Rad leftovers: "costs {1} less to activate for each rad counter you have", "you may have this land enter tapped. If you do, you get two rad counters", "loses all rad counters" and "Choose one that hasn't been chosen"; frees about 2 cards (Mariposa Military Base, Survivor's Med Kit)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
@@ -171,7 +174,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c3b) Time counters on suspended cards and permanents, in the views of exiled cards too, and the blessing badge on the table
 - [ ] (c4e) Cards that read the crew record and crew events and wait on a wording, and a Reconfigure corpus card; frees about 10 cards (Smogbelcher Chariot, Mindlink Mech, The Fantasticar)
 - [ ] (c5e) The rest of the cipher and hideaway cards; frees about 6 cards (Hidden Strings, Shelldock Isle)
-- [ ] (c6d-b) Phase-out durations and counts: until the source leaves, tapped as it phases in, phased out this way, phases-out and phases-in triggers; frees the precon cards Oubliette, Out of Time, The Moment and The War Doctor (and Teferi's Imp)
+- [ ] (c6d-e) Vanishing without a number and The Moment's destroy by time counters; frees Out of Time and The Moment
+- [ ] (c6d-f) Batch triggers on cards put into exile from anywhere and The War Doctor's attack damage that exiles; frees The War Doctor
 - [ ] (c6d-c) Devour X, devoured kinds and conditions: Thromok, Voracious Dragon, Hellkite Hatchling, Kresh, and a discard for each devoured creature (Tar Fiend); none of them is in a precon
 - [ ] (c6d-d) Gift "instead" spells left (Wildfire Howl, Dewdrop Cure, Into the Flood Maw) and entered-under-your-control-this-turn conditions (Zimone, Gargoyle Flock, Galadriel)
 - [ ] (r2de-c) Cast permissions left: "Once each turn" on any turn, a spell cast through a permission exiled instead of a graveyard, a card cast from its own graveyard or exile, exiled cards cast in a trigger, spells chosen from a graveyard and cast free; frees about 20 cards (Kess, Dissident Mage, Squee, the Immortal, Dire Fleet Daredevil, Diviner of Mist)
