@@ -416,6 +416,7 @@ mod surveil;
 mod suspend;
 mod symbol_fuzz;
 mod t15a_popular;
+mod t15a_validate;
 mod tail_alone;
 mod tail_fuzz;
 mod tail_pairs;
