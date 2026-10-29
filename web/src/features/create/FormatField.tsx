@@ -5,12 +5,12 @@ const FORMATS: readonly { value: GameFormat; name: string; words: string }[] = [
   {
     value: 'commander',
     name: 'Commander',
-    words: '2 to 6 players, 40 life, a commander each',
+    words: 'Any number of players from 2, 40 life, a commander each',
   },
   {
     value: 'normal',
     name: 'Normal',
-    words: '2 to 12 players, 20 life, 60-card decks',
+    words: 'Any number of players from 2, 20 life, 60-card decks',
   },
 ]
 
