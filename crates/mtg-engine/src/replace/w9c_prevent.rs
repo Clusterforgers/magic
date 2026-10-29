@@ -12,6 +12,7 @@ use mtg_cards::trigger::{ReplaceBy, ReplaceWhen};
 use super::{Candidate, Item, Origin, Pass, Slot, Unit, slots_of};
 use crate::events::Event;
 use crate::resolve::w5d_run_instead;
+use mtg_core::ids::ObjectId;
 
 /// Whether the token's card is of the kind: each predicate is a type, subtype, supertype or colour (or the negation of
 /// one), which the validator holds a kind of token to; any other predicate does not match.
@@ -31,6 +32,22 @@ fn w9c_token_pred(definition: &CardDefinition, pred: &Pred) -> bool {
 }
 
 impl Pass<'_> {
+    /// The tokens that effects run in place of an event make get ids of their own: the effects number them from the
+    /// state, as do the other events of the batch (the tokens of the event replaced, another death replaced the same way),
+    /// so they take the next ids the batch has not given.
+    pub(super) fn w9c_fresh_tokens(&mut self, mut events: Vec<Event>) -> Vec<Event> {
+        let first = self.state.next_object().get();
+        for event in &mut events {
+            if let Event::TokenCreated(token) = event
+                && token.object.get() >= first
+            {
+                token.object = ObjectId(self.next_id);
+                self.next_id += 1;
+            }
+        }
+        events
+    }
+
     /// The kinds of token the replacement effects at hand name.
     fn w9c_token_kinds(&self) -> Vec<&Selector> {
         self.sources
@@ -119,6 +136,7 @@ impl Pass<'_> {
             effects,
         )
         .unwrap_or_default();
+        let events = self.w9c_fresh_tokens(events);
         self.prevent(at, candidate, &ReplaceBy::Prevent, applied.to_vec());
         let slots: Vec<Slot> = slots_of(events)
             .into_iter()
@@ -296,5 +314,47 @@ mod tests {
         assert_eq!(u64::try_from(angels).unwrap(), creatures, "{out:?}");
         assert_eq!(out.len(), 1 + angels, "{out:?}");
         assert!(out.contains(&("Thing".to_owned(), false)), "{out:?}");
+    }
+
+    const ZOMBIES: &str = r#"{"Replacement":{"when":{"ZoneChange":{"what":[{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}},"by":{"Instead":[{"Exile":{"what":"Triggering"}},{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}}}}]}}}"#;
+
+    fn ids(out: &[Event]) -> Vec<ObjectId> {
+        out.iter()
+            .filter_map(|event| match event {
+                Event::TokenCreated(made) => Some(made.object),
+                _ => None,
+            })
+            .collect()
+    }
+
+    #[rstest]
+    #[case::two_deaths_each_make_a_token(&[ZOMBIES], false)]
+    #[case::angels_beside_the_tokens_kept(&[ANGELS], true)]
+    #[case::angels_for_the_zombies_of_two_deaths(&[ZOMBIES, ANGELS], false)]
+    fn the_tokens_made_instead_have_ids_no_other_token_of_the_batch_has(
+        #[values(2, 4)] seats: usize,
+        #[case] rules: &[&str],
+        #[case] tokens: bool,
+    ) {
+        let game = game(seats, rules);
+        let batch: Vec<Event> = if tokens {
+            vec![
+                token(&game, 0, CardType::Artifact),
+                token(&game, 1, CardType::Creature),
+            ]
+        } else {
+            [(1, PlayerId(0)), (2, PlayerId(1))]
+                .map(|(index, owner)| Event::ZoneChanged {
+                    object: at(&game, index),
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(owner),
+                    cause: crate::events::ZoneCause::Destroyed,
+                })
+                .to_vec()
+        };
+        let made = ids(&events(&game, batch));
+        assert_eq!(made.len(), 2, "{made:?}");
+        assert_ne!(made[0], made[1]);
+        assert!(made.iter().all(|id| id.get() >= game.next_object));
     }
 }

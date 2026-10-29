@@ -107,6 +107,9 @@ pub mod turn;
 pub mod w6b_emblems;
 pub mod zones;
 
+#[cfg(test)]
+mod w9c_saturation;
+
 pub use caps::caps;
 pub use characteristics::{Characteristics, characteristics};
 pub use day_night::DayNight;

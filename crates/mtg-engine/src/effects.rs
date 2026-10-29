@@ -247,8 +247,8 @@ impl Modification {
                 chars.toughness = Some(*toughness);
             }
             Modification::ModifyPowerToughness { power, toughness } => {
-                chars.power = chars.power.map(|p| p + power);
-                chars.toughness = chars.toughness.map(|t| t + toughness);
+                chars.power = chars.power.map(|p| p.saturating_add(*power));
+                chars.toughness = chars.toughness.map(|t| t.saturating_add(*toughness));
             }
             Modification::SwitchPowerToughness => {
                 std::mem::swap(&mut chars.power, &mut chars.toughness);

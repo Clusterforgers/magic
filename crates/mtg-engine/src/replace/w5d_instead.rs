@@ -73,6 +73,7 @@ impl Pass<'_> {
         if matches!(unit, Unit::Draw { .. }) {
             self.draws_changed = true;
         }
+        let events = self.w9c_fresh_tokens(events);
         let slots: Vec<_> = slots_of(events)
             .into_iter()
             .map(|mut slot| {

@@ -82,8 +82,7 @@ pub(crate) fn change(
     }
     let now = held.get(kind).copied().unwrap_or(0);
     let after = if delta > 0 {
-        now.checked_add(by)
-            .ok_or_else(|| invalid(format!("{by} more {kind:?} counters than can be counted")))?
+        now.saturating_add(by)
     } else {
         now.checked_sub(by)
             .ok_or_else(|| invalid(format!("cannot remove {by} {kind:?} counters from {now}")))?
