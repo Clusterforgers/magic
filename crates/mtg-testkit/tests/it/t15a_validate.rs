@@ -138,7 +138,6 @@ fn t15a_v_top(driver: &Driver) -> Target {
 }
 
 #[rstest]
-#[ignore = "t15m: a delayed trigger reads no stat of the spell its source countered"]
 fn t15a_v_mana_drain_adds_at_the_next_main_phase_of_its_caster(
     #[values(2, 3, 4)] seats: usize,
     #[values(false, true)] drained_back: bool,
@@ -188,7 +187,6 @@ fn t15a_v_mana_drain_adds_at_the_next_main_phase_of_its_caster(
 }
 
 #[rstest]
-#[ignore = "t15m: a delayed trigger reads no stat of the spell its source countered"]
 fn t15a_v_mana_drain_on_the_casters_own_turn_pays_in_the_postcombat_main(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
@@ -422,7 +420,6 @@ fn t15a_v_otawara_channel_costs_less_per_legendary_creature(
 }
 
 #[rstest]
-#[ignore = "t15n: a creature card put into a graveyard from a library does not trigger Syr Konrad"]
 fn t15a_v_syr_konrad_counts_each_creature_card_milled(
     #[values(2, 3, 4)] seats: usize,
     #[values(0, 1, 2)] creatures: usize,
@@ -441,7 +438,7 @@ fn t15a_v_syr_konrad_counts_each_creature_card_milled(
         } else {
             swamp()
         };
-        scenario = scenario.library(seat, [swamp(), swamp(), top]);
+        scenario = scenario.library(seat, [top, swamp(), swamp()]);
     }
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_ability("Syr Konrad, the Grim", 1)?;
@@ -484,7 +481,7 @@ fn t15a_v_syr_konrad_sees_the_creatures_dying_beside_it(
 }
 
 #[rstest]
-#[ignore = "t15o: the {2}, {T} ability of Three Tree City is not offered as a mana ability"]
+#[ignore = "t15o: the {2}, {T} ability of Three Tree City is not offered among the mana abilities"]
 fn t15a_v_three_tree_city_adds_one_color_per_creature_of_the_type(
     #[values(2, 3, 4)] seats: usize,
     #[values(0, 1, 3)] zombies: usize,
@@ -519,10 +516,23 @@ fn t15a_v_three_tree_city_adds_one_color_per_creature_of_the_type(
         |d, decision| pick(d, decision, "Zombie"),
     )?;
     let city = on_battlefield(driver.state(), "Three Tree City").unwrap();
-    driver.answer(Answer::Priority(PriorityAction::ActivateMana(ManaSource {
-        object: city,
-        ability: 2,
-    })))?;
+    // The {2} of the cost is paid from the pool: the Forests are tapped first.
+    driver.tap_for_mana("Forest")?;
+    driver.tap_for_mana("Forest")?;
+    let DecisionKind::Priority(options) = &driver.decision()?.kind else {
+        panic!("priority after mana");
+    };
+    let colored: Vec<ManaSource> = options
+        .mana_abilities
+        .iter()
+        .filter(|m| m.source.object == city && m.produces != ManaType::Colorless)
+        .map(|m| m.source)
+        .collect();
+    if zombies == 0 {
+        assert_eq!(colored, [], "no mana to add, nothing offered");
+        return Ok(());
+    }
+    driver.answer(Answer::Priority(PriorityAction::ActivateMana(colored[0])))?;
     for _ in 0..6 {
         let decision = driver.decision()?.clone();
         if matches!(decision.kind, DecisionKind::Priority(_)) {
@@ -545,5 +555,44 @@ fn t15a_v_three_tree_city_adds_one_color_per_creature_of_the_type(
     ] {
         assert_eq!(t15a_v_pool(&driver, 0, other), 0, "{other:?}");
     }
+    Ok(())
+}
+
+/// The game of five seats, seed 3179, that found it: Kalitas's controller loses as an opponent's creature dies.
+#[rstest]
+fn t15a_v_a_player_who_loses_as_kalitas_replaces_a_death_gets_no_zombie(
+    #[values(3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let blast = spell(
+        "Blast",
+        CardType::Instant,
+        r#"[{"what":"AnyTarget"}]"#,
+        r#"[{"DealDamage":{"to":{"Target":0},"amount":3}},{"DealDamage":{"to":"Opponents","amount":3}}]"#,
+    );
+    let scenario = t15a_v_table(seats, 1, 0, Step::Main1)
+        .hand(0, [blast])
+        .battlefield(0, [ready(card("Dregscape Zombie").unwrap())])
+        .battlefield(1, [ready(card("Kalitas, Traitor of Ghet").unwrap())])
+        .life(1, 3);
+    let mut driver = Driver::from_scenario(scenario)?;
+    let zombie = driver.target_named("Dregscape Zombie")?;
+    driver.cast_at("Blast", &[zombie])?;
+    t15a_v_drive(&mut driver, |_| true, |_, _| None)?;
+    assert!(!driver.state().player(pid(1)).unwrap().is_in_game());
+    assert_eq!(
+        on_battlefield(driver.state(), "Kalitas, Traitor of Ghet"),
+        None
+    );
+    assert!(
+        driver
+            .state()
+            .zone(Zone::Battlefield)
+            .iter()
+            .all(|id| driver
+                .state()
+                .object(*id)
+                .is_some_and(|o| o.controller() != pid(1))),
+        "nothing is made for the player who left"
+    );
     Ok(())
 }
