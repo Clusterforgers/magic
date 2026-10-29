@@ -224,6 +224,20 @@ impl PreconRepo {
             .collect())
     }
 
+    /// The oracle ids of the stored cards any deck names on any board, each once, in id order.
+    pub async fn oracle_ids(&self) -> Result<Vec<OracleId>, DbError> {
+        let ids = sqlx::query_scalar!(
+            r#"SELECT DISTINCT oracle_id AS "oracle_id!" FROM precon_deck_cards
+               WHERE oracle_id IS NOT NULL ORDER BY 1"#
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(ids
+            .into_iter()
+            .map(|id: Uuid| OracleId(id.to_string()))
+            .collect())
+    }
+
     /// A digest of every deck and entry: two equal versions mean no precon changed in between, so
     /// anything derived from the decks is current. The cards behind the entries are not part of it
     /// (`CardRepo::index_version` tells those).

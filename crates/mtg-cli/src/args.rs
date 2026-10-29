@@ -210,6 +210,10 @@ pub struct ProposeArgs {
     )]
     pub letters: Option<String>,
 
+    /// Take sample cards only from the stored precon decks (any board), by the same rules and order.
+    #[arg(long, requires = "sample", conflicts_with = "cards")]
+    pub precons: bool,
+
     /// The API to ask: the Anthropic Messages API, or an OpenAI-style chat completions server such as Ollama or llama.cpp.
     #[arg(long, value_enum, default_value_t = Provider::Anthropic)]
     pub provider: Provider,
@@ -605,6 +609,10 @@ mod tests {
             "/tmp/p",
         ])
         .unwrap();
+        assert!(!sample.precons);
+        let precons = propose(&["--sample", "5", "--precons", "--seed", "3", "--resume"]).unwrap();
+        assert!(precons.precons && precons.resume);
+        assert_eq!((precons.sample, precons.seed), (Some(5), Some(3)));
         assert_eq!(
             (
                 sample.sample,
@@ -625,6 +633,8 @@ mod tests {
     #[case::names_and_a_sample(&["--cards", "Opt", "--sample", "3"])]
     #[case::seed_without_a_sample(&["--cards", "Opt", "--seed", "3"])]
     #[case::letters_without_a_sample(&["--letters", "A-L"])]
+    #[case::precons_without_a_sample(&["--precons"])]
+    #[case::precons_with_names(&["--cards", "Opt", "--precons"])]
     #[case::too_few_examples(&["--cards", "Opt", "--examples", "2"])]
     #[case::too_many_examples(&["--cards", "Opt", "--examples", "6"])]
     #[case::an_empty_name(&["--cards", ""])]

@@ -920,6 +920,13 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// "Cast this spell only ...": the condition is judged for the caster as the spell is announced.
+    fn w17c_cast_only(&mut self, condition: &Condition) {
+        self.uses("Ability", "CastOnly");
+        self.scope = Scope::new(&[], false);
+        self.at("condition", |w| w.condition(condition));
+    }
+
     /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
     /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
     fn w14c_alternative_cost(&mut self, cost: &Cost) {
@@ -2372,6 +2379,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
+                if matches!(rule, GameRule::CountersRemain) {
+                    w.problem("counters remain on a card by a static ability, not by an effect");
+                }
             }),
             Effect::Crewed { .. }
             | Effect::BecomeDayNight { .. }
@@ -2828,6 +2838,7 @@ impl Walker<'_> {
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
+            Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -2903,6 +2914,7 @@ impl Walker<'_> {
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
+            | GameRule::VoteAgain(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)
@@ -2932,11 +2944,26 @@ impl Walker<'_> {
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::CanBeCommander => {}
+            GameRule::GraveyardCardsUntargetable
+            | GameRule::CantLoseGame { .. }
+            | GameRule::CantCastSpells { .. }
+            | GameRule::ToughnessAssignsDamage(_)
+            | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
             GameRule::TriggerAgain { cause } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
                 self.at(tag, |w| w.at("cause", |w| w.trigger_pattern(cause)));
                 self.scope = saved;
             }
+        }
+    }
+
+    /// The players a rule about losing, casting or combat damage names.
+    fn w17b_rule(&mut self, tag: &str, rule: &GameRule) {
+        if let GameRule::CantLoseGame { who, .. }
+        | GameRule::CantCastSpells { who, .. }
+        | GameRule::ToughnessAssignsDamage(who) = rule
+        {
+            self.at(tag, |w| w.reference(who, Kind::Player));
         }
     }
 
@@ -3412,6 +3439,14 @@ fn type_words(type_line: &str) -> (Vec<&str>, Vec<&str>) {
     )
 }
 
+/// Whether an instant or sorcery does something as it is cast with no `Spell` ability: a keyword line of cascade alone
+/// (Into the Time Vortex, Throes of Chaos) cascades and then resolves with nothing to do.
+pub(crate) fn w17a_casting_does_something(abilities: &[Ability]) -> bool {
+    abilities
+        .iter()
+        .any(|ability| matches!(ability, Ability::Keyword(Keyword::Cascade)))
+}
+
 /// The problems of a card file against the imported card: names, fingerprints, keywords and the
 /// printed characteristics its abilities rely on.
 pub(crate) fn check_printed(
@@ -3578,7 +3613,11 @@ fn check_face_printed(
             w.problem("a Spell ability belongs to an instant or sorcery");
         });
     }
-    if is_spell && !has_spell && status == ImplStatus::Full {
+    if is_spell
+        && !has_spell
+        && status == ImplStatus::Full
+        && !w17a_casting_does_something(&face.abilities)
+    {
         walker.at("abilities", |w| {
             w.problem("an instant or sorcery needs a Spell ability");
         });

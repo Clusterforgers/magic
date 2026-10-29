@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT DISTINCT oracle_id AS \"oracle_id!\" FROM precon_deck_cards\n               WHERE oracle_id IS NOT NULL ORDER BY 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "oracle_id!",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "oracle_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "5e1966e3c8da143ac5485a38dfc54e103dc5a8bfcd01cb6045a757106d6b7c03"
+}

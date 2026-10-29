@@ -1,0 +1,16 @@
+{
+  "oracle_id": "4080f7e3-06d3-4d3d-9929-4e826cb66713",
+  "name": "Herald of Eternal Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of Eternal Dawn",
+      "oracle_fingerprint": "907b194b03583ca13ac77a3b1f9c1d47",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "opponents_cant_win": true } } } }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,7 @@ pub mod select;
 pub mod session;
 pub mod store;
 
+use std::collections::BTreeSet;
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
@@ -181,8 +182,12 @@ pub fn c11i_client_of(
     })
 }
 
-/// The cards the arguments select, as positions in `cards`.
-pub fn targets_of(cards: &[PrintedCard], args: &ProposeArgs) -> Result<Vec<usize>, CliError> {
+/// The cards the arguments select, as positions in `cards`; a sample draws only from the oracle ids of `within` when given.
+pub fn targets_of(
+    cards: &[PrintedCard],
+    args: &ProposeArgs,
+    within: Option<&BTreeSet<String>>,
+) -> Result<Vec<usize>, CliError> {
     if !args.cards.is_empty() {
         return select::by_names(cards, &args.cards);
     }
@@ -207,6 +212,7 @@ pub fn targets_of(cards: &[PrintedCard], args: &ProposeArgs) -> Result<Vec<usize
         count,
         args.seed.unwrap_or(1),
         letters.as_ref(),
+        within,
     ))
 }
 
@@ -244,7 +250,12 @@ pub async fn run_command(
     api: &AnthropicConfig,
 ) -> Result<String, CliError> {
     let cards = stored_cards(db).await?;
-    let targets = targets_of(&cards, args)?;
+    let within = if args.precons {
+        Some(precon_oracle_ids(db).await?)
+    } else {
+        None
+    };
+    let targets = targets_of(&cards, args, within.as_ref())?;
     let options = options_of(args)?;
     if args.dry_run {
         return dry_run(&cards, &targets, &options);
@@ -270,6 +281,12 @@ pub async fn run_command(
         text.push_str(&w2a_promote_run(db, cache, out, accepted).await?);
     }
     Ok(text)
+}
+
+/// The oracle ids of the cards the stored precon decks name, the pool of `--precons`.
+async fn precon_oracle_ids(db: &Database) -> Result<BTreeSet<String>, CliError> {
+    let ids = db.precons().oracle_ids().await?;
+    Ok(ids.into_iter().map(|id| id.0).collect())
 }
 
 /// Promotes the accepted proposals a run saved, into the `mtg-cards` crate directory `out`, as `promote` does.

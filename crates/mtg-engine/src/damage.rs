@@ -66,8 +66,13 @@ pub(crate) fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) ->
     if !strikes {
         return None;
     }
-    let power = characteristics(state, id)?.power.unwrap_or(0).max(0);
-    Some(u32::try_from(power).unwrap_or(0))
+    let chars = characteristics(state, id)?;
+    let power = if crate::w17b_statics::w17b_by_toughness(state, id) {
+        chars.toughness
+    } else {
+        chars.power
+    };
+    Some(u32::try_from(power.unwrap_or(0).max(0)).unwrap_or(0))
 }
 
 /// Damage that is lethal to `id` from a source that does or does not have deathtouch (CR 120.6, 702.2c).
