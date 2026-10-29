@@ -460,6 +460,7 @@ mod w10a_attack_limit_at;
 mod w10b_phasing;
 mod w11a_exert;
 mod w11b_phase_durations;
+mod w15b_out_of_time;
 mod w11c_crimes_clash;
 mod w11d_venture;
 mod w2b_read_ahead;
