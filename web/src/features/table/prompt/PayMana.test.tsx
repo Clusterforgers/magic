@@ -13,7 +13,11 @@ const view = fixture.view
 const byId = new Map(view.objects.map((object) => [object.id, object]))
 const hand = must(view.players[0]?.hand.cards)
 const battlefield = view.objects.filter((object) => object.zone === 'Battlefield' && object.controller === 0)
-const OWN: ObjectId[] = [...hand, ...battlefield.map((object) => object.id)]
+const OWN: ObjectId[] = [
+  ...(view.players[0]?.command.cards ?? []),
+  ...hand,
+  ...battlefield.map((object) => object.id),
+]
 const lands = battlefield
   .filter((object) => object.types.includes('Land') && object.permanent?.tapped === false)
   .map((object) => object.id)

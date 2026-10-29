@@ -1,6 +1,8 @@
 /** The game log as the panel draws it: a line for every event worth one, and each round of priority passes folded into one line. */
 import type { LogEntry } from '@/play/store'
-import type { Event, PlayerId } from '@/protocol/generated'
+import type { Event, PlayerId, PlayerView } from '@/protocol/generated'
+import { commanderDamageLine } from './commander'
+import { commanderHits } from './commanderLog'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 
@@ -27,6 +29,8 @@ const resolves = (event: Event): boolean =>
 export interface FoldOptions {
   /** The seats still in the game: a round in which all of them pass is "All pass". */
   seats: readonly PlayerId[]
+  /** The players as the view shows them now, whose commander damage names the hits of commanders; none by default. */
+  players?: readonly PlayerView[]
 }
 
 /**
@@ -54,18 +58,35 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
       spoken: all ? `${joinWords(who)} pass` : '',
     })
   }
-  for (const { seq, event } of log) {
+  const hits = commanderHits(
+    log.map((entry) => entry.event),
+    options.players ?? [],
+  )
+  log.forEach(({ seq, event }, index) => {
     const view = 'Public' in event ? event.Public : null
-    if (view !== null && typeof view !== 'string' && 'PriorityGranted' in view) continue
+    if (view !== null && typeof view !== 'string' && 'PriorityGranted' in view) return
     if (view !== null && typeof view !== 'string' && 'PriorityPassed' in view) {
       if (passed.length === 0) first = seq
       if (!passed.includes(view.PriorityPassed.player)) passed.push(view.PriorityPassed.player)
-      continue
+      return
     }
     flush(view ?? undefined)
-    const line = describeEvent(event, names)
+    const hit = hits.get(index)
+    const line =
+      hit === undefined
+        ? describeEvent(event, names)
+        : {
+            text: commanderDamageLine(
+              names.card(hit.source),
+              hit.amount,
+              names.seat(hit.player),
+              hit.total,
+              hit.lethal,
+            ),
+            minor: false,
+          }
     lines.push({ seq, text: line.text, minor: line.minor, passed: [], spoken: '' })
-  }
+  })
   flush(undefined)
   return lines
 }

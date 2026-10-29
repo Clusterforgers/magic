@@ -75,7 +75,7 @@ describe('the tile', () => {
   it('writes everything it shows in its name', () => {
     show(1, true)
     expect(tile(1)).toHaveAccessibleName(
-      "Show Bo's board. Life 38, 6 cards in hand, 47 in library, 5 in graveyard, 1 in exile, 1 in the command zone, active turn, shown now",
+      "Show Bo's board. Life 38, 6 cards in hand, 47 in library, 5 in graveyard, 1 in exile, 1 in the command zone, Atraxa, Praetors’ Voice: cast 2 times from the command zone, tax 4 mana, 6 of 21 commander damage from Tymna the Weaver, active turn, shown now",
     )
   })
 

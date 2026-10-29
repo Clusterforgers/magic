@@ -6,6 +6,7 @@ import type { PlayerId } from '@/protocol/generated'
 import { LifeFx } from './fx/LifeFx'
 import { ManaPool } from './ManaPool'
 import { useSeatNamer } from './names'
+import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import { ACTIVE_EDGE, ACTIVE_TINT, CountChip, PriorityDot, SeatDot } from './PodParts'
 import { chipZones, podCounts, podState, priorityName, showsPriorityDot, tileName } from './podFigures'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
@@ -37,6 +38,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       priority: holdsPriority(state, seat),
     })),
   )
+  const chips = useCommanderChips(seat)
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const counts = podCounts(player, exile)
@@ -56,6 +58,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         priority: flags.priority,
         eliminated,
         focused,
+        commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
       })}
       onClick={() => onFocusSeat(seat)}
       className={cn(
@@ -85,9 +88,11 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       </span>
       {/* What does not fit the tile is cut, the last figure first; the spoken name has it all. */}
       <span className="flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground">
+        <DamageChips chips={chips.damage} density="tile" />
         {chipZones(counts).map((zone) => (
           <CountChip key={zone} zone={zone} count={counts[zone]} density="tile" />
         ))}
+        <TaxChips chips={chips.tax} density="tile" />
         <ManaPool pool={player.mana} className="shrink-0 flex-nowrap text-xs" />
         {eliminated ? (
           <b className="shrink-0 rounded bg-destructive/10 px-1 text-destructive">Eliminated</b>

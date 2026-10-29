@@ -34,7 +34,8 @@ describe('buildFixture', () => {
     const { view } = buildFixture({ seats: 5 })
     for (const player of view.players) {
       expect(player.graveyard.count).toBe(5)
-      expect(player.command.count).toBe(1)
+      expect(player.command.count).toBe(player.seat === 0 ? 2 : 1)
+      expect(player.commanders?.map((entry) => entry.object)).toEqual(player.command.cards)
       const commander = must(view.objects.find((object) => object.id === player.command.cards?.[0]))
       expect(commander.supertypes).toContain('Legendary')
       expect(commander.zone).toEqual({ Command: player.seat })
@@ -213,8 +214,9 @@ describe('the fixture game with a prompt', () => {
       expect(hand).toContain(id)
       expect(byId.get(id)?.types).toContain('Land')
     }
+    const command = must(view).players[0]?.command.cards ?? []
     for (const id of options.castable) {
-      expect(hand).toContain(id)
+      expect([...command, ...hand]).toContain(id)
       expect(byId.get(id)?.types).not.toContain('Land')
     }
     // One spell of the hand is left uncastable, so a dimmed hand card can be seen.

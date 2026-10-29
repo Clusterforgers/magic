@@ -29,9 +29,10 @@ export function creaturesOf(fixture: Fixture, seat: number): ObjectId[] {
   return [...untapped, ...mine.filter((object) => !untapped.includes(object))].map((object) => object.id)
 }
 
-/** Everything seat 0 holds or controls on the battlefield: what a prompt marks as its own. */
+/** Everything seat 0 holds, keeps in its command zone or controls on the battlefield: what a prompt marks as its own. */
 export function ownOf(fixture: Fixture): ObjectId[] {
-  const hand = must(fixture.view.players[0]?.hand.cards)
+  const command = fixture.view.players[0]?.command.cards ?? []
+  const hand = [...command, ...must(fixture.view.players[0]?.hand.cards)]
   const battlefield = fixture.view.objects.filter(
     (object) => object.zone === 'Battlefield' && object.controller === 0,
   )

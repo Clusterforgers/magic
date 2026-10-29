@@ -14,7 +14,7 @@ export function describeLoss(reason: LossReason): string {
     case 'Conceded':
       return 'conceded'
     case 'CommanderDamage':
-      return 'was dealt 21 or more combat damage by one commander'
+      return 'lost to commander damage'
     case 'OpponentReachedLife':
       return 'lost to a player at the winning life total'
   }
