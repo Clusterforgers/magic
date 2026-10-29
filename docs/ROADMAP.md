@@ -36,7 +36,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
-- Playable first: "Views complete" (v1), then the web in this order, Commander first because it is the format the owner plays: card images (a1, a2), Commander at the table (k1), the table states, the manual-action menu, the prompts for the decision kinds, Commander in the builder and lobby (k2), the playtest polish (f1b), a four-seat Commander game in Playwright (k3), the deploy (d1) and the not-validated list (f1a). Coverage rounds and the Gate run beside it.
+- Playable first: "Views complete" (v1), then the web in this order, Commander first because it is the format the owner plays: card images (a1, a2), Commander at the table (k1), the table states, the manual-action menu, the prompts for the decision kinds, Commander in the builder (k2), the playtest polish (f1b), a four-seat Commander game in Playwright (k3), the deploy (d1) and the not-validated list (f1a). Coverage rounds and the Gate run beside it.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
 
 ## Done
@@ -123,7 +123,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 The server is settled first, then the web is built once against the final types.
 
-- [~] (g0a) (w2-lobby-commander) The create form and the lobby deck chooser pick a precon and the Commander format, so `precon-game.spec.ts` (`startTable` makes the game with `POST /api/games` and `PUT .../deck`) plays from the UI alone; joins with (w1a) and (k2)
 - [~] (g0b) (w3-payment) A hand highlights only the cards the seat can pay for, and the payment prompt disables "Pay automatically" with its reason when the mana cannot cover the cost (manual pair, `failure-bo` page text: "That answer is not allowed: invalid payment" with the prompt left open)
 - [~] (g0c) (w4-table-readability) The hand fan keeps every card's name and cost readable at 1600x1000 (names cut off in `verified/17-bo-PayMana.png` and `four-seats/25-bo-turn-5-Priority.png`) and the turn splash never covers a prompt (`verified/17-bo-PayMana.png`)
 - [~] (g0e) (w3-payment) Paying by hand cannot go wrong: the prompt keeps a source that would overpay or that needs mana made before it from being tapped, instead of the server refusing the confirm ("payment provides 4 mana but the cost is 3" with Sol Ring and two more sources; "the mana cost of ManaSource ... cannot be paid from the mana made before it"; both in runs with `autoPay: false`, whose seat now pays automatically in `precon-game.spec.ts`)
@@ -139,7 +138,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (a1) (a1-card-images) Card images: the server serves the normal and art-crop image of a card identity (printing, face, token) from a disk cache filled from the Scryfall CDN, and the text face stands in while an image loads or does not exist (`docs/server.md`, `docs/data-sources.md`)
 - [ ] (a2) The table, hand, stack, preview, deck builder and lobby draw the real card image, unaltered as Scryfall's image terms require, with tapped state, counters, attachments, loyalty and support marks over it, with `/dev/table` screenshots at six sizes in both themes (`docs/web.md`)
 - [ ] (k1) Commander at the table: each commander in the command zone with its cast count and tax, casting it from there with the tax in the cast options, the choice to return it to the command zone, and commander damage on every pod with the lethal amount, with `/dev/table` screenshots of a four-seat game at six sizes in both themes
-- [ ] (k2) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
+- [ ] (k2) Commander in the builder: a commander slot with partner and background pairs, colour identity in the filters and the check (`docs/deck-check.md`)
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
@@ -335,9 +334,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
 - [~] (B3) (w1-precons-web) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
 - [~] (w1a) (w1-precons-web) Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
-- [~] (w2b) (w2-lobby-commander) House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
-- [~] (w2a) (w2-lobby-commander) Precons as a third kind of deck in the lobby picker (`docs/server.md`, `docs/deck-check.md`)
-- [~] (hr5c) (w2-lobby-commander) The lobby picker shows each deck's verdict at the table before joining, through `POST /api/decks/check` (`docs/server.md`, Precons)
+- [ ] (w2c) The lobby of an invite-only game names the house rules: `GET /api/games/{id}` carries `house_rules` and `useLobbyRules` reads the lookup instead of the game browser's row (`docs/server.md`, `docs/web.md`, House rules)
+- [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
+- [ ] (w2e) The create form and the lobby chooser (Your decks, Built-in, Precons; blocked and checking rows) read well at 360, 390, 768, 1400 and 1920 px in both themes, with `/dev/lobby?format=commander&rules=1&account=1` screenshots reviewed and `layout.spec.ts` gating the new form
+- [ ] (w2f) Run `precon-game.spec.ts` (create form, chooser, join, Ready on a database with cards and precons) and the specs that now pick Normal on the create form (`accounts`, `settings`, `layout`, `lobby-controls`) green twice
 - [ ] (f1a) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)

@@ -37,7 +37,7 @@ export interface DeckChooserProps {
 type Kind = 'builtin' | 'own' | 'precons'
 
 /** The kinds of deck a game of this format and this visitor can choose among, in the order of the tabs. */
-export function deckKinds(format: GameFormat, signedIn: boolean): { kind: Kind; label: string }[] {
+function deckKinds(format: GameFormat, signedIn: boolean): { kind: Kind; label: string }[] {
   return [
     ...(signedIn ? [{ kind: 'own' as const, label: 'Your decks' }] : []),
     ...(format === 'normal' ? [{ kind: 'builtin' as const, label: 'Built-in' }] : []),

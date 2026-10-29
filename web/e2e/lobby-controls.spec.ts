@@ -25,6 +25,7 @@ async function hostAndGuest(browser: Browser): Promise<Pair> {
   for (const page of [hostPage, guestPage]) page.on('pageerror', (error) => errors.push(error.message))
 
   await hostPage.goto('/new')
+  await hostPage.getByRole('radio', { name: /^Normal/ }).check()
   await hostPage.getByLabel('Your name').fill(host)
   await hostPage.getByLabel('Your deck').selectOption('mono-green')
   await hostPage.getByRole('button', { name: 'Create game' }).click()

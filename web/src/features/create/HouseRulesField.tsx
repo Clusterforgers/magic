@@ -100,7 +100,7 @@ export function HouseRulesField({ draft, problems, onChange }: HouseRulesFieldPr
           {summary}
         </span>
       </summary>
-      <div className="grid gap-5 border-t px-4 py-4">
+      <div className="grid gap-6 border-t px-4 py-4">
         <p className="text-sm text-muted-foreground">
           Leave a field empty to play by the format’s rule. Only what you fill in changes the game, and every
           player sees it.

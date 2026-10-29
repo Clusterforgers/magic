@@ -56,6 +56,7 @@ async function makeGame(
 /** The create form, filled in by a person who gives a name and takes the rest as it is. */
 async function createFromForm(page: Page, seats: number): Promise<void> {
   await page.goto('/new')
+  await page.getByRole('radio', { name: /^Normal/ }).check()
   await expect(page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
   await page.getByLabel('Seats').selectOption(String(seats))
   await page.getByLabel('Your name').fill(unique('Host'))

@@ -27,7 +27,7 @@ export function FormatField({ value, onChange }: FormatFieldProps) {
         {FORMATS.map((format) => (
           <label
             key={format.value}
-            className="flex cursor-pointer items-start gap-3 rounded-lg border border-border-strong px-3 py-3 has-checked:border-primary has-checked:bg-muted has-focus-visible:ring-3 has-focus-visible:ring-ring/50"
+            className="flex cursor-pointer items-start gap-3 rounded-lg border border-border-strong px-3 py-3 has-checked:border-primary has-checked:bg-muted has-focus-visible:ring-3 has-focus-visible:ring-ring"
           >
             <input
               type="radio"
@@ -37,7 +37,7 @@ export function FormatField({ value, onChange }: FormatFieldProps) {
               className="mt-1 accent-primary"
               onChange={() => onChange(format.value)}
             />
-            <span className="grid gap-0.5">
+            <span className="grid gap-1">
               <span className="text-base font-medium">{format.name}</span>
               <span className="text-sm text-muted-foreground">{format.words}</span>
             </span>

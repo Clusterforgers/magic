@@ -31,23 +31,26 @@ export function useVerdicts(api: Pick<DecksApi, 'check'>, game: string, wanted: 
     setOf((before) => new Map(before).set(id, state))
   }, [])
 
-  const pump = useCallback((): void => {
-    while (running.current < AT_ONCE) {
-      const id = queue.current.shift()
-      if (id === undefined) return
-      running.current += 1
-      void api
-        .check({ deck: id, format: null, cards: null, game })
-        .then(
-          (report) => set(id, { status: 'ready', verdict: verdictOf(report) }),
-          () => set(id, { status: 'failed' }),
-        )
-        .finally(() => {
-          running.current -= 1
-          pump()
-        })
-    }
-  }, [api, game, set])
+  const pump = useCallback(
+    function run(): void {
+      while (running.current < AT_ONCE) {
+        const id = queue.current.shift()
+        if (id === undefined) return
+        running.current += 1
+        void api
+          .check({ deck: id, format: null, cards: null, game })
+          .then(
+            (report) => set(id, { status: 'ready', verdict: verdictOf(report) }),
+            () => set(id, { status: 'failed' }),
+          )
+          .finally(() => {
+            running.current -= 1
+            run()
+          })
+      }
+    },
+    [api, game, set],
+  )
 
   const key = wanted.join('\n')
   useEffect(() => {

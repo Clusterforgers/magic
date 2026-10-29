@@ -199,7 +199,7 @@ const words = (text: string): string[] =>
     .filter((word) => word !== '')
 
 /** The precons that match what was typed (every word in the name, set or a commander) and that the format takes. */
-export function matchingPrecons(
+function matchingPrecons(
   precons: readonly PreconListItem[],
   query: string,
   format: GameFormat,
@@ -256,7 +256,7 @@ export function PreconList({
             id={searchId}
             type="search"
             autoComplete="off"
-            className="pl-9"
+            className="pl-8"
             placeholder="Name, set or commander"
             value={query}
             onChange={(event) => {

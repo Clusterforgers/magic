@@ -60,8 +60,8 @@ async function sit(browser: Browser, account: Account): Promise<Player> {
 
 /**
  * The precons to play, chosen by the stored data and not by name: the playable precons whose copies are mostly
- * Verified come first, the ones with the most manual copies last. The create form cannot pick a precon, so the
- * list is read from the API as the precon browser will.
+ * Verified come first, the ones with the most manual copies last. The list is read from the API only to choose which
+ * precons to play; the table itself is made through the create form and the lobby's chooser.
  */
 async function precons(browser: Browser): Promise<{ verified: PreconListItem[]; manual: PreconListItem[] }> {
   const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL })
@@ -83,10 +83,25 @@ async function precons(browser: Browser): Promise<{ verified: PreconListItem[]; 
 }
 
 /**
- * Makes a Commander game as the first account through `POST /api/games` (the create form has no format and no
- * precon), has every other account open the invite page and join, and sets each seat's precon through
- * `PUT .../deck` (the lobby's deck chooser lists demo decks and the account's own). Returns the players in seat order,
- * all in the lobby.
+ * Chooses `deck` in the lobby's chooser as `player` does: the Precons list, a search for its name, its row (which waits
+ * for the table's verdict and must not be blocked), and the press, then waits for the server's answer.
+ */
+async function chooseTablePrecon(player: Player, deck: PreconListItem): Promise<void> {
+  const { page } = player
+  await page.getByRole('tab', { name: 'Precons' }).click()
+  await page.getByRole('searchbox', { name: 'Search precons' }).fill(deck.name)
+  const row = page.locator(`[data-deck-option="precon:${deck.code}"]`)
+  await expect(row).toBeVisible()
+  await expect(row).not.toContainText('Checking at this table')
+  await expect(row).not.toContainText('Cannot be taken')
+  await row.locator('button[aria-pressed]').first().click()
+  await expect(page.locator('[data-slot="deck-note"]')).toContainText('Your deck is now')
+}
+
+/**
+ * Makes a Commander game as the first account on the create form (Commander is its default; invite only), has every
+ * other account open the invite page with the code the host's lobby shows and join, and has every seat choose its
+ * precon in the lobby's deck chooser. Returns the players in seat order, all in the lobby.
  */
 async function startTable(
   browser: Browser,
@@ -97,27 +112,16 @@ async function startTable(
   const firstDeck = decks[0]
   if (first === undefined || firstDeck === undefined) throw new Error('a table needs a seat')
   const host = await sit(browser, first)
-  const created = await host.context.request.post('/api/games', {
-    data: {
-      format: 'commander',
-      visibility: 'invite',
-      held: 1,
-      seats: accounts.map((account, index) => ({
-        name: account.name,
-        ...(index === 0 ? { deck: `precon:${firstDeck.code}` } : {}),
-      })),
-    },
-  })
-  expect(created.status(), await created.text()).toBe(201)
-  const { game, code, seats } = (await created.json()) as {
-    game: string
-    code: string
-    seats: { seat: number; token: string }[]
-  }
-  const hostSeat = seats[0]
-  if (hostSeat === undefined) throw new Error('no seat for the host')
-  await host.page.goto(`/game/${game}#seat=${hostSeat.seat}&token=${hostSeat.token}`)
+  await host.page.goto('/new')
+  await expect(host.page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
+  await expect(host.page.getByRole('radio', { name: /^Commander/ })).toBeChecked()
+  await host.page.getByLabel('Seats').selectOption(String(accounts.length))
+  await host.page.getByRole('radio', { name: 'Invite only' }).check()
+  await host.page.getByRole('button', { name: 'Create game' }).click()
   await expect(host.page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
+  const code = (await host.page.locator('[data-slot="invite-code"]').textContent())?.trim() ?? ''
+  expect(code).not.toBe('')
+  await chooseTablePrecon(host, firstDeck)
 
   const players = [host]
   for (const [index, account] of others.entries()) {
@@ -129,10 +133,7 @@ async function startTable(
     await expect(player.page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
     const deck = decks[index + 1]
     if (deck === undefined) throw new Error(`no precon for seat ${index + 2}`)
-    const chosen = await player.context.request.put(`/api/games/${game}/seats/${index + 1}/deck`, {
-      data: { deck: `precon:${deck.code}` },
-    })
-    expect(chosen.status(), await chosen.text()).toBe(200)
+    await chooseTablePrecon(player, deck)
     players.push(player)
   }
   return players
