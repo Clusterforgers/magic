@@ -215,6 +215,7 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 ### Code
 
 - `fx/moves.ts` (pure): `deriveMoves(before, after, events)` gives `Move[]` (`kind`, `object`, `look`, `from`, `to`, `order`, `targets`) and the marks; `MOVE_MS` holds the tokens, which `fx.css` repeats.
+- The travel layer measures a move's source in the store subscriber of `watchBatches`, which runs before React draws the batch, so a card that left the hand is measured where it stood; it measures the destination on the next frame, and a place it does not find falls back to its zone's anchor.
 - `handReason.ts` (pure): `unplayableReason(object, view, options)` gives the reason of a dimmed hand card; `REASON_WORDS` its label and line.
 - `/dev/table?fx=` `cast`, `activate`, `resolve`, `counter`, `land` and `draw` play these moments on the fixture table, beside `attack`, `block`, `damage`, `death` (the die moment), `life` and `enter`.
 
