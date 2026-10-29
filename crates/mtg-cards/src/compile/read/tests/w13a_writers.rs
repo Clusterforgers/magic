@@ -22,3 +22,17 @@ fn w13a_dump() {
         }
     }
 }
+
+#[test]
+#[ignore = "exploration dump"]
+fn w13a_read_dump() {
+    let list = std::fs::read_to_string(std::env::var("W13A_TEXTS").unwrap_or_default()).unwrap_or_default();
+    for text in list.lines() {
+        println!("== {text}");
+        for kind in [ClauseKind::Spell, ClauseKind::Triggered, ClauseKind::Activated, ClauseKind::Static] {
+            if let Some(read) = clause(text, kind, false) {
+                println!("  {}", serde_json::to_string(&read).unwrap_or_default());
+            }
+        }
+    }
+}

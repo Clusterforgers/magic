@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9b884dfd-59f4-45c0-bf1e-6ad9f5b58895",
+  "name": "Feldon's Cane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feldon's Cane",
+      "oracle_fingerprint": "99afee826dc2e4cab4a401763a84f359",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

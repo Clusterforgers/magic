@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2bf65e7d-6d31-4ad6-93cd-623612d3175d",
+  "name": "Sudden Impact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Impact",
+      "oracle_fingerprint": "d870904bfbf56070f095d641fce1d403",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

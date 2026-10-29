@@ -1,0 +1,35 @@
+{
+  "oracle_id": "73d175b3-f0dc-4599-8702-2967a8ead06a",
+  "name": "Giant's Ire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant's Ire",
+      "oracle_fingerprint": "ee378008a2b347c54232a56bf4f9abf5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Giant" }, { "ControlledBy": "You" }] },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -237,6 +237,9 @@ mod w12a_their_graveyard;
 mod w13a_either_quality;
 mod w13a_greater;
 mod w13a_itself;
+mod w13a_named;
+mod w13a_only_one;
+mod w13a_sacrifice_all;
 mod w13a_shuffle_zone;
 mod w13a_their_hand;
 mod w13a_those;
@@ -389,7 +392,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 
 /// Adds the wordings of the shapes the stored local-model proposals hit (r4d-b, r4b-b): a count greater than a number,
 /// a later step on "those creatures", a count of a target player's hand, a target with one of two qualities, a target
-/// that deals damage to itself, a zone shuffled into the library and a target that was one of two colors.
+/// that deals damage to itself, a zone shuffled into the library, a target that was one of two colors, a group of
+/// exactly one, a sacrifice of a whole group and creatures with a name.
 fn add_w13a(ability: &Ability, texts: &mut Vec<String>) {
     w13a_greater::add(ability, texts);
     w13a_those::add(ability, texts);
@@ -398,6 +402,9 @@ fn add_w13a(ability: &Ability, texts: &mut Vec<String>) {
     w13a_itself::add(ability, texts);
     w13a_shuffle_zone::add(ability, texts);
     w13a_was_color::add(ability, texts);
+    w13a_only_one::add(ability, texts);
+    w13a_sacrifice_all::add(ability, texts);
+    w13a_named::add(ability, texts);
 }
 
 /// Adds the wordings of the shapes the stored local-model proposals hit (r4d): the next turn's upkeep, a target said

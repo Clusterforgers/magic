@@ -1,0 +1,36 @@
+{
+  "oracle_id": "10026343-a8cd-4a99-b4d9-ff7611f52052",
+  "name": "Yukora, the Prisoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yukora, the Prisoner",
+      "oracle_fingerprint": "d18a6b06c405c599692bd3c067708002",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Subtype": "Ogre" } }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Subtype": "Ogre" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

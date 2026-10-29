@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "022960a1-8223-4b83-aea2-85359c39f3b8",
+  "oracle_id": "3bc51b45-1f96-4277-8b80-bb0a528c6ac2",
+  "multiverse_ids": [
+    240039
+  ],
+  "mtgo_id": 43941,
+  "mtgo_foil_id": 43942,
+  "tcgplayer_id": 58359,
+  "cardmarket_id": 254445,
+  "name": "Homicidal Seclusion",
+  "lang": "en",
+  "released_at": "2012-05-04",
+  "uri": "https://api.scryfall.com/cards/022960a1-8223-4b83-aea2-85359c39f3b8",
+  "scryfall_uri": "https://scryfall.com/card/avr/108/homicidal-seclusion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:04:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.jpg?1783940696",
+    "normal": "https://cards.scryfall.io/normal/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.jpg?1783940696",
+    "large": "https://cards.scryfall.io/large/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.jpg?1783940696",
+    "png": "https://cards.scryfall.io/png/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.png?1783940696",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.jpg?1783940696",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.jpg?1783940696",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.webp?1783940696",
+    "grid": "https://cards.scryfall.io/grid/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.webp?1783940696",
+    "display": "https://cards.scryfall.io/display/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.webp?1783940696",
+    "art": "https://cards.scryfall.io/art/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.webp?1783940696",
+    "crop": "https://cards.scryfall.io/crop/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.webp?1783940696",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/2/022960a1-8223-4b83-aea2-85359c39f3b8.jpg?1783940696"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "As long as you control exactly one creature, that creature gets +3/+1 and has lifelink.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "039810a9-92d7-4f2d-b2d0-ca661ac586c0",
+  "set": "avr",
+  "set_name": "Avacyn Restored",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/039810a9-92d7-4f2d-b2d0-ca661ac586c0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aavr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/avr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/022960a1-8223-4b83-aea2-85359c39f3b8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3bc51b45-1f96-4277-8b80-bb0a528c6ac2&unique=prints",
+  "collector_number": "108",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Damned crows and their endless squawking . . . blocks out the voices in my head . . .\"\n—Hermit of Hanne Hall",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cliff Childs",
+  "artist_ids": [
+    "ed6f7e03-20ba-4c73-bdda-4a4928480721"
+  ],
+  "illustration_id": "e0e7aa07-1aa7-41d0-83cd-cd818109c931",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26236,
+  "penny_rank": 3072,
+  "prices": {
+    "usd": "0.06",
+    "usd_foil": "0.45",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.28",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=240039&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHomicidal%2BSeclusion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHomicidal%2BSeclusion",
+    "edhrec": "https://edhrec.com/route/?cc=Homicidal+Seclusion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F58359%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=254445&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/43941?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
