@@ -6,7 +6,7 @@ import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
 import { DeckMarker } from './DeckMarker'
 import { ExportMenu } from './ExportMenu'
-import { cardsText, checkNote, formatLabel } from './format'
+import { cardsText, checkNote, formatLabel, hasUnvalidated } from './format'
 
 interface DeckRowProps {
   deck: DeckListItem
@@ -49,6 +49,16 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
           </time>
         </p>
         {note === null ? null : <p className="text-sm">{note}</p>}
+        {hasUnvalidated(deck.summary.counts) ? (
+          <Link
+            to="/decks/$deckId/unvalidated"
+            params={{ deckId: deck.id }}
+            aria-label={`Not validated cards of ${deck.name}`}
+            className="w-fit text-sm text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Not validated cards
+          </Link>
+        ) : null}
       </div>
       <div className="flex items-center gap-2">
         <Link
