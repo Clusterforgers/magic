@@ -396,6 +396,7 @@ impl PlayerView {
                 .counters()
                 .map(|(kind, count)| (kind.clone(), count))
                 .collect(),
+            citys_blessing: state.has_citys_blessing(seat),
             enchanted_by: state.attachments_of_player(seat),
             mulligans: player.mulligans(),
             mulligan: player.mulligan_status(),
@@ -458,6 +459,7 @@ impl TableView {
         let combat = state.combat();
         TableView {
             viewer,
+            spectator: is_spectator(state, viewer),
             format: state.format().name().to_owned(),
             house_rules: Some(state.house_rules().clone()).filter(|rules| !rules.is_empty()),
             stage: state.stage(),
@@ -516,12 +518,30 @@ pub(crate) fn visible_objects(state: &GameState, viewer: PlayerId) -> Vec<Object
         .collect()
 }
 
+/// The viewer id of a spectator of the game `state`: the number of seats, which names no seat. Every view and event batch
+/// built for it is a spectator's (`TableView::spectator`).
+pub fn spectator_viewer(state: &GameState) -> PlayerId {
+    PlayerId::from_index(state.players().len())
+}
+
+/// Whether `viewer` is no seat of the game `state`.
+fn is_spectator(state: &GameState, viewer: PlayerId) -> bool {
+    viewer.index() >= state.players().len()
+}
+
 impl StateView {
-    /// Builds what `viewer` may know: their own hand, every public zone, and counts for the rest.
+    /// Builds what `viewer` may know: their own hand, every public zone, and counts for the rest. A viewer that is no
+    /// seat gets a spectator's view.
     pub fn for_player(state: &GameState, viewer: PlayerId) -> StateView {
         StateView {
             table: TableView::of(state, viewer),
             objects: visible_objects(state, viewer),
         }
+    }
+
+    /// Builds what a spectator may know: every public zone and the counts of the hands and libraries, with no seat's
+    /// hidden cards. The table says it is a spectator's (`TableView::spectator`).
+    pub fn for_spectator(state: &GameState) -> StateView {
+        StateView::for_player(state, spectator_viewer(state))
     }
 }

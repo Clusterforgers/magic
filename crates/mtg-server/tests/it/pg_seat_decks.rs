@@ -1,4 +1,4 @@
-//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, a blocked deck is refused with its issues to its owner alone, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, a start whose recipe cannot be stored is refused and tried again, and a table with a deck played by hand lists as one, stores that when it starts and resumes as one after a restart.
+//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, a blocked deck is refused with its issues to its owner alone, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, a start whose recipe cannot be stored is refused and tried again, and a table with a deck played by hand lists as one, stores that when it starts and resumes as one after a restart, and the printing a deck line chose is the printing of the cards in the game's views (a line with none leaves it out, a built-in deck has none) and in the recipe, and the same after a restart.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -636,4 +636,87 @@ async fn a_table_where_the_guest_plays_by_hand_starts_and_resumes_as_one(pool: P
 #[sqlx::test(migrations = false)]
 async fn a_table_whose_decks_are_run_whole_starts_and_resumes_as_one(pool: PgPool) {
     plays_by_hand_through_a_restart(pool, forests(), bears(), false).await;
+}
+
+/// The Scryfall id of the corpus printing of `name`.
+fn printing(name: &str) -> String {
+    objects()
+        .iter()
+        .find(|card| card["name"] == name)
+        .unwrap_or_else(|| panic!("the corpus has no {name}"))["id"]
+        .as_str()
+        .unwrap()
+        .to_owned()
+}
+
+/// What seat 0 sees of its own cards: the cards' names with their identity.
+async fn identities(handle: &mtg_server::GameHandle) -> Vec<mtg_protocol::ObjectView> {
+    let mut queue = handle.join(PlayerId::from_index(0)).await.unwrap();
+    loop {
+        if let ServerMessage::Snapshot { state, .. } = queue.recv().await.unwrap() {
+            return state.objects;
+        }
+    }
+}
+
+#[sqlx::test(migrations = false)]
+async fn the_printing_a_deck_line_chose_names_the_cards_of_the_game_and_survives_a_restart(
+    pool: PgPool,
+) {
+    let mut server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    // Fifty-six Forests of the corpus printing, four Grizzly Bears of no printing.
+    let lines = [
+        json!({"zone": "main", "oracle_id": oracle("Forest"), "printing_id": printing("Forest"), "count": 56}),
+        line("main", "Grizzly Bears", 4),
+    ];
+    let stored = store(&server, &ann, &deck("Printed", "modern", &lines)).await;
+    let game = create(&server, &ann, "mono-green").await;
+    let bo = register(server.addr, "bob", PASSWORD).await;
+    let path = format!("/api/games/{game}/join");
+    let joined = bo
+        .post(server.addr, &path, &json!({"deck": "mono-red"}).to_string())
+        .await;
+    assert_eq!(joined.status, 200, "{}", joined.text());
+    assert_eq!(choose(&server, &ann, &game, 0, &stored).await.status, 200);
+    lobby::start(&server.registry, &game, 2).await;
+
+    // The recipe keeps one printing for each card of the library, none for the demo deck.
+    let (recipe, _) = recipe(&pool, &game).await;
+    let cards = recipe["decks"][0]["cards"].as_array().unwrap();
+    let printings = recipe["decks"][0]["printings"].as_array().unwrap();
+    assert_eq!(printings.len(), cards.len());
+    for (card, printing_id) in cards.iter().zip(printings) {
+        let forest = card == &json!(oracle("Forest"));
+        assert_eq!(printing_id, &json!(forest.then(|| printing("Forest"))));
+    }
+    assert_eq!(
+        recipe["decks"][1],
+        json!({"kind": "demo", "id": "mono-red"})
+    );
+
+    // The views name the printing of every card seat 0 sees, and the cards of no printing name only the card.
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    let hash = handle.status().await.unwrap().state_hash;
+    let before = identities(&handle).await;
+    assert!(before.iter().any(|object| object.name == "Forest"));
+    for object in &before {
+        let identity = object.identity.as_ref().expect("a stored card has one");
+        let (card, wanted) = if object.name == "Forest" {
+            ("Forest", Some(printing("Forest")))
+        } else {
+            ("Grizzly Bears", None)
+        };
+        assert_eq!(identity.oracle_id, oracle(card), "{}", object.name);
+        assert_eq!(identity.printing_id, wanted, "{}", object.name);
+    }
+
+    server.shutdown();
+    server.finished().await.unwrap();
+    drop(handle);
+    drop(server);
+    let server = TestServer::start_with_cards(pool.clone(), bot_config(), source(&pool)).await;
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    assert_eq!(handle.status().await.unwrap().state_hash, hash);
+    assert_eq!(identities(&handle).await, before);
 }

@@ -75,7 +75,7 @@ function legalityIssues(texts: string[]) {
 }
 
 const mainOrder = (): Array<string | null | undefined> =>
-  [...deckPane().querySelectorAll('li[data-line^="main:"] > [data-slot="card-name"]')].map(
+  [...deckPane().querySelectorAll('li[data-line^="main:"] [data-slot="card-name"]')].map(
     (name) => name.textContent,
   )
 

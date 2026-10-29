@@ -5,6 +5,7 @@
  */
 import type { GameInfo, GameSeat, Joined, LobbyGame, SeatDeck, Visibility } from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
+import { readHouseRules } from './houseRules'
 import { isGameResult } from './parse'
 
 const VISIBILITIES: Record<Visibility, true> = { public: true, invite: true }
@@ -32,7 +33,19 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
   if (!isText(game) || !isText(host) || !isText(format) || !isFlag(manual)) return null
   if (!isCount(filled) || !isCount(total) || !isCount(age) || filled > total) return null
   if (!isText(createdAt) || !STAMP.test(createdAt)) return null
-  return { game, host, format, manual_play: manual, filled, total, created_at: createdAt, age_secs: age }
+  const rules = readHouseRules(item.house_rules)
+  if (rules === null) return null
+  return {
+    game,
+    host,
+    format,
+    ...(rules === undefined ? {} : { house_rules: rules }),
+    manual_play: manual,
+    filled,
+    total,
+    created_at: createdAt,
+    age_secs: age,
+  }
 }
 
 /** The rows of `GET /api/lobbies`, or `null` when the body or any row is unreadable. */
@@ -82,7 +95,8 @@ function readGameSeat(item: unknown): GameSeat | null {
  * The answer of `GET /api/games/{id}`. A server from before the lobby showed readiness sends no `ready` (nobody is
  * known to be ready then) and one from before visibility sends no `visibility` (it listed nothing, so its games were
  * invite-only), one from before Commander sends no `format` (it played Normal only) and one from before manual cards
- * sends no `manual_play` (no table played by hand); a field that is there must be right.
+ * sends no `manual_play` (no table played by hand); a field that is there must be right. `house_rules` is there only for
+ * a game with rules set.
  */
 export function readGameInfo(body: unknown): GameInfo | null {
   if (!isRecord(body) || !isFlag(body.started) || !Array.isArray(body.seats)) return null
@@ -95,6 +109,8 @@ export function readGameInfo(body: unknown): GameInfo | null {
   if (!isVisibility(visibility)) return null
   const manual = body.manual_play === undefined ? false : body.manual_play
   if (!isFlag(manual)) return null
+  const rules = readHouseRules(body.house_rules)
+  if (rules === null) return null
   const result = body.result === null || isGameResult(body.result) ? body.result : undefined
   if (result === undefined) return null
   const seats: GameSeat[] = []
@@ -112,5 +128,6 @@ export function readGameInfo(body: unknown): GameInfo | null {
     result,
     visibility,
     manual_play: manual,
+    ...(rules === undefined ? {} : { house_rules: rules }),
   }
 }

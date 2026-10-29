@@ -7,7 +7,7 @@ import { LIFE_PER_SYMBOL } from '../manaSymbols'
 import { ManaDot } from '../ManaPool'
 import { ManaPips } from '../ManaPips'
 import { manaName, spendWords } from './payText'
-import { MANA_TYPES, manaOf, poolLeft } from './payment'
+import { MANA_TYPES, madeOf, poolLeft } from './payment'
 import type { LifeChoice, Spend } from './payment'
 
 const PIP_SIZE = 'size-5 text-xs'
@@ -154,7 +154,12 @@ export function PaymentSummary({
               className="h-9 gap-1.5 px-2"
               onClick={() => take(index)}
             >
-              <ManaDot type={manaOf(spend)} />
+              <span aria-hidden="true" className="text-muted-foreground tabular-nums">
+                {index + 1}.
+              </span>
+              {madeOf(spend).map((mana, at) => (
+                <ManaDot key={`${mana}-${at}`} type={mana} />
+              ))}
               <span aria-hidden="true">
                 {spend.kind === 'pool' ? 'Pool' : nameOf(spend.option.source.object)}
               </span>

@@ -769,9 +769,13 @@ fn from_elsewhere(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern>
 
 fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     let (from, to) = if r.word("enters") {
-        // The older wording, "enters the battlefield", says the same.
-        r.words("the battlefield");
-        (None, Some(ZoneKind::Battlefield))
+        if r.words("from a graveyard") {
+            (Some(ZoneKind::Graveyard), Some(ZoneKind::Battlefield))
+        } else {
+            // The older wording, "enters the battlefield", says the same.
+            r.words("the battlefield");
+            (None, Some(ZoneKind::Battlefield))
+        }
     } else if r.word("dies") || r.words("is put into a graveyard from the battlefield") {
         (Some(ZoneKind::Battlefield), Some(ZoneKind::Graveyard))
     } else if let Some(elsewhere) = r.attempt(|r| from_elsewhere(r, what)) {
@@ -1237,6 +1241,9 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::ZoneChange { what, from, to } => {
             let verb = match (from, to) {
                 (None, Some(ZoneKind::Battlefield)) => "enters",
+                (Some(ZoneKind::Graveyard), Some(ZoneKind::Battlefield)) => {
+                    "enters from a graveyard"
+                }
                 (Some(ZoneKind::Battlefield), Some(ZoneKind::Graveyard)) => "dies",
                 (None, Some(ZoneKind::Graveyard)) => "is put into a graveyard from anywhere",
                 (Some(ZoneKind::Battlefield), None) => "leaves the battlefield",
@@ -1691,6 +1698,7 @@ fn about(what: &Selector, verbs: &[String]) -> Option<String> {
                 || matches!(
                     verb.as_str(),
                     "enters"
+                        | "enters from a graveyard"
                         | "dies"
                         | "is put into a graveyard from anywhere"
                         | "leaves the battlefield"

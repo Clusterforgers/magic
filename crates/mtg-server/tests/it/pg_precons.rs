@@ -9,6 +9,7 @@ use std::time::Duration;
 
 use mtg_cards::Caps;
 use mtg_db::Database;
+use mtg_import::ids::PrintingId;
 use mtg_import::mtgjson::{PreconCard, PreconDeck};
 use mtg_import::scryfall::cards;
 use mtg_protocol::{LobbySeat, ServerMessage};
@@ -98,15 +99,28 @@ fn evergreen() -> PreconDeck {
     )
 }
 
-/// Four copies of a card the rules model in part: playable, with four manual cards.
+/// The Scryfall id of the corpus printing of `name`.
+fn printing(name: &str) -> String {
+    objects()
+        .iter()
+        .find(|card| card["name"] == name)
+        .unwrap_or_else(|| panic!("the corpus has no {name}"))["id"]
+        .as_str()
+        .unwrap()
+        .to_owned()
+}
+
+/// Four copies of a card the rules model in part: playable, with four manual cards. The Forests name their printing.
 fn quest() -> PreconDeck {
-    deck(
+    let mut quest = deck(
         "Quest Pack",
         "Starter Deck",
         "2023-03-01",
         &[],
         &[("Forest", 56), ("Aven Mindcensor", 4)],
-    )
+    );
+    quest.main_board[0].scryfall_id = Some(PrintingId(printing("Forest")));
+    quest
 }
 
 /// A Commander deck: legal and playable by hand in a Commander game; a Normal game has no command zone for it.
@@ -794,6 +808,40 @@ async fn one_request_makes_a_lobby_with_the_precon_as_the_hosts_deck_and_the_gam
         stored["fingerprints"][0],
         DeckFingerprint::of(&cards).unwrap().to_string()
     );
+}
+
+#[sqlx::test(migrations = false)]
+async fn the_printing_a_precon_names_is_kept_in_the_recipe_for_the_cards_of_that_line(
+    pool: PgPool,
+) {
+    let server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let body = json!({
+        "format": "normal", "visibility": "public", "held": 1,
+        "seats": [{"name": "ann", "deck": on(QUEST)}, {"deck": "mono-red"}],
+    });
+    let created = ann.post(server.addr, "/api/games", &body.to_string()).await;
+    assert_eq!(created.status, 201, "{}", created.text());
+    let game = created.json()["game"].as_str().unwrap().to_owned();
+    let joined = net::lobby::join(server.addr, &game, &json!({ "name": "Cy" }), &[]).await;
+    assert_eq!(joined.status, 200, "{}", joined.text());
+    lobby::start(&server.registry, &game, 2).await;
+    let (stored, _) = recipe(&pool, &game).await;
+
+    // The Quest Pack's Forests name the corpus printing and its other cards none; the built-in deck of the other seat has none.
+    let cards = stored["decks"][0]["cards"].as_array().unwrap();
+    let printings = stored["decks"][0]["printings"].as_array().unwrap();
+    assert_eq!(printings.len(), cards.len());
+    let forests = printings
+        .iter()
+        .filter(|id| **id == json!(printing("Forest")))
+        .count();
+    assert_eq!(forests, 56);
+    assert_eq!(printings.iter().filter(|id| id.is_null()).count(), 4);
+    for (card, id) in cards.iter().zip(printings) {
+        assert_eq!(id.is_null(), *card != json!(oracle("Forest")));
+    }
+    assert!(stored["decks"][1].get("printings").is_none());
 }
 
 #[sqlx::test(migrations = false)]

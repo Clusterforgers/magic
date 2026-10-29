@@ -203,6 +203,28 @@ pub enum Provider {
     Openai,
 }
 
+/// How much a model that has an effort setting thinks before it answers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+pub enum Reasoning {
+    /// Little thinking: the fastest answers.
+    Low,
+    /// The usual amount.
+    Medium,
+    /// The most thinking: the slowest and longest answers.
+    High,
+}
+
+impl Reasoning {
+    /// The word the OpenAI-style `reasoning_effort` field takes.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Reasoning::Low => "low",
+            Reasoning::Medium => "medium",
+            Reasoning::High => "high",
+        }
+    }
+}
+
 /// Options of `propose`.
 #[derive(Debug, Args)]
 // Each flag is one independent command-line switch.
@@ -257,6 +279,27 @@ pub struct ProposeArgs {
     /// The most tokens an answer of an OpenAI-style server may have, a reasoning model's thinking included.
     #[arg(long, value_name = "N", default_value_t = crate::propose::c11i_openai::C11I_DEFAULT_ANSWER_TOKENS)]
     pub max_answer_tokens: u32,
+
+    /// Seconds one request may take, the answer read to its end; a request that takes longer is cancelled and retried.
+    #[arg(long, value_name = "SECS", default_value_t = 600, value_parser = clap::value_parser!(u64).range(1..))]
+    pub request_timeout: u64,
+
+    /// How often a failed request (timeout, 429, 5xx, dropped connection) is sent again, with a growing wait; a card
+    /// whose last try fails gets no proposal and `--resume` asks it again.
+    #[arg(long, value_name = "N", default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=10))]
+    pub retries: u32,
+
+    /// The reasoning effort of a model that has the setting (`gpt-oss`, o-series): sent as `reasoning_effort` to an
+    /// OpenAI-style server, which may reject or ignore it; the Anthropic provider never gets it. Default: not sent, so the
+    /// model uses its own.
+    #[arg(long, value_enum, value_name = "EFFORT")]
+    pub reasoning: Option<Reasoning>,
+
+    /// How many cards are worked on at the same time; each card's repair rounds stay in order and the request and token
+    /// budgets are shared. A local server answers that many requests at once only when it is set up to (Ollama:
+    /// `OLLAMA_NUM_PARALLEL`); the paid API accepts them.
+    #[arg(long, value_name = "N", default_value_t = 1, value_parser = clap::value_parser!(u32).range(1..=64))]
+    pub jobs: u32,
 
     /// The most requests to send (a repair round is a request).
     #[arg(long, value_name = "N", default_value_t = 100)]
@@ -722,8 +765,44 @@ mod tests {
     #[case::too_few_examples(&["--cards", "Opt", "--examples", "2"])]
     #[case::too_many_examples(&["--cards", "Opt", "--examples", "6"])]
     #[case::an_empty_name(&["--cards", ""])]
+    #[case::a_zero_timeout(&["--cards", "Opt", "--request-timeout", "0"])]
+    #[case::too_many_retries(&["--cards", "Opt", "--retries", "11"])]
+    #[case::no_jobs(&["--cards", "Opt", "--jobs", "0"])]
+    #[case::too_many_jobs(&["--cards", "Opt", "--jobs", "65"])]
+    #[case::an_unknown_effort(&["--cards", "Opt", "--reasoning", "extreme"])]
     fn propose_refuses_options_that_do_not_fit_together(#[case] args: &[&str]) {
         assert!(propose(args).is_err());
+    }
+
+    #[rstest]
+    #[case::not_given(&[], None)]
+    #[case::low(&["--reasoning", "low"], Some(Reasoning::Low))]
+    #[case::high(&["--reasoning", "high"], Some(Reasoning::High))]
+    fn propose_takes_a_reasoning_effort_only_when_asked(
+        #[case] extra: &[&str],
+        #[case] effort: Option<Reasoning>,
+    ) {
+        let mut line = vec!["--cards", "Opt", "--provider", "openai"];
+        line.extend_from_slice(extra);
+        assert_eq!(propose(&line).unwrap().reasoning, effort);
+    }
+
+    #[rstest]
+    #[case::defaults(&[], 600, 2, 1)]
+    #[case::given(&["--request-timeout", "90", "--retries", "0", "--jobs", "4"], 90, 0, 4)]
+    fn propose_takes_a_request_timeout_a_retry_count_and_jobs(
+        #[case] extra: &[&str],
+        #[case] timeout: u64,
+        #[case] retries: u32,
+        #[case] jobs: u32,
+    ) {
+        let mut line = vec!["--cards", "Opt"];
+        line.extend_from_slice(extra);
+        let args = propose(&line).unwrap();
+        assert_eq!(
+            (args.request_timeout, args.retries, args.jobs),
+            (timeout, retries, jobs)
+        );
     }
 
     #[test]

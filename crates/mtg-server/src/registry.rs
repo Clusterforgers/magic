@@ -156,6 +156,8 @@ pub struct PublicGame {
     pub result: Option<GameResult>,
     /// Whether the table plays with manual cards (the roster says so in the lobby, the start does once the game runs).
     pub manual_play: bool,
+    /// What the creator set in place of the format's values.
+    pub house_rules: HouseRules,
 }
 
 /// Why a game left the registry, as the sockets of its seats learn it.
@@ -844,7 +846,7 @@ impl Registry {
 
     /// The public facts of a game; `None` if there is no such game or its actor is gone.
     pub async fn describe(&self, id: GameId) -> Option<PublicGame> {
-        let (handle, format, visibility, seats) = {
+        let (handle, format, visibility, house_rules, seats) = {
             let games = self.games();
             let entry = games.get(&id)?;
             let seats: Vec<SeatSummary> = entry
@@ -857,7 +859,13 @@ impl Registry {
                     state: slot.state,
                 })
                 .collect();
-            (entry.handle.clone(), entry.format, entry.visibility, seats)
+            (
+                entry.handle.clone(),
+                entry.format,
+                entry.visibility,
+                entry.house_rules.clone(),
+                seats,
+            )
         };
         let status = handle.status().await.ok()?;
         Some(PublicGame {
@@ -869,6 +877,7 @@ impl Registry {
             ready: status.ready,
             result: status.result,
             manual_play: status.manual_play,
+            house_rules,
         })
     }
 

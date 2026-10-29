@@ -43,6 +43,7 @@ async fn w3a_sent_format(json_mode: bool, schema: bool) -> Value {
         json_mode,
         schema,
         max_answer_tokens: 1_000,
+        reasoning: None,
     };
     let client = OpenAiClient::new(
         dialect,

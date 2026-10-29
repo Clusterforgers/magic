@@ -323,6 +323,7 @@ pub(crate) async fn game(
         result: game.result,
         visibility: game.visibility,
         manual_play: game.manual_play,
+        house_rules: Some(game.house_rules).filter(|rules| !rules.is_empty()),
     }))
 }
 

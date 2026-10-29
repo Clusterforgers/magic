@@ -4,7 +4,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
-import { CardFace } from './CardFace'
+import { PreviewCard } from './PreviewCard'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
@@ -75,7 +75,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       )}
     >
       <div className="shrink-0">
-        <CardFace object={object} role={role} size={wide ? 'large' : 'medium'} upright />
+        <PreviewCard key={id} object={object} role={role} size={wide ? 'large' : 'medium'} />
       </div>
       <div className={cn('grid content-start gap-1 text-sm', wide ? 'mt-3' : 'min-w-0 flex-1')}>
         <p className="font-semibold">{object.name}</p>

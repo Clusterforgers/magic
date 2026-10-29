@@ -1,6 +1,6 @@
 // Goal: /dev/lobby gives every seat a deck unless `nodeck` lists it, reads `nodeck` and `account` leniently, lists the stored decks of a signed-in page beside the built-in ones, and answers a choice as a server would: the roster shows the deck, a deck of Commander is refused with its issues, and Ready opens once the seat has a deck.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
-import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react'
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { scaled } from '@/test-utils/loadFactor'
@@ -63,21 +63,24 @@ describe('/dev/lobby with decks', () => {
     expect(
       await screen.findByRole('list', { name: 'Your decks' }, { timeout: scaled(5000) }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('list', { name: 'Demo decks' })).toBeInTheDocument()
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
+      'Your decks',
+      'Built-in',
+      'Precons',
+    ])
     cleanup()
     await visit('/dev/lobby?seats=3&me=1&nodeck=1')
-    expect(await screen.findByRole('list', { name: 'Demo decks' })).toBeInTheDocument()
+    expect(await screen.findByRole('list', { name: 'Built-in decks' })).toBeInTheDocument()
     expect(screen.queryByRole('list', { name: 'Your decks' })).toBeNull()
   }, 20_000)
 
-  it('shows the choice in the roster and opens Ready, and refuses a Commander deck with its issues', async () => {
+  it('shows the choice in the roster and opens Ready, and keeps Commander decks out of a Normal game', async () => {
     const user = userEvent.setup()
     await visit('/dev/lobby?seats=3&me=1&nodeck=1&account=1')
     const ready = await screen.findByRole('button', { name: 'Ready' })
     expect(ready).toBeDisabled()
-    await user.click(await screen.findByRole('button', { name: /Atraxa Superfriends/ }))
-    const alert = await screen.findByRole('alert', {}, { timeout: scaled(5000) })
-    expect(within(alert).getAllByRole('listitem').length).toBeGreaterThan(0)
+    expect(await screen.findByRole('button', { name: /Burn/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Atraxa Superfriends/ })).toBeNull()
     await user.click(screen.getByRole('button', { name: /Burn/ }))
     await waitFor(() => expect(screen.getByRole('button', { name: 'Ready' })).toBeEnabled(), {
       timeout: scaled(5000),
@@ -85,5 +88,22 @@ describe('/dev/lobby with decks', () => {
     expect(document.querySelectorAll('[data-slot="seat-deck"]')[1]).toHaveTextContent(
       'Burn, Modern, 3 cards need manual steps',
     )
+  }, 20_000)
+
+  it('makes a Commander game of it: stored and precon decks with their verdicts, no built-in decks, and the house rules named', async () => {
+    const user = userEvent.setup()
+    await visit('/dev/lobby?seats=3&me=1&nodeck=1&account=1&format=commander&rules=1')
+    const tabs = await screen.findAllByRole('tab')
+    expect(tabs.map((tab) => tab.textContent)).toEqual(['Your decks', 'Precons'])
+    expect(await screen.findByRole('button', { name: /Atraxa Superfriends.*Whole deck runs/ })).toBeEnabled()
+    await user.click(screen.getByRole('tab', { name: 'Precons' }))
+    expect(await screen.findByRole('button', { name: /Draconic Domination.*Whole deck runs/ })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /Merciless Rage.*4 cards played by hand/ })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /Arcane Wizardry.*Cannot be taken/ })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    )
+    expect(screen.queryByRole('button', { name: /Mono White Starter/ })).toBeNull()
+    expect(await screen.findByText(/Starting life 30/)).toBeInTheDocument()
   }, 20_000)
 })

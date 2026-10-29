@@ -6,7 +6,9 @@
  * it gives is for the viewer's own main phase.
  */
 import type { PlayState } from '@/play/store'
-import type { Event, EventView, HiddenEvent, PlayerId, Step } from '@/protocol/generated'
+import type { Event, EventView, HiddenEvent, PlayerId, PlayerView, Step } from '@/protocol/generated'
+import { commanderDamageLine } from '../commander'
+import { commanderHits } from '../commanderLog'
 import { describeEvent } from '../eventText'
 import type { EventNames } from '../eventText'
 import { batchBetween } from '../fx/batch'
@@ -121,8 +123,27 @@ const startsTurn = (view: EventView): boolean =>
   'Public' in view && typeof view.Public !== 'string' && 'TurnBegan' in view.Public
 
 // The newest event line worth reading; the start of a turn is the banner's to tell.
-function newestLine(events: readonly EventView[], names: EventNames, banner: boolean): TickerLine | null {
-  for (const view of events.toReversed()) {
+function newestLine(
+  events: readonly EventView[],
+  names: EventNames,
+  banner: boolean,
+  players: readonly PlayerView[],
+): TickerLine | null {
+  const hits = commanderHits(events, players)
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const view = events[index]
+    if (view === undefined) continue
+    const hit = hits.get(index)
+    if (hit !== undefined) {
+      const text = commanderDamageLine(
+        names.card(hit.source),
+        hit.amount,
+        names.seat(hit.player),
+        hit.total,
+        hit.lethal,
+      )
+      return { kind: 'event', text }
+    }
     const line = describeEvent(sameForEverySeat(view), names)
     if (line.minor) continue
     return banner && startsTurn(view) ? null : { kind: 'event', text: line.text }
@@ -166,7 +187,7 @@ export function deriveFeed(
     seat: names,
     card: (id) => after.objectsById[id]?.name ?? before.objectsById[id]?.name ?? 'a card',
   }
-  const newest = newestLine(events, eventNames, banner !== null)
+  const newest = newestLine(events, eventNames, banner !== null, after.view.players)
   const lines = [
     ...(note === null ? [] : [{ kind: 'skipped', text: note } satisfies TickerLine]),
     ...(explained ? [{ kind: 'reason', text: OWN_REASON } satisfies TickerLine] : []),

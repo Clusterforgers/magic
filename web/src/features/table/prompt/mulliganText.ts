@@ -12,20 +12,28 @@ export function mulliganText(options: MulliganOptions): string {
   const { hand, mulligans_taken: taken, can_mulligan: can } = options
   const { bottom_if_keep: keep, bottom_if_mulligan: next, free_mulligans: freeAllowed } = options
   const size = hand.length
+  const newSize = options.hand_if_mulligan ?? size
+  const scryKeep = options.scry_if_keep ?? 0
+  const scryNext = options.scry_if_mulligan ?? 0
+  const scried = (count: number): string => (count === 0 ? '' : ` then scries ${count}`)
   const thisHand = size === 0 ? 'this hand' : `this hand of ${cards(size)}`
   const free = Math.min(taken, freeAllowed)
   const soFar =
     taken === 0
       ? 'You have not taken a mulligan yet.'
       : `You have taken ${taken} ${taken === 1 ? 'mulligan' : 'mulligans'} so far${free === 0 ? '' : ` (${free} free)`}.`
-  const keeping = keep === 0 ? '' : ` Keeping it puts ${cards(keep)} on the bottom of your library.`
+  const keeping =
+    (keep === 0 ? '' : ` Keeping it puts ${cards(keep)} on the bottom of your library.`) +
+    (scryKeep === 0 ? '' : ` Keeping it also scries ${scryKeep}.`)
   if (!can) return `Keep ${thisHand}? ${soFar}${keeping} You cannot take another.`
-  const drawn = size === 0 ? 'a new hand' : `${size} new ${size === 1 ? 'card' : 'cards'}`
+  const drawn = newSize === 0 ? 'a new hand' : `${newSize} new ${newSize === 1 ? 'card' : 'cards'}`
   const another = taken === 0 ? 'A' : 'Another'
   const cost =
-    next > keep
-      ? `${another} mulligan draws ${drawn}, then puts ${cards(next)} on the bottom of your library.`
-      : `${another} mulligan is free: it draws ${drawn} and adds no card to the bottom of your library.`
+    newSize < size
+      ? `${another} mulligan deals a smaller hand of ${cards(newSize)} and puts nothing on the bottom of your library${scried(scryNext)}.`
+      : next > keep
+        ? `${another} mulligan draws ${drawn}, then puts ${cards(next)} on the bottom of your library${scried(scryNext)}.`
+        : `${another} mulligan is free: it draws ${drawn} and adds no card to the bottom of your library${scried(scryNext)}.`
   return `Keep ${thisHand}, or take a mulligan? ${soFar}${keeping} ${cost}`
 }
 

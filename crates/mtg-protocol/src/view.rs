@@ -245,6 +245,11 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<(CounterKind, u32)>>", optional)]
     pub counters: Vec<(CounterKind, u32)>,
+    /// Whether the player has the city's blessing (CR 702.131), which they keep for the rest of the game; public, and left
+    /// out while they do not.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub citys_blessing: bool,
     /// The Auras that enchant the player, in id order; public, and left out while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
@@ -366,8 +371,13 @@ pub struct CombatView {
 /// Every event batch carries a fresh one, so a client never derives any of it from events.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct TableView {
-    /// The seat this view was built for.
+    /// The seat this view was built for. A spectator's view names the number of seats, which is no seat (see `spectator`).
     pub viewer: PlayerId,
+    /// Whether the viewer is a spectator, no seat of the table: every public zone is listed and no hand unless the table
+    /// has open hands. Told in every table of that viewer, so a client never counts seats; left out for a seat.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub spectator: bool,
     /// Name of the format being played.
     pub format: String,
     /// What the table's creator set in place of the format's values; left out when nothing is set.

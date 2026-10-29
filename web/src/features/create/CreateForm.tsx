@@ -12,20 +12,25 @@ import { AdvancedOptions } from './AdvancedOptions'
 import { describeApiError } from './apiErrors'
 import {
   addSeat,
+  chooseFormat,
   chooseLinks,
   chooseVisibility,
   defaultDraft,
+  editRule,
   editSeat,
   nameFieldId,
   problemCount,
   problemsOf,
   removeSeat,
   resizeSeats,
+  ruleProblems,
   toRequest,
 } from './form'
 import type { Draft } from './form'
 import { GameCreated } from './GameCreated'
+import { FormatField } from './FormatField'
 import { HostFields } from './HostFields'
+import { HouseRulesField } from './HouseRulesField'
 import { SeatList } from './SeatList'
 import { VisibilityField } from './VisibilityField'
 
@@ -57,7 +62,8 @@ export function CreateForm({ api, decks }: CreateFormProps) {
   const failureRef = useRef<HTMLDivElement>(null)
 
   const problems = problemsOf(draft, decks)
-  const troubled = problemCount(problems)
+  const rules = ruleProblems(draft)
+  const troubled = problemCount(problems) + Object.keys(rules).length
 
   useEffect(() => {
     const id = focusAfterRender.current
@@ -104,7 +110,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
   async function submit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
     if (pending) return
-    if (troubled > 0 || decks.length === 0) {
+    if (troubled > 0 || (draft.format === 'normal' && decks.length === 0)) {
       setShowProblems(true)
       setFocusProblem((n) => n + 1)
       return
@@ -171,7 +177,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         <p className="mt-1 text-base text-muted-foreground">
           {draft.links
             ? 'Choose how many seats there are, then give each a name and a deck. You get one link per seat to send to your friends.'
-            : 'Choose how many seats there are and who can find the game. Your friends take the other seats from the game browser or with a link or code.'}
+            : 'Your friends take the other seats from the game browser or with a link or code.'}
         </p>
         {account === null ? null : (
           <p data-slot="signed-in-note" className="mt-2 text-sm break-words">
@@ -186,25 +192,32 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         )}
       </div>
 
+      <FormatField
+        value={draft.format}
+        onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
+      />
+
       <div className="grid gap-6 md:grid-cols-2 md:items-start">
-        {draft.links ? (
-          <SeatList
-            draft={draft}
-            decks={decks}
-            problems={shown}
-            onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
-            onAdd={add}
-            onRemove={remove}
-          />
-        ) : (
-          <HostFields
-            draft={draft}
-            decks={decks}
-            problems={shown?.get(draft.seats[0]?.id ?? -1) ?? null}
-            onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
-            onCount={(count) => setDraft((current) => resizeSeats(current, decks, count))}
-          />
-        )}
+        <div className="grid content-start gap-6">
+          {draft.links ? (
+            <SeatList
+              draft={draft}
+              decks={decks}
+              problems={shown}
+              onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
+              onAdd={add}
+              onRemove={remove}
+            />
+          ) : (
+            <HostFields
+              draft={draft}
+              decks={decks}
+              problems={shown?.get(draft.seats[0]?.id ?? -1) ?? null}
+              onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
+              onCount={(count) => setDraft((current) => resizeSeats(current, decks, count))}
+            />
+          )}
+        </div>
         <div className="grid content-start gap-6">
           {draft.links ? null : (
             <VisibilityField
@@ -214,10 +227,17 @@ export function CreateForm({ api, decks }: CreateFormProps) {
           )}
           <AdvancedOptions
             links={draft.links}
+            linksAllowed={draft.format === 'normal'}
             onLinks={(links) => setDraft((current) => chooseLinks(current, links))}
           />
         </div>
       </div>
+
+      <HouseRulesField
+        draft={draft}
+        problems={showProblems ? rules : null}
+        onChange={(id, text) => setDraft((current) => editRule(current, id, text))}
+      />
 
       {showProblems && troubled > 0 ? (
         <Alert variant="destructive">
@@ -225,7 +245,9 @@ export function CreateForm({ api, decks }: CreateFormProps) {
           <AlertDescription className="text-foreground">
             {draft.links
               ? `${troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be created.`
-              : 'Fix your name or deck before the game can be created.'}
+              : Object.keys(rules).length > 0 && problemCount(problems) === 0
+                ? 'Fix the house rules marked below before the game can be created.'
+                : 'Fix your name, deck or house rules before the game can be created.'}
           </AlertDescription>
         </Alert>
       ) : null}

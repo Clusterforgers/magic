@@ -351,6 +351,7 @@ mod strive;
 mod sz3_writers;
 mod sz_more_writers;
 mod sz_writers;
+mod t16a_named_abilities;
 mod tail_alone;
 mod tail_pairs;
 mod tail_third;

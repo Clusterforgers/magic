@@ -71,6 +71,7 @@ export async function renderGame(options: GameOptions = {}): Promise<GameHarness
       account={options.account ?? null}
       api={server.api}
       decks={server.decks}
+      precons={server.precons}
       deps={deps}
     />
   )

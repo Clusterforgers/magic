@@ -17,7 +17,7 @@ async function submitWith(script: ServerScript) {
 /** What the server sends for each of its error codes, and the words the page must answer with. */
 const REJECTIONS: [string, number, RegExp][] = [
   ['invalid_request', 400, /could not use those game settings.*2 to 12 seats/i],
-  ['unsupported_format', 400, /only play Normal games for now/i],
+  ['unsupported_format', 400, /does not know that format/i],
   ['unknown_deck', 400, /decks is no longer on the server.*reload/i],
   ['forbidden_origin', 403, /does not accept requests from this web address/i],
   ['not_found', 404, /could not find what this page asked for/i],

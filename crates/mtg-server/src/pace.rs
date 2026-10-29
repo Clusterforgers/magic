@@ -752,6 +752,8 @@ mod tests {
             except: Vec::new(),
             text: "Choose a value for X.".into(),
             can_cancel,
+            cost: None,
+            per_x: 0,
         })
     }
 

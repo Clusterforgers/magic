@@ -110,7 +110,27 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         except: offer.except,
         text: "Choose a value for X.".to_owned(),
         can_cancel: ctx.can_cancel(),
+        cost: at_zero(ctx, work.choices),
+        per_x: per_x(ctx, work.choices),
     })))
+}
+
+/// The total mana cost with X at 0, which the prompt adds X to; `None` for an X that is not in a mana cost.
+fn at_zero(ctx: &Ctx<'_>, choices: &Choices) -> Option<ManaCost> {
+    if !matches!(ctx.needs.x, Some(XCost::Mana { .. })) {
+        return None;
+    }
+    let mut trial = choices.clone();
+    trial.x = Some(0);
+    total::of(ctx, &trial).and_then(|total| total.mana)
+}
+
+/// The generic mana each 1 of X adds to the total cost: the `{X}` of the cost paid, 0 for an X that is not mana.
+fn per_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
+    match &ctx.needs.x {
+        Some(XCost::Mana { symbols }) => alternative_symbols(ctx, choices.way).unwrap_or(*symbols),
+        _ => 0,
+    }
 }
 
 /// Whether `pays` accepts the total cost of casting the spell `id` for `cost` (the cost modifiers applied), choosing
@@ -454,6 +474,11 @@ mod tests {
     /// What the cast of `cost` with `x` symbols of `{X}` and `lands` Forests asks first: the most X offered, or `None`
     /// when no number is asked or the cast is rewound.
     fn most(cost: &str, x: u8, lands: usize) -> Option<u32> {
+        x_asked(cost, x, lands).and_then(|options| options.max)
+    }
+
+    /// The number decision the cast of `cost` with `x` symbols of `{X}` and `lands` Forests asks first, if any.
+    fn x_asked(cost: &str, x: u8, lands: usize) -> Option<NumberOptions> {
         let game = state(
             vec![vec![spell(cost, x)], vec![]],
             vec![vec![forest(); lands], vec![]],
@@ -470,9 +495,30 @@ mod tests {
             Next::Ask(Decision {
                 kind: DecisionKind::ChooseNumber(options),
                 ..
-            }) => options.max,
+            }) => Some(options),
             _ => None,
         }
+    }
+
+    #[rstest]
+    #[case::one_x_and_a_colour("{G}", 1, 5, "{G}", 1)]
+    #[case::one_x_alone("", 1, 3, "", 1)]
+    #[case::two_x_and_generic("{2}{G}", 2, 7, "{2}{G}", 2)]
+    #[case::three_x("", 3, 8, "", 3)]
+    fn the_number_for_x_carries_the_cost_at_zero_and_the_mana_per_x(
+        #[case] cost: &str,
+        #[case] x: u8,
+        #[case] lands: usize,
+        #[case] at_zero: &str,
+        #[case] per_x: u32,
+    ) {
+        let options = x_asked(cost, x, lands).expect("X is asked");
+        let expected = ManaCost::parse(at_zero).expect("a cost");
+        assert_eq!(
+            options.cost.map(|c| c.mana_value()),
+            Some(expected.mana_value())
+        );
+        assert_eq!(options.per_x, per_x);
     }
 
     #[rstest]

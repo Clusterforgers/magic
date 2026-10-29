@@ -50,6 +50,7 @@ async function register(page: Page, username: string): Promise<void> {
 /** Opens the create page, which waits until it is known who is signed in. */
 async function openCreate(page: Page): Promise<void> {
   await page.goto('/new')
+  await page.getByRole('radio', { name: /^Normal/ }).check()
   await expect(page.getByRole('form', { name: 'Create a game' })).toBeVisible()
 }
 

@@ -213,6 +213,7 @@ Calciform Pools
 Caldaia Strongarm
 Caldera Hellion
 Caller of the Pack
+Canoptek Tomb Sentinel
 Caprichrome
 Capsize
 Captivating Crew
@@ -1557,6 +1558,7 @@ Traverse the Outlands
 Traxos, Scourge of Kroog
 Treasure Cruise
 Treasure Hunt
+Triarch Praetorian
 Tribal Flames
 Trostani Discordant
 Trove Tracker

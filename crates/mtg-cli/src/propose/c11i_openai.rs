@@ -11,6 +11,7 @@ use tokio::runtime::Handle;
 
 use super::c11i_http::{ApiKey, Dialect, HttpClient, HttpConfig};
 use super::model::{ModelError, Request, Response, Role, Usage};
+use crate::args::Reasoning;
 use crate::progress::Progress;
 
 /// The environment variable that may hold a key for the server; nothing else supplies it.
@@ -35,6 +36,8 @@ pub struct OpenAi {
     pub schema: bool,
     /// The most tokens an answer may have, the reasoning of a reasoning model included.
     pub max_answer_tokens: u32,
+    /// The effort to ask for (`reasoning_effort`); `None` leaves the field out and the model uses its own.
+    pub reasoning: Option<Reasoning>,
 }
 
 /// The HTTP client of the chat completions API.
@@ -75,6 +78,9 @@ impl Dialect for OpenAi {
         let mut body = c11i_request_body(request, self.json_mode, self.max_answer_tokens);
         if self.schema {
             body["response_format"] = w3a_schema_format().clone();
+        }
+        if let Some(effort) = self.reasoning {
+            body["reasoning_effort"] = json!(effort.as_str());
         }
         body
     }
@@ -211,6 +217,26 @@ mod tests {
         if json_mode {
             assert_eq!(body["response_format"]["type"], "json_object");
         }
+    }
+
+    #[rstest]
+    #[case::not_asked(None, None)]
+    #[case::low(Some(Reasoning::Low), Some("low"))]
+    #[case::medium(Some(Reasoning::Medium), Some("medium"))]
+    #[case::high(Some(Reasoning::High), Some("high"))]
+    fn the_reasoning_effort_is_sent_only_when_asked(
+        #[case] reasoning: Option<Reasoning>,
+        #[case] sent: Option<&str>,
+    ) {
+        let dialect = OpenAi {
+            json_mode: true,
+            schema: false,
+            max_answer_tokens: 100,
+            reasoning,
+        };
+        let body = dialect.body(&request("card"));
+        assert_eq!(body.get("reasoning_effort").and_then(Value::as_str), sent);
+        assert!(body.get("reasoning").is_none(), "{body}");
     }
 
     #[test]

@@ -36,6 +36,11 @@ mana: ManaPool,
  */
 counters?: Array<[CounterKind, number]>, 
 /**
+ * Whether the player has the city's blessing (CR 702.131), which they keep for the rest of the game; public, and left
+ * out while they do not.
+ */
+citys_blessing?: boolean, 
+/**
  * The Auras that enchant the player, in id order; public, and left out while there are none.
  */
 enchanted_by?: Array<ObjectId>, 
