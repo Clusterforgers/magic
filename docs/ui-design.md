@@ -84,7 +84,7 @@ Arena puts the opponent on top, your hand on the bottom edge rising on hover, th
 |---|---|---|
 | top bar | home, turn badge, mini phase pips, menu (layout, theme, Concede) | 44 px |
 | opponents | a pod and board per opponent | `minmax(0, 1fr)` |
-| shared | stack chips, ticker, prompt line; a long prompt grows up into a sheet of at most 40 dvh over the opponents' board, beside the pod column, never over your board (its cards are what a prompt asks you to click), the hand or the controls | `clamp(56px, 9dvh, 88px)` |
+| shared | stack chips, ticker, prompt line; a long prompt grows up into a sheet of at most 40 dvh into room the opponents' area keeps free, beside the pod column, so it covers no card, and never over your board (its cards are what a prompt asks you to click), the hand or the controls | `clamp(56px, 9dvh, 88px)` |
 | own | pod, then creatures, other, lands | `minmax(0, 1.15fr)` |
 | hand dock | overlapping fan, 62% of each card showing; hover or focus lifts it 40% and opens the preview | `clamp(112px, 17dvh, 200px)` |
 | controls dock | pass controls (button 44 px or more, End turn, menu) and the stop ladder, one row with a Mine or Theirs switch, with Full Control | bottom right |
@@ -102,7 +102,7 @@ Whose turn it is stays on screen as a token: Legends of Runeterra's attack token
 | Cue | When | Shows | Reduced motion |
 |---|---|---|---|
 | Turn badge | always, in the top bar | the phase's icon and name, then "Your turn · 5 · Precombat main" (accent fill) or "Bo's turn · 5 · Declare blockers" (tint, accent edge); [Phase themes](#phase-themes) | unchanged |
-| Turn banner | turn number or active seat changes | a band over the shared region, "Your turn" or "Bo's turn" and the turn; 250 ms in, 600 held, 150 out; `pointer-events: none` | fade only, held 1.5 s |
+| Turn banner | turn number or active seat changes | a band over the middle of the top bar, "Your turn" or "Bo's turn" and the turn; 250 ms in, 600 held, 150 out; `pointer-events: none` | fade only, held 1.5 s |
 | Active seat | during its turn | a 3 px edge inside the pod or tile (turn-you-edge or turn-them), with a faint tint on a tile; a dot after the name of a priority holder who is not active, named "Bo has priority"; your pod adds `your-turn-cue`, pulsing twice (5.6 s) and then resting; in Focus mode the strip leads with the active seat and the large board follows it, a 150 ms cross-fade | static ring, no fade |
 | Ticker | every batch | one line: the newest non-minor log line, plus "Skipped Upkeep, Draw" when steps passed with no window for you; three lines, 3 s each | static |
 | Ladder | a step changes | current step lit in the phase's accent, passed steps filled, a skipped step dashed for 1 s | no sweep |

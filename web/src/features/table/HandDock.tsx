@@ -88,9 +88,11 @@ export const HandDock = memo(function HandDock({ seat }: { seat: PlayerId }) {
     >
       <div ref={zone} className="flex size-full min-h-0 min-w-0 items-end justify-center gap-1">
         {cards === null || waiting.size === 0 ? null : (
+          // As high as the dock and no higher: the fan inside stands taller (the room for a lifted card) and the
+          // divider is this box's edge, so it must not follow the fan up into the battlefield.
           <div
             data-slot="hand-command"
-            className="flex shrink-0 items-end border-r border-foreground/15 pr-1"
+            className="flex h-full shrink-0 items-end border-r border-foreground/15 pr-1"
           >
             <HandFan
               ids={[...waiting.keys()]}

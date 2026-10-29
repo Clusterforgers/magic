@@ -10,18 +10,19 @@ import { ownDecision } from './prompt/ownDecision'
 import { PromptHost } from './prompt/PromptHost'
 import { isYourTurn } from './selectors'
 import { StackChips } from './StackChips'
-import { TurnBanner } from './turn/TurnBanner'
 import { TurnTicker } from './turn/TurnTicker'
 import { priorityText, waitingOn, waitingText } from './turnText'
 import { useEdgeFade } from './useEdgeFade'
+import { useSheetOverhang } from './useSheetOverhang'
 import { useStable } from './useStable'
 
 /**
  * The shared strip between the opponents and your board: the spells on the stack as chips, who has priority and what
  * the game is waiting for. When this seat must decide, the prompt (`prompt/PromptHost`) takes the place of the
  * read-only line; `data-slot="decision-line"` marks both. A prompt that needs more than the strip grows into a sheet
- * upward over the opponents' board, at most `sheetMax` px high, and scrolls inside itself past that. It never grows
- * down over your board, which holds the cards a prompt asks you to click, nor over the hand dock or the controls.
+ * upward into the room the opponents' area leaves free for it (`useSheetOverhang`), at most `sheetMax` px high, and
+ * scrolls inside itself past that. It never grows down over your board, which holds the cards a prompt asks you to
+ * click, nor over the hand dock or the controls, and it lies over no card of the opponents' boards.
  */
 export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?: number }) {
   const name = useSeatNamer()
@@ -31,10 +32,13 @@ export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?:
   const mine = usePlay((state) => ownDecision(state) !== null)
   const yourTurn = usePlay(isYourTurn)
   const holder = priorityText(priority, stage, name)
+  const strip = useRef<HTMLElement>(null)
   const sheet = useRef<HTMLDivElement>(null)
   useEdgeFade(sheet)
+  useSheetOverhang(strip, sheet)
   return (
     <section
+      ref={strip}
       aria-label="Turn and priority"
       data-region="shared"
       data-your-turn={yourTurn || undefined}
@@ -91,7 +95,6 @@ export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?:
           <TurnTicker />
         </div>
       </div>
-      <TurnBanner inset={inset} anchor={sheet} />
     </section>
   )
 }

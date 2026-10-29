@@ -101,6 +101,12 @@ describe('your commanders in the hand dock', () => {
     expect(list.querySelectorAll('[data-slot="hand-commander-tax"]')).toHaveLength(2)
   })
 
+  it('stand in a box as high as the dock, so the divider after them never rises over the battlefield', () => {
+    show()
+    const box = must(document.querySelector('[data-slot="hand-command"]'))
+    expect(box).toHaveClass('h-full', 'border-r')
+  })
+
   it('marks them castable in a priority window, as the hand', () => {
     const fixture = FIXTURE
     const pending = must(DEV_PROMPTS['priority'])(fixture)

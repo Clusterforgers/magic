@@ -187,6 +187,11 @@ const STOPS: readonly Stop[] = [
   tableStop('The table (dev), 2 seats, the opening hand', 'seats=2&prompt=mulligan', 'keep'),
   tableStop('The table (dev), 4 seats, declaring attackers', 'seats=4&prompt=attack&turn=you', 'prompt'),
   tableStop('The table (dev), 4 seats, declaring blockers', 'seats=4&prompt=block', 'prompt'),
+  tableStop(
+    'The table (dev), 4 seats, returning a commander',
+    'seats=4&prompt=commander-return&turn=you',
+    'prompt',
+  ),
   tableStop('The table (dev), 6 seats, paying a cost', 'seats=6&prompt=pay', null),
   tableStop('The table (dev), 12 seats, in focus mode', 'seats=12&prompt=priority&turn=you', 'pass'),
   {

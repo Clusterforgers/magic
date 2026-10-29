@@ -12,6 +12,7 @@ import { TableRules } from './TableRules'
 import type { TableMode } from './layout'
 import { TurnBadge } from './TurnBadge'
 import { StepLadder } from './turn/StepLadder'
+import { TurnBanner } from './turn/TurnBanner'
 
 const HOME = cn(
   buttonVariants({ variant: 'ghost', size: 'sm' }),
@@ -53,7 +54,7 @@ interface TopBarProps {
 /**
  * The top bar of the table: home, the turn badge, the button of the side sheet on a narrow window, and the table menu
  * (layout, stops and Full Control where the dock has no room, theme, Concede). 44 px high, 32 px on a phone on its
- * side.
+ * side. The turn banner lies over its middle while a new turn is announced.
  */
 export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compact = false }: TopBarProps) {
   const [menu, setMenu] = useState(false)
@@ -65,7 +66,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
     <header
       data-region="bar"
       data-themed=""
-      className="flex min-h-0 min-w-0 items-center gap-2 border-b-[3px] border-phase bg-surface px-2"
+      className="relative flex min-h-0 min-w-0 items-center gap-2 border-b-[3px] border-phase bg-surface px-2"
     >
       <HomeLink />
       <TurnBadge />
@@ -88,6 +89,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
         }}
       />
       {allowed ? <ConcedeDialog open={conceding} onOpenChange={setConceding} /> : null}
+      <TurnBanner />
     </header>
   )
 }

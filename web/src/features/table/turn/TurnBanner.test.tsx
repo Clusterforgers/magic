@@ -169,16 +169,23 @@ describe('what it does for a reader and for an answer', () => {
 })
 
 describe('where it sits', () => {
-  it('hangs on the top edge of the strip when the sheet cannot be measured, and covers nothing', () => {
+  it('lies over the middle of the top bar, whose turn badge says the same, and not in the shared strip', () => {
     renderCueTable()
-    expect(banner()).toHaveClass('absolute', 'inset-x-0', 'bottom-full')
-    expect(banner()).not.toHaveClass('inset-0')
+    expect(document.querySelector('[data-region="bar"]')).toContainElement(banner())
+    expect(document.querySelector('[data-region="shared"]')).not.toContainElement(banner())
+    expect(banner()).toHaveClass('absolute', 'inset-y-0.5', 'mx-auto', 'w-fit')
   })
 
-  it.each([88, 190, 360])('hangs 4 px above a sheet of %i px, however tall a prompt makes it', (height) => {
+  it.each([88, 190, 360])('stays in the bar however tall a prompt of %i px makes the sheet', (height) => {
     vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(height)
     renderCueTable()
-    expect(banner()?.style.bottom).toBe(`${height + 4}px`)
-    expect(banner()).not.toHaveClass('bottom-full')
+    expect(document.querySelector('[data-region="bar"]')).toContainElement(banner())
+    expect(banner()?.style.bottom).toBe('')
+  })
+
+  it('keeps to the width of the bar and is for the eye only', () => {
+    renderCueTable()
+    expect(banner()).toHaveClass('max-w-[calc(100%-1rem)]')
+    expect(banner()).toHaveAttribute('aria-hidden', 'true')
   })
 })

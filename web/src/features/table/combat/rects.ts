@@ -35,6 +35,32 @@ const FACE = '[data-slot="card-face"]'
 const faceOf = (element: Element): Element =>
   (element.hasAttribute('data-object-id') ? element.querySelector(FACE) : null) ?? element
 
+const clips = (overflow: string): boolean => overflow !== '' && overflow !== 'visible'
+
+/**
+ * Whether some of `box`, the box of an element of the table, is drawn: no ancestor below `scope` that scrolls or
+ * clips (a board's zone, a section squeezed to no room) cuts all of it off. A card in such a place is in the page but
+ * not on the table, so a line must not run to where it would be.
+ */
+function isDrawn(element: Element, box: DOMRect, scope: ParentNode): boolean {
+  let { left, top, right, bottom } = box
+  for (
+    let parent = element.parentElement;
+    parent !== null && parent !== scope;
+    parent = parent.parentElement
+  ) {
+    const { overflowX, overflowY } = getComputedStyle(parent)
+    if (!clips(overflowX) && !clips(overflowY)) continue
+    const clip = parent.getBoundingClientRect()
+    left = Math.max(left, clip.left)
+    top = Math.max(top, clip.top)
+    right = Math.min(right, clip.right)
+    bottom = Math.min(bottom, clip.bottom)
+    if (right <= left || bottom <= top) return false
+  }
+  return true
+}
+
 /** The provider that reads the page. */
 export const domRects: RectProvider = {
   measure(anchors, origin) {
@@ -46,7 +72,7 @@ export const domRects: RectProvider = {
         const element = scope.querySelector(selector)
         if (element === null) continue
         const box = faceOf(element).getBoundingClientRect()
-        if (box.width <= 0 || box.height <= 0) continue
+        if (box.width <= 0 || box.height <= 0 || !isDrawn(element, box, scope)) continue
         found.set(anchorKey(anchor), {
           x: box.left - base.left,
           y: box.top - base.top,

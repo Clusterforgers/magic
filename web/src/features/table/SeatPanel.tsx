@@ -159,7 +159,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       {...marks}
       data-variant="panel"
       className={cn(
-        '@container relative grid content-start gap-2 rounded-xl bg-card p-2 text-card-foreground',
+        // One track that may shrink (`minmax(0, 1fr)`): a chip that is longer than the pod is cut inside it instead of
+        // widening the pod and pushing the life figure out of the column.
+        '@container relative grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-2 rounded-xl bg-card p-2 text-card-foreground',
         ring,
         eliminated && 'border-l-4 border-destructive',
       )}
