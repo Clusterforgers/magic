@@ -97,6 +97,9 @@
   --color-support-verified: var(--support-verified);
   --color-support-partial: var(--support-partial);
   --color-support-manual: var(--support-manual);
+  --color-card-back: var(--card-back);
+  --color-card-back-edge: var(--card-back-edge);
+  --color-card-back-ink: var(--card-back-ink);
   --color-support-stale: var(--support-stale);
   --color-support-unplayable: var(--support-unplayable);
 
@@ -154,6 +157,9 @@
   --support-verified: oklch(0.45 0.14 150);
   --support-partial: oklch(0.46 0.13 245);
   --support-manual: oklch(0.46 0.13 55);
+  --card-back: oklch(0.42 0.05 260);
+  --card-back-edge: oklch(0.22 0.02 260);
+  --card-back-ink: oklch(0.78 0.05 260);
   --support-stale: oklch(0.44 0.09 100);
   --support-unplayable: oklch(0.47 0.19 27);
 
@@ -236,6 +242,9 @@
   --support-verified: oklch(0.74 0.15 150);
   --support-partial: oklch(0.76 0.1 245);
   --support-manual: oklch(0.8 0.15 70);
+  --card-back: oklch(0.36 0.05 260);
+  --card-back-edge: oklch(0.14 0.01 260);
+  --card-back-ink: oklch(0.7 0.05 260);
   --support-stale: oklch(0.84 0.14 100);
   --support-unplayable: oklch(0.77 0.15 25);
 
