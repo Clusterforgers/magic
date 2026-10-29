@@ -308,6 +308,7 @@ Every prompt but Mulligan, AssignDamage, OrderTriggers, YesNo, ChooseOption, Cho
 - `TableOptions.effects` is on by default except under vitest (`import.meta.env.MODE === 'test'`), so other tests see no timers and no extra markup; a test turns it on with `renderTable({ options: { effects: true } })` and `vi.useFakeTimers()`.
 - `Card` sets `data-fx` and `data-fx-side` (`own` or `other`), `LifeFx` wraps the life figure, and `CardRow` puts each `GhostCard` back before the card it stood before, as an `aria-hidden` `li` with no `data-object-id` and nothing focusable.
 - Durations are the custom properties `--fx-<kind>-ms` in `fx/fx.css`, which `fxCss.test.ts` holds equal to `FX_MS`; `--fx-slow` stretches them.
+- Moves from a zone to the stack and on, the spotlight, target arrows and the hand's reasons: [ui-design.md](ui-design.md), Playing is legible.
 
 ## Turn cues
 

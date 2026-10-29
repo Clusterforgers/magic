@@ -139,6 +139,85 @@ Each theme has `phase-<id>` (accent), `phase-<id>-soft` (tint, lightness 0.95 li
 - Colour-blind: any two accents, and an accent and the gold of your turn, differ by CIEDE2000 [S33] 12 or more under full vision, protanopia, deuteranopia and tritanopia [S32].
 - Motion: a change of theme fades in 200 ms and is immediate under reduced motion. Nothing waits for a theme, and none adds a delay to an answer.
 
+## Playing is legible
+
+Every play reads on the table without the log: what was played, from where, at what, and what it did. As in Arena [S25 S27], a spell travels from where it was to the stack, stands large for a moment, points at its targets and travels on to where it ends. The moves decorate the batch that arrived, as the effects of [web.md](web.md) (Table feedback) do: the table shows the true state when they start, nothing waits for them, and they come from public events only, so every seat that sees the same events sees the same moves.
+
+### Moments
+
+A move is a picture of the card (a card back for a card the viewer may not identify) that flies on an overlay layer, `aria-hidden` and without a pointer, from one place to another. A place is a card on the table (`data-object-id`) or a zone anchor (`data-fx-anchor="<seat>:<zone>"` on the hand, library, graveyard, exile and command chips of a pod, a tile and the hand dock; `stack` on the shared strip's stack). A mark is a still attribute on a card (`data-fx`).
+
+| Moment | Comes from | Moves | Marks | Log line |
+|---|---|---|---|---|
+| Cast | `SpellCast`; the zone before the batch, else the caster's hand | source to stack | spotlight, then target arrows | "Ana casts Lightning Bolt targeting Hill Giant" |
+| Activate | `AbilityActivated`, `AbilityPutOnStack` (`source`, `snapshot`) | an ability chip from the source to the stack | `activated` on the source | "Ana activates Gravedigger targeting Grizzly Bears" |
+| Trigger | `AbilityTriggered`, `AbilityPutOnStack` with `cause` | an ability chip from the source to the stack | `triggered` on the source | "Soul Warden triggers" |
+| Target | `ObjectView.targets`, else `choices.targets` of the event | none | `targeted` on each target while the item is on the stack; arrows | in the cast or activate line |
+| Resolve | `ResolutionEnded` `Resolved`; the zone after | stack to the battlefield (a permanent) or the owner's graveyard | `resolved` on what it touched | "Lightning Bolt resolves" |
+| Counter | `ResolutionEnded` `Countered`, inside the resolution of the counter | stack to graveyard | `countered` on the chip before it leaves | "Counterspell counters Lightning Bolt" |
+| Fizzle | `ResolutionEnded` `Fizzled` | stack to graveyard | `fizzled` | "Lightning Bolt does nothing: its targets are gone" |
+| Enter | `Entered`, a battlefield object new to the batch | from its last zone unless that was the stack | `entered` | the line of the event that moved it |
+| Die, exile, bounce | `CreatureDied`, `ZoneChanged` (`cause`) | the ghost, then battlefield to graveyard, exile or hand | `died`, `exiled`, `bounced`; an arrow from the resolving object | "Hill Giant dies", "Hill Giant is exiled by Swords to Plowshares" |
+| Draw | `CardDrawn`, public or hidden | library to hand, a card back for another seat | `drawn` on the viewer's new hand card | "Ana draws a card" |
+| Play land | `LandPlayed` | hand to battlefield | `entered` | "Ana plays Forest" |
+| Other moves | `ZoneChanged` (mill, discard, return) | old zone to new zone | none | the event's line |
+
+- The resolving object at an event is the last `ResolutionBegan` without its `ResolutionEnded`; what it destroys, exiles, bounces or counters gets a short arrow from it.
+- A spell cast and resolved in one batch (no seat had a decision) plays both legs with the spotlight between, so a spell never happens unseen.
+- A batch plays its moves in event order, `--fx-stagger-ms` apart, at most `MAX_MOVES` (8); the rest are marks only. A newer batch finishes the moves of an older one at once.
+
+### Motion tokens
+
+| Token | ms | Easing | Use |
+|---|---|---|---|
+| `--fx-travel-ms` | 380 | `--ease-out` | one leg of a move; the picture takes the size of where it lands |
+| `--fx-spotlight-ms` | 900 | in 150 `--ease-out`, out 150 `--ease-in` | the large spell after a cast by another seat, or one that passes through the stack in one batch |
+| `--fx-stagger-ms` | 120 | none | between the moves of one batch |
+| `--fx-arrow-ms` | 250 | `--ease-out` | an arrow draws in (stroke-dashoffset) |
+| `--fx-mark-ms` | 600 | none | `activated`, `triggered`, `resolved`, `countered`, `fizzled`, `exiled`, `bounced`, `drawn` |
+
+A single mark stays at most 600 ms; a whole sequence stays under 1,700 ms (two legs, the spotlight and the staggers). `--fx-slow` stretches all of them.
+
+### Reduced motion
+
+Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and the destination take their marks as still outlines at once, the spotlight is the ring of the top stack chip, and arrows appear without drawing in. The store drops moves under `reduced` as it drops ghosts.
+
+### The stack
+
+- The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo") and a dot in its controller's colour.
+- Arrows run from the top chip to each target (a card, or a player's life figure) while it is on the stack; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer, in `--primary` for the viewer's items and `--destructive` for another seat's.
+- The spotlight is a picture at 1.6 times the hand card's height, centred over the shared strip. It never stays, so the layout gate measures the table without it.
+- The Stack tab shows the top item as a large picture with its text and targets, the rest as rows.
+
+### The hand
+
+- While the viewer holds priority, a playable card (`castable`, `playable_lands`, `faces`, `suspendable`, `foretellable`) is legal: ring and lifted 4 px. Every other hand card is dimmed and carries a reason. Without priority the hand is unmarked.
+- The reason is a short label on the card's foot on hover and focus, the spoken name ("not available, sorcery speed") and a line in the preview ("Not now: only in your main phase with an empty stack"), which touch reaches.
+
+| Reason | Label | Line |
+|---|---|---|
+| `Timing` | Sorcery speed | Only in your main phase with an empty stack |
+| `LandPlayed` | Land played | You have played a land this turn |
+| `Mana` | Needs mana | Not enough mana |
+| `Targets` | No targets | Nothing it can target |
+| `Cost` | Can't pay | A cost cannot be paid |
+| `Restricted` | Not allowed | An effect forbids it now |
+| (unknown) | Not now | Not playable now |
+
+- Until the server says why, the web reads `Timing` and `LandPlayed` off public state (types, `Flash`, step, stack, `lands_played`) and `Mana` when the mana value exceeds the untapped permanents with mana abilities plus the pool; anything else is "Not now". The server's reason replaces the guess.
+- A battlefield, graveyard or command card with an ability in `PriorityOptions.abilities` is legal as a hand card is.
+
+### What the protocol carries
+
+- Carried: every moment above, from `SpellCast`, `AbilityActivated`, `AbilityPutOnStack` (with the source's `snapshot`), `AbilityTriggered`, `ResolutionBegan`, `ResolutionEnded`, `Entered`, `ZoneChanged`, `CreatureDied`, `CardDrawn`, `LandPlayed`, the hidden forms of the moves, `ObjectView.targets` and `source`, and the two moments of the batch. A cast object keeps its id from hand to stack to battlefield, so source and destination are its zones before and after.
+- New: `PriorityOptions.unplayable?: Array<UnplayableCard>`, `UnplayableCard = { card: ObjectId, reason: Unplayable }`, `Unplayable = "Timing" | "LandPlayed" | "Mana" | "Targets" | "Cost" | "Restricted"`: one entry for each card of the holder's hand and command zone that is not offered, with the first reason found in that order. Only the holder sees options, so nothing leaks.
+
+### Code
+
+- `fx/moves.ts` (pure): `deriveMoves(before, after, events)` gives `Move[]` (`kind`, `object`, `look`, `from`, `to`, `order`, `targets`) and the marks; `MOVE_MS` holds the tokens, which `fx.css` repeats.
+- `handReason.ts` (pure): `unplayableReason(object, view, options)` gives the reason of a dimmed hand card; `REASON_WORDS` its label and line.
+- `/dev/table?fx=` `cast`, `activate`, `resolve`, `counter`, `land` and `draw` play these moments on the fixture table, beside `attack`, `block`, `damage`, `death` (the die moment), `life` and `enter`.
+
 ## Game browser and lobby
 
 `/` becomes Play: open games, Create game and Join with a code. Create moves to `/new`, an invite opens `/join/$code`, My games stays; a signed-in user also gets "Continue" for a running game. Visibility follows Steamworks lobbies (private, public, a joinable flag) [S23] and Unity's, which hide private lobbies from queries and join them by code [S29].
