@@ -10,6 +10,7 @@ use crate::card_rules::CardRulesRepo;
 use crate::cards::CardRepo;
 use crate::decks::DeckRepo;
 use crate::error::DbError;
+use crate::fix_marks::FixMarkRepo;
 use crate::import::Importer;
 use crate::precons::PreconRepo;
 use crate::runs::ImportRuns;
@@ -69,6 +70,11 @@ impl Database {
     /// Decks stored by accounts.
     pub fn decks(&self) -> DeckRepo {
         DeckRepo::new(self.pool.clone())
+    }
+
+    /// Cards accounts marked as important to fix.
+    pub fn fix_marks(&self) -> FixMarkRepo {
+        FixMarkRepo::new(self.pool.clone())
     }
 
     /// Precon deck listing and loading.

@@ -1,0 +1,59 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT m.oracle_id, c.name, m.note,\n                      to_char(m.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') AS \"created_at!\"\n               FROM card_fix_marks m JOIN cards c ON c.oracle_id = m.oracle_id\n               WHERE m.user_id = $1 ORDER BY m.created_at DESC, c.name, m.oracle_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "card_fix_marks",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "cards",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "note",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "card_fix_marks",
+            "name": "note"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "created_at!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "664cc88d809a323cd365a7b088eaa47a9a8909af27581d92faeea4a33db9d1d2"
+}

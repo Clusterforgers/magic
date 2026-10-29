@@ -1,5 +1,6 @@
 //! `check-rules --gaps`: everything that holds the checked proposals back, grouped by reason and ranked by the popularity
-//! of the cards each gap would free (`docs/cards-dsl.md`, Model-assisted reading).
+//! of the cards each gap would free (`docs/cards-dsl.md`, Model-assisted reading). With the fix marks of the database
+//! (`--marks`) the gaps that free the most marked cards come first and a column shows the marks.
 
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
@@ -21,6 +22,9 @@ pub const TOP: usize = 15;
 
 /// The most examples of a gap.
 const EXAMPLES: usize = 5;
+
+/// The fix marks players made, by oracle id: how many accounts marked each card (`FixMarkRepo::ranked`).
+pub type Marks = BTreeMap<String, u32>;
 
 /// The longest reason of the printed table; a longer one is cut and ends in `...`.
 const WIDTH: usize = 90;
@@ -66,6 +70,8 @@ pub struct Held {
     pub name: String,
     /// The weight of its EDHREC rank; 0 without one.
     pub weight: f64,
+    /// How many accounts marked it as important to fix; 0 without marks.
+    pub marks: u32,
     /// Its blockers; never empty.
     pub blockers: BTreeSet<Blocker>,
 }
@@ -81,6 +87,8 @@ pub struct Gap {
     pub freed: usize,
     /// The popularity weight of the freed cards.
     pub weight: f64,
+    /// The fix marks on the freed cards, summed.
+    pub marks: u32,
     /// Up to five cards, the freed ones first and the most played first.
     pub examples: Vec<String>,
 }
@@ -233,12 +241,13 @@ pub fn blockers(report: &Report, names: &[String]) -> BTreeSet<Blocker> {
 
 /// The cards the checked proposals leave out of the verified set. A card with several proposals counts once, by the one
 /// with the fewest blockers (the first of equals); a card with a proposal that nothing holds back is not held.
-pub fn held_cards(checked: &Checked, popularity: &Popularity) -> Vec<Held> {
+pub fn held_cards(checked: &Checked, popularity: &Popularity, marks: &Marks) -> Vec<Held> {
     let mut best: BTreeMap<&str, Held> = BTreeMap::new();
     for (report, subject) in checked.reports.iter().zip(&checked.subjects) {
         let held = Held {
             name: report.card.clone(),
             weight: popularity.rank(&subject.oracle_id).map_or(0.0, weight_of),
+            marks: marks.get(&subject.oracle_id).copied().unwrap_or(0),
             blockers: blockers(report, &subject.names),
         };
         let better = best
@@ -266,8 +275,8 @@ fn by_weight(cards: &mut [&Held]) {
     cards.sort_by(|a, b| b.weight.total_cmp(&a.weight).then(a.name.cmp(&b.name)));
 }
 
-/// The ledger: a row for each blocker, the gaps that free the most popularity first, then the most cards freed, the most
-/// cards blocked, the kind and the reason.
+/// The ledger: a row for each blocker, the gaps that free the most marked cards first (all tie without marks), then the
+/// most popularity, the most cards freed, the most cards blocked, the kind and the reason.
 pub fn rank(held: &[Held]) -> Vec<Gap> {
     let mut tallies: BTreeMap<&Blocker, Tally<'_>> = BTreeMap::new();
     for card in held {
@@ -292,6 +301,7 @@ pub fn rank(held: &[Held]) -> Vec<Gap> {
                 freed: tally.freed.len(),
                 // Not `sum()`: the sum of nothing is -0.0, which sorts before 0.0.
                 weight: tally.freed.iter().fold(0.0, |sum, card| sum + card.weight),
+                marks: tally.freed.iter().map(|card| card.marks).sum(),
                 examples: tally
                     .freed
                     .iter()
@@ -303,8 +313,9 @@ pub fn rank(held: &[Held]) -> Vec<Gap> {
         })
         .collect();
     gaps.sort_by(|a, b| {
-        b.weight
-            .total_cmp(&a.weight)
+        b.marks
+            .cmp(&a.marks)
+            .then(b.weight.total_cmp(&a.weight))
             .then(b.freed.cmp(&a.freed))
             .then(b.blocked.cmp(&a.blocked))
             .then(a.blocker.cmp(&b.blocker))
@@ -320,11 +331,26 @@ fn field(text: &str) -> String {
 /// The ledger as TSV: a header, then a row for each gap with the kind, the reason, the cards blocked, the cards freed, the
 /// weight of the freed cards and the examples joined by `; `.
 pub fn tsv(gaps: &[Gap]) -> String {
-    let mut text = String::from("kind\treason\tblocked\tfreed\tweight\texamples\n");
+    tsv_with(gaps, false)
+}
+
+/// [`tsv`] with the fix marks on the freed cards as a `marks` column after `freed`.
+pub fn tsv_marked(gaps: &[Gap]) -> String {
+    tsv_with(gaps, true)
+}
+
+fn tsv_with(gaps: &[Gap], marks: bool) -> String {
+    let mark_head = if marks { "\tmarks" } else { "" };
+    let mut text = format!("kind\treason\tblocked\tfreed{mark_head}\tweight\texamples\n");
     for gap in gaps {
+        let mark_field = if marks {
+            format!("\t{}", gap.marks)
+        } else {
+            String::new()
+        };
         let _ = writeln!(
             text,
-            "{}\t{}\t{}\t{}\t{:.6}\t{}",
+            "{}\t{}\t{}\t{}{mark_field}\t{:.6}\t{}",
             gap.blocker.kind.word(),
             field(&gap.blocker.reason),
             gap.blocked,
@@ -338,20 +364,44 @@ pub fn tsv(gaps: &[Gap]) -> String {
 
 /// The first rows of the ledger as a table for the terminal.
 pub fn table(gaps: &[Gap], top: usize) -> String {
+    table_with(gaps, top, false)
+}
+
+/// [`table`] with the fix marks on the freed cards as a `marks` column, the gaps with the most marks first.
+pub fn table_marked(gaps: &[Gap], top: usize) -> String {
+    table_with(gaps, top, true)
+}
+
+fn table_with(gaps: &[Gap], top: usize, marks: bool) -> String {
     let mut text = format!(
-        "gaps (top {} of {}; freed: cards this gap alone holds back, weight: their 1 / (EDHREC rank + 100) summed)\n",
+        "gaps (top {} of {}; freed: cards this gap alone holds back, weight: their 1 / (EDHREC rank + 100) summed{})\n",
         top.min(gaps.len()),
-        gaps.len()
+        gaps.len(),
+        if marks {
+            ", marks: fix marks on them, ranked first"
+        } else {
+            ""
+        }
     );
+    let mark_head = if marks {
+        format!(" {:>5}", "marks")
+    } else {
+        String::new()
+    };
     let _ = writeln!(
         text,
-        "{:>3}  {:<17} {:>5} {:>7} {:>8}  reason (examples)",
+        "{:>3}  {:<17} {:>5} {:>7}{mark_head} {:>8}  reason (examples)",
         "#", "kind", "freed", "blocked", "weight"
     );
     for (i, gap) in gaps.iter().take(top).enumerate() {
+        let mark_cell = if marks {
+            format!(" {:>5}", gap.marks)
+        } else {
+            String::new()
+        };
         let _ = writeln!(
             text,
-            "{:>3}  {:<17} {:>5} {:>7} {:>8.5}  {} ({})",
+            "{:>3}  {:<17} {:>5} {:>7}{mark_cell} {:>8.5}  {} ({})",
             i + 1,
             gap.blocker.kind.word(),
             gap.freed,
@@ -374,23 +424,28 @@ fn cut(text: &str) -> String {
 }
 
 /// Writes the ledger of the checked proposals to `path` and returns the text to print: the counts, the top of the ledger
-/// and where it is written.
+/// and where it is written. With `marks` (the fix marks of the database) the gaps are ranked by them and a column shows
+/// them; without, the ledger is as it was.
 pub async fn write_ledger(
     checked: &Checked,
     popularity: &Popularity,
+    marks: Option<&Marks>,
     path: &Path,
 ) -> Result<String, CliError> {
-    let held = held_cards(checked, popularity);
+    let held = held_cards(checked, popularity, marks.unwrap_or(&Marks::new()));
     let gaps = rank(&held);
-    tokio::fs::write(path, tsv(&gaps))
+    let (file, top) = match marks {
+        Some(_) => (tsv_marked(&gaps), table_marked(&gaps, TOP)),
+        None => (tsv(&gaps), table(&gaps, TOP)),
+    };
+    tokio::fs::write(path, file)
         .await
         .map_err(|source| CliError::io(path, source))?;
     let mut text = format!(
-        "{}\n{} cards held back by {} gaps\n{}\ngaps written to {}",
+        "{}\n{} cards held back by {} gaps\n{top}\ngaps written to {}",
         checked.counts(),
         held.len(),
         gaps.len(),
-        table(&gaps, TOP),
         path.display()
     );
     if !checked.written.is_empty() {

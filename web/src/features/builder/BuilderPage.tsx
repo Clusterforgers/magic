@@ -12,6 +12,7 @@ import { cardsApi } from '@/net/cards'
 import type { CardsApi } from '@/net/cards'
 import { decksApi } from '@/net/decks'
 import type { DecksApi } from '@/net/decks'
+import type { FixMarksApi } from '@/net/fixMarks'
 import { Builder } from './Builder'
 import { useDeckView } from './useDeckView'
 
@@ -22,6 +23,8 @@ interface BuilderPageProps {
   api?: DecksApi
   /** The card endpoints; the shared client unless a test brings its own. */
   cards?: CardsApi
+  /** The fix-mark endpoints; with them a card's preview offers "Mark important to fix". */
+  fixMarks?: FixMarksApi
 }
 
 // The two panes while the deck loads.
@@ -34,11 +37,16 @@ function PanesSkeleton() {
   )
 }
 
-function DeckLoader({ deckId, api, cards }: Required<BuilderPageProps>) {
+function DeckLoader({
+  deckId,
+  api,
+  cards,
+  fixMarks,
+}: Required<Omit<BuilderPageProps, 'fixMarks'>> & Pick<BuilderPageProps, 'fixMarks'>) {
   const { state, reload } = useDeckView(api, deckId)
 
   if (state.status === 'ready')
-    return <Builder key={state.view.id} view={state.view} api={api} cards={cards} />
+    return <Builder key={state.view.id} view={state.view} api={api} cards={cards} fixMarks={fixMarks} />
   return (
     <PageShell width="wide">
       {state.status === 'loading' ? (
@@ -104,7 +112,7 @@ function DeckLoader({ deckId, api, cards }: Required<BuilderPageProps>) {
  * `/decks/$deckId`: the builder for one of the signed-in user's decks. Someone who is not signed in is sent to the
  * sign-in form and back; a server without accounts keeps no decks; a deck that is not the account's reads as missing.
  */
-export function BuilderPage({ deckId, api = decksApi, cards = cardsApi }: BuilderPageProps) {
+export function BuilderPage({ deckId, api = decksApi, cards = cardsApi, fixMarks }: BuilderPageProps) {
   usePageTitle('Deck builder')
   const status = useAuth((state) => state.status)
 
@@ -145,5 +153,5 @@ export function BuilderPage({ deckId, api = decksApi, cards = cardsApi }: Builde
       </PageShell>
     )
   }
-  return <DeckLoader deckId={deckId} api={api} cards={cards} />
+  return <DeckLoader deckId={deckId} api={api} cards={cards} fixMarks={fixMarks} />
 }

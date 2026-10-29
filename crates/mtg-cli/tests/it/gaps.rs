@@ -1,4 +1,4 @@
-//! Goal: `check-rules --gaps` writes the ledger of what holds stored proposals back: equal reasons of several cards are one row, a card with several proposals counts once by its best one, the rows rank by the popularity the cached Oracle Cards file gives the cards they alone hold back, the TSV and the printed top are stable, and a missing cache file or an unwritable path is an error that says what to do.
+//! Goal: `check-rules --gaps` writes the ledger of what holds stored proposals back (with `--marks`, ranked by the fix marks of players and with a marks column): equal reasons of several cards are one row, a card with several proposals counts once by its best one, the rows rank by the popularity the cached Oracle Cards file gives the cards they alone hold back, the TSV and the printed top are stable, and a missing cache file or an unwritable path is an error that says what to do.
 
 #![allow(clippy::unwrap_used)]
 
@@ -9,11 +9,12 @@ use std::path::{Path, PathBuf};
 use mtg_cli::args::{CheckRulesArgs, Cli, Command};
 use mtg_cli::cache::Cache;
 use mtg_cli::check_rules::check_rules;
-use mtg_cli::gaps::write_ledger;
+use mtg_cli::gaps::{Marks, write_ledger};
 use mtg_cli::ingest::{IngestOptions, ingest};
 use mtg_cli::popularity::Popularity;
 use mtg_cli::run;
 use mtg_db::Database;
+use mtg_import::ids::OracleId;
 use sqlx::PgPool;
 
 use common::{fixture_cache, progress, put_ranks};
@@ -75,6 +76,7 @@ fn args(files: &[&Path], gaps: Option<&Path>) -> CheckRulesArgs {
         bundle: true,
         write: None,
         gaps: gaps.map(Path::to_path_buf),
+        marks: false,
         files: files.iter().map(|file| file.to_path_buf()).collect(),
     }
 }
@@ -128,7 +130,7 @@ async fn ledger_of_the_bundles(pool: PgPool, swapped: bool) {
 
     let checked = check_rules(&db, &args(&files, Some(&gaps))).await.unwrap();
     let ranks = Popularity::from_cache(&cache).unwrap();
-    let text = write_ledger(&checked, &ranks, &gaps).await.unwrap();
+    let text = write_ledger(&checked, &ranks, None, &gaps).await.unwrap();
 
     // Sol Ring (1), Island (50) and the unranked Mountain share one invalid row; Shock (10) alone has a missing writer; the
     // two clauses of Aether Vial are two rows that free nothing, since each card has two blockers; Lightning Bolt is
@@ -157,6 +159,102 @@ async fn ledger_of_the_bundles(pool: PgPool, swapped: bool) {
     );
 }
 
+/// Marks the card `name` for `accounts` accounts.
+async fn mark(db: &Database, name: &str, accounts: u128) {
+    let oracle: String = sqlx::query_scalar("SELECT oracle_id::text FROM cards WHERE name = $1")
+        .bind(name)
+        .fetch_one(db.pool())
+        .await
+        .unwrap();
+    for account in 1..=accounts {
+        db.fix_marks()
+            .mark(
+                sqlx::types::uuid::Uuid::from_u128(account),
+                &OracleId(oracle.clone()),
+                None,
+            )
+            .await
+            .unwrap()
+            .unwrap();
+    }
+}
+
+#[sqlx::test]
+async fn the_marks_of_players_rank_the_gaps_first_and_add_a_column(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let (db, cache) = ranked(pool, dir.path()).await;
+    let (main, extra) = bundles(dir.path());
+    let gaps = dir.path().join("gaps.tsv");
+    // Shock (3 marks) is less played than Sol Ring, yet its gap comes first; Mountain's single mark lifts the
+    // invalid row over the two rows that free nothing.
+    mark(&db, "Shock", 3).await;
+    mark(&db, "Mountain", 1).await;
+    mark(&db, "Æther Vial", 5).await;
+    let marks: Marks = db
+        .fix_marks()
+        .ranked(None)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|mark| (mark.oracle_id.to_string(), mark.marks))
+        .collect();
+
+    let checked = check_rules(&db, &args(&[&main, &extra], Some(&gaps)))
+        .await
+        .unwrap();
+    let ranks = Popularity::from_cache(&cache).unwrap();
+    let text = write_ledger(&checked, &ranks, Some(&marks), &gaps)
+        .await
+        .unwrap();
+
+    // Aether Vial's two gaps free nothing (two blockers each), so its five marks weigh on no row.
+    let expected = format!(
+        "kind\treason\tblocked\tfreed\tmarks\tweight\texamples\n\
+         missing-writer\tSpell: effect Connive\t1\t1\t3\t0.009091\tShock\n\
+         invalid\t{NO_SUCH_TARGET}\t3\t3\t1\t0.016568\tSol Ring; Island; Mountain\n{}",
+        vial_rows().replace("\t1\t0\t0.000000\t", "\t1\t0\t0\t0.000000\t")
+    );
+    assert_eq!(std::fs::read_to_string(&gaps).unwrap(), expected);
+    let header = text
+        .lines()
+        .find(|line| line.contains("reason (examples)"))
+        .unwrap();
+    assert!(header.contains("marks"), "{header}");
+    let first = text.lines().find(|line| line.starts_with("  1  ")).unwrap();
+    assert!(
+        first.contains("missing-writer") && first.ends_with("(Shock)"),
+        "{first}"
+    );
+}
+
+#[sqlx::test]
+async fn without_marks_the_ledger_is_as_it_was_even_when_cards_are_marked(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let (db, cache) = ranked(pool, dir.path()).await;
+    let (main, extra) = bundles(dir.path());
+    let gaps = dir.path().join("gaps.tsv");
+    mark(&db, "Shock", 3).await;
+
+    let checked = check_rules(&db, &args(&[&main, &extra], Some(&gaps)))
+        .await
+        .unwrap();
+    write_ledger(
+        &checked,
+        &Popularity::from_cache(&cache).unwrap(),
+        None,
+        &gaps,
+    )
+    .await
+    .unwrap();
+
+    let file = std::fs::read_to_string(&gaps).unwrap();
+    assert!(file.starts_with(HEADER), "{file}");
+    assert!(
+        file.lines().nth(1).unwrap().starts_with("invalid\t"),
+        "{file}"
+    );
+}
+
 #[sqlx::test]
 async fn a_card_with_a_verified_proposal_leaves_the_ledger_empty(pool: PgPool) {
     let dir = tempfile::tempdir().unwrap();
@@ -167,9 +265,14 @@ async fn a_card_with_a_verified_proposal_leaves_the_ledger_empty(pool: PgPool) {
     let checked = check_rules(&db, &args(&[&file], Some(&gaps)))
         .await
         .unwrap();
-    let text = write_ledger(&checked, &Popularity::from_cache(&cache).unwrap(), &gaps)
-        .await
-        .unwrap();
+    let text = write_ledger(
+        &checked,
+        &Popularity::from_cache(&cache).unwrap(),
+        None,
+        &gaps,
+    )
+    .await
+    .unwrap();
 
     assert_eq!(std::fs::read_to_string(&gaps).unwrap(), HEADER);
     assert!(text.contains("0 cards held back by 0 gaps"), "{text}");
@@ -185,9 +288,14 @@ async fn a_path_that_cannot_be_written_is_an_error_that_names_it(pool: PgPool) {
     let checked = check_rules(&db, &args(&[&file], Some(&gaps)))
         .await
         .unwrap();
-    let error = write_ledger(&checked, &Popularity::from_cache(&cache).unwrap(), &gaps)
-        .await
-        .unwrap_err();
+    let error = write_ledger(
+        &checked,
+        &Popularity::from_cache(&cache).unwrap(),
+        None,
+        &gaps,
+    )
+    .await
+    .unwrap_err();
 
     assert!(error.to_string().contains("gaps.tsv"), "{error}");
 }

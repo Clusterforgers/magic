@@ -21,6 +21,7 @@ fn held(name: &str, weight: f64, blockers: &[(Kind, &str)]) -> Held {
     Held {
         name: name.to_owned(),
         weight,
+        marks: 0,
         blockers: blockers
             .iter()
             .map(|(kind, reason)| blocker(*kind, reason))
@@ -464,6 +465,81 @@ fn a_gap_that_frees_nothing_weighs_zero_and_ranks_below_the_gaps_that_free_cards
     assert!(tsv(&gaps).contains("\t0.000000\tTwo\n"));
 }
 
+fn marked(name: &str, weight: f64, marks: u32, blockers: &[(Kind, &str)]) -> Held {
+    Held {
+        marks,
+        ..held(name, weight, blockers)
+    }
+}
+
+#[test]
+fn the_marks_of_the_freed_cards_rank_a_gap_before_its_popularity_and_a_shared_card_adds_none() {
+    let gaps = rank(&[
+        marked("Popular", 0.5, 0, &[A]),
+        marked("Wanted", 0.01, 3, &[B]),
+        marked("Wanted too", 0.0, 2, &[B]),
+        // Marked, but held by two gaps: freeing neither alone frees it.
+        marked("Shared", 0.0, 9, &[C, D]),
+    ]);
+
+    assert_eq!(
+        gaps.iter()
+            .map(|gap| (gap.blocker.reason.as_str(), gap.marks))
+            .collect::<Vec<_>>(),
+        [
+            ("Spell: effect B", 5),
+            ("Spell: effect A", 0),
+            ("target N does not exist", 0),
+            ("the engine does not run X yet", 0),
+        ]
+    );
+}
+
+#[test]
+fn marks_add_a_column_to_the_tsv_and_the_table_and_the_plain_output_has_none() {
+    let gaps = rank(&[marked("Wanted", 0.25, 3, &[A])]);
+
+    assert_eq!(
+        tsv_marked(&gaps),
+        "kind\treason\tblocked\tfreed\tmarks\tweight\texamples\n\
+         missing-writer\tSpell: effect A\t1\t1\t3\t0.250000\tWanted\n"
+    );
+    assert_eq!(
+        tsv(&gaps),
+        "kind\treason\tblocked\tfreed\tweight\texamples\n\
+         missing-writer\tSpell: effect A\t1\t1\t0.250000\tWanted\n"
+    );
+    let with = table_marked(&gaps, TOP);
+    let without = table(&gaps, TOP);
+    assert!(with.contains("marks: fix marks"), "{with}");
+    assert!(!without.contains("marks"), "{without}");
+    let header = with.lines().nth(1).unwrap();
+    assert!(header.contains("blocked marks   weight"), "{header}");
+    assert!(with.lines().nth(2).unwrap().contains("    3 "), "{with}");
+    assert_eq!(without.lines().count(), with.lines().count());
+}
+
+#[test]
+fn without_marks_the_ledger_ranks_by_popularity_as_it_always_did() {
+    let cards = [
+        held("One", 0.5, &[A]),
+        held("Two", 0.25, &[B]),
+        held("Three", 0.125, &[C]),
+    ];
+
+    let gaps = rank(&cards);
+
+    assert_eq!(
+        gaps.iter().map(row).collect::<Vec<_>>(),
+        [
+            ("Spell: effect A", 1, 1),
+            ("Spell: effect B", 1, 1),
+            ("target N does not exist", 1, 1),
+        ]
+    );
+    assert!(gaps.iter().all(|gap| gap.marks == 0));
+}
+
 #[test]
 fn an_empty_ledger_is_a_header_alone() {
     assert_eq!(tsv(&[]), "kind\treason\tblocked\tfreed\tweight\texamples\n");
@@ -496,6 +572,7 @@ proptest! {
             .map(|(i, (rank, blockers))| Held {
                 name: format!("card {i}"),
                 weight: weight_of(*rank),
+                marks: 0,
                 blockers: blockers
                     .iter()
                     .map(|(kind, reason)| Blocker { kind: *kind, reason: reason.clone() })

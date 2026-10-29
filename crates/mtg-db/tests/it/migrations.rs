@@ -39,6 +39,7 @@ async fn applies_to_an_empty_database_and_can_be_rerun(pool: PgPool) {
     assert_eq!(
         tables,
         [
+            "card_fix_marks",
             "card_rules",
             "cards",
             "deck_cards",

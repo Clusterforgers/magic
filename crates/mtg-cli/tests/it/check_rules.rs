@@ -37,6 +37,7 @@ fn args(files: &[&Path]) -> CheckRulesArgs {
         bundle: false,
         write: None,
         gaps: None,
+        marks: false,
         files: files.iter().map(|file| file.to_path_buf()).collect(),
     }
 }

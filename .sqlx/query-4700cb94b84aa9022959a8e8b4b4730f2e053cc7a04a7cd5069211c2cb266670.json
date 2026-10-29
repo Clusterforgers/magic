@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM card_fix_marks WHERE user_id = $1 AND oracle_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4700cb94b84aa9022959a8e8b4b4730f2e053cc7a04a7cd5069211c2cb266670"
+}
