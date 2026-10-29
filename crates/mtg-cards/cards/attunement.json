@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5ea46ccf-5e36-4889-bf64-00d4f327e9b2",
+  "name": "Attunement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Attunement",
+      "oracle_fingerprint": "07271c6d68a091c67fe08bdee3639819",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "ReturnToHand": { "filter": [{ "Type": "Enchantment" }, { "Is": "This" }] } }
+            ],
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": { "count": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

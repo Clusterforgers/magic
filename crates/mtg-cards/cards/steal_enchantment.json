@@ -1,0 +1,15 @@
+{
+  "oracle_id": "567a3fa7-5ca9-4812-b81d-4953c401c83d",
+  "name": "Steal Enchantment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steal Enchantment",
+      "oracle_fingerprint": "30e4039451da67791231f80873e80ed6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Enchantment" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

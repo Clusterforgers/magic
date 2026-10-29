@@ -253,6 +253,8 @@ mod w16a_entry_if;
 mod w16a_named_yours;
 mod w16a_owner;
 mod w16a_return_cost;
+mod w16a_state_trigger;
+mod w16a_static_and;
 mod w4a_if;
 mod w4a_if_conditions;
 mod w4a_if_instead;
@@ -403,7 +405,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 /// Adds the wordings of the shapes the stored local-model proposals hit (r4d-d, r4b-d): an entry with counters under a
 /// condition, the defending player who acts, the card returned to its owner's hand as a cost, a group of one of two
 /// colors, damage turned into counters, creatures you control with a name, the owner of a target, control of the
-/// enchanted permanent and a later step joined by ", then".
+/// enchanted permanent, a state trigger, two parts of a static ability joined by "and" and a later step joined by ", then".
 fn add_w16a(ability: &Ability, texts: &mut Vec<String>) {
     w16a_entry_if::add(ability, texts);
     w16a_defending::add(ability, texts);
@@ -413,6 +415,8 @@ fn add_w16a(ability: &Ability, texts: &mut Vec<String>) {
     w16a_named_yours::add(ability, texts);
     w16a_owner::add(ability, texts);
     w16a_enchanted_control::add(ability, texts);
+    w16a_state_trigger::add(ability, texts);
+    w16a_static_and::add(ability, texts);
     w16a_comma_then::add(texts);
 }
 

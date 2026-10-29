@@ -1,0 +1,15 @@
+{
+  "oracle_id": "ca283839-864f-4252-8452-480e3ba29b20",
+  "name": "Domineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domineer",
+      "oracle_fingerprint": "ecb223a51cf42366e11c7f0dcecf907c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }, { "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

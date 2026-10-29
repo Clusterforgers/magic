@@ -16,7 +16,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Some(inner) = value.get_mut("Replacement").and_then(Value::as_object_mut) else {
         return;
     };
-    if inner.get("by").and_then(|by| by.get("WithCounters")).is_none() {
+    if inner
+        .get("by")
+        .and_then(|by| by.get("WithCounters"))
+        .is_none()
+    {
         return;
     }
     let Some(condition) = inner.remove("condition").filter(|c| !c.is_null()) else {

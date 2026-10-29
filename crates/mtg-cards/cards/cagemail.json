@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fe1f40fe-011b-4686-b865-fed00c56d30a",
+  "name": "Cagemail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cagemail",
+      "oracle_fingerprint": "60ad67d68c9c0690efefee31c12293c9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, "CantAttack"]
+          }
+        }
+      ]
+    }
+  ]
+}

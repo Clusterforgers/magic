@@ -1,0 +1,30 @@
+{
+  "oracle_id": "909e1bff-237a-4259-9c0f-419185681782",
+  "name": "Tethered Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tethered Griffin",
+      "oracle_fingerprint": "4a4436dfdbdd295f7280dc6e5d7211f4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

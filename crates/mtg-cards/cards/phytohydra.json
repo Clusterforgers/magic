@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4f5a7b65-b7f4-4bad-acfd-35edfb8f86a7",
+  "name": "Phytohydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phytohydra",
+      "oracle_fingerprint": "f65690884c192a89656acaf4c270bbbe",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "Instead": [
+                { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

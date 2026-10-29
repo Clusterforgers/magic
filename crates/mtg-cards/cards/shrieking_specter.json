@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f6adfb5f-a21c-4e86-bd16-a9c1e355af34",
+  "name": "Shrieking Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrieking Specter",
+      "oracle_fingerprint": "a85205e826af61e5323cb9c67ad6fc0e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Discard": { "who": "Defending" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

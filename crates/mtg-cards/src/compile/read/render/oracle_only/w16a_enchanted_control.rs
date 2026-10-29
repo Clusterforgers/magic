@@ -26,7 +26,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     };
     let plain = inner.get("affected") == Some(&json!("Attached"))
         && inner.get("mods") == Some(&json!([{"SetController": "You"}]))
-        && inner.get("condition").is_none_or(serde_json::Value::is_null);
+        && inner
+            .get("condition")
+            .is_none_or(serde_json::Value::is_null);
     if plain {
         texts.extend(
             W16A_KINDS

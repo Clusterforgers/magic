@@ -34,7 +34,10 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             continue;
         }
         for (from, to) in &swaps {
-            for (from, to) in [(from.clone(), to.clone()), (capitalized(from), capitalized(to))] {
+            for (from, to) in [
+                (from.clone(), to.clone()),
+                (capitalized(from), capitalized(to)),
+            ] {
                 if text.contains(&from) {
                     texts.push(text.replace(&from, &to));
                 }
