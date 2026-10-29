@@ -52,6 +52,9 @@ describe('/dev/table in development', () => {
   it.each([
     ['?seats=2', 'grid', [1, 0]],
     ['?seats=12', 'focus', [1, 0]],
+    ['?seats=16', 'focus', [1, 0]],
+    ['?seats=24', 'focus', [1, 0]],
+    ['?seats=40', 'focus', [1, 0]],
     ['?seats=12&mode=grid', 'grid', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0]],
     ['?seats=4&mode=focus&focus=3', 'focus', [3, 0]],
     ['?seats=6&focus=5', 'focus', [5, 0]],
@@ -62,7 +65,19 @@ describe('/dev/table in development', () => {
     expect(panels()).toEqual(seats)
   })
 
-  it.each(['?seats=99', '?seats=1', '?seats=abc', '?mode=sideways&seats=3'])(
+  it.each([16, 24, 40])(
+    'draws a table of %i seats as a tile for each opponent and one board',
+    async (seats) => {
+      await visit(`/dev/table?seats=${seats}`)
+      await screen.findByRole('region', { name: 'Game table' }, { timeout: scaled(8000) })
+      expect(document.querySelectorAll('[data-tile-seat]')).toHaveLength(seats - 1)
+      expect(document.querySelectorAll('[data-slot="tile-strip"] > li')).toHaveLength(seats - 1)
+      expect(panels()).toEqual([1, 0])
+    },
+    20_000,
+  )
+
+  it.each(['?seats=1', '?seats=abc', '?mode=sideways&seats=3'])(
     'ignores the nonsense in %s',
     async (search) => {
       await visit(`/dev/table${search}`)

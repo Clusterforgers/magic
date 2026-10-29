@@ -28,7 +28,9 @@ fn many(count: usize) -> String {
 
 /// A Commander game of `count` seats, none with a deck yet.
 fn commander(count: usize) -> String {
-    let seats: Vec<Value> = (0..count).map(|i| json!({ "name": format!("P{i}") })).collect();
+    let seats: Vec<Value> = (0..count)
+        .map(|i| json!({ "name": format!("P{i}") }))
+        .collect();
     json!({ "format": "commander", "seats": seats }).to_string()
 }
 

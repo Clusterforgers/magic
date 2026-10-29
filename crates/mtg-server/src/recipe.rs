@@ -985,10 +985,7 @@ mod tests {
     #[case::unknown("modern", None)]
     #[case::capitals("Commander", None)]
     #[case::empty("", None)]
-    fn a_format_is_named_by_its_wire_key(
-        #[case] key: &str,
-        #[case] expected: Option<FormatKind>,
-    ) {
+    fn a_format_is_named_by_its_wire_key(#[case] key: &str, #[case] expected: Option<FormatKind>) {
         assert_eq!(FormatKind::parse(key), expected);
         if let Some(kind) = expected {
             assert_eq!(kind.as_str(), key);
