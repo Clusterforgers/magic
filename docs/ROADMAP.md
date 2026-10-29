@@ -253,6 +253,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
+- [~] (t15a) (t15a-popular-1) The 42 not-Verified cards among the 300 most popular Commander cards (`mtg-cli coverage --all --out`; Path of Ancestry, Mana Drain, Smothering Tithe, Sylvan Library, Force of Will, Mana Vault, The One Ring) read whole, or skipped with the missing piece as a lettered line
 - [~] (r3) (the local bulk run of gpt-oss:20b with --schema, run by the orchestrator) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (t9a-a) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and "~ or a creature it's paired with" triggers (Silverblade Paladin, Donna Noble, Breathkeeper Seraph)
 - [ ] (t9a-b) Plot as a special action from the hand and a free cast from exile on a later turn, with "plotting costs {M} less" (Lock and Load, Pyretic Charge, Doc Aurlock)
