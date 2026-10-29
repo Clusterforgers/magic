@@ -17,7 +17,7 @@ export function TargetFace({ id }: { id: ObjectId }) {
       data-candidate={id}
       onPointerEnter={preview.onPointerEnter}
       onPointerLeave={preview.onPointerLeave}
-      className="relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md ring-1 ring-border-strong [--card-h:4.55rem] [--card-w:3.25rem]"
+      className="relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md ring-1 ring-border-strong [--card-h:3.85rem] [--card-w:2.75rem]"
     >
       {object === undefined ? (
         <span

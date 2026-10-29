@@ -19,6 +19,7 @@ import type {
 } from '@/protocol/generated'
 import { forecastScene, withBlockForecast } from './combatScene'
 import { assignDamage } from './damagePrompt'
+import { ANNOUNCE_PROMPTS } from './announcePrompts'
 import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 
@@ -437,6 +438,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-low-life': payLowLife,
   'commander-return': commanderReturn,
   ...EFFECT_PROMPTS,
+  ...ANNOUNCE_PROMPTS,
 }
 
 /**

@@ -136,13 +136,12 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (g0g) The hand dock holds hands of 9 to 16 cards in two rows below 1000 px of height: at 1400x900 a hand of 9 or more scrolls, since two rows need 150 px of cards (`HAND_CLAMP` in `layout.ts`, or more of the width from the controls dock beside it)
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
-- [~] (w3b) (w3-prompts-a) The DivideAmount prompt: the total split among the targets, each at least one
-- [~] (w3c) (w3-prompts-a) The ChooseCosts prompt: the optional costs the player can pay, as toggles
 - [~] (w3d) (w3-prompts-b) The ChooseReplacement prompt: which replacement effect applies first
 - [~] (w3e) (w3-prompts-b) Scry and cards put back: top and bottom piles in order
 - [ ] (w3f) The payment prompt spends restricted mana by hand, read against `PayOptions.spend`
 - [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise
 - [ ] (w3h) The payment prompt exiles graveyard cards for delve
+- [ ] (w3j) `decisionName` (`turnText.ts`) names a decision kind the client does not know as Discard, so the waiting label and the clock words of a newer server's decision read wrong
 - [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name yet
 - [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X

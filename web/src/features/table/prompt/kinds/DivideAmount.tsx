@@ -99,7 +99,7 @@ function Row({ target, label, share, max, active, inputRef, onEnter, onLeave, on
  * least one. One row per target, in the order the engine lists them: the card's picture or the player's name and a
  * stepper (the minus and plus buttons, the arrow keys or a typed number); a share never goes past what the other
  * targets leave. The split starts even, as the response clock would answer, so the common case is one press of
- * Confirm; the line under the rows counts what is left to give and Confirm waits until nothing is. A cast can be
+ * Confirm; the line beside Confirm, above the rows, counts what is left to give and Confirm waits until nothing is. A cast can be
  * taken back with Cancel; a triggered ability that divides as it goes on the stack cannot. Targets that are cards on
  * the table are marked, and a click on one moves focus to its row.
  */
@@ -165,31 +165,6 @@ export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options })
   return (
     <PromptLayout text={divideSentence(askerWords(source?.name), text, total)}>
       <form data-slot="divide-split" className="grid w-full gap-2" onSubmit={confirm}>
-        <ul aria-label="Amount for each target" className="grid max-h-56 gap-1.5 overflow-y-auto">
-          {among.map((target, index) => {
-            const share = shares[index] ?? 1
-            const objectId = 'Object' in target ? target.Object.id : undefined
-            return (
-              <Row
-                key={targetKey(target)}
-                target={target}
-                label={labels[index] ?? 'a target'}
-                share={share}
-                max={mostFor(shares, index, total)}
-                active={objectId !== undefined && selection.has(objectId)}
-                inputRef={(element) => {
-                  if (index === 0) first.current = element
-                  if (objectId === undefined) return
-                  if (element === null) inputs.current.delete(objectId)
-                  else inputs.current.set(objectId, element)
-                }}
-                onEnter={() => (objectId === undefined ? selection.clear() : selection.set([objectId]))}
-                onLeave={() => selection.clear()}
-                onChange={(wanted) => setEdited(setShare(shares, index, wanted, total))}
-              />
-            )
-          })}
-        </ul>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <Button type="submit" className="h-10 px-4" disabled={!verdict.legal} aria-describedby={statusId}>
             Confirm
@@ -215,6 +190,31 @@ export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options })
             {verdict.status}
           </p>
         </div>
+        <ul aria-label="Amount for each target" className="grid max-h-64 gap-1.5 overflow-y-auto">
+          {among.map((target, index) => {
+            const share = shares[index] ?? 1
+            const objectId = 'Object' in target ? target.Object.id : undefined
+            return (
+              <Row
+                key={targetKey(target)}
+                target={target}
+                label={labels[index] ?? 'a target'}
+                share={share}
+                max={mostFor(shares, index, total)}
+                active={objectId !== undefined && selection.has(objectId)}
+                inputRef={(element) => {
+                  if (index === 0) first.current = element
+                  if (objectId === undefined) return
+                  if (element === null) inputs.current.delete(objectId)
+                  else inputs.current.set(objectId, element)
+                }}
+                onEnter={() => (objectId === undefined ? selection.clear() : selection.set([objectId]))}
+                onLeave={() => selection.clear()}
+                onChange={(wanted) => setEdited(setShare(shares, index, wanted, total))}
+              />
+            )
+          })}
+        </ul>
       </form>
     </PromptLayout>
   )
