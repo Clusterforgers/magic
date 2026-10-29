@@ -19,11 +19,7 @@ function menaceTable(needed: number | null) {
   /** Chooses `blocker`, then the attacker at `at` in its list. */
   const block = async (blocker: ObjectId, at: 0 | 1): Promise<void> => {
     await table.user.click(table.card(blocker))
-    const picker = screen.getByRole('group', { name: /^Attackers .* may block$/ })
-    const choices = within(picker)
-      .getAllByRole('button')
-      .filter((b) => !['Cancel', 'Remove block'].includes(b.textContent ?? ''))
-    await table.user.click(must(choices[at]))
+    await table.user.click(table.card(must(attackers[at])))
   }
   const list = () => screen.queryByRole('list', { name: 'Attackers that need several blockers' })
   return { ...table, attackers, blockers, confirm, block, list }
@@ -49,7 +45,7 @@ describe('an attacker that needs several blockers', () => {
     await block(blockers[1], 0)
     expect(confirm()).toBeEnabled()
     expect(text()).not.toMatch(/needs/)
-    expect(notes().get(attackers[0])).toBe('Blocked by 2')
+    expect(notes().has(attackers[0])).toBe(false)
     await user.click(confirm())
     expect(answer.mock.calls).toEqual([
       [
@@ -64,15 +60,14 @@ describe('an attacker that needs several blockers', () => {
   })
 
   it('lets another attacker be blocked by one while it has none, and waits again once one blocker joins it', async () => {
-    const { block, confirm, attackers, blockers, user, answer } = menaceTable(2)
+    const { block, card, confirm, attackers, blockers, user, answer } = menaceTable(2)
     await block(blockers[0], 1)
     expect(confirm()).toBeEnabled()
     // The second blocker goes to the one that needs two: it has one, so Confirm waits.
     await block(blockers[1], 0)
     expect(confirm()).toBeDisabled()
     // Taking that block back leaves the first block alone, which can be sent.
-    const pairs = within(screen.getByRole('list', { name: 'Your blocks' }))
-    await user.click(must(pairs.getAllByRole('button', { name: /^Remove the block of/ })[1]))
+    await user.click(card(must(blockers[1])))
     expect(confirm()).toBeEnabled()
     await user.click(confirm())
     expect(answer.mock.calls).toEqual([[{ DeclareBlockers: [[blockers[0], attackers[1]]] }]])

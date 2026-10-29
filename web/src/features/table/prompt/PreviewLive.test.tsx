@@ -82,6 +82,7 @@ function mount(tableForecast: CombatForecast | null = null) {
     ...table,
     card,
     click,
+    card,
     send: (message: ServerMessage): void => void act(() => h.deliver(message)),
     wait: (ms: number): void => void act(() => vi.advanceTimersByTime(ms)),
     /** Chooses a blocker and the attacker it blocks. */
@@ -140,7 +141,7 @@ describe('blocks being chosen', () => {
     t.send(blockers(31, [m1, m2], [t1, t2]))
     t.wait(DEBOUNCE_MS * 5)
     t.block(m1, t1)
-    t.click(screen.getByRole('button', { name: /^Remove the block of/ }))
+    t.click(t.card(m1))
     t.wait(DEBOUNCE_MS * 5)
     expect(t.previews()).toEqual([])
     expect(t.state()).toBeNull()
@@ -164,8 +165,8 @@ describe('blocks being chosen', () => {
     expect(outcome).not.toHaveTextContent(CHECKING_WORDS)
     expect(within(outcome).getByText('You would take 3 damage, from 20 to 17 life.')).toBeInTheDocument()
     expect(t.doomed()).toEqual([t1])
-    expect(t.life(0)).toHaveTextContent('20')
-    expect(t.life(0)).toHaveTextContent('17')
+    expect(t.life(0)).toHaveTextContent('-3')
+    expect(t.life(0)).toHaveAccessibleName('Life would go from 20 to 17')
     // The same facts for a screen reader, in one sentence.
     expect(t.spoken()).toMatch(/^If you block like this: .* would die\. You would take 3 damage\.$/)
   })
@@ -188,7 +189,7 @@ describe('blocks being chosen', () => {
     expect(t.doomed().sort((a, b) => a - b)).toEqual([m2, t2].sort((a, b) => a - b))
 
     // Taking the second block back asks again for the first, and its marks return with the answer.
-    t.click(must(screen.getAllByRole('button', { name: /^Remove the block of/ }).at(-1)))
+    t.click(t.card(m2))
     expect(t.doomed()).toEqual([])
     t.wait(DEBOUNCE_MS)
     expect(t.previews()).toHaveLength(3)

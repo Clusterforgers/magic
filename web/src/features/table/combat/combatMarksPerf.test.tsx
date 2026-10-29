@@ -145,7 +145,7 @@ describe('a block chosen at 12 seats', () => {
     await t.user.click(t.card(attacker))
     expect(t.damage().size).toBe(0)
     faces.clear()
-    await t.user.click(screen.getByRole('button', { name: new RegExp(`^Remove the block of `) }))
+    await t.user.click(t.card(blocker))
     const drawn = redrawn()
     for (const id of marked) expect(drawn).toContain(id)
     expect(drawn.filter((id) => !mayChange.has(id))).toEqual([])

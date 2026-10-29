@@ -99,8 +99,6 @@ describe('a block being made', () => {
     expect(before).toBeGreaterThan(0)
     await t.make(blocker, attacker)
 
-    expect(t.pairs()).toHaveLength(1)
-    expect(t.pairs()[0]).toHaveTextContent(`Your ${t.name(blocker)} blocks Bo's ${t.name(attacker)}`)
     expect(t.pending()).toEqual([
       expect.objectContaining({
         key: `pending-block:${blocker}`,
@@ -132,8 +130,7 @@ describe('a block being made', () => {
     const [attacker] = t.attackers as [ObjectId]
     const forecasted = t.damage()
     await t.make(blocker, attacker)
-    await t.user.click(screen.getByRole('button', { name: `Remove the block of ${t.name(blocker)}` }))
-    expect(t.pairs()).toHaveLength(0)
+    await t.user.click(t.card(blocker))
     expect(t.pending()).toEqual([])
     expect(t.damage()).toEqual(forecasted)
     expect(t.life(0)).not.toBeNull()
@@ -147,16 +144,14 @@ describe('a block being made', () => {
     const [attacker] = t.attackers as [ObjectId]
     await t.make(first, attacker)
     await t.make(second, attacker)
-    expect(t.pairs()).toHaveLength(2)
     expect(t.pending().map((line) => [line.key, line.to])).toEqual([
       [`pending-block:${first}`, `card:${attacker}`],
       [`pending-block:${second}`, `card:${attacker}`],
     ])
-    expect(t.pairs()[1]).toHaveTextContent(`Your ${t.name(second)} blocks Bo's ${t.name(attacker)}`)
-    await t.user.click(screen.getByRole('button', { name: `Remove the block of ${t.name(first)}` }))
+    await t.user.click(t.card(first))
     expect(t.pending().map((line) => line.key)).toEqual([`pending-block:${second}`])
     await t.fellBack()
-    await t.user.click(screen.getByRole('button', { name: `Remove the block of ${t.name(second)}` }))
+    await t.user.click(t.card(second))
     expect(t.pending()).toEqual([])
     expect(must(t.outcome())).toHaveTextContent('If you do not block')
   })
@@ -168,9 +163,10 @@ describe('a block being made', () => {
     await t.make(blocker, first)
     const before = must(t.pending()[0])
     expect(before.to).toBe(`card:${first}`)
-    await t.user.click(screen.getByRole('button', { name: `Change the block of ${t.name(blocker)}` }))
-    const picker = screen.getByRole('group', { name: /may block$/ })
-    await t.user.click(within(picker).getByRole('button', { name: new RegExp(`^${t.name(second)}`) }))
+    // A click on the blocker takes the block back, a second one chooses it again, and the attacker is clicked.
+    await t.user.click(t.card(blocker))
+    await t.user.click(t.card(blocker))
+    await t.user.click(t.card(second))
     const after = must(t.pending()[0])
     expect(after.key).toBe(before.key)
     expect(after.to).toBe(`card:${second}`)
@@ -186,7 +182,6 @@ describe('a block being made', () => {
     expect(must(t.outcome())).toHaveTextContent('If you do not block')
     await t.user.keyboard('{Escape}')
     expect(t.pending()).toEqual([])
-    expect(t.pairs()).toHaveLength(0)
   })
 
   it('is answered as the pairs made, and the lines go with the prompt; the forecast is the table again', async () => {
@@ -228,7 +223,7 @@ describe('a block being made', () => {
     const [attacker] = t.attackers as [ObjectId]
     await t.make(blocker, attacker)
     await t.fellBack()
-    await t.user.click(screen.getByRole('button', { name: `Remove the block of ${t.name(blocker)}` }))
+    await t.user.click(t.card(blocker))
     expect(t.outcome()).toBeNull()
   })
 
@@ -315,12 +310,13 @@ describe('attacks being chosen', () => {
     ])
   })
 
-  it('follows an attacker that is aimed somewhere else in the list under the buttons', async () => {
+  it('follows an attacker that is aimed somewhere else with "All at"', async () => {
     const t = attack()
     const [a] = t.attackers as [ObjectId]
     await t.user.click(t.card(a))
     const before = must(t.pending()[0])
-    await t.user.selectOptions(screen.getByRole('combobox', { name: `Who ${t.name(a)} attacks` }), 'player:3')
+    await t.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), 'player:3')
+    await t.user.click(screen.getByRole('button', { name: 'All at Dee' }))
     const after = must(t.pending()[0])
     expect(after.key).toBe(before.key)
     expect(after.to).toBe('seat:3')
