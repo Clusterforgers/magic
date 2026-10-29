@@ -33,6 +33,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-a), (r2az-b).
 - Statics and layers: (c8ja), (c8jb), (c7l) to (c7n), (c7q), (c7s), (c7e), (o1d), (m4), (r1ab), (r2az-b), (r2az-c), (r2az-g).
 - Compiler wordings, no engine change: (c10) one piece per wording family with (c10s-a) to (c10s-e), (c10d), (c10e) and (c10r), (o2fa) to (o2fd), (c11) and (c11c) layouts, (c9c), (r2dgb), (r2dgc-b), (r2dgc-c), (r1auec), (r1aued).
+- Card sweeps run on the free local model (`propose` with `--jobs`, `--reasoning low`, `--solved-examples 5`, in popularity order); Claude agents implement what the sweeps and `coverage --all` show missing (writers, primitives) and the web.
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
