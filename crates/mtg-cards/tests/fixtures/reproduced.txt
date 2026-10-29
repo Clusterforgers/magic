@@ -179,6 +179,7 @@ Bosh, Iron Golem
 Brain Freeze
 Brainstorm
 Branchblight Stalker
+Brave the Sands
 Breath of Life
 Breezekeeper
 Briarblade Adept
@@ -294,6 +295,7 @@ Courser of Kruphix
 Court of Grace
 Crack in Time
 Cram Session
+Crash
 Crawlspace
 Creeping Tar Pit
 Crib Swap
@@ -684,6 +686,7 @@ Heronblade Elite
 Hexavus
 Hidden Dragonslayer
 Hidden Hideout
+High Ground
 Highspire Artisan
 History of Benalia
 Hoarder's Greed
@@ -970,6 +973,7 @@ New Horizons
 Niblis of Frost
 Nick Valentine, Private Eye
 Night Clubber
+Night Market Guard
 Nighthawk Scavenger
 Nightmare
 Nightscape Familiar
@@ -1306,6 +1310,7 @@ Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra
 Snubhorn Sentry
+Snuff Out
 Sodden Verdure
 Sol Ring
 Solstice Zealot
@@ -1530,6 +1535,7 @@ Tuskguard Captain
 Twilight Mire
 Twincast
 Twinflame
+Two-Headed Giant of Foriys
 Tyranid Prime
 Tyrant Guard
 Tyrant's Familiar

@@ -12,4 +12,9 @@ object: ObjectId,
 /**
  * Attackers it may block.
  */
-can_block: Array<ObjectId>, };
+can_block: Array<ObjectId>, 
+/**
+ * How many of them it may block beyond the first ("can block an additional creature each combat"): the
+ * declaration names it once for each. Left out while it is 0.
+ */
+extra?: number, };

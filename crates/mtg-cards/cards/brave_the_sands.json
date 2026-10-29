@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4e89bd75-f59d-4f08-be51-5660fbbba3c2",
+  "name": "Brave the Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brave the Sands",
+      "oracle_fingerprint": "033f3bf1011c0d1600784fb0031d7f3d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "BlocksAdditional": 1 }]
+          }
+        }
+      ]
+    }
+  ]
+}

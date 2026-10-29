@@ -905,6 +905,44 @@ impl<'a> Walker<'a> {
         self.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost, required);
     }
 
+    /// A cast in place of the mana cost: its condition, read with no targets, and the cost paid instead, if any.
+    fn w14c_free_cast(&mut self, condition: Option<&Condition>, cost: Option<&Cost>) {
+        self.scope = Scope::new(&[], false);
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+        if let Some(cost) = cost {
+            self.w14c_alternative_cost(cost);
+        }
+    }
+
+    /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
+    /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
+    fn w14c_alternative_cost(&mut self, cost: &Cost) {
+        self.at("cost", |w| w.cost(cost));
+        if cost.0.is_empty() {
+            self.problem("an alternative cost names what is paid; leave it out for a free cast");
+        }
+        if cost.has_x() {
+            self.problem("an alternative cost has no X");
+        }
+        let by_the_source = cost.0.iter().any(|item| {
+            matches!(
+                item,
+                CostItem::Tap
+                    | CostItem::Untap
+                    | CostItem::SacrificeSelf
+                    | CostItem::ExileSelf
+                    | CostItem::DiscardSelf
+                    | CostItem::OneOf(_)
+            )
+        });
+        if by_the_source {
+            self.problem("an alternative cost is paid by the caster with no choice and not by the spell itself");
+        }
+        self.parts_a_spell_cost_does_not_pay("Ability", "FreeCast.Cost", cost, false);
+    }
+
     /// The parts of the cost of a keyword of a spell (kicker, buyback, entwine, flashback, evoke, madness) that the
     /// announcement of the spell does not pay: counters removed from the source, which a card in a hand or a graveyard
     /// has none of, and an amount that is the X announced, which the cost of a spell does not count. They are named
@@ -1156,7 +1194,9 @@ impl<'a> Walker<'a> {
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
             }
-            Modification::MinBlockers(count) | Modification::MaxBlockers(count) => {
+            Modification::MinBlockers(count)
+            | Modification::MaxBlockers(count)
+            | Modification::BlocksAdditional(count) => {
                 if *count < 1 {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
@@ -2765,11 +2805,8 @@ impl Walker<'_> {
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
-            Ability::FreeCast { condition } => {
-                w.scope = Scope::new(&[], false);
-                if let Some(condition) = condition {
-                    w.at("condition", |w| w.condition(condition));
-                }
+            Ability::FreeCast { condition, cost } => {
+                w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {

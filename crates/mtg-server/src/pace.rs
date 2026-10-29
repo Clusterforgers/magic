@@ -1173,10 +1173,12 @@ mod tests {
                 BlockerOption {
                     object: ObjectId(1),
                     can_block: vec![ObjectId(9)],
+                    extra: 0,
                 },
                 BlockerOption {
                     object: ObjectId(2),
                     can_block: vec![ObjectId(9)],
+                    extra: 0,
                 },
             ],
             min_blockers: Vec::new(),

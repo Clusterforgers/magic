@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 37] = [
+const TEMPLATES: [Template; 39] = [
     super::w13b_mill_rad::w13b_tapped_for_counters,
     super::w9d_exert::w9d_exert,
     super::c11b_once::c11b_once,
@@ -80,6 +80,8 @@ const TEMPLATES: [Template; 37] = [
     super::untap_rules::doesnt_untap,
     evasion::block_only,
     free_cast,
+    super::w14c_alt_costs::w14c_alt_cost,
+    super::w14c_block_capacity::w14c_blocks_additional,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -199,6 +201,7 @@ fn free_cast(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("without paying its mana cost")?;
     Some(Ability::FreeCast {
         condition: Some(condition),
+        cost: None,
     })
 }
 
@@ -1167,8 +1170,9 @@ pub(super) fn statics(
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
-    let group =
+    let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
+    group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {
@@ -1244,12 +1248,6 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             per,
             condition,
         } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
-        Ability::FreeCast {
-            condition: Some(held),
-        } => control_texts(held)
-            .into_iter()
-            .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))
-            .collect(),
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..
@@ -1877,6 +1875,9 @@ pub(super) fn predicate(
         }
         [Modification::MaxBlockers(1)] => {
             return Some("can't be blocked by more than one creature".to_owned());
+        }
+        [more @ Modification::BlocksAdditional(_)] => {
+            return super::w14c_block_capacity::w14c_blocks_additional_text(more);
         }
         [Modification::MinBlockers(count @ 2..)] => {
             return Some(format!(

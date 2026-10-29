@@ -108,6 +108,7 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
     let blockers = vec![BlockerOption {
         object: a,
         can_block: vec![b],
+        extra: 0,
     }];
     assert_eq!(
         serde_json::to_value(BlockOptions {

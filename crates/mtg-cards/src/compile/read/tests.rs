@@ -385,6 +385,8 @@ mod w13a_writers;
 mod w13b_mill_rad;
 mod w14a_leftovers;
 mod w14b_incubate;
+mod w14c_alt_costs;
+mod w14c_block_capacity;
 mod w2b_each_of;
 mod w2b_you_and;
 mod w2c_counts;

@@ -280,6 +280,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             blockers: vec![BlockerOption {
                 object: a,
                 can_block: vec![b],
+                extra: 0,
             }],
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
@@ -290,6 +291,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             blockers: vec![BlockerOption {
                 object: a,
                 can_block: vec![b],
+                extra: 0,
             }],
             min_blockers: vec![(b, 2)],
             max_blockers: Vec::new(),

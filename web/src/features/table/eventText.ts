@@ -94,6 +94,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('MaxBlockers' in modification) {
     return `can't be blocked by more than ${modification.MaxBlockers} ${modification.MaxBlockers === 1 ? 'creature' : 'creatures'}`
   }
+  if ('BlocksAdditional' in modification) {
+    const more = modification.BlocksAdditional
+    return `can block an additional ${more === 1 ? 'creature' : `${more} creatures`} each combat`
+  }
   if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
   if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
   if ('SetTypes' in modification) {

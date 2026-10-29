@@ -614,8 +614,9 @@ impl Driver {
             let free = options
                 .blockers
                 .iter()
-                .map(|b| b.object)
-                .filter(|o| !chosen.iter().any(|(c, _)| c == o));
+                // A creature that can block an additional creature is named once for each attacker it blocks.
+                .filter(|b| chosen.iter().filter(|(c, _)| *c == b.object).count() <= b.extra)
+                .map(|b| b.object);
             let blocker_id = self.find(free, blocker, "legal blockers")?;
             let can_block = options
                 .blockers
