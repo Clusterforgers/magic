@@ -3,7 +3,8 @@ import type { KeyboardEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { ManaOption, ObjectId } from '@/protocol/generated'
-import { ManaDot } from '../ManaPool'
+import { givesOfOptions } from '../manaMade'
+import { ManaMade, madeWords } from '../ManaMade'
 
 /** Props of `ManaChoice`. */
 export interface ManaChoiceProps {
@@ -38,7 +39,9 @@ export function ManaChoice({ card, options, onPick, onCancel }: ManaChoiceProps)
     >
       <span className="text-sm">Tap {name} for</span>
       {options.map((option, index) => {
-        const colour = option.produces.toLowerCase()
+        // The mana of this ability with its amount: "red", "2 colorless", "white and black".
+        const gives = { ...givesOfOptions([option]), cost: [], sacrifice: false }
+        const colour = madeWords(gives)
         // Two abilities of one colour are told apart by their place on the card.
         const label = same(option) > 1 ? `${colour} (ability ${option.source.ability + 1})` : colour
         return (
@@ -50,7 +53,7 @@ export function ManaChoice({ card, options, onPick, onCancel }: ManaChoiceProps)
             aria-label={`Add ${label} mana`}
             onClick={() => onPick(option)}
           >
-            <ManaDot type={option.produces} />
+            <ManaMade gives={gives} sizeClass="size-4 text-[0.6875rem]" />
             {label}
           </Button>
         )

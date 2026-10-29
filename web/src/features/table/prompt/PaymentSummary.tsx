@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import type { ManaCost, ManaPool, ManaType, ObjectId } from '@/protocol/generated'
 import { costPips } from '../cardModel'
+import { madeCost } from '../manaMade'
 import { LIFE_PER_SYMBOL } from '../manaSymbols'
 import { ManaDot } from '../ManaPool'
 import { ManaPips } from '../ManaPips'
@@ -12,7 +13,8 @@ import type { LifeChoice, Spend } from './payment'
 
 const PIP_SIZE = 'size-5 text-xs'
 
-function Row({ label, children }: { label: string; children: ReactNode }) {
+/** One labelled line of the payment: a short label and its content. */
+export function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div role="group" aria-label={label} className="flex flex-wrap items-center gap-x-3 gap-y-1">
       <span aria-hidden="true" className="w-24 shrink-0 text-xs text-muted-foreground">
@@ -23,7 +25,8 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
   )
 }
 
-const Quiet = ({ children }: { children: ReactNode }) => (
+/** A muted word where a line has nothing to show. */
+export const Quiet = ({ children }: { children: ReactNode }) => (
   <span className="text-xs text-muted-foreground">{children}</span>
 )
 
@@ -59,6 +62,8 @@ export interface PaymentSummaryProps {
   onClear(): void
   /** Present when the cost has a symbol that life can pay. */
   life?: LifeSummary
+  /** The row of mana sources, drawn between the floating mana and the payment. */
+  sources?: ReactNode
 }
 
 /**
@@ -78,6 +83,7 @@ export function PaymentSummary({
   onRemove,
   onClear,
   life,
+  sources,
 }: PaymentSummaryProps) {
   const root = useRef<HTMLDivElement>(null)
   const refocus = useRef<number | null>(null)
@@ -137,6 +143,7 @@ export function PaymentSummary({
         )}
       </Row>
       {life === undefined ? null : <LifeRow life={life} cost={cost} />}
+      {sources}
       <Row label="Paying with">
         {empty ? <Quiet>nothing yet</Quiet> : null}
         {spends.map((spend, index) => {
@@ -195,6 +202,17 @@ export function PaymentSummary({
               Clear
             </Button>
           </>
+        )}
+      </Row>
+      <Row label="Made so far">
+        {empty ? (
+          <Quiet>nothing yet</Quiet>
+        ) : (
+          <ManaPips
+            pips={costPips(madeCost(spends.flatMap(madeOf)))}
+            sizeClass={PIP_SIZE}
+            label="Mana made"
+          />
         )}
       </Row>
       <Row label="Still owed">

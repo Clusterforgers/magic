@@ -1,3 +1,4 @@
+import { Lock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ManaPool as ManaPoolValue, ManaType } from '@/protocol/generated'
 import { manaLetter } from './cardModel'
@@ -38,10 +39,22 @@ export function manaHeld(pool: ManaPoolValue): Array<{ type: ManaType; count: nu
   })
 }
 
-/** The mana a seat has floating, by kind, each in words for a screen reader; an empty pool draws nothing. */
+/** The mana of a pool with a restriction (Mishra's Workshop's), by kind in the order of the wire. */
+export function manaRestricted(pool: ManaPoolValue): Array<{ type: ManaType; count: number }> {
+  return TYPES.flatMap((type) => {
+    const count = (pool.restricted ?? []).filter((entry) => entry.mana === type).length
+    return count > 0 ? [{ type, count }] : []
+  })
+}
+
+/**
+ * The mana a seat has floating, by kind: the symbol and `×2` for the amount, each in words for a screen reader. Mana
+ * that may be spent only on some things comes after the rest with a lock on it. An empty pool draws nothing.
+ */
 export function ManaPool({ pool, className }: { pool: ManaPoolValue; className?: string }) {
   const held = manaHeld(pool)
-  if (held.length === 0) return null
+  const restricted = manaRestricted(pool)
+  if (held.length === 0 && restricted.length === 0) return null
   return (
     <div
       role="group"
@@ -49,13 +62,31 @@ export function ManaPool({ pool, className }: { pool: ManaPoolValue; className?:
       className={cn('flex flex-wrap items-center gap-x-2 gap-y-1 text-sm', className)}
     >
       {held.map(({ type, count }) => (
-        <span key={type} className="inline-flex items-center gap-1">
+        <span key={type} data-mana={type} className="inline-flex items-center gap-0.5">
           <ManaDot type={type} />
           <span className="font-semibold tabular-nums" aria-hidden="true">
-            {count}
+            ×{count}
           </span>
           <span className="sr-only">
             {count} {type.toLowerCase()}
+          </span>
+        </span>
+      ))}
+      {restricted.map(({ type, count }) => (
+        <span
+          key={`restricted-${type}`}
+          data-mana={type}
+          data-restricted="true"
+          title="Restricted mana: it can be spent only on what its source allows"
+          className="inline-flex items-center gap-0.5 rounded-full border border-dashed border-foreground/40 px-1"
+        >
+          <ManaDot type={type} />
+          <Lock aria-hidden="true" className="size-3 text-muted-foreground" />
+          <span className="font-semibold tabular-nums" aria-hidden="true">
+            ×{count}
+          </span>
+          <span className="sr-only">
+            {count} {type.toLowerCase()}, restricted
           </span>
         </span>
       ))}
