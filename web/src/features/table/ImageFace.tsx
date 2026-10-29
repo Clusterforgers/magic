@@ -6,7 +6,7 @@ import { cardImageFallbackUrl, cardImageUrl, faceOf } from '@/features/cards/ima
 import type { ImageSize, ImageSource } from '@/features/cards/images'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
-import { counterLabels, loyaltyOf, statusLabels } from './cardModel'
+import { counterLabels, loyaltyOf, statusChips } from './cardModel'
 import type { CombatRole, Links } from './cardModel'
 import { SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
@@ -56,7 +56,7 @@ function Overlay({ object, role, size, turned, note, links }: OverlayProps) {
   const printed = usePrinted(object)
   const badge = statBadge(object, printed, loyaltyOf(object))
   const manual = object.manual ?? []
-  const labels = statusLabels(object, role).filter((label) => !(turned && label === 'Tapped'))
+  const chips = statusChips(object, role).filter((chip) => !(turned && chip.label === 'Tapped'))
   return (
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">
       <span
@@ -65,12 +65,15 @@ function Overlay({ object, role, size, turned, note, links }: OverlayProps) {
           turned ? ART_BOX.turned : cn(ART_BOX.upright, 'overflow-x-visible overflow-y-clip'),
         )}
       >
-        {labels.map((label) => (
+        {chips.map(({ label, tone }) => (
           <span
             key={label}
+            data-slot="card-status"
+            data-tone={tone}
             className={cn(
               CHIP,
-              'max-w-none bg-foreground font-medium whitespace-nowrap text-background',
+              'max-w-none font-medium whitespace-nowrap',
+              tone === 'danger' ? 'bg-destructive text-background' : 'bg-foreground text-background',
               text,
             )}
           >
@@ -193,8 +196,20 @@ export function ImageFace({ source, box, turned, stacked, imageSize, children, .
   )
 }
 
-/** A card the viewer may not see, or one lying face down: the neutral back, turned when tapped. */
-export function BackFace({ box, turned, label }: { box: string | null; turned: boolean; label: string }) {
+/** A card the viewer may not see, or one lying face down: the neutral back, turned when tapped; a face-down one is named. */
+export function BackFace({
+  box,
+  turned,
+  label,
+  faceDown = false,
+  size = 'normal',
+}: {
+  box: string | null
+  turned: boolean
+  label: string
+  faceDown?: boolean
+  size?: CardSize
+}) {
   return (
     <span
       data-slot="card-picture"
@@ -209,6 +224,18 @@ export function BackFace({ box, turned, label }: { box: string | null; turned: b
         label={label}
         className={turned ? 'h-(--card-w) w-[calc(var(--card-w)*5/7)] rotate-90' : 'size-full'}
       />
+      {faceDown ? (
+        <span
+          data-slot="card-status"
+          className={cn(
+            CHIP,
+            'pointer-events-none absolute top-[44%] left-1/2 max-w-none -translate-x-1/2 bg-foreground font-medium whitespace-nowrap text-background',
+            SIZE[size].text,
+          )}
+        >
+          Face down
+        </span>
+      ) : null}
     </span>
   )
 }

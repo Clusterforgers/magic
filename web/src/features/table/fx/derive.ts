@@ -10,8 +10,7 @@
  */
 import { sameJson } from '@/play/view'
 import type { CombatView, EventView, ObjectId, ObjectView, StateView } from '@/protocol/generated'
-import { rowOf } from '../cardModel'
-import { splitBattlefield } from '../selectors'
+import { rowHolding, splitBattlefield } from '../selectors'
 import type { DiedEffect, Effect } from './model'
 
 type Objects = Readonly<Record<ObjectId, ObjectView>>
@@ -77,7 +76,7 @@ const inGraveyard = (object: ObjectView): boolean =>
 
 /** The next card after `was` in its row before the batch that is still in that row after it, else null. */
 function stillStandingAfter(before: Moment, after: Moment, was: ObjectView): ObjectId | null {
-  const row = rowOf(was)
+  const row = rowHolding(before.view, before.objectsById, was)
   const old = splitBattlefield(before.view, before.objectsById).get(was.controller)?.[row] ?? []
   const now = new Set(splitBattlefield(after.view, after.objectsById).get(was.controller)?.[row] ?? [])
   return old.slice(old.indexOf(was.id) + 1).find((id) => now.has(id)) ?? null
@@ -148,7 +147,7 @@ export function deriveEffects(before: Moment, after: Moment, events: readonly Ev
       kind: 'died',
       object: id,
       seat: was.controller,
-      row: rowOf(was),
+      row: rowHolding(before.view, before.objectsById, was),
       snapshot: was,
       before: stillStandingAfter(before, after, was),
       damage: hurt.get(id) ?? 0,

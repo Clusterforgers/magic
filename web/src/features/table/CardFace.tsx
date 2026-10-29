@@ -10,7 +10,7 @@ import {
   keywordLine,
   loyaltyOf,
   powerToughness,
-  statusLabels,
+  statusChips,
   typeLine,
 } from './cardModel'
 import type { CombatRole, Links } from './cardModel'
@@ -18,6 +18,8 @@ import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
 import { ManaPips } from './ManaPips'
+import { statBadge } from './overlay'
+import { usePrinted } from './printed'
 import type { CardNote } from './prompt/marks'
 
 interface CardFaceProps {
@@ -67,6 +69,8 @@ export function CardFace(props: CardFaceProps) {
         box={box}
         turned={turned}
         label={object.face_down === true ? 'Face-down card' : 'Hidden card'}
+        faceDown={object.face_down === true}
+        size={size}
       />
     )
   const source = imageSourceOf(object)
@@ -110,11 +114,12 @@ export function TextFace({
   const turned = object.permanent?.tapped === true && !upright
   const frame = frameOf(object)
   const full = size !== 'compact' && !turned
-  const labels = statusLabels(object, role)
+  const chips = statusChips(object, role)
   const keywords = keywordLine(object)
   const pt = powerToughness(object)
   const counters = counterLabels(object)
   const loyalty = loyaltyOf(object)
+  const modified = statBadge(object, usePrinted(object), loyalty)?.modified ?? null
   const nameLines = nameLinesOf(turned, full, size)
   return (
     <span
@@ -145,11 +150,14 @@ export function TextFace({
         data-slot="card-art"
         className="mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm bg-foreground/5 p-0.5"
       >
-        {labels.map((label) => (
+        {chips.map(({ label, tone }) => (
           <span
             key={label}
+            data-slot="card-status"
+            data-tone={tone}
             className={cn(
-              'h-fit rounded-sm bg-foreground px-1 leading-snug font-medium text-background',
+              'h-fit rounded-sm px-1 leading-snug font-medium text-background',
+              tone === 'danger' ? 'bg-destructive' : 'bg-foreground',
               classes.text,
             )}
           >
@@ -219,9 +227,15 @@ export function TextFace({
       ) : (
         <span
           data-slot={pt === null ? 'card-loyalty' : undefined}
+          data-modified={modified ?? undefined}
           className={cn(
             classes.name,
-            'self-end rounded-tl-md bg-foreground px-1.5 leading-snug font-bold text-background tabular-nums',
+            'self-end rounded-tl-md px-1.5 leading-snug font-bold text-background tabular-nums',
+            modified === 'up'
+              ? 'bg-support-verified'
+              : modified === 'down'
+                ? 'bg-destructive'
+                : 'bg-foreground',
           )}
         >
           {pt ?? loyalty}

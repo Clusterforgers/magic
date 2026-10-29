@@ -234,12 +234,16 @@ export function counterWords(object: ObjectView): string[] {
   )
 }
 
-/** What a permanent is attached to and what is attached to it, by name. */
+/** What a permanent is attached to, copies or shows as another face, and what is attached to it, by name. */
 export interface Links {
-  /** The permanent an Aura or Equipment is attached to. */
+  /** What an Aura or Equipment is attached to: a permanent, or the player a Curse enchants. */
   host?: string | undefined
   /** The permanents attached to it. */
   attached?: readonly string[] | undefined
+  /** The object it is a copy of, while the viewer can see that object. */
+  copyOf?: string | undefined
+  /** The front face of a card the permanent shows as another face. */
+  frontFace?: string | undefined
 }
 
 /** "attached to Grizzly Bears" for an Aura or Equipment; "Pacifism and Bonesplitter attached" for its host. */
@@ -260,29 +264,78 @@ export function abilityWords(ability: AbilityDef): string {
   return `Tap: add ${ability.Mana.produces.toLowerCase()} mana`
 }
 
-/** The short labels of a permanent's state, as drawn on the card face. */
-export function statusLabels(object: ObjectView, role: CombatRole | null): string[] {
-  const labels: string[] = []
-  const state = object.permanent
-  if (state?.tapped === true) labels.push('Tapped')
-  if (state?.summoning_sick === true) labels.push('Sick')
-  if (state !== null && state.damage > 0) labels.push(`${state.damage} dmg`)
-  if (role === 'attacking') labels.push('Attacking')
-  if (role === 'blocked') labels.push('Blocked')
-  if (role === 'blocking') labels.push('Blocking')
-  return labels
+/** How a state chip reads: plain, or a warning. */
+export type ChipTone = 'plain' | 'danger'
+
+/** One short state of a permanent, as a chip on its face. */
+export interface StatusChip {
+  label: string
+  tone: ChipTone
 }
 
-/** The same state in full words, for a screen reader and the preview. */
-export function statusWords(object: ObjectView, role: CombatRole | null): string[] {
+/** Whether the damage marked on a permanent is as much as its toughness, which is above zero: it will be destroyed. */
+export function isLethal(object: ObjectView): boolean {
+  const damage = object.permanent?.damage ?? 0
+  return damage > 0 && object.toughness !== null && object.toughness > 0 && damage >= object.toughness
+}
+
+/** Whether a permanent shows the back of its card: transformed, flipped, melded or a modal double-faced card cast as its back. */
+export function showsBackFace(object: ObjectView): boolean {
+  return object.zone === 'Battlefield' && (object.face ?? 0) > 0
+}
+
+/** The cards a merged permanent holds; 1 for any other object. */
+const mergedCount = (object: ObjectView): number => object.merged?.length ?? 1
+
+/** The chips of a permanent's state, as drawn on the card face. */
+export function statusChips(object: ObjectView, role: CombatRole | null): StatusChip[] {
+  const chips: StatusChip[] = []
+  const add = (label: string, tone: ChipTone = 'plain'): void => {
+    chips.push({ label, tone })
+  }
+  const state = object.permanent
+  if (state?.tapped === true) add('Tapped')
+  if (state?.summoning_sick === true) add('Sick')
+  if (state !== null && state.damage > 0) add(`${state.damage} dmg`, isLethal(object) ? 'danger' : 'plain')
+  if (role === 'attacking') add('Attacking')
+  if (role === 'blocked') add('Blocked')
+  if (role === 'blocking') add('Blocking')
+  if (object.face_down === true) add('Face down')
+  if (showsBackFace(object)) add('Back face')
+  if (object.copy !== undefined) add('Copy')
+  if (mergedCount(object) > 1) add(`Merged ×${mergedCount(object)}`)
+  if (state?.prepared === true) add('Prepared')
+  if (state?.level !== undefined) add(`Level ${state.level}`)
+  return chips
+}
+
+/** The short labels of a permanent's state, as drawn on the card face. */
+export function statusLabels(object: ObjectView, role: CombatRole | null): string[] {
+  return statusChips(object, role).map((chip) => chip.label)
+}
+
+/** The same state in full words, for a screen reader and the preview; `links` names what a copy copies. */
+export function statusWords(object: ObjectView, role: CombatRole | null, links: Links = {}): string[] {
   const words: string[] = []
   const state = object.permanent
   if (state?.tapped === true) words.push('tapped')
   if (state?.summoning_sick === true) words.push('summoning sick')
-  if (state !== null && state.damage > 0) words.push(`${state.damage} damage`)
+  if (state !== null && state.damage > 0) {
+    words.push(`${state.damage} damage${isLethal(object) ? ', enough to destroy it' : ''}`)
+  }
   if (role === 'attacking') words.push('attacking')
   if (role === 'blocked') words.push('attacking, blocked')
   if (role === 'blocking') words.push('blocking')
+  if (object.face_down === true) words.push('face down')
+  if (showsBackFace(object)) {
+    words.push(links.frontFace === undefined ? 'back face' : `back face of ${links.frontFace}`)
+  }
+  if (object.copy !== undefined) words.push(links.copyOf === undefined ? 'copy' : `copy of ${links.copyOf}`)
+  if (mergedCount(object) > 1) {
+    words.push(`merged from ${(object.merged ?? []).map((part) => part.name).join(', ')}`)
+  }
+  if (state?.prepared === true) words.push('prepared')
+  if (state?.level !== undefined) words.push(`level ${state.level}`)
   return words
 }
 
@@ -302,7 +355,7 @@ export function cardLabel(object: ObjectView, role: CombatRole | null, links: Li
   }
   parts.push(...keywordNames(object).map((name) => name.toLowerCase()))
   parts.push(...object.abilities.map(abilityWords))
-  parts.push(...statusWords(object, role))
+  parts.push(...statusWords(object, role, links))
   parts.push(...counterWords(object), ...linkWords(links))
   return parts.join(', ')
 }
