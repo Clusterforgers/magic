@@ -175,7 +175,7 @@ export function LineRow({ line, format, room, check, outside = null, actions }: 
           data-slot="line-outside"
           className="order-5 col-span-full flex items-start gap-1 text-xs text-destructive sm:order-none sm:col-span-3 sm:col-start-2"
         >
-          <TriangleAlertIcon aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+          <TriangleAlertIcon aria-hidden="true" className="mt-1 size-4 shrink-0" />
           {outside}
         </p>
       )}
