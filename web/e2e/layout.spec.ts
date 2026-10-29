@@ -58,7 +58,7 @@ async function createFromForm(page: Page, seats: number): Promise<void> {
   await page.goto('/new')
   await page.getByRole('radio', { name: /^Normal/ }).check()
   await expect(page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
-  await page.getByLabel('Seats').selectOption(String(seats))
+  await page.getByLabel('Seats').fill(String(seats))
   await page.getByLabel('Your name').fill(unique('Host'))
   await page.getByRole('button', { name: 'Create game' }).click()
   await expect(page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()

@@ -1,6 +1,6 @@
 /** The address parameters of `/dev/lobby`, read leniently: whatever makes no sense is ignored. */
 export interface DevLobbySearch {
-  /** How many seats the table has, 2 to 12; 4 when missing or wrong. */
+  /** How many seats the table has, 2 or more; 4 when missing or wrong. */
   seats: number
   /** The seats that have pressed Ready. */
   ready: number[]
@@ -24,7 +24,6 @@ export interface DevLobbySearch {
 }
 
 const FEWEST_SEATS = 2
-const MOST_SEATS = 12
 
 const whole = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isInteger(value) && value >= 0 ? value : undefined
@@ -46,7 +45,7 @@ function seatList(value: unknown, seats: number): number[] {
 /** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=&format=&rules=`; the router has already parsed numbers and lists. */
 export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySearch {
   const asked = whole(search.seats)
-  const seats = asked === undefined || asked < FEWEST_SEATS || asked > MOST_SEATS ? 4 : asked
+  const seats = asked === undefined || asked < FEWEST_SEATS ? 4 : asked
   const me = whole(search.me)
   const nodeck = seatList(search.nodeck, seats)
   return {

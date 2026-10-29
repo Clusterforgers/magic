@@ -30,7 +30,6 @@ use thiserror::Error;
 
 pub use fingerprint::{DeckFingerprint, FINGERPRINT_VERSION, FingerprintError};
 
-use crate::api::MAX_SEATS;
 use crate::cards::with_printings;
 use crate::demo;
 
@@ -59,14 +58,6 @@ impl FormatKind {
         [FormatKind::Normal, FormatKind::Commander]
             .into_iter()
             .find(|kind| kind.as_str() == key)
-    }
-
-    /// The most seats a game of this format has; every format has at least two.
-    pub const fn max_seats(self) -> usize {
-        match self {
-            FormatKind::Normal => MAX_SEATS,
-            FormatKind::Commander => 6,
-        }
     }
 
     /// The engine's rules of the format.
@@ -511,6 +502,9 @@ mod tests {
     #[case::three_seats(1, &["mono-red", "mono-white", "mono-green"])]
     #[case::mirror(42, &["mono-white", "mono-white"])]
     #[case::twelve_seats(7, &["mono-green"; 12])]
+    #[case::thirteen_seats(8, &["mono-red"; 13])]
+    #[case::twenty_four_seats(9, &["mono-white"; 24])]
+    #[case::sixty_four_seats(10, &["mono-green"; 64])]
     #[case::big_seed(u64::MAX, &["mono-green", "mono-red"])]
     #[case::seed_past_f64(9_007_199_254_740_993, &["mono-red", "mono-green"])]
     fn recipes_round_trip_through_json_and_rebuild_the_same_game(
@@ -986,20 +980,15 @@ mod tests {
     }
 
     #[rstest]
-    #[case::normal("normal", Some(FormatKind::Normal), MAX_SEATS)]
-    #[case::commander("commander", Some(FormatKind::Commander), 6)]
-    #[case::unknown("modern", None, 0)]
-    #[case::capitals("Commander", None, 0)]
-    #[case::empty("", None, 0)]
-    fn a_format_is_named_by_its_wire_key_and_limits_its_table(
-        #[case] key: &str,
-        #[case] expected: Option<FormatKind>,
-        #[case] most: usize,
-    ) {
+    #[case::normal("normal", Some(FormatKind::Normal))]
+    #[case::commander("commander", Some(FormatKind::Commander))]
+    #[case::unknown("modern", None)]
+    #[case::capitals("Commander", None)]
+    #[case::empty("", None)]
+    fn a_format_is_named_by_its_wire_key(#[case] key: &str, #[case] expected: Option<FormatKind>) {
         assert_eq!(FormatKind::parse(key), expected);
         if let Some(kind) = expected {
             assert_eq!(kind.as_str(), key);
-            assert_eq!(kind.max_seats(), most);
             assert_eq!(kind.rules().name(), key);
             let stored = serde_json::to_value(kind).unwrap();
             assert_eq!(stored, json!(key));
@@ -1059,6 +1048,11 @@ mod tests {
     #[case::three(3)]
     #[case::four(4)]
     #[case::six(6)]
+    #[case::eight(8)]
+    #[case::twelve(12)]
+    #[case::thirteen(13)]
+    #[case::twenty_four(24)]
+    #[case::sixty_four(64)]
     fn a_commander_recipe_rebuilds_the_game_with_each_seats_commander_in_its_command_zone(
         #[case] seats: usize,
     ) {
@@ -1143,6 +1137,9 @@ mod tests {
     #[case::three(3)]
     #[case::four(4)]
     #[case::six(6)]
+    #[case::twelve(12)]
+    #[case::twenty_four(24)]
+    #[case::sixty_four(64)]
     fn seats_without_a_deck_hold_a_stand_in_the_format_accepts(#[case] seats: usize) {
         let stand_in = DeckRef::Demo {
             id: demo::COMMANDER_STAND_IN.into(),

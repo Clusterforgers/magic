@@ -1,6 +1,6 @@
 // Goal: the form model starts from sensible defaults, stays between 2 and 12 seats, judges names exactly as the server does, and always builds a request body of the documented shape.
 import { describe, expect, it } from 'vitest'
-import { MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS } from '@/lib/limits'
+import { MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
 import { DECKS } from '@/test-utils/decks'
 import {
   addSeat,
@@ -13,6 +13,7 @@ import {
   problemsOf,
   removeSeat,
   resizeSeats,
+  seatsTyped,
   toRequest,
 } from './form'
 import type { Draft } from './form'
@@ -27,7 +28,7 @@ const grown = (to: number, decks = DECKS): Draft => {
   return draft
 }
 
-const seatCounts = Array.from({ length: MAX_SEATS - MIN_SEATS + 1 }, (_, i) => MIN_SEATS + i)
+const seatCounts = [2, 3, 4, 8, 12, 13, 24, 64]
 
 describe('the starting form', () => {
   it('has two seats named Player 1 and Player 2 on different decks', () => {
@@ -91,9 +92,8 @@ describe('adding and removing seats', () => {
     ])
   })
 
-  it(`does not grow past ${MAX_SEATS} seats`, () => {
-    const full = grown(MAX_SEATS)
-    expect(addSeat(full, DECKS)).toBe(full)
+  it.each(seatCounts)('grows past %i seats: no count is the most', (count) => {
+    expect(addSeat(grown(count), DECKS).seats).toHaveLength(count + 1)
   })
 
   it(`does not shrink below ${MIN_SEATS} seats`, () => {
@@ -197,13 +197,33 @@ describe('problemsOf', () => {
 describe('resizeSeats', () => {
   it.each(seatCounts)('makes exactly %i seats, from either side', (count) => {
     expect(resizeSeats(defaultDraft(DECKS), DECKS, count).seats).toHaveLength(count)
-    expect(resizeSeats(grown(MAX_SEATS), DECKS, count).seats).toHaveLength(count)
+    expect(resizeSeats(grown(64), DECKS, count).seats).toHaveLength(count)
   })
 
-  it.each([-3, 0, 1, 99, 2.9, Number.NaN])('keeps %s between the fewest and the most seats', (count) => {
-    const seats = resizeSeats(defaultDraft(DECKS), DECKS, count).seats.length
-    expect(seats).toBeGreaterThanOrEqual(MIN_SEATS)
-    expect(seats).toBeLessThanOrEqual(MAX_SEATS)
+  it.each([-3, 0, 1, 2.9, Number.NaN, Number.POSITIVE_INFINITY])(
+    'keeps %s at the fewest seats or as it was',
+    (count) => {
+      const seats = resizeSeats(defaultDraft(DECKS), DECKS, count).seats.length
+      expect(seats).toBe(MIN_SEATS)
+    },
+  )
+
+  it.each([99, 400])('makes %i seats: there is no most', (count) => {
+    expect(resizeSeats(defaultDraft(DECKS), DECKS, count).seats).toHaveLength(count)
+  })
+
+  it.each([
+    ['20', 20],
+    [' 7 ', 7],
+    ['2', 2],
+    ['1', null],
+    ['0', null],
+    ['', null],
+    ['2.5', null],
+    ['-4', null],
+    ['abc', null],
+  ])('reads the seat field text %j as %s', (text, count) => {
+    expect(seatsTyped(text)).toBe(count)
   })
 
   it('keeps what was typed in the seats that stay, and drops the last ones', () => {

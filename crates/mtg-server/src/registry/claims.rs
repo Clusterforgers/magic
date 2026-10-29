@@ -261,7 +261,8 @@ impl Registry {
             let entry = games.get(&game).ok_or(TableError::NotFound)?;
             match entry.seats.get(seat.index()) {
                 Some(slot) if slot.state == SeatState::Claimed => slot.name.clone(),
-                _ => return Err(TableError::NotClaimed),
+                Some(_) => return Err(TableError::NotClaimed),
+                None => return Err(TableError::NotFound),
             }
         };
         match table.handle.vacate(seat).await {
