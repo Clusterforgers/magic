@@ -97,6 +97,7 @@ const RUNS: &[&str] = &[
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
     "Amount.Destroyed",
+    "Amount.Exiled",
     "Amount.PhasedOut",
     "Amount.Distinct",
     "Amount.DieResult",

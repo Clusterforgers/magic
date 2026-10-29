@@ -252,6 +252,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
         | Amount::Destroyed(_)
+        | Amount::Exiled(_)
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
         | Amount::Triggering => Traits::NONE,

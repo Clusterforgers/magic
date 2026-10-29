@@ -185,6 +185,7 @@ Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
 Brigid's Command
+Brimaz, Blight of Oreskos
 Brimstone Vandal
 Brion Stoutarm
 Bronzeplate Boar
@@ -477,6 +478,7 @@ Evercoat Ursine
 Evolutionary Leap
 Exalted Angel
 Excavation Technique
+Excise the Imperfect
 Exotic Disease
 Exotic Orchard
 Exploding Barrel
@@ -1391,6 +1393,7 @@ Sultai Devotee
 Summer Bloom
 Summon: G.F. Ifrit
 Sundering Growth
+Sunfall
 Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier

@@ -44,6 +44,12 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
 
 /// What `died_under_you` reads, written back.
 fn died_under_texts(what: TurnTally, number: u32) -> Vec<String> {
+    if what == TurnTally::PhyrexiansDiedUnder {
+        return (number == 1)
+            .then(|| "a Phyrexian died under your control this turn".to_owned())
+            .into_iter()
+            .collect();
+    }
     let kind = if what == TurnTally::CreaturesDiedUnder {
         ""
     } else {
@@ -64,6 +70,11 @@ fn died_under_texts(what: TurnTally, number: u32) -> Vec<String> {
 fn died_under_you(r: &mut Reader<'_>) -> Option<Condition> {
     let (number, noun) = if r.words("a nontoken creature") {
         (1, TurnTally::NontokenCreaturesDiedUnder)
+    } else if r
+        .attempt(|r| (r.word("a") && r.name() == Some("Phyrexian")).then_some(()))
+        .is_some()
+    {
+        (1, TurnTally::PhyrexiansDiedUnder)
     } else if r.words("a creature") {
         (1, TurnTally::CreaturesDiedUnder)
     } else {
@@ -307,7 +318,8 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
                 what:
                     TurnTally::CreaturesDied
                     | TurnTally::CreaturesDiedUnder
-                    | TurnTally::NontokenCreaturesDiedUnder,
+                    | TurnTally::NontokenCreaturesDiedUnder
+                    | TurnTally::PhyrexiansDiedUnder,
                 ..
             },
             Cmp::Ge,
@@ -420,7 +432,10 @@ fn died_texts(left: &Amount, number: u32) -> Vec<String> {
             .collect(),
         Amount::Tallied {
             who: Ref::You,
-            what: what @ (TurnTally::CreaturesDiedUnder | TurnTally::NontokenCreaturesDiedUnder),
+            what:
+                what @ (TurnTally::CreaturesDiedUnder
+                | TurnTally::NontokenCreaturesDiedUnder
+                | TurnTally::PhyrexiansDiedUnder),
         } => died_under_texts(*what, number),
         _ => Vec::new(),
     }

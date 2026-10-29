@@ -1,4 +1,4 @@
-//! Goal: incubate reads into the DSL with a number or an X, alone or after a step joined by ", then", and writes back as the card's own text; the wordings with an unread amount stay with the table.
+//! Goal: incubate reads into the DSL with a number or an X, alone or after a step joined by ", then", and writes back as the card's own text; the wordings with no amount stay with the table.
 use super::*;
 
 #[rstest]
@@ -26,10 +26,6 @@ fn w7c_incubate_wordings_read_and_write_back(
 }
 
 #[rstest]
-#[case::exiled_this_way(
-    "Exile all creatures. Incubate X, where X is the number of creatures exiled this way."
-)]
-#[case::its_controller("Exile target nonland permanent. Its controller incubates 2.")]
 #[case::no_amount("Incubate.")]
 #[case::incubate_twice("Incubate 2 twice.")]
 fn w7c_incubate_near_misses_stay_with_the_table(#[case] text: &str) {

@@ -312,13 +312,15 @@ impl<'a> Scope<'a> {
             | TurnTally::CreaturesDied
             | TurnTally::NontokenCreaturesDied
             | TurnTally::CreaturesDiedUnder
-            | TurnTally::NontokenCreaturesDiedUnder => {
+            | TurnTally::NontokenCreaturesDiedUnder
+            | TurnTally::PhyrexiansDiedUnder => {
                 let kind = match what {
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,
                     TurnTally::CreaturesDiedUnder => Tally::DiedUnder,
                     TurnTally::NontokenCreaturesDiedUnder => Tally::DiedNontokenUnder,
+                    TurnTally::PhyrexiansDiedUnder => Tally::W14bPhyrexianDiedUnder,
                     _ => Tally::DiedNontoken,
                 };
                 let total: u32 = self
@@ -1265,6 +1267,7 @@ impl<'a> Scope<'a> {
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
+            Amount::Exiled(of) => self.w14b_exiled(of)?,
             Amount::PhasedOut(of) => self.w11b_phased(of)?,
             Amount::DieResult(which) => self.c11e_die_result(*which),
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
@@ -1275,12 +1278,7 @@ impl<'a> Scope<'a> {
             Amount::Tallied { who, what } => self.tallied(who, *what)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
             Amount::Party(who) => self.party(who)?,
-            Amount::StartingLife(who) => self
-                .players(who)?
-                .into_iter()
-                .map(|player| i64::from(self.state.ruleset().starting_life(player)))
-                .min()
-                .unwrap_or(0),
+            Amount::StartingLife(who) => self.w14b_starting_life(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -1459,6 +1457,20 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// How many of the permanents the resolution exiled match the selector as they last existed.
+    fn w14b_exiled(&self, of: &Selector) -> Result<i64, ResolveError> {
+        let Some(resolving) = self.state.resolving.as_ref() else {
+            return Ok(0);
+        };
+        let mut found = 0i64;
+        for exiled in &resolving.w14b_exiled {
+            if self.selects(of, *exiled)? {
+                found += 1;
+            }
+        }
+        Ok(found)
+    }
+
     /// "for each creature that phased out this way": the permanents the resolution phased out that match the selector.
     fn w11b_phased(&self, of: &Selector) -> Result<i64, ResolveError> {
         let Some(resolving) = self.state.resolving.as_ref() else {
@@ -1471,6 +1483,16 @@ impl<'a> Scope<'a> {
             }
         }
         Ok(found)
+    }
+
+    /// The lowest starting life total among the players a reference names; 0 for none.
+    fn w14b_starting_life(&self, who: &Ref) -> Result<i64, ResolveError> {
+        Ok(self
+            .players(who)?
+            .into_iter()
+            .map(|player| i64::from(self.state.ruleset().starting_life(player)))
+            .min()
+            .unwrap_or(0))
     }
 
     fn life_lost_this_way(&self) -> i64 {

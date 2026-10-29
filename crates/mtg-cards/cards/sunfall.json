@@ -1,0 +1,21 @@
+{
+  "oracle_id": "fb3f5097-0da0-458c-8508-60823567e2da",
+  "name": "Sunfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunfall",
+      "oracle_fingerprint": "57238e1c63e3ee62f7027bec2106453a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              { "Incubate": { "count": { "Exiled": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

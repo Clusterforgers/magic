@@ -57,7 +57,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
 "- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Emblems: objects in the command zone with abilities of their own that work from there, read and written by the compiler.
-- Incubate: the Incubator token with its Phyrexian back face, read and written by the compiler.
+- Incubate: the Incubator token with its Phyrexian back face, another player who incubates, the permanents exiled this way and the Phyrexians that died, read and written by the compiler.
 - Expend: the trigger on the turn's Nth mana spent on spells, read and written by the compiler.
 - Clash: the clash with an opponent, its win branch and "repeat this process", read and written by the compiler.
 - Crimes: "whenever you commit a crime" and "whenever an opponent commits a crime" on targeting another player, what they control or their graveyard.
@@ -140,7 +140,7 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,368 of 6,429 precon cards, 67.9%; 82.9% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,389 of 6,429 precon cards, 68.3%; 83.0% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 
 ### Mana and costs
@@ -160,7 +160,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3a) Plot: the special action from a hand, the plotted card cast free as a sorcery on a later turn, plot cost reductions; frees about 4 cards (Lock and Load, Pyretic Charge)
 - [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
-- [~] (r2da-c-a) (w14b-incubate-devour) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
 - [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Oasis Ritualist, Fervent Paincaster)
 - [ ] (r2da-c-g) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
 - [ ] (r2da-c-i) Clash leftovers: "at the beginning of your next main phase, you may add {C} equal to that spell's mana value", "clash with defending player" and "whenever you win a clash" (Scattering Stroke, Marvo, Deep Operative)
@@ -177,7 +176,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c5e) The rest of the cipher and hideaway cards; frees about 6 cards (Hidden Strings, Shelldock Isle)
 - [ ] (c6d-e) Vanishing without a number and The Moment's destroy by time counters; frees Out of Time and The Moment
 - [ ] (c6d-f) Batch triggers on cards put into exile from anywhere and The War Doctor's attack damage that exiles; frees The War Doctor
-- [~] (c6d-c) (w14b-incubate-devour) Devour X, devoured kinds and conditions: Thromok, Voracious Dragon, Hellkite Hatchling, Kresh, and a discard for each devoured creature (Tar Fiend); none of them is in a precon
+- [ ] (c6d-c) Devour X, devoured kinds and conditions: Thromok, Voracious Dragon, Hellkite Hatchling, Kresh, and a discard for each devoured creature (Tar Fiend); none of them is in a precon
 - [ ] (c6d-d) Gift "instead" spells left (Wildfire Howl, Dewdrop Cure, Into the Flood Maw) and entered-under-your-control-this-turn conditions (Zimone, Gargoyle Flock, Galadriel)
 - [ ] (r2de-c) Cast permissions left: "Once each turn" on any turn, a spell cast through a permission exiled instead of a graveyard, a card cast from its own graveyard or exile, exiled cards cast in a trigger, spells chosen from a graveyard and cast free; frees about 20 cards (Kess, Dissident Mage, Squee, the Immortal, Dire Fleet Daredevil, Diviner of Mist)
 - [ ] (r2r) Alternative costs left: life or energy instead of mana, fixed mana, impending, X in madness, a paid madness cost as a condition; frees about 8 cards (Xander's Pact, Nashi, Fist of Suns)
