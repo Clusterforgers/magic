@@ -59,7 +59,7 @@ describe('a server without accounts', () => {
 })
 
 describe('the page in the app', () => {
-  it('is titled, linked from the main navigation between Play and My games, and marked as the current page', async () => {
+  it('is titled, linked from the main navigation between Precons and My games, and marked as the current page', async () => {
     vi.spyOn(decksApi, 'list').mockResolvedValue([deckItem()])
     const app = await renderApp('/decks', { accounts: { users, signedIn: ADA.username } })
     await screen.findByRole('list', { name: 'Your decks' })
@@ -69,7 +69,7 @@ describe('the page in the app', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Play', 'Decks', 'My games', 'Create'])
+    ).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Create'])
     expect(within(nav).getByRole('link', { name: 'Decks' })).toHaveAttribute('aria-current', 'page')
     expect(within(nav).getByRole('link', { name: 'My games' })).not.toHaveAttribute('aria-current')
     expect(app.router.state.location.pathname).toBe('/decks')
