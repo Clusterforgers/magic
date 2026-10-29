@@ -64,7 +64,7 @@ Not built yet, in order of value:
 
 1. Smoke test: run the deck through bot games in the engine (the testkit harness) and cache the result by `deck_hash`. "Tested in 20 bot games" backs the static label and catches crashes in card combinations.
 2. Swap suggestions: for a flagged card, verified cards of the same type, mana value and colour identity, one click to swap.
-3. Demand-ranked backlog: every flagged card in every saved deck counts toward the coverage dashboard, so implementation follows what the table plays. Fix marks are the first signal of it: a player marks a card as important to fix and `mtg-cli fix-marks` and `check-rules --gaps --marks` rank by the marks ([server.md](server.md), Fix marks).
+3. Demand-ranked backlog: every flagged card in every saved deck counts toward the coverage dashboard, so implementation follows what the table plays. Fix marks are the first signal of it: a player marks a card as important to fix and `mtg-cli fix-marks` and `check-rules --gaps --marks` rank by the marks ([server.md](server.md), Fix marks). The proposal checker repairs the mechanical slips of a model before it judges ([cards-dsl.md](cards-dsl.md), Model-assisted reading), so more proposals reach a verdict.
 4. Table setting "verified decks only" for friends who want no manual steps; the default allows manual play with a visible note to all seats.
 5. History: the last few checks per deck (date, engine version, result), which explains why a marker went away.
 6. Paste-a-list check without an account, and `mtg-cli check <file>` for the same report.

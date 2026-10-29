@@ -602,7 +602,9 @@ mod tests {
             }],
             ..Default::default()
         };
-        let card = super::super::complete::parse(proposal, &printed, "cards/test_spell.json")
+        let value = super::super::complete::read(proposal, "cards/test_spell.json")
+            .expect("the proposal is a JSON object");
+        let card = super::super::complete::parse(value, &printed, "cards/test_spell.json")
             .expect("the proposal parses");
         let clauses = crate::compile::compile(&printed).clauses;
         pair_card(&card, &clauses, &printed)
