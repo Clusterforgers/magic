@@ -239,7 +239,6 @@ The server is settled first, then the web is built once against the final types.
 
 ### Model-assisted reading
 - [~] (r3) (the local bulk run of gpt-oss:20b with --schema, run by the orchestrator) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
-- [~] (t10a) (w18a-propose-precons) `mtg-cli propose --precons`: the sample draws only from the cards of the stored precons that are not Verified, so the local model works on the tail that is left
 - [~] (t10b) (w18b-tail-triage) Triage of the precon cards that one clause holds back (1,501 of 2,024): which are expressible in the DSL today, which need a reader, a small node or a subsystem, and which clauses share a shape, so the sweeps take many cards at a time
 - [~] (t9a) (w17a-keywords) Keywords the coverage report names as blockers: Backup N, Cascade, Soulbond and Plot; frees about 9 precon cards
 - [~] (t9b) (w17b-statics) Statics the coverage report names as blockers: graveyard cards that can't be targeted, counters that stay as a permanent changes zone, an additional vote, "you can't lose the game and your opponents can't win", opponents can't cast spells during your turn, a secretly chosen opponent, combat damage assigned by toughness, +N/+N for each Aura and Equipment attached, enters with counters equal to the mana spent, a chosen type in addition to its types; frees about 12 precon cards
