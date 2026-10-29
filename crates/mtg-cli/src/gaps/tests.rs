@@ -2,10 +2,11 @@
 
 use super::*;
 
+use crate::check_rules::Subject;
 use mtg_cards::card::{Card, ImplStatus, Span};
 use mtg_cards::compile::ClauseKind;
 use mtg_cards::load::LoadError;
-use mtg_cards::proposal::{ClauseReport, Stray};
+use mtg_cards::proposal::{ClauseReport, Repair, RepairClass, Stray};
 use mtg_cards::support::SupportRecord;
 use proptest::prelude::*;
 use rstest::rstest;
@@ -72,6 +73,7 @@ fn valid(
     Report {
         card: "Fire".to_owned(),
         problems: Vec::new(),
+        repairs: Vec::new(),
         clauses: clauses
             .into_iter()
             .zip(0..)
@@ -597,4 +599,84 @@ proptest! {
             prop_assert!(pair[0].weight >= pair[1].weight);
         }
     }
+}
+
+fn repaired(mut report: Report, name: &str, classes: &[RepairClass]) -> Report {
+    name.clone_into(&mut report.card);
+    report.repairs = classes
+        .iter()
+        .map(|class| Repair {
+            class: *class,
+            at: "faces[0]".to_owned(),
+            note: "fixed".to_owned(),
+        })
+        .collect();
+    report
+}
+
+fn checked_of(reports: Vec<Report>) -> Checked {
+    let subjects = (0..reports.len())
+        .map(|n| Subject {
+            oracle_id: format!("id{n}"),
+            names: Vec::new(),
+        })
+        .collect();
+    Checked {
+        reports,
+        subjects,
+        written: Vec::new(),
+    }
+}
+
+#[test]
+fn repairs_get_a_row_each_with_the_cards_repaired_and_those_nothing_holds_back_now() {
+    let free = valid(vec![(reads(), "Fire.")], &[], None);
+    let held_back = valid(vec![(differs("Ice."), "Fire.")], &[], None);
+    let checked = checked_of(vec![
+        repaired(
+            free,
+            "Free",
+            &[RepairClass::ManualSpan, RepairClass::TokenSize],
+        ),
+        repaired(held_back, "Held", &[RepairClass::ManualSpan]),
+        valid(vec![(reads(), "Fire.")], &[], None),
+    ]);
+    let ranks = Popularity::new(BTreeMap::from([
+        ("id0".to_owned(), 1),
+        ("id1".to_owned(), 2),
+    ]))
+    .expect("ranks");
+    let rows = repair_rows(&checked, &ranks);
+    let shown: Vec<_> = rows
+        .iter()
+        .map(|row| {
+            (
+                row.blocker.kind,
+                row.blocker.reason.as_str(),
+                row.blocked,
+                row.freed,
+            )
+        })
+        .collect();
+    assert_eq!(
+        shown,
+        [
+            (Kind::Repaired, "unusable Manual span", 2, 1),
+            (Kind::Repaired, "token size from the text", 1, 1),
+        ]
+    );
+    assert_eq!(rows[0].examples, ["Free", "Held"]);
+    assert_eq!(
+        repaired_line(&rows).as_deref(),
+        Some("repaired before judging: 2 unusable Manual span, 1 token size from the text")
+    );
+}
+
+#[test]
+fn no_repairs_no_rows_and_no_line() {
+    let checked = checked_of(vec![valid(vec![(reads(), "Fire.")], &[], None)]);
+    let ranks = Popularity::new(BTreeMap::from([("id0".to_owned(), 1)])).expect("ranks");
+    let rows = repair_rows(&checked, &ranks);
+    assert_eq!(rows.len(), 0);
+    assert_eq!(repaired_line(&rows), None);
 }

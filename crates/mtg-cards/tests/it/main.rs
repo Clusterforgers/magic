@@ -23,6 +23,7 @@ mod printed;
 mod proposal;
 mod proposal_blocks;
 mod proposal_names;
+mod proposal_repair;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;
