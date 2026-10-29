@@ -125,26 +125,10 @@ fn w20a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
             to,
         });
     }
-    r.need("that shares a")?;
-    let creature = r.words("creature type");
-    if !creature {
-        r.need("card type")?;
-    }
-    r.need("with")?;
-    let named = if r.words("that creature") || r.words("that permanent") || r.word("it") {
-        if r.triggered {
-            Ref::Triggering
-        } else {
-            Ref::Target(0)
-        }
-    } else {
-        return None;
-    };
-    Some(if creature {
-        Pred::SharesSubtype(named)
-    } else {
-        Pred::SharesType(named)
-    })
+    // The creature of the event, so only a trigger has one to name.
+    r.triggered.then_some(())?;
+    r.need("that shares a creature type with that creature")?;
+    Some(Pred::SharesSubtype(Ref::Triggering))
 }
 
 /// The cards a take names, as a filter: the common one, or with the additions of this module.
@@ -210,12 +194,6 @@ fn w20a_filter_text(filter: &Selector, plural: bool) -> Option<String> {
             )),
             Pred::SharesSubtype(Ref::Triggering) => {
                 back.push("that shares a creature type with that creature".to_owned());
-            }
-            Pred::SharesSubtype(Ref::Target(0)) => {
-                back.push("that shares a creature type with that permanent".to_owned());
-            }
-            Pred::SharesType(Ref::Target(0)) => {
-                back.push("that shares a card type with that permanent".to_owned());
             }
             Pred::AnyOf(list) if w20a_is_mixed(list) => mixed = Some(w20a_mixed_text(list)?),
             other if adjective_text(other, Form::Each).as_deref() == Some("historic") => {
