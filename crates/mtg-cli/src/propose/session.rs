@@ -34,7 +34,7 @@ pub struct Context<'a> {
 }
 
 /// The settings of a run.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Options {
     /// The model id.
     pub model: String,
@@ -119,8 +119,12 @@ impl<'a> Session<'a> {
             }
             tally.add(&outcome);
             if outcome != Outcome::NotRun {
+                let why = match &outcome {
+                    Outcome::Failed(message) => format!(": {message}"),
+                    _ => String::new(),
+                };
                 self.progress.line(format_args!(
-                    "{}: {} ({} requests)",
+                    "{}: {} ({} requests){why}",
                     card.name,
                     outcome.word(),
                     self.budget.requests() - before

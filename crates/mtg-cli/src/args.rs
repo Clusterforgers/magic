@@ -252,6 +252,15 @@ pub struct ProposeArgs {
     #[arg(long, value_name = "N", default_value_t = crate::propose::c11i_openai::C11I_DEFAULT_ANSWER_TOKENS)]
     pub max_answer_tokens: u32,
 
+    /// Seconds one request may take, the answer read to its end; a request that takes longer is cancelled and retried.
+    #[arg(long, value_name = "SECS", default_value_t = 600, value_parser = clap::value_parser!(u64).range(1..))]
+    pub request_timeout: u64,
+
+    /// How often a failed request (timeout, 429, 5xx, dropped connection) is sent again, with a growing wait; a card
+    /// whose last try fails gets no proposal and `--resume` asks it again.
+    #[arg(long, value_name = "N", default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=10))]
+    pub retries: u32,
+
     /// The most requests to send (a repair round is a request).
     #[arg(long, value_name = "N", default_value_t = 100)]
     pub max_requests: u32,
@@ -702,8 +711,24 @@ mod tests {
     #[case::too_few_examples(&["--cards", "Opt", "--examples", "2"])]
     #[case::too_many_examples(&["--cards", "Opt", "--examples", "6"])]
     #[case::an_empty_name(&["--cards", ""])]
+    #[case::a_zero_timeout(&["--cards", "Opt", "--request-timeout", "0"])]
+    #[case::too_many_retries(&["--cards", "Opt", "--retries", "11"])]
     fn propose_refuses_options_that_do_not_fit_together(#[case] args: &[&str]) {
         assert!(propose(args).is_err());
+    }
+
+    #[rstest]
+    #[case::defaults(&[], 600, 2)]
+    #[case::given(&["--request-timeout", "90", "--retries", "0"], 90, 0)]
+    fn propose_takes_a_request_timeout_and_a_retry_count(
+        #[case] extra: &[&str],
+        #[case] timeout: u64,
+        #[case] retries: u32,
+    ) {
+        let mut line = vec!["--cards", "Opt"];
+        line.extend_from_slice(extra);
+        let args = propose(&line).unwrap();
+        assert_eq!((args.request_timeout, args.retries), (timeout, retries));
     }
 
     #[test]

@@ -18,6 +18,7 @@ pub mod w19b_solved;
 use std::collections::BTreeSet;
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
+use std::time::Duration;
 
 use mtg_cards::PrintedCard;
 use mtg_cards::builtin;
@@ -186,6 +187,8 @@ pub fn c11i_client_of(
 ) -> Result<Box<dyn ModelClient + Send>, CliError> {
     let handle = tokio::runtime::Handle::current();
     let mut config = api.clone();
+    config.timeout = Duration::from_secs(args.request_timeout);
+    config.attempts = args.retries.saturating_add(1);
     Ok(match args.provider {
         Provider::Anthropic => {
             if let Some(base) = &args.base_url {
