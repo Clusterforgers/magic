@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - M0 to M2 (foundations, card data, engine core, protocol and server, game flow, web client, deck builder): done.
-- M3 card system and M6 coverage: in progress; 4,141 of the 6,429 stored precon cards (64.4%) and 80.7% of the copies are Verified.
+- M3 card system and M6 coverage: in progress; 4,450 of the 6,429 stored precon cards (69.2%) and 83.5% of the copies are Verified; the rest is played by hand through manual clauses and manual actions (`docs/protocol.md`).
 - M4 Commander: done in the engine, server and lobby except the companion conditions that need more than the card (m4c).
 - M5 table and prompts, M7 product, M8 polish and deploy: not started.
 
@@ -15,7 +15,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 - Structure before additions: work that changes how abilities, characteristics, events, costs or views are shaped runs first and alone; work that fills one stub (a keyword, an effect) follows in any order.
 - A cluster is the items that touch one area of code. They run back to back, and a decision kind is built with the first task that asks it.
-- The card system (M3) and Commander (M4) are complete in the DSL, engine and protocol types before the web shows them (M5), so each screen is built once. Until then a new event, decision or view field gets a placeholder in the web that keeps typecheck and e2e green.
+- The views, decisions and events of the card system (M3) and Commander (M4) are final in the engine and protocol types before the web shows them (M5), so each screen is built once. A card the compiler does not read whole is played through manual clauses and manual actions, so the web does not wait for the tail of the coverage; the coverage rounds run beside it, in the order of card popularity. Until a view is final a new event, decision or view field gets a placeholder in the web that keeps typecheck and e2e green.
 - Rules data leads the engine: support is computed, so a compiled card is Partial until the engine runs its primitives and then Verified without an edit. The coverage report ranks what holds cards back, and clusters that do not need each other (`docs/cards-dsl.md`, Tasks) run in that order.
 - A cluster ends with its corpus cards Verified, the compiler templates and goldens for its wordings, a fuzz deck under every invariant, hidden-information tests for its events and current generated bindings.
 - Items that depend on nothing (import checks, account settings, deploy) wait in their milestone and can be taken at any time without rework.
@@ -113,7 +113,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ### Manual cards and views
 - [ ] Views complete: every object state, the activatable abilities with cost and target wording, a spectator audience, and reveals moved to a hidden zone in one batch (`docs/protocol.md`)
-- [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
+- [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
 - [ ] (m4c) Companion conditions that need more than the card (mana value parity, an activated ability, a shared type, one mana symbol) in rules, engine and deck check; frees about 4 cards (Jegantha, Kaheera, Gyruda)
@@ -141,8 +141,10 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
-- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,405 of 6,429 precon cards, 68.5%; 83.1% of the copies)
+- [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,450 of 6,429 precon cards, 69.2%; 83.5% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
+- [ ] (t14a) `mtg-cli coverage --all` ranks the blockers over every Commander-legal card, each weighted by its popularity rank (the Scryfall EDHREC rank), so a clause that serves several cards outside the precons is read first; the top 2,000 cards by rank are the first target (618 are not Verified)
+- [ ] (t14b) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often
 
 ### Mana and costs
 - [ ] (c1j) A mana ability that takes permanents and is used more than once in a payment may take its own source with its last use (Skirk Prospector)
