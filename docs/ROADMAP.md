@@ -59,7 +59,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Emblems: objects in the command zone with abilities of their own that work from there, read and written by the compiler.
 - Incubate: the Incubator token with its Phyrexian back face, read and written by the compiler.
 - Expend: the trigger on the turn's Nth mana spent on spells, read and written by the compiler.
-- Clash: the clash with an opponent, its win branch and "repeat this process", read and written by the compiler.
+- Clash: the clash with an opponent or the defending player, its win branch, "repeat this process" and "whenever you win a clash", read and written by the compiler.
 - Crimes: "whenever you commit a crime" and "whenever an opponent commits a crime" on targeting another player, what they control or their graveyard.
 - Clash wordings: a won clash that may put the returned creature on top instead, and the clashed player's creatures held through their next untap step.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
@@ -160,9 +160,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
 - [~] (r2da-c-a) (w14b-incubate-devour) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
-- [~] (r2da-c-j) (w15c-forecast-clash-arena) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Oasis Ritualist, Fervent Paincaster)
-- [~] (r2da-c-g) (w15c-forecast-clash-arena) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
-- [~] (r2da-c-i) (w15c-forecast-clash-arena) Clash leftovers: "at the beginning of your next main phase, you may add {C} equal to that spell's mana value", "clash with defending player" and "whenever you win a clash" (Scattering Stroke, Marvo, Deep Operative)
+- [ ] (r2da-c-j) Exert as a cost part and mana whose spell gains haste (Arena of Glory, Carnelian Orb of Dragonkind, Oasis Ritualist, Fervent Paincaster)
+- [ ] (r2da-c-k) A delayed trigger reads the targets of the resolution that set it up by last known information: "at the beginning of your next main phase, you may add an amount of {C} equal to that spell's mana value" after a won clash (Scattering Stroke)
+- [ ] (r2da-c-g) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
 - [~] (r2da-c-e1) (w15a-dungeons-initiative) The rooms of Dungeon of the Mad Mage, Tomb of Annihilation and Undercity the compiler does not read (Runestone Caverns, Mad Wizard's Lair, Veils of Fear, Sandfall Cell, Oubliette, Throne of the Dead Three), so those dungeons can be entered
 - [~] (r2da-c-e2) (w15a-dungeons-initiative) The initiative (CR 725): the designation, "you take the initiative", venture into Undercity as it is taken and in its holder's upkeep, taken by combat damage, "if you have the initiative" (Seasoned Dungeoneer, Loot Dispute, Sarevok's Tome, From the Catacombs)
 - [~] (r2da-c-e3) (w15a-dungeons-initiative) The venture cards that wait on another wording, and the player view of the dungeon and room (Radiant Solar, Thorough Investigation, Immovable Rod, Sefris of the Hidden Ways, Hama Pashar)

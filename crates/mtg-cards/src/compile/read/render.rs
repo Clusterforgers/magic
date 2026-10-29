@@ -995,7 +995,7 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
-            .or_else(|| writer.w15c_clash(&effects[start..]))
+            .or_else(|| w15c_clash::w15c_clash(&effects[start..]))
             .or_else(|| writer.w11c_clash(&effects[start..]))
             .or_else(|| writer.w9b_clash(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
