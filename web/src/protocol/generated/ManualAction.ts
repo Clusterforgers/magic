@@ -98,7 +98,7 @@ to: ObjectId, } } | { "Unattach": {
  */
 object: ObjectId, } } | { "Damage": { 
 /**
- * The card that deals it, in any zone.
+ * The card that deals it, in a zone every seat sees.
  */
 source: ObjectId, 
 /**
