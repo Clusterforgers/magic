@@ -16,6 +16,9 @@ fn games() -> u64 {
 /// Answers per squared seat a bot game may take: the games of 8 to 24 seats take about 180.
 const ANSWERS_PER_SQUARE: usize = 400;
 
+/// The same for Commander, whose 100-card decks and 40 life make longer games: about 420.
+const COMMANDER_ANSWERS_PER_SQUARE: usize = 1_000;
+
 #[rstest]
 #[case(8)]
 #[case(16)]
@@ -44,7 +47,7 @@ fn seeded_commander_games_of_many_seats_finish_and_keep_every_invariant(#[case] 
         let setup = commander_fuzz_setup(seats, seed).unwrap();
         let outcome = play_game(setup, seed).unwrap_or_else(|failure| panic!("{failure}"));
         eprintln!("{seats} seats, seed {seed}: {} answers", outcome.answers);
-        assert!(outcome.answers < ANSWERS_PER_SQUARE * seats * seats);
+        assert!(outcome.answers < COMMANDER_ANSWERS_PER_SQUARE * seats * seats);
     });
     eprintln!("{seats} commander seats: {:?}", started.elapsed());
 }
