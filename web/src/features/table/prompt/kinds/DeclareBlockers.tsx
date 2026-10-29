@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { KeyboardEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Check, Shield } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
-import { Button } from '@/components/ui/button'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { powerToughness } from '../../cardModel'
@@ -11,6 +11,7 @@ import { usePreviewRequest } from '../../combat/usePreviewRequest'
 import { useSeatNamer } from '../../names'
 import { NO_IDS } from '../../selectors'
 import { blockersByAttacker, blockersNeeded, blockSummary, uniqueNames } from '../combatText'
+import { BarButton } from '../CombatBar'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
 import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -18,78 +19,15 @@ import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
+import { usePrimaryKey } from '../usePrimaryKey'
 import { useObjects } from '../useCombatNames'
 
-const focusCard = (id: ObjectId): void =>
-  document.querySelector<HTMLElement>(`button[data-object-id="${id}"]`)?.focus()
-
-interface PickerProps {
-  /** The blocker being placed, as the prompt names it. */
-  blocker: string
-  /** The attackers it may block, as buttons. */
-  choices: readonly { id: ObjectId; label: string; blocked: boolean }[]
-  /** Whether it blocks something already, so the block can be taken back. */
-  paired: boolean
-  /** Changes with the blocker, which moves focus to the first button again. */
-  focusKey: ObjectId
-  onPick(attacker: ObjectId): void
-  onRemove(): void
-  onCancel(): void
-}
-
 /**
- * Which attacker a chosen blocker blocks: one button per attacker it may block, so an attacker on a seat that is not
- * drawn can still be picked. Focus moves to the first button on open, and Escape cancels.
- */
-function AttackerPicker({ blocker, choices, paired, focusKey, onPick, onRemove, onCancel }: PickerProps) {
-  const first = useRef<HTMLButtonElement>(null)
-  useEffect(() => first.current?.focus(), [focusKey])
-  return (
-    <div
-      role="group"
-      aria-label={`Attackers ${blocker} may block`}
-      data-slot="attacker-picker"
-      className="grid basis-full gap-2"
-      onKeyDown={(event: KeyboardEvent) => {
-        if (event.key !== 'Escape') return
-        event.preventDefault()
-        onCancel()
-      }}
-    >
-      <span className="text-sm">{blocker} blocks</span>
-      <div className="flex max-h-48 flex-wrap items-center gap-2 overflow-y-auto p-0.5">
-        {choices.map((choice, index) => (
-          <Button
-            key={choice.id}
-            ref={index === 0 ? first : undefined}
-            variant="outline"
-            className="h-10 px-3"
-            aria-pressed={choice.blocked}
-            onClick={() => onPick(choice.id)}
-          >
-            {choice.label}
-          </Button>
-        ))}
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        {paired ? (
-          <Button variant="ghost" className="h-10 px-3" onClick={onRemove}>
-            Remove block
-          </Button>
-        ) : null}
-        <Button variant="ghost" className="h-10 px-3" onClick={onCancel}>
-          Cancel
-        </Button>
-      </div>
-    </div>
-  )
-}
-
-/**
- * DeclareBlockers: creatures that may block are legal, the rest of the hand and battlefield dimmed. Choose a blocker
- * (click, Enter or Space), then the attacker it blocks (an attacker card, or its button in the list that opens);
- * both cards say so, and a blocker can be chosen again to change or remove its block. Confirm sends the pairs, No
- * blocks an empty answer.
+ * DeclareBlockers: creatures that may block are legal, the rest of the hand and battlefield dimmed. A click on a
+ * blocker chooses it (one click blocks when it can block a single attacker), a click on an attacker then gives it the
+ * block, a click on a blocker that blocks takes the block back, and another blocker chosen and the same attacker
+ * clicked make a double block. The arrows say who blocks whom; no label is written on a card, except what an attacker
+ * that needs several blockers still lacks. Confirm sends the pairs, No blocks an empty answer.
  */
 export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ options }) => {
   const { id, answer, selection } = usePrompt()
@@ -178,17 +116,14 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   }, [own, legal, attackersShown, choices, pairs, choosing])
 
   const notes = useMemo<CardNotes>(() => {
-    const written = new Map<ObjectId, { label: string; words: string }>()
+    const written = new Map<ObjectId, { label?: string; words: string; cue?: 'active' }>()
     for (const [blocker, attacker] of pairs) {
-      const name = byId.get(attacker)?.name ?? 'an attacker'
       written.set(blocker, {
-        label: `Blocks ${name}`,
-        words: `blocking ${name}, ${controllerOf(attacker)}'s`,
+        words: `blocking ${byId.get(attacker)?.name ?? 'an attacker'}, ${controllerOf(attacker)}'s`,
       })
     }
     for (const [attacker, blockers] of blockerLists) {
       const names = blockers.map((id) => byId.get(id)?.name ?? 'a creature')
-      const [only] = names
       const lacking = (minimums.get(attacker) ?? 0) - blockers.length
       written.set(
         attacker,
@@ -197,13 +132,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
               label: `Needs ${lacking} more`,
               words: `blocked by ${names.join(' and ')}, needs ${lacking} more ${lacking === 1 ? 'blocker' : 'blockers'}`,
             }
-          : {
-              label:
-                names.length === 1 && only !== undefined
-                  ? `Blocked by ${only}`
-                  : `Blocked by ${names.length}`,
-              words: `blocked by ${names.join(' and ')}`,
-            },
+          : { words: `blocked by ${names.join(' and ')}` },
       )
     }
     // An attacker that needs several blockers says so before anyone is put on it.
@@ -211,19 +140,14 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
       if (blockerLists.has(attacker)) continue
       written.set(attacker, { label: `Needs ${needed}+ blockers`, words: `needs ${blockersNeeded(needed)}` })
     }
-    if (choosing !== undefined && !pairs.has(choosing)) {
-      written.set(choosing, { label: 'Pick attacker', words: 'choose the attacker it blocks' })
+    if (choosing !== undefined) {
+      written.set(choosing, { words: 'choose the attacker it blocks', cue: 'active' })
     }
     return written
   }, [pairs, blockerLists, minimums, byId, choosing, controllerOf])
 
   const pair = (blocker: ObjectId, attacker: ObjectId): void => {
-    setPairs((current) => {
-      const next = new Map(current)
-      if (current.get(blocker) === attacker) next.delete(blocker)
-      else next.set(blocker, attacker)
-      return next
-    })
+    setPairs((current) => new Map(current).set(blocker, attacker))
     selection.clear()
   }
   const unpair = (blocker: ObjectId): void => {
@@ -235,8 +159,12 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     selection.clear()
   }
   const choose = (id: ObjectId): void => {
-    if (offered.has(id)) {
-      if (selection.has(id)) selection.clear()
+    const can = offered.get(id)
+    if (can !== undefined) {
+      const [only] = can
+      if (pairs.has(id)) unpair(id)
+      else if (choosing === id) selection.clear()
+      else if (can.length === 1 && only !== undefined) pair(id, only)
       else selection.set([id])
       return
     }
@@ -245,46 +173,78 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   useCardMarks(marks, choose, { toggles: true })
   useCardNotes(notes)
 
-  const back = (blocker: ObjectId, action: () => void): void => {
-    action()
-    focusCard(blocker)
+  // Escape lets go of the blocker that was chosen.
+  useEffect(() => {
+    if (choosing === undefined) return undefined
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape' && !event.defaultPrevented) selection.clear()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [choosing, selection])
+
+  const ready = pairs.size > 0 && short.length === 0
+  const confirm = (): void => {
+    if (ready) answer({ DeclareBlockers: [...pairs] })
   }
+  // With nothing focused, Enter confirms the blocks that are chosen; Space is left alone.
+  usePrimaryKey({ space: () => undefined, enter: confirm }, ready)
 
   const [firstShort] = short
   const text =
     legal.length === 0
       ? 'None of your creatures can block. Choose No blocks to go on.'
       : choosing !== undefined
-        ? `Choose the attacker ${blockerName(choosing)} blocks.`
+        ? `Click the attacker ${blockerName(choosing)} blocks.`
         : firstShort !== undefined
           ? `${attackerName(firstShort[0])} needs ${blockersNeeded(firstShort[1])}. Choose another creature to block it, or take its block back.`
           : pairs.size === 0
-            ? 'Choose a creature to block with, then the attacker it blocks, or choose No blocks.'
+            ? 'Click a creature to block with, then the attacker it blocks, or choose No blocks.'
             : `${blockSummary(pairs.size, new Set(pairs.values()).size)}. Confirm the blocks, or choose another creature.`
 
   return (
-    <PromptLayout text={text}>
+    <PromptLayout compact text={text}>
       {options.most === undefined ? null : (
-        <p data-slot="declaration-limit" className="basis-full text-sm text-muted-foreground">
+        <p data-slot="declaration-limit" className="basis-full text-xs text-muted-foreground">
           No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can block this combat.
         </p>
       )}
-      <Button
-        className="h-10 px-4"
-        disabled={pairs.size === 0 || short.length > 0}
-        onClick={() => answer({ DeclareBlockers: [...pairs] })}
-      >
-        Confirm blocks
-      </Button>
-      <Button variant="outline" className="h-10 px-4" onClick={() => answer({ DeclareBlockers: [] })}>
-        No blocks
-      </Button>
-      {minimums.size === 0 ? null : (
-        <ul
-          aria-label="Attackers that need several blockers"
-          data-slot="block-minimums"
-          className="grid basis-full gap-0.5 text-sm"
+      {choosing === undefined ? null : (
+        // An attacker whose seat is not drawn cannot be clicked, so it can be picked here too.
+        <NativeSelect
+          size="sm"
+          aria-label={`Attacker ${blockerName(choosing)} blocks`}
+          value=""
+          onChange={(event) => {
+            const attacker = Number(event.target.value)
+            if (choices.includes(attacker)) pair(choosing, attacker)
+          }}
         >
+          <NativeSelectOption value="">Choose attacker…</NativeSelectOption>
+          {choices.map((attacker) => (
+            <NativeSelectOption key={attacker} value={attacker}>
+              {attackerLabel(attacker)}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
+      )}
+      <BarButton
+        icon={Check}
+        label="Confirm blocks"
+        word="Block"
+        keepWord
+        disabled={!ready}
+        onClick={confirm}
+      />
+      <BarButton
+        variant="outline"
+        icon={Shield}
+        label="No blocks"
+        word="No blocks"
+        onClick={() => answer({ DeclareBlockers: [] })}
+      />
+      {minimums.size === 0 ? null : (
+        <ul aria-label="Attackers that need several blockers" data-slot="block-minimums" className="sr-only">
           {[...minimums].map(([attacker, needed]) => {
             const have = blockerLists.get(attacker)?.length ?? 0
             return (
@@ -296,61 +256,15 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
           })}
         </ul>
       )}
-      {choosing === undefined ? null : (
-        <AttackerPicker
-          blocker={blockerName(choosing)}
-          focusKey={choosing}
-          paired={pairs.has(choosing)}
-          choices={choices.map((id) => ({
-            id,
-            blocked: pairs.get(choosing) === id,
-            label: attackerLabel(id),
-          }))}
-          onPick={(attacker) => back(choosing, () => pair(choosing, attacker))}
-          onRemove={() => back(choosing, () => unpair(choosing))}
-          onCancel={() => back(choosing, selection.clear)}
-        />
-      )}
-      {pairs.size === 0 ? null : (
-        <ul
-          aria-label="Your blocks"
-          data-slot="block-pairs"
-          className="grid max-h-44 basis-full gap-1 overflow-y-auto"
-        >
-          {[...pairs].map(([blocker, attacker]) => (
-            <li key={blocker} className="flex items-center justify-between gap-2 text-sm">
-              <span className="min-w-0">
-                Your {blockerName(blocker)} blocks {controllerOf(attacker)}&apos;s {attackerName(attacker)}
-              </span>
-              <span className="flex shrink-0 gap-1">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  aria-label={`Change the block of ${blockerName(blocker)}`}
-                  onClick={() => selection.set([blocker])}
-                >
-                  Change
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  aria-label={`Remove the block of ${blockerName(blocker)}`}
-                  onClick={() => unpair(blocker)}
-                >
-                  Remove
-                </Button>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
       {preview === null && pairs.size === 0 ? null : (
-        <PreviewOutcome
-          slot="block-outcome"
-          heading={pairs.size === 0 ? 'If you do not block' : 'If you block like this'}
-          forecast={preview}
-          status={previewStatus}
-        />
+        <div className="sr-only">
+          <PreviewOutcome
+            slot="block-outcome"
+            heading={pairs.size === 0 ? 'If you do not block' : 'If you block like this'}
+            forecast={preview}
+            status={previewStatus}
+          />
+        </div>
       )}
     </PromptLayout>
   )

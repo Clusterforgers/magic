@@ -1,5 +1,6 @@
 import { useContext, useLayoutEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+import { createDefenderStore, DefenderContext } from './defender'
 import { createDrawnForecastStore, DrawnForecastContext } from './drawn'
 import { useBlockPreview } from './forecast'
 import { createPendingCombatStore, PendingCombatContext } from './pending'
@@ -17,17 +18,20 @@ function DrawnForecast(): null {
 }
 
 /**
- * What the combat marks of a table share: the choices a prompt has not sent (`pending.ts`) and the forecast on screen
- * (`drawn.ts`). `GameTable` wraps itself in this once, inside the game.
+ * What the combat marks of a table share: the choices a prompt has not sent (`pending.ts`), the forecast on screen
+ * (`drawn.ts`) and the defender an attack is aimed at (`defender.ts`). `GameTable` wraps itself in this once, inside the game.
  */
 export function CombatProviders({ children }: { children: ReactNode }) {
   const [pending] = useState(createPendingCombatStore)
   const [drawn] = useState(createDrawnForecastStore)
+  const [defenders] = useState(createDefenderStore)
   return (
     <PendingCombatContext value={pending}>
       <DrawnForecastContext value={drawn}>
-        <DrawnForecast />
-        {children}
+        <DefenderContext value={defenders}>
+          <DrawnForecast />
+          {children}
+        </DefenderContext>
       </DrawnForecastContext>
     </PendingCombatContext>
   )

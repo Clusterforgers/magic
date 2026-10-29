@@ -91,6 +91,7 @@ export const Card = memo(function Card({
       type="button"
       data-object-id={id}
       data-highlight={highlight}
+      data-cue={note?.cue}
       data-size={size}
       data-tapped={tapped || undefined}
       data-doomed={outlook?.dies || undefined}

@@ -192,7 +192,7 @@ export function TextFace({
             + {name}
           </span>
         ))}
-        {note === undefined ? null : (
+        {note?.label === undefined ? null : (
           <span
             data-slot="card-note"
             className={cn(

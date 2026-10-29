@@ -108,7 +108,7 @@ function Overlay({ object, role, size, turned, note, links }: OverlayProps) {
             + {name}
           </span>
         ))}
-        {note === undefined ? null : (
+        {note?.label === undefined ? null : (
           <span
             data-slot="card-note"
             className={cn(CHIP, 'bg-primary font-medium text-primary-foreground', text)}
