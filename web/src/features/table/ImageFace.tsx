@@ -29,11 +29,11 @@ export function useDrawnWidth(size: CardSize, fit: boolean): number {
 // The edges stay inside the 6 px between boxes of a line and the 4 px between lines.
 const PILE = 'shadow-[2px_2px_0_0_var(--color-border-strong),4px_4px_0_0_var(--color-border)]'
 
-// Where the art box of a printed card lies, upright and on its side (rotated a quarter turn clockwise): state chips sit
-// there, clear of the name line, the type line, the rules text and the artist line.
+// State chips sit in the art box of an upright picture, clear of the name line, the type line, the rules text and the
+// artist line; under a turned one they use the room its upright box leaves, since its art box is too low for them.
 const ART_BOX = {
   upright: 'top-[11%] right-[7%] left-[7%] max-h-[44%]',
-  turned: 'top-[7%] right-[12%] bottom-[7%] left-[45%]',
+  turned: 'top-full right-0 left-0 h-[calc(var(--card-h)-var(--card-w)*5/7)] justify-center overflow-hidden pt-0.5',
 }
 // The power/toughness or loyalty box at the bottom right, which lies at the bottom left once turned.
 const STAT_BOX = { upright: 'right-[3%] bottom-[2.5%]', turned: 'bottom-[3%] left-[2.5%]' }
@@ -60,8 +60,8 @@ function Overlay({ object, role, size, turned, note, links }: OverlayProps) {
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">
       <span
         className={cn(
-          'absolute flex flex-wrap content-start gap-0.5 overflow-hidden',
-          turned ? ART_BOX.turned : ART_BOX.upright,
+          'absolute flex flex-wrap content-start gap-0.5',
+          turned ? ART_BOX.turned : cn(ART_BOX.upright, 'overflow-hidden'),
         )}
       >
         {labels.map((label) => (
@@ -160,7 +160,8 @@ export function ImageFace({ source, box, turned, stacked, imageSize, children, .
       data-turned={turned || undefined}
       className={cn(
         'relative block w-(--card-w) rounded-md',
-        turned ? 'h-[calc(var(--card-w)*5/7)]' : 'h-(--card-h)',
+        // A turned picture stands at the top of its box, so its chips have the room below.
+        turned ? 'h-[calc(var(--card-w)*5/7)] self-start' : 'h-(--card-h)',
         box,
         stacked ? PILE : null,
       )}

@@ -102,7 +102,7 @@ export async function fetchRealIds(api: CardsApi, names: readonly string[]): Pro
   for (const name of new Set(names)) {
     try {
       const page = await api.search({ text: name, perPage: 20 })
-      const hit = page.cards.find((card) => card.name === name)
+      const hit = page.cards.find((card) => card.name === name || card.name.startsWith(`${name} // `))
       if (hit !== undefined) found[name] = hit.oracle_id
     } catch {
       // The table keeps its text face for a card the server does not know.
