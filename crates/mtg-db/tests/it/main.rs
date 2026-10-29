@@ -19,6 +19,7 @@ mod name_lookup;
 mod pagination;
 mod precon_all;
 mod precon_import;
+mod precon_oracle_ids;
 mod precon_resolution;
 mod printing_import;
 mod row_counts;
