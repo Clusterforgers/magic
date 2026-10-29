@@ -1,0 +1,235 @@
+// Goal: a guest in a lobby chooses a precon that the game's format takes (Commander precons in a Commander game, the rest in a Normal one), finds it by name, set or commander, sees the table's verdict on each shown precon before choosing, cannot press one the table cannot take, and sees the house rules of a listed game named in the lobby.
+import { screen } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
+import { legalityIssue, reportCard, reportOf, summary } from '@/features/decks/fakeDecks'
+import { jsonResponse } from '@/test-utils/fakeFetch'
+import type { ServerScript } from '@/test-utils/fakeServer'
+import { renderGame } from '@/test-utils/gameHarness'
+import { changesOf } from '@/test-utils/lobbyControls'
+import { lobbyMessage } from '@/test-utils/lobbyFrames'
+import type { SeatFlags } from '@/test-utils/lobbyFrames'
+import type { HouseRules, PreconListItem } from '@/protocol/generated'
+
+afterEach(() => window.sessionStorage.clear())
+
+const TABLE: SeatFlags[] = [
+  ['Ana', true, false, null],
+  ['Bo', true, false],
+]
+
+const precon = (name: string, set: string, commanders: string[]): PreconListItem => {
+  const code = `${set}-${name.toLowerCase().replace(/\W+/g, '-')}`
+  return {
+    code,
+    name,
+    set,
+    deck_type: commanders.length > 0 ? 'Commander Deck' : 'Starter Deck',
+    release_date: '2020-01-01',
+    commanders,
+    card_count: 100,
+    format: commanders.length > 0 ? 'commander' : 'freeform',
+    state: 'verified',
+    verified: true,
+    playable: true,
+    summary: summary(),
+  }
+}
+
+const PRECONS = [
+  precon('Draconic Domination', 'c18', ['The Ur-Dragon']),
+  precon('Merciless Rage', 'c19', ['Kediss, Emberclaw Familiar']),
+  precon('Arcane Wizardry', 'c17', ['Inalla, Archmage Ritualist']),
+  precon('Mono White Starter', 'st1', []),
+]
+
+// The verdict of the table on each: Merciless Rage has four cards to play by hand, Arcane Wizardry cannot be taken.
+const REPORTS: Record<string, ReturnType<typeof reportOf>> = {
+  'precon:c19-merciless-rage': reportOf([
+    reportCard('Forest', { count: 96 }),
+    reportCard('Mana Reflection', { count: 4, support: 'manual' }),
+  ]),
+  'precon:c17-arcane-wizardry': reportOf(
+    [reportCard('Forest', { count: 99 })],
+    [legalityIssue('The deck has 99 cards, and a Commander deck needs 100')],
+  ),
+}
+
+interface Scene {
+  format?: string
+  precons?: PreconListItem[]
+  script?: ServerScript
+  visibility?: string
+}
+
+async function openPrecons({
+  format = 'commander',
+  precons = PRECONS,
+  script = {},
+  visibility = 'public',
+}: Scene = {}) {
+  const h = await renderGame({
+    script: {
+      precons: () => jsonResponse(200, { precons }),
+      check: (body) =>
+        jsonResponse(
+          200,
+          REPORTS[(body as { deck: string }).deck] ?? reportOf([reportCard('Forest', { count: 100 })]),
+        ),
+      game: () =>
+        jsonResponse(200, {
+          format,
+          started: false,
+          seats: TABLE.map(([name], seat) => ({ seat, name })),
+          connected: [0, 1],
+          ready: [],
+          result: null,
+          visibility,
+          manual_play: false,
+        }),
+      ...script,
+    },
+  })
+  h.join(0, TABLE.length)
+  h.deliver(lobbyMessage(TABLE))
+  await h.settle()
+  return h
+}
+
+const names = (): string[] =>
+  [...screen.getByRole('list', { name: 'Precons' }).children].map(
+    (item) => item.querySelector('button')?.textContent ?? '',
+  )
+
+describe('the precons on offer', () => {
+  it('lists the precons with a commander in a Commander game, and only a Commander tab', async () => {
+    await openPrecons()
+    expect(await screen.findByRole('list', { name: 'Precons' })).toBeInTheDocument()
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Precons'])
+    expect(names().map((text) => text.slice(0, 12))).toEqual(['Draconic Dom', 'Merciless Ra', 'Arcane Wizar'])
+    expect(document.querySelector('[data-slot="precon-count"]')).toHaveTextContent(
+      '3 precons for a Commander game.',
+    )
+  })
+
+  it('lists the precons without a commander in a Normal game, after the built-in decks', async () => {
+    const h = await openPrecons({ format: 'normal' })
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Built-in', 'Precons'])
+    await h.user.click(screen.getByRole('tab', { name: 'Precons' }))
+    await screen.findByRole('list', { name: 'Precons' })
+    expect(names()).toHaveLength(1)
+    expect(names()[0]).toMatch(/^Mono White Starter/)
+  })
+
+  it('finds a precon by name, set or commander, every word of the search at once', async () => {
+    const h = await openPrecons()
+    const search = await screen.findByRole('searchbox', { name: 'Search precons' })
+    await h.user.type(search, 'ur-dragon')
+    expect(names()).toHaveLength(1)
+    expect(names()[0]).toMatch(/^Draconic Domination/)
+    await h.user.clear(search)
+    await h.user.type(search, 'c19 rage')
+    expect(names()[0]).toMatch(/^Merciless Rage/)
+    await h.user.clear(search)
+    await h.user.type(search, 'nothing like this')
+    expect(screen.queryByRole('list', { name: 'Precons' })).toBeNull()
+    expect(document.querySelector('[data-slot="precon-count"]')).toHaveTextContent('No precon matches.')
+  })
+
+  it('shows twelve at a time and the rest on request, checking only the ones shown', async () => {
+    const many = Array.from({ length: 15 }, (_, n) =>
+      precon(`Deck ${String(n).padStart(2, '0')}`, 'c20', ['A']),
+    )
+    const h = await openPrecons({ precons: many })
+    await screen.findByRole('list', { name: 'Precons' })
+    expect(names()).toHaveLength(12)
+    await screen.findAllByText('Whole deck runs')
+    const asked = () => h.server.calls.filter((call) => call.url === '/api/decks/check').length
+    expect(asked()).toBe(12)
+    await h.user.click(screen.getByRole('button', { name: 'Show more (3 left)' }))
+    expect(names()).toHaveLength(15)
+    await screen.findAllByText('Whole deck runs')
+    expect(asked()).toBe(15)
+  })
+
+  it('shows the table’s verdict on each precon, and a precon the table cannot take cannot be pressed', async () => {
+    const h = await openPrecons()
+    expect(await screen.findByRole('button', { name: /Draconic Domination.*Whole deck runs/ })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /Merciless Rage.*4 cards played by hand/ })).toBeEnabled()
+    const blocked = screen.getByRole('button', { name: /Arcane Wizardry.*Cannot be taken/ })
+    expect(blocked).toHaveAttribute('aria-disabled', 'true')
+    expect(blocked).toHaveAccessibleDescription(/The deck has 99 cards, and a Commander deck needs 100\./)
+    await h.user.click(blocked)
+    expect(changesOf(h.server).filter((call) => call.method === 'PUT')).toEqual([])
+  })
+
+  it('chooses a precon with its code and says what the table now sees', async () => {
+    const h = await openPrecons({
+      script: {
+        chooseDeck: () =>
+          jsonResponse(200, { name: 'Draconic Domination', format: 'commander', manual_cards: 0 }),
+      },
+    })
+    await h.user.click(await screen.findByRole('button', { name: /Draconic Domination/ }))
+    await h.settle()
+    const put = changesOf(h.server).filter((call) => call.method === 'PUT')
+    expect(put).toHaveLength(1)
+    expect(put[0]?.body).toEqual({ deck: 'precon:c18-draconic-domination' })
+    expect(document.querySelector('[data-slot="deck-note"]')).toHaveTextContent(
+      'Your deck is now Draconic Domination, Commander, no manual steps.',
+    )
+  })
+
+  it('says why the list is missing and loads it again on request', async () => {
+    let answers = 0
+    const h = await openPrecons({
+      script: {
+        precons: () =>
+          answers++ === 0
+            ? jsonResponse(429, { error: 'rate_limited', message: 'slow down' })
+            : jsonResponse(200, { precons: PRECONS }),
+      },
+    })
+    expect(await screen.findByText(/too many requests/)).toBeInTheDocument()
+    await h.user.click(screen.getByRole('button', { name: 'Try again' }))
+    expect(await screen.findByRole('list', { name: 'Precons' })).toBeInTheDocument()
+  })
+})
+
+describe('the house rules in the lobby', () => {
+  const RULES: HouseRules = { starting_life: 30, free_mulligans: 1, mulligan_style: 'vancouver' }
+  const row = (rules?: HouseRules) => ({
+    games: [
+      {
+        game: '8f2c1a52-31de-4c77-9a35-0d1d3f6a7b10',
+        host: 'Ana',
+        format: 'commander',
+        ...(rules === undefined ? {} : { house_rules: rules }),
+        manual_play: false,
+        filled: 2,
+        total: 4,
+        created_at: '2026-10-10T09:00:00Z',
+        age_secs: 5,
+      },
+    ],
+  })
+
+  it('names the rules of a listed game that differ from the format’s own', async () => {
+    await openPrecons({ script: { lobbies: () => jsonResponse(200, row(RULES)) } })
+    const line = await screen.findByText(/House rules:/)
+    expect(line.parentElement).toHaveTextContent('Starting life 30 · Vancouver mulligan')
+    expect(line.parentElement).not.toHaveTextContent('free mulligan')
+  })
+
+  it('says nothing for a game that plays by its format’s rules', async () => {
+    const h = await openPrecons({ script: { lobbies: () => jsonResponse(200, row({ starting_life: 40 })) } })
+    await h.settle()
+    expect(document.querySelector('[data-slot="lobby-rules"]')).toBeNull()
+  })
+
+  it('asks nothing of an invite-only game, which the browser does not list', async () => {
+    const h = await openPrecons({ visibility: 'invite' })
+    await h.settle()
+    expect(h.server.calls.some((call) => call.url === '/api/lobbies')).toBe(false)
+    expect(document.querySelector('[data-slot="lobby-rules"]')).toBeNull()
+  })
+})

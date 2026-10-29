@@ -9,6 +9,8 @@ import type { SeatLink } from '@/lib/seatLink'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
 import { decksApi as sharedDecks } from '@/net/decks'
+import { preconsApi as sharedPrecons } from '@/net/precons'
+import type { PreconsApi } from '@/net/precons'
 import type { DecksApi } from '@/net/decks'
 import { browserTimers } from '@/net/timers'
 import { createSession } from '@/play/session'
@@ -42,6 +44,8 @@ export interface GamePageProps {
   api?: Api
   /** The signed-in account's deck calls, for the deck chooser of the lobby: the shared client unless a test brings its own. */
   decks?: DecksApi
+  /** The precons for the deck chooser: the shared client unless a test brings its own. */
+  precons?: Pick<PreconsApi, 'list'>
   /** Fakes for the socket, timers and origin; leave out in the app. */
   deps?: SessionOverrides
 }
@@ -53,6 +57,7 @@ export function GamePage({
   account = null,
   api = sharedApi,
   decks = sharedDecks,
+  precons = sharedPrecons,
   deps,
 }: GamePageProps) {
   // A new game, seat, token or account is a new session, so the key makes it a new component rather than a stale one.
@@ -65,6 +70,7 @@ export function GamePage({
         name={joinName(gameId, link.seat)}
         api={api}
         decks={decks}
+        precons={precons}
         deps={deps}
       />
     )
@@ -78,6 +84,7 @@ export function GamePage({
       name={account}
       api={api}
       decks={decks}
+      precons={precons}
       deps={deps}
     />
   )
@@ -91,6 +98,7 @@ interface SeatedGameProps {
   name: string
   api: Api
   decks: DecksApi
+  precons: Pick<PreconsApi, 'list'>
   deps: SessionOverrides | undefined
 }
 
@@ -124,7 +132,7 @@ function useConnected(session: Session): void {
   }, [session])
 }
 
-function SeatedGame({ gameId, token, name, api, decks, deps }: SeatedGameProps) {
+function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGameProps) {
   const [session] = useState(() => createSession({ ...deps, game: gameId, token, name }))
   useConnected(session)
   const state = useStore(session.store, useShallow(screenState))
@@ -147,7 +155,12 @@ function SeatedGame({ gameId, token, name, api, decks, deps }: SeatedGameProps) 
     screen = <GameOver />
     title = 'Game over'
   } else if (state.seat !== null && !ended) {
-    screen = state.phase === 'playing' ? <GameTable /> : <Lobby api={api} decks={decks} token={token} />
+    screen =
+      state.phase === 'playing' ? (
+        <GameTable />
+      ) : (
+        <Lobby api={api} decks={decks} precons={precons} token={token} />
+      )
     title = state.phase === 'playing' ? 'Game' : 'Lobby'
   }
   usePageTitle(useTurnTitle(session.store, title, screen !== null && state.phase === 'playing'))

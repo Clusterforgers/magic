@@ -154,7 +154,7 @@ describe('no card name reaches the lobby', () => {
       ['Ann', true, false, SEAT_DECK],
       ['Bea', true, false, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 }],
     ])
-    await screen.findByRole('list', { name: 'Demo decks' })
+    await screen.findByRole('list', { name: 'Built-in decks' })
     const lobbyText = document.body.textContent ?? ''
     expect(mentions(lobbyText)).toEqual([])
     expect(

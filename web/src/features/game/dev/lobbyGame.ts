@@ -10,7 +10,10 @@ import { createSession } from '@/play/session'
 import type { Session } from '@/play/session'
 import { initialPlayState } from '@/play/store'
 import type { LobbyRoster } from '@/play/store'
-import type { Counts, DeckListItem, DeckState, SeatDeck } from '@/protocol/generated'
+import type { Counts, DeckListItem, DeckState, HouseRules, SeatDeck } from '@/protocol/generated'
+import { counts as tallyOf, legalityIssue, reportCard, reportOf, summary } from '@/features/decks/fakeDecks'
+import type { PreconsApi } from '@/net/precons'
+import type { PreconListItem } from '@/protocol/generated'
 import type { DevLobbySearch } from './lobbySearch'
 
 /** The text the dev page prints, so a production bundle can be searched for any trace of the fixture. */
@@ -130,6 +133,9 @@ function lobbySession(me: number): Session {
   return { ...inert, ready: () => setReady(true), notReady: () => setReady(false) }
 }
 
+/** The house rules of the fixture game that differ from its format's own. */
+const DEV_RULES: HouseRules = { starting_life: 30, free_mulligans: 2, mulligan_style: 'vancouver' }
+
 /**
  * A game context holding a lobby: the roster of `options`, this page seated at `me`, the socket open. The lookup says
  * only the visibility (the roster names the seats), so the host's toggle and the controls have something to draw.
@@ -150,6 +156,7 @@ export function lobbyGame(options: DevLobbySearch): GameContextValue {
     ready: [],
     result: null,
     visibility: options.visibility ?? 'public',
+    format: options.format ?? 'normal',
   }
   return { game: 'dev-lobby', session, lookup: { game, missing: false, failed: false } }
 }
@@ -179,8 +186,25 @@ function setDeck(session: Session, seat: number, deck: SeatDeck): void {
  * roster as the server's next `Lobby` message would. A deck is chosen after a short wait and shows in the roster; the
  * Commander deck is refused with its issues, as a Normal game refuses it. Close and Leave then take the page to Play.
  */
-export function lobbyApi(session: Session): LobbyApi {
+export function lobbyApi(session: Session, options: Pick<DevLobbySearch, 'format' | 'rules'> = {}): LobbyApi {
   return {
+    listLobbies: async () => ({
+      games: [
+        {
+          game: 'dev-lobby',
+          host: 'Ada',
+          format: options.format ?? 'normal',
+          ...(options.rules === true ? { house_rules: DEV_RULES } : {}),
+          manual_play: false,
+          filled: 2,
+          total: 4,
+          created_at: '2026-10-10T09:00:00Z',
+          age_secs: 30,
+        },
+      ],
+      etag: null,
+      fetchedAt: 0,
+    }),
     setVisibility: async (_game, visibility) => visibility,
     closeGame: async () => undefined,
     leaveGame: async () => undefined,
@@ -198,7 +222,7 @@ export function lobbyApi(session: Session): LobbyApi {
       await new Promise((resolve) => setTimeout(resolve, 400))
       const demo = DEMO_DECKS.find((deck) => deck.id === id)
       const stored = STORED_DECKS.find((deck) => deck.id === id)
-      if (stored?.format === 'commander') {
+      if (stored?.format === 'commander' && options.format !== 'commander') {
         throw new LobbyError('deck_blocked', 422, 'The deck cannot be played in this game.', null, [
           {
             code: 'no_commander_zone',
@@ -231,11 +255,65 @@ export function lobbyApi(session: Session): LobbyApi {
 
 /** The signed-in player's deck calls: the list of stored decks, from memory. */
 export function lobbyDecks(): DecksApi {
+  const answer = (body: unknown): Response =>
+    new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } })
   return createDecksApi({
-    fetch: async () =>
-      new Response(JSON.stringify({ decks: STORED_DECKS }), {
-        status: 200,
-        headers: { 'content-type': 'application/json' },
-      }),
+    fetch: async (url, init) => {
+      if (!url.endsWith('/api/decks/check')) return answer({ decks: STORED_DECKS })
+      const asked = JSON.parse(String(init?.body)) as { deck: string }
+      return answer(tableReport(asked.deck))
+    },
   })
+}
+
+/** What the table says of a deck: stored decks by their check state, precons by their code. */
+function tableReport(deck: string) {
+  const stored = STORED_DECKS.find((candidate) => candidate.id === deck)
+  const state = stored?.state ?? PRECON_STATES[deck] ?? 'verified'
+  const cards = [reportCard('Forest', { count: 90 })]
+  if (state === 'manual_play') cards.push(reportCard('Mana Reflection', { count: 4, support: 'manual' }))
+  if (state === 'blocked') cards.push(reportCard('Phantom Card', { count: 2, support: 'unplayable' }))
+  const issues = state === 'blocked' ? [legalityIssue('the deck is not legal in this format')] : []
+  return reportOf(cards, issues)
+}
+
+const PRECON_STATES: Record<string, DeckState> = {
+  'precon:c18-draconic-domination': 'verified',
+  'precon:c19-merciless-rage': 'manual_play',
+  'precon:c17-arcane-wizardry': 'blocked',
+}
+
+const precon = (
+  code: string,
+  name: string,
+  set: string,
+  commanders: string[],
+  state: DeckState,
+): PreconListItem => ({
+  code,
+  name,
+  set,
+  deck_type: commanders.length > 0 ? 'Commander Deck' : 'Starter Deck',
+  release_date: '2018-08-10',
+  commanders,
+  card_count: 100,
+  format: commanders.length > 0 ? 'commander' : 'freeform',
+  state,
+  verified: state === 'verified',
+  playable: state !== 'blocked',
+  summary: summary({ state, counts: tallyOf({ total: 100 }) }),
+})
+
+/** The precons of the fixture: two that play, one the table cannot take, and one without a commander. */
+export function lobbyPrecons(): Pick<PreconsApi, 'list'> {
+  return {
+    list: async () => ({
+      precons: [
+        precon('c19-merciless-rage', 'Merciless Rage', 'c19', ['Kediss, Emberclaw Familiar'], 'manual_play'),
+        precon('c18-draconic-domination', 'Draconic Domination', 'c18', ['The Ur-Dragon'], 'verified'),
+        precon('c17-arcane-wizardry', 'Arcane Wizardry', 'c17', ['Inalla, Archmage Ritualist'], 'blocked'),
+        precon('st-mono-white', 'Mono White Starter', 'st', [], 'verified'),
+      ],
+    }),
+  }
 }

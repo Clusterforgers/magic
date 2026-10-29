@@ -5,6 +5,7 @@
  */
 import type { GameInfo, GameSeat, Joined, LobbyGame, SeatDeck, Visibility } from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
+import { readHouseRules } from './houseRules'
 import { isGameResult } from './parse'
 
 const VISIBILITIES: Record<Visibility, true> = { public: true, invite: true }
@@ -32,7 +33,19 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
   if (!isText(game) || !isText(host) || !isText(format) || !isFlag(manual)) return null
   if (!isCount(filled) || !isCount(total) || !isCount(age) || filled > total) return null
   if (!isText(createdAt) || !STAMP.test(createdAt)) return null
-  return { game, host, format, manual_play: manual, filled, total, created_at: createdAt, age_secs: age }
+  const rules = readHouseRules(item.house_rules)
+  if (rules === null) return null
+  return {
+    game,
+    host,
+    format,
+    ...(rules === undefined ? {} : { house_rules: rules }),
+    manual_play: manual,
+    filled,
+    total,
+    created_at: createdAt,
+    age_secs: age,
+  }
 }
 
 /** The rows of `GET /api/lobbies`, or `null` when the body or any row is unreadable. */

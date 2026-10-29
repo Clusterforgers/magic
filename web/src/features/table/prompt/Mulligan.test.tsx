@@ -177,6 +177,26 @@ describe('the words', () => {
     expect(mulliganText(options({ hand: hand.slice(0, size) }))).toBe(words)
   })
 
+  it.each([
+    [
+      'a Paris mulligan',
+      { hand_if_mulligan: 6, bottom_if_mulligan: 0 },
+      'A mulligan deals a smaller hand of 6 cards and puts nothing on the bottom of your library.',
+    ],
+    [
+      'a Vancouver mulligan that scries',
+      { hand_if_mulligan: 6, bottom_if_mulligan: 0, scry_if_keep: 1, scry_if_mulligan: 1 },
+      'Keeping it also scries 1. A mulligan deals a smaller hand of 6 cards and puts nothing on the bottom of your library then scries 1.',
+    ],
+    [
+      'a London mulligan that scries on keeping',
+      { scry_if_keep: 2 },
+      'Keeping it also scries 2. A mulligan draws 7 new cards, then puts 1 card on the bottom of your library.',
+    ],
+  ])('names the hand and the scry of %s', (_style, over, tail) => {
+    expect(mulliganText(options(over))).toContain(tail)
+  })
+
   it('is one polite live sentence under the name of the decision', () => {
     const { container } = renderMulligan(options())
     const line = must(container.querySelector<HTMLElement>('[data-slot="decision-line"]'))

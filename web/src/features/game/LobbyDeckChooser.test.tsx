@@ -2,7 +2,7 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createAuthStore } from '@/features/auth/store'
-import { deckIn } from '@/features/decks/fakeDecks'
+import { deckIn, legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import { startAccounts } from '@/test-utils/accountsServer'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 import { tokenOf } from '@/test-utils/fakeServer'
@@ -42,14 +42,33 @@ const STORED = [
   }),
 ]
 
+// What the table says of each stored deck: it runs, three cards are played by hand, and it cannot be taken.
+const REPORTS: Record<string, ReturnType<typeof reportOf>> = {
+  rakdos: reportOf([reportCard('Forest', { count: 60 })]),
+  burn: reportOf([
+    reportCard('Forest', { count: 57 }),
+    reportCard('Odd Card', { count: 3, support: 'manual' }),
+  ]),
+  pauper: reportOf(
+    [reportCard('Forest', { count: 58 }), reportCard('Bad Card', { count: 2, support: 'unplayable' })],
+    [legalityIssue('a Pauper deck holds no rares')],
+  ),
+}
+
 interface Scene {
+  format?: string
   table?: SeatFlags[]
   script?: ServerScript
   signedIn?: boolean
 }
 
 /** A lobby on seat 0 with the roster pushed; a signed-in page reads the stored decks of `STORED` unless told otherwise. */
-async function openChooser({ table = NO_DECK, script = {}, signedIn = false }: Scene = {}) {
+async function openChooser({
+  table = NO_DECK,
+  script = {},
+  signedIn = false,
+  format = 'normal',
+}: Scene = {}) {
   const accounts = startAccounts({
     users: { ada: 'correct horse battery' },
     signedIn: signedIn ? 'ada' : undefined,
@@ -59,8 +78,14 @@ async function openChooser({ table = NO_DECK, script = {}, signedIn = false }: S
     auth: signedIn ? createAuthStore({ api: accounts.api }) : undefined,
     script: {
       myDecks: () => jsonResponse(200, { decks: STORED }),
+      check: (body) =>
+        jsonResponse(
+          200,
+          REPORTS[(body as { deck: string }).deck] ?? reportOf([reportCard('Forest', { count: 60 })]),
+        ),
       game: () =>
         jsonResponse(200, {
+          format,
           started: false,
           seats: table.map(([name], seat) => ({ seat, name })),
           connected: [0, 1],
@@ -77,7 +102,15 @@ async function openChooser({ table = NO_DECK, script = {}, signedIn = false }: S
   return h
 }
 
-const tile = (name: string | RegExp): HTMLElement => screen.getByRole('button', { name })
+// A deck's name is its title, then its facts and its verdict; a string asks for the start of it.
+const tile = (name: string | RegExp): HTMLElement =>
+  screen.getByRole('button', {
+    name: typeof name === 'string' ? new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`) : name,
+  })
+const checked = (h: { server: { calls: readonly { url: string; init?: RequestInit }[] } }) =>
+  h.server.calls
+    .filter((call) => call.url === '/api/decks/check')
+    .map((call) => JSON.parse(String(call.init?.body)) as { deck: string; game: string })
 const deckCalls = (h: { server: Parameters<typeof changesOf>[0] }) =>
   changesOf(h.server).filter((call) => call.method === 'PUT')
 const note = (): Element | null => document.querySelector('[data-slot="deck-note"]')
@@ -86,56 +119,108 @@ const current = (): string => document.querySelector('[data-slot="deck-current"]
 const ready = (): HTMLElement => screen.getByRole('button', { name: /^(Not r|R)eady$/ })
 
 describe('the decks on offer', () => {
-  it('gives a guest the demo decks and asks for no stored ones', async () => {
+  it('gives a guest the built-in decks and the precons, and asks for no stored ones', async () => {
     const h = await openChooser()
-    await screen.findByRole('list', { name: 'Demo decks' })
-    expect(within(screen.getByRole('list', { name: 'Demo decks' })).getAllByRole('listitem')).toHaveLength(3)
+    await screen.findByRole('list', { name: 'Built-in decks' })
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Built-in', 'Precons'])
+    expect(
+      within(screen.getByRole('list', { name: 'Built-in decks' })).getAllByRole('listitem'),
+    ).toHaveLength(3)
     expect(screen.queryByRole('list', { name: 'Your decks' })).toBeNull()
     expect(h.server.calls.some((call) => call.url === '/api/decks')).toBe(false)
     expect(tile('Mono Red GiantsNormal, Red, 60 cards')).toHaveAttribute('aria-pressed', 'false')
+    expect(tile('Mono Red Giants')).toHaveAccessibleName(/Whole deck runs$/)
   })
 
-  it('gives a signed-in player their stored decks first, each with its check state in words', async () => {
-    await openChooser({ signedIn: true })
-    const stored = await screen.findByRole('list', { name: 'Your decks' })
-    expect(
-      within(stored)
-        .getAllByRole('listitem')
-        .map((item) => item.getAttribute('data-deck-option')),
-    ).toEqual(['rakdos', 'burn', 'pauper'])
-    expect(within(stored).getByRole('button', { name: /Rakdos Midrange.*Verified/ })).toBeEnabled()
-    expect(within(stored).getByRole('button', { name: /Burn.*Manual play/ })).toBeEnabled()
-    expect(within(stored).getByRole('button', { name: /Pauper Affinity.*Blocked/ })).toBeInTheDocument()
-    expect(screen.getByRole('list', { name: 'Demo decks' })).toBeInTheDocument()
-  })
-
-  it('shows a blocked deck with its reason and sends nothing when it is pressed', async () => {
+  it('gives a signed-in player their stored decks first, each with its verdict at the table in words', async () => {
     const h = await openChooser({ signedIn: true })
-    const blocked = await screen.findByRole('button', { name: /Pauper Affinity/ })
+    const stored = await screen.findByRole('list', { name: 'Your decks' })
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
+      'Your decks',
+      'Built-in',
+      'Precons',
+    ])
+    expect([...stored.children].map((item) => item.getAttribute('data-deck-option'))).toEqual([
+      'rakdos',
+      'burn',
+      'pauper',
+    ])
+    expect(
+      await within(stored).findByRole('button', { name: /Rakdos Midrange.*Whole deck runs/ }),
+    ).toBeEnabled()
+    expect(within(stored).getByRole('button', { name: /Burn.*3 cards played by hand/ })).toBeEnabled()
+    expect(
+      within(stored).getByRole('button', { name: /Pauper Affinity.*Cannot be taken/ }),
+    ).toBeInTheDocument()
+    expect(checked(h).map((body) => body.deck)).toEqual(['rakdos', 'burn', 'pauper'])
+    expect(checked(h).every((body) => body.game === GAME_ID)).toBe(true)
+  })
+
+  it('shows a deck the table cannot take with its reasons and sends nothing when it is pressed', async () => {
+    const h = await openChooser({ signedIn: true })
+    const blocked = await screen.findByRole('button', { name: /Pauper Affinity.*Cannot be taken/ })
     expect(blocked).toHaveAttribute('aria-disabled', 'true')
-    expect(blocked).toHaveAccessibleDescription(
-      /Blocked: 2 legality issues\. Fix it in the deck builder to play it\./,
-    )
+    expect(blocked).toHaveAccessibleDescription(/A Pauper deck holds no rares\. 1 more below\./)
+    const reasons = within(blocked.closest('li') as HTMLElement).getByRole('list', {
+      name: 'Why Pauper Affinity cannot be taken',
+    })
+    expect(
+      within(reasons)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['A Pauper deck holds no rares.', '2 cards the game cannot play.'])
     await h.user.click(blocked)
     expect(deckCalls(h)).toEqual([])
   })
 
-  it('says so when a signed-in player has no stored deck, and keeps the demo decks', async () => {
-    await openChooser({ signedIn: true, script: { myDecks: () => jsonResponse(200, { decks: [] }) } })
-    expect(await screen.findByText(/You have no saved decks yet/)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Decks page' })).toHaveAttribute('href', '/decks')
-    expect(screen.getByRole('list', { name: 'Demo decks' })).toBeInTheDocument()
+  it('names the cards played by hand on expand', async () => {
+    await openChooser({ signedIn: true })
+    const burn = (await screen.findByRole('button', { name: /Burn.*3 cards played by hand/ })).closest('li')
+    const names = within(burn as HTMLElement).getByRole('list', { name: 'Cards of Burn played by hand' })
+    expect(
+      within(names)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['Odd Card'])
   })
 
-  it('says why the stored decks are missing and offers another try, with the demo decks still usable', async () => {
+  it('says a verdict could not be had, lets the deck be pressed anyway and asks again on request', async () => {
+    let asked = 0
+    const h = await openChooser({
+      signedIn: true,
+      script: {
+        check: (body) =>
+          asked++ < 3 ? FAILURES.server() : jsonResponse(200, REPORTS[(body as { deck: string }).deck]),
+      },
+    })
+    await screen.findAllByText('Could not check this deck at the table.')
+    expect(tile(/Rakdos Midrange/)).toBeEnabled()
+    await h.user.click(screen.getAllByRole('button', { name: 'Check again' })[0] as HTMLElement)
+    expect(await screen.findByRole('button', { name: /Rakdos Midrange.*Whole deck runs/ })).toBeEnabled()
+  })
+
+  it('says so when a signed-in player has no stored deck, and keeps the built-in decks one tab away', async () => {
+    const h = await openChooser({
+      signedIn: true,
+      script: { myDecks: () => jsonResponse(200, { decks: [] }) },
+    })
+    expect(await screen.findByText(/You have no saved decks yet/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Decks page' })).toHaveAttribute('href', '/decks')
+    await h.user.click(screen.getByRole('tab', { name: 'Built-in' }))
+    expect(await screen.findByRole('list', { name: 'Built-in decks' })).toBeInTheDocument()
+  })
+
+  it('says why the stored decks are missing and offers another try, with the built-in decks still usable', async () => {
     let answers = 0
-    await openChooser({
+    const h = await openChooser({
       signedIn: true,
       script: { myDecks: () => (answers++ === 0 ? FAILURES.server() : jsonResponse(200, { decks: STORED })) },
     })
     expect(await screen.findByText(/The server ran into a problem/)).toBeInTheDocument()
-    expect(tile('Mono Red GiantsNormal, Red, 60 cards')).toBeEnabled()
-    await screen.getByRole('button', { name: 'Try again' }).click()
+    await h.user.click(screen.getByRole('tab', { name: 'Built-in' }))
+    expect(await screen.findByRole('button', { name: /^Mono Red Giants/ })).toBeEnabled()
+    await h.user.click(screen.getByRole('tab', { name: 'Your decks' }))
+    await h.user.click(screen.getByRole('button', { name: 'Try again' }))
     expect(await screen.findByRole('list', { name: 'Your decks' })).toBeInTheDocument()
   })
 })
@@ -151,7 +236,7 @@ describe('a choice that goes through', () => {
     ],
     [
       'a stored deck with manual cards',
-      /Burn.*Manual play/,
+      /Burn.*3 cards played by hand/,
       'burn',
       true,
       'Your deck is now Burn, Modern, 3 cards need manual steps.',
@@ -162,8 +247,9 @@ describe('a choice that goes through', () => {
       signedIn,
       script: answer === undefined ? {} : { chooseDeck: () => jsonResponse(200, answer) },
     })
-    await screen.findByRole('list', { name: 'Demo decks' })
-    if (signedIn) await screen.findByRole('list', { name: 'Your decks' })
+    const stored = id === 'burn'
+    if (signedIn && !stored) await h.user.click(await screen.findByRole('tab', { name: 'Built-in' }))
+    await screen.findByRole('list', { name: stored ? 'Your decks' : 'Built-in decks' })
     await h.user.click(tile(name))
     await h.settle()
     expect(deckCalls(h)).toEqual([
@@ -183,7 +269,7 @@ describe('a choice that goes through', () => {
   it('shows the choice at once with a spinner, every other control waits, and focus stays on the deck pressed', async () => {
     const gate = held()
     const h = await openChooser({ table: WITH_DECK, script: { chooseDeck: gate.answer } })
-    await screen.findByRole('list', { name: 'Demo decks' })
+    await screen.findByRole('list', { name: 'Built-in decks' })
     await h.user.click(tile('Mono Red GiantsNormal, Red, 60 cards'))
     const pressed = tile('Mono Red GiantsNormal, Red, 60 cards')
     expect(pressed).toHaveAttribute('aria-busy', 'true')
@@ -205,7 +291,7 @@ describe('a choice that goes through', () => {
     const h = await openChooser({
       table: withDecks(WITH_DECK, { 0: { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 } }),
     })
-    await screen.findByRole('list', { name: 'Demo decks' })
+    await screen.findByRole('list', { name: 'Built-in decks' })
     expect(tile('Mono Red GiantsNormal, Red, 60 cards')).toHaveAttribute('aria-pressed', 'true')
     expect(tile('Mono Green StompersNormal, Green, 60 cards')).toHaveAttribute('aria-pressed', 'false')
     h.deliver(lobbyMessage(WITH_DECK))
@@ -254,7 +340,7 @@ describe('a choice that fails', () => {
     ['offline', FAILURES.offline, /Could not reach the server/],
   ])('puts the old choice back and says why on %s', async (_what, answer, words) => {
     const h = await openChooser({ table: WITH_DECK, script: { chooseDeck: answer } })
-    await screen.findByRole('list', { name: 'Demo decks' })
+    await screen.findByRole('list', { name: 'Built-in decks' })
     await h.user.click(tile('Mono Red GiantsNormal, Red, 60 cards'))
     await h.settle()
     expect(problem()).toHaveTextContent('Your deck is still Mono Green Stompers, Normal, no manual steps.')
@@ -282,6 +368,7 @@ describe('a choice that fails', () => {
       'Lightning Bolt: 4 copies is the most a Normal deck may hold, and this deck has 5.',
       'The main deck has 58 cards, and a Normal deck needs 60.',
     ])
+    await h.user.click(screen.getByRole('tab', { name: 'Built-in' }))
     expect(tile('Mono Green StompersNormal, Green, 60 cards')).toHaveAttribute('aria-pressed', 'true')
   })
 
@@ -292,7 +379,7 @@ describe('a choice that fails', () => {
         chooseDeck: () => jsonResponse(422, { error: 'deck_blocked', message: 'blocked', issues: [] }),
       },
     })
-    await screen.findByRole('list', { name: 'Demo decks' })
+    await screen.findByRole('list', { name: 'Built-in decks' })
     await h.user.click(tile('Mono Red GiantsNormal, Red, 60 cards'))
     await h.settle()
     expect(problem()).toHaveTextContent('The deck holds cards that the game cannot play.')
@@ -300,7 +387,7 @@ describe('a choice that fails', () => {
 
   it('ends the lobby with the words that the game has started on 409 started', async () => {
     const h = await openChooser({ table: WITH_DECK, script: { chooseDeck: FAILURES.started } })
-    await screen.findByRole('list', { name: 'Demo decks' })
+    await screen.findByRole('list', { name: 'Built-in decks' })
     await h.user.click(tile('Mono Red GiantsNormal, Red, 60 cards'))
     await h.settle()
     const stopped = document.querySelector('[data-slot="lobby-stopped"]')
@@ -320,7 +407,7 @@ describe('a choice that fails', () => {
             : jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 }),
       },
     })
-    await screen.findByRole('list', { name: 'Demo decks' })
+    await screen.findByRole('list', { name: 'Built-in decks' })
     await h.user.click(tile('Mono Red GiantsNormal, Red, 60 cards'))
     await h.settle()
     expect(problem()).not.toBeNull()
@@ -351,7 +438,7 @@ describe('Ready needs a deck', () => {
     h.deliver(lobbyMessage([['Ana', true, true], WITH_DECK[1] as SeatFlags]))
     expect(ready()).toHaveAccessibleName('Not ready')
     expect(screen.getByText(/Your deck is locked while you are ready/)).toBeInTheDocument()
-    expect(screen.queryByRole('list', { name: 'Demo decks' })).toBeNull()
+    expect(screen.queryByRole('list', { name: 'Built-in decks' })).toBeNull()
     expect(current()).toBe('Mono Green Stompers, Normal, no manual steps')
   })
 
