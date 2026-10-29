@@ -546,8 +546,8 @@ async fn a_buffed_token_keeps_its_picture_and_its_tag(pool: PgPool) {
         "the tag follows the stored link, not the asked stats"
     );
     assert_ne!(tags[0], tags[2]);
-    let none = format!("/api/images/token/0/normal?name=Thopters&colors=C&power=2&toughness=2");
-    assert_eq!(get(server.addr, &none).await.error_code(), "no_image");
+    let none = "/api/images/token/0/normal?name=Thopters&colors=C&power=2&toughness=2";
+    assert_eq!(get(server.addr, none).await.error_code(), "no_image");
 }
 
 #[sqlx::test(migrations = false)]

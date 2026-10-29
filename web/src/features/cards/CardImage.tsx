@@ -11,10 +11,13 @@ export const RETRY_AFTER_MS = 5 * 60_000
 // Shared by every picture on the page, so a remounted card neither flashes its skeleton nor asks for a missing one again.
 const loaded = new Set<string>()
 const failedAt = new Map<string, number>()
+// Misses kept for the whole session, by key (`CardImage` `missKey`): a token that no picture stands for.
+const missed = new Set<string>()
 
-/** The status a picture starts in: what the page learned of it before. */
-export function knownStatus(src: string, now: number = Date.now()): ImageStatus {
+/** The status a picture starts in: what the page learned of it before; `key` is the miss key it is asked under. */
+export function knownStatus(src: string, now: number = Date.now(), key: string = src): ImageStatus {
   if (loaded.has(src)) return 'loaded'
+  if (missed.has(key)) return 'failed'
   const failed = failedAt.get(src)
   return failed !== undefined && now - failed < RETRY_AFTER_MS ? 'failed' : 'loading'
 }
@@ -23,6 +26,7 @@ export function knownStatus(src: string, now: number = Date.now()): ImageStatus 
 export function resetImageMemory(): void {
   loaded.clear()
   failedAt.clear()
+  missed.clear()
 }
 
 /** The corner of a printed card: 4.75% of its width, which is 3.39% of its height. */
@@ -35,8 +39,16 @@ interface CardImageProps {
   alt: string
   /** The picture asked for once `src` is missing (`cardImageFallbackUrl`); the text face stays when both are. */
   fallback?: string | null
-  /** The text face under the picture: shown while it loads, when it is missing and when pictures are off. */
-  children?: ReactNode
+  /**
+   * A miss is remembered for the session under this key instead of for `RETRY_AFTER_MS` under the URL, so every URL
+   * that shares it (a token at other power and toughness, which the server finds by name) is not asked for again.
+   */
+  missKey?: string | null
+  /**
+   * The text face under the picture: shown while it loads, when it is missing and when pictures are off. A function
+   * gets the status, to draw a missing picture's face differently from the one that waits.
+   */
+  children?: ReactNode | ((status: ImageStatus) => ReactNode)
   /** State drawn over a loaded picture, never into it. */
   overlay?: ReactNode
   /** The box; a 5:7 card as wide as its parent when left out. */
@@ -55,6 +67,7 @@ interface CardImageProps {
 export function CardImage({
   src: asked,
   fallback = null,
+  missKey = null,
   alt,
   children,
   overlay,
@@ -63,7 +76,9 @@ export function CardImage({
   eager = false,
 }: CardImageProps) {
   const [seen, setSeen] = useState<{ src: string; status: ImageStatus } | null>(null)
-  const statusOf = (url: string): ImageStatus => (seen?.src === url ? seen.status : knownStatus(url))
+  const keyOf = (url: string): string => (url === asked && missKey !== null ? missKey : url)
+  const statusOf = (url: string): ImageStatus =>
+    seen?.src === url ? seen.status : knownStatus(url, Date.now(), keyOf(url))
   const src =
     asked !== null && fallback !== null && fallback !== asked && statusOf(asked) === 'failed'
       ? fallback
@@ -72,6 +87,7 @@ export function CardImage({
   const settle = (next: ImageStatus) => {
     if (src === null) return
     if (next === 'loaded') loaded.add(src)
+    else if (keyOf(src) !== src) missed.add(keyOf(src))
     else failedAt.set(src, Date.now())
     setSeen({ src, status: next })
   }
@@ -81,7 +97,7 @@ export function CardImage({
       data-status={status ?? 'none'}
       className={cn('relative block', className ?? 'aspect-[5/7] w-full')}
     >
-      {status === 'loaded' ? null : children}
+      {status === 'loaded' ? null : typeof children === 'function' ? children(status ?? 'failed') : children}
       {src === null || status === 'failed' ? null : (
         <span
           aria-hidden={status === 'loaded' ? undefined : true}

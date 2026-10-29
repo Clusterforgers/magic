@@ -62,6 +62,25 @@ describe('CardImage', () => {
     expect(knownStatus(SRC, now + RETRY_AFTER_MS + 1)).toBe('loading')
   })
 
+  it('remembers a miss under its key for the session, for every URL that shares the key', () => {
+    const asked = (src: string) => (
+      <CardImage src={src} missKey="/token/Thopter" alt="Thopter">
+        {(status) => <span>{`face is ${status}`}</span>}
+      </CardImage>
+    )
+    const first = render(asked('/token/Thopter?power=1'))
+    expect(screen.getByText('face is loading')).toBeInTheDocument()
+    act(() => fireEvent.error(screen.getByRole('img', { hidden: true })))
+    expect(screen.getByText('face is failed')).toBeInTheDocument()
+    first.unmount()
+    const later = Date.now() + 10 * RETRY_AFTER_MS
+    expect(knownStatus('/token/Thopter?power=1', later, '/token/Thopter')).toBe('failed')
+    const second = render(asked('/token/Thopter?power=2'))
+    expect(second.container.querySelector('img')).toBeNull()
+    expect(screen.getByText('face is failed')).toBeInTheDocument()
+    expect(knownStatus('/token/Thopter?power=2', later)).toBe('loading')
+  })
+
   it.each<['load' | 'error', string, boolean]>([
     ['load', 'loaded', false],
     ['error', 'failed', true],
