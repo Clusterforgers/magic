@@ -1,5 +1,5 @@
 /** Goal: an attacker that needs several blockers (menace, `BlockOptions.min_blockers`) says so before anyone is put on it, on its card and in the prompt; Confirm waits while it has some blockers but too few and sends once it has enough or none; a prompt without such an attacker is as it was. */
-import { screen, within } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { BlockOptions, ObjectId } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'

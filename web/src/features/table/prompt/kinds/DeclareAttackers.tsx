@@ -152,9 +152,9 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
           ? `${attackSummary(
               declared.map((entry) => entry.target),
               names,
-            )}. Confirm the attack, or keep choosing.`
+            )}.`
           : several && aim !== undefined
-            ? `Click the creatures that attack ${names.short(aim)}, or another player to change who, or choose No attack.`
+            ? `Click creatures to attack ${names.short(aim)}, or click another player.`
             : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
 
   return (
@@ -177,6 +177,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       {several && aim !== undefined ? (
         <NativeSelect
           size="sm"
+          className="max-w-44"
           aria-label="Attack at"
           value={targetKey(aim)}
           onChange={(event) => pickAim(event.target.value)}
@@ -229,14 +230,12 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         onClick={() => answer({ DeclareAttackers: [] })}
       />
       {declared.length === 0 ? null : (
-        <div className="sr-only">
-          <PreviewOutcome
-            slot="attack-outcome"
-            heading="If you attack like this"
-            forecast={preview}
-            status={previewStatus}
-          />
-        </div>
+        <PreviewOutcome
+          slot="attack-outcome"
+          heading="If you attack like this"
+          forecast={preview}
+          status={previewStatus}
+        />
       )}
     </PromptLayout>
   )

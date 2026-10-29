@@ -97,11 +97,11 @@
  * more. Static, so there is nothing to put in the motion query.
  */
 [data-object-id][data-highlight='selected'] {
-  --tw-shadow: 0 0 10px 1px color-mix(in oklab, var(--primary) 55%, transparent);
+  --tw-shadow: 0 0 14px 3px color-mix(in oklab, var(--primary) 70%, transparent);
 }
 
 [data-object-id][data-cue='active'] {
-  --tw-shadow: 0 0 18px 5px color-mix(in oklab, var(--primary) 80%, transparent);
+  --tw-shadow: 0 0 20px 6px color-mix(in oklab, var(--primary) 90%, transparent);
 }
 
 .combat-head {

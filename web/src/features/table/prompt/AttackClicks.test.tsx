@@ -52,9 +52,12 @@ describe('the clicks of an attack', () => {
   it('has a bar of icon buttons in one row and no list, panel or defender choice at two seats', () => {
     const t = table(2, attackers(2, [{ Player: 1 }]))
     const bar = must(t.container.querySelector('[data-slot="combat-bar"]'))
-    expect(
-      [...bar.querySelectorAll('button')].map((button) => button.getAttribute('aria-label')),
-    ).toEqual(['Attack with all', 'Clear', 'Confirm attack', 'No attack'])
+    expect([...bar.querySelectorAll('button')].map((button) => button.getAttribute('aria-label'))).toEqual([
+      'Attack with all',
+      'Clear',
+      'Confirm attack',
+      'No attack',
+    ])
     expect(screen.queryByRole('combobox')).toBeNull()
     expect(t.container.querySelector('[data-defender]')).toBeNull()
   })
@@ -105,33 +108,36 @@ describe('the keyboard', () => {
 })
 
 describe('the defender of several seats', () => {
-  it.each([3, 4])('at %i seats starts at the first seat and a click on a pod aims the next creatures there', async (seats) => {
-    const options = attackers(seats, seatsOf(seats))
-    const [a, b, c] = options.map((option) => option.object) as [ObjectId, ObjectId, ObjectId]
-    const t = table(seats, options)
-    const last = seats - 1
-    expect(pod(t, 1)).toHaveAttribute('data-defender', 'chosen')
-    expect(pod(t, last)).toHaveAttribute('data-defender', 'candidate')
-    expect(pod(t, 0)).not.toHaveAttribute('data-defender')
-    await t.user.click(t.card(a))
-    await t.user.click(pod(t, last))
-    expect(pod(t, last)).toHaveAttribute('data-defender', 'chosen')
-    expect(pod(t, 1)).toHaveAttribute('data-defender', 'candidate')
-    await t.user.click(t.card(b))
-    await t.user.click(t.card(c))
-    await t.user.click(t.button('Confirm attack'))
-    expect(t.answer.mock.calls).toEqual([
-      [
-        {
-          DeclareAttackers: [
-            [a, { Player: 1 }],
-            [b, { Player: last }],
-            [c, { Player: last }],
-          ],
-        },
-      ],
-    ])
-  })
+  it.each([3, 4])(
+    'at %i seats starts at the first seat and a click on a pod aims the next creatures there',
+    async (seats) => {
+      const options = attackers(seats, seatsOf(seats))
+      const [a, b, c] = options.map((option) => option.object) as [ObjectId, ObjectId, ObjectId]
+      const t = table(seats, options)
+      const last = seats - 1
+      expect(pod(t, 1)).toHaveAttribute('data-defender', 'chosen')
+      expect(pod(t, last)).toHaveAttribute('data-defender', 'candidate')
+      expect(pod(t, 0)).not.toHaveAttribute('data-defender')
+      await t.user.click(t.card(a))
+      await t.user.click(pod(t, last))
+      expect(pod(t, last)).toHaveAttribute('data-defender', 'chosen')
+      expect(pod(t, 1)).toHaveAttribute('data-defender', 'candidate')
+      await t.user.click(t.card(b))
+      await t.user.click(t.card(c))
+      await t.user.click(t.button('Confirm attack'))
+      expect(t.answer.mock.calls).toEqual([
+        [
+          {
+            DeclareAttackers: [
+              [a, { Player: 1 }],
+              [b, { Player: last }],
+              [c, { Player: last }],
+            ],
+          },
+        ],
+      ])
+    },
+  )
 
   it('keeps the last choice for the next attack of the table', async () => {
     const options = attackers(3, seatsOf(3))
@@ -166,7 +172,8 @@ describe('the defender of several seats', () => {
   it('sends a creature at a planeswalker chosen in the list', async () => {
     const walker = must(
       fixtureOf(3).view.objects.find(
-        (object) => object.zone === 'Battlefield' && object.controller === 1 && !object.types.includes('Creature'),
+        (object) =>
+          object.zone === 'Battlefield' && object.controller === 1 && !object.types.includes('Creature'),
       ),
     ).id
     const options = attackers(3, [...seatsOf(3), { Planeswalker: walker }], 1)

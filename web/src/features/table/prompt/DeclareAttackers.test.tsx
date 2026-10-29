@@ -144,10 +144,10 @@ describe('one defender', () => {
     const { card, user, text } = attack(optionsOf(spec))
     expect(text()).toBe('Choose the creatures that attack Bo, or choose No attack.')
     await user.click(card(a))
-    expect(text()).toBe('1 attacker at Bo. Confirm the attack, or keep choosing.')
+    expect(text()).toBe('1 attacker at Bo.')
     await user.click(card(b))
     await user.click(card(c))
-    expect(text()).toBe('3 attackers at Bo. Confirm the attack, or keep choosing.')
+    expect(text()).toBe('3 attackers at Bo.')
   })
 
   it('attacks with all, in the order the options list them', async () => {
@@ -255,7 +255,7 @@ describe('several defenders', () => {
       await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), last)
       await table.user.click(table.card(b))
       await table.user.click(table.card(c))
-      expect(table.text()).toBe(`3 attackers: 1 at Bo, 2 at ${last}. Confirm the attack, or keep choosing.`)
+      expect(table.text()).toBe(`3 attackers: 1 at Bo, 2 at ${last}.`)
       await table.user.click(table.button('Confirm attack'))
       expect(table.answer.mock.calls).toEqual([
         [
@@ -276,10 +276,10 @@ describe('several defenders', () => {
     const table = attack(options, 4)
     expect(screen.queryByRole('button', { name: /^All at/ })).toBeNull()
     await table.user.click(table.button('Attack with all'))
-    expect(table.text()).toBe('4 attackers at Bo. Confirm the attack, or keep choosing.')
+    expect(table.text()).toBe('4 attackers at Bo.')
     await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), 'player:2')
     await table.user.click(table.button('All at Cy'))
-    expect(table.text()).toBe('4 attackers at Cy. Confirm the attack, or keep choosing.')
+    expect(table.text()).toBe('4 attackers at Cy.')
     await table.user.click(table.button('Confirm attack'))
     const sent = table.answer.mock.calls[0]?.[0] as { DeclareAttackers: [ObjectId, AttackTarget][] }
     expect(sent.DeclareAttackers.map(([, target]) => target)).toEqual(Array(4).fill({ Player: 2 }))
@@ -289,12 +289,12 @@ describe('several defenders', () => {
     const table = attack(optionsOf({ name: '', seats: 12, count: 5 }), 12)
     await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), 'player:11')
     await table.user.click(table.button('Attack with all'))
-    expect(table.text()).toBe('5 attackers at Lena. Confirm the attack, or keep choosing.')
+    expect(table.text()).toBe('5 attackers at Lena.')
   })
 
   it('says what to do before anything is chosen', () => {
     const { text } = attack(optionsOf({ name: '', seats: 4, count: 3 }), 4)
-    expect(text()).toBe('Click the creatures that attack Bo, or another player to change who, or choose No attack.')
+    expect(text()).toBe('Click creatures to attack Bo, or click another player.')
   })
 
   it('offers a planeswalker by name and owner, and answers with it', async () => {
@@ -328,7 +328,7 @@ describe('several defenders', () => {
     await table.user.click(table.card(a))
     await table.user.click(table.card(b))
     await table.user.unhover(table.card(b))
-    expect(table.text()).toBe('2 attackers: 1 at Bo, 1 at Cy. Confirm the attack, or keep choosing.')
+    expect(table.text()).toBe('2 attackers: 1 at Bo, 1 at Cy.')
     await table.user.click(table.button('Confirm attack'))
     expect(table.answer.mock.calls).toEqual([
       [

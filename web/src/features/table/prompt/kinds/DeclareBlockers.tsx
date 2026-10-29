@@ -199,8 +199,8 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         : firstShort !== undefined
           ? `${attackerName(firstShort[0])} needs ${blockersNeeded(firstShort[1])}. Choose another creature to block it, or take its block back.`
           : pairs.size === 0
-            ? 'Click a creature to block with, then the attacker it blocks, or choose No blocks.'
-            : `${blockSummary(pairs.size, new Set(pairs.values()).size)}. Confirm the blocks, or choose another creature.`
+            ? 'Click a blocker, then the attacker it blocks.'
+            : `${blockSummary(pairs.size, new Set(pairs.values()).size)}.`
 
   return (
     <PromptLayout compact text={text}>
@@ -213,6 +213,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         // An attacker whose seat is not drawn cannot be clicked, so it can be picked here too.
         <NativeSelect
           size="sm"
+          className="max-w-44"
           aria-label={`Attacker ${blockerName(choosing)} blocks`}
           value=""
           onChange={(event) => {
@@ -257,14 +258,12 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         </ul>
       )}
       {preview === null && pairs.size === 0 ? null : (
-        <div className="sr-only">
-          <PreviewOutcome
-            slot="block-outcome"
-            heading={pairs.size === 0 ? 'If you do not block' : 'If you block like this'}
-            forecast={preview}
-            status={previewStatus}
-          />
-        </div>
+        <PreviewOutcome
+          slot="block-outcome"
+          heading={pairs.size === 0 ? 'If you do not block' : 'If you block like this'}
+          forecast={preview}
+          status={previewStatus}
+        />
       )}
     </PromptLayout>
   )

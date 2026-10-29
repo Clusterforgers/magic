@@ -82,7 +82,6 @@ function mount(tableForecast: CombatForecast | null = null) {
     ...table,
     card,
     click,
-    card,
     send: (message: ServerMessage): void => void act(() => h.deliver(message)),
     wait: (ms: number): void => void act(() => vi.advanceTimersByTime(ms)),
     /** Chooses a blocker and the attacker it blocks. */
@@ -260,7 +259,7 @@ describe('blocks being chosen', () => {
     expect(t.h.state().notice).toBeNull()
   })
 
-  it('keep the room of the last forecast while the engine is asked, unseen and unread', () => {
+  it('keep the last forecast in the page while the engine is asked, unseen and unread', () => {
     const table = forecastOf({ dies: [t1], damage: 4 })
     const t = mount({
       ...table,
@@ -286,7 +285,7 @@ describe('blocks being chosen', () => {
     expect(t.state()).toBe('checking')
     const kept = must(t.section('block-outcome')).querySelector('ul')
     expect(kept).toHaveAttribute('aria-hidden', 'true')
-    expect(kept).toHaveClass('invisible')
+    expect(kept).toHaveClass('sr-only')
     expect(items()).toBe(before)
     // Nothing of it can be read: the list is hidden from the accessibility tree.
     expect(

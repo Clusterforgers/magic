@@ -4,11 +4,6 @@ import { describe, expect, it } from 'vitest'
 import type { BlockerOption, BlockOptions, ObjectId } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { creaturesOf, fixtureOf, ownOf, renderCombat } from '@/test-utils/combatTable'
-import { powerToughness } from '../cardModel'
-
-const objectOf = (seats: number, id: ObjectId) =>
-  must(fixtureOf(seats).view.objects.find((object) => object.id === id))
-
 interface Spec {
   name: string
   seats: number
@@ -80,7 +75,9 @@ const block = (spec: Spec) => {
   // The attackers the chosen blocker may block, as the bar lists them for a seat whose cards are not drawn.
   const picker = (): HTMLElement => screen.getByRole('combobox', { name: /^Attacker .* blocks$/ })
   const choices = (): HTMLOptionElement[] =>
-    within(picker()).getAllByRole<HTMLOptionElement>('option').filter((option) => option.value !== '')
+    within(picker())
+      .getAllByRole<HTMLOptionElement>('option')
+      .filter((option) => option.value !== '')
   return { ...table, ...given, picker, choices }
 }
 
@@ -242,7 +239,7 @@ describe('a replaced decision', () => {
 describe('the words', () => {
   it('says what to do before a blocker is chosen and is one live region', () => {
     const { text, container } = block(must(SPECS[0]))
-    expect(text()).toBe('Click a creature to block with, then the attacker it blocks, or choose No blocks.')
+    expect(text()).toBe('Click a blocker, then the attacker it blocks.')
     const line = must(container.querySelector<HTMLElement>('[data-slot="decision-line"]'))
     expect(within(line).getByText('Your decision: Declare blockers')).toBeInTheDocument()
     expect(line.querySelectorAll('[aria-live]')).toHaveLength(1)
