@@ -122,9 +122,11 @@ async fn every_card_is_compiled_with_all_and_a_hand_written_card_is_left_to_its_
         (report.written, report.replaced, report.unchanged),
         (10, 0, 0)
     );
-    assert_eq!((report.full, report.partial), (6, 4));
+    assert_eq!((report.full, report.partial), (7, 3));
     assert_eq!(status_of(&pool, "Shock").await, "full");
-    assert_eq!(status_of(&pool, "Æther Vial").await, "partial");
+    // "a creature card with mana value equal to the number of charge counters" reads whole.
+    assert_eq!(status_of(&pool, "Æther Vial").await, "full");
+    assert_eq!(status_of(&pool, "Jace, the Mind Sculptor").await, "partial");
     // What is stored is what the loader reads back as the card's rules.
     let shock = rules_of(&pool, "Shock").await;
     assert_eq!(shock["name"], "Shock");
@@ -169,7 +171,7 @@ async fn a_second_run_changes_nothing(pool: PgPool) {
     );
     assert_eq!(
         (report.full, report.partial),
-        (6, 4),
+        (7, 3),
         "the unchanged count too"
     );
     assert_eq!(db.card_rules().version().await.unwrap(), before);
@@ -338,7 +340,7 @@ async fn the_report_says_what_was_done(pool: PgPool) {
 
     assert!(
         text.starts_with(
-            "compile: every stored card, 20 cards\n  rows: 10 written, 0 replaced, 0 unchanged, 0 removed\n  by state: 6 full, 4 partial\n  not compiled: 1 hand-written (0 invalid), 8 nothing to read, 1 compiled rules invalid\n"
+            "compile: every stored card, 20 cards\n  rows: 10 written, 0 replaced, 0 unchanged, 0 removed\n  by state: 7 full, 3 partial\n  not compiled: 1 hand-written (0 invalid), 8 nothing to read, 1 compiled rules invalid\n"
         ),
         "{text}"
     );
