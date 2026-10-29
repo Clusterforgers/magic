@@ -562,32 +562,39 @@ fn attack_limit_at(scope: &Scope<'_>, most: u32, at: &Ref) -> Result<Rule, Resol
     })
 }
 
+/// The objects `who` names in `scope` that are in `zone` now: what the source is attached to for `Attached`.
+fn w17b_rule_objects(
+    scope: &Scope<'_>,
+    who: &Ref,
+    zone: Zone,
+) -> Result<Vec<ObjectRef>, ResolveError> {
+    let named = if matches!(who, Ref::Attached) {
+        scope
+            .state
+            .host_of(scope.source.id)
+            .and_then(|host| scope.state.object(host))
+            .map(GameObject::reference)
+            .into_iter()
+            .collect()
+    } else {
+        scope.objects(who)?
+    };
+    // An object that has changed zones since it was named is a new object (CR 400.7).
+    Ok(named
+        .into_iter()
+        .filter(|named| {
+            scope
+                .state
+                .object(named.id)
+                .is_some_and(|o| o.counter() == named.counter && o.zone() == zone)
+        })
+        .collect())
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
-    let objects = |who: &Ref, zone: Zone| -> Result<Vec<ObjectRef>, ResolveError> {
-        let named = if matches!(who, Ref::Attached) {
-            scope
-                .state
-                .host_of(scope.source.id)
-                .and_then(|host| scope.state.object(host))
-                .map(GameObject::reference)
-                .into_iter()
-                .collect()
-        } else {
-            scope.objects(who)?
-        };
-        // An object that has changed zones since it was named is a new object (CR 400.7).
-        Ok(named
-            .into_iter()
-            .filter(|named| {
-                scope
-                    .state
-                    .object(named.id)
-                    .is_some_and(|o| o.counter() == named.counter && o.zone() == zone)
-            })
-            .collect())
-    };
+    let objects = |who: &Ref, zone: Zone| w17b_rule_objects(scope, who, zone);
     Ok(match wanted {
         GameRule::DamageCantBePrevented { source, combat } => Rule::DamageCantBePrevented {
             source: source.clone(),
