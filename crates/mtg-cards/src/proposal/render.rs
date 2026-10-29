@@ -29,10 +29,13 @@ impl Report {
         }
     }
 
-    /// The report: the card and its summary, the problems, each clause that does not read back and, with `verbose`,
+    /// The report: the card and its summary, what was repaired, the problems, each clause that does not read back and, with `verbose`,
     /// each that does; the clauses the engine does not run come last.
     pub fn render(&self, verbose: bool) -> String {
         let mut text = format!("{}: {}\n", self.card, self.summary());
+        for repair in &self.repairs {
+            let _ = writeln!(text, "  repaired  {repair}");
+        }
         for problem in &self.problems {
             let _ = writeln!(text, "  invalid   {problem}");
         }

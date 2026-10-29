@@ -183,20 +183,22 @@ fn the_status_a_file_declares_does_not_count() {
 }
 
 #[test]
-fn another_cards_oracle_id_is_invalid_where_it_is_written() {
+fn another_cards_oracle_id_is_replaced_by_the_cards_and_the_text_stays_the_judge() {
     let wrong = r#"{"oracle_id":"00000000-0000-4000-8000-000000000000","faces":[{"abilities":[{"Keyword":"Flying"},{"Keyword":"Vigilance"}]}]}"#;
+    let other = r#"{"oracle_id":"00000000-0000-4000-8000-000000000000","faces":[{"abilities":[{"Keyword":"Flying"}]}]}"#;
 
     let report = run("Serra Angel", wrong);
+    let partial = run("Serra Angel", other);
 
-    assert_eq!(report.verdict(), Verdict::Invalid);
-    assert!(
-        report
-            .problems
-            .iter()
-            .any(|problem| problem.path == "oracle_id"),
-        "{:?}",
-        report.problems
+    assert_eq!(
+        report.verdict(),
+        Verdict::Accepted,
+        "{}",
+        report.render(false)
     );
+    assert_eq!(report.repairs.len(), 1);
+    assert_eq!(report.repairs[0].at, "oracle_id");
+    assert_ne!(partial.verdict(), Verdict::Invalid);
 }
 
 #[test]

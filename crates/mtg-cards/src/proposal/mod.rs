@@ -10,6 +10,9 @@ mod blocks;
 mod complete;
 mod pairing;
 mod render;
+mod repair;
+
+pub use repair::{Repair, RepairClass};
 
 use std::collections::BTreeSet;
 
@@ -101,6 +104,8 @@ pub struct Report {
     pub strays: Vec<Stray>,
     /// The support state of the completed rules; `None` when they are invalid.
     pub support: Option<SupportRecord>,
+    /// What the checker repaired in the file before it judged it; empty when the file needed nothing.
+    pub repairs: Vec<Repair>,
     /// The rules as the checker completes them: oracle id, name, status and fingerprints from the card, a `Manual`
     /// ability for each open clause, abilities in printed order; `None` when the JSON does not parse.
     pub rules: Option<Card>,
@@ -165,8 +170,17 @@ pub fn check(
         strays: Vec::new(),
         support: None,
         rules: None,
+        repairs: Vec::new(),
     };
-    let proposed = match complete::parse(text, printed, &file) {
+    let mut value = match complete::read(text, &file) {
+        Ok(value) => value,
+        Err(error) => {
+            report.problems.push(error);
+            return report;
+        }
+    };
+    report.repairs = repair::repair(&mut value, printed);
+    let proposed = match complete::parse(value, printed, &file) {
         Ok(card) => card,
         Err(error) => {
             report.problems.push(error);
