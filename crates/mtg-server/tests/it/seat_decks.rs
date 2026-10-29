@@ -258,7 +258,10 @@ async fn only_the_holder_of_a_seat_chooses_its_deck_and_a_deck_nobody_has_is_one
         (elsewhere.status, elsewhere.error_code().as_str()),
         (403, "forbidden")
     );
-    for seat in ["01", "12", "-1", "x", ""] {
+    // A seat no game has is not the caller's to choose for: one 403, whatever the number.
+    let beyond = put_deck(&server, &made.id, "12", made.host(), "mono-red").await;
+    assert_eq!(beyond.status, 403, "seat 12");
+    for seat in ["01", "-1", "x", ""] {
         let reply = put_deck(&server, &made.id, seat, made.host(), "mono-red").await;
         assert_eq!(reply.status, 404, "seat {seat:?}");
     }
