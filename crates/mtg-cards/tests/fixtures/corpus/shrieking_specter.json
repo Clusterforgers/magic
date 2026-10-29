@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "81d3b0fd-a81e-4665-bba6-b6d085693abf",
+  "oracle_id": "f6adfb5f-a21c-4e86-bd16-a9c1e355af34",
+  "multiverse_ids": [
+    20363
+  ],
+  "tcgplayer_id": 379,
+  "cardmarket_id": 14523,
+  "name": "Shrieking Specter",
+  "lang": "en",
+  "released_at": "1999-07-01",
+  "uri": "https://api.scryfall.com/cards/81d3b0fd-a81e-4665-bba6-b6d085693abf",
+  "scryfall_uri": "https://scryfall.com/card/s99/89/shrieking-specter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:33:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.jpg?1783946031",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.jpg?1783946031",
+    "large": "https://cards.scryfall.io/large/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.jpg?1783946031",
+    "png": "https://cards.scryfall.io/png/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.png?1783946031",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.jpg?1783946031",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.jpg?1783946031",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.webp?1783946031",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.webp?1783946031",
+    "display": "https://cards.scryfall.io/display/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.webp?1783946031",
+    "art": "https://cards.scryfall.io/art/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.webp?1783946031",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.webp?1783946031",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/81d3b0fd-a81e-4665-bba6-b6d085693abf.jpg?1783946031"
+  },
+  "mana_cost": "{5}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Specter",
+  "oracle_text": "Flying\nWhenever this creature attacks, defending player discards a card.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7e345c51-7a88-4c7a-8184-4e1ba493b40d",
+  "set": "s99",
+  "set_name": "Starter 1999",
+  "set_type": "starter",
+  "set_uri": "https://api.scryfall.com/sets/7e345c51-7a88-4c7a-8184-4e1ba493b40d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3As99&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/s99?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/81d3b0fd-a81e-4665-bba6-b6d085693abf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af6adfb5f-a21c-4e86-bd16-a9c1e355af34&unique=prints",
+  "collector_number": "89",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "rk post",
+  "artist_ids": [
+    "81ae0f3f-1d88-4125-9aeb-b15b4c734c82"
+  ],
+  "illustration_id": "2f4dea27-caf7-4cd7-8712-c2679e3842c4",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31171,
+  "prices": {
+    "usd": "1.02",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.36",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=20363&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShrieking%2BSpecter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShrieking%2BSpecter",
+    "edhrec": "https://edhrec.com/route/?cc=Shrieking+Specter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F379%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=14523&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Shrieking+Specter&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

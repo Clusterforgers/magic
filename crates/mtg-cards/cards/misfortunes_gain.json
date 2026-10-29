@@ -1,0 +1,22 @@
+{
+  "oracle_id": "01b778d7-0965-48ab-a81f-e29f8a233d07",
+  "name": "Misfortune's Gain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misfortune's Gain",
+      "oracle_fingerprint": "821f9def18e11b98c55f1fd10bcd4094",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "GainLife": { "who": { "OwnerOf": { "Target": 0 } }, "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ec7eb7d8-92b2-4442-856e-a9790301c3b3",
+  "name": "Silver Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silver Drake",
+      "oracle_fingerprint": "d37752ebff528adc17a2eab92abba6ad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "White" }, { "Color": "Blue" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

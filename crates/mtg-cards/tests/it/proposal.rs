@@ -240,7 +240,7 @@ fn loyalty_abilities_whose_effects_have_writers_read_back(#[case] card: &str, #[
 }
 
 #[rstest]
-#[case::a_modification("Control Magic", "control_magic.json", "SetController")]
+#[case::a_modification("Kormus Bell", "kormus_bell.json", "SetColors")]
 #[case::a_rule("Maralen of the Mornsong", "maralen_of_the_mornsong.json", "Rule")]
 fn a_construct_without_a_writer_cannot_be_read_back_and_is_named(
     #[case] card: &str,

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "48fa47c0-544e-4374-a0a6-ef8f65cdf0dd",
+  "name": "Swaggering Corsair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swaggering Corsair",
+      "oracle_fingerprint": "975e418623938db7e91252b1ceab7977",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

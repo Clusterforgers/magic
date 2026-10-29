@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f104b361-8000-4eda-b530-1502528e09f9",
+  "name": "Leeching Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leeching Sliver",
+      "oracle_fingerprint": "67af7d9e7d0b665dbc854fae51fd4532",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "ControlledBy": "You" }, { "Subtype": "Sliver" }] } },
+            "effects": [{ "LoseLife": { "who": "Defending", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
