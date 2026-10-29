@@ -1,0 +1,12 @@
+{
+  "oracle_id": "e3444fcf-70ed-4d6e-aea9-030af15cad56",
+  "name": "Throes of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Throes of Chaos",
+      "oracle_fingerprint": "d61d013eceb47acebc3e11e0a4076325",
+      "abilities": [{ "Keyword": "Cascade" }, { "Keyword": "Retrace" }]
+    }
+  ]
+}

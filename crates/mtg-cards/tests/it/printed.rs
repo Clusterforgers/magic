@@ -94,6 +94,11 @@ const X_DAMAGE: &str = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[
     r#"{"Keyword":"Flash"}"#,
     &["faces[0].abilities: an instant or sorcery needs a Spell ability"]
 )]
+#[case::w17a_a_spell_of_cascade_alone(
+    printed("Sorcery", "{3}{R}", "Cascade\nRetrace", &["Cascade", "Retrace"]),
+    r#"{"Keyword":"Cascade"},{"Keyword":"Retrace"}"#,
+    &[]
+)]
 #[case::loyalty_off_a_planeswalker(
     printed("Creature \u{2014} Elf", "{G}", "+1: Draw.", &[]),
     r#"{"Loyalty":{"cost":{"Plus":1},"effects":[{"Draw":{}}]}}"#,
