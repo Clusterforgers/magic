@@ -85,6 +85,7 @@ mod tests {
             attached_player: None,
             attachments: Vec::new(),
             manual: Vec::new(),
+            identity: None,
         }
     }
 

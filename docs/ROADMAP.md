@@ -51,6 +51,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Web: the game UI with prompts for all eight decision kinds, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Popular-card edges: a delayed trigger reads the stats of its resolution's targets as they last were (Mana Drain), and no token is made for a player who loses in the same batch (CR 800.4a).
 - Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand, and one-click play.
+- Table readability: the hand keeps every card's name and cost readable (one row down to 68 px, then rows that show each card's top, scrolling only past that), the turn band hangs above the prompt sheet, and the log folds a round of passes into one line of colour dots.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
 - Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
 - Changes of control: targets, groups, the enchanted permanent, one target for each opponent with the untap and keywords after it, an untap before the taking, a base size or a creature type for the turn, each player taking back what they own, exchanges of control and a targeting spell or ability countered unless its controller pays (`docs/engine.md`, `docs/cards-dsl.md`).
@@ -92,6 +93,8 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Mill and rad counters: mill triggers per card, per batch and per player, target bounds from a mill batch, cards milled this turn, the radiation rule, entering tapped for rad counters, costs reduced per rad counter and losing all rad counters.
 - Statics of the rules: cards in graveyards that can't be targeted, players who can't lose or win, opponents who can't cast on your turn, combat damage by toughness and counters that remain as a card changes zones.
 - Popularity coverage: `mtg-cli coverage --all` ranks the blockers of every Commander-legal card by the EDHREC rank of the cards they hold back, shows the Verified share by rank bucket and lists the cards of the top 2,000 that are not Verified (`docs/data-sources.md`).
+- Card identity in views: `ObjectView.identity` names the oracle id of a card the viewer identifies, set by the server on every card it reads.
+- Card images: the server serves the picture of a card, printing or token from a disk cache that fills from the Scryfall CDN under the politeness rules, and warms the pictures of a starting game in the background (`docs/server.md`, Pictures).
 
 ## M3 Card system
 
@@ -117,7 +120,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test
 
 ### Manual cards and views
-- [~] (v1) (v1-views-final) Views complete: every object state, the activatable abilities with cost and target wording, a spectator audience, and reveals moved to a hidden zone in one batch (`docs/protocol.md`)
 - [~] (v1a) (v1a-ability-wording) The activated abilities of an object in its view with their oracle wording (`ObjectView.activated`, the loyalty abilities' text), so a menu names what `PriorityOptions.abilities` offers
 - [~] (v1b) (v1a-ability-wording) A card revealed and moved to a hidden zone in one batch reaches every seat it was shown to as it was seen (`EventBatch.shown`), so the log names it
 - [~] (v1c) (v1c-spectator-printing) A spectator audience: `StateView::for_spectator` and `TableView.spectator`, so a client tells a spectator's view from a seat's without counting seats
@@ -134,9 +136,9 @@ The server is settled first, then the web is built once against the final types.
 
 - [~] (g0a) (w2-lobby-commander) The create form and the lobby deck chooser pick a precon and the Commander format, so `precon-game.spec.ts` (`startTable` makes the game with `POST /api/games` and `PUT .../deck`) plays from the UI alone; joins with (w1a) and (k2)
 - [~] (g0b) (w3-payment) A hand highlights only the cards the seat can pay for, and the payment prompt disables "Pay automatically" with its reason when the mana cannot cover the cost (manual pair, `failure-bo` page text: "That answer is not allowed: invalid payment" with the prompt left open)
-- [~] (g0c) (w4-table-readability) The hand fan keeps every card's name and cost readable at 1600x1000 (names cut off in `verified/17-bo-PayMana.png` and `four-seats/25-bo-turn-5-Priority.png`) and the turn splash never covers a prompt (`verified/17-bo-PayMana.png`)
 - [~] (g0e) (w3-payment) Paying by hand cannot go wrong: the prompt keeps a source that would overpay or that needs mana made before it from being tapped, instead of the server refusing the confirm ("payment provides 4 mana but the cost is 3" with Sol Ring and two more sources; "the mana cost of ManaSource ... cannot be paid from the mana made before it"; both in runs with `autoPay: false`, whose seat now pays automatically in `precon-game.spec.ts`)
-- [~] (g0d) (w4-table-readability) The log folds the "receives priority" and "passes priority" lines of a step into one line and a seat's priority windows with only mana abilities to use are passed (four seats: eight lines a step, `four-seats/25-bo-turn-5-Priority.png`; idle windows in 2 to 15 of 27 to 48 decisions)
+- [ ] (g0f) A seat is passed for at a priority window with only mana abilities to use: `windows.rs` `asks` asks on `PriorityOptions.can_act` (`priority.rs` `can_act`: lands, castable spells, abilities that are not mana abilities, special actions; mana abilities never count), a held stop, Full Control or a yield, so the idle windows of the smoke runs (2 to 15 of 27 to 48 decisions per game) come from one of those: find which (a costly mana ability listed by `other_abilities`, a stop the seat holds) and pass the window as idle, with a test over the window table in `windows.rs`
+- [ ] (g0g) The hand dock holds hands of 9 to 16 cards in two rows below 1000 px of height: at 1400x900 a hand of 9 or more scrolls, since two rows need 150 px of cards (`HAND_CLAMP` in `layout.ts`, or more of the width from the controls dock beside it)
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
 - [~] (w3a) (w3-payment) Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and cards put back; the payment prompt for X, restricted mana, convoke and delve
@@ -145,7 +147,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
-- [~] (a1) (a1-card-images) Card images: the server serves the normal and art-crop image of a card identity (printing, face, token) from a disk cache filled from the Scryfall CDN, and the text face stands in while an image loads or does not exist (`docs/server.md`, `docs/data-sources.md`)
 - [~] (a2) (a2-card-images-web) The table, hand, stack, preview, deck builder and lobby draw the real card image, unaltered as Scryfall's image terms require, with tapped state, counters, attachments, loyalty and support marks over it, with `/dev/table` screenshots at six sizes in both themes (`docs/web.md`)
 - [~] (k1) (k1-commander-table) Commander at the table: each commander in the command zone with its cast count and tax, casting it from there with the tax in the cast options, the choice to return it to the command zone, and commander damage on every pod with the lethal amount, with `/dev/table` screenshots of a four-seat game at six sizes in both themes
 - [ ] (k2) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)

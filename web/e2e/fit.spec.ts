@@ -40,9 +40,9 @@ interface Look {
   things: Record<string, { box: Box; free: boolean } | null>
 }
 
-/** What each thing is, as a selector. A prompt's controls are in the dock; the hand is the dock's first card. */
+/** What each thing is, as a selector. A prompt's controls are in the dock; the hand is the first card of the row nothing lies over. */
 const THINGS = {
-  hand: '[data-region="hand"] button[data-object-id]',
+  hand: '[data-region="hand"] [data-slot="hand-slot"]:not([data-back]) button[data-object-id]',
   life: '[data-you] [data-slot="life"]',
   primary: '[data-region="controls"] [data-slot="primary-action"]',
   keep: '[data-decision="Mulligan"] button',

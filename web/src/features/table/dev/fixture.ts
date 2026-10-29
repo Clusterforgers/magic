@@ -35,6 +35,8 @@ export interface FixtureOptions {
   permanents?: number
   /** The seat whose turn it is and who attacks; the seat after the viewer by default. */
   active?: PlayerId
+  /** Cards in the viewer's hand, 0 to 24; 7 by default. */
+  hand?: number
 }
 
 /** The table, its log and chat, and the seat names. */
@@ -153,6 +155,11 @@ export function buildFixture(options: FixtureOptions): Fixture {
         pick(INSTANTS, 0),
         pick(INSTANTS, 4),
       ]
+      const wanted = Math.min(24, Math.max(0, Math.floor(options.hand ?? hand.length)))
+      for (let more = hand.length; more < wanted; more += 1) {
+        hand.push(pick(more % 3 === 0 ? INSTANTS : more % 3 === 1 ? CREATURES : LANDS, more * 3 + 1))
+      }
+      hand.length = wanted
       for (const template of hand) mine.hand.push(add(template, seat, { Hand: seat }).id)
     }
     cards.push(mine)

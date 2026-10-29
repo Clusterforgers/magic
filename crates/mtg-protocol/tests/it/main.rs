@@ -32,6 +32,7 @@ mod granted_miracle_hidden;
 mod hidden_info;
 mod hideaway_view;
 mod house_rules_view;
+mod identity_view;
 mod improvise_hidden;
 mod impulse_hidden;
 mod keyword_view;
