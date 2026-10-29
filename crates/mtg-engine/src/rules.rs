@@ -392,6 +392,28 @@ struct Unpreventable {
 }
 
 impl RulesInForce {
+    /// Keeps the least limit on the attacks at each of the defenders.
+    fn w14a_limit_attacks_at(&mut self, most: u32, at: &[AttackTarget]) {
+        for target in at {
+            let least = self
+                .attack_limit_at
+                .get(target)
+                .map_or(most, |was| (*was).min(most));
+            self.attack_limit_at.insert(*target, least);
+        }
+    }
+
+    /// Keeps the least limit on the blocks of each of the players.
+    fn w14a_limit_blocks(&mut self, most: u32, who: &[PlayerId]) {
+        for player in who {
+            let least = self
+                .block_limit_each
+                .get(player)
+                .map_or(most, |was| (*was).min(most));
+            self.block_limit_each.insert(*player, least);
+        }
+    }
+
     /// Puts a rule in force. `controller` and `source` are those of the effect or the permanent that has the rule.
     fn put(&mut self, rule: &Rule, controller: PlayerId, source: Option<ObjectRef>) {
         let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
@@ -409,27 +431,11 @@ impl RulesInForce {
             Rule::AttackLimit(most) => {
                 self.attack_limit = Some(self.attack_limit.map_or(*most, |was| was.min(*most)));
             }
-            Rule::AttackLimitAt { most, at } => {
-                for target in at {
-                    let least = self
-                        .attack_limit_at
-                        .get(target)
-                        .map_or(*most, |was| (*was).min(*most));
-                    self.attack_limit_at.insert(*target, least);
-                }
-            }
+            Rule::AttackLimitAt { most, at } => self.w14a_limit_attacks_at(*most, at),
             Rule::BlockLimit(most) => {
                 self.block_limit = Some(self.block_limit.map_or(*most, |was| was.min(*most)));
             }
-            Rule::BlockLimitEach { most, who } => {
-                for player in who {
-                    let least = self
-                        .block_limit_each
-                        .get(player)
-                        .map_or(*most, |was| (*was).min(*most));
-                    self.block_limit_each.insert(*player, least);
-                }
-            }
+            Rule::BlockLimitEach { most, who } => self.w14a_limit_blocks(*most, who),
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
             Rule::NoLifeLossFromDamage(players) => self.no_damage_loss.extend(players),
@@ -516,6 +522,14 @@ fn w10a_defenders(scope: &Scope<'_>, at: &Ref) -> Result<Vec<AttackTarget>, Reso
         .collect())
 }
 
+/// "Each opponent can't block with more than one creature this combat": the limit and the players it names.
+fn w14a_block_limit_each(scope: &Scope<'_>, most: u32, who: &Ref) -> Result<Rule, ResolveError> {
+    Ok(Rule::BlockLimitEach {
+        most,
+        who: scope.players(who)?,
+    })
+}
+
 /// "No more than N creatures can attack you each combat": the limit and the defenders it names.
 fn attack_limit_at(scope: &Scope<'_>, most: u32, at: &Ref) -> Result<Rule, ResolveError> {
     Ok(Rule::AttackLimitAt {
@@ -583,10 +597,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
         GameRule::AttackLimitAt { most, at } => attack_limit_at(scope, *most, at)?,
         GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
-        GameRule::BlockLimitEach { most, who } => Rule::BlockLimitEach {
-            most: *most,
-            who: scope.players(who)?,
-        },
+        GameRule::BlockLimitEach { most, who } => w14a_block_limit_each(scope, *most, who)?,
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
@@ -667,12 +678,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SkipDrawStep(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
-        Rule::BlockLimitEach { who, .. } => who.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
-        Rule::PlayersHave { who, .. } => who.is_empty(),
+        Rule::BlockLimitEach { who, .. } | Rule::PlayersHave { who, .. } => who.is_empty(),
         Rule::TriggerAgain(_)
         | Rule::DamageCantBePrevented { .. }
         | Rule::Regenerate(_)
