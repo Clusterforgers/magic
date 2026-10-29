@@ -79,12 +79,10 @@ function shareTable(previous: TableView, next: TableView): TableView {
 
 function shareObject(previous: ObjectView, next: ObjectView): ObjectView {
   if (sameJson(previous, next)) return previous
+  // Every field of `next`, so an optional one (keywords, identity, activated) is never dropped.
   return {
-    id: next.id,
-    owner: next.owner,
-    controller: next.controller,
+    ...next,
     zone: keep(previous.zone, next.zone),
-    name: next.name,
     mana_cost: keep(previous.mana_cost, next.mana_cost),
     supertypes: keep(previous.supertypes, next.supertypes),
     types: keep(previous.types, next.types),
