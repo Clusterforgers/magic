@@ -86,6 +86,7 @@ pub mod library;
 pub mod loyalty;
 pub mod mana;
 pub mod manual;
+mod manual_effects;
 pub mod merged;
 pub mod monarch;
 pub mod object;

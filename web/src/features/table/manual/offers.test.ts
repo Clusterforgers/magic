@@ -1,4 +1,4 @@
-// Goal: the menu of a card lists exactly the manual actions the protocol allows for that card, zone, seat and priority state, says why the others cannot be used, and every filled form builds the exact ManualAction payload.
+// Goal: the menu of a card lists exactly the manual actions the protocol allows for that card, zone and seat at any time, blocks them for a seat out of the game, says why the others cannot be used, and every filled form builds the exact ManualAction payload.
 import { describe, expect, it } from 'vitest'
 import type { CounterKind, ManualAction, ObjectView } from '@/protocol/generated'
 import { card, permanent } from '@/test-utils/cards'
@@ -9,7 +9,9 @@ import {
   EMPTY_DRAFT,
   isAttachment,
   manualMenu,
-  NEEDS_PRIORITY,
+  damageTargets,
+  GAME_OVER,
+  OUT_OF_GAME,
   startDraft,
   validCounterName,
   zoneKind,
@@ -22,7 +24,7 @@ function input(object: ObjectView, over: Partial<MenuInput> = {}): MenuInput {
   return {
     seat: SEAT,
     object,
-    holding: true,
+    players: [0, 1],
     hasCommandZone: true,
     library: 40,
     counters: [],
@@ -53,9 +55,16 @@ describe('which groups and entries a card offers', () => {
         move: MOVES,
         counters: ['add-+1/+1', 'add-counters', 'remove-counters'],
         tap: ['tap'],
+        effect: ['damage', 'mana', 'pump'],
         token: ['token'],
         other: OTHER,
       },
+    ],
+    [
+      'a creature of an opponent',
+      card({ owner: 1, controller: 1 }),
+      {},
+      { tap: ['tap'], effect: ['pump'], token: ['token'], other: OTHER },
     ],
     [
       'a creature with two kinds of counter',
@@ -80,7 +89,7 @@ describe('which groups and entries a card offers', () => {
       'a land of the seat',
       card({ types: ['Land'], subtypes: [] }),
       {},
-      { counters: ['add-counters', 'remove-counters'], tap: ['tap'] },
+      { counters: ['add-counters', 'remove-counters'], tap: ['tap'], effect: ['damage', 'mana'] },
     ],
     [
       'a card in the seat hand',
@@ -96,6 +105,7 @@ describe('which groups and entries a card offers', () => {
           'move-LibraryBottom',
           'move-Command',
         ],
+        effect: ['mana'],
         token: ['token'],
         other: OTHER,
       },
@@ -169,14 +179,14 @@ describe('which groups and entries a card offers', () => {
     if (expected.attach?.length === 0) expect(groupIds(menu)).not.toContain('attach')
   })
 
-  it('lists the groups in the order move, counters, tap, attach, token, you', () => {
+  it('lists the groups in the order move, counters, tap, attach, effects, token, you', () => {
     const menu = manualMenu(input({ ...card(), subtypes: ['Aura'] }))
-    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'token', 'other'])
+    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'token', 'other'])
   })
 
   it('leaves out counters, tapping and attaching for a card that is not a permanent', () => {
     const menu = manualMenu(input(card({ zone: { Hand: SEAT }, permanent: null, subtypes: ['Aura'] })))
-    expect(groupIds(menu)).toEqual(['move', 'token', 'other'])
+    expect(groupIds(menu)).toEqual(['move', 'effect', 'token', 'other'])
   })
 })
 
@@ -221,15 +231,15 @@ describe('what stops an entry', () => {
     expect(keys(menu, 'other')).toEqual(OTHER)
   })
 
-  it('without priority every entry is listed and none can be used', () => {
-    const menu = manualMenu(input(card({ counters: [['+1/+1', 1]] }), { holding: false }))
-    expect(menu.notice).toBe(NEEDS_PRIORITY)
+  it.each([OUT_OF_GAME, GAME_OVER])('once %s every entry is listed and none can be used', (reason) => {
+    const menu = manualMenu(input(card({ counters: [['+1/+1', 1]] }), { off: reason }))
+    expect(menu.notice).toBe(reason)
     const all = menu.groups.flatMap((entry) => entry.items)
     expect(all.length).toBeGreaterThan(10)
-    expect(all.every((entry) => entry.unavailable === NEEDS_PRIORITY)).toBe(true)
+    expect(all.every((entry) => entry.unavailable === reason)).toBe(true)
   })
 
-  it('with priority nothing is blocked on an ordinary permanent but removing counters it does not have', () => {
+  it('for a seat in the game nothing is blocked on an ordinary permanent but removing counters it does not have', () => {
     const menu = manualMenu(input(card()))
     expect(menu.notice).toBeUndefined()
     const blocked = menu.groups.flatMap((entry) => entry.items).filter((entry) => entry.unavailable)
@@ -417,6 +427,29 @@ describe('the forms', () => {
         },
       },
     ],
+    [
+      'damage to a player',
+      'damage',
+      { hit: { Player: 1 }, count: 3 },
+      {},
+      { Damage: { source: 3, target: { Player: 1 }, amount: 3 } },
+    ],
+    [
+      'damage to a creature',
+      'damage',
+      { hit: { Object: 12 }, count: 99 },
+      {},
+      { Damage: { source: 3, target: { Object: 12 }, amount: 99 } },
+    ],
+    ['mana', 'mana', { mana: 'Blue', count: 20 }, {}, { AddMana: { mana: 'Blue', count: 20 } }],
+    ['a pump', 'pump', { power: 3, toughness: 0 }, {}, { Pump: { object: 3, power: 3, toughness: 0 } }],
+    [
+      'a shrink',
+      'pump',
+      { power: -99, toughness: -2 },
+      {},
+      { Pump: { object: 3, power: -99, toughness: -2 } },
+    ],
   ]
   it.each(ok)('builds %s', (_name, ask, draft, extra, action) => {
     expect(built(ask, draft, extra)).toEqual({ action })
@@ -441,6 +474,15 @@ describe('the forms', () => {
     ['a custom token without a name', 'token', { token: 'custom', name: ' ' }, {}],
     ['a custom token with a power of 100', 'token', { token: 'custom', name: 'X', power: 100 }, {}],
     ['a token that is not on the list', 'token', { token: 'Dinosaur' }, {}],
+    ['damage to nothing', 'damage', { count: 2 }, {}],
+    ['zero damage', 'damage', { hit: { Player: 1 }, count: 0 }, {}],
+    ['100 damage', 'damage', { hit: { Player: 1 }, count: 100 }, {}],
+    ['21 mana', 'mana', { count: 21 }, {}],
+    ['zero mana', 'mana', { count: 0 }, {}],
+    ['a pump of nothing', 'pump', { power: 0, toughness: 0 }, {}],
+    ['a pump of 100', 'pump', { power: 100, toughness: 1 }, {}],
+    ['a shrink of 100', 'pump', { power: 1, toughness: -100 }, {}],
+    ['a fractional pump', 'pump', { power: 0.5, toughness: 1 }, {}],
   ]
   it.each(bad)('refuses %s with a reason', (_name, ask, draft, extra) => {
     const result = built(ask, draft, extra)
@@ -452,6 +494,26 @@ describe('the forms', () => {
     expect(start('removeCounters')).toBe('+1/+1')
     expect(start('removePlayerCounters', { counters: [[{ Other: 'energy' }, 1]] })).toBe('energy')
     expect(start('addCounters')).toBe('+1/+1')
+  })
+})
+
+describe('what damage can be dealt to', () => {
+  it('lists the players in the game, the other seats first, then what takes damage on the battlefield by name', () => {
+    const objects = [
+      card({ id: 1, name: 'Zombie', types: ['Creature'] }),
+      card({ id: 2, name: 'Jace', types: ['Planeswalker'] }),
+      card({ id: 3, name: 'Invasion', types: ['Battle'] }),
+      card({ id: 4, name: 'Forest', types: ['Land'] }),
+      card({ id: 5, name: 'Bear', types: ['Creature'], zone: { Graveyard: 0 }, permanent: null }),
+    ]
+    expect(damageTargets(objects, [0, 2, 3], 2)).toEqual([
+      { Player: 0 },
+      { Player: 3 },
+      { Player: 2 },
+      { Object: 3 },
+      { Object: 2 },
+      { Object: 1 },
+    ])
   })
 })
 

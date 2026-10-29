@@ -39,6 +39,14 @@ describe('server errors', () => {
     },
   )
 
+  it('shows the reason of a refused manual action and keeps the pending decision', () => {
+    const h = connected()
+    expect(h.session.manual({ Tap: { object: 3 } })).toBe(true)
+    h.deliver({ type: 'Error', code: 'IllegalAnswer', message: 'Grizzly Bears is already tapped' })
+    expect(h.state().notice).toMatch(/Grizzly Bears is already tapped/)
+    expect(h.state().pending).toMatchObject({ id: 7 })
+  })
+
   it.each(['BadMessage', 'Internal'])(
     '%s repeated twenty times still sends nothing and keeps the game',
     (code) => {

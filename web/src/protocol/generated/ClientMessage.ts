@@ -2,6 +2,7 @@
 import type { Answer } from "./Answer";
 import type { DecisionId } from "./DecisionId";
 import type { FullControlMode } from "./FullControlMode";
+import type { ManualAction } from "./ManualAction";
 import type { Step } from "./Step";
 import type { StopSide } from "./StopSide";
 import type { YieldUntil } from "./YieldUntil";
@@ -41,7 +42,11 @@ answer: Answer, } | { "type": "Chat",
 /**
  * The text.
  */
-text: string, } | { "type": "Concede" } | { "type": "Resync" } | { "type": "AutoPass", 
+text: string, } | { "type": "Manual", 
+/**
+ * What the seat does.
+ */
+action: ManualAction, } | { "type": "Concede" } | { "type": "Resync" } | { "type": "AutoPass", 
 /**
  * The new setting.
  */

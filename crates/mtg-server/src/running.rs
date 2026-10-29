@@ -1,9 +1,11 @@
 //! A started game as a plain state machine: the engine plus the decision ids that tell stale answers from current ones.
 
+use std::collections::VecDeque;
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::forecast::CombatForecast;
+use mtg_engine::manual::ManualAction;
 use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState};
 use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView, TableView};
@@ -137,6 +139,10 @@ pub(crate) struct Running {
     banks: Banks,
     /// Whether the table played with manual cards when the game began.
     manual_play: bool,
+    /// Manual actions that came while a replacement question held a batch, applied in order once it is answered.
+    deferred: VecDeque<(PlayerId, ManualAction)>,
+    /// Set by a manual step: the next settle keeps the clock of a decision of the same seat and kind.
+    clock_kept: bool,
 }
 
 pub(crate) fn count(len: usize) -> u64 {
@@ -147,6 +153,8 @@ pub(crate) fn count(len: usize) -> u64 {
 fn millis(span: Duration) -> u64 {
     u64::try_from(span.as_millis()).unwrap_or(u64::MAX)
 }
+
+mod manual;
 
 impl Running {
     /// Wraps `engine`; call [`settle`](Running::settle) to issue the first decision id.
@@ -161,6 +169,8 @@ impl Running {
             waits: Waits::fresh(pace.dwell),
             banks,
             manual_play: false,
+            deferred: VecDeque::new(),
+            clock_kept: false,
         }
     }
 
@@ -307,6 +317,7 @@ impl Running {
             return None;
         };
         let dwell = halt == Halt::Dwell;
+        let carried = self.carried_clock(&decision, dwell);
         let kept = self
             .pending
             .as_ref()
@@ -327,6 +338,9 @@ impl Running {
                 hidden: true,
             });
             return None;
+        }
+        if let Some((due, shown_at)) = carried {
+            return Some(self.reissue(id, decision, due, shown_at));
         }
         let state = self.engine.state();
         let clock = if state.stage() == Stage::Mulligan {

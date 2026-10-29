@@ -26,7 +26,7 @@ fn options() -> PlayOptions {
 }
 
 /// The name of the kind of action.
-fn kind(action: &ManualAction) -> &'static str {
+pub(crate) fn kind(action: &ManualAction) -> &'static str {
     match action {
         ManualAction::Move { .. } => "move",
         ManualAction::MoveTop { .. } => "move top",
@@ -40,6 +40,9 @@ fn kind(action: &ManualAction) -> &'static str {
         ManualAction::Discard { .. } => "discard",
         ManualAction::Attach { .. } => "attach",
         ManualAction::Unattach { .. } => "unattach",
+        ManualAction::Damage { .. } => "damage",
+        ManualAction::AddMana { .. } => "mana",
+        ManualAction::Pump { .. } => "pump",
     }
 }
 

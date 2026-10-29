@@ -3,15 +3,18 @@ import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { NativeSelect } from '@/components/ui/native-select'
-import type { ManualAction, ManualZone, ObjectView } from '@/protocol/generated'
+import type { DamageTarget, ManaType, ManualAction, ManualZone, ObjectView } from '@/protocol/generated'
 import {
   attachTargets,
   buildAction,
   COMMON_TOKENS,
   counterName,
+  damageTargets,
   KNOWN_COUNTERS,
   LIMITS,
+  MANA_KINDS,
   startDraft,
+  targetKey,
 } from './offers'
 import type { Ask, BuildInput, Draft } from './offers'
 
@@ -37,6 +40,9 @@ const FORMS: Record<Ask, FormWords> = {
   draw: { title: () => 'Draw cards', submit: 'Draw', count: 'How many' },
   mill: { title: () => 'Mill cards', submit: 'Mill', count: 'How many' },
   moveTop: { title: () => 'Move top cards of your library', submit: 'Move', count: 'How many' },
+  damage: { title: (name) => `Deal damage with ${name}`, submit: 'Deal', count: 'Damage' },
+  mana: { title: () => 'Add mana to your pool', submit: 'Add', count: 'How much' },
+  pump: { title: (name) => `Pump ${name} until end of turn`, submit: 'Pump', count: '' },
 }
 
 const TOP_DESTINATIONS: readonly [ManualZone, string][] = [
@@ -68,7 +74,8 @@ function NumberField({ label, value, onChange, autoFocus = false, min = 0 }: Num
     <Field label={label}>
       <Input
         type="number"
-        inputMode="numeric"
+        // A numeric keypad has no minus sign, so a field that takes one gets the full keyboard.
+        inputMode={min < 0 ? 'text' : 'numeric'}
         min={min}
         value={Number.isNaN(value) ? '' : value}
         data-autofocus={autoFocus || undefined}
@@ -88,7 +95,10 @@ interface FormProps {
   onSend: (action: ManualAction) => void
 }
 
-/** The form that completes an action the menu cannot send as it is: counters, life, cards, a token or an attachment. */
+/**
+ * The form that completes an action the menu cannot send as it is: counters, life, cards, a token, an attachment,
+ * damage, mana or a pump.
+ */
 export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: FormProps) {
   const [draft, setDraft] = useState(() => startDraft(ask, input))
   const set = (change: Partial<Draft>): void => setDraft((now) => ({ ...now, ...change }))
@@ -209,13 +219,49 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
           </NativeSelect>
         </Field>
       ) : null}
-      <NumberField
-        label={words.count}
-        value={draft.count}
-        autoFocus={!kindsAsked && ask !== 'token'}
-        min={1}
-        onChange={(count) => set({ count })}
-      />
+      {ask === 'damage' ? (
+        <DamageTargetField input={input} objects={objects} nameOf={nameOf} draft={draft} set={set} />
+      ) : null}
+      {ask === 'mana' ? (
+        <Field label="Kind of mana">
+          <NativeSelect
+            value={draft.mana}
+            data-autofocus
+            onChange={(event) => set({ mana: event.currentTarget.value as ManaType })}
+          >
+            {MANA_KINDS.map(([mana, symbol]) => (
+              <option key={mana} value={mana}>
+                {`${mana} (${symbol})`}
+              </option>
+            ))}
+          </NativeSelect>
+        </Field>
+      ) : null}
+      {ask === 'pump' ? (
+        <div className="grid grid-cols-2 gap-2">
+          <NumberField
+            label="Power change"
+            value={draft.power}
+            autoFocus
+            min={-LIMITS.pump}
+            onChange={(power) => set({ power })}
+          />
+          <NumberField
+            label="Toughness change"
+            value={draft.toughness}
+            min={-LIMITS.pump}
+            onChange={(toughness) => set({ toughness })}
+          />
+        </div>
+      ) : (
+        <NumberField
+          label={words.count}
+          value={draft.count}
+          autoFocus={!kindsAsked && ask !== 'token' && ask !== 'damage' && ask !== 'mana'}
+          min={1}
+          onChange={(count) => set({ count })}
+        />
+      )}
       <p role="status" className="min-h-5 px-1 text-xs text-muted-foreground">
         {problem}
       </p>
@@ -226,6 +272,48 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
         </Button>
       </div>
     </form>
+  )
+}
+
+interface DamageTargetProps {
+  input: Omit<BuildInput, 'draft'>
+  objects: Readonly<Record<number, ObjectView>>
+  nameOf: (seat: number) => string
+  draft: Draft
+  set: (change: Partial<Draft>) => void
+}
+
+/** The players and permanents a card can deal damage to, by name; nothing is chosen at first. */
+function DamageTargetField({ input, objects, nameOf, draft, set }: DamageTargetProps) {
+  const targets = useMemo(
+    () => damageTargets(Object.values(objects), input.players, input.seat),
+    [objects, input.players, input.seat],
+  )
+  const label = (target: DamageTarget): string => {
+    if ('Player' in target) {
+      return target.Player === input.seat ? `${nameOf(target.Player)} (you)` : nameOf(target.Player)
+    }
+    const object = objects[target.Object]
+    return object === undefined ? 'A permanent' : `${object.name} (${nameOf(object.controller)})`
+  }
+  return (
+    <Field label="Deal it to">
+      <NativeSelect
+        value={draft.hit === null ? '' : targetKey(draft.hit)}
+        data-autofocus
+        onChange={(event) => {
+          const key = event.currentTarget.value
+          set({ hit: targets.find((target) => targetKey(target) === key) ?? null })
+        }}
+      >
+        <option value="">Choose…</option>
+        {targets.map((target) => (
+          <option key={targetKey(target)} value={targetKey(target)}>
+            {label(target)}
+          </option>
+        ))}
+      </NativeSelect>
+    </Field>
   )
 }
 

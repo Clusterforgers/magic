@@ -5,7 +5,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 ## Messages
 
 - Both families are flat JSON objects tagged with `type`. `PROTOCOL_VERSION` (1) rides in `Join` and `Welcome`.
-  - `ClientMessage`: `Join`, `Ready`, `NotReady`, `Answer`, `Preview`, `Chat`, `Concede`, `Resync`, `AutoPass`, `Yield`, `CancelYield`, `SetStop`, `FullControl`.
+  - `ClientMessage`: `Join`, `Ready`, `NotReady`, `Answer`, `Preview`, `Chat`, `Concede`, `Resync`, `AutoPass`, `Yield`, `CancelYield`, `SetStop`, `FullControl`, `Manual`. `Manual {action}` is a `ManualAction` taken at any time by a seat in the game, apart from any decision ([server.md](server.md), Manual actions); `Answer` with `PriorityAction::Manual` still takes one while the seat holds priority.
   - `ServerMessage`: `Welcome`, `Lobby`, `Decision`, `Forecast`, `Events`, `Snapshot`, `Chat`, `Error`, `GameOver`, `Yielding`, `Stops`, `FullControl`, `Bank`.
 - TypeScript bindings come from ts-rs into `web/src/protocol/generated/`. `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol bindings::` regenerates them, and the drift test fails while they are stale.
 - `mtg-core` and `mtg-engine` derive `TS` behind an optional `ts` feature that only this crate enables. ts-rs inlines the flattened table, so the TypeScript `StateView` is `TableView`'s fields plus `objects`.

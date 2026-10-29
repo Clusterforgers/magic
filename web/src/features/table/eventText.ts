@@ -304,7 +304,20 @@ export function describeManual(player: PlayerId, action: ManualAction, n: EventN
   if ('Attach' in action) {
     return `${who} attaches ${n.card(action.Attach.object)} to ${n.card(action.Attach.to)} (by hand)`
   }
-  return `${who} takes ${n.card(action.Unattach.object)} off what it is attached to (by hand)`
+  if ('Unattach' in action) {
+    return `${who} takes ${n.card(action.Unattach.object)} off what it is attached to (by hand)`
+  }
+  if ('Damage' in action) {
+    const { source, target, amount } = action.Damage
+    return `${who}: ${n.card(source)} deals ${amount} damage to ${damageTarget(target, n)} (by hand)`
+  }
+  if ('AddMana' in action) {
+    const { mana, count } = action.AddMana
+    return `${who} adds ${`{${manaLetter(mana)}}`.repeat(count)} (by hand)`
+  }
+  const { object, power, toughness } = action.Pump
+  const signed = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
+  return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`
 }
 
 /** A card moved by hand that the viewer cannot name, in the words of `describeManual`; `from` is the zone it left. */

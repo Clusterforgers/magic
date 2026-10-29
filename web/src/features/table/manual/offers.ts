@@ -2,6 +2,8 @@
 import type {
   CommonToken,
   CounterKind,
+  DamageTarget,
+  ManaType,
   ManualAction,
   ManualClause,
   ManualToken,
@@ -28,11 +30,23 @@ export function zoneKind(zone: Zone): ZoneKind {
   return 'command'
 }
 
-/** Why nothing can be done by hand now. */
-export const NEEDS_PRIORITY = 'You act by hand only while you hold priority.'
+/** Why a seat that has lost does nothing by hand. */
+export const OUT_OF_GAME = 'You have left the game; nothing more is done by hand.'
+
+/** Why nothing is done by hand once the game is over. */
+export const GAME_OVER = 'The game is over.'
 
 /** The limits of the protocol (`ManualAction`). */
-export const LIMITS = { counters: 99, life: 1000, cards: 10, tokens: 10, name: 24 } as const
+export const LIMITS = {
+  counters: 99,
+  life: 1000,
+  cards: 10,
+  tokens: 10,
+  name: 24,
+  damage: 99,
+  mana: 20,
+  pump: 99,
+} as const
 
 /** The forms that ask for what an action still needs. */
 export type Ask =
@@ -47,6 +61,9 @@ export type Ask =
   | 'draw'
   | 'mill'
   | 'moveTop'
+  | 'damage'
+  | 'mana'
+  | 'pump'
 
 /** One entry of the menu: an action sent as it is (`action`) or the form that completes it (`ask`). */
 export interface ManualItem {
@@ -61,7 +78,7 @@ export interface ManualItem {
 }
 
 /** The groups of the menu, in order. */
-export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'token' | 'other'
+export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'token' | 'other'
 
 /** A titled run of entries, or a note that says why it has none. */
 export interface ManualGroup {
@@ -85,8 +102,10 @@ export interface ManualMenu {
 export interface MenuInput {
   seat: PlayerId
   object: ObjectView
-  /** Whether the seat faces its own priority decision, the only moment a manual action is taken. */
-  holding: boolean
+  /** Why nothing can be done by hand (a seat that lost, a finished game); left out while the seat plays. */
+  off?: string
+  /** The seats still in the game, which can be dealt damage. */
+  players: readonly PlayerId[]
   /** Whether the format has a command zone to move a card to. */
   hasCommandZone: boolean
   /** Cards in the seat's library. */
@@ -287,19 +306,37 @@ function otherGroup(input: MenuInput, off: string | undefined): ManualGroup {
   return { id: 'other', label: 'You', items }
 }
 
+/** What a card does when the seat plays one of its abilities by hand: damage and mana from its own, a pump on any creature. */
+function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | null {
+  const { object, seat } = input
+  const items: ManualItem[] = []
+  if (object.owner === seat || object.controller === seat) {
+    // A card in a hand or library would name itself to every seat as the source.
+    const kind = zoneKind(object.zone)
+    if (kind !== 'hand' && kind !== 'library') {
+      items.push({ key: 'damage', label: 'Deal damage…', ask: 'damage', unavailable: off })
+    }
+    items.push({ key: 'mana', label: 'Add mana…', ask: 'mana', unavailable: off })
+  }
+  if (zoneKind(object.zone) === 'battlefield' && object.types.includes('Creature')) {
+    items.push({ key: 'pump', label: 'Pump…', hint: 'until end of turn', ask: 'pump', unavailable: off })
+  }
+  return items.length === 0 ? null : { id: 'effect', label: 'Effects', items }
+}
+
 /**
- * The menu of one card for the seat that faces its priority decision (`holding`), as the protocol allows it
- * (`ManualAction`): moves, discards and attachments of what the seat owns or controls, counters and tapping of any
- * permanent, and life, counters, draws, library cards and tokens of the seat itself. Without priority the entries are
- * listed and inert.
+ * The menu of one card, as the protocol allows it (`ManualAction`) at any time: moves, discards and attachments of
+ * what the seat owns or controls, damage and mana from its cards, counters, tapping and pumps of any permanent, and
+ * life, counters, draws, library cards and tokens of the seat itself. With `off` set the entries are listed and inert.
  */
 export function manualMenu(input: MenuInput): ManualMenu {
-  const off = input.holding ? undefined : NEEDS_PRIORITY
+  const { off } = input
   const groups = [
     moveGroup(input, off),
     countersGroup(input, off),
     tapGroup(input, off),
     attachGroup(input, off),
+    effectGroup(input, off),
     {
       id: 'token' as const,
       label: 'Token',
@@ -325,6 +362,42 @@ export function attachTargets(
   const rank = (object: ObjectView): number => (object.controller === seat ? 0 : 1)
   return found.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name) || a.id - b.id)
 }
+
+const DAMAGEABLE = ['Creature', 'Planeswalker', 'Battle']
+
+/**
+ * What a card can deal damage to: the players still in the game (the other seats first), then the creatures,
+ * planeswalkers and battles on the battlefield by name.
+ */
+export function damageTargets(
+  objects: Iterable<ObjectView>,
+  players: readonly PlayerId[],
+  seat: PlayerId,
+): DamageTarget[] {
+  const seats = [...players].sort((a, b) => Number(a === seat) - Number(b === seat) || a - b)
+  const found: ObjectView[] = []
+  for (const object of objects) {
+    if (object.zone !== 'Battlefield' || object.kind === 'Ability') continue
+    if (object.types.some((type) => DAMAGEABLE.includes(type))) found.push(object)
+  }
+  found.sort((a, b) => a.name.localeCompare(b.name) || a.id - b.id)
+  return [...seats.map((player) => ({ Player: player })), ...found.map((object) => ({ Object: object.id }))]
+}
+
+/** A damage target as the value of a form field, and back. */
+export function targetKey(target: DamageTarget): string {
+  return 'Player' in target ? `player:${target.Player}` : `object:${target.Object}`
+}
+
+/** The kinds of mana a pool holds, with their symbols, in WUBRG order and colorless last. */
+export const MANA_KINDS: readonly (readonly [ManaType, string])[] = [
+  ['White', 'W'],
+  ['Blue', 'U'],
+  ['Black', 'B'],
+  ['Red', 'R'],
+  ['Green', 'G'],
+  ['Colorless', 'C'],
+]
 
 /** The tokens the protocol lists, in the order a menu shows them (`CommonToken::ALL`). */
 export const COMMON_TOKENS: readonly CommonToken[] = [
@@ -361,6 +434,9 @@ export interface Draft {
   name: string
   power: number
   toughness: number
+  /** What damage is dealt to. */
+  hit: DamageTarget | null
+  mana: ManaType
 }
 
 /** The start of every form. */
@@ -374,6 +450,8 @@ export const EMPTY_DRAFT: Draft = {
   name: '',
   power: 1,
   toughness: 1,
+  hit: null,
+  mana: 'Colorless',
 }
 
 /** The kind a draft names, or null while it names none the protocol takes. */
@@ -470,6 +548,23 @@ export function buildAction(ask: Ask, input: BuildInput): Built {
       if (bad !== null) return bad
       const token = tokenOf(draft)
       return 'problem' in token ? token : { action: { CreateToken: { token: token.token, count } } }
+    }
+    case 'damage': {
+      if (draft.hit === null) return problem('Choose what is dealt the damage.')
+      const bad = range(1, LIMITS.damage, 'an amount')
+      return bad ?? { action: { Damage: { source: object.id, target: draft.hit, amount: count } } }
+    }
+    case 'mana': {
+      const bad = range(1, LIMITS.mana, 'an amount')
+      return bad ?? { action: { AddMana: { mana: draft.mana, count } } }
+    }
+    case 'pump': {
+      const { power, toughness } = draft
+      if (!whole(power, -LIMITS.pump, LIMITS.pump) || !whole(toughness, -LIMITS.pump, LIMITS.pump)) {
+        return problem(`Enter changes from -${LIMITS.pump} to ${LIMITS.pump}.`)
+      }
+      if (power === 0 && toughness === 0) return problem('Change power or toughness.')
+      return { action: { Pump: { object: object.id, power, toughness } } }
     }
   }
 }

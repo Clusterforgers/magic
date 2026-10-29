@@ -2,6 +2,7 @@
 
 use std::fmt;
 
+use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::{GameState, Stage};
@@ -44,6 +45,9 @@ pub struct PlayOptions {
     /// Take a scripted manual action ([`ManualScript`]) at one priority decision in this many, in place of the bot's
     /// answer; 0 never. The bots themselves never take one.
     pub manual_every: usize,
+    /// Take an out-of-band manual action (`Engine::manual`) by a random seat in the game before one decision in this
+    /// many, of any kind and whoever it belongs to; 0 never.
+    pub manual_anytime_every: usize,
 }
 
 impl Default for PlayOptions {
@@ -56,6 +60,7 @@ impl Default for PlayOptions {
             auto_pass: false,
             bot_windows: false,
             manual_every: 0,
+            manual_anytime_every: 0,
         }
     }
 }
@@ -165,6 +170,7 @@ pub fn play_game_with(
     let mut windows = table_windows(&mut bots, &engine, options);
     let pass = Answer::Priority(PriorityAction::Pass);
     let mut script = ManualScript::new(seed, options.manual_every);
+    let mut anytime = ManualScript::anytime(seed, options.manual_anytime_every);
     let mut manual_actions = 0;
     let mut answers = 0;
     let mut auto_passes = 0;
@@ -189,6 +195,15 @@ pub fn play_game_with(
         }
         if matches!(decision.kind, DecisionKind::ChooseOption(_)) {
             option_asks += 1;
+        }
+        if let Some((seat, action)) = out_of_band(&mut anytime, &engine) {
+            let events = engine
+                .manual(seat, &action)
+                .map_err(|e| fail(e.into(), engine.events()))?;
+            windows.observe(&events);
+            manual_actions += 1;
+            observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
+            continue;
         }
         let table_passes = windows.passes(engine.state(), &decision);
         let scripted = scripted_action(&mut script, &engine, &decision, table_passes);
@@ -275,6 +290,17 @@ fn bots_for(seats: usize, seed: u64, options: PlayOptions) -> Vec<RandomBot> {
             bot
         })
         .collect()
+}
+
+/// The out-of-band action a random seat takes before this decision, if the script takes one now.
+fn out_of_band(script: &mut ManualScript, engine: &Engine) -> Option<(PlayerId, ManualAction)> {
+    if engine.replacing() || engine.state().stage() != Stage::Turns || !script.due() {
+        return None;
+    }
+    let seat = script.seat(engine.state())?;
+    script
+        .action(engine.state(), seat)
+        .map(|action| (seat, action))
 }
 
 /// The manual action the script takes at this decision, if it takes one: only a priority decision the table does not

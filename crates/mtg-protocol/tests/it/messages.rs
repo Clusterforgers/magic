@@ -30,6 +30,7 @@ use mtg_engine::forecast::{
 };
 use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
+use mtg_engine::manual::{ManualAction, ManualZone};
 use mtg_engine::object::{Chosen, ObjectRef};
 use mtg_engine::snapshot::snapshot;
 use mtg_engine::spend::Spend;
@@ -51,7 +52,7 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 13;
+const CLIENT_VARIANTS: usize = 14;
 const SERVER_VARIANTS: usize = 13;
 
 const YIELDS: [YieldUntil; 3] = [
@@ -103,6 +104,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::NotReady => 10,
         ClientMessage::SetStop { .. } => 11,
         ClientMessage::FullControl { .. } => 12,
+        ClientMessage::Manual { .. } => 13,
     }
 }
 
@@ -524,6 +526,31 @@ fn sample_forecast() -> CombatForecast {
     }
 }
 
+/// One manual action of each kind that plays an ability by hand, and a move.
+fn manual_samples() -> Vec<ManualAction> {
+    vec![
+        ManualAction::Damage {
+            source: ObjectId(4),
+            target: DamageTarget::Object(ObjectId(9)),
+            amount: 2,
+        },
+        ManualAction::AddMana {
+            mana: ManaType::Colorless,
+            count: 20,
+        },
+        ManualAction::Pump {
+            object: ObjectId(9),
+            power: -3,
+            toughness: 3,
+        },
+        ManualAction::Draw { count: 1 },
+        ManualAction::Move {
+            object: ObjectId(9),
+            to: ManualZone::Graveyard,
+        },
+    ]
+}
+
 fn client_samples() -> Vec<ClientMessage> {
     let mut out = vec![
         ClientMessage::Join {
@@ -557,6 +584,11 @@ fn client_samples() -> Vec<ClientMessage> {
         }
     }
     out.extend(MODES.map(|mode| ClientMessage::FullControl { mode }));
+    out.extend(
+        manual_samples()
+            .into_iter()
+            .map(|action| ClientMessage::Manual { action }),
+    );
     out.extend(answers().into_iter().map(|answer| ClientMessage::Answer {
         decision: DecisionId(41),
         answer,
@@ -753,6 +785,18 @@ fn every_event_view_variant_round_trips() {
 #[case(ClientMessage::Resync, json!({"type": "Resync"}))]
 #[case(ClientMessage::AutoPass { enabled: false }, json!({"type": "AutoPass", "enabled": false}))]
 #[case(ClientMessage::CancelYield, json!({"type": "CancelYield"}))]
+#[case(
+    ClientMessage::Manual { action: ManualAction::Damage { source: ObjectId(4), target: DamageTarget::Player(PlayerId(1)), amount: 3 } },
+    json!({"type": "Manual", "action": {"Damage": {"source": 4, "target": {"Player": 1}, "amount": 3}}})
+)]
+#[case(
+    ClientMessage::Manual { action: ManualAction::AddMana { mana: ManaType::Red, count: 2 } },
+    json!({"type": "Manual", "action": {"AddMana": {"mana": "Red", "count": 2}}})
+)]
+#[case(
+    ClientMessage::Manual { action: ManualAction::Pump { object: ObjectId(9), power: 2, toughness: -1 } },
+    json!({"type": "Manual", "action": {"Pump": {"object": 9, "power": 2, "toughness": -1}}})
+)]
 #[case(
     ClientMessage::Yield { until: YieldUntil::Resolve },
     json!({"type": "Yield", "until": "Resolve"})

@@ -1,7 +1,7 @@
-// Goal: a card opens its manual menu by right click, long press and keyboard, lists the entries by group, sends the exact manual answer for each choice and for each filled form, closes with the focus back on the card, and says why nothing can be done without priority.
+// Goal: a card opens its manual menu by right click, long press and keyboard, lists the entries by group, sends the exact Manual message for each choice and each filled form at any time, closes with the focus back on the card, and says why a seat that lost can do nothing.
 import { act, fireEvent, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { Answer, FullControlMode, ManualAction, ObjectView } from '@/protocol/generated'
+import type { Answer, ManualAction, ObjectView } from '@/protocol/generated'
 import type { PlayState } from '@/play/store'
 import { indexById } from '@/play/view'
 import { card, permanent } from '@/test-utils/cards'
@@ -17,17 +17,17 @@ const ID = 900
 
 interface Shown {
   object?: ObjectView
-  answer?: (answer: Answer) => boolean
-  /** Replaces the session's request for Full Control. */
-  fullControl?: (mode: FullControlMode) => boolean
+  /** What the session's manual sender answers. */
+  manual?: (action: ManualAction) => boolean
   /** Changes the play state before the first render. */
   state?: (state: PlayState) => PlayState
   spectator?: boolean
 }
 
 /** One card (object 900) among the few permanents of a small fixture, inside the manual menu's provider. */
-function renderMenu({ object = card(), answer = () => true, fullControl, state, spectator }: Shown = {}) {
-  const sent: Answer[] = []
+function renderMenu({ object = card(), manual = () => true, state, spectator }: Shown = {}) {
+  const sent: ManualAction[] = []
+  const answered: Answer[] = []
   const table = renderTable({
     fixture: buildFixture({ seats: 2, permanents: 4, hand: 2 }),
     ui: (
@@ -36,11 +36,11 @@ function renderMenu({ object = card(), answer = () => true, fullControl, state, 
       </ManualMenuProvider>
     ),
     session: {
-      answer: (given) => {
-        sent.push(given)
-        return answer(given)
+      manual: (action) => {
+        sent.push(action)
+        return manual(action)
       },
-      ...(fullControl === undefined ? {} : { setFullControl: fullControl }),
+      answer: (given) => !!answered.push(given),
     },
     state: (first) => {
       const view = clone(must(first.view))
@@ -50,14 +50,13 @@ function renderMenu({ object = card(), answer = () => true, fullControl, state, 
       return state === undefined ? next : state(next)
     },
   })
-  return { ...table, sent }
+  return { ...table, sent, answered }
 }
 
 const cardButton = (): HTMLElement =>
   document.querySelector<HTMLElement>(`button[data-object-id="${ID}"]`) as HTMLElement
 const menu = (): HTMLElement => screen.getByRole('menu')
 const entry = (name: string | RegExp): HTMLElement => within(menu()).getByRole('menuitem', { name })
-const manual = (action: ManualAction): Answer => ({ Priority: { Manual: action } })
 
 afterEach(() => {
   vi.useRealTimers()
@@ -75,7 +74,7 @@ describe('opening the menu', () => {
     const groups = within(menu())
       .getAllByRole('group')
       .map((group) => group.getAttribute('data-group'))
-    expect(groups).toEqual(['move', 'counters', 'tap', 'token', 'other'])
+    expect(groups).toEqual(['move', 'counters', 'tap', 'effect', 'token', 'other'])
     expect(within(menu()).getByRole('group', { name: 'Move to' })).toBeInTheDocument()
     expect(within(menu()).getByRole('group', { name: 'Counters' })).toBeInTheDocument()
   })
@@ -217,7 +216,7 @@ describe('what a choice sends', () => {
     cardButton().focus()
     await user.keyboard('m')
     await user.click(entry(new RegExp(`^${String(label).replace(/[+/]/g, '\\$&')}`)))
-    expect(sent).toEqual([manual(action)])
+    expect(sent).toEqual([action])
     expect(screen.queryByRole('menu')).toBeNull()
     expect(cardButton()).toHaveFocus()
   })
@@ -227,7 +226,7 @@ describe('what a choice sends', () => {
     cardButton().focus()
     await tapped.user.keyboard('m')
     await tapped.user.click(entry('Untap'))
-    expect(tapped.sent).toEqual([manual({ Untap: { object: ID } })])
+    expect(tapped.sent).toEqual([{ Untap: { object: ID } }])
   })
 
   it('sends a discard for a card in the hand', async () => {
@@ -235,11 +234,11 @@ describe('what a choice sends', () => {
     cardButton().focus()
     await user.keyboard('m')
     await user.click(entry('Discard'))
-    expect(sent).toEqual([manual({ Discard: { object: ID } })])
+    expect(sent).toEqual([{ Discard: { object: ID } }])
   })
 
-  it('keeps the menu and says so when the connection refuses the answer', async () => {
-    const { user } = renderMenu({ answer: () => false })
+  it('keeps the menu and says so when the connection refuses the action', async () => {
+    const { user } = renderMenu({ manual: () => false })
     cardButton().focus()
     await user.keyboard('m')
     await user.click(entry('Tap'))
@@ -247,14 +246,13 @@ describe('what a choice sends', () => {
     expect(menu()).toBeInTheDocument()
   })
 
-  it('disables the entries and sends nothing when the decision on screen is no longer a priority decision', async () => {
+  it('stays usable when the decision on screen goes away while it is open', async () => {
     const { user, sent, update } = renderMenu()
     cardButton().focus()
     await user.keyboard('m')
     update(() => ({ pending: null }))
-    expect(entry('Tap')).toHaveAttribute('aria-disabled', 'true')
     await user.click(entry('Tap'))
-    expect(sent).toEqual([])
+    expect(sent).toEqual([{ Tap: { object: ID } }])
   })
 })
 
@@ -276,7 +274,7 @@ describe('the forms', () => {
     await user.clear(field('How many'))
     await user.type(field('How many'), '4')
     await user.click(within(dialog()).getByRole('button', { name: 'Add' }))
-    expect(sent).toEqual([manual({ Counters: { object: ID, counter: 'charge', delta: 4 } })])
+    expect(sent).toEqual([{ Counters: { object: ID, counter: 'charge', delta: 4 } }])
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
@@ -286,7 +284,7 @@ describe('the forms', () => {
     await user.selectOptions(field('Kind of counter'), 'other')
     await user.type(field('Name of the counter'), 'oil')
     await user.click(within(dialog()).getByRole('button', { name: 'Add' }))
-    expect(sent).toEqual([manual({ Counters: { object: ID, counter: { Other: 'oil' }, delta: 1 } })])
+    expect(sent).toEqual([{ Counters: { object: ID, counter: { Other: 'oil' }, delta: 1 } }])
   })
 
   it('refuses a number out of range with the reason and sends nothing', async () => {
@@ -309,7 +307,7 @@ describe('the forms', () => {
     await user.clear(field('How many'))
     await user.type(field('How many'), '2')
     await user.click(within(dialog()).getByRole('button', { name: 'Remove' }))
-    expect(sent).toEqual([manual({ Counters: { object: ID, counter: '+1/+1', delta: -2 } })])
+    expect(sent).toEqual([{ Counters: { object: ID, counter: '+1/+1', delta: -2 } }])
   })
 
   it.each([
@@ -325,7 +323,7 @@ describe('the forms', () => {
     await user.clear(input)
     await user.type(input, amount)
     await user.click(within(dialog()).getByRole('button', { name: submit }))
-    expect(sent).toEqual([manual(action)])
+    expect(sent).toEqual([action])
   })
 
   it('moves the top cards of the library to the place chosen', async () => {
@@ -333,7 +331,7 @@ describe('the forms', () => {
     await user.click(entry('Move top cards of library…'))
     await user.selectOptions(field('Move them to'), 'LibraryBottom')
     await user.click(within(dialog()).getByRole('button', { name: 'Move' }))
-    expect(sent).toEqual([manual({ MoveTop: { count: 1, to: 'LibraryBottom' } })])
+    expect(sent).toEqual([{ MoveTop: { count: 1, to: 'LibraryBottom' } }])
   })
 
   it('creates the tokens chosen', async () => {
@@ -343,7 +341,7 @@ describe('the forms', () => {
     await user.clear(field('How many'))
     await user.type(field('How many'), '2')
     await user.click(within(dialog()).getByRole('button', { name: 'Create' }))
-    expect(sent).toEqual([manual({ CreateToken: { token: { Common: 'Soldier' }, count: 2 } })])
+    expect(sent).toEqual([{ CreateToken: { token: { Common: 'Soldier' }, count: 2 } }])
   })
 
   it('describes a custom creature token', async () => {
@@ -357,7 +355,7 @@ describe('the forms', () => {
     await user.type(field('Toughness'), '2')
     await user.click(within(dialog()).getByRole('button', { name: 'Create' }))
     expect(sent).toEqual([
-      manual({
+      {
         CreateToken: {
           token: {
             Custom: {
@@ -371,7 +369,7 @@ describe('the forms', () => {
           },
           count: 1,
         },
-      }),
+      },
     ])
   })
 
@@ -386,9 +384,50 @@ describe('the forms', () => {
     expect(within(list).queryByText('Sword of Tests')).toBeNull()
     await user.type(within(dialog()).getByLabelText('Filter by name'), target.name)
     await user.click(within(list).getAllByRole('button', { name: new RegExp(target.name) })[0] as HTMLElement)
-    const [answer] = sent
-    expect(answer).toMatchObject({ Priority: { Manual: { Attach: { object: ID } } } })
+    const [action] = sent
+    expect(action).toMatchObject({ Attach: { object: ID } })
     expect(sent).toHaveLength(1)
+  })
+
+  it('deals the damage asked for to the player or permanent chosen', async () => {
+    const { user, sent } = await open()
+    await user.click(entry('Deal damage…'))
+    expect(dialog()).toHaveAccessibleName('Deal damage with Grizzly Bears')
+    expect(within(dialog()).getByRole('button', { name: 'Deal' })).toBeDisabled()
+    const to = field('Deal it to')
+    expect(to).toHaveFocus()
+    expect(within(to).getByRole('option', { name: 'Serra Angel (Bo)' })).toBeInTheDocument()
+    await user.selectOptions(to, 'player:1')
+    await user.clear(field('Damage'))
+    await user.type(field('Damage'), '3')
+    await user.click(within(dialog()).getByRole('button', { name: 'Deal' }))
+    expect(sent).toEqual([{ Damage: { source: ID, target: { Player: 1 }, amount: 3 } }])
+  })
+
+  it('adds the mana asked for to the pool', async () => {
+    const { user, sent } = await open()
+    await user.click(entry('Add mana…'))
+    await user.selectOptions(field('Kind of mana'), 'Green')
+    await user.clear(field('How much'))
+    await user.type(field('How much'), '2')
+    await user.click(within(dialog()).getByRole('button', { name: 'Add' }))
+    expect(sent).toEqual([{ AddMana: { mana: 'Green', count: 2 } }])
+  })
+
+  it('pumps a creature, also one of an opponent, and refuses a change of nothing', async () => {
+    const { user, sent } = await open({ object: card({ owner: 1, controller: 1 }) })
+    await user.click(entry(/^Pump…/))
+    await user.clear(field('Power change'))
+    await user.type(field('Power change'), '0')
+    await user.clear(field('Toughness change'))
+    await user.type(field('Toughness change'), '0')
+    expect(within(dialog()).getByRole('button', { name: 'Pump' })).toBeDisabled()
+    await user.clear(field('Power change'))
+    await user.type(field('Power change'), '-2')
+    await user.clear(field('Toughness change'))
+    await user.type(field('Toughness change'), '3')
+    await user.click(within(dialog()).getByRole('button', { name: 'Pump' }))
+    expect(sent).toEqual([{ Pump: { object: ID, power: -2, toughness: 3 } }])
   })
 
   it('says when the filter matches nothing', async () => {
@@ -412,29 +451,50 @@ describe('the forms', () => {
   })
 })
 
-describe('without priority', () => {
-  it('lists the entries and says none can be used, and sends nothing', async () => {
-    const { user, sent } = renderMenu({ state: (state) => ({ ...state, pending: null }) })
-    cardButton().focus()
-    await user.keyboard('m')
-    expect(screen.getByText(/only while you hold priority/)).toBeInTheDocument()
-    const tap = entry('Tap')
-    expect(tap).toHaveAttribute('aria-disabled', 'true')
-    await user.click(tap)
-    expect(sent).toEqual([])
-    expect(menu()).toBeInTheDocument()
-  })
-
-  it('does the same while another kind of decision waits', async () => {
-    const { user } = renderMenu({
-      state: (state) => ({
+describe('at any time', () => {
+  it.each([
+    ['with no decision on screen', (state: PlayState): PlayState => ({ ...state, pending: null })],
+    [
+      'while a decision of another kind waits',
+      (state: PlayState): PlayState => ({
         ...state,
         pending: state.pending === null ? null : { ...state.pending, decision: decisionFor('YesNo') },
       }),
+    ],
+  ])('the entries can be used %s and send a Manual message, not an answer', async (_name, state) => {
+    const { user, sent, answered } = renderMenu({ state })
+    cardButton().focus()
+    await user.keyboard('m')
+    expect(entry('Tap')).not.toHaveAttribute('aria-disabled')
+    await user.click(entry('Tap'))
+    expect(sent).toEqual([{ Tap: { object: ID } }])
+    expect(answered).toEqual([])
+    expect(screen.queryByRole('menu')).toBeNull()
+  })
+
+  it('has no entry that asks for the next window', async () => {
+    const { user } = renderMenu({ state: (state) => ({ ...state, pending: null }) })
+    cardButton().focus()
+    await user.keyboard('m')
+    expect(within(menu()).queryByRole('menuitem', { name: /next window/ })).toBeNull()
+  })
+
+  it('lists the entries inert, with the reason, for a seat that lost', async () => {
+    const { user, sent } = renderMenu({
+      state: (state) => {
+        const view = clone(must(state.view))
+        view.players = view.players.map((player) =>
+          player.seat === 0 ? { ...player, lost: 'ZeroLife' } : player,
+        )
+        return { ...state, view }
+      },
     })
     cardButton().focus()
     await user.keyboard('m')
+    expect(screen.getByText(/left the game/)).toBeInTheDocument()
     expect(entry('Tap')).toHaveAttribute('aria-disabled', 'true')
+    await user.click(entry('Tap'))
+    expect(sent).toEqual([])
   })
 })
 
@@ -457,32 +517,6 @@ describe('rules left to the table', () => {
     cardButton().focus()
     await user.keyboard('m')
     expect(screen.queryByRole('region', { name: 'By hand' })).toBeNull()
-  })
-
-  it('offers to ask for the next window when the seat is passed for, and asks once', async () => {
-    const asked: FullControlMode[] = []
-    const { user } = renderMenu({
-      state: (state) => ({ ...state, pending: null }),
-      fullControl: (mode) => !!asked.push(mode),
-    })
-    cardButton().focus()
-    await user.keyboard('m')
-    await user.click(entry(/^Ask me at the next window/))
-    expect(asked).toEqual(['NextWindow'])
-    expect(screen.queryByRole('menu')).toBeNull()
-  })
-
-  it.each([
-    ['holding priority', {}],
-    [
-      'Full Control already on',
-      { state: (state: PlayState) => ({ ...state, pending: null, fullControl: 'Held' as const }) },
-    ],
-  ])('does not offer it while %s', async (_name, over) => {
-    const { user } = renderMenu(over)
-    cardButton().focus()
-    await user.keyboard('m')
-    expect(within(menu()).queryByRole('menuitem', { name: /next window/ })).toBeNull()
   })
 })
 

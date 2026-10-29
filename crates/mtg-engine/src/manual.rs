@@ -1,7 +1,7 @@
-//! Manual actions: what the holder of priority does by hand for a card the engine does not run, as the same events the
+//! Manual actions: what a seat does by hand for a card the engine does not run, as the same events the
 //! effects produce.
 //!
-//! `PriorityAction::Manual` carries a [`ManualAction`]. The seat that has priority may take one at any time; it is
+//! `PriorityAction::Manual` and `Engine::manual` carry a [`ManualAction`]. A seat in the game may take one at any time; it is
 //! checked here against the state, answered with the `Event::ManualAction` that names the seat and the action and the
 //! events of the change (a `ZoneChanged`, a `CountersChanged`, a `TokenCreated`, a `LifeLost`), and committed like the
 //! events of any effect, so replacement effects, triggers and state-based actions follow it as they follow a spell.
@@ -16,12 +16,14 @@ use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::attach;
 use crate::caps::caps;
 use crate::choose::Target;
+use crate::combat::DamageTarget;
 use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::format::ExtraZone;
@@ -50,6 +52,10 @@ pub const MAX_WORD_CHARS: usize = 24;
 pub const MAX_SUBTYPES: usize = 6;
 /// Largest power or toughness of a custom token.
 pub const MAX_STAT: i32 = 99;
+/// Most damage one action deals.
+pub const MAX_DAMAGE: u32 = 99;
+/// Most mana one action adds.
+pub const MAX_MANA: u32 = 20;
 
 /// Where a card goes: a zone of its owner, or the shared battlefield or exile.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -296,8 +302,9 @@ pub enum ManualToken {
     Custom(Box<CustomToken>),
 }
 
-/// What the holder of priority does by hand. Zone moves, discards and attachments work on what the seat owns or
-/// controls; counters, tapping and untapping on any permanent; life and a player's counters on the seat's own.
+/// What a seat does by hand. Zone moves, discards, attachments and damage sources are what the seat owns or controls;
+/// counters, tapping, untapping and pumps work on any permanent, damage on any player or permanent that takes it; life,
+/// a player's counters and mana on the seat's own.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum ManualAction {
@@ -381,6 +388,31 @@ pub enum ManualAction {
         /// The attachment.
         object: ObjectId,
     },
+    /// A card of the seat deals damage to a player or to a creature, planeswalker or battle, as its ability would.
+    Damage {
+        /// The card that deals it, in a zone every seat sees.
+        source: ObjectId,
+        /// Who or what is dealt it.
+        target: DamageTarget,
+        /// How much, 1 to 99.
+        amount: u32,
+    },
+    /// Add mana to the seat's pool, until the step ends.
+    AddMana {
+        /// The kind of mana.
+        mana: ManaType,
+        /// How much, 1 to 20.
+        count: u32,
+    },
+    /// A creature on the battlefield gets +power/+toughness until end of turn.
+    Pump {
+        /// The creature.
+        object: ObjectId,
+        /// Power change, from -99 to 99.
+        power: i32,
+        /// Toughness change, from -99 to 99.
+        toughness: i32,
+    },
 }
 
 /// Why a manual action is refused.
@@ -421,6 +453,18 @@ pub enum ManualRefusal {
     /// A custom token or a kind of counter is not acceptable.
     #[error("a token or counter needs {0}")]
     BadToken(&'static str),
+    /// The target is neither a player in the game nor a creature, planeswalker or battle on the battlefield.
+    #[error("only a player, creature, planeswalker or battle is dealt damage")]
+    NotDamageable,
+    /// The object is not a creature on the battlefield.
+    #[error("{0:?} is not a creature on the battlefield")]
+    NotACreature(ObjectId),
+    /// A replacement choice is being made; the action waits until it is answered.
+    #[error("a replacement choice is being made; try again once it is answered")]
+    Settling,
+    /// The game has not begun its first turn.
+    #[error("manual actions start with the first turn")]
+    NotStarted,
 }
 
 /// Whether `player` may take `action` in `state`, or why not; the check `PriorityAction::Manual` answers to.
@@ -514,6 +558,19 @@ pub(crate) fn events(
             }
             vec![Event::Unattached { object: *object }]
         }
+        ManualAction::Damage {
+            source,
+            target,
+            amount,
+        } => crate::manual_effects::damage(state, player, *source, *target, *amount)?,
+        ManualAction::AddMana { mana, count } => {
+            crate::manual_effects::mana(player, *mana, *count)?
+        }
+        ManualAction::Pump {
+            object,
+            power,
+            toughness,
+        } => crate::manual_effects::pump(state, player, *object, *power, *toughness)?,
     };
     let mut events = Vec::with_capacity(changes.len() + 1);
     events.push(Event::ManualAction {

@@ -6,12 +6,11 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { CounterKind, ManualAction } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
-import { ownDecision } from '../prompt/ownDecision'
 import { playerOf } from '../selectors'
 import { ManualForm } from './ManualForm'
 import { createMenuStore, ManualMenuContext, useMenuStore, useMenuTarget } from './menuStore'
 import type { MenuTarget } from './menuStore'
-import { manualMenu } from './offers'
+import { GAME_OVER, manualMenu, OUT_OF_GAME } from './offers'
 import type { Ask, ManualGroup, ManualItem } from './offers'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
@@ -99,19 +98,21 @@ function Panel({ target }: { target: MenuTarget }) {
   const seat = usePlay((state) => state.seat)
   const object = usePlay((state) => state.objectsById[target.id])
   const objects = usePlay((state) => state.objectsById)
-  const holding = usePlay((state) => {
-    const pending = ownDecision(state)
-    return pending !== null && 'Priority' in pending.decision.kind
-  })
   const hasCommandZone = usePlay((state) => state.view?.format.toLowerCase() === 'commander')
   const mine = usePlay(
     useShallow((state) => {
       const player = seat === null ? undefined : playerOf(state, seat)
-      return { library: player?.library.count ?? 0, counters: player?.counters ?? NO_COUNTERS }
+      return {
+        library: player?.library.count ?? 0,
+        counters: player?.counters ?? NO_COUNTERS,
+        off: state.result !== null ? GAME_OVER : (player?.lost ?? null) !== null ? OUT_OF_GAME : undefined,
+      }
     }),
   )
+  const players = usePlay(
+    useShallow((state) => (state.view?.players ?? []).filter((p) => p.lost === null).map((p) => p.seat)),
+  )
   const close = useCallback((): void => store?.close(), [store])
-  const fullControl = usePlay((state) => state.fullControl)
 
   const input = useMemo(
     () =>
@@ -120,13 +121,14 @@ function Panel({ target }: { target: MenuTarget }) {
         : {
             seat,
             object,
-            holding,
+            off: mine.off,
+            players,
             hasCommandZone,
             library: mine.library,
             counters: mine.counters,
             ownerName: nameOf(object.owner),
           },
-    [seat, object, holding, hasCommandZone, mine, nameOf],
+    [seat, object, players, hasCommandZone, mine, nameOf],
   )
   const menu = useMemo(() => (input === null ? null : manualMenu(input)), [input])
 
@@ -180,20 +182,11 @@ function Panel({ target }: { target: MenuTarget }) {
 
   if (menu === null || input === null) return null
 
+  // Sent at any time, apart from any decision; a refusal comes back as the session's notice with the engine's reason.
   const send = (action: ManualAction): void => {
-    const pending = ownDecision(session.store.getState())
-    if (pending === null || !('Priority' in pending.decision.kind)) {
-      setError(menu.notice ?? 'Priority has moved on; try again when you hold it.')
-      return
-    }
-    if (session.answer({ Priority: { Manual: action } })) close()
+    if (menu.notice !== undefined) setError(menu.notice)
+    else if (session.manual(action)) close()
     else setError('The action could not be sent; the connection is not open.')
-  }
-  // A seat the server passes for is given no priority decision, so by-hand work waits for a window it asks for.
-  const askable = !holding && fullControl === 'Off'
-  const askNext = (): void => {
-    if (session.setFullControl('NextWindow')) close()
-    else setError('The request could not be sent; the connection is not open.')
   }
   const use = (item: ManualItem): void => {
     setError(undefined)
@@ -238,13 +231,6 @@ function Panel({ target }: { target: MenuTarget }) {
         aria-describedby={menu.notice === undefined ? undefined : 'manual-notice'}
         className="min-h-0 overflow-y-auto overscroll-contain px-1 pb-1"
       >
-        {askable ? (
-          <Item
-            item={{ key: 'ask-priority', label: 'Ask me at the next window', hint: 'once' }}
-            notice={undefined}
-            onUse={askNext}
-          />
-        ) : null}
         {menu.groups.map((group) => (
           <Group key={group.id} group={group} notice={menu.notice} onUse={use} />
         ))}
