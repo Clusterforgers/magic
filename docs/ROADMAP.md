@@ -218,6 +218,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2db-a) Several statics, or a player rule and statics, in one sentence, and hexproof from the Aura controller's opponents; frees about 6 cards (Tenza, Godo's Maul, Nighthowler, Sigarda, Heron's Grace)
 
 ### Compiler wordings
+- [~] (t16a) (t16a-named-abilities) A named ability whose label is no known ability word (`Heavy Rock Cutter — Whenever this creature attacks...`, `Genomic Enhancement — {T}: Add one mana...`, the Warhammer 40K cards) is read as the ability after the label instead of the whole line staying unread; measure the cards it frees
 - [ ] (c10) Unread spell, trigger and activated wordings ranked by `mtg-cli coverage`: one piece per family left (quoted tokens, goad, counters, pump, manlands, graveyard, flicker, damage, draw and discard)
 - [ ] (c10s-a) Mana spent to cast a spell as an amount ("the amount of mana spent to cast this spell", "that spell"): Wurmquake, Manaform Hellkite, Prossh, Gyrus, Kurbis, Marath
 - [ ] (c10s-b) Differences and "whichever is greater" as amounts: Sandstone Oracle, Slithermuse, Hit the Mother Lode, Jaws of Defeat, Tales of the Ancestors, Prophet of the Scarab, Willowdusk
