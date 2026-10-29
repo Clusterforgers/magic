@@ -2,13 +2,10 @@ import { useSearch } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
-import { FIXTURE_DECKS, fixtureCardsApi, fixtureDecksApi } from '../fixture'
+import { FIXTURE_DECKS, fixtureCardsApi, fixtureDecksApi, UNVALIDATED_FIXTURE_MARKER } from '../fixture'
 import type { FixtureOptions } from '../fixture'
 import { UnvalidatedPage } from '../UnvalidatedPage'
 import type { DevView } from './unvalidatedSearch'
-
-/** Text the production build must not contain (`devBuild.test.ts` looks for it). */
-export const UNVALIDATED_FIXTURE_MARKER = 'unvalidated-fixture'
 
 const never = new Promise<never>(() => undefined)
 

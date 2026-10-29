@@ -1,15 +1,7 @@
 // Goal: the not-validated list groups the cards of checked decks by deck and merges them by card (the cards held by most decks first, then by name), narrows them to a state, quotes each clause from the text of its face by spans counted in Unicode scalar values, and writes the copy text in exactly one format.
 import { describe, expect, it } from 'vitest'
 import { reportCard } from '../fakeDecks'
-import {
-  clauseLines,
-  copyText,
-  filterCards,
-  groupByDeck,
-  mergeDecks,
-  quoteOf,
-  stateCounts,
-} from './model'
+import { clauseLines, copyText, filterCards, groupByDeck, mergeDecks, quoteOf, stateCounts } from './model'
 import type { CheckedDeck, FlaggedCard } from './model'
 
 const clause = (text: string, face = 0, start = 0, end = 4) => ({ face, span: { start, end }, text })
@@ -181,7 +173,12 @@ describe('copyText', () => {
     ['oracle-x', ['Draw a card. Then more.']],
     ['oracle-y', ['Whenever you cast a spell,\nyou win.']],
   ])
-  const x = flagged({ decks: [{ id: 'a', name: 'Aristocrats' }, { id: 'b', name: 'Bees' }] })
+  const x = flagged({
+    decks: [
+      { id: 'a', name: 'Aristocrats' },
+      { id: 'b', name: 'Bees' },
+    ],
+  })
   const y = flagged({ oracleId: 'oracle-y', name: 'Card Y', support: 'manual', reasons: [], decks: [] })
 
   it('writes one block a card, a line a clause, blocks apart by an empty line', () => {

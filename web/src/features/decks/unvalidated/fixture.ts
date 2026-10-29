@@ -8,6 +8,9 @@ import type { DecksApi } from '@/net/decks'
 import type { CardDetail, DeckListItem, DeckReport, Reason, ReportCard, Support } from '@/protocol/generated'
 import { cardHit, deckIn, deckView, oracleIdOf, reportCard, reportOf, summary } from '../fakeDecks'
 
+/** Text the production build must not contain (`devBuild.test.ts` looks for it). */
+export const UNVALIDATED_FIXTURE_MARKER = 'unvalidated-fixture'
+
 /** One clause: the words of the face it covers (the whole face when none) and why the game leaves it. */
 export interface ClauseSpec {
   face?: number
