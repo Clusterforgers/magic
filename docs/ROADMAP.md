@@ -81,6 +81,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
 - Replacements that name their event: `Instead` steps read the replaced player, amount and source of damage, and "tap or untap" is a choice of the controller.
 - X in triggers: an `{X}` paid in an effect and read by what follows it, the X of a cycling cost or a monstrosity in its trigger, and "up to X" targets.
+- Mill and rad counters: mill triggers per card, per batch and per player, target bounds from a mill batch, cards milled this turn, the radiation rule, entering tapped for rad counters, costs reduced per rad counter and losing all rad counters.
 
 ## M3 Card system
 
@@ -160,8 +161,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (r2da-c-g) (w11c-crimes-forecast-clash) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
 - [~] (r2da-c-h) (w11c-crimes-forecast-clash) Clash wordings not read: "clash, then return ... If you win, ... instead", "that player's next untap step", a delayed mana of the countered spell, "whenever you win a clash" (Whirlpool Whelm, Pollen Lullaby, Scattering Stroke, Marvo, Deep Operative)
 - [~] (r2da-c-e) (w11d-venture) Venture into the dungeon and the initiative: the dungeon cards and their rooms (Dungeon Map, Radiant Solar, Seasoned Dungeoneer)
-- [~] (r2da-f) (w13b-mill-rad-leftovers) Mill leftovers: target bounds from the trigger's count ("each of up to X target creatures, where X is the number of nonland cards milled this way"), "Do this only once each turn" after a may, a batch per player ("whenever a player mills one or more creature cards") and "a card that was milled this turn"; frees about 5 cards (The Wise Mothman, Screeching Scorchbeast, Zellix, Sanity Flayer, Tato Farmer)
-- [~] (r2da-g) (w13b-mill-rad-leftovers) Rad leftovers: "costs {1} less to activate for each rad counter you have", "you may have this land enter tapped. If you do, you get two rad counters", "loses all rad counters" and "Choose one that hasn't been chosen"; frees about 2 cards (Mariposa Military Base, Survivor's Med Kit)
+- [ ] (r2da-h) "Do this only once each turn" after a may as its own limit: a declined may leaves the ability open for the turn (now read as a trigger limited to once each turn)
 - [ ] (r2da-d) Emblem abilities the compiler does not read ("Whenever a creature attacks you, it gets +5/+5", an activated ability with "where X"), then the other clauses of the emblem planeswalkers; frees about 20 cards (Garruk, Apex Predator; Ob Nixilis of the Black Oath)
 - [ ] (r2dga) Rules for the partners of accepted proposals, so both halves become corpus cards; frees about 8 cards (Ukkima, Stalking Shadow, Pippin, Warden of Isengard, Brallin, Skyshark Rider)
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background and a planeswalker commander, once their other text runs
