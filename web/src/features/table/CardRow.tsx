@@ -98,7 +98,8 @@ function TuckedCards({ ids, size, each, lift, current }: TuckedProps) {
     <div
       key={id}
       data-tucked={id}
-      className="absolute left-0"
+      // The ground under each card keeps a dimmed or translucent face from showing the one behind it.
+      className="absolute left-0 rounded-md bg-lane"
       style={{ top: lift - (ids.length - at) * each, zIndex: at }}
     >
       <Card id={id} size={size} fit tabbable={id === current} />
@@ -245,7 +246,7 @@ export function CardRow({
               {behindHost === undefined ? (
                 <Card id={item} size={size} fit={fit} tabbable={tabbable} />
               ) : (
-                <div data-host={item} className="relative flex" style={{ zIndex: behindHost.length }}>
+                <div data-host={item} className="relative flex rounded-md bg-lane" style={{ zIndex: behindHost.length }}>
                   <Card id={item} size={size} fit={fit} tabbable={tabbable} />
                 </div>
               )}

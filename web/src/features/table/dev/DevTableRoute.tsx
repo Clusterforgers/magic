@@ -68,6 +68,7 @@ export function DevTableRoute() {
     rules,
     cards,
     states,
+    equip,
     menu,
   } = useSearch({
     from: '/dev/table',
@@ -78,6 +79,7 @@ export function DevTableRoute() {
     if (states === true) setDetailFetcher(cards === 'real' ? (id) => cardsApi.get(id) : printedDetail)
     return fixtureGame({
       states,
+      equip,
       seats,
       board,
       prompt,
@@ -91,7 +93,7 @@ export function DevTableRoute() {
       fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
       real,
     })
-  }, [seats, board, prompt, menu, turn, step, hand, rules, states, cards, preview, stops, fc, real])
+  }, [seats, board, prompt, menu, turn, step, hand, rules, states, equip, cards, preview, stops, fc, real])
   const view = game.session.store.getState().view
   const candidates = useMemo(
     () => (menu === undefined || view === null ? undefined : menuCandidates(view, view.viewer, menu)),
