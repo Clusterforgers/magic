@@ -17,6 +17,7 @@ pub mod error;
 pub mod fetch;
 pub mod files;
 pub mod forge;
+pub mod gaps;
 pub mod http;
 pub mod ingest;
 pub mod pacer;
@@ -112,11 +113,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             let db = connect(cli.database_url).await?;
             Ok(compile::compile(&db, &args).await?.render())
         }
-        Command::CheckRules(args) => {
-            let db = connect(cli.database_url).await?;
-            let checked = check_rules::check_rules(&db, &args).await?;
-            Ok(checked.render(args.verbose))
-        }
+        Command::CheckRules(args) => check_rules_command(cli.database_url, &cache, &args).await,
         Command::ForgeCheck(args) => {
             let db = connect(cli.database_url).await?;
             forge::forge_check(&db, &args).await
@@ -137,6 +134,24 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             w19b_pairs::w19b_export_pairs(&db, &args).await
         }
     }
+}
+
+/// `check-rules`: the reports, or with `--gaps` the ledger (the ranks come from the cache, read before the database is).
+async fn check_rules_command(
+    database_url: Option<String>,
+    cache: &Cache,
+    args: &args::CheckRulesArgs,
+) -> Result<String, CliError> {
+    let ranks = match &args.gaps {
+        Some(_) => Some(popularity::Popularity::from_cache(cache)?),
+        None => None,
+    };
+    let db = connect(database_url).await?;
+    let checked = check_rules::check_rules(&db, args).await?;
+    let (Some(path), Some(ranks)) = (&args.gaps, &ranks) else {
+        return Ok(checked.render(args.verbose));
+    };
+    gaps::write_ledger(&checked, ranks, path).await
 }
 
 /// The database the URL names, or the error that asks for one.

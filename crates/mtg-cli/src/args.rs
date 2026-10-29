@@ -183,6 +183,12 @@ pub struct CheckRulesArgs {
     #[arg(long, value_name = "DIR")]
     pub write: Option<PathBuf>,
 
+    /// Write the ledger of everything that holds the proposals back (missing writers, invalid and mismatching rules, missing
+    /// primitives) to this TSV file, ranked by the popularity of the cards each gap alone holds back, and print its top 15
+    /// in place of the reports; the ranks come from the cached Oracle Cards file.
+    #[arg(long, value_name = "FILE")]
+    pub gaps: Option<PathBuf>,
+
     /// The rules files (JSON); with `--card`, exactly one.
     #[arg(value_name = "FILE", required = true)]
     pub files: Vec<PathBuf>,
@@ -509,6 +515,20 @@ mod tests {
             ),
             (card, verbose, bundle, write.map(PathBuf::from), files)
         );
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "check-rules", "a.json"], None)]
+    #[case(&["mtg-cli", "check-rules", "--gaps", "ledger.tsv", "a.json", "b.json"], Some("ledger.tsv"))]
+    fn check_rules_gaps_names_the_file_of_the_ledger(
+        #[case] args: &[&str],
+        #[case] gaps: Option<&str>,
+    ) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::CheckRules(args) = cli.command else {
+            panic!("expected check-rules");
+        };
+        assert_eq!(args.gaps, gaps.map(PathBuf::from));
     }
 
     #[test]

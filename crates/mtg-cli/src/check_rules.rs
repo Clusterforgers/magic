@@ -16,16 +16,37 @@ use crate::audit::stored_cards;
 use crate::compile::names_of;
 use crate::error::CliError;
 
+/// The stored card a report is for.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Subject {
+    /// The Scryfall oracle id.
+    pub oracle_id: String,
+    /// The name of the card and of each of its faces.
+    pub names: Vec<String>,
+}
+
 /// The checked proposals of a run, in the order of the files.
 #[derive(Debug)]
 pub struct Checked {
     /// One report for each file.
     pub reports: Vec<Report>,
+    /// The card of each report.
+    pub subjects: Vec<Subject>,
     /// The files written with `--write`.
     pub written: Vec<PathBuf>,
 }
 
 impl Checked {
+    /// The number of cards by summary: `3 cards: 2 ACCEPTED Verified, 1 MISMATCH`.
+    pub fn counts(&self) -> String {
+        let mut counts = BTreeMap::new();
+        for report in &self.reports {
+            *counts.entry(report.summary()).or_insert(0usize) += 1;
+        }
+        let tally: Vec<String> = counts.iter().map(|(k, n)| format!("{n} {k}")).collect();
+        format!("{} cards: {}", self.reports.len(), tally.join(", "))
+    }
+
     /// The reports as text, then a line of counts by summary when there is more than one file.
     pub fn render(&self, verbose: bool) -> String {
         let mut text = self
@@ -35,12 +56,7 @@ impl Checked {
             .collect::<Vec<_>>()
             .join("\n");
         if self.reports.len() > 1 {
-            let mut counts = BTreeMap::new();
-            for report in &self.reports {
-                *counts.entry(report.summary()).or_insert(0usize) += 1;
-            }
-            let tally: Vec<String> = counts.iter().map(|(k, n)| format!("{n} {k}")).collect();
-            let _ = write!(text, "\n{} cards: {}", self.reports.len(), tally.join(", "));
+            let _ = write!(text, "\n{}", self.counts());
         }
         for path in &self.written {
             let _ = write!(text, "\nwritten {}", path.display());
@@ -119,6 +135,7 @@ pub async fn check_rules(db: &Database, args: &CheckRulesArgs) -> Result<Checked
     let caps: Caps = mtg_engine::caps();
     let mut checked = Checked {
         reports: Vec::new(),
+        subjects: Vec::new(),
         written: Vec::new(),
     };
     for (printed, text) in proposals(&cards, args).await? {
@@ -132,6 +149,12 @@ pub async fn check_rules(db: &Database, args: &CheckRulesArgs) -> Result<Checked
                 .map_err(|source| CliError::io(&path, source))?;
             checked.written.push(path);
         }
+        checked.subjects.push(Subject {
+            oracle_id: printed.oracle_id.clone(),
+            names: std::iter::once(printed.name.clone())
+                .chain(printed.faces.iter().map(|face| face.name.clone()))
+                .collect(),
+        });
         checked.reports.push(report);
     }
     Ok(checked)
