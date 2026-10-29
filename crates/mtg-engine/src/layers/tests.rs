@@ -998,3 +998,40 @@ fn a_clone_gathers_its_own_effects_and_an_event_drops_them() {
         "the copy was made before the Totem left"
     );
 }
+
+/// "Enchanted creature loses all abilities and can't attack or block." as the static ability of the Totem that holds the
+/// Bear, and an effect of another timestamp that gives the Bear something.
+#[rstest]
+#[case::an_older_keyword_is_lost(Modification::AddKeyword(Keyword::Haste), 0, &[], 0)]
+#[case::a_newer_keyword_is_kept(Modification::AddKeyword(Keyword::Haste), 500, &[Keyword::Haste], 0)]
+#[case::an_older_second_keyword_is_lost(Modification::AddKeyword(Keyword::Vigilance), 0, &[], 0)]
+#[case::a_newer_ability_is_kept(Modification::GrantAbility(Arc::new(rules(ACTIVATED))), 500, &[], 1)]
+#[case::an_older_ability_is_lost(Modification::GrantAbility(Arc::new(rules(ACTIVATED))), 0, &[], 0)]
+#[case::a_newer_loss_of_a_keyword_changes_nothing(Modification::RemoveKeyword(Keyword::Flying), 500, &[], 0)]
+fn the_loss_of_abilities_of_an_aura_keeps_what_is_given_after_it_and_the_restrictions_stay(
+    #[case] given: Modification,
+    #[case] timestamp: u64,
+    #[case] keywords: &[Keyword],
+    #[case] granted: usize,
+) {
+    let aura = on_the_bear(r#""LoseAbilities","CantAttack","CantBlock""#);
+    let mut game = state(
+        vec![vec![], vec![]],
+        vec![vec![bear(), totem(&aura)], vec![]],
+    );
+    effect(&mut game, "Bear", given, timestamp);
+    let bear = named(&game, "Bear").id;
+    assert_eq!(
+        keywords_of(&game, bear),
+        keywords.iter().collect::<Vec<_>>(),
+        "keywords"
+    );
+    assert_eq!(abilities_of(&game, bear).len(), granted, "abilities");
+    assert!(
+        characteristics(&game, bear).unwrap().abilities.is_empty(),
+        "the mana ability is lost whenever the effect was made"
+    );
+    // The restrictions are the Aura's own effect, not abilities of the creature: nothing given later lifts them.
+    assert!(crate::characteristics::cant_attack(&game, bear));
+    assert!(crate::characteristics::cant_block(&game, bear));
+}

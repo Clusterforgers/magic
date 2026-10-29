@@ -325,6 +325,7 @@ mod mutate_counts;
 mod mutate_fuzz;
 mod ninjutsu;
 mod object_nth;
+mod observed_stasis;
 mod offered_helpers;
 mod optional_triggers;
 mod owner_left;
