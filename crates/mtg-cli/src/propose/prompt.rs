@@ -38,7 +38,7 @@ pub fn instructions() -> &'static str {
     INSTRUCTIONS
 }
 
-/// The first message about a card: its text, then the nearest hand-written examples, then the request.
+/// The first message about a card: its text, then the nearest solved examples, then the request.
 pub fn card_prompt(card: &PrintedCard, examples: &[&Example]) -> String {
     let mut text = format!("{CARD_MARKER}{}\nLayout: {}\n", card.name, card.layout);
     if !card.keywords.is_empty() {
@@ -76,7 +76,7 @@ pub fn card_prompt(card: &PrintedCard, examples: &[&Example]) -> String {
         let _ = writeln!(text, "Oracle text:\n{}", face.oracle_text);
     }
     if !examples.is_empty() {
-        text.push_str("\nHand-written examples with close wording (oracle text, then the rules that are accepted for it):\n");
+        text.push_str("\nSolved examples with close wording (oracle text, then the rules that are accepted for it):\n");
         for example in examples {
             let _ = write!(
                 text,
@@ -262,7 +262,7 @@ mod tests {
             ),
             "{text}"
         );
-        assert!(!text.contains("Hand-written examples"));
+        assert!(!text.contains("examples with close wording"));
     }
 
     #[test]

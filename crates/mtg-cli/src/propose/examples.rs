@@ -8,6 +8,8 @@ use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::load::Library;
 use serde::Serialize;
 
+use super::w19b_solved::W19bSolvedExamples;
+
 /// Rules longer than this many bytes are weighed down: they cost prompt tokens and teach one card.
 const LONG_RULES: f64 = 3000.0;
 
@@ -142,7 +144,7 @@ fn names_of(card: &PrintedCard) -> Vec<String> {
 }
 
 /// The abilities of a card's faces as compact JSON in serde's field order, the shape a proposal has.
-fn rules_json(card: &Card) -> String {
+pub(crate) fn rules_json(card: &Card) -> String {
     #[derive(Serialize)]
     struct Rules<'a> {
         faces: Vec<FaceRules<'a>>,
@@ -167,6 +169,7 @@ fn rules_json(card: &Card) -> String {
 #[derive(Debug, Default)]
 pub struct ExampleIndex {
     examples: Vec<Example>,
+    w19b_solved: Option<W19bSolvedExamples>,
 }
 
 impl ExampleIndex {
@@ -201,7 +204,19 @@ impl ExampleIndex {
             })
             .collect();
         examples.sort_by(|a, b| a.name.cmp(&b.name));
-        Self { examples }
+        Self {
+            examples,
+            w19b_solved: None,
+        }
+    }
+
+    /// The index that answers with the nearest solved cards instead of the hand-written ones.
+    #[must_use]
+    pub fn w19b_with_solved(self, solved: W19bSolvedExamples) -> Self {
+        Self {
+            w19b_solved: Some(solved),
+            ..self
+        }
     }
 
     /// How many examples the index holds.
@@ -216,6 +231,9 @@ impl ExampleIndex {
 
     /// The `count` examples nearest to `card`, nearest first, never the card itself.
     pub fn nearest(&self, card: &PrintedCard, count: usize) -> Vec<&Example> {
+        if let Some(solved) = &self.w19b_solved {
+            return solved.nearest(card);
+        }
         let wanted = terms_of(card);
         let mut scored: Vec<(f64, &Example)> = self
             .examples
@@ -326,6 +344,7 @@ mod tests {
         let far = printed("Far", "Sorcery", "Destroy target land.", &[]);
         let index = ExampleIndex {
             examples: vec![example(&far, "{}"), example(&near, "{}")],
+            ..ExampleIndex::default()
         };
         let found: Vec<&str> = index
             .nearest(&wanted, 2)
@@ -342,6 +361,7 @@ mod tests {
         let b = printed("Alpha", "Instant", "Draw a card.", &[]);
         let index = ExampleIndex {
             examples: vec![example(&wanted, "{}"), example(&a, "{}"), example(&b, "{}")],
+            ..ExampleIndex::default()
         };
         let found: Vec<&str> = index
             .nearest(&wanted, 5)
@@ -363,6 +383,7 @@ mod tests {
                 example(&b, "same"),
                 example(&c, "other"),
             ],
+            ..ExampleIndex::default()
         };
         let found: Vec<&str> = index
             .nearest(&wanted, 5)
@@ -379,6 +400,7 @@ mod tests {
         let short = printed("Short", "Instant", "Draw a card.", &[]);
         let index = ExampleIndex {
             examples: vec![example(&long, &"x".repeat(9000)), example(&short, "{}")],
+            ..ExampleIndex::default()
         };
         assert_eq!(index.nearest(&wanted, 1)[0].name, "Short");
     }
