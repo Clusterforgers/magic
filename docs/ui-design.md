@@ -74,7 +74,7 @@ Arena puts the opponent on top, your hand on the bottom edge rising on hover, th
 +-----------------------------------------------+ Log  |
 | shared: stack chips, ticker, prompt line       | Chat |
 +-----------------------------------------------+ Stack|
-| own: pod, creatures, other, lands              |      |
+| own: pod, lanes: creatures; lands, other      |      |
 +-----------------------------------------------+      |
 | hand dock                    | controls dock   |      |
 +-----------------------------------------------+------+
@@ -85,12 +85,13 @@ Arena puts the opponent on top, your hand on the bottom edge rising on hover, th
 | top bar | home, turn badge, mini phase pips, menu (layout, theme, Concede) | 44 px |
 | opponents | a pod and board per opponent | `minmax(0, 1fr)` |
 | shared | stack chips, ticker, prompt line; a long prompt grows up into a sheet of at most 40 dvh into room the opponents' area keeps free, beside the pod column, so it covers no card, and never over your board (its cards are what a prompt asks you to click), the hand or the controls | `clamp(56px, 9dvh, 88px)` |
-| own | pod, then creatures, other, lands | `minmax(0, 1.15fr)` |
+| own | pod, then the lanes of your permanents: creatures toward the middle, lands left and other permanents right | `minmax(0, 1.15fr)` |
 | hand dock | overlapping fan, 62% of each card showing; hover or focus lifts it 40% and opens the preview | `clamp(112px, 17dvh, 200px)` |
 | controls dock | pass controls (button 44 px or more, End turn, menu) and the stop ladder, one row with a Mine or Theirs switch, with Full Control | bottom right |
 | side | Log, Chat, Stack tabs with unread counts (the stack also shows as chips in the shared region) | L, XL 280 to 320 px; M a 44 px rail opening over the table; S, XS a sheet |
 
-- `fitRows(box, groups, limits)` (pure, `fit.ts`) tries card widths from 112 px down to 44 px in 2 px steps (5:7, lands at 0.8) and returns the largest at which every row fits. At 44 px the zone scrolls inside, with an edge fade and a "+N" count. A `ResizeObserver` writes `--card-w`. Card text stays at 11 px or more; the preview carries the rest.
+- Lanes: a board draws its permanents in three lanes, lands, creatures and other permanents (artifacts, enchantments, planeswalkers, battles; a creature of any other type is a creature). Creatures face the middle of the table, lands sit at the left and other permanents at the right, on every board, an opponent's mirrored top to bottom. Lanes never overlap, an empty lane takes no room, and each lane has a faint ground (`--lane`). The command zone, graveyard and exile are the pod's corner beside the board.
+- `fitLanes(box, counts, facing)` (pure, `laneFit.ts`) halves its way over a ladder of card widths from 224 px down to 44 px in 2 px steps (5:7, lands at 0.8) and returns the largest at which some shape fits every lane: one band of all three lanes, creatures over a band of lands and other permanents, or a band each; a tie goes to two bands. Cards shrink as counts grow, lanes wrap into more lines, and at 44 px the zone scrolls inside, creatures first, with an edge fade and a "+N" count. The duel board of an early Commander game draws cards 100 px wide or more at 1440x900 and 130 at 1920x1080. Card text stays at 11 px or more; the preview carries the rest.
 - `group.ts` merges permanents equal in name, controller, tapped state, counters, attachments and summoning sickness into one stack with a ×N badge. Lands and tokens group at once, other cards when a zone would fall under 64 px. A stack opens in place on click or Enter, and while a prompt needs each member.
 - Seats: 2 draws one wide opponent board beside a 168 px pod column; 3 and 4 draw two or three columns of one-line pods; 5 or more, or any column under 280 px, draws a tile strip and one focused board that follows the active seat. That is Grid or Focus mode; the menu overrides it. Opponent boards shrink before yours.
 - S (tablet): the same grid, a side sheet, 44 px targets. XS (phone, portrait): top bar, a 56 px pod strip (active first), the focused opponent board, your board, the shared line, a 96 to 120 px hand dock; a tap on a pod focuses it. Landscape phones use S with a 32 px top bar.

@@ -58,6 +58,8 @@ export interface Look {
   small: string[]
   /** The primary actions asked for, by name: where they are and whether nothing lies over them; null when absent. */
   actions: Record<string, { box: Box; free: boolean } | null>
+  /** Lanes of a battlefield that lie over another lane of it, or outside a board that does not scroll. */
+  lanes: string[]
 }
 
 /** What `measure` is asked. */
@@ -222,7 +224,36 @@ export function measure(ask: Ask): Look {
   }
   if (ask.reveal) window.scrollTo(was.x, was.y)
 
+  // The lanes of a battlefield never lie over each other, and on a board that does not scroll every lane is inside it.
+  const lanes: string[] = []
+  for (const board of Array.from(document.querySelectorAll('[data-battlefield-seat]'))) {
+    const seat = board.getAttribute('data-battlefield-seat') ?? '?'
+    const placed = Array.from(board.querySelectorAll('[data-lane]')).map((lane) => ({
+      name: lane.getAttribute('data-lane') ?? 'lane',
+      box: boxOf(lane),
+    }))
+    placed.forEach((one, index) => {
+      for (const two of placed.slice(index + 1)) {
+        const across = Math.min(one.box.right, two.box.right) - Math.max(one.box.left, two.box.left)
+        const down = Math.min(one.box.bottom, two.box.bottom) - Math.max(one.box.top, two.box.top)
+        if (across > slack && down > slack) lanes.push(`seat ${seat} ${one.name} over ${two.name}`)
+      }
+    })
+    const zone = board.querySelector('[data-slot="battlefield-zone"]')
+    if (zone === null || zone.scrollHeight > zone.clientHeight + 1) continue
+    const room = boxOf(zone)
+    for (const lane of placed) {
+      const out =
+        lane.box.left < room.left - slack ||
+        lane.box.right > room.right + slack ||
+        lane.box.top < room.top - slack ||
+        lane.box.bottom > room.bottom + slack
+      if (out) lanes.push(`seat ${seat} ${lane.name} outside its board`)
+    }
+  }
+
   return {
+    lanes,
     inner,
     scroll: { width: root.scrollWidth, height: root.scrollHeight, x: window.scrollX, y: window.scrollY },
     cutOff,
@@ -259,6 +290,7 @@ export function problemsOf(look: Look, expect: Expect): string[] {
   if (expect.fits && scroll.y !== 0) problems.push('was scrolled down')
   problems.push(...listed('cut off:', look.cutOff))
   problems.push(...listed('small text:', [...new Set(look.small)]))
+  problems.push(...listed('lane:', look.lanes))
   for (const [name, action] of Object.entries(look.actions)) {
     if (action === null) problems.push(`${name} is missing`)
     else if (!within(action.box, inner)) problems.push(`${name} is outside the window`)
