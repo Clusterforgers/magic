@@ -130,7 +130,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
-- [ ] (a1) Card images: the server serves the normal and art-crop image of a card identity (printing, face, token) from a disk cache filled from the Scryfall CDN, and the text face stands in while an image loads or does not exist (`docs/server.md`, `docs/data-sources.md`)
+- [~] (a1) (a1-card-images) Card images: the server serves the normal and art-crop image of a card identity (printing, face, token) from a disk cache filled from the Scryfall CDN, and the text face stands in while an image loads or does not exist (`docs/server.md`, `docs/data-sources.md`)
 - [ ] (a2) The table, hand, stack, preview, deck builder and lobby draw the real card image, unaltered as Scryfall's image terms require, with tapped state, counters, attachments, loyalty and support marks over it, with `/dev/table` screenshots at six sizes in both themes (`docs/web.md`)
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
