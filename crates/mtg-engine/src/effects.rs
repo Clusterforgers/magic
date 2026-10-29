@@ -162,6 +162,9 @@ pub enum Modification {
     /// The object can't be blocked by more than this many creatures together: a restriction with no layer that the
     /// block rules read.
     MaxBlockers(u32),
+    /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
+    /// additional creature each combat" (CR 509.1a).
+    BlocksAdditional(u32),
     /// The object can't attack `you`, the planeswalkers `you` controls or both: a restriction with no layer that the
     /// attack declaration reads.
     CantAttackYou {
@@ -207,6 +210,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => return None,
         })
     }
@@ -270,6 +274,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => {}
         }
     }

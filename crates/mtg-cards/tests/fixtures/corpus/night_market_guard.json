@@ -1,0 +1,21 @@
+{
+  "id": "2098bb0f-6ab5-407c-93f7-fee3b385926e",
+  "oracle_id": "3a7a27fe-60f0-4a21-a1c1-5fef8a528391",
+  "name": "Night Market Guard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bbd",
+  "collector_number": "242",
+  "rarity": "common",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Construct",
+  "oracle_text": "This creature can block an additional creature each combat.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

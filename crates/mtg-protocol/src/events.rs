@@ -299,6 +299,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::EmblemCreated(_)
         | Event::Ventured(_)
         | Event::DungeonCompleted { .. }
+        | Event::InitiativeTaken { .. }
         | Event::BecameCopy(_)
         // A copy of a spell or ability on the stack shows what the stack shows of the original, and no more.
         | Event::SpellCopied(_)
@@ -322,6 +323,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Learned { .. }
         | Event::DieRolled { .. }
         | Event::CoinFlipped { .. }
+        | Event::Clashed { .. }
         | Event::Proliferated { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
@@ -896,6 +898,11 @@ mod tests {
                 player: OWNER,
                 sides: 20,
                 result: 7,
+            },
+            Event::Clashed {
+                player: OWNER,
+                opponent: OTHER,
+                won: false,
             },
             Event::CoinFlipped {
                 player: OTHER,

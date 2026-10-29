@@ -34,6 +34,8 @@ pub enum ObjectKind {
     Emblem,
     /// A dungeon in its owner's command zone (CR 309).
     Dungeon,
+    /// The initiative in its holder's command zone (CR 725).
+    Initiative,
 }
 
 impl ObjectKind {

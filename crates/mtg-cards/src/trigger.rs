@@ -357,6 +357,15 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player takes the initiative (CR 725); `Triggering` is that player.
+    TakesInitiative {
+        /// Who takes it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player becomes the monarch ("whenever you become the monarch"); `Triggering` is that player.
     BecomesMonarch {
         /// Who becomes it.
@@ -398,6 +407,15 @@ pub enum TriggerPattern {
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {
         /// Who wins the flip.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// A player wins a clash ("whenever you win a clash", CR 701.23); `Triggering` is that player.
+    W15cClashWon {
+        /// Who wins the clash.
         #[serde(
             default = "Ref::each_player",
             skip_serializing_if = "Ref::is_each_player"

@@ -55,6 +55,7 @@ mod twins;
 mod two_targets;
 mod untapped;
 mod w11c_clash;
+mod w15c_clash;
 mod w2b_you_and;
 mod w2d_villainous;
 mod w6e_control;
@@ -194,6 +195,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(they);
     let counted = where_x_draws(&texts);
     texts.extend(counted);
+    let hand_first = super::w15c_clash::w15c_hand_first(&texts);
+    texts.extend(hand_first);
     let incubated = w7c_then_incubate(&texts);
     texts.extend(incubated);
     let regenerating = regeneration_wordings(&texts);
@@ -430,6 +433,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     super::w13b_mill_rad::w13b_wordings(ability, &mut texts);
     graveyard_wordings(ability, &mut texts);
     produced_wordings(&mut texts);
+    super::w15b_time::w15b_wordings(ability, &mut texts);
     texts
 }
 
@@ -993,6 +997,7 @@ fn written(
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
+            .or_else(|| w15c_clash::w15c_clash(&effects[start..]))
             .or_else(|| writer.w11c_clash(&effects[start..]))
             .or_else(|| writer.w9b_clash(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
@@ -2349,10 +2354,10 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
-            Effect::Incubate {
-                who: Ref::You,
-                count,
-            } => format!("incubate {}", points_text(count)?),
+            Effect::Incubate { who, count } => match who {
+                Ref::You => format!("incubate {}", points_text(count)?),
+                _ => format!("{} {}", self.player(who)?, self.predicate(effect, true)?),
+            },
             Effect::TimeTravel { who: Ref::You } => "time travel".to_owned(),
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
@@ -2421,17 +2426,22 @@ impl Writer<'_> {
                     format!("{} ventures into {into}", self.player(who)?)
                 }
             }
-            Effect::BecomeMonarch { who } => format!(
-                "{} {} the monarch",
-                self.player(who)?,
-                if *who == Ref::You {
-                    "become"
-                } else {
-                    "becomes"
-                }
-            ),
+            Effect::BecomeMonarch { .. } | Effect::TakeInitiative { .. } => {
+                return self.w15a_designation(effect);
+            }
             _ => return self.module_effect(effect),
         })
+    }
+
+    /// "you become the monarch", "you take the initiative".
+    fn w15a_designation(&mut self, effect: &Effect) -> Option<String> {
+        let (who, verb, designation) = match effect {
+            Effect::BecomeMonarch { who } => (who, "become", "the monarch"),
+            Effect::TakeInitiative { who } => (who, "take", "the initiative"),
+            _ => return None,
+        };
+        let s = if *who == Ref::You { "" } else { "s" };
+        Some(format!("{} {verb}{s} {designation}", self.player(who)?))
     }
 
     /// "return ~ from your graveyard to the battlefield", "shuffle ~ into its owner's library".
@@ -2591,6 +2601,8 @@ impl Writer<'_> {
         prevention::effect_text(effect)
             .or_else(|| lands::effect_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
+            .or_else(|| super::w14a_limits::w14a_block_limit_each_text(effect))
+            .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))
             .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))
             .or_else(|| c10_vp_planar_text(effect))

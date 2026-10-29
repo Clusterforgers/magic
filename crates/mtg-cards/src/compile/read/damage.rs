@@ -80,7 +80,12 @@ fn amount_and_recipient(r: &mut Reader<'_>) -> Option<(Amount, Ref)> {
 pub(super) fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     (r.source() || (r.targets.is_empty() && r.word("it"))).then_some(())?;
     r.need("deals")?;
-    let (amount, first) = amount_and_recipient(r)?;
+    // "it deals damage equal to the number of time counters on it": the source is "it" in its own amount.
+    let outer = r.it.clone();
+    r.it = outer.clone().or(Some(Ref::This));
+    let read = amount_and_recipient(r);
+    r.it = outer;
+    let (amount, first) = read?;
     let mut recipients = vec![first];
     // Objects and players are no overlap; two groups of objects or two groups of players may be.
     if r.targets.is_empty()

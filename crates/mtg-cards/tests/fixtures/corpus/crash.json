@@ -1,0 +1,23 @@
+{
+  "id": "7a26bde3-8392-4476-b347-f223d52554a6",
+  "oracle_id": "562af5da-1080-46d2-8a38-71f06b7e8457",
+  "name": "Crash",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mmq",
+  "collector_number": "186",
+  "rarity": "common",
+  "released_at": "1999-10-04",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "You may sacrifice a Mountain rather than pay this spell's mana cost.\nDestroy target artifact.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

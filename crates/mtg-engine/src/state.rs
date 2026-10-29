@@ -124,6 +124,8 @@ pub(crate) enum Tally {
     DiedUnder,
     /// A nontoken creature put into a graveyard from the battlefield (counted for the player who controlled it as it died).
     DiedNontokenUnder,
+    /// A Phyrexian put into a graveyard from the battlefield (counted for the player who controlled it as it died).
+    W14bPhyrexianDiedUnder,
     /// A creature declared as an attacker (counted for its controller, once for each creature).
     Attackers,
     /// A Vehicle that became crewed (counted for the object).
@@ -245,6 +247,8 @@ pub struct GameState {
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
     /// The dungeons (CR 309): each player's venture marker and the dungeons they completed.
     pub(crate) w11d: crate::w11d_dungeon::W11dDungeons,
+    /// Who has the initiative (CR 725) and the object that stands for it.
+    pub(crate) w15a_initiative: Option<crate::w15a_initiative::W15aHeld>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
     /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
@@ -723,6 +727,10 @@ impl Hash for GameState {
         // Likewise a game where nobody ventured.
         if !self.w11d.is_empty() {
             self.w11d.hash(state);
+        }
+        // Likewise a game where nobody took the initiative.
+        if let Some(held) = self.w15a_initiative {
+            held.hash(state);
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);

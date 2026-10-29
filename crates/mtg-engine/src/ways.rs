@@ -254,8 +254,12 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         });
     }
     let permitted = permissions.iter().any(|permission| permission.free);
-    if permitted || (!ways.is_empty() && free_cast_open(state, player, card)) {
+    if permitted {
         ways.push(free_way(instant));
+    } else if !ways.is_empty()
+        && let Some(way) = w14c_printed_alternative(state, player, card, instant)
+    {
+        ways.push(way);
     }
     for keyword in keywords_of(state, id) {
         ways.extend(crate::c9_emerge_ways::c9_emerge_ways(
@@ -283,13 +287,39 @@ fn free_way(instant: bool) -> Way {
     }
 }
 
-/// Whether the card has a printed "you may cast this spell without paying its mana cost" that is open to `player` now: its
-/// condition holds for them (CR 118.9). It replaces the mana cost, so it adds a way only where the card is cast for that cost.
-fn free_cast_open(state: &GameState, player: PlayerId, card: &GameObject) -> bool {
+/// The printed alternative cost of the card that is open to `player` now (CR 118.9): "you may cast this spell without
+/// paying its mana cost" or "you may sacrifice a Mountain rather than pay this spell's mana cost" whose condition holds
+/// for them, the free cast first. It replaces the mana cost, so it adds a way only where the card is cast for that cost.
+fn w14c_printed_alternative(
+    state: &GameState,
+    player: PlayerId,
+    card: &GameObject,
+    instant: bool,
+) -> Option<Way> {
     let scope = Scope::announcing(state, player, card.reference());
-    ability_reader::printed_rules(card.card()).any(|rule| {
-        matches!(&**rule, Ability::FreeCast { condition }
-            if condition.as_ref().is_none_or(|held| scope.holds(held).unwrap_or(false)))
+    let open: Vec<Option<&Cost>> = ability_reader::printed_rules(card.card())
+        .filter_map(|rule| match &**rule {
+            Ability::FreeCast { condition, cost }
+                if condition
+                    .as_ref()
+                    .is_none_or(|held| scope.holds(held).unwrap_or(false)) =>
+            {
+                Some(cost.as_ref())
+            }
+            _ => None,
+        })
+        .collect();
+    if open.contains(&None) {
+        return Some(free_way(instant));
+    }
+    let (mana, parts) = open.into_iter().flatten().find_map(cast_cost)?;
+    Some(Way {
+        alternative: Some(CastWay::Free),
+        label: format!("Cast for {}", cost_words(&mana, &parts)),
+        mana: Some(mana),
+        instant,
+        variant: 0,
+        parts,
     })
 }
 

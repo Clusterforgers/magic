@@ -21,6 +21,7 @@ use crate::rules::{
 use crate::state::GameState;
 use crate::w8a_declaration_limits::w8a_check_limit;
 use crate::w10a_attack_limits_at::w10a_check_limits_at;
+use crate::w14c_block_capacity::{w14c_check_pairs, w14c_distinct_blockers, w14c_extra_blocks};
 use crate::zones::Zone;
 
 /// What an attacking creature is attacking.
@@ -465,7 +466,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             *able.entry(*attacker).or_default() += 1;
         }
     }
-    let most = block_limit(state);
+    let most = block_limit(state, player);
     let together: BTreeSet<ObjectId> = blockable
         .iter()
         .copied()
@@ -488,9 +489,11 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
                 .copied()
                 .filter(|attacker| blockable_together(*attacker))
                 .collect();
+            let extra = w14c_extra_blocks(state, *object).min(can_block.len().saturating_sub(1));
             (!can_block.is_empty()).then_some(BlockerOption {
                 object: *object,
                 can_block,
+                extra,
             })
         })
         .collect();
@@ -560,19 +563,7 @@ pub(crate) fn check_blockers(
     options: &BlockOptions,
     answer: &[(ObjectId, ObjectId)],
 ) -> Result<(), IllegalAnswer> {
-    for (i, (blocker, attacker)) in answer.iter().enumerate() {
-        if answer[..i].iter().any(|(b, _)| b == blocker) {
-            return Err(IllegalAnswer::Duplicate("blocker"));
-        }
-        let allowed = options
-            .blockers
-            .iter()
-            .find(|b| b.object == *blocker)
-            .ok_or(IllegalAnswer::NotOffered("blocker"))?;
-        if !allowed.can_block.contains(attacker) {
-            return Err(IllegalAnswer::NotOffered("attacker to block"));
-        }
-    }
+    w14c_check_pairs(options, answer)?;
     for (_, attacker) in answer {
         let got = answer.iter().filter(|(_, a)| a == attacker).count();
         let needed = keywords::min_blockers(state, *attacker);
@@ -584,7 +575,7 @@ pub(crate) fn check_blockers(
             return Err(IllegalAnswer::TooManyBlockers { allowed, got });
         }
     }
-    let declared: Vec<ObjectId> = answer.iter().map(|(blocker, _)| *blocker).collect();
+    let declared = w14c_distinct_blockers(answer);
     let excused = w8a_check_limit(options.most, &options.required, &declared)?;
     // CR 509.1c: every requirement that can be obeyed is; a creature that must block does, unless every block it could
     // make would break a restriction (menace, a full declaration) that no creature free to join could mend.

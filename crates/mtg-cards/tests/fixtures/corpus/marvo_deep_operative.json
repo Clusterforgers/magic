@@ -1,0 +1,29 @@
+{
+  "id": "8fdb30c1-0551-48b7-8bcb-d7e0dbb6690a",
+  "oracle_id": "317ab0b3-1163-4893-a881-4c397feb213d",
+  "name": "Marvo, Deep Operative",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkc",
+  "collector_number": "7",
+  "rarity": "mythic",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{3}{U}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Octopus Rogue",
+  "oracle_text": "Whenever Marvo attacks, clash with defending player. (Each clashing player reveals the top card of their library, then puts that card on their choice of the top or bottom. A player wins if their card had a greater mana value.)\nWhenever you win a clash, draw a card. Then you may cast a spell from your hand with mana value 8 or less without paying its mana cost.",
+  "power": "1",
+  "toughness": "8",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Clash"
+  ]
+}

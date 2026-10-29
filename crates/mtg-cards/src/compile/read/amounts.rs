@@ -295,7 +295,9 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             counter,
         } => super::w13b_mill_rad::w13b_you_have_text(counter)?,
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
-        Amount::Destroyed(_) => super::w2c_counts::w2c_destroyed_each_text(counted)?,
+        Amount::Destroyed(_) | Amount::Exiled(_) => {
+            super::w2c_counts::w2c_destroyed_each_text(counted)?
+        }
         Amount::PhasedOut(_) => super::w11b_phase::w11b_phased_each_text(counted)?,
         Amount::Distinct { .. } => super::w2c_counts::w2c_distinct_text(counted, false)?,
         _ => return None,

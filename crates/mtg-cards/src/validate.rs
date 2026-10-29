@@ -617,6 +617,7 @@ impl<'a> Walker<'a> {
             Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
+            Amount::Exiled(of) => self.w2c_selector_amount("Exiled", of),
             Amount::PhasedOut(of) => self.w2c_selector_amount("PhasedOut", of),
             Amount::Players(who) => self.player_amount("Players", who),
             Amount::HighestLife(who) => self.player_amount("HighestLife", who),
@@ -728,6 +729,10 @@ impl<'a> Walker<'a> {
             Condition::Monarch(who) => {
                 self.uses("Condition", "Monarch");
                 self.at("Monarch", |w| w.reference(who, Kind::Player));
+            }
+            Condition::Initiative(who) => {
+                self.uses("Condition", "Initiative");
+                self.at("Initiative", |w| w.reference(who, Kind::Player));
             }
             Condition::MonarchAtTurnStart(who) => {
                 self.uses("Condition", "MonarchAtTurnStart");
@@ -902,6 +907,44 @@ impl<'a> Walker<'a> {
             self.problem("an additional cost is paid by the caster, not by the spell itself");
         }
         self.parts_a_spell_cost_does_not_pay("Ability", "AdditionalCost", cost, required);
+    }
+
+    /// A cast in place of the mana cost: its condition, read with no targets, and the cost paid instead, if any.
+    fn w14c_free_cast(&mut self, condition: Option<&Condition>, cost: Option<&Cost>) {
+        self.scope = Scope::new(&[], false);
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+        if let Some(cost) = cost {
+            self.w14c_alternative_cost(cost);
+        }
+    }
+
+    /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
+    /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
+    fn w14c_alternative_cost(&mut self, cost: &Cost) {
+        self.at("cost", |w| w.cost(cost));
+        if cost.0.is_empty() {
+            self.problem("an alternative cost names what is paid; leave it out for a free cast");
+        }
+        if cost.has_x() {
+            self.problem("an alternative cost has no X");
+        }
+        let by_the_source = cost.0.iter().any(|item| {
+            matches!(
+                item,
+                CostItem::Tap
+                    | CostItem::Untap
+                    | CostItem::SacrificeSelf
+                    | CostItem::ExileSelf
+                    | CostItem::DiscardSelf
+                    | CostItem::OneOf(_)
+            )
+        });
+        if by_the_source {
+            self.problem("an alternative cost is paid by the caster with no choice and not by the spell itself");
+        }
+        self.parts_a_spell_cost_does_not_pay("Ability", "FreeCast.Cost", cost, false);
     }
 
     /// The parts of the cost of a keyword of a spell (kicker, buyback, entwine, flashback, evoke, madness) that the
@@ -1155,7 +1198,9 @@ impl<'a> Walker<'a> {
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
             }
-            Modification::MinBlockers(count) | Modification::MaxBlockers(count) => {
+            Modification::MinBlockers(count)
+            | Modification::MaxBlockers(count)
+            | Modification::BlocksAdditional(count) => {
                 if *count < 1 {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
@@ -1319,11 +1364,13 @@ impl<'a> Walker<'a> {
             TriggerPattern::LifeGained { who }
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
+            | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
             | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
             | TriggerPattern::CoinFlipWon { who }
+            | TriggerPattern::W15cClashWon { who }
             | TriggerPattern::DiceRolled { who, .. }
             | TriggerPattern::Amassed { who }
             | TriggerPattern::Surveilled { who }
@@ -1427,11 +1474,13 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
+                | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
                 | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::CoinFlipWon { .. }
+                | TriggerPattern::W15cClashWon { .. }
                 | TriggerPattern::DiceRolled { .. }
                 | TriggerPattern::Amassed { .. }
                 | TriggerPattern::Explored { .. }
@@ -2116,6 +2165,7 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
+            | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
@@ -2197,7 +2247,18 @@ impl Walker<'_> {
                 results,
             } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
             Effect::FlipCoin { who, win, lose, .. } => w.flip_coin(who, win, lose),
-            Effect::Clash { who, win, lose, .. } => w.w9b_clash(who, win, lose),
+            Effect::Clash {
+                who,
+                win,
+                lose,
+                with,
+                ..
+            } => {
+                if let Some(with) = with {
+                    w.at("with", |w| w.reference(with, Kind::Player));
+                }
+                w.w9b_clash(who, win, lose);
+            }
             Effect::VillainousChoice {
                 who, first, second, ..
             } => {
@@ -2764,11 +2825,8 @@ impl Walker<'_> {
                 ..
             } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
-            Ability::FreeCast { condition } => {
-                w.scope = Scope::new(&[], false);
-                if let Some(condition) = condition {
-                    w.at("condition", |w| w.condition(condition));
-                }
+            Ability::FreeCast { condition, cost } => {
+                w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
@@ -2827,6 +2885,12 @@ impl Walker<'_> {
                 if !matches!(at, Ref::You | Ref::This) {
                     w.at("at", |w| w.problem("a limit on the attacks protects you or this planeswalker"));
                 }
+            }),
+            GameRule::BlockLimitEach { most, who } => self.at(tag, |w| {
+                if *most == 0 {
+                    w.problem("a limit on a declaration lets at least one creature in");
+                }
+                w.at("who", |w| w.reference(who, Kind::Player));
             }),
             GameRule::AttackLimit(most) | GameRule::BlockLimit(most) => {
                 if *most == 0 {

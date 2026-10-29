@@ -383,6 +383,13 @@ mod w11d_venture;
 mod w12a_writers;
 mod w13a_writers;
 mod w13b_mill_rad;
+mod w14a_leftovers;
+mod w14b_incubate;
+mod w14c_alt_costs;
+mod w14c_block_capacity;
+mod w15a_initiative;
+mod w15b_time;
+mod w15c_clash;
 mod w16a_writers;
 mod w2b_each_of;
 mod w2b_you_and;
@@ -855,7 +862,6 @@ mod removal {
     #[case::unless_destroy("Destroy target creature unless its controller pays {3}.")]
     #[case::if_clause("Destroy target creature if it's attacking.")]
     #[case::a_second_target("Destroy target creature and target land.")]
-    #[case::each("Destroy each creature.")]
     #[case::that("Destroy target creature that was dealt damage this turn.")]
     #[case::an_ability_of_a_creature("Counter target activated ability of a creature.")]
     #[case::a_player("Destroy target player.")]

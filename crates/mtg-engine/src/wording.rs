@@ -449,6 +449,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} complete{s} a dungeon"), false)
         }
+        TriggerPattern::TakesInitiative { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} take{s} the initiative"), false)
+        }
         TriggerPattern::BecomesMonarch { who: by } => {
             let (name, s) = who(by);
             (format!("{name} become{s} the monarch"), false)
@@ -464,6 +468,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Proliferated { who: by } => {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
+        }
+        TriggerPattern::W15cClashWon { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} win{s} a clash"), false)
         }
         TriggerPattern::CoinFlipWon { who: by } => {
             let (name, s) = who(by);
@@ -1468,6 +1476,7 @@ mod tests {
     )]
     #[case::you_proliferate(r#"{"Proliferated":{"who":"You"}}"#, "Whenever you proliferate")]
     #[case::you_win_a_flip(r#"{"CoinFlipWon":{"who":"You"}}"#, "Whenever you win a coin flip")]
+    #[case::you_win_a_clash(r#"{"W15cClashWon":{"who":"You"}}"#, "Whenever you win a clash")]
     #[case::a_player_wins_a_flip(r#"{"CoinFlipWon":{}}"#, "Whenever a player wins a coin flip")]
     #[case::you_amass(r#"{"Amassed":{"who":"You"}}"#, "Whenever you amass")]
     #[case::you_bolster(r#"{"Bolstered":{"who":"You"}}"#, "Whenever you bolster")]

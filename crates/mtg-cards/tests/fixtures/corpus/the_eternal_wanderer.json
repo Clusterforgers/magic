@@ -1,0 +1,24 @@
+{
+  "id": "905f0dd4-0197-45f8-8e7f-396d6dcef600",
+  "oracle_id": "20a1671d-e8a4-4cf1-87a7-f2f6319f4b9e",
+  "name": "The Eternal Wanderer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "11",
+  "rarity": "rare",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Planeswalker",
+  "oracle_text": "No more than one creature can attack The Eternal Wanderer each combat.\n+1: Exile up to one target artifact or creature. Return that card to the battlefield under its owner's control at the beginning of that player's next end step.\n0: Create a 2/2 white Samurai creature token with double strike.\n−4: For each player, choose a creature that player controls. Each player sacrifices all creatures they control not chosen this way.",
+  "loyalty": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

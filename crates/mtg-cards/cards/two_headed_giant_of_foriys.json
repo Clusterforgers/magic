@@ -1,0 +1,15 @@
+{
+  "oracle_id": "38aa31bd-7145-43b9-9409-463d9ad6cd69",
+  "name": "Two-Headed Giant of Foriys",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Two-Headed Giant of Foriys",
+      "oracle_fingerprint": "fc8982e839950606d4bc3b6368b07b5f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 1 }] } }
+      ]
+    }
+  ]
+}

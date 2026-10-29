@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 36] = [
+const TEMPLATES: [Template; 39] = [
     super::w13b_mill_rad::w13b_tapped_for_counters,
     super::w9d_exert::w9d_exert,
     super::c11b_once::c11b_once,
@@ -60,6 +60,7 @@ const TEMPLATES: [Template; 36] = [
     as_entering,
     super::day_night::starts_the_day,
     super::prepare::enters_prepared,
+    super::w14a_limits::w14a_limit_while,
     rule,
     super::player_keywords::ability,
     lands::from_a_zone,
@@ -79,6 +80,8 @@ const TEMPLATES: [Template; 36] = [
     super::untap_rules::doesnt_untap,
     evasion::block_only,
     free_cast,
+    super::w14c_alt_costs::w14c_alt_cost,
+    super::w14c_block_capacity::w14c_blocks_additional,
 ];
 
 /// A static ability that is a whole sentence: the shape and its period.
@@ -198,6 +201,7 @@ fn free_cast(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("without paying its mana cost")?;
     Some(Ability::FreeCast {
         condition: Some(condition),
+        cost: None,
     })
 }
 
@@ -1166,8 +1170,9 @@ pub(super) fn statics(
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
 pub fn texts(ability: &Ability) -> Vec<String> {
-    let group =
+    let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
+    group.extend(super::w14c_alt_costs::w14c_alt_cost_texts(ability));
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {
@@ -1243,12 +1248,6 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             per,
             condition,
         } => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
-        Ability::FreeCast {
-            condition: Some(held),
-        } => control_texts(held)
-            .into_iter()
-            .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))
-            .collect(),
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..
@@ -1497,8 +1496,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
     if from == ZoneKind::Graveyard {
         return super::c8_eg_cast_itself::c8_eg_texts(rule, condition);
     }
-    if condition.is_some() {
-        return Vec::new();
+    if let Some(condition) = condition {
+        return super::w14a_limits::w14a_limit_while_texts(rule, condition);
     }
     match (rule, from) {
         (GameRule::CantBeCountered(Ref::This), ZoneKind::Stack) => {
@@ -1876,6 +1875,9 @@ pub(super) fn predicate(
         }
         [Modification::MaxBlockers(1)] => {
             return Some("can't be blocked by more than one creature".to_owned());
+        }
+        [more @ Modification::BlocksAdditional(_)] => {
+            return super::w14c_block_capacity::w14c_blocks_additional_text(more);
         }
         [Modification::MinBlockers(count @ 2..)] => {
             return Some(format!(

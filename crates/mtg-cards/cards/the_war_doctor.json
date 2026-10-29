@@ -1,0 +1,55 @@
+{
+  "oracle_id": "d97553bf-6763-4a7b-8d82-1b438a22aa62",
+  "name": "The War Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The War Doctor",
+      "oracle_fingerprint": "269302c4737ccf0b6a0a122b37c01178",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Batch": { "PhasedOut": { "what": ["Other"] } } },
+                {
+                  "Batch": {
+                    "ZoneChange": { "what": ["Other", { "Not": "Token" }], "to": "Exile" }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "time" } } }
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -59,15 +59,24 @@ fn w9b_reveal(
         [Some(_), None] => true,
         _ => false,
     };
+    events.push(Event::Clashed {
+        player: pair[0],
+        opponent: pair[1],
+        won,
+    });
     Ok((events, won))
 }
 
 /// The opponent chosen and the clash: its events, the opponent, and whether the clash was won.
-fn w9b_walk(cx: &Cx<'_>, player: PlayerId) -> Result<Option<(Vec<Event>, PlayerId, bool)>, Stop> {
+fn w9b_walk(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    with: Option<&Ref>,
+) -> Result<Option<(Vec<Event>, PlayerId, bool)>, Stop> {
     let state = cx.state();
     let opponents: Vec<PlayerId> = cx
         .scope
-        .players(&Ref::Opponents)?
+        .players(with.unwrap_or(&Ref::Opponents))?
         .into_iter()
         .filter(|other| *other != player && state.is_alive(*other))
         .collect();
@@ -92,7 +101,11 @@ fn w9b_walk(cx: &Cx<'_>, player: PlayerId) -> Result<Option<(Vec<Event>, PlayerI
 /// is no clash.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Clash {
-        who, win, until, ..
+        who,
+        win,
+        until,
+        with,
+        ..
     } = effect
     else {
         return Err(wrong_effect("Clash"));
@@ -106,7 +119,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    let walked = match w9b_walk(cx, player) {
+    let walked = match w9b_walk(cx, player, with.as_ref()) {
         Ok(walked) => walked,
         Err(stop) => return Stop::settle(Err(stop)),
     };
