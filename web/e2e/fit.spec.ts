@@ -163,8 +163,10 @@ test.describe('the development table with 40 permanents a seat', () => {
     await page.goto(`${DEV_WEB_URL}/dev/table?seats=4&prompt=mulligan`)
     await page.locator(THINGS.keep).first().waitFor()
     await atEverySize(page, ['hand', 'life', 'keep'], onTable('the opening hands'))
-    // Seven cards of the opening hand are in the dock.
-    await expect(page.locator('[data-region="hand"] ul button[data-object-id]')).toHaveCount(7)
+    // Seven cards of the opening hand are in the dock, with the commanders that wait before them in a list of their own.
+    await expect(
+      page.locator('[data-region="hand"] ul[aria-label$="\'s hand"] button[data-object-id]'),
+    ).toHaveCount(7)
   })
 
   test('fits with a table of twelve seats in focus mode', async ({ page }) => {
