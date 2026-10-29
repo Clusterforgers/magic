@@ -7,9 +7,12 @@ use std::collections::BTreeSet;
 
 use crate::choose::Target;
 use crate::events::Event;
+use crate::state::GameState;
 
-/// Drops the counters put on or removed from an object after an earlier event of the batch moved it to another zone.
-pub(super) fn w13a_without_counters_on_moved(events: &mut Vec<Event>) {
+/// Drops the counters put on or removed from an object as it was before the batch (its incarnation in `state`) after an
+/// earlier event of the batch moved it to another zone; counters for the object it becomes (a permanent that enters
+/// with counters) stay.
+pub(super) fn w13a_without_counters_on_moved(state: &GameState, events: &mut Vec<Event>) {
     let mut moved = BTreeSet::new();
     events.retain(|event| match event {
         Event::ZoneChanged { object, .. } => {
@@ -17,7 +20,13 @@ pub(super) fn w13a_without_counters_on_moved(events: &mut Vec<Event>) {
             true
         }
         Event::CountersChanged(changed) => match changed.on {
-            Target::Object(named) => !moved.contains(&named.id),
+            Target::Object(named) => {
+                let before = state
+                    .object(named.id)
+                    .map(crate::object::GameObject::counter);
+                !(moved.contains(&named.id)
+                    && before.is_some_and(|counter| named.counter <= counter))
+            }
             Target::Player(_) => true,
         },
         _ => true,
@@ -27,7 +36,8 @@ pub(super) fn w13a_without_counters_on_moved(events: &mut Vec<Event>) {
 #[cfg(test)]
 mod tests {
     //! Goal: a death replaced by an exile with counters for the source keeps the batch valid when the source dies in
-    //! the same batch (Ravenous Slime and a creature of an opponent sacrificed together), and the counters still come
+    //! the same batch (Ravenous Slime and a creature of an opponent sacrificed together), counters for the object a move
+    //! of the batch makes stay, and the counters still come
     //! when the source stays.
     use std::sync::Arc;
 
@@ -38,9 +48,14 @@ mod tests {
     use rstest::rstest;
 
     use super::super::{Processed, process};
+    use mtg_cards::value::CounterKind;
+
+    use crate::choose::Target;
+    use crate::counters::CountersChanged;
     use crate::events::{Event, ZoneCause};
     use crate::fixtures::{creature, state};
     use crate::fold::apply_event;
+    use crate::object::ObjectRef;
     use crate::state::GameState;
     use crate::zones::Zone;
 
@@ -94,5 +109,36 @@ mod tests {
             game.object(bear).map(crate::object::GameObject::zone),
             Some(Zone::Exile)
         );
+    }
+
+    #[test]
+    fn counters_for_the_object_a_move_of_the_batch_makes_stay() {
+        let mut game = game();
+        let slime = game.zone(Zone::Battlefield)[0];
+        let before = game
+            .object(slime)
+            .map_or(0, crate::object::GameObject::counter);
+        let put = |counter| {
+            Event::CountersChanged(CountersChanged {
+                on: Target::Object(ObjectRef { id: slime, counter }),
+                counter: CounterKind::PlusOnePlusOne,
+                delta: 1,
+            })
+        };
+        let exiled = Event::ZoneChanged {
+            object: slime,
+            from: Zone::Battlefield,
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        };
+        let Processed::Events(events) =
+            process(&game, vec![exiled.clone(), put(before + 1)], &[]).unwrap()
+        else {
+            panic!("nothing is asked");
+        };
+        assert_eq!(events, [exiled, put(before + 1)]);
+        for event in &events {
+            apply_event(&mut game, event).unwrap_or_else(|error| panic!("{event:?}: {error}"));
+        }
     }
 }

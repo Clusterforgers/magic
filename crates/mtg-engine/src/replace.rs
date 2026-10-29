@@ -1678,7 +1678,7 @@ impl Pass<'_> {
                 };
             }
         }
-        w13a_moved::w13a_without_counters_on_moved(&mut events);
+        w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
         events.extend(used);
         events
     }
