@@ -4,7 +4,8 @@ import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import { GameContext } from '@/features/game/gameContext'
 import { Lobby } from '@/features/game/Lobby'
-import { lobbyApi, lobbyDecks, lobbyGame, lobbyPrecons, LOBBY_FIXTURE_MARKER } from './lobbyGame'
+import { deckFacts, lobbyDecks, lobbyPrecons } from './deckApis'
+import { lobbyApi, lobbyGame, LOBBY_FIXTURE_MARKER } from './lobbyGame'
 
 /**
  * `/dev/lobby?seats=4&ready=0,2&away=3&me=1&names=long&visibility=invite&nodeck=1&account=1`: the real lobby over a
@@ -16,16 +17,34 @@ import { lobbyApi, lobbyDecks, lobbyGame, lobbyPrecons, LOBBY_FIXTURE_MARKER } f
  * Close and Leave go to Play.
  */
 export function DevLobbyRoute() {
-  const { seats, ready, away, me, names, visibility, nodeck, account, format, rules } = useSearch({
+  const {
+    seats,
+    ready,
+    away,
+    me,
+    names,
+    visibility,
+    nodeck,
+    account,
+    format,
+    rules,
+    decks: many,
+    list,
+    detail,
+  } = useSearch({
     from: '/dev/lobby',
   })
   const game = useMemo(
     () => lobbyGame({ seats, ready, away, me, names, visibility, nodeck, format, rules }),
     [seats, ready, away, me, names, visibility, nodeck, format, rules],
   )
-  const api = useMemo(() => lobbyApi(game.session, { format }), [game, format])
-  const decks = useMemo(() => lobbyDecks(), [])
-  const precons = useMemo(() => lobbyPrecons(), [])
+  const switches = useMemo(() => ({ decks: many, list, detail }), [many, list, detail])
+  const api = useMemo(
+    () => lobbyApi(game.session, { format, lookup: (id) => deckFacts(id, switches) }),
+    [game, format, switches],
+  )
+  const decks = useMemo(() => lobbyDecks(switches), [switches])
+  const precons = useMemo(() => lobbyPrecons(switches), [switches])
   const auth = useMemo(
     () =>
       createAuthStore({

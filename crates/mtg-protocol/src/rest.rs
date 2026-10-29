@@ -1,13 +1,14 @@
 //! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), of the signed-in user's game
 //! list (`/api/me/games`), of the card endpoints (`/api/cards`), of the deck endpoints
-//! (`/api/decks`), of the precon endpoints (`/api/precons`) and of the game browser
-//! (`/api/lobbies`, joining), with TypeScript bindings.
+//! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the precon endpoints
+//! (`/api/precons`) and of the game browser (`/api/lobbies`, joining), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The body of
 //! `POST /api/games` is still written by hand on both sides.
 
 mod cards;
 mod decks;
+mod fix_marks;
 mod lobbies;
 mod precons;
 
@@ -28,6 +29,7 @@ pub use decks::{
     MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER,
     MAX_IMPORT_CHARS, MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
 };
+pub use fix_marks::{FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_NOTE_CHARS};
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
     JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, Visibility, VisibilityBody,

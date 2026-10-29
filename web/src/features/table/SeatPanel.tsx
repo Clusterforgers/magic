@@ -1,4 +1,6 @@
+import { Crosshair } from 'lucide-react'
 import { memo } from 'react'
+import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { describeLoss } from '@/features/game/outcome'
 import { usePlay } from '@/features/game/gameContext'
@@ -7,6 +9,8 @@ import type { PlayerId } from '@/protocol/generated'
 import { CardRow } from './CardRow'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import type { CardBox } from './CardRow'
+import { useDefender } from './combat/defender'
+import type { DefenderState } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { ManaPool } from './ManaPool'
@@ -21,6 +25,22 @@ interface SeatPanelProps {
   seat: PlayerId
   /** `panel` is the pod for a column 168 px wide; `line` is one row, for a column of boards or a narrow window. */
   variant?: 'panel' | 'line'
+}
+
+/** How a pod reads while an attack is aimed: a seat that may be attacked has an outline, the one chosen a filled one. */
+function defenderClass(state: DefenderState | undefined): string | undefined {
+  if (state === undefined) return undefined
+  return state === 'chosen'
+    ? 'cursor-pointer bg-primary/10 outline-2 outline-primary'
+    : 'cursor-pointer outline-1 outline-primary/40 hover:outline-2 hover:outline-primary'
+}
+
+/** A click on a pod that no control inside it took picks the seat as the defender. */
+function pickOnClick(pick: () => void): (event: MouseEvent<HTMLElement>) => void {
+  return (event) => {
+    if (event.target instanceof Element && event.target.closest('button, a, [role="button"]') !== null) return
+    pick()
+  }
 }
 
 /** The box of a commander in the pod: the smallest card the fit engine draws. */
@@ -67,6 +87,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     })),
   )
   const chips = useCommanderChips(seat)
+  const defender = useDefender(seat)
   if (player === undefined) return null
   const graveyard = player.graveyard.cards ?? NO_IDS
   const commanders = player.command.cards ?? NO_IDS
@@ -83,15 +104,21 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     'data-your-turn': flags.cue || undefined,
     'data-eliminated': eliminated || undefined,
     'data-state': podState(flags.active, flags.priority),
+    'data-defender': defender.state,
+    onClick: defender.state === undefined ? undefined : pickOnClick(defender.pick),
   }
-  const words = podStateWords(flags.active, flags.priority)
+  const words = [
+    podStateWords(flags.active, flags.priority),
+    defender.state === 'chosen' ? 'Your attackers go here.' : '',
+  ]
+    .filter((part) => part !== '')
+    .join(' ')
   // The glow carries its own ring and edge, so it stands in for the ring classes instead of adding to them.
   const ring = flags.cue ? YOUR_TURN_EDGE : cn('ring-1 ring-foreground/10', flags.active && ACTIVE_EDGE)
   const line = variant === 'line'
   const mana = <ManaPool pool={player.mana} />
   const notes = (
     <>
-      <LifeForecast seat={seat} />
       {player.lost === null ? null : (
         <p className="rounded-md bg-destructive/10 px-2 py-1 text-xs font-medium text-destructive">
           Eliminated: {describeLoss(player.lost)}
@@ -108,6 +135,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     <div className="flex min-w-0 items-center gap-1.5">
       <SeatDot seat={seat} />
       <h3 className="truncate text-sm leading-5 font-semibold">{owner}</h3>
+      {defender.state === 'chosen' ? (
+        <Crosshair aria-hidden="true" className="size-3.5 shrink-0 text-primary" />
+      ) : null}
       {flags.you ? (
         <span className={cn('shrink-0 text-xs text-muted-foreground', line && '@max-sm:hidden')}>you</span>
       ) : null}
@@ -126,12 +156,21 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           '@container flex min-w-0 flex-col gap-1 rounded-xl bg-card px-2 py-1 text-card-foreground',
           ring,
           eliminated && 'border-l-4 border-destructive',
+          defenderClass(defender.state),
         )}
       >
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
           <div className="flex min-w-24 flex-1 items-center justify-between gap-2">
             {name}
-            <Life seat={seat} life={player.life} as="span" className="text-2xl font-semibold tabular-nums" />
+            <div className="flex shrink-0 items-center gap-1.5">
+              <LifeForecast seat={seat} />
+              <Life
+                seat={seat}
+                life={player.life}
+                as="span"
+                className="text-2xl font-semibold tabular-nums"
+              />
+            </div>
           </div>
           <div role="group" aria-label={`${owner}'s zones`} className="flex shrink-0 items-center gap-1">
             <CountChip zone="hand" count={counts.hand} density="line" />
@@ -164,6 +203,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         '@container relative grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-2 rounded-xl bg-card p-2 text-card-foreground',
         ring,
         eliminated && 'border-l-4 border-destructive',
+        defenderClass(defender.state),
       )}
     >
       <header className="flex items-center justify-between gap-2">
@@ -174,7 +214,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             {mana}
           </div>
         </div>
-        <Life seat={seat} life={player.life} as="p" className="text-life" />
+        <div className="flex shrink-0 items-center gap-1.5">
+          <LifeForecast seat={seat} />
+          <Life seat={seat} life={player.life} as="p" className="text-life" />
+        </div>
       </header>
       {words === '' ? null : <p className="sr-only">{words}</p>}
       <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">

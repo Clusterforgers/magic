@@ -1,24 +1,38 @@
-import { CircleAlertIcon } from 'lucide-react'
-import { useState } from 'react'
+import { CircleAlertIcon, EyeIcon } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import type { GameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
 import type { PreconsApi } from '@/net/precons'
 import type { SeatDeck } from '@/protocol/generated'
-import { BuiltInList, OwnList, PreconList } from './ChoiceLists'
+import type { DeckEntry } from './deckEntries'
 import { deckWords, issueWords, NO_ISSUES } from './deckWords'
+import { DeckPane } from './DeckPane'
+import { BuiltInSource, OwnSource, PreconSource } from './DeckSources'
 import type { DeckChoice } from './useDeckChoice'
+import { useDeckDetails } from './useDeckDetail'
 import type { LobbyApi } from './useLobbyControls'
+import { useVerdicts } from './useVerdicts'
+
+/** The width from which the preview sits beside the list; below it opens as a dialog. */
+export const WIDE_QUERY = '(min-width: 1000px)'
+
+/** How long a selection rests before the deck's cards and its verdict are asked for. */
+const REST_MS = 200
 
 /** What the chooser asks of the page. */
 export interface DeckChooserProps {
   /** The built-in decks come from here. */
   api: Pick<LobbyApi, 'listDecks'>
-  /** The signed-in account's decks come from here, and every deck's verdict at the table. */
+  /** The signed-in account's decks come from here, and every deck's cards and verdict at the table. */
   decks: DecksApi
-  /** The precons come from here. */
-  precons: Pick<PreconsApi, 'list'>
+  /** The precons and their cards come from here. */
+  precons: Pick<PreconsApi, 'list' | 'get'>
   /** The game the decks are judged for. */
   game: string
   /** The format of the game: it decides which decks can be taken at all. */
@@ -32,6 +46,8 @@ export interface DeckChooserProps {
   /** Some request of the lobby is out, so nothing else can be sent. */
   busy: boolean
   choice: DeckChoice
+  /** Told which deck is selected but not chosen, and why this table cannot take it, for the Ready button's words. */
+  onPreview?(previewing: { name: string; blocked: string | null } | null): void
 }
 
 type Kind = 'builtin' | 'own' | 'precons'
@@ -46,11 +62,11 @@ function deckKinds(format: GameFormat, signedIn: boolean): { kind: Kind; label: 
 }
 
 /**
- * The player's own deck: what the table is told of it, and until the seat is ready the decks to choose among in
- * three kinds, built-in decks (Normal games), the account's stored decks (signed in) and precons (searchable). The
- * format of the game filters them, and each deck shows its verdict at this table before it is chosen: the whole deck
- * runs, some cards are played by hand, or the table cannot take it, in which case it cannot be pressed. The choice
- * shows at once with a spinner on the deck pressed; a refusal puts the old choice back and says why.
+ * The player's own deck: what the table is told of it and, until the seat is ready, the decks to choose among in tabs
+ * (the account's stored decks, built-in decks in Normal games, precons). Each tab is a list and the preview of the
+ * selected deck beside it (a dialog under 1000 px): its commanders, legality at this table, support summary, mana
+ * curve and every card; "Use this deck" (or Enter or a double click on a row) takes it. A deck the table cannot take
+ * is shown but not chosen. The choice shows at once with a spinner; a refusal puts the old choice back and says why.
  */
 export function DeckChooser({
   api,
@@ -63,66 +79,167 @@ export function DeckChooser({
   ready,
   busy,
   choice,
+  onPreview,
 }: DeckChooserProps) {
   const { problem } = choice
   const kinds = deckKinds(format, signedIn)
-  // A signed-in player most likely brings a deck of their own, so the list opens on those; a guest starts on the first.
   const first = kinds[0]?.kind ?? 'precons'
-  const start: Kind = first
-  const [tab, setTab] = useState<Kind>(start)
-  // A list is fetched and its decks are checked when its tab is first opened, then kept.
-  const [opened, setOpened] = useState<ReadonlySet<Kind>>(new Set([start]))
+  const [tab, setTab] = useState<Kind>(first)
+  // A list is fetched when its tab is first opened, then kept.
+  const [opened, setOpened] = useState<ReadonlySet<Kind>>(new Set([first]))
   const shown = kinds.some((entry) => entry.kind === tab) ? tab : first
-  const list = { game, format, current, busy, choice }
+  const [selected, setSelected] = useState<DeckEntry | null>(null)
+  const [sheet, setSheet] = useState(false)
+  const wide = useMediaQuery(WIDE_QUERY, true)
+  const root = useRef<HTMLElement>(null)
+  const watching = wide || sheet || ready
+  const restedId = useDebouncedValue(selected?.id ?? null, REST_MS)
+  const rested = watching && selected !== null && selected.id === restedId ? selected : null
+  const details = useDeckDetails(decks, precons, rested)
+  const verdicts = useVerdicts(decks, game, rested === null || rested.kind === 'builtin' ? [] : [rested.id])
+  const select = useCallback((entry: DeckEntry) => setSelected(entry), [])
+  const use = (entry: DeckEntry): void => {
+    choice.choose({ id: entry.id, name: entry.name })
+    setSheet(false)
+  }
+  const pane = (locked: boolean) => (
+    <DeckPane
+      entry={selected}
+      detail={details.of(selected)}
+      verdict={selected === null ? undefined : verdicts.of.get(selected.id)}
+      format={format}
+      chosen={locked || (selected !== null && selected.id === choice.chosenId)}
+      pending={selected !== null && choice.pending?.id === selected.id}
+      waiting={busy}
+      onUse={use}
+      onRetryDetail={details.retry}
+      onRetryVerdict={verdicts.retry}
+    />
+  )
+  const known = selected !== null && current != null && selected.name === current.name
+  const verdict = selected === null ? undefined : verdicts.of.get(selected.id)
+  const reasons =
+    verdict?.status === 'ready' && verdict.verdict.kind === 'blocked' ? verdict.verdict.reasons : null
+  const blocked = reasons === null ? null : (reasons[0] ?? null)
+  const previewName = selected === null || known || ready ? null : selected.name
+  useEffect(() => {
+    onPreview?.(previewName === null ? null : { name: previewName, blocked })
+  }, [onPreview, previewName, blocked])
+  const source = {
+    game,
+    format,
+    current,
+    busy,
+    choice,
+    selectedId: selected?.id ?? null,
+    pictures: (id: string) => details.known(id)?.commanders ?? [],
+    onSelect: select,
+    onActivate: () => setSheet(!wide),
+    onChoose: use,
+  }
   return (
-    <section aria-labelledby="deck-title" data-slot="deck-chooser" className="grid grid-cols-1 gap-3">
-      <div className="grid gap-1">
-        <h2 id="deck-title" className="text-lg font-semibold">
-          Your deck
-        </h2>
-        <p data-slot="deck-current" className="text-sm [overflow-wrap:anywhere]">
-          {current === undefined
-            ? null
-            : current === null
-              ? 'You have no deck yet. Choose one to press Ready.'
-              : deckWords(current)}
-        </p>
+    <section
+      ref={root}
+      aria-labelledby="deck-title"
+      data-slot="deck-chooser"
+      className="flex min-h-0 flex-1 flex-col gap-3"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+        <div className="grid min-w-0 gap-1">
+          <h2 id="deck-title" className="text-lg font-semibold">
+            Your deck
+          </h2>
+          <p data-slot="deck-current" className="text-sm [overflow-wrap:anywhere]">
+            {current === undefined
+              ? null
+              : current === null
+                ? 'You have no deck yet. Choose one to press Ready.'
+                : deckWords(current)}
+          </p>
+        </div>
+        {ready || current == null ? null : wide ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => root.current?.querySelector<HTMLElement>('[role="option"][tabindex="0"]')?.focus()}
+          >
+            Change
+          </Button>
+        ) : (
+          <Button type="button" variant="outline" size="sm" disabled={!known} onClick={() => setSheet(true)}>
+            <EyeIcon aria-hidden="true" />
+            View deck
+          </Button>
+        )}
       </div>
       {ready ? (
-        <p data-slot="deck-locked" className="text-sm text-muted-foreground">
-          Your deck is locked while you are ready. Press Not ready to change it.
-        </p>
+        <>
+          <p data-slot="deck-locked" className="text-sm text-muted-foreground">
+            Your deck is locked while you are ready. Press Not ready to change it.
+          </p>
+          {wide && known ? (
+            <div className="min-h-0 flex-1 overflow-y-auto" data-slot="deck-pane">
+              {pane(true)}
+            </div>
+          ) : null}
+        </>
       ) : (
-        <Tabs
-          value={shown}
-          onValueChange={(value) => {
-            const next = kinds.find((entry) => entry.kind === value)
-            if (next === undefined) return
-            setTab(next.kind)
-            setOpened((before) => new Set(before).add(next.kind))
-          }}
-        >
-          <TabsList aria-label="Kinds of deck" className="max-w-full">
+        <div className="grid min-h-0 flex-1 gap-4 min-[1000px]:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)] min-[1280px]:grid-cols-[minmax(16rem,20rem)_minmax(0,1fr)]">
+          <Tabs
+            value={shown}
+            onValueChange={(value) => {
+              const next = kinds.find((entry) => entry.kind === value)
+              if (next === undefined) return
+              setTab(next.kind)
+              setSelected(null)
+              setOpened((before) => new Set(before).add(next.kind))
+            }}
+            className="flex min-h-0 flex-col gap-3"
+          >
+            <TabsList aria-label="Kinds of deck" className="max-w-full">
+              {kinds.map((entry) => (
+                <TabsTrigger key={entry.kind} value={entry.kind}>
+                  {entry.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
             {kinds.map((entry) => (
-              <TabsTrigger key={entry.kind} value={entry.kind}>
-                {entry.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {kinds.map((entry) => (
-            <TabsContent key={entry.kind} value={entry.kind} keepMounted className="outline-none">
-              <div className="max-h-96 overflow-y-auto pr-1" data-slot="deck-list">
+              <TabsContent
+                key={entry.kind}
+                value={entry.kind}
+                keepMounted
+                className="flex min-h-0 flex-1 flex-col outline-none"
+              >
                 {!opened.has(entry.kind) ? null : entry.kind === 'builtin' ? (
-                  <BuiltInList api={api} {...list} />
+                  <BuiltInSource api={api} active={shown === entry.kind} {...source} />
                 ) : entry.kind === 'own' ? (
-                  <OwnList decks={decks} {...list} />
+                  <OwnSource decks={decks} active={shown === entry.kind} {...source} />
                 ) : (
-                  <PreconList precons={precons} checks={decks} {...list} />
+                  <PreconSource precons={precons} active={shown === entry.kind} {...source} />
                 )}
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+              </TabsContent>
+            ))}
+          </Tabs>
+          {wide ? (
+            <div
+              data-slot="deck-pane"
+              className="surface min-h-[18rem] min-w-0 overflow-y-auto overscroll-contain p-4"
+            >
+              {pane(false)}
+            </div>
+          ) : (
+            <Dialog open={sheet} onOpenChange={setSheet}>
+              <DialogContent data-slot="deck-sheet" className="max-w-xl p-4 sm:p-6">
+                <DialogTitle className="sr-only">Deck preview</DialogTitle>
+                <DialogDescription className="sr-only">
+                  The deck's cards, how far the game plays them and whether this table takes it.
+                </DialogDescription>
+                {pane(false)}
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
       )}
       <p
         data-slot="deck-note"

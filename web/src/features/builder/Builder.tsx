@@ -10,6 +10,7 @@ import { usePageTitle } from '@/hooks/usePageTitle'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
+import type { FixMarksApi } from '@/net/fixMarks'
 import type { CardHit, DeckView, DeckZone } from '@/protocol/generated'
 import {
   addCard,
@@ -80,6 +81,8 @@ interface BuilderProps {
   view: DeckView
   api: DecksApi
   cards: CardsApi
+  /** The fix-mark endpoints; with them a card's preview offers "Mark important to fix". */
+  fixMarks?: FixMarksApi
 }
 
 /**
@@ -90,7 +93,7 @@ interface BuilderProps {
  * the page is as tall as the window under the header and the two panes scroll inside their own regions; under `lg` a
  * Search or Deck switch shows one at a time.
  */
-export function Builder({ view, api, cards }: BuilderProps) {
+export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
   const [stored, setStored] = useState(() => ({ view, draft: draftOf(view) }))
   const [draft, setDraft] = useState<Draft>(stored.draft)
   const [saving, setSaving] = useState(false)
@@ -286,6 +289,7 @@ export function Builder({ view, api, cards }: BuilderProps) {
         card={preview?.card ?? null}
         open={preview?.open === true}
         api={cards}
+        fixMarks={fixMarks}
         finalFocus={opener}
         onClose={() => setPreview((current) => current && { ...current, open: false })}
       />

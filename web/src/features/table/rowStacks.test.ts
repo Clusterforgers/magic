@@ -8,7 +8,7 @@ import { card, forest } from '@/test-utils/cards'
 import type { RowKind } from './cardModel'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
-import { FIT_LIMITS, fitRows, LAND_SCALE } from './fit'
+import { fitLanes, LANE_LIMITS as FIT_LIMITS } from './laneFit'
 import type { FitBox } from './fit'
 import { GROUP_OTHERS_BELOW } from './group'
 import { POD_COLUMN_PX, regionSizes, ZONE_GAP_PX } from './layout'
@@ -16,7 +16,7 @@ import type { Viewport } from './layout'
 import {
   battlefieldStacks,
   boxesOf,
-  fitGroups,
+  laneCounts,
   idsOfRows,
   keyOf,
   layoutSeat,
@@ -25,8 +25,8 @@ import {
 } from './rowStacks'
 import type { RowEntry, SeatLayout } from './rowStacks'
 
-const NEAR: readonly RowKind[] = ['creatures', 'other', 'lands']
-const FAR: readonly RowKind[] = ['lands', 'other', 'creatures']
+const NEAR = 'near' as const
+const FAR = 'far' as const
 const NOTHING = new Set<never>()
 const BIG: FitBox = { width: 1200, height: 600 }
 
@@ -78,13 +78,13 @@ const goblin = (id: number, over: Partial<ObjectView> = {}): ObjectView =>
 const layout = (
   permanents: readonly ObjectView[],
   box: FitBox | null = BIG,
-  order: readonly RowKind[] = NEAR,
+  order: 'near' | 'far' = NEAR,
   extra: { opened?: ReadonlySet<string>; marked?: ReadonlySet<number> } = {},
 ): SeatLayout =>
   layoutSeat({
     box,
     stacks: battlefieldStacks(state(permanents), 1),
-    order,
+    facing: order,
     opened: extra.opened ?? NOTHING,
     marked: extra.marked ?? NOTHING,
   })
@@ -174,13 +174,10 @@ describe('a tapped permanent against the fit', () => {
       const drawn = layout(seat(every, 'distinct'), { width: 700, height: 300 })
       const boxes = counts(drawn.rows)
       expect(boxes).toEqual({ creatures: 14, other: 10, lands: 16 })
-      const fit = fitRows({ width: 700, height: 300 }, [
-        { stacks: 14 },
-        { stacks: 10 },
-        { stacks: 16, scale: LAND_SCALE },
-      ])
+      const fit = fitLanes({ width: 700, height: 300 }, { creatures: 14, other: 10, lands: 16 }, NEAR)
       expect(drawn.fit).toEqual(fit)
-      for (const row of NEAR) expect(visibleIds(drawn.rows[row])).toHaveLength(boxes[row])
+      for (const row of ['creatures', 'other', 'lands'] as const)
+        expect(visibleIds(drawn.rows[row])).toHaveLength(boxes[row])
     },
   )
 
@@ -203,7 +200,7 @@ describe('a tapped permanent against the fit', () => {
     const before = layout(seat(0, 'distinct'), box).fit
     const after = layout(seat(every, 'distinct'), box).fit
     expect(after?.cardWidth).toBe(before?.cardWidth)
-    expect(after?.lines).toBe(before?.lines)
+    expect(after?.height).toBe(before?.height)
   })
 })
 
@@ -228,7 +225,7 @@ describe('identical cards that are no lands or tokens', () => {
     expect(plain.fit).toBeNull()
     if (merged) {
       expect(must(layout(permanents, box, NEAR).fit).cardWidth).toBeGreaterThanOrEqual(
-        must(fitRows(box, fitGroups(plain.rows, NEAR)).cardWidth),
+        must(fitLanes(box, laneCounts(plain.rows), NEAR).cardWidth),
       )
       expect(drawn.rows.creatures.length).toBeLessThan(plain.rows.creatures.length)
     } else {
@@ -240,7 +237,7 @@ describe('identical cards that are no lands or tokens', () => {
     const permanents = pack(10, 10)
     for (let height = 60; height <= 400; height += 20) {
       const box = { width: 500, height }
-      const plainWidth = fitRows(box, fitGroups(layout(permanents, null).rows, NEAR)).cardWidth
+      const plainWidth = fitLanes(box, laneCounts(layout(permanents, null).rows), NEAR).cardWidth
       expect(layout(permanents, box).merged, `${height}`).toBe(plainWidth < GROUP_OTHERS_BELOW)
     }
   })
@@ -313,8 +310,8 @@ function boards(viewport: Viewport): { own: FitBox; opponent: FitBox } {
 }
 
 const duel = fixtureState(buildFixture({ seats: 2 }))
-const laid = (seat: number, box: FitBox, order: readonly RowKind[]): SeatLayout =>
-  layoutSeat({ box, stacks: battlefieldStacks(duel, seat), order, opened: NOTHING, marked: NOTHING })
+const laid = (seat: number, box: FitBox, order: 'near' | 'far'): SeatLayout =>
+  layoutSeat({ box, stacks: battlefieldStacks(duel, seat), facing: order, opened: NOTHING, marked: NOTHING })
 
 describe('40 permanents a seat in a duel', () => {
   it.each(SIZES)('fit both boards at %s without a zone scrolling', (_name, viewport) => {

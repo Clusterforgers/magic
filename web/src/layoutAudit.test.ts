@@ -21,6 +21,7 @@ function clean(change: Partial<Look> = {}): Look {
     cutOff: [],
     small: [],
     actions: {},
+    lanes: [],
     ...change,
   }
 }
@@ -30,6 +31,12 @@ const inside = { box: { left: 10, top: 10, right: 100, bottom: 50 }, free: true 
 describe('the rules a page can break', () => {
   it.each<[string, Look, boolean, string[]]>([
     ['a page that keeps them all', clean(), true, []],
+    [
+      'a battlefield whose lanes lie over each other or out of the board',
+      clean({ lanes: ['seat 1 lands over other', 'seat 0 creatures outside its board'] }),
+      true,
+      ['lane: seat 1 lands over other', 'lane: seat 0 creatures outside its board'],
+    ],
     [
       'a page wider than the window',
       clean({ scroll: { width: 420, height: 844, x: 0, y: 0 } }),

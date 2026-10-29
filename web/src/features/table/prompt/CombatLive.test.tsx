@@ -44,7 +44,8 @@ function mount() {
     must(table.container.querySelector<HTMLElement>(`button[data-object-id="${id}"]`))
   const send = (message: ServerMessage): void => act(() => h.deliver(message))
   const marked = (): number => table.container.querySelectorAll('[data-highlight]').length
-  const noted = (): number => table.container.querySelectorAll('[data-slot="card-note"]').length
+  const noted = (): number =>
+    table.container.querySelectorAll('button[data-object-id][aria-pressed="true"]').length
   return { h, ...table, card, send, marked, noted }
 }
 
@@ -120,7 +121,8 @@ describe('an attack decision from the server', () => {
     expect(card(m1)).toHaveAttribute('data-highlight', 'dimmed')
     expect(card(m3)).toHaveAttribute('data-highlight', 'legal')
     expect(noted()).toBe(0)
-    expect(screen.getByRole('combobox', { name: 'Attack at' })).toHaveValue('player:1')
+    // The defender chosen last is where the next attack starts.
+    expect(screen.getByRole('combobox', { name: 'Attack at' })).toHaveValue('player:2')
     expect(screen.getByRole('button', { name: 'Confirm attack' })).toBeDisabled()
   })
 
@@ -157,7 +159,7 @@ describe('a block decision from the server', () => {
     await user.click(card(t2))
     await user.click(card(m2))
     await user.click(card(t2))
-    expect(noted()).toBe(3)
+    expect(noted()).toBe(2)
     await user.click(screen.getByRole('button', { name: 'Confirm blocks' }))
     expect(h.sentOf('Answer')).toEqual([
       {

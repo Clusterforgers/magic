@@ -62,6 +62,7 @@ mod required_cost_hidden;
 mod rest;
 mod rest_cards;
 mod rest_decks;
+mod rest_fix_marks;
 mod rest_lobbies;
 mod rest_precons;
 mod saga_transform_view;

@@ -6,15 +6,16 @@ function sameBox(a: FitBox | null, b: FitBox): boolean {
   return a !== null && a.width === b.width && a.height === b.height
 }
 
-/** The room inside a zone: its box less its padding, in whole px. Null where nothing is laid out (a test, a hidden zone). */
+/** The room inside a zone: its box less its padding, in whole px. Null where it has no width (a test, a hidden zone). */
 function contentBox(zone: HTMLElement): FitBox | null {
   const style = getComputedStyle(zone)
   // An unset padding reads as an empty string, which is no padding.
   const px = (value: string): number => parseFloat(value) || 0
   const width = zone.clientWidth - px(style.paddingLeft) - px(style.paddingRight)
   const height = zone.clientHeight - px(style.paddingTop) - px(style.paddingBottom)
-  if (!(width > 0) || !(height > 0)) return null
-  return { width: Math.floor(width), height: Math.floor(height) }
+  // A zone squeezed to no height (a tall prompt sheet over it) still has a width its lanes must keep inside.
+  if (!(width > 0)) return null
+  return { width: Math.floor(width), height: Math.max(0, Math.floor(height)) }
 }
 
 /**

@@ -92,6 +92,7 @@ mod deck_import;
 mod decks;
 pub mod demo;
 mod dwell;
+mod fix_marks;
 mod game_id;
 mod handle;
 mod images;

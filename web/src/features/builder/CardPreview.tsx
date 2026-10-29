@@ -8,8 +8,10 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SupportMark, supportDecoration } from '@/features/decks/SupportMark'
+import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
+import type { FixMarksApi } from '@/net/fixMarks'
 import type { CardDetail, CardFaceView, CardHit, Reason, Support } from '@/protocol/generated'
 import { segmentsOf } from './clauses'
 import { ManaCost } from './ManaCost'
@@ -26,6 +28,8 @@ interface CardPreviewProps {
   onClose: () => void
   /** Where focus goes when the preview closes: the control that opened it. */
   finalFocus?: FinalFocus
+  /** The fix-mark endpoints; with them the preview offers "Mark important to fix" for any card. */
+  fixMarks?: FixMarksApi
 }
 
 // A card has several faces when its name joins them with `//` (CardHit.name).
@@ -199,7 +203,7 @@ function Clauses({ support, reasons }: { support: Support; reasons: readonly Rea
   )
 }
 
-function Body({ card, api }: { card: CardHit; api: CardsApi }) {
+function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?: FixMarksApi }) {
   const { state, retry } = useCardDetail(api, card.oracle_id)
   const support = state.status === 'ready' ? state.detail.card.support : card.support
   return (
@@ -211,6 +215,14 @@ function Body({ card, api }: { card: CardHit; api: CardsApi }) {
         </div>
         <DialogDescription>{card.type_line}</DialogDescription>
         <SupportMark support={support} className="justify-self-start" />
+        {fixMarks === undefined ? null : (
+          <FixMarkButton
+            oracleId={card.oracle_id}
+            name={card.name}
+            api={fixMarks}
+            emphasis={isIssue(support) ? 'prominent' : 'quiet'}
+          />
+        )}
       </header>
       <div data-slot="preview-pictures" className="flex gap-2">
         {Array.from({ length: hasManyFaces(card) ? 2 : 1 }, (_, face) => (
@@ -276,7 +288,7 @@ function Body({ card, api }: { card: CardHit; api: CardsApi }) {
  * resolve underlined in the text with their reasons in words under it. The detail loads when the preview opens and
  * shows its own loading, failed and unavailable states; Escape closes it and focus returns to `finalFocus`.
  */
-export function CardPreview({ card, open, api, onClose, finalFocus }: CardPreviewProps) {
+export function CardPreview({ card, open, api, onClose, finalFocus, fixMarks }: CardPreviewProps) {
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
       {card === null ? null : (
@@ -285,7 +297,7 @@ export function CardPreview({ card, open, api, onClose, finalFocus }: CardPrevie
           data-slot="card-preview"
           className="p-4 max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-h-[90dvh] max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 sm:max-w-xl sm:p-6"
         >
-          <Body key={card.oracle_id} card={card} api={api} />
+          <Body key={card.oracle_id} card={card} api={api} fixMarks={fixMarks} />
         </DialogContent>
       )}
     </Dialog>

@@ -11,6 +11,7 @@ mod coverage_all;
 mod fetch_decks;
 mod fetch_printings;
 mod fetch_scryfall;
+mod fix_marks;
 mod forge_check;
 mod gaps;
 mod ingest;

@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT to_regclass('card_fix_marks') IS NOT NULL AS \"migrated!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "migrated!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "1bdf840691bea4975704f0b806bd45c2feaee70d10e77330d158527958b7e2e9"
+}
