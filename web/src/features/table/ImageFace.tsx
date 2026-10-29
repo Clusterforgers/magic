@@ -33,7 +33,7 @@ const PILE = 'shadow-[2px_2px_0_0_var(--color-border-strong),4px_4px_0_0_var(--c
 // artist line; under a turned one they use the room its upright box leaves, since its art box is too low for them.
 const ART_BOX = {
   upright: 'top-[11%] right-[7%] left-[7%] max-h-[44%]',
-  turned: 'top-full right-0 left-0 h-[calc(var(--card-h)-var(--card-w)*5/7)] justify-center overflow-hidden pt-0.5',
+  turned: 'top-full right-0 left-0 h-[calc(var(--card-h)-var(--card-w)*5/7)] justify-center overflow-hidden pt-0.5 [&>span]:py-px [&>span]:leading-none',
 }
 // The power/toughness or loyalty box at the bottom right, which lies at the bottom left once turned.
 const STAT_BOX = { upright: 'right-[3%] bottom-[2.5%]', turned: 'bottom-[3%] left-[2.5%]' }
