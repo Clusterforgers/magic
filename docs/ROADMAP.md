@@ -147,7 +147,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
 - [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
-- [ ] (a2d) A token whose power or toughness changed keeps its picture: the token lookup matches the printed values, which the view does not carry
+- [~] (a2d) (token-picture) A token whose power or toughness changed keeps its picture: the token lookup matches the printed values, which the view does not carry
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1b) The one-line pods of three and four seats draw each commander as a small picture beside the command zone chip, both of a partner pair, and pass the layout gate
@@ -157,9 +157,17 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
-- [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
+- [~] (ts1) (table-states) Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
+- [~] (pl1) (table-lanes) The battlefield draws each seat's permanents in lanes by type (lands, creatures, other permanents such as artifacts, enchantments and planeswalkers) with the command zone, graveyard and exile in their own corner, and sizes the cards to fill the room a board has: at two seats a card is large and easy to read, at four seats still legible, with the layout gate and fit specs green
+- [~] (pl2) (combat-clicks) Attacking and blocking by clicking: a click on a creature attacks (the arrow says so, no label on the card), a second click takes it back; to block, click your creature and then the attacker it blocks (one click when only one attacker can be blocked), a second click undoes; the prompt sheet is compact, and the life each seat would have after damage shows as a small chip on its pod without taking room
+- [~] (pl3) (mana-display) Mana shows what it is: the payment prompt's sources, the mana pool and the cards that make mana show the symbols and the amount each gives ({C}{C} for Sol Ring, one coloured symbol for a basic land)
+- [~] (pm1) (manual-anytime) Manual actions at any time: a seat applies a manual action to its cards (and counters and tapping to any permanent, life and player counters on itself) whenever it likes, on any turn, with a stack, whether or not the card is supported or the seat holds priority, so a card that does not do what it should is fixed by hand and an ability the engine does not play is played by hand (tokens, counters, damage, mana, draws, zone moves); the engine applies it between decisions, the log names it and replays reproduce it
+- [~] (lb1) (lobby-deck-view) The waiting-for-players page uses the width and clears up: seats and invite on one side, "Your deck" on the other with a chooser that shows the chosen deck in full (commanders, colours, card count, support summary, mana curve, the cards grouped by type as pictures, its not-validated cards), and a Ready button that always says why it is off
+- [~] (pn1) (no-seat-limit) No limit on the number of players for any format: the create form, the server and the engine accept any number of seats from two up, and the table lays out as many as there are
+- [ ] (fx1) A player marks a card the game does not run whole as important to fix (builder, deck page, lobby deck view, table card menu), the marks are stored per user and listed ranked by marks for the owner (`mtg-cli fix-marks`), and weigh in the gap ledger
+- [ ] (db1) The deck builder gets a user-experience pass: card pictures large enough to read, the deck grouped by type with counts, a stats panel (curve, colours, types), the full deck preview shared with the lobby, per-card "play by hand" and "fix this" controls, clear support marks
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [ ] Manual actions on any card: a menu and log entries
+- [~] (ma1) (manual-menu) Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
 - [ ] Playwright games with corpus decks that ask every decision kind
 - [ ] (c5h) The table's event text has a line for the rule `MustAttackPlayers` (Encore) instead of the generic trigger line
