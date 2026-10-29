@@ -91,6 +91,10 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
         spoken: '',
         manual: true,
       })
+      const entered = byHandLine(event, names)
+      if (entered !== null) {
+        lines.push({ seq: seq + 0.5, text: entered, minor: false, passed: [], spoken: '', manual: true })
+      }
       return
     }
     const hit = hits.get(index)

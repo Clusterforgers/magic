@@ -4,7 +4,7 @@
  * mana cost, which a permanent no longer needs), a sick permanent as a small icon and a slight dim, and the current
  * power and toughness or loyalty on the stat box. Nothing is drawn over the art or the rules text beyond a mark's size.
  */
-import { Hand, Hourglass, Link2 } from 'lucide-react'
+import { Hourglass, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import { counterChips, loyaltyOf, statusChips } from './cardModel'
@@ -12,6 +12,7 @@ import type { ChipTone, CombatRole, CounterChip, Links } from './cardModel'
 import { CARD_CORNER } from '@/features/cards/CardImage'
 import { SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
+import { ByHandMark } from './manual/ByHand'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
 import type { CardNote } from './prompt/marks'
@@ -129,16 +130,7 @@ export function Overlay({ object, role, size, turned, note, links }: OverlayProp
           data-slot="card-marks-head"
           className={cn('absolute flex max-h-[34%] gap-0.5 overflow-hidden', corner.head)}
         >
-          {manual.length === 0 ? null : (
-            <span
-              data-slot="card-support"
-              title={`Played by hand: ${manual.map((clause) => `${clause.text} (${clause.reason})`).join('; ')}`}
-              className="pointer-events-auto grid size-4 place-items-center rounded-full border border-background bg-support-manual text-background shadow-sm"
-            >
-              <Hand aria-hidden="true" className="size-2.5" />
-              <span className="sr-only">Some rules are played by hand</span>
-            </span>
-          )}
+          <ByHandMark object={object} spot="corner" compact={size === 'compact'} text={text} />
           {sick ? (
             <span
               data-slot="card-sick"

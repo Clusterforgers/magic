@@ -3,7 +3,7 @@
  * loyalty, changed power and toughness, damage, attachments, other faces, face-down cards, copies, merges, prepared and
  * level — spread over the seats, and the printed cards that make the changed numbers read as buffed or debuffed.
  */
-import type { CardDetail, ObjectView } from '@/protocol/generated'
+import type { CardDetail, ManualClause, ObjectView } from '@/protocol/generated'
 import type { Fixture } from './fixture'
 
 /** The seats' permanents per seat in the base table, so the states have room (lands, creatures and others). */
@@ -31,6 +31,9 @@ const PRINTED: Record<string, Printed[]> = {
   'st-jace': [{ name: 'Jace Beleren', power: null, toughness: null, loyalty: '3' }],
   'st-liliana': [{ name: 'Liliana of the Veil', power: null, toughness: null, loyalty: '3' }],
   'st-teferi': [{ name: 'Teferi, Hero of Dominaria', power: null, toughness: null, loyalty: '4' }],
+  'st-pegasus': [{ name: 'Pegasus Courser', power: '1', toughness: '3' }],
+  'st-mage': [{ name: 'Wild Mage Apprentice', power: '2', toughness: '2' }],
+  'st-oracle': [{ name: 'Verbose Oracle', power: '1', toughness: '1' }],
 }
 
 /** What the card endpoint would answer for a state card, so changed numbers can be compared with the printed ones. */
@@ -102,6 +105,26 @@ const soldier = (over: Partial<ObjectView> = {}): Partial<ObjectView> => ({
   toughness: 1,
   ...over,
 })
+
+/** Observed Stasis, a Partial card: the engine runs neither clause, so the table plays both by hand. */
+const STASIS: ManualClause[] = [
+  {
+    text: 'When this Aura enters, remove enchanted creature from combat, then draw a card for each tapped creature its controller controls.',
+    reason: 'the engine does not read this sentence yet',
+  },
+  {
+    text: 'Enchanted creature loses all abilities and can’t attack or block.',
+    reason: 'the engine does not read this sentence yet',
+  },
+]
+const COIN_FLIP: ManualClause = {
+  text: 'Whenever this creature attacks, flip a coin.',
+  reason: 'a random choice the engine does not offer',
+}
+const LONG_CLAUSE: ManualClause = {
+  text: 'At the beginning of your upkeep, each player reveals the top card of their library, then you choose one of the revealed cards that shares a card type with another revealed card and put it into your hand.',
+  reason: 'the engine does not read this sentence yet',
+}
 
 const tapped = { tapped: true, damage: 0, summoning_sick: false }
 const sick = { tapped: false, damage: 0, summoning_sick: true }
@@ -233,6 +256,16 @@ function mine(first: number, seat: number, rival: number): ObjectView[] {
       abilities: [{ Mana: { produces: 'Green' } }],
     }),
     base(id(27), seat, aura('Wild Growth', id(26), { colors: ['Green'] })),
+    // Clauses left to the table: an Aura whose two clauses are played by hand (a Partial card), the creature it
+    // enchants, a creature with one clause and a long one.
+    base(id(28), seat, { ...creature('Pegasus Courser', 'st-pegasus', 1, 3), attachments: [id(29)] }),
+    base(id(29), seat, aura('Observed Stasis', id(28), { manual: STASIS })),
+    base(id(30), seat, { ...creature('Wild Mage Apprentice', 'st-mage', 2, 2), manual: [COIN_FLIP] }),
+    base(id(31), seat, {
+      ...creature('Verbose Oracle', 'st-oracle', 1, 1),
+      permanent: tapped,
+      manual: [COIN_FLIP, LONG_CLAUSE, ...STASIS],
+    }),
   ]
   return list
 }

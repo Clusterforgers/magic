@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import type { KeyboardEvent, MouseEvent, PointerEvent } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId } from '@/protocol/generated'
+import { clausesOf, opensClauses, showClauses } from './clauses'
 import { useMenuStore } from './menuStore'
 import type { MenuStore } from './menuStore'
 
@@ -47,17 +48,30 @@ function openBelow(store: MenuStore, id: ObjectId, element: HTMLElement): void {
 
 /**
  * What opens the manual menu of a card: a right click, a long press of a finger, and the keyboard (`m`, the Menu key,
- * Shift+F10) while the card is focused. A seat that only watches has none, and the browser's own menu stays.
+ * Shift+F10) while the card is focused. A seat that only watches has none, and the browser's own menu stays. A card with
+ * clauses left to the table also lists them on `h`, for a seat that plays and one that watches.
  */
 export function useManualMenu(id: ObjectId): ManualMenuHandlers {
   const store = useMenuStore()
   const plays = usePlay((state) => state.seat !== null && state.view?.spectator !== true)
+  const clauses = usePlay((state) => {
+    const object = state.objectsById[id]
+    return object !== undefined && clausesOf(object).length > 0
+  })
   const timer = useRef<number | undefined>(undefined)
   const start = useRef({ x: 0, y: 0 })
   const swallow = useRef(false)
   useEffect(() => () => window.clearTimeout(timer.current), [])
   return useMemo(() => {
-    if (store === null || !plays) return NONE
+    if (store === null) return NONE
+    // The list of the clauses is for everybody who sees the card; the focused card is its opener.
+    const lists = (event: KeyboardEvent<HTMLElement>): boolean => {
+      if (!clauses || event.target !== event.currentTarget || !opensClauses(event)) return false
+      event.preventDefault()
+      showClauses(store, id, event.currentTarget, event.currentTarget)
+      return true
+    }
+    if (!plays) return clauses ? { onKeyDown: lists } : NONE
     const cancel = (): void => window.clearTimeout(timer.current)
     return {
       onContextMenu(event) {
@@ -67,7 +81,7 @@ export function useManualMenu(id: ObjectId): ManualMenuHandlers {
         else openAt(store, id, event.currentTarget, event.clientX, event.clientY)
       },
       onKeyDown(event) {
-        if (event.target !== event.currentTarget || !opensMenu(event)) return
+        if (lists(event) || event.target !== event.currentTarget || !opensMenu(event)) return
         event.preventDefault()
         openBelow(store, id, event.currentTarget)
       },
@@ -97,5 +111,5 @@ export function useManualMenu(id: ObjectId): ManualMenuHandlers {
         event.stopPropagation()
       },
     }
-  }, [store, plays, id])
+  }, [store, plays, clauses, id])
 }
