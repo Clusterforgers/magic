@@ -5,6 +5,7 @@ export type { AbilityDef } from "./AbilityDef";
 export type { AbilityRef } from "./AbilityRef";
 export type { AbilitySource } from "./AbilitySource";
 export type { AccountDeletion } from "./AccountDeletion";
+export type { ActivatedView } from "./ActivatedView";
 export type { Answer } from "./Answer";
 export type { AttackOptions } from "./AttackOptions";
 export type { AttackRange } from "./AttackRange";

@@ -2,7 +2,7 @@
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
-use mtg_core::card::{CardType, CardTypes};
+use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
 use mtg_engine::combat::Attacker;
@@ -21,6 +21,7 @@ use crate::view::{
     LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView,
     StateView, TableView, TurnView, ZoneView,
 };
+use crate::wording::activated_views;
 
 /// Every card type, for expanding a [`CardTypes`] set into a list.
 const ALL_TYPES: [CardType; 9] = [
@@ -96,6 +97,12 @@ impl<'a> Sight<'a> {
         }
     }
 
+    /// Whether the viewer reads the rules of the object: not those of a card in another seat's hand or library, even one
+    /// a reveal showed them.
+    pub(crate) fn reads_rules_of(&self, object: &GameObject) -> bool {
+        !matches!(object.zone(), Zone::Hand(_) | Zone::Library(_)) || object.owner() == self.viewer
+    }
+
     /// How the viewer sees the object: whole, as a face-down card that is there with no identity, or not at all.
     pub(crate) fn look(&self, object: &GameObject) -> Look {
         let id = object.id();
@@ -160,6 +167,21 @@ fn printed_keyword_names(card: &CardDefinition) -> Vec<String> {
         }
     }
     names
+}
+
+/// What the card prints, then what effects gave it; nothing for an ability on the stack.
+fn shown_subtypes(card: &CardDefinition, now: &[Subtype], printed: bool) -> Vec<Subtype> {
+    if !printed {
+        return Vec::new();
+    }
+    let mut all = card.subtypes.clone();
+    let given: Vec<Subtype> = now
+        .iter()
+        .filter(|subtype| !all.contains(subtype))
+        .cloned()
+        .collect();
+    all.extend(given);
+    all
 }
 
 fn type_list(types: CardTypes) -> Vec<CardType> {
@@ -256,6 +278,12 @@ impl ObjectView {
         };
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
+        // A face-down permanent's abilities are the 2/2's; the card behind it is read off `abilities`.
+        let activated = if printed && !behind && sight.reads_rules_of(object) {
+            activated_views(state, id, &chars.abilities, &card.name)
+        } else {
+            Vec::new()
+        };
         Some(ObjectView {
             id,
             owner: object.owner(),
@@ -263,24 +291,14 @@ impl ObjectView {
             zone: object.zone(),
             name: shown_name(state, sight.viewer, object, &card.name),
             mana_cost: card.mana_cost.clone().filter(|_| printed),
-            supertypes: if printed {
-                card.supertypes.iter().copied().collect()
-            } else {
-                Vec::new()
-            },
+            supertypes: card
+                .supertypes
+                .iter()
+                .copied()
+                .filter(|_| printed)
+                .collect(),
             types: type_list(chars.types),
-            // What the card prints, then what effects gave it.
-            subtypes: if printed {
-                let mut all = card.subtypes.clone();
-                let given = chars
-                    .subtypes
-                    .iter()
-                    .filter(|subtype| !all.contains(subtype));
-                all.extend(given.cloned().collect::<Vec<_>>());
-                all
-            } else {
-                Vec::new()
-            },
+            subtypes: shown_subtypes(card, &chars.subtypes, printed),
             colors: chars.colors.iter().collect(),
             power: chars.power,
             toughness: chars.toughness,
@@ -342,6 +360,7 @@ impl ObjectView {
                 Vec::new()
             },
             identity: card.identity.clone().filter(|_| printed),
+            activated,
         })
     }
 
@@ -377,6 +396,7 @@ impl ObjectView {
             merged: Vec::new(),
             manual: Vec::new(),
             identity: None,
+            activated: Vec::new(),
         }
     }
 }

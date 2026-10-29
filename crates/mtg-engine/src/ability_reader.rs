@@ -400,7 +400,7 @@ fn card_of<'a>(
 
 /// The keyword that adds the ability `address` names, when a keyword does: the card's rule, or the keyword the
 /// effect or static ability gave.
-pub(crate) fn keyword_adding(state: &GameState, address: AbilityRef) -> Option<Keyword> {
+pub fn keyword_adding(state: &GameState, address: AbilityRef) -> Option<Keyword> {
     keyword_added(state, address, None)
 }
 

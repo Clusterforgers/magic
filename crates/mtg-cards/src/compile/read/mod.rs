@@ -168,6 +168,7 @@ mod zone_moves;
 pub use chance::{add_row as add_die_row, die_row, ends_in_roll, row_texts as die_row_texts};
 pub use chapters::block as chapter_block;
 pub use class::block as class_block;
+pub use costs::text as render_cost;
 pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use render::{

@@ -17,6 +17,7 @@ pub mod message;
 pub mod project;
 pub mod rest;
 pub mod view;
+pub mod wording;
 
 pub use error::ProtocolError;
 pub use events::{EventBatch, EventView, HiddenEvent, project_events};
@@ -31,7 +32,7 @@ pub use rest::{
     UserView,
 };
 pub use view::{
-    AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
-    MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView, StateView, TableView,
-    TurnView, ZoneView,
+    ActivatedView, AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView,
+    CopyView, MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView, StateView,
+    TableView, TurnView, ZoneView,
 };

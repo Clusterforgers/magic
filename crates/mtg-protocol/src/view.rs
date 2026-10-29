@@ -83,6 +83,41 @@ pub struct LoyaltyAbilityView {
     pub cost: LoyaltyCost,
 }
 
+/// An activated ability of an object in the words of its card, for a menu to name what `PriorityOptions` offers.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct ActivatedView {
+    /// Its address, as `PriorityOptions.abilities` lists it; left out for a plain tap-for-mana ability, which the payment
+    /// offers as a `ManaOption` with the index of the ability among `ObjectView.abilities`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub ability: Option<AbilityRef>,
+    /// The cost in oracle wording (`{2}, {T}, Sacrifice Mind Stone`, `+1` for a loyalty ability); empty when it has no words.
+    pub cost: String,
+    /// What it does in oracle wording; see `unworded` for an ability the writer cannot word.
+    pub effect: String,
+    /// What each target specification targets, in the words of the effect; left out while it targets nothing.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub targets: Vec<String>,
+    /// The loyalty cost of a planeswalker's loyalty ability.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub loyalty: Option<LoyaltyCost>,
+    /// Whether it is a mana ability (CR 605), which needs no priority and uses no stack.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub mana: bool,
+    /// The keyword line that adds it (`Cycling {2}`, `Equip {1}`), when a keyword does.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub keyword: Option<String>,
+    /// Whether the card writer cannot word it: `effect` then is its keyword line, or names it by its place among the
+    /// object's activated abilities (`Activated ability 2`).
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub unworded: bool,
+}
+
 /// A card the viewer may identify, with its current (layer-derived) characteristics.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct ObjectView {
@@ -185,6 +220,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub identity: Option<CardIdentity>,
+    /// Its activated abilities in oracle wording, in the order of its abilities; left out while it has none, and for a
+    /// card in another seat's hand or library.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ActivatedView>>", optional)]
+    pub activated: Vec<ActivatedView>,
 }
 
 /// Whether a flag is off, so serialization can leave it out (serde hands over a reference).

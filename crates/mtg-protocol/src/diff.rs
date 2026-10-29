@@ -86,6 +86,7 @@ mod tests {
             attachments: Vec::new(),
             manual: Vec::new(),
             identity: None,
+            activated: Vec::new(),
         }
     }
 
