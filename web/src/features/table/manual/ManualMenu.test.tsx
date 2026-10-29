@@ -1,7 +1,7 @@
 // Goal: a card opens its manual menu by right click, long press and keyboard, lists the entries by group, sends the exact manual answer for each choice and for each filled form, closes with the focus back on the card, and says why nothing can be done without priority.
 import { act, fireEvent, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { Answer, ManualAction, ObjectView } from '@/protocol/generated'
+import type { Answer, FullControlMode, ManualAction, ObjectView } from '@/protocol/generated'
 import type { PlayState } from '@/play/store'
 import { indexById } from '@/play/view'
 import { card, permanent } from '@/test-utils/cards'
@@ -18,13 +18,15 @@ const ID = 900
 interface Shown {
   object?: ObjectView
   answer?: (answer: Answer) => boolean
+  /** Replaces the session's request for Full Control. */
+  fullControl?: (mode: FullControlMode) => boolean
   /** Changes the play state before the first render. */
   state?: (state: PlayState) => PlayState
   spectator?: boolean
 }
 
 /** One card (object 900) among the few permanents of a small fixture, inside the manual menu's provider. */
-function renderMenu({ object = card(), answer = () => true, state, spectator }: Shown = {}) {
+function renderMenu({ object = card(), answer = () => true, fullControl, state, spectator }: Shown = {}) {
   const sent: Answer[] = []
   const table = renderTable({
     fixture: buildFixture({ seats: 2, permanents: 4, hand: 2 }),
@@ -38,6 +40,7 @@ function renderMenu({ object = card(), answer = () => true, state, spectator }: 
         sent.push(given)
         return answer(given)
       },
+      ...(fullControl === undefined ? {} : { setFullControl: fullControl }),
     },
     state: (first) => {
       const view = clone(must(first.view))
@@ -432,6 +435,54 @@ describe('without priority', () => {
     cardButton().focus()
     await user.keyboard('m')
     expect(entry('Tap')).toHaveAttribute('aria-disabled', 'true')
+  })
+})
+
+describe('rules left to the table', () => {
+  const clauses = [
+    { text: 'Whenever you cast a spell, draw a card.', reason: 'the engine does not run this yet' },
+  ]
+
+  it('quotes the clauses of the card at the top of its menu, with the reason', async () => {
+    const { user } = renderMenu({ object: card({ manual: clauses }) })
+    cardButton().focus()
+    await user.keyboard('m')
+    const block = screen.getByRole('region', { name: 'By hand' })
+    expect(block).toHaveTextContent('Whenever you cast a spell, draw a card.')
+    expect(block).toHaveTextContent('the engine does not run this yet')
+  })
+
+  it('shows no such block for a card the engine runs whole', async () => {
+    const { user } = renderMenu()
+    cardButton().focus()
+    await user.keyboard('m')
+    expect(screen.queryByRole('region', { name: 'By hand' })).toBeNull()
+  })
+
+  it('offers to ask for the next window when the seat is passed for, and asks once', async () => {
+    const asked: FullControlMode[] = []
+    const { user } = renderMenu({
+      state: (state) => ({ ...state, pending: null }),
+      fullControl: (mode) => !!asked.push(mode),
+    })
+    cardButton().focus()
+    await user.keyboard('m')
+    await user.click(entry(/^Ask me at the next window/))
+    expect(asked).toEqual(['NextWindow'])
+    expect(screen.queryByRole('menu')).toBeNull()
+  })
+
+  it.each([
+    ['holding priority', {}],
+    [
+      'Full Control already on',
+      { state: (state: PlayState) => ({ ...state, pending: null, fullControl: 'Held' as const }) },
+    ],
+  ])('does not offer it while %s', async (_name, over) => {
+    const { user } = renderMenu(over)
+    cardButton().focus()
+    await user.keyboard('m')
+    expect(within(menu()).queryByRole('menuitem', { name: /next window/ })).toBeNull()
   })
 })
 

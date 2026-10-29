@@ -3,6 +3,7 @@ import type {
   CommonToken,
   CounterKind,
   ManualAction,
+  ManualClause,
   ManualToken,
   ManualZone,
   ObjectId,
@@ -75,6 +76,8 @@ export interface ManualMenu {
   title: string
   /** Set while nothing can be done by hand, and why. */
   notice?: string
+  /** The clauses of the card's rules that the engine leaves to the table: what the seat applies by hand. */
+  clauses: readonly ManualClause[]
   groups: ManualGroup[]
 }
 
@@ -304,7 +307,7 @@ export function manualMenu(input: MenuInput): ManualMenu {
     },
     otherGroup(input, off),
   ].filter((group): group is ManualGroup => group !== null)
-  return { title: input.object.name, notice: off, groups }
+  return { title: input.object.name, notice: off, clauses: input.object.manual ?? [], groups }
 }
 
 /** The permanents an attachment can go to: every other permanent but its host, the seat's own first, then by name. */

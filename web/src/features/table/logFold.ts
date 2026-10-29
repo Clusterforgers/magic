@@ -5,7 +5,7 @@ import { commanderDamageLine } from './commander'
 import { commanderHits } from './commanderLog'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
-import { manualRun, manualText } from './manual/manualLog'
+import { byHandLine, manualRun, manualText } from './manual/manualLog'
 
 /** One line of the folded log. */
 export interface FoldedLine {
@@ -108,6 +108,11 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
             minor: false,
           }
     lines.push({ seq, text: line.text, minor: line.minor, passed: [], spoken: '' })
+    const byHand = byHandLine(event, names)
+    // Half a step after its event: a line of its own that keeps the keys of the lines unique.
+    if (byHand !== null) {
+      lines.push({ seq: seq + 0.5, text: byHand, minor: false, passed: [], spoken: '', manual: true })
+    }
   })
   flush(undefined)
   return lines

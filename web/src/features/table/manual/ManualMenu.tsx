@@ -111,6 +111,7 @@ function Panel({ target }: { target: MenuTarget }) {
     }),
   )
   const close = useCallback((): void => store?.close(), [store])
+  const fullControl = usePlay((state) => state.fullControl)
 
   const input = useMemo(
     () =>
@@ -188,6 +189,12 @@ function Panel({ target }: { target: MenuTarget }) {
     if (session.answer({ Priority: { Manual: action } })) close()
     else setError('The action could not be sent; the connection is not open.')
   }
+  // A seat the server passes for is given no priority decision, so by-hand work waits for a window it asks for.
+  const askable = !holding && fullControl === 'Off'
+  const askNext = (): void => {
+    if (session.setFullControl('NextWindow')) close()
+    else setError('The request could not be sent; the connection is not open.')
+  }
   const use = (item: ManualItem): void => {
     setError(undefined)
     if (item.action !== undefined) send(item.action)
@@ -231,6 +238,13 @@ function Panel({ target }: { target: MenuTarget }) {
         aria-describedby={menu.notice === undefined ? undefined : 'manual-notice'}
         className="min-h-0 overflow-y-auto overscroll-contain px-1 pb-1"
       >
+        {askable ? (
+          <Item
+            item={{ key: 'ask-priority', label: 'Ask me at the next window', hint: 'once' }}
+            notice={undefined}
+            onUse={askNext}
+          />
+        ) : null}
         {menu.groups.map((group) => (
           <Group key={group.id} group={group} notice={menu.notice} onUse={use} />
         ))}
@@ -262,6 +276,22 @@ function Panel({ target }: { target: MenuTarget }) {
           <p id="manual-notice" className="text-xs text-muted-foreground">
             {menu.notice}
           </p>
+        )}
+        {menu.clauses.length === 0 ? null : (
+          <section
+            aria-label="By hand"
+            data-slot="by-hand"
+            className="mt-1 grid max-h-28 gap-1 overflow-y-auto rounded-md bg-muted px-2 py-1.5"
+          >
+            <p className="text-xs font-medium">By hand</p>
+            <ul className="grid gap-1 text-xs">
+              {menu.clauses.map((clause) => (
+                <li key={clause.text}>
+                  <q>{clause.text}</q> <span className="text-muted-foreground">{clause.reason}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
         {error === undefined ? null : (
           <p role="alert" className="text-xs text-destructive">

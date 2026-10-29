@@ -51,6 +51,7 @@ export function DevTableRoute() {
       fixtureGame({
         seats,
         prompt,
+        holding: menu === undefined ? undefined : true,
         turn,
         step,
         hand,
@@ -60,7 +61,7 @@ export function DevTableRoute() {
         fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
         real,
       }),
-    [seats, prompt, turn, step, hand, rules, preview, stops, fc, real],
+    [seats, prompt, menu, turn, step, hand, rules, preview, stops, fc, real],
   )
   const view = game.session.store.getState().view
   const candidates = useMemo(

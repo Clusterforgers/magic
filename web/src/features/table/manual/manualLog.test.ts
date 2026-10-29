@@ -241,6 +241,48 @@ describe('the events of the change', () => {
   })
 })
 
+describe('rules left to the table', () => {
+  const withClauses = {
+    ...names,
+    clauses: (id: number) =>
+      id === 1 ? ['Draw a card.', 'x'.repeat(200)] : id === 2 ? ['Gain 2 life.'] : [],
+  }
+  const lines = (events: readonly EventView[]) =>
+    foldLog(log(events), withClauses, { seats: [0, 1] }).map((line) => line.text)
+
+  it('quotes them after the spell resolves, in a line of their own', () => {
+    const [resolves, quote] = lines([pub({ SpellResolved: { object: 2 } })])
+    expect(resolves).toBe('Grizzly Bears resolves')
+    expect(quote).toBe('Grizzly Bears has rules to apply by hand: “Gain 2 life.”')
+  })
+
+  it('quotes them after a land is played', () => {
+    expect(lines([pub({ LandPlayed: { player: 1, object: 2 } })]).at(-1)).toMatch(/^Grizzly Bears has rules/)
+  })
+
+  it('cuts a long clause and joins several', () => {
+    const quote = lines([pub({ SpellResolved: { object: 1 } })]).at(-1) ?? ''
+    expect(quote).toMatch(/“Draw a card\.”; “x{159}…”$/)
+  })
+
+  it('marks the line and keeps the keys of the lines apart', () => {
+    const folded = foldLog(log([pub({ SpellResolved: { object: 2 } })]), withClauses, { seats: [0, 1] })
+    expect(folded.map((line) => line.manual)).toEqual([undefined, true])
+    expect(new Set(folded.map((line) => line.seq)).size).toBe(2)
+  })
+
+  it.each([
+    ['a card without clauses', pub({ SpellResolved: { object: 3 } })],
+    ['another event of a card with clauses', pub({ PermanentTapped: { object: 2 } })],
+  ])('adds nothing for %s', (_name, event) => {
+    expect(lines([event])).toHaveLength(1)
+  })
+
+  it('adds nothing where the viewer is told no clauses', () => {
+    expect(fold([pub({ SpellResolved: { object: 2 } })])).toEqual(['Grizzly Bears resolves'])
+  })
+})
+
 describe('a viewer who cannot see the card', () => {
   it('reads the move from its hidden twin and the zone it left', () => {
     const events = [

@@ -28,6 +28,8 @@ import { STEP_LABEL } from './turnText'
 export interface EventNames {
   seat(seat: PlayerId): string
   card(id: ObjectId): string
+  /** The clauses of a card's rules that are left to the table, when the viewer knows them. */
+  clauses?(id: ObjectId): readonly string[]
 }
 
 /** One log line. Minor lines (priority passes, mana, untaps) are drawn quietly. */

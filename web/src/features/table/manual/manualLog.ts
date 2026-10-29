@@ -85,6 +85,31 @@ export function manualRun(log: readonly LogEntry[], at: number): ManualRun | nul
   return null
 }
 
+/** The longest clause the log quotes whole. */
+const QUOTE_CHARS = 160
+
+const quoted = (text: string): string =>
+  `“${text.length > QUOTE_CHARS ? `${text.slice(0, QUOTE_CHARS - 1)}…` : text}”`
+
+/**
+ * What a resolved spell or a played land leaves to the table: the clauses of its rules the engine does not run,
+ * quoted, so the seat sees what to apply by hand at the moment it can. Null for any other event and for a card
+ * without such clauses (or one whose clauses the viewer does not know).
+ */
+export function byHandLine(event: EventView, names: EventNames): string | null {
+  if (!('Public' in event) || typeof event.Public === 'string') return null
+  const { Public: shown } = event
+  const id =
+    'SpellResolved' in shown
+      ? shown.SpellResolved.object
+      : 'LandPlayed' in shown
+        ? shown.LandPlayed.object
+        : null
+  const clauses = id === null ? [] : (names.clauses?.(id) ?? [])
+  if (id === null || clauses.length === 0) return null
+  return `${names.card(id)} has rules to apply by hand: ${clauses.map(quoted).join('; ')}`
+}
+
 /** The sentence of a manual action (or of the hidden twin of a move) as the viewer reads it. */
 export function manualText(event: EventView, from: Zone | undefined, names: EventNames): string {
   if ('Public' in event && typeof event.Public !== 'string' && 'ManualAction' in event.Public) {
