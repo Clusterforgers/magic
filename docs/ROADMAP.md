@@ -365,11 +365,11 @@ The server is settled first, then the web is built once against the final types.
 
 ## M7 Product
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
-- [ ] (w1b) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
+- [~] (w1b) (f1a-unvalidated-list) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
 - [ ] (w2h) A seat that reloads or reconnects gets the game log back (`play/store.ts`): after a `Snapshot` the log reads "Nothing has happened yet."
-- [ ] (f1a) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
+- [~] (f1a) (f1a-unvalidated-list) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
