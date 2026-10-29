@@ -39,7 +39,7 @@ pub(super) fn w6e_gain_control(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// What is taken, and the noun "that ..." names it by again: a target object, the enchanted permanent, or all of a group.
-fn w6e_taken(r: &mut Reader<'_>) -> Option<(Ref, Option<&'static str>)> {
+pub(super) fn w6e_taken(r: &mut Reader<'_>) -> Option<(Ref, Option<&'static str>)> {
     if let Some(group) = all(r) {
         return Some((group, None));
     }
@@ -63,7 +63,7 @@ fn w6e_taken(r: &mut Reader<'_>) -> Option<(Ref, Option<&'static str>)> {
 }
 
 /// How long the control lasts: the turn, while the source stays or is controlled, or for good.
-fn w6e_duration(r: &mut Reader<'_>) -> Option<Duration> {
+pub(super) fn w6e_duration(r: &mut Reader<'_>) -> Option<Duration> {
     if r.words("until end of turn") {
         return Some(Duration::UntilEndOfTurn);
     }
@@ -104,7 +104,7 @@ fn w6e_untapped(r: &mut Reader<'_>, what: &Ref, noun: &str) -> Option<Vec<Effect
 }
 
 /// "haste", "trample and haste", "trample, haste, and annihilator 1".
-fn w6e_keywords(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+pub(super) fn w6e_keywords(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     let mut mods: Vec<Modification> = granted_keywords(r)?
         .into_iter()
         .map(Modification::AddKeyword)

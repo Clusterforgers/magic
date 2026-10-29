@@ -67,7 +67,7 @@ impl Writer<'_> {
     }
 
     /// "creature" for a target creature, "permanent" for a target that names no kind.
-    fn w6e_noun(&self) -> Option<&'static str> {
+    pub(super) fn w6e_noun(&self) -> Option<&'static str> {
         if self.target_is(|what| {
             matches!(what, Targetable::Object(selector)
                 if selector.0.contains(&Pred::Type(CardType::Creature)))
