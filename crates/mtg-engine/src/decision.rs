@@ -368,6 +368,18 @@ pub struct BlockerOption {
     pub object: ObjectId,
     /// Attackers it may block.
     pub can_block: Vec<ObjectId>,
+    /// How many of them it may block beyond the first ("can block an additional creature each combat"): the
+    /// declaration names it once for each. Left out while it is 0.
+    #[serde(default, skip_serializing_if = "w14c_is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<usize>", optional))]
+    pub extra: usize,
+}
+
+/// Whether a count is 0, so it is left out of the wire form.
+// serde's `skip_serializing_if` hands out a reference.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn w14c_is_zero(count: &usize) -> bool {
+    *count == 0
 }
 
 /// Legal blockers.
@@ -680,6 +692,7 @@ mod tests {
                 .map(|(object, can_block)| BlockerOption {
                     object: id(*object),
                     can_block: can_block.iter().map(|attacker| id(*attacker)).collect(),
+                    extra: 0,
                 })
                 .collect(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),

@@ -421,6 +421,13 @@ impl RandomBot {
                     let pick = self.rng.index(option.can_block.len() + 1);
                     if let Some(attacker) = option.can_block.get(pick) {
                         blocks.push((option.object, *attacker));
+                        // A creature that can block an additional creature may take more of the others.
+                        for other in option.can_block.iter().filter(|a| *a != attacker) {
+                            let named = blocks.iter().filter(|(b, _)| *b == option.object).count();
+                            if named <= option.extra && self.rng.index(2) == 0 {
+                                blocks.push((option.object, *other));
+                            }
+                        }
                     }
                 }
                 // An attacker that may be blocked by few creatures only (one at most) keeps the first blockers it got.

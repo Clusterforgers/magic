@@ -273,6 +273,7 @@ const RUNS: &[&str] = &[
     "Mod.CanBlockOnly",
     "Mod.MinBlockers",
     "Mod.MaxBlockers",
+    "Mod.BlocksAdditional",
     "Mod.Goaded",
     "Effect.DelayedTrigger",
     "Effect.If",

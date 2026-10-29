@@ -67,7 +67,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantBeBlockedBy { .. }
         | Modification::CanBlockOnly { .. }
         | Modification::MinBlockers(_)
-        | Modification::MaxBlockers(_) => Traits::NONE,
+        | Modification::MaxBlockers(_)
+        | Modification::BlocksAdditional(_) => Traits::NONE,
         Modification::Goaded { .. } => Traits::GOADED,
     }
 }
@@ -100,7 +101,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
-        | Wanted::MaxBlockers(_) => Traits::NONE,
+        | Wanted::MaxBlockers(_)
+        | Wanted::BlocksAdditional(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
     }
 }
@@ -136,6 +138,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
+        | Wanted::BlocksAdditional(_)
         | Wanted::Goaded => Traits::NONE,
     }
 }

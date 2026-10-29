@@ -1176,7 +1176,9 @@ impl<'a> Walker<'a> {
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
             }
-            Modification::MinBlockers(count) | Modification::MaxBlockers(count) => {
+            Modification::MinBlockers(count)
+            | Modification::MaxBlockers(count)
+            | Modification::BlocksAdditional(count) => {
                 if *count < 1 {
                     self.problem("a limit on blockers needs a count of at least one");
                 }
