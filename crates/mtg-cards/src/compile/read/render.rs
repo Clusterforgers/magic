@@ -2424,6 +2424,11 @@ impl Writer<'_> {
                     "becomes"
                 }
             ),
+            Effect::TakeInitiative { who } => format!(
+                "{} {} the initiative",
+                self.player(who)?,
+                if *who == Ref::You { "take" } else { "takes" }
+            ),
             _ => return self.module_effect(effect),
         })
     }

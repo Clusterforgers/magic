@@ -191,6 +191,9 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
 pub(crate) fn introduces(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
         Event::TokenCreated(created) => definition_triggers(&created.definition),
+        // A new dungeon's first room and the initiative's object trigger on the event that makes them.
+        Event::Ventured(ventured) => ventured.definition.is_some(),
+        Event::InitiativeTaken { .. } => true,
         Event::EffectCreated { effect } => match &effect.modification {
             crate::effects::Modification::GrantAbility(granted) => triggers_something(granted),
             crate::effects::Modification::AddKeyword(keyword) => keyword_triggers(keyword),

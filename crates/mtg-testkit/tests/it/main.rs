@@ -462,6 +462,7 @@ mod w11a_exert;
 mod w11b_phase_durations;
 mod w11c_crimes_clash;
 mod w11d_venture;
+mod w15a_initiative;
 mod w2b_read_ahead;
 mod w2c_destroyed;
 mod w2c_distinct;

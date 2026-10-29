@@ -617,6 +617,8 @@ pub struct InvariantChecker {
     setup: GameSetup,
     shadow: GameState,
     expected_objects: usize,
+    /// The initiative's object, while it is in the game.
+    w15a_initiative: Option<mtg_core::ids::ObjectId>,
     expected_life: Vec<i32>,
     expected_pool: Vec<[i64; 6]>,
     /// The restricted mana each pool holds, by the history of what was added and spent.
@@ -683,6 +685,7 @@ impl InvariantChecker {
             expected_attached,
             expected_enchanted,
             expected_objects: shadow.object_count(),
+            w15a_initiative: None,
             expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
             expected_restricted: vec![Vec::new(); shadow.players().len()],
@@ -810,6 +813,22 @@ impl InvariantChecker {
         }
     }
 
+    /// A new holder of the initiative gets a new object and the old one, if still in the game, leaves it.
+    fn w15a_initiative_count(&mut self, event: &Event) {
+        match event {
+            Event::ObjectLeftGame { object } if self.w15a_initiative == Some(*object) => {
+                self.w15a_initiative = None;
+            }
+            Event::InitiativeTaken { object, .. } if self.w15a_initiative != Some(*object) => {
+                if self.w15a_initiative.replace(*object).is_some() {
+                    self.expected_objects -= 1;
+                }
+                self.expected_objects += 1;
+            }
+            _ => {}
+        }
+    }
+
     fn observe_event(&mut self, event: &Event) -> Result<(), Violation> {
         // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
         let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }
@@ -894,6 +913,7 @@ impl InvariantChecker {
             self.expected_objects += 1;
         }
         self.expected_objects = w11d_dungeon_count(self.expected_objects, event);
+        self.w15a_initiative_count(event);
         // The spell's card is part of the permanent, no object of its own.
         if matches!(event, Event::Mutated { .. }) {
             self.expected_objects -= 1;

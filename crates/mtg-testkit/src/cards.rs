@@ -448,6 +448,19 @@ pub fn monarcher(name: &str) -> Arc<CardDefinition> {
     )
 }
 
+/// An instant for `{0}` with "You take the initiative."
+pub fn w15a_initiator(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::TakeInitiative { who: Ref::You }],
+            }),
+    )
+}
+
 /// An instant for `{0}` with "Venture into the dungeon."
 pub fn w11d_venturer(name: &str) -> Arc<CardDefinition> {
     Arc::new(

@@ -664,6 +664,13 @@ pub enum Event {
         /// The dungeon.
         object: ObjectId,
     },
+    /// A player took the initiative (CR 725); `object` stands for it in their command zone.
+    InitiativeTaken {
+        /// Who took it.
+        player: PlayerId,
+        /// The initiative's object.
+        object: ObjectId,
+    },
     /// A player learned (CR 701.48): the discard and the draw are the events that follow it.
     Learned {
         /// Who learned.
@@ -1045,6 +1052,7 @@ impl Event {
             Event::TokenCreated(token) => vec![token.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
             Event::Ventured(ventured) => vec![ventured.object],
+            Event::InitiativeTaken { object, .. } => vec![*object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],

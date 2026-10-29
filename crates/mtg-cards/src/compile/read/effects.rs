@@ -727,6 +727,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             who,
             count: points(r)?,
         },
+        "take" | "takes" if r.words("the initiative") => Effect::TakeInitiative { who },
         "take" | "takes" => super::turns::extra_turns(r, &who)?,
         "win" | "wins" => {
             r.need("the game")?;

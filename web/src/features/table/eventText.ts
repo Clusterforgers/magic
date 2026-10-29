@@ -537,6 +537,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const v = event.Ventured
     return line(`${n.seat(v.player)} ventures into ${v.room_name} (${v.dungeon})`)
   }
+  if ('InitiativeTaken' in event) {
+    return line(`${n.seat(event.InitiativeTaken.player)} takes the initiative`)
+  }
   if ('DungeonCompleted' in event) {
     return line(`${n.seat(event.DungeonCompleted.player)} completes a dungeon`)
   }

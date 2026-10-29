@@ -474,6 +474,7 @@ impl TableView {
                 lands_played: turn.lands_played(),
                 day_night: state.day_night(),
                 monarch: state.monarch(),
+                initiative: state.w15a_initiative(),
             },
             priority: state.priority().map(|p| PriorityView {
                 holder: p.holder(),

@@ -43,4 +43,8 @@ day_night?: DayNight,
 /**
  * The monarch (CR 724); left out while nobody is.
  */
-monarch?: PlayerId, };
+monarch?: PlayerId, 
+/**
+ * The player who has the initiative (CR 725); left out while nobody has it.
+ */
+initiative?: PlayerId, };

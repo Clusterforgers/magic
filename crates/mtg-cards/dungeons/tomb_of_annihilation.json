@@ -14,21 +14,145 @@
       "text": "Each player loses 2 life unless they discard a card.",
       "leads_to": [
         "Sandfall Cell"
-      ]
+      ],
+      "ability": {
+        "Spell": {
+          "effects": [
+            {
+              "RepeatEach": {
+                "over": "EachPlayer",
+                "as": "player",
+                "effects": [
+                  {
+                    "Pay": {
+                      "who": {
+                        "Bound": "player"
+                      },
+                      "cost": [
+                        {
+                          "Discard": {}
+                        }
+                      ],
+                      "unpaid": [
+                        {
+                          "LoseLife": {
+                            "who": {
+                              "Bound": "player"
+                            },
+                            "amount": 2
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     },
     {
       "name": "Sandfall Cell",
       "text": "Each player loses 2 life unless they sacrifice a creature, artifact, or land of their choice.",
       "leads_to": [
         "Cradle of the Death God"
-      ]
+      ],
+      "ability": {
+        "Spell": {
+          "effects": [
+            {
+              "RepeatEach": {
+                "over": "EachPlayer",
+                "as": "player",
+                "effects": [
+                  {
+                    "Pay": {
+                      "who": {
+                        "Bound": "player"
+                      },
+                      "cost": [
+                        {
+                          "Sacrifice": {
+                            "filter": [
+                              {
+                                "AnyOf": [
+                                  {
+                                    "Type": "Creature"
+                                  },
+                                  {
+                                    "Type": "Artifact"
+                                  },
+                                  {
+                                    "Type": "Land"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "unpaid": [
+                        {
+                          "LoseLife": {
+                            "who": {
+                              "Bound": "player"
+                            },
+                            "amount": 2
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     },
     {
       "name": "Oubliette",
       "text": "Discard a card and sacrifice a creature, an artifact, and a land.",
       "leads_to": [
         "Cradle of the Death God"
-      ]
+      ],
+      "ability": {
+        "Spell": {
+          "effects": [
+            {
+              "Discard": {}
+            },
+            {
+              "Sacrifice": {
+                "filter": [
+                  {
+                    "Type": "Creature"
+                  }
+                ]
+              }
+            },
+            {
+              "Sacrifice": {
+                "filter": [
+                  {
+                    "Type": "Artifact"
+                  }
+                ]
+              }
+            },
+            {
+              "Sacrifice": {
+                "filter": [
+                  {
+                    "Type": "Land"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
     },
     {
       "name": "Cradle of the Death God",

@@ -656,6 +656,12 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The player takes the initiative (CR 725), even when they have it.
+    TakeInitiative {
+        /// Who takes it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// "You get an emblem with "..."" (CR 114): each player named gets an emblem in their command zone with these
     /// abilities, written as on a permanent; the emblem's abilities work from the command zone for the rest of the game.
     CreateEmblem {

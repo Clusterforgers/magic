@@ -728,6 +728,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "Monarch");
                 self.at("Monarch", |w| w.reference(who, Kind::Player));
             }
+            Condition::Initiative(who) => {
+                self.uses("Condition", "Initiative");
+                self.at("Initiative", |w| w.reference(who, Kind::Player));
+            }
             Condition::MonarchAtTurnStart(who) => {
                 self.uses("Condition", "MonarchAtTurnStart");
                 self.at("MonarchAtTurnStart", |w| w.reference(who, Kind::Player));
@@ -1318,6 +1322,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::LifeGained { who }
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
+            | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
             | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
@@ -1426,6 +1431,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
                 | TriggerPattern::BecomesMonarch { .. }
+                | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
                 | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DayNightChanges { .. }
@@ -2115,6 +2121,7 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::Proliferate { who }
             | Effect::BecomeMonarch { who }
+            | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }

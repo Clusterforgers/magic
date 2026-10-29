@@ -97,6 +97,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Bo ventures into Cave Entrance (Lost Mine of Phandelver)',
   ],
   DungeonCompleted: [{ DungeonCompleted: { player: 1, object: 9 } }, 'Bo completes a dungeon'],
+  InitiativeTaken: [{ InitiativeTaken: { player: 1, object: 9 } }, 'Bo takes the initiative'],
   Explored: [{ Explored: { object: 3, player: 1 } }, 'Forest explores'],
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
   Exerted: [{ Exerted: { object: 3, player: 1 } }, 'Forest is exerted'],

@@ -596,6 +596,9 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::w11a_exert::w11a_fold_ended(state, *object, *player)
         }
         Event::Ventured(ventured) => crate::w11d_dungeon::w11d_fold_ventured(state, ventured),
+        Event::InitiativeTaken { player, object } => {
+            crate::w15a_initiative::w15a_fold_taken(state, *player, *object)
+        }
         Event::DungeonCompleted { player, object } => {
             crate::w11d_dungeon::w11d_fold_completed(state, *player, *object)
         }

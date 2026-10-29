@@ -157,6 +157,8 @@ enum Happened {
     Surveilled { player: PlayerId, nth: u32 },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
+    /// A player took the initiative.
+    TookInitiative { player: PlayerId },
     /// A player ventured into `room` of the dungeon `object`.
     Ventured {
         player: PlayerId,
@@ -873,6 +875,9 @@ fn about_players_and_permanents(
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
+        Event::InitiativeTaken { player, .. } => {
+            found.push(Happened::TookInitiative { player: *player });
+        }
         Event::Ventured(ventured) => found.push(Happened::Ventured {
             player: ventured.player,
             object: ventured.object,
@@ -1272,6 +1277,7 @@ fn matching_event(
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
+        | (TriggerPattern::TakesInitiative { who }, Happened::TookInitiative { player })
         | (TriggerPattern::CompletedDungeon { who }, Happened::CompletedDungeon { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
         | (TriggerPattern::CoinFlipWon { who }, Happened::CoinFlipWon { player })
