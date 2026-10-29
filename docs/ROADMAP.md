@@ -94,6 +94,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Card identity in views: `ObjectView.identity` names the oracle id of a card the viewer identifies, set by the server on every card it reads.
 - Card images: the server serves the picture of a card, printing or token from a disk cache that fills from the Scryfall CDN under the politeness rules, and warms the pictures of a starting game in the background (`docs/server.md`, Pictures).
 - Card images in the web: table cards, hand, stack and preview draw the picture with the state over it, the builder through the same endpoints, and "Card images" in the table menu turns them off (`docs/web.md`, Card images).
+- Commander at the table: commander cards and tax chips in the pods, commander damage per source with the lethal amount, casting from the command zone in the hand dock with the tax, the return choice and commander damage in the log (`docs/web.md`).
 
 ## M3 Card system
 
@@ -149,7 +150,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
 - [ ] (a2d) A token whose power or toughness changed keeps its picture: the token lookup matches the printed values, which the view does not carry
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
-- [~] (k1) (k1-commander-table) Commander at the table: each commander in the command zone with its cast count and tax, casting it from there with the tax in the cast options, the choice to return it to the command zone, and commander damage on every pod with the lethal amount, with `/dev/table` screenshots of a four-seat game at six sizes in both themes
+- [ ] (k1b) The one-line pods of three and four seats draw each commander as a small picture beside the command zone chip, both of a partner pair, and pass the layout gate
+- [ ] (k1c) `/dev/table` screenshots of the four-seat Commander fixture (`commander-return` too) at 360, 390, 768, 1024, 1400, 1600x1000 and 1920 in both themes, with the layout gate and fit specs green
 - [ ] (k2) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes

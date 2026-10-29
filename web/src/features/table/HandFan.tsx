@@ -126,7 +126,7 @@ function TaxPill({ tax }: { tax: number }) {
           +
           <ManaPips
             pips={[{ key: 'tax', tone: 'generic', text: `${tax}`, symbol: `${tax}`, name: `${tax} generic mana` }]}
-            sizeClass="size-3.5 text-[0.625rem]"
+            sizeClass="size-4 text-[0.6875rem]"
             label="Tax"
           />
         </>

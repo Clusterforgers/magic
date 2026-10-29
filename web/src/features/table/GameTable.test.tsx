@@ -62,13 +62,13 @@ describe('grid mode', () => {
     const rows = screen.getAllByRole('list').map((list) => list.getAttribute('aria-label'))
     const bo = rows.filter((label) => label?.startsWith("Bo's"))
     expect(bo).toEqual(["Bo's command zone", "Bo's lands", "Bo's other permanents", "Bo's creatures"])
-    // Her pod, then her battlefield with the creatures toward the middle, then the hand dock along the bottom.
+    // Her battlefield with the creatures toward the middle, then the hand dock along the bottom: her commanders, her hand.
     const alice = rows.filter((label) => label?.startsWith("Alice's"))
     expect(alice).toEqual([
-      "Alice's command zone",
       "Alice's creatures",
       "Alice's other permanents",
       "Alice's lands",
+      "Alice's commanders in the command zone",
       "Alice's hand",
     ])
   })
@@ -105,7 +105,7 @@ describe('focus mode', () => {
     const { container } = renderTable({ fixture: buildFixture({ seats: 6, permanents: 2 }) })
     expect(within(screen.getByRole('list', { name: 'Opponents' })).getAllByRole('listitem')).toHaveLength(5)
     expect(tile(container, 3)).toHaveAccessibleName(
-      "Show Dee's board. Life 34, 5 cards in hand, 45 in library, 5 in graveyard, 0 in exile, 1 in the command zone",
+      "Show Dee's board. Life 34, 5 cards in hand, 45 in library, 5 in graveyard, 0 in exile, 1 in the command zone, Meren of Clan Nel Toth: cast 1 time from the command zone, tax 2 mana",
     )
     expect(tile(container, 1)).toHaveAccessibleName(
       /^Show Bo's board\. Life 38, 6 cards in hand, .*, active turn, shown now$/,

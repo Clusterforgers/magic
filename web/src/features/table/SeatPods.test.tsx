@@ -1,5 +1,5 @@
 // Goal: at every layout of the table (a duel's 168 px column, one-line pods for 3 and 4 seats, tiles in the strip and one pod column for 5 or more, a phone's strip and your own line) each seat is drawn once as a pod, a one-line pod or a tile, with its name, its life and the chips of its four zones named in words, the command zone only where it holds a card, and no placeholder text anywhere on the table.
-import { within } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Viewport } from './layout'
 import { podCounts, zoneLabel } from './podFigures'
@@ -163,6 +163,8 @@ describe('the command zone in a pod', () => {
       within(rootOf(1, 'line')).getByRole('button', { name: /^Command zone 1 card/ }),
     ).toBeInTheDocument()
     expect(within(rootOf(2, 'line')).queryByRole('button', { name: /^Command zone/ })).toBeNull()
-    expect(within(rootOf(0, 'panel')).getByRole('list', { name: "Alice's command zone" })).toBeInTheDocument()
+    // Your own commanders wait in the hand dock, where they are cast; an opponent's sit in its pod.
+    expect(within(rootOf(0, 'panel')).queryByRole('list', { name: "Alice's command zone" })).toBeNull()
+    expect(screen.getByRole('list', { name: "Alice's commanders in the command zone" })).toBeInTheDocument()
   })
 })

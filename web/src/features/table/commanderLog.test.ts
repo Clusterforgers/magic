@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { LogEntry } from '@/play/store'
 import type { Event, EventView, PlayerView } from '@/protocol/generated'
 import { commanderHits } from './commanderLog'
+import { describeEvent } from './eventText'
 import { foldLog } from './logFold'
 
 const ATRAXA = 10
@@ -60,6 +61,18 @@ describe('commander hits', () => {
 
   it('a batch that starts while damage is dealt counts from its first event', () => {
     expect(commanderHits([hit(ATRAXA, 7)], PLAYERS, true).get(0)?.total).toBe(14)
+  })
+})
+
+describe('the lines of the return choice', () => {
+  const names = { seat: () => 'Alice', card: () => 'Atraxa' }
+  it.each<[Event, string]>([
+    [{ ZoneChanged: { object: ATRAXA, from: { Graveyard: 0 }, to: { Command: 0 }, cause: 'Moved' } }, 'Atraxa returns to the command zone'],
+    [{ ZoneChanged: { object: ATRAXA, from: 'Battlefield', to: { Command: 0 }, cause: 'Destroyed' } }, 'Atraxa is destroyed and returns to the command zone'],
+    [{ ZoneChanged: { object: ATRAXA, from: 'Battlefield', to: { Command: 0 }, cause: 'StateBased' } }, 'Atraxa returns to the command zone'],
+    [{ CommanderStayed: { object: ATRAXA } }, 'Atraxa stays out of the command zone'],
+  ])('%j reads %s', (event, text) => {
+    expect(describeEvent({ Public: event }, names).text).toBe(text)
   })
 })
 

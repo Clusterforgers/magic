@@ -21,7 +21,7 @@ const untapped = battlefield.filter(
 )
 const lands = untapped.filter((object) => isLand(object.id)).map((object) => object.id)
 const rock = must(untapped.find((object) => !isLand(object.id)))
-const OWN: ObjectId[] = [...hand, ...battlefield.map((object) => object.id)]
+const OWN: ObjectId[] = [...(view.players[0]?.command.cards ?? []), ...hand, ...battlefield.map((object) => object.id)]
 
 const [land1, land2, land3] = lands as [ObjectId, ObjectId, ObjectId]
 const [play1, play2] = handLands as [ObjectId, ObjectId]
