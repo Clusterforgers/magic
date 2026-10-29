@@ -1,14 +1,13 @@
 // Goal: accounts play real precon decks from a Postgres database through the real UI, from the lobby into the first turns (mulligans, lands, spells with their targets and payments, attacks, every step), and the run records what stops a first real game.
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
-import type { Browser, TestInfo } from '@playwright/test'
-import type { PreconList, PreconListItem } from '../src/protocol/generated'
-import { playToTheEnd, Run } from './driver'
+import type { PreconListItem } from '../src/protocol/generated'
+import { playToTheEnd, Run, turnOf } from './driver'
 import type { Hooks, Seen, Style } from './driver'
 import { everyoneReady } from './lobby'
 import type { Player } from './lobby'
-import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
+import { ACCOUNTS_DATABASE_URL } from './ports'
+import { attachFailure, precons, Shots, signUp, startTable, SHOTS_DIR } from './table'
+import type { Account } from './table'
 
 // Needs Postgres with the card data (`mtg-cli ingest` and `compile`) and the precons: set E2E_DATABASE_URL to such a
 // database (docs/web.md says how). Without it `pnpm e2e` has no database and this file is skipped.
@@ -17,156 +16,10 @@ test.skip(
   'set E2E_DATABASE_URL to a database with cards and precons to run this',
 )
 
-const PASSWORD = 'correct horse battery'
-/** Where the milestone screenshots go; none are taken while it is unset (the repo keeps no images). */
-const SHOTS_DIR = process.env['E2E_SHOTS_DIR']
 /** Decisions all seats may answer before the run is called stuck. */
 const MAX_DECISIONS = 1_500
 /** Time with no decision answered by any seat before the run is called stuck. */
 const STALL_MS = 25_000
-
-const unique = (prefix: string): string => `${prefix}_${Math.random().toString(36).slice(2, 8)}`
-
-interface Account {
-  name: string
-  storage: Awaited<ReturnType<import('@playwright/test').BrowserContext['storageState']>>
-}
-
-/** Registers an account in a browser of its own and keeps its cookies, so a test signs it in without registering again. */
-async function signUp(browser: Browser, prefix: string): Promise<Account> {
-  const name = unique(prefix)
-  const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL })
-  try {
-    const page = await context.newPage()
-    await page.goto('/register')
-    await page.getByLabel('Username').fill(name)
-    await page.getByLabel('Password').fill(PASSWORD)
-    await page.getByRole('button', { name: 'Create account' }).click()
-    await expect(page.getByRole('heading', { level: 1, name: 'Play' })).toBeVisible()
-    return { name, storage: await context.storageState() }
-  } finally {
-    await context.close()
-  }
-}
-
-/** A player signed in as the account, in a browser context of its own, with the page's uncaught exceptions collected. */
-async function sit(browser: Browser, account: Account): Promise<Player> {
-  const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL, storageState: account.storage })
-  const page = await context.newPage()
-  const errors: string[] = []
-  page.on('pageerror', (error) => errors.push(error.message))
-  return { name: account.name, page, context, errors }
-}
-
-/**
- * The precons to play, chosen by the stored data and not by name: the playable precons whose copies are mostly
- * Verified come first, the ones with the most manual copies last. The list is read from the API only to choose which
- * precons to play; the table itself is made through the create form and the lobby's chooser.
- */
-async function precons(browser: Browser): Promise<{ verified: PreconListItem[]; manual: PreconListItem[] }> {
-  const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL })
-  try {
-    const response = await context.request.get('/api/precons')
-    expect(response.status()).toBe(200)
-    const { precons } = (await response.json()) as PreconList
-    const playable = precons.filter((precon) => precon.playable && precon.commanders.length > 0)
-    const ratio = (p: PreconListItem): number =>
-      p.summary.counts.verified / Math.max(p.summary.counts.total, 1)
-    const byRatio = [...playable].sort((a, b) => ratio(b) - ratio(a) || a.code.localeCompare(b.code))
-    const byManual = [...playable].sort(
-      (a, b) => b.summary.counts.manual - a.summary.counts.manual || a.code.localeCompare(b.code),
-    )
-    // E2E_PRECONS names the manual pair by code ("c21-silverquill-statement,sld-odds-and-ends") to replay a finding.
-    const named = (process.env['E2E_PRECONS'] ?? '').split(',').filter((code) => code !== '')
-    const pinned = named.flatMap((code) => playable.filter((precon) => precon.code === code))
-    const replay = named.length > 0 && pinned.length === named.length
-    return { verified: byRatio, manual: replay ? pinned : byManual }
-  } finally {
-    await context.close()
-  }
-}
-
-/**
- * Chooses `deck` in the lobby's chooser as `player` does: the Precons list, a search for its name, its row (which waits
- * for the table's verdict and must not be blocked), and the press, then waits for the server's answer.
- */
-async function chooseTablePrecon(player: Player, deck: PreconListItem): Promise<void> {
-  const { page } = player
-  await page.getByRole('tab', { name: 'Precons' }).click()
-  await page.getByRole('searchbox', { name: 'Search precons' }).fill(deck.name)
-  const row = page.locator(`[data-deck-option="precon:${deck.code}"]`)
-  await expect(row).toBeVisible()
-  await expect(row).not.toContainText('Checking at this table')
-  await expect(row).not.toContainText('Cannot be taken')
-  await row.locator('button[aria-pressed]').first().click()
-  await expect(page.locator('[data-slot="deck-note"]')).toContainText('Your deck is now')
-}
-
-/**
- * Makes a Commander game as the first account on the create form (Commander is its default; invite only), has every
- * other account open the invite page with the code the host's lobby shows and join, and has every seat choose its
- * precon in the lobby's deck chooser. Returns the players in seat order, all in the lobby.
- */
-async function startTable(
-  browser: Browser,
-  accounts: readonly Account[],
-  decks: readonly PreconListItem[],
-): Promise<Player[]> {
-  const [first, ...others] = accounts
-  const firstDeck = decks[0]
-  if (first === undefined || firstDeck === undefined) throw new Error('a table needs a seat')
-  const host = await sit(browser, first)
-  await host.page.goto('/new')
-  await expect(host.page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
-  await expect(host.page.getByRole('radio', { name: /^Commander/ })).toBeChecked()
-  await host.page.getByLabel('Seats').fill(String(accounts.length))
-  await host.page.getByText('Invite only', { exact: true }).click()
-  await expect(host.page.getByRole('radio', { name: 'Invite only' })).toBeChecked()
-  await host.page.getByRole('button', { name: 'Create game' }).click()
-  await expect(host.page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
-  const code = (await host.page.locator('[data-slot="invite-code"]').textContent())?.trim() ?? ''
-  expect(code).not.toBe('')
-  await chooseTablePrecon(host, firstDeck)
-
-  const players = [host]
-  for (const [index, account] of others.entries()) {
-    const player = await sit(browser, account)
-    await player.page.goto(`/join/${code}`)
-    // A signed-in account is not asked for a name: the seat is named after the account.
-    await expect(player.page.getByLabel('Your name')).toHaveCount(0)
-    await player.page.getByRole('button', { name: 'Join game' }).click()
-    await expect(player.page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
-    const deck = decks[index + 1]
-    if (deck === undefined) throw new Error(`no precon for seat ${index + 2}`)
-    await chooseTablePrecon(player, deck)
-    players.push(player)
-  }
-  return players
-}
-
-/** The turn number of a banner such as "Ada's turn · 5 · End step". */
-const turnOf = (banner: string): number => Number(/ · (\d+) · /.exec(banner)?.[1] ?? 0)
-
-/** Takes a milestone screenshot; the name has the number of shots so far, so the files list in the order they were taken. */
-class Shots {
-  private count = 0
-  private readonly seen = new Set<string>()
-  private readonly dir: string | undefined
-
-  constructor(dir: string | undefined, table: string) {
-    this.dir = dir === undefined ? undefined : join(dir, table)
-    if (this.dir !== undefined) mkdirSync(this.dir, { recursive: true })
-  }
-
-  /** Shoots `player`'s page once for each `key`. */
-  async once(player: Player, key: string, label: string): Promise<void> {
-    if (this.dir === undefined || this.seen.has(key)) return
-    this.seen.add(key)
-    this.count += 1
-    const file = `${String(this.count).padStart(2, '0')}-${player.name.split('_')[0]}-${label}.png`
-    await player.page.screenshot({ path: join(this.dir, file) })
-  }
-}
 
 interface Played {
   run: Run
@@ -210,21 +63,6 @@ async function playTurns(
 /** Counts the trail lines of a seat that start with a verb ("plays Forest", "casts Sol Ring"). */
 const count = (run: Run, who: string, verb: string): number =>
   run.trail.filter((line) => line.includes(` ${who} `) && new RegExp(`#\\d+ ${verb} `).test(line)).length
-
-async function attachFailure(testInfo: TestInfo, run: Run, players: readonly Player[]): Promise<void> {
-  await testInfo.attach('trail.txt', { body: run.trail.join('\n') || '(no decision was answered)' })
-  for (const { name, page } of players) {
-    const png = await page.screenshot()
-    await testInfo.attach(`${name}.png`, { body: png, contentType: 'image/png' })
-    // The page's words say what a screenshot may hide (a prompt cut off, a seat waiting on a decision).
-    await testInfo.attach(`${name}.txt`, { body: await page.locator('body').innerText() })
-    if (SHOTS_DIR !== undefined) {
-      mkdirSync(SHOTS_DIR, { recursive: true })
-      writeFileSync(join(SHOTS_DIR, `failure-${name}.png`), png)
-      writeFileSync(join(SHOTS_DIR, `failure-${name}.txt`), await page.locator('body').innerText())
-    }
-  }
-}
 
 test.describe('real precon decks', () => {
   // A failed test restarts the worker and its beforeAll would register four more accounts (ten an address in 15 minutes).

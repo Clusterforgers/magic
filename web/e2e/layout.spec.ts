@@ -2,7 +2,7 @@
 import { expect, test } from '@playwright/test'
 import type { APIRequestContext, BrowserContext, Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
-import { measure, problemsOf, TEXT_FLOOR, THEMES } from './layoutAudit'
+import { measure, problemsOf, TABLE_EXEMPT, TEXT_FLOOR, THEMES } from './layoutAudit'
 import type { Ask } from './layoutAudit'
 import { expectTheme, holdsAtEverySize, showPane, themedContext } from './layoutGate'
 import type { Rules } from './layoutGate'
@@ -15,18 +15,6 @@ interface Stop extends Rules {
   /** Opens the page in the context and waits until it is drawn. */
   open(page: Page, context: BrowserContext): Promise<void>
 }
-
-/**
- * What the table scrolls or clips on purpose: the art of a card is a picture of a card, and the strip of opponents, the
- * chips of the stack and the hand scroll inside their own box where the width is short (docs/ui-design.md, Table
- * layout).
- */
-const TABLE_EXEMPT = [
-  '[data-slot="card-face"]',
-  '[data-slot="tile-strip"]',
-  '[data-slot="stack-chips"] ol',
-  '[data-slot="hand-fan"]',
-]
 
 const unique = (prefix: string): string => `${prefix}${Math.random().toString(36).slice(2, 7)}`
 
