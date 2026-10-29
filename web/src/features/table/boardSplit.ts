@@ -17,9 +17,18 @@ export interface BoardCounts {
 /** The closed stacks of a seat's lanes, one box each, as the board draws them before any stack opens. */
 export function seatCounts(state: PlayState, seat: PlayerId, grouped = true): LaneCounts {
   const { plain } = battlefieldStacks(state, seat, grouped)
-  const counts: LaneCounts = { lands: plain.lands.length, creatures: plain.creatures.length, other: plain.other.length }
-  const deepest = (row: readonly StackIds[]): number => Math.max(0, ...row.map((stack) => stack.tucked?.length ?? 0))
-  const tucked = { lands: deepest(plain.lands), creatures: deepest(plain.creatures), other: deepest(plain.other) }
+  const counts: LaneCounts = {
+    lands: plain.lands.length,
+    creatures: plain.creatures.length,
+    other: plain.other.length,
+  }
+  const deepest = (row: readonly StackIds[]): number =>
+    Math.max(0, ...row.map((stack) => stack.tucked?.length ?? 0))
+  const tucked = {
+    lands: deepest(plain.lands),
+    creatures: deepest(plain.creatures),
+    other: deepest(plain.other),
+  }
   return tucked.lands + tucked.creatures + tucked.other === 0 ? counts : { ...counts, tucked }
 }
 

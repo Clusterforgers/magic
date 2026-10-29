@@ -149,7 +149,10 @@ export function battlefieldStacks(state: PlayState, seat: PlayerId, grouped = tr
 
 /** Every permanent of the rows, row after row, each host followed by the attachments tucked behind it. */
 export function idsOfRows(rows: RowStacks): ObjectId[] {
-  return [...rows.creatures, ...rows.other, ...rows.lands].flatMap((stack) => [...stack.ids, ...(stack.tucked ?? [])])
+  return [...rows.creatures, ...rows.other, ...rows.lands].flatMap((stack) => [
+    ...stack.ids,
+    ...(stack.tucked ?? []),
+  ])
 }
 
 /** The key of the stack that holds `id`, if any. */
@@ -205,7 +208,8 @@ export function depthOf(entries: readonly RowEntry[]): number {
 }
 
 const sameIds = (a: readonly ObjectId[] | undefined, b: readonly ObjectId[] | undefined): boolean =>
-  a === b || (a !== undefined && b !== undefined && a.length === b.length && a.every((id, at) => id === b[at]))
+  a === b ||
+  (a !== undefined && b !== undefined && a.length === b.length && a.every((id, at) => id === b[at]))
 
 /** Whether two rows draw the same stacks in the same state; keys are no part of it, ids and openness are. */
 export function sameEntries(a: readonly RowEntry[], b: readonly RowEntry[]): boolean {
@@ -260,8 +264,16 @@ function entriesOfRows(
 
 /** The boxes of each lane (one for each stack and one for each member of an open one) and its deepest tuck. */
 export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>): LaneCounts {
-  const counts: LaneCounts = { creatures: boxesOf(rows.creatures), other: boxesOf(rows.other), lands: boxesOf(rows.lands) }
-  const tucked = { creatures: depthOf(rows.creatures), other: depthOf(rows.other), lands: depthOf(rows.lands) }
+  const counts: LaneCounts = {
+    creatures: boxesOf(rows.creatures),
+    other: boxesOf(rows.other),
+    lands: boxesOf(rows.lands),
+  }
+  const tucked = {
+    creatures: depthOf(rows.creatures),
+    other: depthOf(rows.other),
+    lands: depthOf(rows.lands),
+  }
   return tucked.creatures + tucked.other + tucked.lands === 0 ? counts : { ...counts, tucked }
 }
 

@@ -8,7 +8,13 @@ import { rowOf } from '../cardModel'
 import type { Fixture } from './fixture'
 
 /** The attachments of the scene's main host, deepest first as the table tucks them. */
-export const EQUIP_STACK = ['Ethereal Armor', 'Rancor', 'Spider Umbra', 'Bonesplitter', 'Lightning Greaves'] as const
+export const EQUIP_STACK = [
+  'Ethereal Armor',
+  'Rancor',
+  'Spider Umbra',
+  'Bonesplitter',
+  'Lightning Greaves',
+] as const
 
 interface Piece {
   name: string
@@ -65,9 +71,12 @@ export function withEquip(fixture: Fixture): Fixture {
       { name: 'Lightning Greaves', subtype: 'Equipment', controller: viewer, host: main.id },
     )
   }
-  if (second !== undefined) pieces.push({ name: 'Short Sword', subtype: 'Equipment', controller: viewer, host: second.id })
-  if (third !== undefined) pieces.push({ name: 'Pacifism', subtype: 'Aura', controller: rival, host: third.id })
-  if (theirs !== undefined) pieces.push({ name: 'Eel Umbra', subtype: 'Aura', controller: viewer, host: theirs.id })
+  if (second !== undefined)
+    pieces.push({ name: 'Short Sword', subtype: 'Equipment', controller: viewer, host: second.id })
+  if (third !== undefined)
+    pieces.push({ name: 'Pacifism', subtype: 'Aura', controller: rival, host: third.id })
+  if (theirs !== undefined)
+    pieces.push({ name: 'Eel Umbra', subtype: 'Aura', controller: viewer, host: theirs.id })
   pieces.push(
     { name: 'Sword of Fire and Ice', subtype: 'Equipment', controller: viewer },
     { name: 'Curse of Opulence', subtype: 'Aura', controller: viewer, player: rival, curse: true },
@@ -81,7 +90,9 @@ export function withEquip(fixture: Fixture): Fixture {
   }
   const hosts = fixture.view.objects.map((object) => {
     const extra = attachments.get(object.id)
-    return extra === undefined ? object : { ...object, attachments: [...(object.attachments ?? []), ...extra] }
+    return extra === undefined
+      ? object
+      : { ...object, attachments: [...(object.attachments ?? []), ...extra] }
   })
   const battlefield = [...(fixture.view.battlefield.cards ?? []), ...added.map((object) => object.id)]
   return {

@@ -10,7 +10,7 @@ const parse = (key: string): LaneCounts => {
   const [lands = 0, creatures = 0, other = 0, tuckedLands = 0, tuckedCreatures = 0, tuckedOther = 0] = key
     .split(',')
     .map(Number)
-    const counts: LaneCounts = { lands, creatures, other }
+  const counts: LaneCounts = { lands, creatures, other }
   if (tuckedLands + tuckedCreatures + tuckedOther === 0) return counts
   return { ...counts, tucked: { lands: tuckedLands, creatures: tuckedCreatures, other: tuckedOther } }
 }

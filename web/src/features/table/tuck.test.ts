@@ -15,12 +15,22 @@ const base = fixtureState(buildFixture({ seats: 2 }))
 
 const state = (objects: readonly ObjectView[]): PlayState => ({
   ...base,
-  view: { ...must(base.view), objects: [...objects], battlefield: { count: objects.length, cards: objects.map((o) => o.id) } },
+  view: {
+    ...must(base.view),
+    objects: [...objects],
+    battlefield: { count: objects.length, cards: objects.map((o) => o.id) },
+  },
   objectsById: indexById(objects),
 })
 
 const creature = (id: number, attachments: number[] = [], controller = 1): ObjectView =>
-  card({ id, name: `Bear ${id}`, controller, owner: controller, ...(attachments.length > 0 ? { attachments } : {}) })
+  card({
+    id,
+    name: `Bear ${id}`,
+    controller,
+    owner: controller,
+    ...(attachments.length > 0 ? { attachments } : {}),
+  })
 const attachment = (id: number, subtype: string, to: number, controller = 1): ObjectView =>
   card({
     id,
@@ -50,12 +60,15 @@ describe('tuckOf', () => {
     expect(tuckOf(height, depth)).toBe(each)
   })
 
-  it.each([60, 100, 140, 210, 314])('never lets five or fewer attachments take more than the share of a %i px card', (height) => {
-    for (let depth = 1; depth <= 5; depth += 1) {
-      const each = tuckOf(height, depth)
-      expect(each * depth <= height * TUCK_MAX_SHARE || each === TUCK_MIN_PX).toBe(true)
-    }
-  })
+  it.each([60, 100, 140, 210, 314])(
+    'never lets five or fewer attachments take more than the share of a %i px card',
+    (height) => {
+      for (let depth = 1; depth <= 5; depth += 1) {
+        const each = tuckOf(height, depth)
+        expect(each * depth <= height * TUCK_MAX_SHARE || each === TUCK_MIN_PX).toBe(true)
+      }
+    },
+  )
 })
 
 describe('the tuck of a seat', () => {
@@ -64,16 +77,16 @@ describe('the tuck of a seat', () => {
     ['an Equipment', [creature(1, [2]), attachment(2, 'Equipment', 1)], 1, [2]],
     [
       'Equipment before Auras in id order are tucked Auras first',
-      [creature(1, [2, 3, 4]), attachment(2, 'Equipment', 1), attachment(3, 'Aura', 1), attachment(4, 'Aura', 1)],
+      [
+        creature(1, [2, 3, 4]),
+        attachment(2, 'Equipment', 1),
+        attachment(3, 'Aura', 1),
+        attachment(4, 'Aura', 1),
+      ],
       1,
       [3, 4, 2],
     ],
-    [
-      'an Aura of another seat',
-      [creature(1, [2]), attachment(2, 'Aura', 1, 0)],
-      1,
-      [2],
-    ],
+    ['an Aura of another seat', [creature(1, [2]), attachment(2, 'Aura', 1, 0)], 1, [2]],
     ['an unattached Equipment', [creature(1), attachment(2, 'Equipment', 99)], 1, []],
   ])('%s', (_label, objects, drawn, tucked) => {
     const stacks = battlefieldStacks(state(objects), 1).plain
@@ -82,10 +95,15 @@ describe('the tuck of a seat', () => {
     expect(idsOfRows(stacks)).toEqual(expect.arrayContaining([1, ...tucked]))
   })
 
-  it('takes a foreign attachment out of its controller\'s lanes', () => {
+  it("takes a foreign attachment out of its controller's lanes", () => {
     const play = state([creature(1, [2]), attachment(2, 'Aura', 1, 0)])
     expect(idsOfRows(battlefieldStacks(play, 0).plain)).toEqual([])
-    expect(seatCounts(play, 1)).toEqual({ lands: 0, creatures: 1, other: 0, tucked: { lands: 0, creatures: 1, other: 0 } })
+    expect(seatCounts(play, 1)).toEqual({
+      lands: 0,
+      creatures: 1,
+      other: 0,
+      tucked: { lands: 0, creatures: 1, other: 0 },
+    })
   })
 
   it('keeps an unattached Equipment in the other lane, without a tuck', () => {
@@ -94,8 +112,19 @@ describe('the tuck of a seat', () => {
   })
 
   it('lets the arrow keys reach the attachments after their host', () => {
-    const play = state([creature(1, [2, 3]), attachment(2, 'Equipment', 1), attachment(3, 'Aura', 1), creature(4)])
-    const layout = layoutSeat({ box: null, stacks: battlefieldStacks(play, 1), facing: 'near', opened: new Set(), marked: new Set() })
+    const play = state([
+      creature(1, [2, 3]),
+      attachment(2, 'Equipment', 1),
+      attachment(3, 'Aura', 1),
+      creature(4),
+    ])
+    const layout = layoutSeat({
+      box: null,
+      stacks: battlefieldStacks(play, 1),
+      facing: 'near',
+      opened: new Set(),
+      marked: new Set(),
+    })
     expect(visibleIds(layout.rows.creatures)).toEqual([1, 3, 2, 4])
     expect(laneCounts(layout.rows).tucked).toEqual({ creatures: 2, other: 0, lands: 0 })
   })
@@ -116,14 +145,17 @@ describe('the fit of a lane with a tuck', () => {
 
   it('needs more height for the same cards once a host carries attachments', () => {
     const counts = { lands: 6, creatures: 8, other: 3 }
-    expect(laneHeight(1000, { ...counts, tucked: { creatures: 3 } }, 120)).toBeGreaterThan(laneHeight(1000, counts, 120))
+    expect(laneHeight(1000, { ...counts, tucked: { creatures: 3 } }, 120)).toBeGreaterThan(
+      laneHeight(1000, counts, 120),
+    )
   })
 
   it('does not fan a lands lane with a tuck', () => {
     const narrow = { width: 700, height: 400 }
     const fanned = fitLanes(narrow, { lands: 12, creatures: 2, other: 0 }, 'near')
     const tucked = fitLanes(narrow, { lands: 12, creatures: 2, other: 0, tucked: { lands: 1 } }, 'near')
-    const pileOf = (fit: typeof fanned) => fit.bands.flatMap((band) => band.lanes).find((place) => place.lane === 'lands')?.pile
+    const pileOf = (fit: typeof fanned) =>
+      fit.bands.flatMap((band) => band.lanes).find((place) => place.lane === 'lands')?.pile
     expect(pileOf(fanned)).toBeGreaterThan(1)
     expect(pileOf(tucked)).toBe(1)
   })

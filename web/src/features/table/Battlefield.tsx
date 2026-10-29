@@ -62,7 +62,21 @@ interface LaneProps {
 
 /** One lane of a seat's permanents; it redraws only when its stacks, their state or its sizes change. */
 const Lane = memo(
-  function Lane({ seat, lane, label, size, entries, onToggle, width, height, span, pile, head, tuck, lift }: LaneProps) {
+  function Lane({
+    seat,
+    lane,
+    label,
+    size,
+    entries,
+    onToggle,
+    width,
+    height,
+    span,
+    pile,
+    head,
+    tuck,
+    lift,
+  }: LaneProps) {
     const ghosts = useGhosts(seat, lane)
     const ids = useMemo(() => visibleIds(entries), [entries])
     const box = useMemo<CardBox | undefined>(

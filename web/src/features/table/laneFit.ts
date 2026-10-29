@@ -185,7 +185,9 @@ function placeBand(
   const most = Math.max(...full.map((lane) => counts[lane]))
   let best: BandPlace | null = null
   for (let lines = 1; lines <= most && best === null; lines += 1) {
-    const placed = full.map((lane) => placeLane(lane, counts[lane], cardWidth, lines, limits, depthOf(counts, lane)))
+    const placed = full.map((lane) =>
+      placeLane(lane, counts[lane], cardWidth, lines, limits, depthOf(counts, lane)),
+    )
     if (spanOf(placed, limits.laneGap) <= boxWidth) best = bandOf(placed)
   }
   // A land with an attachment tucked behind it stands on its own: the lands lane is not fanned then.
@@ -339,7 +341,9 @@ export function fitLanes(
   const bands = placeShape('three', counts, minWidth, Number.MAX_SAFE_INTEGER, limits, 'near') ?? []
   const narrow = bands.map((band) =>
     bandOf(
-      band.lanes.map((lane) => placeLane(lane.lane, lane.boxes, minWidth, lane.boxes, limits, depthOf(counts, lane.lane))),
+      band.lanes.map((lane) =>
+        placeLane(lane.lane, lane.boxes, minWidth, lane.boxes, limits, depthOf(counts, lane.lane)),
+      ),
     ),
   )
   const height = heightOf(narrow, limits.bandGap)

@@ -75,7 +75,8 @@ function tuckedById(stacks: readonly RowEntry[] | undefined): ReadonlyMap<Object
   const byId = new Map<ObjectId, readonly ObjectId[]>()
   for (const entry of stacks ?? []) {
     const host = entry.ids[0]
-    if (entry.tucked !== undefined && entry.tucked.length > 0 && host !== undefined) byId.set(host, entry.tucked)
+    if (entry.tucked !== undefined && entry.tucked.length > 0 && host !== undefined)
+      byId.set(host, entry.tucked)
   }
   return byId
 }
@@ -241,12 +242,22 @@ export function CardRow({
               style={lifted === undefined ? undefined : { paddingTop: lifted.lift }}
             >
               {lifted !== undefined && behindHost !== undefined ? (
-                <TuckedCards ids={behindHost} size={size} each={lifted.each} lift={lifted.lift} current={roving.current} />
+                <TuckedCards
+                  ids={behindHost}
+                  size={size}
+                  each={lifted.each}
+                  lift={lifted.lift}
+                  current={roving.current}
+                />
               ) : null}
               {behindHost === undefined ? (
                 <Card id={item} size={size} fit={fit} tabbable={tabbable} />
               ) : (
-                <div data-host={item} className="relative flex rounded-md bg-lane" style={{ zIndex: behindHost.length }}>
+                <div
+                  data-host={item}
+                  className="relative flex rounded-md bg-lane"
+                  style={{ zIndex: behindHost.length }}
+                >
                   <Card id={item} size={size} fit={fit} tabbable={tabbable} />
                 </div>
               )}

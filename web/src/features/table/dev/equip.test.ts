@@ -37,12 +37,16 @@ describe('the attachments scene', () => {
     const drawn = new Set(idsOfRows(stacks))
     const names = [...drawn].map((id) => byId.get(id)?.name)
     // The rival's Pacifism lies at the viewer's creature; the viewer's Eel Umbra at the rival's.
-    expect(names).toEqual(expect.arrayContaining(['Sword of Fire and Ice', 'Curse of Opulence', 'Short Sword', 'Pacifism']))
+    expect(names).toEqual(
+      expect.arrayContaining(['Sword of Fire and Ice', 'Curse of Opulence', 'Short Sword', 'Pacifism']),
+    )
     expect(names).not.toContain('Eel Umbra')
     const rival = must(scene.view.players.find((player) => player.seat !== viewer)).seat
     const theirs = idsOfRows(battlefieldStacks(state, rival, false).plain).map((id) => byId.get(id)?.name)
     expect(theirs).toContain('Eel Umbra')
-    const pacifism = Math.max(...scene.view.objects.filter((object) => object.name === 'Pacifism').map((object) => object.id))
+    const pacifism = Math.max(
+      ...scene.view.objects.filter((object) => object.name === 'Pacifism').map((object) => object.id),
+    )
     expect(idsOfRows(battlefieldStacks(state, rival, false).plain)).not.toContain(pacifism)
   })
 })
