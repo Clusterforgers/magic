@@ -91,6 +91,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Statics of the rules: cards in graveyards that can't be targeted, players who can't lose or win, opponents who can't cast on your turn, combat damage by toughness and counters that remain as a card changes zones.
 - Popularity coverage: `mtg-cli coverage --all` ranks the blockers of every Commander-legal card by the EDHREC rank of the cards they hold back, shows the Verified share by rank bucket and lists the cards of the top 2,000 that are not Verified (`docs/data-sources.md`).
 - Card identity in views: `ObjectView.identity` names the oracle id of a card the viewer identifies, set by the server on every card it reads.
+- Card images: the server serves the picture of a card, printing or token from a disk cache that fills from the Scryfall CDN under the politeness rules, and warms the pictures of a starting game in the background (`docs/server.md`, Pictures).
 
 ## M3 Card system
 
@@ -143,7 +144,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
-- [~] (a1) (a1-card-images) Card images: the server serves the normal and art-crop image of a card identity (printing, face, token) from a disk cache filled from the Scryfall CDN, and the text face stands in while an image loads or does not exist (`docs/server.md`, `docs/data-sources.md`)
 - [~] (a2) (a2-card-images-web) The table, hand, stack, preview, deck builder and lobby draw the real card image, unaltered as Scryfall's image terms require, with tapped state, counters, attachments, loyalty and support marks over it, with `/dev/table` screenshots at six sizes in both themes (`docs/web.md`)
 - [ ] (k1) Commander at the table: each commander in the command zone with its cast count and tax, casting it from there with the tax in the cast options, the choice to return it to the command zone, and commander damage on every pod with the lethal amount, with `/dev/table` screenshots of a four-seat game at six sizes in both themes
 - [ ] (k2) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)

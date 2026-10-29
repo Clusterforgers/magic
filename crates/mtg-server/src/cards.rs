@@ -24,6 +24,7 @@ use thiserror::Error;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
+use crate::images::{Images, Warmer};
 use crate::precons::{PreconCache, PreconError, PreconIndex};
 use crate::recipe::{Catalog, GameRecipe};
 
@@ -148,6 +149,7 @@ pub struct CardSource {
     names: Arc<NameIndex>,
     precons: Arc<PreconCache>,
     stored: Arc<StoredRules>,
+    images: Option<Images>,
 }
 
 /// The library of the hand-written rules and the rows of `card_rules`, built when the rows change.
@@ -174,7 +176,26 @@ impl CardSource {
             names: Arc::default(),
             precons: Arc::default(),
             stored: Arc::default(),
+            images: None,
         }
+    }
+
+    /// The same source with the picture cache the card pictures are served from and warmed into.
+    #[must_use]
+    pub fn with_images(mut self, images: Images) -> CardSource {
+        self.images = Some(images);
+        self
+    }
+
+    /// The picture cache; none until [`CardSource::with_images`] or [`crate::Server::open_with`] gives one.
+    pub fn images(&self) -> Option<&Images> {
+        self.images.as_ref()
+    }
+
+    /// What starts the fetching of a game's pictures, if the source has a picture cache.
+    pub(crate) fn warmer(&self) -> Option<Warmer> {
+        let images = self.images.clone()?;
+        Some(Warmer::new(images, self.db.cards()))
     }
 
     /// The same source with other hand-written rules than the embedded ones (tests); the stored

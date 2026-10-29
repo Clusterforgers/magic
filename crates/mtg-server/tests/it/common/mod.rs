@@ -2,6 +2,7 @@
 #![allow(dead_code, unused_imports, clippy::unwrap_used, clippy::expect_used)]
 
 pub mod bot;
+pub mod cdn;
 pub mod logs;
 pub mod store;
 pub mod tape;

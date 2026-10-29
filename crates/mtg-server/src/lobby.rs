@@ -274,6 +274,19 @@ impl<S: EventStore> GameActor<S> {
         )
     }
 
+    /// Starts fetching the pictures of the cards the seats play, in the background.
+    fn warm_images(&self) {
+        let Some(recorder) = &self.recorder else {
+            return;
+        };
+        let chosen = self
+            .decks
+            .as_ref()
+            .and_then(SeatDecks::recipe)
+            .map(|recipe| recipe.oracle_ids());
+        recorder.warm_images(chosen);
+    }
+
     /// Creates the engine, persists its opening events and shows them from seq 0 like any other batch.
     ///
     /// If anything fails the lobby stays as it was, so a repeated `Ready` retries.
@@ -316,6 +329,7 @@ impl<S: EventStore> GameActor<S> {
                 if let Some(recorder) = &self.recorder {
                     recorder.started().await;
                 }
+                self.warm_images();
                 self.announce(batches, Vec::new(), if idle { None } else { first });
                 if idle {
                     return self.start_up().await;
