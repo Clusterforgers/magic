@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fa08400f-b7ca-4c5c-b7ca-a6583b783878",
+  "name": "Survivor's Med Kit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Survivor's Med Kit",
+      "oracle_fingerprint": "7fde0befba7a99342f6f6e5db8772399",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    { "label": "Stimpak", "effects": [{ "Draw": {} }] },
+                    {
+                      "label": "Fancy Lads Snack Cakes",
+                      "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+                    },
+                    {
+                      "label": "RadAway",
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Target": 0 },
+                            "counter": { "Other": "rad" },
+                            "count": {
+                              "Counters": { "on": { "Target": 0 }, "counter": { "Other": "rad" } }
+                            }
+                          }
+                        },
+                        { "Sacrifice": { "filter": ["This"] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

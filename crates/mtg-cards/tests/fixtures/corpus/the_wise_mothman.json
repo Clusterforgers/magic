@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "cfb80c75-4b1b-4f25-923a-933855e7345c",
+  "oracle_id": "7656f93b-336f-49cb-b8fe-c2b5c014258f",
+  "multiverse_ids": [],
+  "tcgplayer_id": 674654,
+  "cardmarket_id": 868474,
+  "name": "The Wise Mothman",
+  "lang": "en",
+  "released_at": "2026-01-26",
+  "uri": "https://api.scryfall.com/cards/cfb80c75-4b1b-4f25-923a-933855e7345c",
+  "scryfall_uri": "https://scryfall.com/card/sld/2455/the-wise-mothman?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:57:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.jpg?1783904269",
+    "normal": "https://cards.scryfall.io/normal/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.jpg?1783904269",
+    "large": "https://cards.scryfall.io/large/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.jpg?1783904269",
+    "png": "https://cards.scryfall.io/png/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.png?1783904269",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.jpg?1783904269",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.jpg?1783904269",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.webp?1783904269",
+    "grid": "https://cards.scryfall.io/grid/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.webp?1783904269",
+    "display": "https://cards.scryfall.io/display/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.webp?1783904269",
+    "art": "https://cards.scryfall.io/art/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.webp?1783904269",
+    "crop": "https://cards.scryfall.io/crop/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.webp?1783904269",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/f/cfb80c75-4b1b-4f25-923a-933855e7345c.jpg?1783904269"
+  },
+  "mana_cost": "{1}{B}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Insect Mutant",
+  "oracle_text": "Flying\nWhenever The Wise Mothman enters or attacks, each player gets a rad counter.\nWhenever one or more nonland cards are milled, put a +1/+1 counter on each of up to X target creatures, where X is the number of nonland cards milled this way.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "cfb80c75-4b1b-4f25-923a-933855e7345c",
+      "component": "combo_piece",
+      "name": "The Wise Mothman",
+      "type_line": "Legendary Creature — Insect Mutant",
+      "uri": "https://api.scryfall.com/cards/cfb80c75-4b1b-4f25-923a-933855e7345c"
+    },
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set": "sld",
+  "set_name": "Secret Lair Drop",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cfb80c75-4b1b-4f25-923a-933855e7345c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7656f93b-336f-49cb-b8fe-c2b5c014258f&unique=prints",
+  "collector_number": "2455",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Seaman",
+  "artist_ids": [
+    "b9c49463-6f55-4039-9d32-c02a658af100"
+  ],
+  "illustration_id": "01934301-40d7-49b4-8d62-e7b858ced1a7",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3734,
+  "prices": {
+    "usd": "12.59",
+    "usd_foil": "13.36",
+    "usd_etched": null,
+    "eur": "10.70",
+    "eur_foil": "11.89",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BWise%2BMothman",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BWise%2BMothman",
+    "edhrec": "https://edhrec.com/route/?cc=The+Wise+Mothman"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F674654%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=868474&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Wise+Mothman&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

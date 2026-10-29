@@ -1,0 +1,165 @@
+{
+  "object": "card",
+  "id": "967dbb24-3073-4c33-bfdf-b3eb9e8fe443",
+  "oracle_id": "ed5889c9-e524-40c1-9011-7559a992bb1b",
+  "multiverse_ids": [
+    652136
+  ],
+  "mtgo_id": 132347,
+  "tcgplayer_id": 540804,
+  "cardmarket_id": 758517,
+  "name": "Screeching Scorchbeast",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/967dbb24-3073-4c33-bfdf-b3eb9e8fe443",
+  "scryfall_uri": "https://scryfall.com/card/pip/49/screeching-scorchbeast?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.jpg?1783912407",
+    "normal": "https://cards.scryfall.io/normal/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.jpg?1783912407",
+    "large": "https://cards.scryfall.io/large/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.jpg?1783912407",
+    "png": "https://cards.scryfall.io/png/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.png?1783912407",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.jpg?1783912407",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.jpg?1783912407",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.webp?1783912407",
+    "grid": "https://cards.scryfall.io/grid/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.webp?1783912407",
+    "display": "https://cards.scryfall.io/display/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.webp?1783912407",
+    "art": "https://cards.scryfall.io/art/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.webp?1783912407",
+    "crop": "https://cards.scryfall.io/crop/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.webp?1783912407",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/6/967dbb24-3073-4c33-bfdf-b3eb9e8fe443.jpg?1783912407"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Bat Mutant",
+  "oracle_text": "Flying, menace\nWhenever this creature attacks, each player gets two rad counters.\nWhenever one or more nonland cards are milled, you may create that many 2/2 black Zombie Mutant creature tokens. Do this only once each turn.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Menace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0886657d-afb0-4f1f-9af7-960724793077",
+      "component": "combo_piece",
+      "name": "Radiation",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/0886657d-afb0-4f1f-9af7-960724793077"
+    },
+    {
+      "object": "related_card",
+      "id": "ba45bc9c-8257-43f8-9ba1-116b9fea90f4",
+      "component": "token",
+      "name": "Zombie Mutant",
+      "type_line": "Token Creature — Zombie Mutant",
+      "uri": "https://api.scryfall.com/cards/ba45bc9c-8257-43f8-9ba1-116b9fea90f4"
+    },
+    {
+      "object": "related_card",
+      "id": "d1bcd152-b1ba-4c49-8ad9-c71f31218ba8",
+      "component": "combo_piece",
+      "name": "Screeching Scorchbeast",
+      "type_line": "Creature — Bat Mutant",
+      "uri": "https://api.scryfall.com/cards/d1bcd152-b1ba-4c49-8ad9-c71f31218ba8"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/967dbb24-3073-4c33-bfdf-b3eb9e8fe443/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed5889c9-e524-40c1-9011-7559a992bb1b&unique=prints",
+  "collector_number": "49",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nino Is",
+  "artist_ids": [
+    "ae717001-28ec-46e3-a07e-f16b6deaf9e2"
+  ],
+  "illustration_id": "7d7cdf69-8a5f-435e-92a3-f014a9b2d658",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4282,
+  "prices": {
+    "usd": "1.82",
+    "usd_foil": "3.42",
+    "usd_etched": null,
+    "eur": "1.00",
+    "eur_foil": "1.08",
+    "tix": "0.60"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652136&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DScreeching%2BScorchbeast",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DScreeching%2BScorchbeast",
+    "edhrec": "https://edhrec.com/route/?cc=Screeching+Scorchbeast"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F540804%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758517&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132347?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

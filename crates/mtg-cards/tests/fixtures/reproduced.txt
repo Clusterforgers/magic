@@ -744,6 +744,7 @@ Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
 Kalemne's Captain
+Kalemne, Disciple of Iroas
 Kalonian Hydra
 Kang, Temporal Tyrant
 Karador, Ghost Chieftain
@@ -798,6 +799,7 @@ Lazotep Reaver
 Leafkin Druid
 Legion Loyalty
 Legolas Greenleaf
+Leonardo, the Balance
 Levitation
 Leyline Binding
 Lhurgoyf
@@ -858,6 +860,7 @@ Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
+Mariposa Military Base
 Maro
 Marwyn, the Nurturer
 Mask of Griselbrand
@@ -962,6 +965,7 @@ Norn's Annex
 Norwood Riders
 Notion Rain
 Novijen, Heart of Progress
+Nykthos Paragon
 Nylea's Colossus
 Nyxborn Behemoth
 O'aka, Traveling Merchant
@@ -1197,6 +1201,7 @@ Scheming Aspirant
 Scorn-Blade Berserker
 Scrabbling Claws
 Scrapshooter
+Screeching Scorchbeast
 Scuzzback Marauders
 Scytheclaw
 Sea Gate
@@ -1376,6 +1381,7 @@ Supreme Verdict
 Surgehacker Mech
 Surrak Dragonclaw
 Surreal Memoir
+Survivor's Med Kit
 Susurian Dirgecraft
 Suture Priest
 Swarm Intelligence
@@ -1395,6 +1401,7 @@ Tainted Isle
 Tamiyo's Logbook
 Tangle Tumbler
 Tanuki Transplanter
+Tato Farmer
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Tavern Scoundrel
@@ -1433,6 +1440,7 @@ The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
 The Warring Triad
+The Wise Mothman
 Thelonite Hermit
 Thieving Magpie
 Thieving Varmint
@@ -1618,6 +1626,7 @@ Wyrm's Crossing Patrol
 Young Wolf
 Zanikev Locust
 Zealous Conscripts
+Zellix, Sanity Flayer
 Zendikar Farguide
 Zendikar Resurgent
 Zhang Fei, Fierce Warrior

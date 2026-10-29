@@ -1,0 +1,37 @@
+{
+  "oracle_id": "7656f93b-336f-49cb-b8fe-c2b5c014258f",
+  "name": "The Wise Mothman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wise Mothman",
+      "oracle_fingerprint": "e9a2f8288cdb7e4a39462eb9a045c17d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "EachPlayer", "counter": { "Other": "rad" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Milled": { "what": [{ "Not": { "Type": "Land" } }] } } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": "Triggering" }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "71b5a3b4-31bb-44d8-a80c-36efff2a621e",
+  "name": "Tato Farmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tato Farmer",
+      "oracle_fingerprint": "85fa6a70352d29b30b558bed03f57148",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": "You", "counter": { "Other": "rad" }, "count": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Land" }, { "In": "Graveyard" }, "MilledThisTurn"] }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

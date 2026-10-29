@@ -256,7 +256,7 @@ fn word_or_number(run: &str, opens: bool) -> Token {
     // A run of capitals ("AV Bead") is a name even where it opens a sentence.
     // So is a word with a capital inside it ("RadAway").
     let capitals = run.chars().all(|c| c.is_ascii_uppercase());
-    let inner = run.chars().skip(1).any(char::is_uppercase);
+    let inner = run.chars().all(char::is_alphabetic) && run.chars().skip(1).any(char::is_uppercase);
     if capital && (!opens || capitals || inner) && !cost_verb && run.chars().count() > 1 {
         return Token::Name(run.replace('\u{2019}', "'"));
     }
