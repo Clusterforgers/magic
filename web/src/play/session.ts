@@ -9,6 +9,7 @@ import type {
   Answer,
   DecisionId,
   FullControlMode,
+  ManualAction,
   ServerMessage,
   Step,
   StopSide,
@@ -46,6 +47,11 @@ export interface Session {
    * not the pending one, when the socket is not open and once the server has shown it does not know previews.
    */
   preview(decision: DecisionId, answer: Answer): boolean
+  /**
+   * Takes a manual action at any time, apart from any decision (`ClientMessage::Manual`); a refusal comes back as an
+   * `Error` and lands in the notice. False when the socket is not open.
+   */
+  manual(action: ManualAction): boolean
   /** Gives up the game. */
   concede(): boolean
   /**
@@ -369,6 +375,7 @@ export function createSession(deps: SessionDeps): Session {
       asked.push({ decision, key: previewKey(answer) })
       return true
     },
+    manual: (action) => socket.send({ type: 'Manual', action }),
     concede: () => socket.send({ type: 'Concede' }),
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),

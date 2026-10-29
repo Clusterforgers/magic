@@ -99,6 +99,28 @@ describe('the sentence of each manual action', () => {
     ['a discard', { Discard: { object: 1 } }, 'Bo discards Sol Ring (by hand)'],
     ['an attach', { Attach: { object: 3, to: 2 } }, 'Bo attaches Sword to Grizzly Bears (by hand)'],
     ['an unattach', { Unattach: { object: 3 } }, 'Bo takes Sword off what it is attached to (by hand)'],
+    [
+      'damage to a player',
+      { Damage: { source: 1, target: { Player: 0 }, amount: 2 } },
+      'Bo: Sol Ring deals 2 damage to Ana (by hand)',
+    ],
+    [
+      'damage to a creature',
+      { Damage: { source: 1, target: { Object: 2 }, amount: 3 } },
+      'Bo: Sol Ring deals 3 damage to Grizzly Bears (by hand)',
+    ],
+    ['mana added', { AddMana: { mana: 'Green', count: 2 } }, 'Bo adds {G}{G} (by hand)'],
+    ['colorless mana added', { AddMana: { mana: 'Colorless', count: 1 } }, 'Bo adds {C} (by hand)'],
+    [
+      'a pump',
+      { Pump: { object: 2, power: 2, toughness: 0 } },
+      'Bo gives Grizzly Bears +2/+0 until end of turn (by hand)',
+    ],
+    [
+      'a shrink',
+      { Pump: { object: 2, power: -1, toughness: -3 } },
+      'Bo gives Grizzly Bears -1/-3 until end of turn (by hand)',
+    ],
   ]
   it.each(sentences)('%s', (_name, what, text) => {
     const line = describeEvent(action(what), names)
@@ -211,6 +233,24 @@ describe('the events of the change', () => {
       'a discard',
       { Discard: { object: 1 } },
       [pub({ CardDiscarded: { player: 1, object: 1 } }), zone(1, { Hand: 1 }, { Graveyard: 1 })],
+    ],
+    [
+      'damage',
+      { Damage: { source: 1, target: { Player: 0 }, amount: 2 } },
+      [pub({ DamageDealt: { source: 1, target: { Player: 0 }, amount: 2 } })],
+    ],
+    [
+      'mana',
+      { AddMana: { mana: 'Red', count: 2 } },
+      [
+        pub({ ManaAdded: { player: 1, mana: 'Red', source: null } }),
+        pub({ ManaAdded: { player: 1, mana: 'Red', source: null } }),
+      ],
+    ],
+    [
+      'a pump',
+      { Pump: { object: 2, power: 1, toughness: 1 } },
+      [pub({ EffectCreated: { effect: {} } } as unknown as Event)],
     ],
   ] as [string, ManualAction, EventView[]][])('of %s fold into one line', (_name, what, change) => {
     expect(fold([action(what), ...change])).toHaveLength(1)

@@ -17,6 +17,7 @@ mod lobby;
 mod lobby_http;
 mod lobby_listing;
 mod lobby_roster;
+mod manual_message;
 mod manual_play;
 mod net;
 mod open_seats;

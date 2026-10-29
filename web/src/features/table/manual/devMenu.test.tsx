@@ -1,4 +1,4 @@
-// Goal: `?menu=` names the card the dev table opens its manual menu on, finds it among the fixture's cards, and the dev session answers a manual action by logging it and keeping priority.
+// Goal: `?menu=` names the card the dev table opens its manual menu on, finds it among the fixture's cards, and the dev session answers a manual action at any time by logging it and keeping the decision that waits.
 import { act, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { parseDevSearch } from '../devSearch'
@@ -78,19 +78,22 @@ describe('on the dev table', () => {
     expect(screen.getByRole('menu')).toBeInTheDocument()
   })
 
-  it('answers a manual action with a line in the log and keeps the priority decision', () => {
-    const game = fixtureGame({ seats: 2, holding: true })
-    const before = game.session.store.getState()
-    const logged = before.log.length
-    const sent = game.session.answer({ Priority: { Manual: { Draw: { count: 1 } } } })
-    const after = game.session.store.getState()
-    expect(sent).toBe(true)
-    expect(after.pending?.id).toBe(before.pending?.id)
-    expect(after.log).toHaveLength(logged + 1)
-    expect(after.log.at(-1)?.event).toEqual({
-      Public: { ManualAction: { player: before.seat, action: { Draw: { count: 1 } } } },
-    })
-  })
+  it.each([true, undefined] as const)(
+    'answers a manual action with a line in the log and keeps the decision (holding priority: %s)',
+    (holding) => {
+      const game = fixtureGame({ seats: 2, ...(holding === undefined ? {} : { holding }) })
+      const before = game.session.store.getState()
+      const logged = before.log.length
+      const sent = game.session.manual({ Draw: { count: 1 } })
+      const after = game.session.store.getState()
+      expect(sent).toBe(true)
+      expect(after.pending?.id).toBe(before.pending?.id)
+      expect(after.log).toHaveLength(logged + 1)
+      expect(after.log.at(-1)?.event).toEqual({
+        Public: { ManualAction: { player: before.seat, action: { Draw: { count: 1 } } } },
+      })
+    },
+  )
 
   it('still clears the decision for any other answer', () => {
     const game = fixtureGame({ seats: 2, holding: true })
