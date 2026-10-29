@@ -203,7 +203,9 @@ fn w21a_face_down_compared_power_and_a_spell_at_you_decide_a_turn(
     let me = driver.target_player(0);
     let life = driver.state().players()[0].life();
     driver.cast_at("Jab", &[me])?;
-    let jab = driver.target_named("Jab")?;
+    let jab_id = w21a_named(&driver, "Jab");
+    let jab =
+        mtg_engine::choose::Target::Object(driver.state().object(jab_id).unwrap().reference());
     driver.cast_at("Ward Off", &[jab])?;
     w21a_resolve(&mut driver)?;
     assert_eq!(
