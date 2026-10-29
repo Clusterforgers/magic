@@ -8,6 +8,7 @@ import { jsonResponse } from '@/test-utils/fakeFetch'
 import { Builder } from '../Builder'
 import { startCards } from '../fakeCards'
 import { reportFor, withCheck } from '../fakeCheck'
+import { memoryFixMarks } from './memoryFixMarks'
 import { BUILDER_FIXTURE_MARKER, fixtureCards, fixtureCheck, fixtureDetails, fixtureView } from './fixture'
 
 /**
@@ -58,6 +59,7 @@ export function DevBuilderRoute() {
       view,
       api: createDecksApi({ fetch: checks.fetch }),
       cards: startCards({ cards: pool, details: fixtureDetails() }),
+      fixMarks: memoryFixMarks(pool),
     }
   }, [deck])
   return (
@@ -70,6 +72,7 @@ export function DevBuilderRoute() {
         view={world.view}
         api={world.api}
         cards={cards === 'real' ? cardsApi : world.cards.api}
+        fixMarks={world.fixMarks}
       />
     </>
   )

@@ -1,5 +1,5 @@
 // Goal: the deck pane shows the deck check as the report gives it: a counts line from the summary, every line whose card is not verified with its mark, edge and reasons (a verified line with none), the Issues only switch and the sort that puts issues first, legality in a section of its own that holds no support mark, and beside the name the marker, which says the badge's word for each saved state and "Changed since the last check" once the draft differs or the stored check is stale.
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { legalityIssue, lineOf, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { CardHit, DeckLineView, DeckView, Reason, Support } from '@/protocol/generated'
@@ -224,7 +224,7 @@ describe('the marker beside the name', () => {
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
     expect(deckPane().querySelector('[data-slot="check-counts"]')).toHaveTextContent(/ · as saved$/)
     await user.click(pane().getByRole('button', { name: 'Save' }))
-    expect(await pane().findByText('Verified')).toBeInTheDocument()
+    await waitFor(() => expect(deckPane().querySelector('[data-marker]')).toHaveAttribute('data-marker', 'verified'))
     expect(deckPane().querySelector('[data-marker]')).toHaveAttribute('data-marker', 'verified')
     expect(deckPane().querySelector('[data-slot="check-counts"]')).not.toHaveTextContent('as saved')
   })

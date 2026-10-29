@@ -5,13 +5,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { IdentityPips } from '@/features/builder/IdentityPips'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { cardsText, formatLabel } from '@/features/decks/format'
-import { SupportMark } from '@/features/decks/SupportMark'
 import { cn } from '@/lib/utils'
-import type { Support } from '@/protocol/generated'
 import { byHand, copiesOf, groupByKind, identityOfDeck, manaCurve, supportCounts, typeCounts } from './model'
 import type { DeckPreviewData } from './model'
 import { CardGroups } from './PreviewCards'
-import { ManaCurve, TypeBars } from './PreviewStats'
+import { ManaCurve, SupportBar, TypeBars } from './PreviewStats'
 
 /** How a format judges the deck: legal, not legal with the reasons, still being asked, or not known. */
 export interface PreviewLegality {
@@ -34,16 +32,6 @@ export interface DeckPreviewProps {
   /** Stands in for everything under the header while the cards load or when they could not be read. */
   body?: ReactNode
   className?: string
-}
-
-const SUPPORT_SHOWN: readonly Support[] = ['verified', 'partial', 'manual', 'stale', 'unplayable']
-// Whole class names, so Tailwind can see them.
-const SEGMENT: Readonly<Record<Support, string>> = {
-  verified: 'bg-support-verified',
-  partial: 'bg-support-partial',
-  manual: 'bg-support-manual',
-  stale: 'bg-support-stale',
-  unplayable: 'bg-support-unplayable',
 }
 
 function Legality({ legality }: { legality: PreviewLegality }) {
@@ -168,38 +156,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
                   ? 'The whole deck runs.'
                   : `${hand} of ${total} cards are played by hand.`}
             </p>
-            <div
-              aria-hidden="true"
-              className="flex h-2 overflow-hidden rounded-full bg-muted"
-              data-slot="support-bar"
-            >
-              {SUPPORT_SHOWN.map((support) => {
-                const count = stats.support[support]
-                return count === 0 ? null : (
-                  <span
-                    key={support}
-                    className={SEGMENT[support]}
-                    style={{ width: `${(count / total) * 100}%` }}
-                  />
-                )
-              })}
-            </div>
-            <ul aria-label="Cards by support" className="flex flex-wrap gap-x-3 gap-y-1.5">
-              {SUPPORT_SHOWN.map((support) => {
-                const count = stats.support[support]
-                const always = support === 'verified' || support === 'partial' || support === 'manual'
-                return count === 0 && !always ? null : (
-                  <li
-                    key={support}
-                    data-support-count={support}
-                    className="flex items-center gap-1.5 text-sm"
-                  >
-                    <SupportMark support={support} />
-                    <span className="font-medium tabular-nums">{count}</span>
-                  </li>
-                )
-              })}
-            </ul>
+            <SupportBar counts={stats.support} />
             {notValidated === undefined || hand === 0 ? null : <div className="text-sm">{notValidated}</div>}
           </section>
 

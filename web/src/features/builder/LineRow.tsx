@@ -1,32 +1,19 @@
 import { HoverPicture } from '@/features/cards/CardPicture'
-import { EllipsisVerticalIcon, MinusIcon, PlusIcon, Trash2Icon, TriangleAlertIcon } from 'lucide-react'
+import { Trash2Icon, TriangleAlertIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
+import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { cn } from '@/lib/utils'
-import type { CardHit, DeckZone } from '@/protocol/generated'
+import type { FixMarksApi } from '@/net/fixMarks'
 import type { Line } from './deckEdit'
+import { Copies, MoveMenu } from './LineControls'
+import type { LineActions } from './LineControls'
 import { ManaCost } from './ManaCost'
 import { isIssue, reasonLines } from './report'
 import type { LineCheck } from './report'
-import { ZONE_THE, ZONE_TO, zonesFor } from './zones'
+import { ZONE_THE } from './zones'
 
-/** What a line can do; each takes the line's zone and card, so the pane passes one set for all lines. */
-export interface LineActions {
-  increment: (zone: DeckZone, oracleId: string) => void
-  decrement: (zone: DeckZone, oracleId: string) => void
-  remove: (zone: DeckZone, oracleId: string) => void
-  move: (zone: DeckZone, oracleId: string, to: DeckZone, count?: number) => void
-  /** Opens the preview of a card; `opener` is the control focus returns to. */
-  preview: (card: CardHit, opener: HTMLElement) => void
-}
+export type { LineActions } from './LineControls'
 
 interface LineRowProps {
   line: Line
@@ -38,18 +25,19 @@ interface LineRowProps {
   /** The check's sentence when the card lies outside the commanders' colour identity, else null. */
   outside?: string | null
   actions: LineActions
+  /** The fix-mark endpoints; with them a card that is not Verified gets the flag. */
+  fixMarks?: FixMarksApi
 }
 
 /**
  * One line of the deck: the copies with minus and plus (the last copy removed takes the line out), the name (a button
  * that opens the card's preview), the cost, and a menu to move copies to another zone with Remove beside it. Under 640 px the row wraps to two lines. A card the
- * game cannot play by itself has an edge in its state's colour and, under the name, its mark and the reasons the check
- * gives.
+ * game cannot play by itself has an edge in its state's colour, the flag that marks it important to fix and, under the
+ * name, its mark and the reasons the check gives.
  */
-export function LineRow({ line, format, room, check, outside = null, actions }: LineRowProps) {
-  const { zone, card, count } = line
+export function LineRow({ line, format, room, check, outside = null, actions, fixMarks }: LineRowProps) {
+  const { zone, card } = line
   const id = card.oracle_id
-  const targets = zonesFor(format).filter((to) => to !== zone)
   const issue = isIssue(check.support)
   const reasons = reasonLines(check.reasons)
   return (
@@ -62,34 +50,7 @@ export function LineRow({ line, format, room, check, outside = null, actions }: 
         issue ? supportEdge(check.support) : outside === null ? 'border-transparent' : 'border-destructive',
       )}
     >
-      <div
-        role="group"
-        aria-label={`${card.name}: ${count} in ${ZONE_THE[zone]}`}
-        className="order-3 flex items-center sm:order-none"
-      >
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label={`Remove one ${card.name}`}
-          onClick={() => actions.decrement(zone, id)}
-        >
-          <MinusIcon aria-hidden="true" />
-        </Button>
-        <span data-count className="w-8 text-center text-sm font-medium tabular-nums">
-          {count}
-        </span>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label={`Add one ${card.name}`}
-          aria-disabled={!room || undefined}
-          onClick={() => room && actions.increment(zone, id)}
-        >
-          <PlusIcon aria-hidden="true" />
-        </Button>
-      </div>
+      <Copies line={line} room={room} actions={actions} className="order-3 sm:order-none" />
       <HoverPicture
         oracleId={card.oracle_id}
         name={card.name}
@@ -110,36 +71,10 @@ export function LineRow({ line, format, room, check, outside = null, actions }: 
         <ManaCost cost={card.mana_cost} />
       </span>
       <div className="order-4 flex items-center justify-self-end sm:order-none">
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Move ${card.name} to another part of the deck`}
-              />
-            }
-          >
-            <EllipsisVerticalIcon aria-hidden="true" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Move to</DropdownMenuLabel>
-              {targets.map((to) => (
-                <DropdownMenuItem key={to} onClick={() => actions.move(zone, id, to)}>
-                  {count > 1 ? `All ${count} to ${ZONE_TO[to]}` : `To ${ZONE_TO[to]}`}
-                </DropdownMenuItem>
-              ))}
-              {count > 1
-                ? targets.map((to) => (
-                    <DropdownMenuItem key={`one-${to}`} onClick={() => actions.move(zone, id, to, 1)}>
-                      {`One to ${ZONE_TO[to]}`}
-                    </DropdownMenuItem>
-                  ))
-                : null}
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {issue && fixMarks !== undefined ? (
+          <FixMarkButton compact oracleId={id} name={card.name} api={fixMarks} emphasis="prominent" />
+        ) : null}
+        <MoveMenu line={line} format={format} actions={actions} />
         <Button
           type="button"
           variant="ghost"

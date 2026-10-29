@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
+import type { FixMarksApi } from '@/net/fixMarks'
 import type { CardHit, CardSearchPage, DeckZone } from '@/protocol/generated'
 import type { Draft } from './deckEdit'
 import { FilterBar } from './FilterBar'
@@ -35,6 +36,8 @@ interface SearchPaneProps {
   commanderIdentity?: readonly string[] | null
   /** A search the builder asks for (a slot looking for a partner): applied, and the box focused, each time `id` changes. */
   seed?: { id: number; filters: SearchFilters } | null
+  /** The fix-mark endpoints; with them a hit that is not Verified gets the flag. */
+  fixMarks?: FixMarksApi
   /** Sets the display of the pane (`flex` or `hidden`), which the page switches under the M breakpoint. */
   className?: string
 }
@@ -100,6 +103,7 @@ export function SearchPane({
   onPreview,
   commanderIdentity = null,
   seed = null,
+  fixMarks,
   className,
 }: SearchPaneProps) {
   const [filters, setFilters] = useState<SearchFilters>(NO_FILTERS)
@@ -193,6 +197,7 @@ export function SearchPane({
             identity={commanderIdentity}
             onAdd={onAdd}
             onPreview={onPreview}
+            fixMarks={fixMarks}
           />
         ))}
       </ul>

@@ -41,7 +41,7 @@ import { useLiveCheck } from './useLiveCheck'
 import { useUnsavedGuard } from './useUnsavedGuard'
 import { ZONE_THE, ZONE_TO } from './zones'
 
-type Shown = 'search' | 'deck'
+type Shown = 'search' | 'deck' | 'stats'
 
 // Under the M breakpoint one pane is on screen and this switch changes which; both stay mounted, so the search keeps
 // its text, page and place when the deck is looked at.
@@ -55,7 +55,7 @@ function ViewSwitch({
   count: number
 }) {
   return (
-    <div role="group" aria-label="Show" className="grid grid-cols-2 gap-2 lg:hidden">
+    <div role="group" aria-label="Show" className="grid grid-cols-3 gap-2 lg:hidden">
       <Button
         type="button"
         variant={shown === 'search' ? 'default' : 'outline'}
@@ -71,6 +71,14 @@ function ViewSwitch({
         onClick={() => onChange('deck')}
       >
         Deck <span className="tabular-nums">{count}</span>
+      </Button>
+      <Button
+        type="button"
+        variant={shown === 'stats' ? 'default' : 'outline'}
+        aria-pressed={shown === 'stats'}
+        onClick={() => onChange('stats')}
+      >
+        Stats
       </Button>
     </div>
   )
@@ -256,7 +264,7 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
           </div>
         </Alert>
       )}
-      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4 lg:grid-cols-2">
+      <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <SearchPane
           api={cards}
           draft={draft}
@@ -264,6 +272,7 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
           onPreview={showPreview}
           commanderIdentity={commanderIdentity}
           seed={seed}
+          fixMarks={fixMarks}
           className={cn(shown === 'search' ? 'flex' : 'hidden', 'lg:flex')}
         />
         <DeckPane
@@ -279,7 +288,10 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
           actions={actions}
           judging={judging}
           onFind={find}
-          className={cn(shown === 'deck' ? 'flex' : 'hidden', 'lg:flex')}
+          part={shown === 'stats' ? 'stats' : 'deck'}
+          fixMarks={fixMarks}
+          onShowHand={() => setShown('stats')}
+          className={cn(shown === 'search' ? 'hidden' : 'flex', 'lg:flex')}
         />
       </div>
       <p role="status" className="sr-only">
