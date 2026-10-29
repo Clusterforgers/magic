@@ -144,7 +144,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise
 - [ ] (w3h) The payment prompt exiles graveyard cards for delve
 - [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name yet
-- [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)

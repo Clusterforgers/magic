@@ -77,6 +77,35 @@ describe('answering', () => {
   })
 })
 
+describe('a question only No answers', () => {
+  function mountOnlyNo() {
+    const table = renderDecision({ YesNo: { source, text: 'Pay {2}?', only_no: true } })
+    return { ...table, yes: () => screen.getByRole('button', { name: 'Yes' }) }
+  }
+
+  it('disables Yes, drops its key and tells a screen reader only N', () => {
+    const { yes, text } = mountOnlyNo()
+    expect(yes()).toBeDisabled()
+    expect(yes()).not.toHaveAttribute('aria-keyshortcuts')
+    expect(text()).toBe(`${sourceName}: Pay {2}? Press N for no.`)
+  })
+
+  it.each([
+    ['a click on Yes', async (t: ReturnType<typeof mountOnlyNo>) => t.user.click(t.yes())],
+    ['y', async (t: ReturnType<typeof mountOnlyNo>) => t.user.keyboard('y')],
+  ])('%s sends nothing', async (_how, gesture) => {
+    const table = mountOnlyNo()
+    await gesture(table)
+    expect(table.answer).not.toHaveBeenCalled()
+  })
+
+  it('answers No from N', async () => {
+    const table = mountOnlyNo()
+    await table.user.keyboard('n')
+    expect(table.answer.mock.calls).toEqual([[{ YesNo: false }]])
+  })
+})
+
 describe('focus', () => {
   it('starts on No, so Enter at once answers what the clock would', async () => {
     const { no, user, answer } = mount('Draw a card?')

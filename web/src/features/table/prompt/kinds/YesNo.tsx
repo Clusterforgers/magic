@@ -4,7 +4,7 @@ import { usePlay } from '@/features/game/gameContext'
 import type { ObjectView } from '@/protocol/generated'
 import { commanderDestination, returnDetail, returnNoLabel, returnQuestion } from '../../commander'
 import { playerOf } from '../../selectors'
-import { askerWords, YES_NO_KEYS, yesNoSentence } from '../choiceText'
+import { askerWords, NO_KEY, YES_NO_KEYS, yesNoSentence } from '../choiceText'
 import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -28,16 +28,17 @@ export const YesNoPrompt: PromptComponent<'YesNo'> = ({ options }) => {
   return commander && source !== undefined ? (
     <CommanderReturn source={source} text={options.text ?? ''} />
   ) : (
-    <PlainYesNo name={source?.name} text={options.text ?? ''} />
+    <PlainYesNo name={source?.name} text={options.text ?? ''} onlyNo={options.only_no === true} />
   )
 }
 
-function PlainYesNo({ name, text }: { name: string | undefined; text: string }) {
+/** With `onlyNo` (the payment cannot be made) Yes is disabled and Y does nothing, so no refused answer is sent. */
+function PlainYesNo({ name, text, onlyNo }: { name: string | undefined; text: string; onlyNo: boolean }) {
   const { answer } = usePrompt()
   const no = useRef<HTMLButtonElement>(null)
   useDefaultFocus(no)
   const say = (yes: boolean) => () => void answer({ YesNo: yes })
-  usePromptKeys({ y: say(true), n: say(false) })
+  usePromptKeys(onlyNo ? { n: say(false) } : { y: say(true), n: say(false) })
 
   const sentence = yesNoSentence(askerWords(name), text)
   return (
@@ -45,7 +46,7 @@ function PlainYesNo({ name, text }: { name: string | undefined; text: string }) 
       text={
         <>
           {sentence}
-          <span className="sr-only"> {YES_NO_KEYS}</span>
+          <span className="sr-only"> {onlyNo ? NO_KEY : YES_NO_KEYS}</span>
         </>
       }
     >
@@ -53,7 +54,8 @@ function PlainYesNo({ name, text }: { name: string | undefined; text: string }) 
         variant="outline"
         className="h-10 min-w-24 px-4"
         aria-label="Yes"
-        aria-keyshortcuts="Y"
+        aria-keyshortcuts={onlyNo ? undefined : 'Y'}
+        disabled={onlyNo}
         onClick={say(true)}
       >
         Yes
