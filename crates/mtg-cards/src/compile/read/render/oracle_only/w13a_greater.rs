@@ -33,9 +33,14 @@ fn w13a_at_least(value: &mut Value) -> bool {
             map.values_mut()
                 .fold(changed, |changed, inner| w13a_at_least(inner) || changed)
         }
-        Value::Array(items) => items
-            .iter_mut()
-            .fold(false, |changed, inner| w13a_at_least(inner) || changed),
+        Value::Array(items) => {
+            items
+                .iter_mut()
+                .map(w13a_at_least)
+                .filter(|changed| *changed)
+                .count()
+                > 0
+        }
         _ => false,
     }
 }

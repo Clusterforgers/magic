@@ -70,12 +70,9 @@ fn w13a_as_own(value: &mut Value, zones: &mut Vec<String>) {
                     zones.push(zone);
                 }
             }
-            map.values_mut()
-                .for_each(|inner| w13a_as_own(inner, zones));
+            map.values_mut().for_each(|inner| w13a_as_own(inner, zones));
         }
-        Value::Array(items) => items
-            .iter_mut()
-            .for_each(|inner| w13a_as_own(inner, zones)),
+        Value::Array(items) => items.iter_mut().for_each(|inner| w13a_as_own(inner, zones)),
         _ => {}
     }
 }

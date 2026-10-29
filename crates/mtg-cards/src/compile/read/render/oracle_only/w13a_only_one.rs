@@ -16,7 +16,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Some(inner) = value.get_mut("Static") else {
         return;
     };
-    if inner.get("affected").and_then(|affected| affected.get("Each")) != Some(&group) {
+    if inner
+        .get("affected")
+        .and_then(|affected| affected.get("Each"))
+        != Some(&group)
+    {
         return;
     }
     let Some(compare) = inner
@@ -33,7 +37,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     }
     compare["op"] = json!("Ge");
     for text in wordings(value) {
-        let Some(rest) = text.strip_prefix("As long as you control a creature, each creature you control ") else {
+        let Some(rest) =
+            text.strip_prefix("As long as you control a creature, each creature you control ")
+        else {
             continue;
         };
         texts.push(format!(
@@ -41,4 +47,3 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         ));
     }
 }
-

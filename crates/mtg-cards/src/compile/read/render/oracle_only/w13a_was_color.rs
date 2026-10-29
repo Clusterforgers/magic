@@ -24,7 +24,10 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     };
     let mut said = None;
     for effect in effects.iter_mut() {
-        let Some(condition) = effect.get_mut("If").and_then(|step| step.get_mut("condition")) else {
+        let Some(condition) = effect
+            .get_mut("If")
+            .and_then(|step| step.get_mut("condition"))
+        else {
             continue;
         };
         if let Some((first, colors)) = w13a_colors(condition) {

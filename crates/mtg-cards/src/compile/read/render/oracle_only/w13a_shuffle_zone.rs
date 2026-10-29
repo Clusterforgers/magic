@@ -30,7 +30,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 /// The word of the zone a move shuffles into the controller's library, when it moves all their cards in it.
 fn w13a_zone(effect: &Value) -> Option<&'static str> {
     let moved = effect.get("Move")?;
-    if moved.as_object()?.len() != 2 || moved.get("to")? != &json!({"Library": {"place": "Shuffled"}}) {
+    if moved.as_object()?.len() != 2
+        || moved.get("to")? != &json!({"Library": {"place": "Shuffled"}})
+    {
         return None;
     }
     let preds = moved.get("what")?.get("Each")?.as_array()?;

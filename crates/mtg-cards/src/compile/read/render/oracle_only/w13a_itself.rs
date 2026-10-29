@@ -14,7 +14,10 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ok(mut value) = serde_json::to_value(ability) else {
         return;
     };
-    let Some(inner) = value.as_object_mut().and_then(|map| map.values_mut().next()) else {
+    let Some(inner) = value
+        .as_object_mut()
+        .and_then(|map| map.values_mut().next())
+    else {
         return;
     };
     let Some([target]) = inner
@@ -26,7 +29,11 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     };
     let target = target.clone();
     let first = json!({"Target": 0});
-    let Some([effect]) = inner.get_mut("effects").and_then(Value::as_array_mut).map(Vec::as_mut_slice) else {
+    let Some([effect]) = inner
+        .get_mut("effects")
+        .and_then(Value::as_array_mut)
+        .map(Vec::as_mut_slice)
+    else {
         return;
     };
     let Some(damage) = effect.get_mut("DealDamage") else {
@@ -48,5 +55,7 @@ fn w13a_said(text: &str) -> Option<String> {
     if amount.contains("target") {
         return None;
     }
-    Some(format!("{lead}deals damage to itself equal to {amount}.{tail}"))
+    Some(format!(
+        "{lead}deals damage to itself equal to {amount}.{tail}"
+    ))
 }

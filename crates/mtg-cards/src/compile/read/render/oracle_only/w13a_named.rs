@@ -47,9 +47,7 @@ fn w13a_marked(value: &mut Value, names: &mut Vec<String>) {
             }
             map.values_mut().for_each(|inner| w13a_marked(inner, names));
         }
-        Value::Array(items) => items
-            .iter_mut()
-            .for_each(|inner| w13a_marked(inner, names)),
+        Value::Array(items) => items.iter_mut().for_each(|inner| w13a_marked(inner, names)),
         _ => {}
     }
 }
