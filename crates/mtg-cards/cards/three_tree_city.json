@@ -1,0 +1,41 @@
+{
+  "oracle_id": "da3b17a2-e1e1-44e9-b9b1-ae54a92037db",
+  "name": "Three Tree City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Three Tree City",
+      "oracle_fingerprint": "c4f4c6f6d95a15d202c25955371fb82c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{"name":"Syr Konrad, the Grim","faces":[{"name":"Syr Konrad, the Grim","abilities":[
+ {"Triggered":{"when":{"AnyOf":[
+   {"ZoneChange":{"what":["Other",{"Type":"Creature"}],"from":"Battlefield","to":"Graveyard"}},
+   {"ZoneChangeExcept":{"what":[{"Type":"Creature"}],"except":"Battlefield","to":"Graveyard"}},
+   {"ZoneChange":{"what":[{"Type":"Creature"},{"OwnedBy":"You"}],"from":"Graveyard"}}]},
+  "effects":[{"DealDamage":{"to":"Opponents","amount":1}}]}},
+ {"Activated":{"cost":[{"Mana":"{1}{B}"}],"effects":[{"Mill":{"who":"EachPlayer"}}]}}]}]}

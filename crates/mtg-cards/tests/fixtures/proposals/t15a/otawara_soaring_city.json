@@ -1,0 +1,5 @@
+{"name":"Otawara, Soaring City","faces":[{"name":"Otawara, Soaring City","abilities":[
+ {"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Blue"]}}}]}},
+ {"Activated":{"cost":[{"Mana":"{3}{U}"},"DiscardSelf",{"Changed":{"change":"Reduce","mana":"{1}","per":{"Count":[{"Type":"Creature"},{"Supertype":"Legendary"},{"ControlledBy":"You"}]}}}],"from":"Hand",
+  "targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Planeswalker"}]}]}}],
+  "effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}]}]}

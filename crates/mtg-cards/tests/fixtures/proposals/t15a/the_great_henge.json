@@ -1,0 +1,4 @@
+{"name":"The Great Henge","faces":[{"name":"The Great Henge","abilities":[
+ {"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":{"Greatest":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Power"}}}},
+ {"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green","Green"]}}},{"GainLife":{"amount":2}}]}},
+ {"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"Triggering","counter":"+1/+1"}},{"Draw":{}}]}}]}]}
