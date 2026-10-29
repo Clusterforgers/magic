@@ -5,6 +5,8 @@
 //! graveyard, the bottom or shuffled into the library. Read from the wording and written back the same way; the other
 //! wordings of a sentence are listed by [`w20a_wordings`].
 
+use std::fmt::Write as _;
+
 use mtg_core::card::Subtype;
 
 use super::amounts::count_word;
@@ -225,7 +227,7 @@ fn w20a_is_mixed(list: &[Pred]) -> bool {
 
 /// "Human or artifact", "Knight, Equipment, or artifact".
 fn w20a_mixed_text(list: &[Pred]) -> Option<String> {
-    let words: Option<Vec<String>> = list
+    let names: Option<Vec<String>> = list
         .iter()
         .map(|pred| match pred {
             Pred::Type(kind) => Some(type_name(*kind).to_owned()),
@@ -233,10 +235,10 @@ fn w20a_mixed_text(list: &[Pred]) -> Option<String> {
             _ => None,
         })
         .collect();
-    Some(match words?.as_slice() {
-        [first, last] => format!("{first} or {last}"),
-        [rest @ .., last] => format!("{}, or {last}", rest.join(", ")),
-        [] => return None,
+    Some(match names?.as_slice() {
+        [one, two] => format!("{one} or {two}"),
+        [front @ .., end] if !front.is_empty() => format!("{}, or {end}", front.join(", ")),
+        _ => return None,
     })
 }
 
@@ -279,7 +281,7 @@ fn w20a_destination_text(to: &Destination) -> Option<String> {
             match counters.as_slice() {
                 [] => {}
                 [(CounterKind::Other(name), 1)] => {
-                    text.push_str(&format!(" with {} {name} counter on it", article(name)));
+                    let _ = write!(text, " with {} {name} counter on it", article(name));
                 }
                 _ => return None,
             }
@@ -383,25 +385,25 @@ fn w20a_phrase(r: &mut Reader<'_>, may: bool, first: bool) -> Option<W20aTake> {
 }
 
 /// The effects of the takes of one sentence, numbered from `taken`.
-fn w20a_effects(takes: Vec<W20aTake>, taken: usize) -> Vec<Effect> {
+fn w20a_effects(items: Vec<W20aTake>, before: usize) -> Vec<Effect> {
     let mut effects = Vec::new();
-    for (index, take) in takes.into_iter().enumerate() {
-        let bind = w20a_bind(taken + index);
+    for (index, item) in items.into_iter().enumerate() {
+        let bind = w20a_bind(before + index);
         effects.push(Effect::Choose {
             who: Ref::You,
-            from: Ref::Each(w20a_among(take.filter)),
-            count: take.bounds,
+            from: Ref::Each(w20a_among(item.filter)),
+            count: item.bounds,
             bind: bind.clone(),
             rest_as: None,
         });
-        if take.reveal {
+        if item.reveal {
             effects.push(Effect::Reveal {
                 what: Ref::Bound(bind.clone()),
             });
         }
         effects.push(Effect::Move {
             what: Ref::Bound(bind),
-            to: take.to,
+            to: item.to,
         });
     }
     effects
@@ -410,15 +412,15 @@ fn w20a_effects(takes: Vec<W20aTake>, taken: usize) -> Vec<Effect> {
 /// A sentence of takes, with the destination of the rest when the sentence names it ("... and the rest into your hand").
 fn w20a_sentence(
     r: &mut Reader<'_>,
-    taken: usize,
+    before: usize,
 ) -> Option<(Vec<Effect>, usize, Option<Destination>)> {
     let may = r.words("you may");
-    let mut takes = vec![w20a_phrase(r, may, true)?];
+    let mut items = vec![w20a_phrase(r, may, true)?];
     while let Some(next) = r.attempt(|r| {
         r.need("and")?;
         w20a_phrase(r, may, false)
     }) {
-        takes.push(next);
+        items.push(next);
     }
     let rest = r.attempt(|r| {
         r.need("and the rest")?;
@@ -427,8 +429,8 @@ fn w20a_sentence(
     if rest.is_none() {
         r.punct('.').then_some(())?;
     }
-    let count = takes.len();
-    Some((w20a_effects(takes, taken), count, rest))
+    let count = items.len();
+    Some((w20a_effects(items, before), count, rest))
 }
 
 /// "Look at the top six cards of your library. You may reveal a Human or artifact card from among them and put it into your

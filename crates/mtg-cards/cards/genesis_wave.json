@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e2487868-f386-438e-a73f-b494f6d35fac",
+  "name": "Genesis Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genesis Wave",
+      "oracle_fingerprint": "50ecc72259d2cc8142f30b0f388a00d4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

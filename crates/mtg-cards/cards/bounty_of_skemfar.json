@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e4bfe005-7c4e-4178-ae41-a28eb2352ad1",
+  "name": "Bounty of Skemfar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bounty of Skemfar",
+      "oracle_fingerprint": "d7f3b97565d786508b8eeda4a55d0337",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Elf" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept_2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept_2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "f6476884-f73f-465f-8e7f-ea312a5b306d",
+  "name": "Loot, Exuberant Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loot, Exuberant Explorer",
+      "oracle_fingerprint": "c60b9b2867c5f0afb1e6a4c980622adf",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{G}{G}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
