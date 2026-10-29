@@ -23,17 +23,17 @@ type DevMoment = (fixture: Fixture) => Fixture
 const object = (id: ObjectId): Target => ({ Object: { id, counter: 0 } })
 
 /** The viewer's own spell on the stack of the fixture, which asks for its targets. */
-const ownSpell = (view: StateView): ObjectView | undefined =>
+export const ownSpell = (view: StateView): ObjectView | undefined =>
   view.objects.find((o) => o.zone === 'Stack' && o.controller === view.viewer)
 
 /** The creatures `seat` controls on the battlefield, in the order of the table. */
-const creaturesOf = (view: StateView, seat: PlayerId): ObjectView[] =>
+export const creaturesOf = (view: StateView, seat: PlayerId): ObjectView[] =>
   view.objects.filter(
     (o) => o.zone === 'Battlefield' && o.controller === seat && o.types.includes('Creature'),
   )
 
 /** Every seat but the viewer's that is still in. */
-const opponents = (view: StateView): PlayerId[] =>
+export const opponents = (view: StateView): PlayerId[] =>
   view.players.filter((p) => p.seat !== view.viewer && p.lost === null).map((p) => p.seat)
 
 /** The viewer's spell asks for one target: an opponent or a creature one of them controls. */

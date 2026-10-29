@@ -8,17 +8,23 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
-import { legalityLines, sentence } from '@/features/builder/report'
+import { legalityLines } from '@/features/builder/report'
+import { ClauseList } from '@/features/decks/unvalidated/ClauseList'
+import { clauseLines } from '@/features/decks/unvalidated/model'
+import type { FaceTexts } from '@/features/decks/unvalidated/model'
+import { useCardTexts } from '@/features/decks/unvalidated/useCardTexts'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { cn } from '@/lib/utils'
+import type { CardsApi } from '@/net/cards'
 import type { PreconBoard, PreconListItem, PreconView } from '@/protocol/generated'
 import { PreconBadge } from './PreconBadge'
 import {
   BOARD_LABEL,
   checkLine,
-  clausesText,
   commandersText,
   copyList,
+  flaggedCards,
+  flaggedLine,
   notVerified,
   releaseText,
   statusOf,
@@ -32,6 +38,8 @@ interface Props {
   open: boolean
   /** The cards and issues, as far as they have arrived. */
   detail: DetailState
+  /** The card endpoint the clauses of the cards are quoted from. */
+  cards: Pick<CardsApi, 'get'>
   onRetry(): void
   /** Close, Escape and the close button. */
   onCancel(): void
@@ -84,7 +92,19 @@ function Blocked({ view }: { view: PreconView | null }) {
 }
 
 /** One board: its heading with the number of cards, then a line a card with its mark and the clauses left to the table. */
-function Board({ board, onlyHand }: { board: PreconBoard; onlyHand: boolean }) {
+function Board({
+  board,
+  precon,
+  onlyHand,
+  faces,
+  pending,
+}: {
+  board: PreconBoard
+  precon: PreconListItem
+  onlyHand: boolean
+  faces: FaceTexts
+  pending: boolean
+}) {
   const cards = onlyHand ? board.cards.filter((card) => card.support !== 'verified') : board.cards
   if (cards.length === 0) return null
   const id = `precon-board-${board.board}`
@@ -95,44 +115,53 @@ function Board({ board, onlyHand }: { board: PreconBoard; onlyHand: boolean }) {
         <span className="font-normal text-muted-foreground">{` · ${cardsWord(board.copies)}`}</span>
       </h3>
       <ul className="surface overflow-hidden">
-        {cards.map((card, index) => (
-          <li
-            key={`${card.name}:${card.printing_id ?? ''}:${index}`}
-            data-support={card.support}
-            className={cn(
-              'grid gap-1 border-b border-l-4 px-3 py-2 last:border-b-0',
-              card.support === 'verified' ? 'border-l-transparent' : supportEdge(card.support),
-            )}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-              <p className="min-w-0 text-sm break-words">
-                <span className="tabular-nums text-muted-foreground">{`${card.count}× `}</span>
-                <span className="font-medium">{card.name}</span>
-                {card.card === null ? null : (
-                  <span className="text-muted-foreground">{` · ${card.card.type_line}`}</span>
-                )}
-              </p>
-              <SupportMark support={card.support} />
-            </div>
-            {card.support === 'verified' ? null : (
-              <p className="text-sm break-words text-muted-foreground">
-                {card.reasons.length > 0 ? (
-                  <span className="font-medium text-foreground">Played by hand: </span>
-                ) : null}
-                {sentence(clausesText(card.support, card.reasons))}
-              </p>
-            )}
-          </li>
-        ))}
+        {cards.map((card, index) => {
+          const flagged = flaggedLine(card, precon)
+          return (
+            <li
+              key={`${card.name}:${card.printing_id ?? ''}:${index}`}
+              data-support={card.support}
+              className={cn(
+                'grid gap-1 border-b border-l-4 px-3 py-2 last:border-b-0',
+                card.support === 'verified' ? 'border-l-transparent' : supportEdge(card.support),
+              )}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                <p className="min-w-0 text-sm break-words">
+                  <span className="tabular-nums text-muted-foreground">{`${card.count}× `}</span>
+                  <span className="font-medium">{card.name}</span>
+                  {card.card === null ? null : (
+                    <span className="text-muted-foreground">{` · ${card.card.type_line}`}</span>
+                  )}
+                </p>
+                <SupportMark support={card.support} />
+              </div>
+              {flagged === null ? null : (
+                <div className="grid gap-1">
+                  {card.reasons.length > 0 ? <p className="text-sm font-medium">Played by hand:</p> : null}
+                  <ClauseList
+                    lines={clauseLines(flagged, faces.get(flagged.oracleId))}
+                    support={card.support}
+                    pending={pending}
+                  />
+                </div>
+              )}
+            </li>
+          )
+        })}
       </ul>
     </section>
   )
 }
 
 /** The cards of a view, with the switch that narrows them to the cards played by hand and the button that copies those. */
-function Cards({ view }: { view: PreconView }) {
+function Cards({ view, cards }: { view: PreconView; cards: Pick<CardsApi, 'get'> }) {
   const [onlyHand, setOnlyHand] = useState(false)
   const hand = notVerified(view)
+  const { faces, pending } = useCardTexts(
+    cards,
+    flaggedCards(view).flatMap((card) => (card.oracleId.startsWith('name:') ? [] : [card.oracleId])),
+  )
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
@@ -148,8 +177,12 @@ function Cards({ view }: { view: PreconView }) {
             Only cards played by hand
           </Label>
         </div>
-        {hand === 0 ? null : (
-          <CopyButton text={copyList(view)} label="Copy list of the cards played by hand">
+        {hand === 0 ? null : pending ? (
+          <Button type="button" variant="outline" size="sm" disabled loading>
+            Reading card text…
+          </Button>
+        ) : (
+          <CopyButton text={copyList(view, faces)} label="Copy list of the cards played by hand">
             Copy list
           </CopyButton>
         )}
@@ -158,7 +191,14 @@ function Cards({ view }: { view: PreconView }) {
         <p className="text-sm text-muted-foreground">The game plays every card of this deck as written.</p>
       ) : null}
       {view.boards.map((board) => (
-        <Board key={board.board} board={board} onlyHand={onlyHand} />
+        <Board
+          key={board.board}
+          board={board}
+          precon={view.precon}
+          onlyHand={onlyHand}
+          faces={faces}
+          pending={pending}
+        />
       ))}
     </div>
   )
@@ -173,6 +213,7 @@ export function PreconDialog({
   precon,
   open,
   detail,
+  cards,
   onRetry,
   onCancel,
   onClosed,
@@ -231,7 +272,7 @@ export function PreconDialog({
               </div>
             </Alert>
           ) : null}
-          {view === null ? null : <Cards view={view} />}
+          {view === null ? null : <Cards view={view} cards={cards} />}
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2 border-t px-6 py-4">
           <Button type="button" variant="outline" onClick={onCancel}>

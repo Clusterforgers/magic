@@ -1,7 +1,8 @@
 /** The precon browser as plain data: a deck's check in words, the filters, the dates and the copyable list. Pure, so tables test it. */
 import { cardsText } from '@/features/decks/format'
-import type { Counts, DeckZone, PreconListItem, PreconView, Reason, Support } from '@/protocol/generated'
-import { reasonLines } from '@/features/builder/report'
+import { copyText } from '@/features/decks/unvalidated/model'
+import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
+import type { Counts, DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
 
 /** How a game treats a precon: it runs the whole deck, it plays some cards by hand, or it cannot take the deck. */
 export type PreconStatus = 'whole' | 'hand' | 'blocked'
@@ -121,36 +122,28 @@ export const BOARD_LABEL: Readonly<Record<DeckZone, string>> = {
   companion: 'Companion',
 }
 
-// What a card with no clause of its own says, by state: the card is still played by hand.
-const NO_CLAUSE: Readonly<Record<Support, string>> = {
-  verified: '',
-  partial: 'partly played by hand',
-  manual: 'played by hand',
-  stale: 'its text changed since the rules were written, so it is played by hand',
-  unplayable: 'the game cannot play it',
+/** A line of a precon as an entry of the list of unvalidated cards; null for a Verified card. */
+export function flaggedLine(card: PreconCardView, precon: PreconListItem): FlaggedCard | null {
+  if (card.support === 'verified') return null
+  return {
+    oracleId: card.card?.oracle_id ?? `name:${card.name}`,
+    name: card.name,
+    support: card.support,
+    reasons: card.reasons,
+    decks: [{ id: precon.code, name: precon.name }],
+  }
 }
 
-/** The unread clauses of a card as one phrase: the reasons joined with "; ", or the state's words when it has none. */
-export function clausesText(support: Support, reasons: readonly Reason[]): string {
-  const lines = reasonLines(reasons).map((line) => line.text.replace(/\.$/, ''))
-  return lines.length > 0 ? lines.join('; ') : NO_CLAUSE[support]
-}
+/** The cards of a precon that are not Verified, in the order of the boards. */
+export const flaggedCards = (view: PreconView): FlaggedCard[] =>
+  view.boards.flatMap((board) => board.cards).flatMap((card) => flaggedLine(card, view.precon) ?? [])
 
 /**
- * The cards that are not Verified as plain text, one line a card (`Name: clause; clause`), in the order of the boards.
- * Empty when every card is verified.
+ * The cards that are not Verified as plain text in the format of the list of unvalidated cards (a block each, the
+ * quoted clause beside its reason once the texts of the cards are known). Empty when every card is verified.
  */
-export function copyList(view: PreconView): string {
-  return view.boards
-    .flatMap((board) => board.cards)
-    .filter((card) => card.support !== 'verified')
-    .map((card) => `${card.name}: ${clausesText(card.support, card.reasons)}`)
-    .join('\n')
-}
+export const copyList = (view: PreconView, texts: FaceTexts = new Map()): string =>
+  copyText(flaggedCards(view), texts)
 
-/** How many lines `copyList` writes. */
-export const notVerified = (view: PreconView): number =>
-  view.boards.reduce(
-    (sum, board) => sum + board.cards.filter((card) => card.support !== 'verified').length,
-    0,
-  )
+/** How many cards `copyList` writes. */
+export const notVerified = (view: PreconView): number => flaggedCards(view).length

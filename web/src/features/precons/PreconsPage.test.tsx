@@ -4,8 +4,12 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
+import { startCards } from '../builder/fakeCards'
+import { cardDetail } from '../builder/fakeCards'
+import { spanOf } from '../decks/unvalidated/fixture'
 import { ApiError } from '@/net/api'
 import type { Api } from '@/net/api'
+import type { CardsApi } from '@/net/cards'
 import { PreconError } from '@/net/precons'
 import { renderInRouter } from '@/test-utils/router'
 import { board, cardLine, checked, issue, preconItem, preconView, reason, startPrecons } from './fakePrecons'
@@ -50,9 +54,20 @@ const created = { game: 'g1', code: 'K7M29QXA', seats: [{ seat: 0, token: 'tok0'
 interface Options extends PreconsScript {
   user?: string
   createGame?: Api['createGame']
+  /** The card endpoint the clauses are quoted from; a server that knows Kozilek and Seer by default. */
+  cards?: Pick<CardsApi, 'get'>
 }
 
-async function open({ user, createGame, ...script }: Options = {}) {
+const KOZILEK_TEXT = 'When you cast this spell, draw two cards. Then discard two cards.'
+const SEER_TEXT = 'Flash\nWhen this enters, exile a card from an opponent\u2019s hand.'
+
+const textOf = (name: string, text: string) =>
+  cardDetail(name, { faces: [{ ...cardDetail(name).faces[0]!, oracle_text: text }] })
+
+const cardServer = () =>
+  startCards({ details: [textOf('Kozilek', KOZILEK_TEXT), textOf('Seer', SEER_TEXT)] }).api
+
+async function open({ user, createGame, cards = cardServer(), ...script }: Options = {}) {
   const server = startPrecons({ precons: LIST, ...script })
   const games = { createGame: vi.fn(createGame ?? (() => Promise.resolve(created))) }
   const auth = createAuthStore({
@@ -64,7 +79,7 @@ async function open({ user, createGame, ...script }: Options = {}) {
   })
   const view = await renderInRouter(
     <AuthContext.Provider value={auth}>
-      <PreconsPage api={server.api} games={games} />
+      <PreconsPage api={server.api} games={games} cards={cards} />
     </AuthContext.Provider>,
   )
   return { ...view, server, games, user: userEvent.setup() }
@@ -173,7 +188,15 @@ describe('the details', () => {
       board('commander', [cardLine('Ulalek')]),
       board('main', [
         cardLine('Sol Ring'),
-        cardLine('Kozilek', 'partial', { reasons: [reason('the discard is not implemented')] }),
+        cardLine('Kozilek', 'partial', {
+          reasons: [
+            reason(
+              'the discard is not implemented',
+              spanOf(KOZILEK_TEXT, 'Then discard two cards.').start,
+              spanOf(KOZILEK_TEXT, 'Then discard two cards.').end,
+            ),
+          ],
+        }),
         cardLine('Seer', 'manual'),
       ]),
     ],
@@ -190,7 +213,18 @@ describe('the details', () => {
     const kozilek = within(main).getByText('Kozilek').closest('li')
     expect(kozilek).toHaveAttribute('data-support', 'partial')
     expect(within(kozilek as HTMLElement).getByText('Partial')).toBeInTheDocument()
-    expect(kozilek).toHaveTextContent('Played by hand: The discard is not implemented')
+    expect(kozilek).toHaveTextContent('Played by hand:')
+    // The words of the card the clause covers stand beside the reason, once the card has been read.
+    await waitFor(() => expect(kozilek?.querySelector('blockquote')).not.toBeNull())
+    const clause = (kozilek as HTMLElement).querySelector('[data-clause]')
+    expect(clause?.querySelector('blockquote')).toHaveTextContent('“Then discard two cards.”')
+    expect(clause?.querySelector('p')).toHaveTextContent('The discard is not implemented')
+    const seer = within(main).getByText('Seer').closest('li')
+    await waitFor(() => expect(seer?.querySelector('blockquote')).not.toBeNull())
+    expect(seer?.querySelector('blockquote')).toHaveTextContent(
+      '“Flash / When this enters, exile a card from an opponent\u2019s hand.”',
+    )
+    expect(seer).toHaveTextContent('Played by hand')
     expect(within(main).getByText('Sol Ring').closest('li')).toHaveAttribute('data-support', 'verified')
     expect(within(main).getByText('Seer').closest('li')).toHaveTextContent('Manual')
     await page.user.click(within(dialog).getByRole('switch', { name: 'Only cards played by hand' }))
@@ -199,7 +233,7 @@ describe('the details', () => {
     expect(screen.queryByRole('region', { name: /Commander/ })).toBeNull()
   })
 
-  it('copies the cards that are not Verified, one `Name: clause` line each', async () => {
+  it('copies the cards that are not Verified, a block each with its clauses quoted beside the reasons', async () => {
     const page = await open({ views: [view] })
     await listed()
     await page.user.click(screen.getByRole('button', { name: 'Details of Eldrazi Unbound' }))
@@ -209,9 +243,47 @@ describe('the details', () => {
     // user-event's own clipboard stands in for the browser's.
     await waitFor(async () =>
       expect(await navigator.clipboard.readText()).toBe(
-        'Kozilek: The discard is not implemented\nSeer: played by hand',
+        [
+          'Kozilek (Partial) - decks: Eldrazi Unbound',
+          '  - "Then discard two cards.": The discard is not implemented',
+          '',
+          'Seer (Manual) - decks: Eldrazi Unbound',
+          '  - "Flash / When this enters, exile a card from an opponent\u2019s hand.": Played by hand',
+        ].join('\n'),
       ),
     )
+  })
+
+  it('waits for the card texts before it copies, so a list never leaves without its quotes', async () => {
+    const page = await open({ views: [view], cards: { get: () => new Promise(() => undefined) } })
+    await listed()
+    await page.user.click(screen.getByRole('button', { name: 'Details of Eldrazi Unbound' }))
+    expect(await screen.findByRole('button', { name: 'Reading card text…' })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    )
+    expect(screen.queryByRole('button', { name: 'Copy list of the cards played by hand' })).toBeNull()
+  })
+
+  it('shows and copies the reasons alone when the card texts cannot be read', async () => {
+    const page = await open({ views: [view], cards: { get: () => Promise.reject(new Error('offline')) } })
+    await listed()
+    await page.user.click(screen.getByRole('button', { name: 'Details of Eldrazi Unbound' }))
+    await page.user.click(
+      await screen.findByRole('button', { name: 'Copy list of the cards played by hand' }),
+    )
+    await waitFor(async () =>
+      expect(await navigator.clipboard.readText()).toBe(
+        [
+          'Kozilek (Partial) - decks: Eldrazi Unbound',
+          '  - The discard is not implemented',
+          '',
+          'Seer (Manual) - decks: Eldrazi Unbound',
+          '  - Played by hand',
+        ].join('\n'),
+      ),
+    )
+    expect(document.querySelector('blockquote')).toBeNull()
   })
 
   it('names what stops a deck the game cannot take, from the server’s issues', async () => {
