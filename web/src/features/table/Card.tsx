@@ -33,6 +33,8 @@ export interface CardProps {
   highlight?: Highlight
   /** Overrides what the active prompt does on a click: called with the id on a click or an activation by keyboard. */
   onSelect?: (id: ObjectId) => void
+  /** Words added to the spoken name, such as where the card waits and what casting it costs. */
+  words?: string
 }
 
 /** What a mark adds to a card's spoken name; a selection that reads as pressed needs no extra word. */
@@ -55,6 +57,7 @@ export const Card = memo(function Card({
   tabbable = true,
   highlight: given,
   onSelect: givenSelect,
+  words: extra,
 }: CardProps) {
   const object = usePlay((state) => state.objectsById[id])
   // The names of what it is attached to and of what is attached to it, for its cue and its spoken name.
@@ -93,7 +96,7 @@ export const Card = memo(function Card({
       data-doomed={outlook?.dies || undefined}
       data-fx={fxAttr(fx)}
       data-fx-side={fxSide(fx)}
-      aria-label={cardLabel(object, role, links) + words + outlookWords(outlook)}
+      aria-label={cardLabel(object, role, links) + (extra === undefined ? '' : `, ${extra}`) + words + outlookWords(outlook)}
       aria-pressed={highlight === undefined || !pressable ? undefined : highlight === 'selected'}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}

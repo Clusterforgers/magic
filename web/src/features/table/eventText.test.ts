@@ -121,7 +121,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Adapted: [{ Adapted: { object: 3, player: 1 } }, 'Forest adapts'],
   ClassLevelGained: [{ ClassLevelGained: { object: 3, player: 1, level: 2 } }, 'Forest becomes level 2'],
   Bolstered: [{ Bolstered: { object: 3, player: 1 } }, 'Bo bolsters'],
-  CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],
+  CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays out of the command zone'],
   CompanionRevealed: [{ CompanionRevealed: { player: 1 } }, 'Bo reveals a companion'],
   CompanionBrought: [{ CompanionBrought: { player: 1, object: 3 } }, 'Bo puts a companion into their hand'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
@@ -643,7 +643,7 @@ describe('events with more than one shape', () => {
     ['Poison', 'Bo had too many poison counters'],
     ['Conceded', 'Bo conceded'],
     ['OpponentReachedLife', 'Bo lost to a player at the winning life total'],
-    ['CommanderDamage', 'Bo was dealt 21 or more combat damage by one commander'],
+    ['CommanderDamage', 'Bo lost to commander damage'],
   ] as const)('says why a player lost: %s', (reason, text) => {
     expect(say({ PlayerLost: { player: 1, reason } })).toBe(text)
   })

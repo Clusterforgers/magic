@@ -15,7 +15,7 @@ import type {
   Zone,
   ZoneView,
 } from '@/protocol/generated'
-import { COMMANDERS, CREATURES, INSTANTS, LANDS, OTHERS } from './cards'
+import { COMMANDERS, CREATURES, INSTANTS, LANDS, OTHERS, PARTNERS } from './cards'
 import type { NonEmpty, Template } from './cards'
 import { buildLog } from './fixtureLog'
 
@@ -72,6 +72,34 @@ export interface LogContext {
 const zoneView = (cards: ObjectId[]): ZoneView => ({ count: cards.length, cards })
 const hidden = (count: number): ZoneView => ({ count, cards: null })
 const NO_MANA: ManaPool = { counts: [0, 0, 0, 0, 0, 0] }
+
+/** How often a commander was cast from the command zone: seat 1 twice, seat 0's first partner and seat 3 once. */
+function commanderCasts(seat: PlayerId, index: number): { casts: number; tax: number } {
+  const casts = index > 0 ? 0 : seat === 1 ? 2 : seat === 0 || seat === 3 ? 1 : 0
+  return { casts, tax: 2 * casts }
+}
+
+/**
+ * The commander damage a seat has taken: seat 1's commander dealt 14 to seat 0 and 20 to seat 2, seat 0's first
+ * partner 6 to seat 1; the other seats took none.
+ */
+function commanderDamage(
+  seat: PlayerId,
+  seats: number,
+  cards: readonly SeatCards[],
+): Pick<PlayerView, 'commander_damage'> {
+  const of = (owner: PlayerId): ObjectId | undefined => cards[owner]?.command[0]
+  const hits: [PlayerId, PlayerId, number][] = [
+    [1, 0, 14],
+    [1, 2, 20],
+    [0, 1, 6],
+  ]
+  const damage = hits.flatMap(([from, to, amount]) => {
+    const commander = of(from)
+    return to === seat && to < seats && commander !== undefined ? [{ commander, damage: amount }] : []
+  })
+  return damage.length === 0 ? {} : { commander_damage: damage }
+}
 
 /** Builds a table of `seats` seats; the same options always give the same table. */
 export function buildFixture(options: FixtureOptions): Fixture {
@@ -144,7 +172,10 @@ export function buildFixture(options: FixtureOptions): Fixture {
       pick(LANDS, seat),
     ]
     for (const template of yard) mine.graveyard.push(add(template, seat, { Graveyard: seat }).id)
-    mine.command.push(add(pick(COMMANDERS, seat), seat, { Command: seat }).id)
+    // Seat 0 plays a partner pair; every other seat one commander.
+    for (const template of seat === 0 ? PARTNERS : [pick(COMMANDERS, seat)]) {
+      mine.command.push(add(template, seat, { Command: seat }).id)
+    }
     if (seat === viewer) {
       const hand: Template[] = [
         pick(LANDS, 1),
@@ -222,6 +253,9 @@ export function buildFixture(options: FixtureOptions): Fixture {
     library: hidden(48 - seat),
     graveyard: zoneView(mine.graveyard),
     command: zoneView(mine.command),
+    commanders: mine.command.map((object, index) => ({ object, ...commanderCasts(seat, index) })),
+    commander_lethal: 21,
+    ...commanderDamage(seat, seats, cards),
     bank: 0,
   }))
 

@@ -41,6 +41,7 @@ export function LogPanel() {
   const log = usePlay((state) => state.log)
   const objects = usePlay((state) => state.objectsById)
   const seat = useSeatNamer()
+  const players = usePlay((state) => state.view?.players)
   const seats = usePlay(
     useShallow(
       (state) =>
@@ -48,8 +49,8 @@ export function LogPanel() {
     ),
   )
   const lines = useMemo(
-    () => foldLog(log, { seat, card: (id) => objects[id]?.name || 'a card' }, { seats }),
-    [log, objects, seat, seats],
+    () => foldLog(log, { seat, card: (id) => objects[id]?.name || 'a card' }, { seats, players }),
+    [log, objects, seat, seats, players],
   )
   const scroller = useRef<HTMLDivElement>(null)
   const following = useRef(true)

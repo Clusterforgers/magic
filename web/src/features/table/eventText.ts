@@ -409,6 +409,11 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
   }
   if ('ZoneChanged' in event) {
     const { object, to, cause } = event.ZoneChanged
+    if (typeof to !== 'string' && 'Command' in to) {
+      // A commander that goes home: the answer to the return question, or a move the question replaced.
+      const how = cause === 'Moved' || cause === 'StateBased' || typeof cause === 'object' ? '' : `${BECAUSE[cause]} and `
+      return line(`${n.card(object)} ${how}returns to the command zone`)
+    }
     return line(
       cause === 'Moved'
         ? `${n.card(object)} moves to ${zoneWord(to, n)}`
@@ -526,7 +531,7 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return line(`${n.seat(owner)} copies ${n.card(of.id)}`)
   }
   if ('CopyCeased' in event) return line(`${n.card(event.CopyCeased.object)} ceases to exist`)
-  if ('CommanderStayed' in event) return line(`${n.card(event.CommanderStayed.object)} stays where it is`)
+  if ('CommanderStayed' in event) return line(`${n.card(event.CommanderStayed.object)} stays out of the command zone`)
   if ('CompanionRevealed' in event)
     return line(`${n.seat(event.CompanionRevealed.player)} reveals a companion`)
   if ('CompanionBrought' in event) {

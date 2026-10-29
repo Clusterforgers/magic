@@ -83,6 +83,8 @@ export interface TileFacts {
   priority: boolean
   eliminated: boolean
   focused: boolean
+  /** The commander tax and damage chips in words; none by default. */
+  commander?: readonly string[]
 }
 
 /** The accessible name of a tile: "Show Bo's board. Life 38, 6 cards in hand, ..., active turn". */
@@ -95,6 +97,7 @@ export function tileName(facts: TileFacts): string {
     `${counts.graveyard} in graveyard`,
     `${counts.exile} in exile`,
     counts.command > 0 ? `${counts.command} in the command zone` : null,
+    ...(facts.commander ?? []),
     facts.active ? 'active turn' : null,
     facts.priority ? 'has priority' : null,
     facts.eliminated ? 'eliminated' : null,

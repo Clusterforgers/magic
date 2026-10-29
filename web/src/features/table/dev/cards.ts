@@ -171,3 +171,9 @@ export const COMMANDERS: NonEmpty<Template> = [
   commander('Prosper, Tome-Bound', cost(2, [0, 0, 1, 1, 0]), ['Black', 'Red'], ['Tiefling', 'Warlock']),
   commander('Zur the Enchanter', cost(1, [1, 1, 1, 0, 0]), ['White', 'Blue', 'Black'], ['Human', 'Wizard']),
 ]
+
+/** A partner pair, the two commanders of seat 0. */
+export const PARTNERS: [Template, Template] = [
+  commander('Tymna the Weaver', cost(1, [1, 0, 1, 0, 0]), ['White', 'Black'], ['Human', 'Cleric']),
+  commander('Thrasios, Triton Hero', cost(0, [0, 1, 0, 0, 1]), ['Blue', 'Green'], ['Merfolk', 'Wizard']),
+]

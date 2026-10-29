@@ -27,6 +27,63 @@ export type DevPrompt = (fixture: Fixture) => PendingDecision
 
 const isLand = (object: ObjectView): boolean => object.types.includes('Land')
 
+/** The viewer's commanders that wait in its command zone. */
+const waitingCommanders = (view: StateView): ObjectId[] => {
+  const player = view.players[view.viewer]
+  const command = player?.command.cards ?? []
+  return (player?.commanders ?? []).map((entry) => entry.object).filter((id) => command.includes(id))
+}
+
+/**
+ * The viewer's second partner went to the graveyard and its owner is asked whether it returns; seat 3 lost to 21
+ * commander damage from seat 1's commander.
+ */
+const commanderReturnTable: DevTable = (fixture) => {
+  const { view } = fixture
+  const viewer = view.viewer
+  const owner = view.players[viewer]
+  const id = owner?.commanders?.at(-1)?.object
+  if (owner === undefined || id === undefined) return fixture
+  const attacker = view.players[1]?.commanders?.[0]?.object
+  const players = view.players.map((player) => {
+    if (player.seat === viewer) {
+      const command = (player.command.cards ?? []).filter((card) => card !== id)
+      const graveyard = [...(player.graveyard.cards ?? []), id]
+      return {
+        ...player,
+        command: { count: command.length, cards: command },
+        graveyard: { count: graveyard.length, cards: graveyard },
+      }
+    }
+    if (player.seat === 3 && attacker !== undefined) {
+      return {
+        ...player,
+        lost: 'CommanderDamage' as const,
+        commander_damage: [{ commander: attacker, damage: 21 }],
+      }
+    }
+    return player
+  })
+  const objects = view.objects.map((object) =>
+    object.id === id ? { ...object, zone: { Graveyard: viewer } } : object,
+  )
+  return withView(fixture, {
+    players,
+    objects,
+    priority: null,
+  })
+}
+
+/** The question the return table asks: the commander in the graveyard, in the engine's words. */
+const commanderReturn: DevPrompt = ({ view }) => {
+  const id = view.players[view.viewer]?.commanders?.at(-1)?.object ?? 0
+  const name = view.objects.find((object) => object.id === id)?.name ?? 'the commander'
+  return {
+    id: 1,
+    decision: { player: view.viewer, kind: { YesNo: { source: id, text: `Put ${name} into the command zone?` } } },
+  }
+}
+
 /**
  * Priority over the fixture's stack: the hand's lands may be played, all but the last spell of the hand may be cast
  * and every untapped permanent that makes mana may be tapped. The first non-land mana source gets an invented second
@@ -57,7 +114,8 @@ const priority: DevPrompt = ({ view }) => {
   })
   const options: PriorityOptions = {
     playable_lands: hand.filter(isLand).map((object) => object.id),
-    castable: spells.slice(0, -1).map((object) => object.id),
+    // The commanders in the command zone are cast like the hand's spells.
+    castable: [...waitingCommanders(view), ...spells.slice(0, -1).map((object) => object.id)],
     mana_abilities,
     can_act: true,
     can_pass: true,
@@ -374,6 +432,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-locked': payLocked,
   'pay-hybrid': payHybrid,
   'pay-low-life': payLowLife,
+  'commander-return': commanderReturn,
   ...EFFECT_PROMPTS,
 }
 
@@ -416,6 +475,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'yield-resolve': (fixture) =>
     withView(fixture, { priority: { holder: fixture.view.turn.active, passed: [] } }),
   'yield-turn': quietMoment('Upkeep', false, false),
+  'commander-return': commanderReturnTable,
   ...EFFECT_MOMENTS,
 }
 
