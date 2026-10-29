@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Triggered":{"effects":[{"Sacrifice":{"filter":["This"]}}],"when":{"State":{"condition":{"Compare":{"left":{"Count":[{"Type":"Enchantment"},{"ControlledBy":"You"}]},"op":"Eq","right":0}}}}} }]} ]}

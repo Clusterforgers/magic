@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f70e72e1-9abe-485b-9fea-e8b35352f5b3",
+  "name": "Pendelhaven",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pendelhaven",
+      "oracle_fingerprint": "1e0ea167734f1efd261ef16cf2612dd9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 14, "end": 68 }
+          }
+        }
+      ]
+    }
+  ]
+}

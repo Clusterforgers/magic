@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"GainLife":{"amount":{"Count":[{"Type":"Creature"},"Attacking"]}}}],"when":{"Batch":{"AttacksPlayer":{"at":"You","what":[{"Type":"Creature"}]}}}}}] } ]}

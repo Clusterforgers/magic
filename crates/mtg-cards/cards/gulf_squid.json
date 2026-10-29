@@ -1,0 +1,26 @@
+{
+  "oracle_id": "98a60a97-3a43-4544-8ea3-40d0bad79caf",
+  "name": "Gulf Squid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gulf Squid",
+      "oracle_fingerprint": "1863787bc88a7139ad984acde1d435ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

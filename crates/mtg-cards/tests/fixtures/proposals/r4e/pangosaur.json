@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Move":{"to":"Hand","what":"This"}}],"when":{"ZoneChange":{"what":[{"Type":"Land"}],"from":"Hand","to":"Battlefield"}}}}]}
+
+  ]}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "86783f8d-26c9-4b8c-a697-ab6facafeb67",
+  "name": "Grizzly Ghoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grizzly Ghoul",
+      "oracle_fingerprint": "879ef4d9eef11606de3b97bfdbd079a9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

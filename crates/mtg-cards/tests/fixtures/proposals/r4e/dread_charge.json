@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"Color":"Black"}]},"duration":"UntilEndOfTurn","mods":[{"CantBeBlockedBy":[{"Not":{"Subtype":"Black"}}]}]}}]}}] }]}

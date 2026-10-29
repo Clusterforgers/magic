@@ -1,0 +1,25 @@
+{
+  "oracle_id": "af55096c-af6b-479f-8257-144e596e89d8",
+  "name": "Vindictive Mob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vindictive Mob",
+      "oracle_fingerprint": "f9fe791d7726af183ea3fede49edff44",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Saproling" }] }]
+          }
+        }
+      ]
+    }
+  ]
+}

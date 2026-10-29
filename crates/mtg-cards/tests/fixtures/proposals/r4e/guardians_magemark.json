@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasAttached":[{"Type":"Artifact"}]}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}]}]}

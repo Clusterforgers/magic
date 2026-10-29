@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Shield":{"by":"Prevent","duration":"UntilEndOfTurn","when":{"Damage":{"source":[{"Type":"Creature"}],"to":{"Each":[{"Type":"Planeswalker"},{"Type":"Creature"},{"Type":"Sorcery"}]}}}}}]} }]}]}

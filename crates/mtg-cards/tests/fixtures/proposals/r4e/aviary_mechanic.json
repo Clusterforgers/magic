@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"May":{"effects":[{"Choose":{"as":"returned","from":{"Each":[{"Type":"Creature"},{"Color":"Green"},{"Color":"White"}]}}},{"Move":{"to":"Hand","what":{"Bound":"returned"}}}]} }],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}}}]}] }

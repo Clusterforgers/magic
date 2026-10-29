@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":[{"AddKeyword":"DoubleStrike"}],"condition":{"Compare":{"left":{"Tallied":{"what":"Drawn","who":"You"}},"op":"Ge","right":2}}}}]}] }

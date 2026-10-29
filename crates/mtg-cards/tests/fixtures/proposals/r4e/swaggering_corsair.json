@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"by":{"WithCounters":{"count":1,"counter":"+1/+1"}},"when":{"Enters":{"what":["This"]}},"condition":{"Compare":{"left":{"Tallied":{"what":"Attackers","who":"You"}},"op":"Ge","right":1}}} }]} ]}

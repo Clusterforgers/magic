@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Activated":{"cost":[{"Mana":"{U}"}],"effects":[{"Move":{"to":"Hand","what":"Attached"}},{"Move":{"to":"Hand","what":"This"}}]}}]} ]}

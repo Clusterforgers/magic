@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2a89feeb-9e66-4539-bd75-7d9d53f52d49",
+  "name": "Shoot Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shoot Down",
+      "oracle_fingerprint": "e3ab74c314c40e4737ba6548b7198758",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Artifact" }] },
+                    { "Object": [{ "Type": "Enchantment" }] },
+                    { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
