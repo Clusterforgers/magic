@@ -5,6 +5,7 @@ import { commanderDamageLine } from './commander'
 import { commanderHits } from './commanderLog'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
+import { manualRun, manualText } from './manual/manualLog'
 
 /** One line of the folded log. */
 export interface FoldedLine {
@@ -17,6 +18,8 @@ export interface FoldedLine {
   passed: readonly PlayerId[]
   /** For a folded line of passes: the words that name the seats, which the line itself leaves to their colour dots. */
   spoken: string
+  /** Set for a line that tells something a seat did by hand. */
+  manual?: true
 }
 
 /** The events that mean something on the stack was passed over: it is about to resolve. */
@@ -62,7 +65,13 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
     log.map((entry) => entry.event),
     options.players ?? [],
   )
+  // The events after a manual action that its sentence already tells.
+  let told = 0
   log.forEach(({ seq, event }, index) => {
+    if (told > 0) {
+      told -= 1
+      return
+    }
     const view = 'Public' in event ? event.Public : null
     if (view !== null && typeof view !== 'string' && 'PriorityGranted' in view) return
     if (view !== null && typeof view !== 'string' && 'PriorityPassed' in view) {
@@ -71,6 +80,19 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
       return
     }
     flush(view ?? undefined)
+    const manual = manualRun(log, index)
+    if (manual !== null) {
+      told = manual.consumed
+      lines.push({
+        seq,
+        text: manualText(event, manual.from, names),
+        minor: false,
+        passed: [],
+        spoken: '',
+        manual: true,
+      })
+      return
+    }
     const hit = hits.get(index)
     const line =
       hit === undefined

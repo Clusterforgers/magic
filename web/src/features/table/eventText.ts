@@ -244,50 +244,71 @@ function zoneWord(zone: Zone, n: EventNames): string {
 
 const MANUAL_ZONE: Record<ManualZone, string> = {
   Battlefield: 'the battlefield',
-  Hand: 'their hand',
-  Graveyard: 'their graveyard',
+  Hand: 'the hand',
+  Graveyard: 'the graveyard',
   Exile: 'exile',
-  LibraryTop: 'the top of their library',
-  LibraryBottom: 'the bottom of their library',
+  LibraryTop: 'the top of the library',
+  LibraryBottom: 'the bottom of the library',
   Command: 'the command zone',
 }
 
-/** What a seat did by hand, as one sentence; the events of the change follow it in the log. */
-function describeManual(player: PlayerId, action: ManualAction, n: EventNames): string {
+/** The zone a card left, without whose it was. */
+function leftWord(zone: Zone): string {
+  if (zone === 'Battlefield' || zone === 'PhasedOut') return 'the battlefield'
+  if (zone === 'Stack') return 'the stack'
+  if (zone === 'Exile') return 'exile'
+  if ('Library' in zone) return 'the library'
+  if ('Hand' in zone) return 'the hand'
+  if ('Graveyard' in zone) return 'the graveyard'
+  return 'the command zone'
+}
+
+/**
+ * What a seat did by hand, as one sentence; the events of the change follow it in the log. `from` is the zone a moved
+ * card left, which the action does not name and the change does (`foldLog` passes it).
+ */
+export function describeManual(player: PlayerId, action: ManualAction, n: EventNames, from?: Zone): string {
   const who = n.seat(player)
   if ('Move' in action) {
-    return `${who} moves ${n.card(action.Move.object)} to ${MANUAL_ZONE[action.Move.to]} by hand`
+    const left = from === undefined ? '' : ` from ${leftWord(from)}`
+    return `${who} moves ${n.card(action.Move.object)}${left} to ${MANUAL_ZONE[action.Move.to]} (by hand)`
   }
   if ('MoveTop' in action) {
     const { count, to } = action.MoveTop
-    return `${who} moves the top ${cards(count)} of their library to ${MANUAL_ZONE[to]} by hand`
+    return `${who} moves the top ${cards(count)} of their library to ${MANUAL_ZONE[to]} (by hand)`
   }
   if ('Counters' in action) {
     const { object, counter, delta } = action.Counters
     const phrase = counterPhrase(Math.abs(delta), counter)
-    return `${who} ${delta > 0 ? 'puts' : 'removes'} ${phrase} ${delta > 0 ? 'on' : 'from'} ${n.card(object)} by hand`
+    return `${who} ${delta > 0 ? 'puts' : 'removes'} ${phrase} ${delta > 0 ? 'on' : 'from'} ${n.card(object)} (by hand)`
   }
   if ('PlayerCounters' in action) {
     const { counter, delta } = action.PlayerCounters
-    return `${who} ${delta > 0 ? 'gets' : 'loses'} ${counterPhrase(Math.abs(delta), counter)} by hand`
+    return `${who} ${delta > 0 ? 'gets' : 'loses'} ${counterPhrase(Math.abs(delta), counter)} (by hand)`
   }
   if ('Life' in action) {
     const { delta } = action.Life
-    return `${who} ${delta > 0 ? 'gains' : 'loses'} ${Math.abs(delta)} life by hand`
+    return `${who} ${delta > 0 ? 'gains' : 'loses'} ${Math.abs(delta)} life (by hand)`
   }
   if ('CreateToken' in action) {
     const { token, count } = action.CreateToken
     const name = 'Common' in token ? token.Common : token.Custom.name
-    return `${who} creates ${count} ${name} ${count === 1 ? 'token' : 'tokens'} by hand`
+    return `${who} creates ${count} ${name} ${count === 1 ? 'token' : 'tokens'} (by hand)`
   }
-  if ('Tap' in action) return `${who} taps ${n.card(action.Tap.object)} by hand`
-  if ('Untap' in action) return `${who} untaps ${n.card(action.Untap.object)} by hand`
-  if ('Draw' in action) return `${who} draws ${cards(action.Draw.count)} by hand`
-  if ('Discard' in action) return `${who} discards ${n.card(action.Discard.object)} by hand`
+  if ('Tap' in action) return `${who} taps ${n.card(action.Tap.object)} (by hand)`
+  if ('Untap' in action) return `${who} untaps ${n.card(action.Untap.object)} (by hand)`
+  if ('Draw' in action) return `${who} draws ${cards(action.Draw.count)} (by hand)`
+  if ('Discard' in action) return `${who} discards ${n.card(action.Discard.object)} (by hand)`
   if ('Attach' in action) {
-    return `${who} attaches ${n.card(action.Attach.object)} to ${n.card(action.Attach.to)} by hand`
+    return `${who} attaches ${n.card(action.Attach.object)} to ${n.card(action.Attach.to)} (by hand)`
   }
-  return `${who} takes ${n.card(action.Unattach.object)} off what it is attached to by hand`
+  return `${who} takes ${n.card(action.Unattach.object)} off what it is attached to (by hand)`
+}
+
+/** A card moved by hand that the viewer cannot name, in the words of `describeManual`; `from` is the zone it left. */
+export function describeHiddenManual(player: PlayerId, to: ManualZone, n: EventNames, from?: Zone): string {
+  const left = from === undefined ? '' : ` from ${leftWord(from)}`
+  return `${n.seat(player)} moves a card${left} to ${MANUAL_ZONE[to]} (by hand)`
 }
 
 /** What a player's answer to a question of a spell or ability says, after their name. */
@@ -777,8 +798,7 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return line(`A delayed ability of ${n.card(event.DelayedTriggerCreated.source.id)} is set up`)
   }
   if ('ManualMove' in event) {
-    const { player, to } = event.ManualMove
-    return line(`${n.seat(player)} moves a card to ${MANUAL_ZONE[to]} by hand`)
+    return line(describeHiddenManual(event.ManualMove.player, event.ManualMove.to, n))
   }
   void (event satisfies { StepDone: unknown })
   return quiet('A step of the resolution is done')
