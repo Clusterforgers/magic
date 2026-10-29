@@ -3,17 +3,13 @@ import type { GameContextValue } from '@/features/game/gameContext'
 import type { LobbyApi } from '@/features/game/useLobbyControls'
 import type { KnownGame } from '@/features/game/useGameInfo'
 import type { DeckInfo } from '@/net/api'
-import { createDecksApi } from '@/net/decks'
-import type { DecksApi } from '@/net/decks'
 import { LobbyError } from '@/net/lobbyErrors'
 import { createSession } from '@/play/session'
 import type { Session } from '@/play/session'
 import { initialPlayState } from '@/play/store'
 import type { LobbyRoster } from '@/play/store'
 import type { Counts, DeckListItem, DeckState, HouseRules, SeatDeck } from '@/protocol/generated'
-import { counts as tallyOf, legalityIssue, reportCard, reportOf, summary } from '@/features/decks/fakeDecks'
-import type { PreconsApi } from '@/net/precons'
-import type { PreconListItem } from '@/protocol/generated'
+import { legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { DevLobbySearch } from './lobbySearch'
 
 /** The text the dev page prints, so a production bundle can be searched for any trace of the fixture. */
@@ -81,7 +77,8 @@ function storedDeck(
 }
 
 /** The signed-in player's stored decks: verified, with cards to resolve by hand, blocked, and one the game refuses. */
-const STORED_DECKS: DeckListItem[] = [
+/** The stored decks every fixture lists first. */
+export const STORED_DECKS: DeckListItem[] = [
   storedDeck('stored-burn', 'Burn', 'modern', 'manual_play', counts({ verified: 57, manual: 3 })),
   storedDeck(
     'stored-pauper',
@@ -188,7 +185,10 @@ function setDeck(session: Session, seat: number, deck: SeatDeck): void {
  * roster as the server's next `Lobby` message would. A deck is chosen after a short wait and shows in the roster; the
  * Commander deck is refused with its issues, as a Normal game refuses it. Close and Leave then take the page to Play.
  */
-export function lobbyApi(session: Session, options: Pick<DevLobbySearch, 'format'> = {}): LobbyApi {
+export function lobbyApi(
+  session: Session,
+  options: Pick<DevLobbySearch, 'format'> & { lookup?: (id: string) => SeatDeck | undefined } = {},
+): LobbyApi {
   return {
     setVisibility: async (_game, visibility) => visibility,
     closeGame: async () => undefined,
@@ -228,7 +228,7 @@ export function lobbyApi(session: Session, options: Pick<DevLobbySearch, 'format
       const facts =
         demo === undefined
           ? stored === undefined
-            ? undefined
+            ? options.lookup?.(id)
             : factsOf(stored)
           : { name: demo.name, format: 'normal', manual_cards: 0 }
       if (facts === undefined) throw new LobbyError('unknown_deck', 404, 'no such deck')
@@ -238,21 +238,8 @@ export function lobbyApi(session: Session, options: Pick<DevLobbySearch, 'format
   }
 }
 
-/** The signed-in player's deck calls: the list of stored decks, from memory. */
-export function lobbyDecks(): DecksApi {
-  const answer = (body: unknown): Response =>
-    new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } })
-  return createDecksApi({
-    fetch: async (url, init) => {
-      if (!url.endsWith('/api/decks/check')) return answer({ decks: STORED_DECKS })
-      const asked = JSON.parse(String(init?.body)) as { deck: string }
-      return answer(tableReport(asked.deck))
-    },
-  })
-}
-
 /** What the table says of a deck: stored decks by their check state, precons by their code. */
-function tableReport(deck: string) {
+export function tableReport(deck: string) {
   const stored = STORED_DECKS.find((candidate) => candidate.id === deck)
   const state = stored?.state ?? PRECON_STATES[deck] ?? 'verified'
   const cards = [reportCard('Forest', { count: 90 })]
@@ -266,39 +253,4 @@ const PRECON_STATES: Record<string, DeckState> = {
   'precon:c18-draconic-domination': 'verified',
   'precon:c19-merciless-rage': 'manual_play',
   'precon:c17-arcane-wizardry': 'blocked',
-}
-
-const precon = (
-  code: string,
-  name: string,
-  set: string,
-  commanders: string[],
-  state: DeckState,
-): PreconListItem => ({
-  code,
-  name,
-  set,
-  deck_type: commanders.length > 0 ? 'Commander Deck' : 'Starter Deck',
-  release_date: '2018-08-10',
-  commanders,
-  card_count: 100,
-  format: commanders.length > 0 ? 'commander' : 'freeform',
-  state,
-  verified: state === 'verified',
-  playable: state !== 'blocked',
-  summary: summary({ state, counts: tallyOf({ total: 100 }) }),
-})
-
-/** The precons of the fixture: two that play, one the table cannot take, and one without a commander. */
-export function lobbyPrecons(): Pick<PreconsApi, 'list'> {
-  return {
-    list: async () => ({
-      precons: [
-        precon('c19-merciless-rage', 'Merciless Rage', 'c19', ['Kediss, Emberclaw Familiar'], 'manual_play'),
-        precon('c18-draconic-domination', 'Draconic Domination', 'c18', ['The Ur-Dragon'], 'verified'),
-        precon('c17-arcane-wizardry', 'Arcane Wizardry', 'c17', ['Inalla, Archmage Ritualist'], 'blocked'),
-        precon('st-mono-white', 'Mono White Starter', 'st', [], 'verified'),
-      ],
-    }),
-  }
 }

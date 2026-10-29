@@ -215,6 +215,16 @@ const STOPS: readonly Stop[] = [
     },
   },
   {
+    name: 'A lobby (dev) of a Commander game with a long list of decks and a preview',
+    fitsFrom: Infinity,
+    actions: { Ready: 'text:Ready', 'Close game': 'text:Close game' },
+    async open(page) {
+      await page.goto(`${DEV_WEB_URL}/dev/lobby?seats=4&me=0&nodeck=0&account=1&format=commander&decks=many`)
+      await expect(page.getByRole('option', { name: /Atraxa Superfriends/ })).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Ready', exact: true })).toBeVisible()
+    },
+  },
+  {
     name: 'The deck builder (dev), the search pane',
     fitsFrom: 640,
     actions: { 'Search cards': 'main input[aria-label="Search cards"]' },
