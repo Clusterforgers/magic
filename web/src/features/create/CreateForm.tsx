@@ -177,7 +177,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         <p className="mt-1 text-base text-muted-foreground">
           {draft.links
             ? 'Choose how many seats there are, then give each a name and a deck. You get one link per seat to send to your friends.'
-            : 'Choose how many seats there are and who can find the game. Your friends take the other seats from the game browser or with a link or code.'}
+            : 'Your friends take the other seats from the game browser or with a link or code.'}
         </p>
         {account === null ? null : (
           <p data-slot="signed-in-note" className="mt-2 text-sm break-words">

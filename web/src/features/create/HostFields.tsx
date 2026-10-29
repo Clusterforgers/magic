@@ -105,7 +105,7 @@ export function HostFields({ draft, decks, problems, onEdit, onCount }: HostFiel
         </div>
       ) : (
         <p data-slot="deck-later" className="text-sm text-muted-foreground">
-          You choose your deck in the lobby, where each deck shows whether it plays at this table.
+          You choose your deck in the lobby.
         </p>
       )}
     </section>

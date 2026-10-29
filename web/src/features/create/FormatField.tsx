@@ -4,12 +4,12 @@ const FORMATS: readonly { value: GameFormat; name: string; words: string }[] = [
   {
     value: 'commander',
     name: 'Commander',
-    words: '2 to 6 players, 40 life, a commander each. Play a precon or a deck of yours.',
+    words: '2 to 6 players, 40 life, a commander each',
   },
   {
     value: 'normal',
     name: 'Normal',
-    words: '2 to 12 players, 20 life. Play a built-in deck or one of yours.',
+    words: '2 to 12 players, 20 life, 60-card decks',
   },
 ]
 
@@ -27,7 +27,7 @@ export function FormatField({ value, onChange }: FormatFieldProps) {
         {FORMATS.map((format) => (
           <label
             key={format.value}
-            className="flex cursor-pointer items-start gap-3 rounded-lg border border-border-strong px-3 py-3 has-checked:border-primary has-checked:bg-muted has-focus-visible:ring-3 has-focus-visible:ring-ring"
+            className="flex cursor-pointer items-start gap-3 rounded-lg border border-border-strong px-3 py-2 has-checked:border-primary has-checked:bg-muted has-focus-visible:ring-3 has-focus-visible:ring-ring"
           >
             <input
               type="radio"

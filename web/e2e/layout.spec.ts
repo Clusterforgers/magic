@@ -136,6 +136,16 @@ const STOPS: readonly Stop[] = [
     },
   },
   {
+    name: 'Create a game, with House rules open',
+    fitsFrom: Infinity,
+    actions: { 'Create game': 'main form button[type="submit"]' },
+    async open(page) {
+      await page.goto('/new')
+      await page.locator('[data-slot="house-rules"] summary').click()
+      await expect(page.getByLabel('Starting life')).toBeVisible()
+    },
+  },
+  {
     name: 'A lobby of four seats, as its host',
     fitsFrom: Infinity,
     actions: { Ready: 'text:Ready', 'Close game': 'text:Close game' },
