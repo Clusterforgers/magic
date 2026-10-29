@@ -2911,6 +2911,7 @@ impl Walker<'_> {
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
+            | GameRule::VoteAgain(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)

@@ -580,6 +580,14 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if let Some(rule) = r.attempt(super::c4_rules::read) {
         return Some(rule);
     }
+    if let Some(rule) = r.attempt(|r| {
+        r.need("while voting")?;
+        r.punct(',').then_some(())?;
+        r.need("you may vote an additional time")?;
+        Some(GameRule::VoteAgain(Ref::You))
+    }) {
+        return Some(rule);
+    }
     lands::additional(r)
 }
 
@@ -1539,6 +1547,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
         (GameRule::CantSearch(_) | GameRule::SkipExtraTurns(_), ZoneKind::Battlefield) => {
             super::c4_rules::texts(rule)
+        }
+        (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {
+            vec!["While voting, you may vote an additional time".to_owned()]
         }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]

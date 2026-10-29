@@ -253,6 +253,7 @@ const RUNS: &[&str] = &[
     "Rule.PlayersHave",
     "Rule.CantDraw",
     "Rule.CantSearch",
+    "Rule.VoteAgain",
     "Rule.SkipExtraTurns",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",

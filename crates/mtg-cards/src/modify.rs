@@ -302,6 +302,9 @@ pub enum GameRule {
     CantDraw(Ref),
     /// The players can't search libraries.
     CantSearch(Ref),
+    /// The players may vote an additional time each time they vote: "While voting, you may vote an additional time."
+    /// (CR 701.38d).
+    VoteAgain(Ref),
     /// A player in the group who would begin an extra turn skips that turn instead (CR 500.7).
     SkipExtraTurns(Ref),
     /// The players play with the top card of their library revealed to every seat.
