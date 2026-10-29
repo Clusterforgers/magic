@@ -50,7 +50,7 @@ function ReplacementRow({ index, candidate, object, label, onChoose, buttonRef }
         <PromptPicture object={object} size="compact" />
         <span className="min-w-0 flex-1">
           <span className="flex items-center justify-between gap-2 text-sm font-medium">
-            <span className="min-w-0 truncate">{label}</span>
+            <span className="line-clamp-2 min-w-0 break-words">{label}</span>
             {key === undefined ? null : <KeyHint>{key}</KeyHint>}
           </span>
           {wording === null ? null : (
