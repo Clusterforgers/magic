@@ -116,6 +116,7 @@ mod statics;
 mod stations;
 pub(super) mod subtypes;
 mod t15a_alt_costs;
+mod target_phrases;
 #[cfg(test)]
 mod tests;
 mod token_binds;
@@ -177,6 +178,7 @@ pub use render::{
 };
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
+pub use target_phrases::target_phrases;
 pub use tokens::same_text;
 
 use super::{ClauseKind, classify};

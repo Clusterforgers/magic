@@ -21,7 +21,7 @@ fn target_index(map: &Map<String, Value>) -> Option<u64> {
 }
 
 /// Whether the value holds a scope of its own at any depth.
-fn scoped(value: &Value) -> bool {
+pub(super) fn scoped(value: &Value) -> bool {
     match value {
         Value::Object(map) => map
             .iter()
@@ -32,7 +32,7 @@ fn scoped(value: &Value) -> bool {
 }
 
 /// The indexes the references of the value use.
-fn used(value: &Value, found: &mut BTreeSet<u64>) {
+pub(super) fn used(value: &Value, found: &mut BTreeSet<u64>) {
     match value {
         Value::Object(map) => match target_index(map) {
             Some(index) => {
@@ -80,7 +80,7 @@ fn trigger_to_target(value: &mut Value, index: u64) -> usize {
 
 /// The indexes the effects of the body use: a target is chosen for the effects, so a reference elsewhere (the event of a
 /// trigger) is no use of it.
-fn used_by(body: &Map<String, Value>) -> BTreeSet<u64> {
+pub(super) fn used_by(body: &Map<String, Value>) -> BTreeSet<u64> {
     let mut found = BTreeSet::new();
     if let Some(effects) = body.get("effects") {
         used(effects, &mut found);
