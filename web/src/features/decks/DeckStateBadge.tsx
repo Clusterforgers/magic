@@ -17,15 +17,17 @@ const LOOK: Record<DeckState, { Icon: LucideIcon; tone: PillTone; className?: st
 
 interface DeckStateBadgeProps extends Omit<ComponentProps<typeof Pill>, 'tone' | 'children'> {
   state: DeckState
+  /** Other words than the state's own, for a page that says more ('12 cards played by hand'). */
+  label?: string
 }
 
 /** The check state of a deck as a pill: an icon and a word (Verified, Manual play, Blocked, Unchecked), never colour alone. */
-export function DeckStateBadge({ state, className, ...props }: DeckStateBadgeProps) {
+export function DeckStateBadge({ state, label, className, ...props }: DeckStateBadgeProps) {
   const { Icon, tone, className: tint } = LOOK[state]
   return (
     <Pill tone={tone} data-deck-state={state} className={cn(tint, className)} {...props}>
       <Icon aria-hidden="true" />
-      {STATE_LABEL[state]}
+      {label ?? STATE_LABEL[state]}
     </Pill>
   )
 }

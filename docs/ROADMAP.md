@@ -47,6 +47,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Protocol and server: generated wire bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts, lobbies, open games and precons.
 - Game flow: auto-pass, response clocks, yields, stops, Full Control, idle windows, the timer bank and leak tests (`docs/arena-flow.md`).
 - Web: the game UI with prompts for all eight decision kinds, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
+- Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand, and one-click play.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
 - Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
 - Changes of control: targets, groups, the enchanted permanent, one target for each opponent with the untap and keywords after it, an untap before the taking, a base size or a creature type for the turn, each player taking back what they own, exchanges of control and a targeting spell or ability countered unless its controller pays (`docs/engine.md`, `docs/cards-dsl.md`).
@@ -334,8 +335,7 @@ The server is settled first, then the web is built once against the final types.
 
 ## M7 Product
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
-- [~] (B3) (w1-precons-web) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
-- [~] (w1a) (w1-precons-web) Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
+- [ ] (w1b) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
 - [~] (w2b) (w2-lobby-commander) House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
 - [~] (w2a) (w2-lobby-commander) Precons as a third kind of deck in the lobby picker (`docs/server.md`, `docs/deck-check.md`)
 - [~] (hr5c) (w2-lobby-commander) The lobby picker shows each deck's verdict at the table before joining, through `POST /api/decks/check` (`docs/server.md`, Precons)
