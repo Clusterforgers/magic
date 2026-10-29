@@ -21,6 +21,12 @@ export interface DevLobbySearch {
   format?: 'commander'
   /** `1` gives the game house rules that differ from its format's own. */
   rules?: true
+  /** `many` lists thirty-odd stored decks and precons, to look at a long list. */
+  decks?: 'many'
+  /** The state of the stored decks' list: `empty`, `loading` for ever or `failed`. */
+  list?: 'empty' | 'loading' | 'failed'
+  /** The cards of a deck: `slow` answers after 2.5 s, `failed` refuses. */
+  detail?: 'slow' | 'failed'
 }
 
 const FEWEST_SEATS = 2
@@ -43,7 +49,7 @@ function seatList(value: unknown, seats: number): number[] {
   return [...new Set(found)].sort((a, b) => a - b)
 }
 
-/** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=&format=&rules=`; the router has already parsed numbers and lists. */
+/** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=&format=&rules=&decks=&list=&detail=`; the router has already parsed numbers and lists. */
 export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySearch {
   const asked = whole(search.seats)
   const seats = asked === undefined || asked < FEWEST_SEATS || asked > MOST_SEATS ? 4 : asked
@@ -61,5 +67,11 @@ export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySe
     account: search.account === true || search.account === 1 || search.account === '1' ? true : undefined,
     format: search.format === 'commander' ? 'commander' : undefined,
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
+    decks: search.decks === 'many' ? 'many' : undefined,
+    list:
+      search.list === 'empty' || search.list === 'loading' || search.list === 'failed'
+        ? search.list
+        : undefined,
+    detail: search.detail === 'slow' || search.detail === 'failed' ? search.detail : undefined,
   }
 }

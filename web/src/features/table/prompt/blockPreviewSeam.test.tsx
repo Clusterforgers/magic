@@ -88,7 +88,7 @@ describe('the seam of the block preview', () => {
     expect(items[0]).toHaveTextContent('You would take no damage.')
     expect(items[1]).toHaveTextContent(/would die, your .* would die\.$/)
     expect(t.doomed().sort((a, b) => a - b)).toEqual([t.blocker, t.attacker].sort((a, b) => a - b))
-    expect(t.life(0)).toHaveTextContent('No combat damage')
+    expect(t.life(0)).toHaveAccessibleName('Takes no combat damage')
     expect(screen.getByRole('list', { name: 'Combat forecast' })).toBeInTheDocument()
     // The block lines stay what they are: dashed, with no colour of their own.
     expect(

@@ -55,7 +55,7 @@ describe('a signed-in player whose seat is saved to the account', () => {
   it('sees their own account on their seat and the other account on the other', async () => {
     await openLobby({ games: [mine()] })
     await waitFor(() => expect(rows()[1]).toHaveTextContent('signed in as bo'))
-    expect(rows()[0]).toHaveTextContent('Seat 1Anayousigned in as Ada_L')
+    expect(rows()[0]).toHaveTextContent('Seat 1Anayouhostsigned in as Ada_L')
     expect(rows()[1]).toHaveTextContent('Seat 2Bosigned in as bo')
   })
 

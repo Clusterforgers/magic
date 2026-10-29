@@ -23,6 +23,7 @@ import { ANNOUNCE_PROMPTS } from './announcePrompts'
 import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
+import { paySources, paySourcesTable } from './paySources'
 
 /** Builds the decision the viewer of a fixture faces. */
 export type DevPrompt = (fixture: Fixture) => PendingDecision
@@ -437,6 +438,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-locked': payLocked,
   'pay-hybrid': payHybrid,
   'pay-low-life': payLowLife,
+  'pay-sources': paySources,
   'commander-return': commanderReturn,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
@@ -470,6 +472,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   forecast: forecastScene,
   'pay-hybrid': hybridTable,
   'pay-low-life': hybridTable,
+  'pay-sources': paySourcesTable,
   mulligan: openingTable('Deciding'),
   'mulligan-free': openingTable('Deciding'),
   bottom: openingTable({ Bottoming: 2 }),

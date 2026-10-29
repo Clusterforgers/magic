@@ -1,4 +1,4 @@
-//! Goal: the picture endpoints answer over real HTTP on Postgres from a fake CDN: a card, printing, face, size and token pick the stored link and the picture arrives byte for byte with its type, week-long caching rule and `ETag`; a repeat is served from the cache and a matching `If-None-Match` is a 304 that needs neither cache nor CDN; requests for one picture make one CDN request, failure included; only https links under scryfall.io are fetched; a failing, lying or busy CDN leaves the cache clean and is waited out as the politeness rules say; the cache stays under its limit; and bad paths and queries are 400s and missing pictures the typed 404.
+//! Goal: the picture endpoints answer over real HTTP on Postgres from a fake CDN: a card, printing, face, size and token pick the stored link (a token whose power, toughness, type or colors changed keeps its picture) and the picture arrives byte for byte with its type, week-long caching rule and `ETag`; a repeat is served from the cache and a matching `If-None-Match` is a 304 that needs neither cache nor CDN; requests for one picture make one CDN request, failure included; only https links under scryfall.io are fetched; a failing, lying or busy CDN leaves the cache clean and is waited out as the politeness rules say; the cache stays under its limit; and bad paths and queries are 400s and missing pictures the typed 404.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::cdn::{Behavior, Cdn, body_for};
@@ -31,6 +31,10 @@ const ODD: u128 = 8;
 const GOBLIN_RED: u128 = 9;
 const GOBLIN_BLACK: u128 = 10;
 const TREASURE: u128 = 11;
+const THOPTER: u128 = 20;
+const THOPTER_TWIN: u128 = 21;
+const THOPTER_BIG: u128 = 22;
+const THOPTER_WHITE: u128 = 23;
 
 /// Printings of Alpha: the first two are paper, the digital one is newer, the last has no picture.
 const ALPHA_2020: u128 = 11;
@@ -98,6 +102,11 @@ fn token(
             "power": pt.0, "toughness": pt.1, "image_uris": links(tag, "front", &["normal"]),
         }),
     )
+}
+
+fn thopter(oracle: u128, colors: &Value, pt: (&str, &str), tag: &str) -> Value {
+    let line = "Token Artifact Creature \u{2014} Thopter";
+    token(oracle, "Thopter", line, colors, pt, tag)
 }
 
 /// Every card of the tests as the one JSON array the importer streams.
@@ -188,6 +197,10 @@ fn fixture() -> String {
             ("", ""),
             "treasure",
         ),
+        thopter(THOPTER_BIG, &json!([]), ("3", "3"), "thopter-big"),
+        thopter(THOPTER, &json!([]), ("1", "1"), "thopter"),
+        thopter(THOPTER_TWIN, &json!([]), ("1", "1"), "thopter-twin"),
+        thopter(THOPTER_WHITE, &json!(["W"]), ("1", "1"), "thopter-white"),
     ];
     serde_json::to_string(&all).unwrap()
 }
@@ -262,6 +275,7 @@ fn printing_path(printing: u128, face: &str, size: &str) -> String {
 }
 
 /// What a request must give: the path the CDN is asked for, or the status and error code.
+#[derive(Clone, Copy)]
 enum Expect {
     Picture(&'static str),
     Refused(u16, &'static str),
@@ -426,7 +440,7 @@ async fn identity_face_and_size_pick_the_picture(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = false)]
-async fn tokens_are_found_by_name_and_every_fact_given(pool: PgPool) {
+async fn tokens_are_found_by_name_and_the_facts_that_fit(pool: PgPool) {
     let cdn = Cdn::start().await;
     let dir = tempfile::tempdir().unwrap();
     let server = start(&pool, &cdn, dir.path(), &Setup::default()).await;
@@ -450,24 +464,18 @@ async fn tokens_are_found_by_name_and_every_fact_given(pool: PgPool) {
             "name=Treasure".to_owned(),
             Picture("/normal/front/t/s/treasure.jpg?1"),
         ),
-        ("name=Goblin&colors=G".to_owned(), Refused(404, "no_image")),
-        (
-            "name=Goblin&colors=R&power=3".to_owned(),
-            Refused(404, "no_image"),
-        ),
-        (
-            "name=Goblin&colors=R&toughness=9".to_owned(),
-            Refused(404, "no_image"),
-        ),
-        (
-            "name=Goblin&type=Creature%20-%20Zombie".to_owned(),
-            Refused(404, "no_image"),
-        ),
-        (
-            "name=Treasure&colors=R".to_owned(),
-            Refused(404, "no_image"),
-        ),
+        // Facts that no stored token has fall back to the name, then to the ones that fit most.
+        ("name=Goblin&colors=G".to_owned(), red),
+        ("name=Goblin&colors=G&power=2&toughness=2".to_owned(), black),
+        ("name=Goblin&colors=R&power=3".to_owned(), red),
+        ("name=Goblin&colors=R&toughness=9".to_owned(), red),
+        ("name=Goblin&type=Creature%20-%20Zombie".to_owned(), red),
+        ("name=Treasure&colors=R".to_owned(), treasure),
         ("name=Nothing".to_owned(), Refused(404, "no_image")),
+        (
+            "name=Nothing&colors=R&power=1".to_owned(),
+            Refused(404, "no_image"),
+        ),
         // A card of that name that is not a token is not a token.
         ("name=Alpha%20Bolt".to_owned(), Refused(404, "no_image")),
         (String::new(), Refused(400, "invalid_request")),
@@ -498,6 +506,48 @@ async fn tokens_are_found_by_name_and_every_fact_given(pool: PgPool) {
     }
     let bad_face = get(server.addr, "/api/images/token/x/normal?name=Goblin").await;
     assert_eq!(bad_face.status, 400);
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_buffed_token_keeps_its_picture_and_its_tag(pool: PgPool) {
+    let cdn = Cdn::start().await;
+    let dir = tempfile::tempdir().unwrap();
+    let server = start(&pool, &cdn, dir.path(), &Setup::default()).await;
+    let dash = "%E2%80%94";
+    let artifact = format!("name=Thopter&type=Artifact%20Creature%20{dash}%20Thopter");
+    // A Thopter 1/1 made 2/2 by an anthem is the 1/1 record; of two alike the smaller oracle id.
+    let cases = [
+        ("&colors=C&power=1&toughness=1", "thopter"),
+        ("&colors=C&power=2&toughness=2", "thopter"),
+        ("&colors=C&power=3&toughness=3", "thopter-big"),
+        ("&colors=C&power=9&toughness=9", "thopter"),
+        ("&colors=C", "thopter"),
+        ("&colors=W&power=4&toughness=4", "thopter-white"),
+        ("&colors=G&power=3&toughness=3", "thopter-big"),
+        ("&colors=G&power=9&toughness=9", "thopter"),
+    ];
+    let mut tags = Vec::new();
+    for (facts, picture) in cases {
+        let path = format!("/api/images/token/0/normal?{artifact}{facts}");
+        let upstream = format!("/normal/front/t/s/{picture}.jpg?1");
+        let first = get(server.addr, &path).await;
+        assert_eq!(first.status, 200, "{path}: {}", first.text());
+        assert_eq!(first.body, body_for(&upstream), "{path}");
+        let tag = first.header("etag").unwrap().to_owned();
+        let again = get(server.addr, &path).await;
+        assert_eq!((again.status, &again.body), (200, &first.body), "{path}");
+        assert_eq!(again.header("etag"), Some(tag.as_str()), "{path}");
+        let held = request(server.addr, "GET", &path, &[("If-None-Match", &tag)], b"").await;
+        assert_eq!(held.status, 304, "{path}");
+        tags.push(tag);
+    }
+    assert_eq!(
+        tags[0], tags[1],
+        "the tag follows the stored link, not the asked stats"
+    );
+    assert_ne!(tags[0], tags[2]);
+    let none = "/api/images/token/0/normal?name=Thopters&colors=C&power=2&toughness=2";
+    assert_eq!(get(server.addr, none).await.error_code(), "no_image");
 }
 
 #[sqlx::test(migrations = false)]

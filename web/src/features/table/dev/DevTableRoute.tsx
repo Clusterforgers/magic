@@ -53,6 +53,7 @@ function useRealIds(
 export function DevTableRoute() {
   const {
     seats,
+    board,
     mode,
     focus,
     prompt,
@@ -78,6 +79,7 @@ export function DevTableRoute() {
     return fixtureGame({
       states,
       seats,
+      board,
       prompt,
       holding: menu === undefined ? undefined : true,
       turn,
@@ -89,7 +91,7 @@ export function DevTableRoute() {
       fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
       real,
     })
-  }, [seats, prompt, menu, turn, step, hand, rules, states, cards, preview, stops, fc, real])
+  }, [seats, board, prompt, menu, turn, step, hand, rules, states, cards, preview, stops, fc, real])
   const view = game.session.store.getState().view
   const candidates = useMemo(
     () => (menu === undefined || view === null ? undefined : menuCandidates(view, view.viewer, menu)),

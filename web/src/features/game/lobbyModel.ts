@@ -100,6 +100,72 @@ export function summaryText(rows: readonly LobbyRow[]): string {
   return `${ready} of ${rows.length} ready, waiting for ${waiting.join(' and ')}`
 }
 
+const players = (count: number): string => `${count} ${count === 1 ? 'player' : 'players'}`
+
+/** The lobby's headline and how far it is. */
+export interface LobbyStatus {
+  /** "Waiting for 1 more player", "Waiting for 2 players to get ready" or "Everyone is ready: starting the game". */
+  headline: string
+  /** Seats that pressed Ready. */
+  ready: number
+  /** Seats at the table. */
+  seats: number
+  /** Every seat is ready. */
+  done: boolean
+}
+
+/** The headline over the seats: who is still to join, else who is still to get ready, else that the game starts. */
+export function lobbyStatus(rows: readonly LobbyRow[]): LobbyStatus {
+  const ready = rows.filter((row) => row.ready).length
+  const seats = rows.length
+  if (seats === 0) return { headline: '', ready, seats, done: false }
+  if (ready === seats) return { headline: 'Everyone is ready: starting the game', ready, seats, done: true }
+  const toJoin = rows.filter((row) => !row.ready && !row.connected).length
+  const headline =
+    toJoin > 0
+      ? `Waiting for ${toJoin} more ${toJoin === 1 ? 'player' : 'players'}`
+      : `Waiting for ${players(seats - ready)} to get ready`
+  return { headline, ready, seats, done: false }
+}
+
+/** What the Ready button and the words beside it say, from what the page knows. */
+export interface ReadyFacts {
+  /** The socket is open. */
+  open: boolean
+  /** Some request of the lobby is out. */
+  busy: boolean
+  /** This seat pressed Ready. */
+  ready: boolean
+  /** The roster shows this seat without a deck. */
+  needsDeck: boolean
+  /** A deck is selected in the chooser but not chosen: its name and, when the table cannot take it, why not. */
+  previewing: { name: string; blocked: string | null } | null
+}
+
+/** The Ready button's label, whether it is off, and the sentence that says why it is off or what it does. */
+export function readyState(facts: ReadyFacts): { label: string; disabled: boolean; hint: string } {
+  const { open, busy, ready, needsDeck, previewing } = facts
+  const label = ready ? 'Not ready' : 'Ready'
+  if (ready)
+    return {
+      label,
+      disabled: !open || busy,
+      hint: 'You are ready. You can take it back until the game starts.',
+    }
+  if (needsDeck) {
+    const lead = 'Ready needs a deck. Choose one under Your deck.'
+    const hint =
+      previewing === null
+        ? lead
+        : previewing.blocked !== null
+          ? `${lead} ${previewing.name} cannot be taken: ${previewing.blocked}`
+          : `${lead} Press Use this deck to take ${previewing.name}.`
+    return { label, disabled: true, hint }
+  }
+  if (!open) return { label, disabled: true, hint: 'Ready is back when the connection is.' }
+  return { label, disabled: busy, hint: 'Press Ready when you are set to play.' }
+}
+
 /** Most changes spelled out in one announcement; the rest are counted. */
 const MAX_SPOKEN_CHANGES = 3
 

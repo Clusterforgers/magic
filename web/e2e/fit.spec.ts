@@ -244,6 +244,42 @@ test.describe('the development table with 40 permanents a seat', () => {
     ).toHaveCount(7)
   })
 
+  test('draws the duel board of an early Commander game large, in lanes that fit without scrolling', async ({
+    page,
+  }) => {
+    await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&prompt=priority&turn=you`)
+    await page.locator(THINGS.primary).waitFor()
+    await atEverySize(page, ['hand', 'life', 'primary'], onTable('the duel board'))
+    for (const [width, height, own, theirs] of [
+      [1920, 1080, 130, 110],
+      [1440, 900, 100, 80],
+    ] as const) {
+      await page.setViewportSize({ width, height })
+      // The narrowest creature of each board, and whether any board scrolls inside itself.
+      const look = () =>
+        page.evaluate(() => {
+          const narrowest = (seat: number) =>
+            Math.min(
+              ...Array.from(
+                document.querySelectorAll(
+                  `[data-battlefield-seat="${seat}"] [data-lane="creatures"] button[data-object-id]`,
+                ),
+              ).map((card) => card.getBoundingClientRect().width),
+            )
+          const scrolls = Array.from(document.querySelectorAll('[data-slot="battlefield-zone"]')).some(
+            (zone) => zone.scrollHeight > zone.clientHeight + 1,
+          )
+          return { own: narrowest(0), theirs: narrowest(1), scrolls }
+        })
+      await expect
+        .poll(look, { message: `${width}x${height}` })
+        .toEqual({ own: expect.any(Number), theirs: expect.any(Number), scrolls: false })
+      const seen = await look()
+      expect(seen.own, `${width}x${height}: your creatures`).toBeGreaterThanOrEqual(own)
+      expect(seen.theirs, `${width}x${height}: the opponent's creatures`).toBeGreaterThanOrEqual(theirs)
+    }
+  })
+
   test('fits with a table of twelve seats in focus mode', async ({ page }) => {
     await page.goto(`${DEV_WEB_URL}/dev/table?seats=12&prompt=priority&turn=you`)
     await page.locator(THINGS.primary).waitFor()

@@ -57,17 +57,17 @@ describe('grid mode', () => {
     expect(panels(container)).toEqual([3, 0, 1, 2])
   })
 
-  it("draws every opponent's battlefield in full, in rows of lands, other permanents and creatures", () => {
+  it("draws every opponent's battlefield in full, in lanes of lands, other permanents and creatures", () => {
     renderTable({ seats: 2 })
     const rows = screen.getAllByRole('list').map((list) => list.getAttribute('aria-label'))
     const bo = rows.filter((label) => label?.startsWith("Bo's"))
     expect(bo).toEqual(["Bo's command zone", "Bo's lands", "Bo's other permanents", "Bo's creatures"])
-    // Her battlefield with the creatures toward the middle, then the hand dock along the bottom: her commanders, her hand.
+    // Her battlefield with the creatures toward the middle, lands left of the other permanents, then the hand dock.
     const alice = rows.filter((label) => label?.startsWith("Alice's"))
     expect(alice).toEqual([
       "Alice's creatures",
-      "Alice's other permanents",
       "Alice's lands",
+      "Alice's other permanents",
       "Alice's commanders in the command zone",
       "Alice's hand",
     ])

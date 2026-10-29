@@ -1,5 +1,4 @@
 // Goal: the forecast costs a crowded table nothing it does not use, at the worst case of 12 seats with 40 permanents each (480 cards on screen): a forecast arriving, changing or going redraws only the creatures it mentions and seats it attacks, a change to one creature redraws that card alone, choosing a block redraws only the cards a block touches and the creatures the forecast had marked, and the lines are measured once per change, not once per card.
-import { screen } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { CombatForecast, ObjectId } from '@/protocol/generated'
@@ -145,7 +144,7 @@ describe('a block chosen at 12 seats', () => {
     await t.user.click(t.card(attacker))
     expect(t.damage().size).toBe(0)
     faces.clear()
-    await t.user.click(screen.getByRole('button', { name: new RegExp(`^Remove the block of `) }))
+    await t.user.click(t.card(blocker))
     const drawn = redrawn()
     for (const id of marked) expect(drawn).toContain(id)
     expect(drawn.filter((id) => !mayChange.has(id))).toEqual([])

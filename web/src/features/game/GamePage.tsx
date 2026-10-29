@@ -45,7 +45,7 @@ export interface GamePageProps {
   /** The signed-in account's deck calls, for the deck chooser of the lobby: the shared client unless a test brings its own. */
   decks?: DecksApi
   /** The precons for the deck chooser: the shared client unless a test brings its own. */
-  precons?: Pick<PreconsApi, 'list'>
+  precons?: Pick<PreconsApi, 'list' | 'get'>
   /** Fakes for the socket, timers and origin; leave out in the app. */
   deps?: SessionOverrides
 }
@@ -98,7 +98,7 @@ interface SeatedGameProps {
   name: string
   api: Api
   decks: DecksApi
-  precons: Pick<PreconsApi, 'list'>
+  precons: Pick<PreconsApi, 'list' | 'get'>
   deps: SessionOverrides | undefined
 }
 

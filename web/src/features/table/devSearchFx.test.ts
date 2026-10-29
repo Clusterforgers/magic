@@ -1,4 +1,4 @@
-// Goal: the dev address takes `?fx=` only for one of the moves the dev table can play, `?slow=` only for a slow-down above 1 and up to 20 and `?preview=` only for a whole number of milliseconds up to 10 000, and shrugs off every other value, so a mistyped address still shows the plain table.
+// Goal: the dev address takes `?board=` only for a named board (a two-seat table), `?fx=` only for one of the moves the dev table can play, `?slow=` only for a slow-down above 1 and up to 20 and `?preview=` only for a whole number of milliseconds up to 10 000, and shrugs off every other value, so a mistyped address still shows the plain table.
 import { describe, expect, it } from 'vitest'
 import { DEV_FX, MAX_DEV_PREVIEW_MS, MAX_DEV_SLOW, parseDevSearch } from './devSearch'
 
@@ -51,5 +51,16 @@ describe('?slow=', () => {
       fx: 'life',
       slow: 4,
     })
+  })
+})
+
+describe('?board=', () => {
+  it.each([
+    ['duel', 4, 'duel', 2],
+    ['heavy', 6, 'heavy', 2],
+    ['Duel', 6, undefined, 6],
+    [3, 3, undefined, 3],
+  ])('reads %j over %i seats', (board, seats, expected, table) => {
+    expect(parseDevSearch({ seats, board })).toMatchObject({ board: expected, seats: table })
   })
 })

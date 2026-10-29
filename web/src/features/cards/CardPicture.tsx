@@ -16,10 +16,20 @@ interface CardPictureProps {
   className?: string
   /** "" when the name is said beside the picture. */
   alt?: string
+  /** Leaves the name off the skeleton, for a thumbnail too small to read it. */
+  quiet?: boolean
 }
 
 /** A card's picture by oracle id outside the table, over a plain skeleton that names it; none with Text only. */
-export function CardPicture({ oracleId, name, face = 0, size = 'normal', className, alt }: CardPictureProps) {
+export function CardPicture({
+  oracleId,
+  name,
+  face = 0,
+  size = 'normal',
+  className,
+  alt,
+  quiet = false,
+}: CardPictureProps) {
   const choice = useImageChoice()
   if (choice === 'text') return null
   return (
@@ -32,7 +42,7 @@ export function CardPicture({ oracleId, name, face = 0, size = 'normal', classNa
         aria-hidden="true"
         className="grid size-full place-items-center rounded-[4.75%/3.393%] border bg-muted p-2 text-center text-xs text-muted-foreground"
       >
-        {name}
+        {quiet ? null : name}
       </span>
     </CardImage>
   )

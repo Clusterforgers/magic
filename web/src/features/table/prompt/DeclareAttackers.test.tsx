@@ -131,23 +131,23 @@ describe('one defender', () => {
     ])
   })
 
-  it('writes "At Bo" on a chosen attacker and speaks it', async () => {
+  it('writes no label on a chosen attacker, and speaks where it attacks', async () => {
     const { card, user, notes } = attack(optionsOf(spec))
     await user.click(card(a))
-    expect(notes()).toEqual(new Map([[a, 'At Bo']]))
+    expect(notes().size).toBe(0)
     expect(card(a)).toHaveAccessibleName(/, attacking Bo$/)
     await user.click(card(a))
-    expect(notes().size).toBe(0)
+    expect(card(a)).not.toHaveAccessibleName(/attacking/)
   })
 
   it('sums up the attack in words as it grows', async () => {
     const { card, user, text } = attack(optionsOf(spec))
     expect(text()).toBe('Choose the creatures that attack Bo, or choose No attack.')
     await user.click(card(a))
-    expect(text()).toBe('1 attacker at Bo. Confirm the attack, or keep choosing.')
+    expect(text()).toBe('1 attacker at Bo.')
     await user.click(card(b))
     await user.click(card(c))
-    expect(text()).toBe('3 attackers at Bo. Confirm the attack, or keep choosing.')
+    expect(text()).toBe('3 attackers at Bo.')
   })
 
   it('attacks with all, in the order the options list them', async () => {
@@ -255,14 +255,7 @@ describe('several defenders', () => {
       await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), last)
       await table.user.click(table.card(b))
       await table.user.click(table.card(c))
-      expect(table.notes()).toEqual(
-        new Map([
-          [a, 'At Bo'],
-          [b, `At ${last}`],
-          [c, `At ${last}`],
-        ]),
-      )
-      expect(table.text()).toBe(`3 attackers: 1 at Bo, 2 at ${last}. Confirm the attack, or keep choosing.`)
+      expect(table.text()).toBe(`3 attackers: 1 at Bo, 2 at ${last}.`)
       await table.user.click(table.button('Confirm attack'))
       expect(table.answer.mock.calls).toEqual([
         [
@@ -278,40 +271,15 @@ describe('several defenders', () => {
     },
   )
 
-  it('shows one row per attacker and lets one be aimed elsewhere', async () => {
-    const options = optionsOf({ name: '', seats: 4, count: 3 })
-    const table = attack(options, 4)
-    const [a, b] = options.attackers.map((x) => x.object) as [ObjectId, ObjectId]
-    await table.user.click(table.card(a))
-    await table.user.click(table.card(b))
-    const list = screen.getByRole('list', { name: 'Who each creature attacks' })
-    expect(within(list).getAllByRole('listitem')).toHaveLength(2)
-    const rows = within(list).getAllByRole('combobox')
-    await table.user.selectOptions(must(rows[1]), 'player:3')
-    expect(table.text()).toBe('2 attackers: 1 at Bo, 1 at Dee. Confirm the attack, or keep choosing.')
-    expect(table.notes().get(b)).toBe('At Dee')
-    await table.user.click(table.button('Confirm attack'))
-    expect(table.answer.mock.calls).toEqual([
-      [
-        {
-          DeclareAttackers: [
-            [a, { Player: 1 }],
-            [b, { Player: 3 }],
-          ],
-        },
-      ],
-    ])
-  })
-
   it('aims everything chosen at one seat with "All at"', async () => {
     const options = optionsOf({ name: '', seats: 4, count: 4 })
     const table = attack(options, 4)
     expect(screen.queryByRole('button', { name: /^All at/ })).toBeNull()
     await table.user.click(table.button('Attack with all'))
-    expect(table.text()).toBe('4 attackers at Bo. Confirm the attack, or keep choosing.')
+    expect(table.text()).toBe('4 attackers at Bo.')
     await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), 'player:2')
     await table.user.click(table.button('All at Cy'))
-    expect(table.text()).toBe('4 attackers at Cy. Confirm the attack, or keep choosing.')
+    expect(table.text()).toBe('4 attackers at Cy.')
     await table.user.click(table.button('Confirm attack'))
     const sent = table.answer.mock.calls[0]?.[0] as { DeclareAttackers: [ObjectId, AttackTarget][] }
     expect(sent.DeclareAttackers.map(([, target]) => target)).toEqual(Array(4).fill({ Player: 2 }))
@@ -321,12 +289,12 @@ describe('several defenders', () => {
     const table = attack(optionsOf({ name: '', seats: 12, count: 5 }), 12)
     await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), 'player:11')
     await table.user.click(table.button('Attack with all'))
-    expect(table.text()).toBe('5 attackers at Lena. Confirm the attack, or keep choosing.')
+    expect(table.text()).toBe('5 attackers at Lena.')
   })
 
   it('says what to do before anything is chosen', () => {
     const { text } = attack(optionsOf({ name: '', seats: 4, count: 3 }), 4)
-    expect(text()).toBe('Choose the creatures that attack and who each one attacks, or choose No attack.')
+    expect(text()).toBe('Click creatures to attack Bo, or click another player.')
   })
 
   it('offers a planeswalker by name and owner, and answers with it', async () => {
@@ -341,7 +309,6 @@ describe('several defenders', () => {
     await table.user.selectOptions(select, `walker:${walker}`)
     const [a] = options.attackers.map((x) => x.object) as [ObjectId]
     await table.user.click(table.card(a))
-    expect(table.notes().get(a)).toMatch(/^At /)
     expect(table.card(a)).toHaveAccessibleName(/, attacking .*, Bo's planeswalker$/)
     await table.user.click(table.button('Confirm attack'))
     expect(table.answer.mock.calls).toEqual([[{ DeclareAttackers: [[a, { Planeswalker: walker }]] }]])
@@ -360,36 +327,19 @@ describe('several defenders', () => {
     )
     await table.user.click(table.card(a))
     await table.user.click(table.card(b))
-    expect(table.notes()).toEqual(
-      new Map([
-        [a, 'At Bo'],
-        [b, 'At Cy'],
-      ]),
-    )
-    const [first, second] = screen.getAllByRole('combobox', { name: /^Who / })
-    expect(within(must(first)).getAllByRole('option')).toHaveLength(3)
-    expect(within(must(second)).getAllByRole('option')).toHaveLength(2)
-  })
-
-  it('tells creatures of the same name apart in the list', async () => {
-    const options = optionsOf({ name: '', seats: 4, count: 3 })
-    const table = attack(options, 4)
-    const [a, b, c] = options.attackers.map((x) => x.object) as [ObjectId, ObjectId, ObjectId]
-    table.update((state) => {
-      const named = (id: ObjectId, name: string) => ({ ...must(state.objectsById[id]), name })
-      return {
-        objectsById: {
-          ...state.objectsById,
-          [a]: named(a, 'Goblin'),
-          [b]: named(b, 'Goblin'),
-          [c]: named(c, 'Elf'),
+    await table.user.unhover(table.card(b))
+    expect(table.text()).toBe('2 attackers: 1 at Bo, 1 at Cy.')
+    await table.user.click(table.button('Confirm attack'))
+    expect(table.answer.mock.calls).toEqual([
+      [
+        {
+          DeclareAttackers: [
+            [a, { Player: 1 }],
+            [b, { Player: 2 }],
+          ],
         },
-      }
-    })
-    await table.user.click(table.button('Attack with all'))
-    expect(
-      screen.getAllByRole('combobox', { name: /^Who / }).map((select) => select.getAttribute('aria-label')),
-    ).toEqual(['Who Goblin 1 attacks', 'Who Goblin 2 attacks', 'Who Elf attacks'])
+      ],
+    ])
   })
 
   it('aims a creature at the seat that was chosen before it', async () => {
@@ -398,7 +348,7 @@ describe('several defenders', () => {
     await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), 'player:2')
     const [a] = options.attackers.map((x) => x.object) as [ObjectId]
     await table.user.click(table.card(a))
-    expect(table.notes().get(a)).toBe('At Cy')
+    expect(table.card(a)).toHaveAccessibleName(/, attacking Cy$/)
   })
 })
 
@@ -434,7 +384,7 @@ describe('a replaced decision', () => {
     const options = optionsOf({ name: '', seats: 2, count: 2 })
     const table = attack(options)
     await table.user.click(table.card(must(options.attackers[0]).object))
-    expect(table.notes().size).toBe(1)
+    expect(table.card(must(options.attackers[0]).object)).toHaveAccessibleName(/attacking/)
     table.update(() => ({ pending: null }))
     expect(table.marks().size).toBe(0)
     expect(table.notes().size).toBe(0)

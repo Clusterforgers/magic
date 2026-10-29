@@ -15,7 +15,7 @@ interface ManaPipsProps {
  * One symbol: a coloured disc with its letter or number. A hybrid symbol is a disc split on the diagonal with a
  * letter in each half, `{2/W}` has its 2 over the generic half, and a Phyrexian symbol carries the phi mark.
  */
-function Pip({ pip, sizeClass }: { pip: ManaPip; sizeClass: string }) {
+export function Pip({ pip, sizeClass }: { pip: ManaPip; sizeClass: string }) {
   const split = pip.split
   return (
     <span
@@ -49,6 +49,21 @@ function Pip({ pip, sizeClass }: { pip: ManaPip; sizeClass: string }) {
         </span>
       )}
     </span>
+  )
+}
+
+/** The five colours as one disc, for "one mana of any colour"; decoration, so name it in words beside it. */
+export function AnyPip({ sizeClass }: { sizeClass: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      data-pip="any"
+      style={{
+        background:
+          'conic-gradient(var(--color-mana-white) 0 20%, var(--color-mana-blue) 0 40%, var(--color-mana-black) 0 60%, var(--color-mana-red) 0 80%, var(--color-mana-green) 0 100%)',
+      }}
+      className={cn('inline-block shrink-0 rounded-full ring-1 ring-foreground/25', sizeClass)}
+    />
   )
 }
 

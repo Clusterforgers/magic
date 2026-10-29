@@ -24,9 +24,9 @@ export interface PreviewOutcomeProps {
 }
 
 /**
- * What a combat prompt says about its choice: the forecast as sentences under a heading, "Checking outcome…" while the
- * engine is asked, or "Outcome shown after you confirm." when no forecast will come. While it is asked, the last list
- * of sentences stays in the page, unseen, so the section does not change height on every click. One polite live
+ * What a combat prompt says about its choice, for a screen reader only (the eye has the chips of the seats and their
+ * tooltips): the forecast as sentences under a heading, "Checking outcome…" while the engine is asked, or "Outcome
+ * shown after you confirm." when no forecast will come. While it is asked, the last list of sentences stays in the page. One polite live
  * region says the result in a single sentence each time it changes; it is the node that shows the fallback words.
  */
 export function PreviewOutcome({ slot, heading, forecast, status }: PreviewOutcomeProps) {
@@ -49,12 +49,12 @@ export function PreviewOutcome({ slot, heading, forecast, status }: PreviewOutco
     <div
       data-slot={slot}
       data-state={forecast !== null ? 'ready' : checking ? 'checking' : 'unavailable'}
-      className="grid basis-full gap-0.5 text-sm"
+      className="contents"
     >
       {forecast !== null ? (
         <>
-          <p className="font-medium">{heading}</p>
-          <ul className="max-h-32 list-disc overflow-y-auto pl-5 text-muted-foreground">
+          <p className="sr-only">{heading}</p>
+          <ul className="sr-only">
             {sentences.map((sentence, index) => (
               <li key={`${index}:${sentence}`}>{sentence}</li>
             ))}
@@ -63,22 +63,17 @@ export function PreviewOutcome({ slot, heading, forecast, status }: PreviewOutco
       ) : null}
       {checking ? (
         <>
-          <p data-slot="outcome-checking" className="text-muted-foreground">
+          <p data-slot="outcome-checking" className="sr-only">
             {CHECKING_WORDS}
           </p>
-          <ul aria-hidden="true" className="invisible max-h-32 list-disc overflow-y-auto pl-5">
+          <ul aria-hidden="true" className="sr-only">
             {kept.map((sentence, index) => (
               <li key={`${index}:${sentence}`}>{sentence}</li>
             ))}
           </ul>
         </>
       ) : null}
-      <p
-        aria-live="polite"
-        aria-atomic="true"
-        data-slot="outcome-live"
-        className={forecast === null && !checking ? 'text-muted-foreground' : 'sr-only'}
-      >
+      <p aria-live="polite" aria-atomic="true" data-slot="outcome-live" className="sr-only">
         {spoken}
       </p>
     </div>

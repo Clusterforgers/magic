@@ -10,10 +10,12 @@ import type { ClockKind } from './clockText'
 interface ClockFaceProps {
   clock: DecisionClock
   kind: ClockKind
+  /** The words sit in the prompt's row and the bar is a 2 px line on the bottom edge of the decision line, which is positioned. */
+  compact: boolean
 }
 
 /** The face of a running clock; it is mounted once per decision, so what it starts from is what the prompt began with. */
-function ClockFace({ clock, kind }: ClockFaceProps) {
+function ClockFace({ clock, kind, compact }: ClockFaceProps) {
   const reduced = useReducedMotion()
   // The bar runs on its own from where it starts; changing its duration every second would make it jump.
   const [start] = useState(() => ({
@@ -25,7 +27,11 @@ function ClockFace({ clock, kind }: ClockFaceProps) {
   const seconds = secondsLeft(clock.leftMs)
   const urgent = seconds <= URGENT_SECONDS
   return (
-    <div data-slot="response-clock" data-urgent={urgent || undefined} className="grid gap-1">
+    <div
+      data-slot="response-clock"
+      data-urgent={urgent || undefined}
+      className={compact ? 'shrink-0' : 'grid gap-1'}
+    >
       <p
         role="timer"
         className={cn('text-xs font-medium', urgent ? 'text-destructive' : 'text-muted-foreground')}
@@ -33,7 +39,13 @@ function ClockFace({ clock, kind }: ClockFaceProps) {
         {clockText(kind, seconds)}
       </p>
       {reduced ? null : (
-        <div className="h-1 w-full overflow-hidden rounded-full bg-border" aria-hidden="true">
+        <div
+          className={cn(
+            'overflow-hidden bg-border',
+            compact ? 'absolute inset-x-0 bottom-0 h-0.5' : 'h-1 w-full rounded-full',
+          )}
+          aria-hidden="true"
+        >
           <div
             data-slot="response-clock-bar"
             className="response-clock-bar h-full w-full rounded-full bg-primary"
@@ -52,6 +64,8 @@ interface ResponseClockProps {
   /** The decision the prompt answers; a clock that belongs to another is not shown. */
   id: DecisionId
   kind: ClockKind
+  /** One thin line: the seconds beside the prompt's controls and the bar on the edge (the combat prompts). */
+  compact?: boolean
 }
 
 /**
@@ -60,8 +74,8 @@ interface ResponseClockProps {
  * It reads the session's clock, which counts from the moment the decision arrived and ends the prompt at zero, so
  * it draws nothing for a decision without one.
  */
-export function ResponseClock({ id, kind }: ResponseClockProps) {
+export function ResponseClock({ id, kind, compact = false }: ResponseClockProps) {
   const clock = usePlay((state) => state.clock)
   if (clock === null || clock.id !== id) return null
-  return <ClockFace key={id} clock={clock} kind={kind} />
+  return <ClockFace key={id} clock={clock} kind={kind} compact={compact} />
 }

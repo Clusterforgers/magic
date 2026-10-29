@@ -15,7 +15,7 @@ import type {
   Zone,
   ZoneView,
 } from '@/protocol/generated'
-import { COMMANDERS, CREATURES, INSTANTS, LANDS, OTHERS, PARTNERS } from './cards'
+import { COMMANDERS, CREATURES, INSTANTS, LANDS, OTHERS, PARTNERS, PLANESWALKER } from './cards'
 import type { NonEmpty, Template } from './cards'
 import { buildLog } from './fixtureLog'
 
@@ -37,7 +37,16 @@ export interface FixtureOptions {
   active?: PlayerId
   /** Cards in the viewer's hand, 0 to 24; 7 by default. */
   hand?: number
+  /**
+   * `duel`: an early Commander board of 12 permanents for the viewer (a planeswalker and a commander among them) and
+   * 10 for every other seat; `heavy` (the default): 40 a seat.
+   */
+  board?: 'duel' | 'heavy'
 }
+
+/** The permanents of the duel board: the viewer's (its commander joins them) and every other seat's. */
+const DUEL_OWN = 11
+const DUEL_THEIRS = 10
 
 /** The table, its log and chat, and the seat names. */
 export interface Fixture {
@@ -107,10 +116,13 @@ export function buildFixture(options: FixtureOptions): Fixture {
   const viewer = options.viewer ?? 0
   const active = options.active ?? (viewer + 1) % seats
   const defender = active === viewer ? (viewer + 1) % seats : viewer
-  const perSeat = options.permanents ?? 40
-  const landCount = Math.round(perSeat * 0.4)
-  const creatureCount = Math.round(perSeat * 0.35)
-  const otherCount = Math.max(0, perSeat - landCount - creatureCount)
+  const duel = options.board === 'duel'
+  const countsOf = (seat: PlayerId): { landCount: number; creatureCount: number; otherCount: number } => {
+    const perSeat = duel ? (seat === viewer ? DUEL_OWN : DUEL_THEIRS) : (options.permanents ?? 40)
+    const landCount = Math.round(perSeat * 0.4)
+    const creatureCount = Math.round(perSeat * 0.35)
+    return { landCount, creatureCount, otherCount: Math.max(0, perSeat - landCount - creatureCount) }
+  }
 
   const objects: ObjectView[] = []
   let nextId = 1
@@ -145,6 +157,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
   const cards: SeatCards[] = []
   for (let seat = 0; seat < seats; seat += 1) {
     const mine: SeatCards = { lands: [], creatures: [], others: [], graveyard: [], hand: [], command: [] }
+    const { landCount, creatureCount, otherCount } = countsOf(seat)
     for (let i = 0; i < landCount; i += 1) {
       const land = add(pick(LANDS, i + seat), seat, 'Battlefield')
       if (i % 3 === 0 && land.permanent !== null) land.permanent.tapped = true
@@ -160,7 +173,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
       mine.creatures.push(creature.id)
     }
     for (let i = 0; i < otherCount; i += 1) {
-      const other = add(pick(OTHERS, i + seat), seat, 'Battlefield')
+      const other = add(duel && i === 0 ? PLANESWALKER : pick(OTHERS, i + seat), seat, 'Battlefield')
       if (i % 4 === 0 && other.permanent !== null && other.abilities.length > 0) other.permanent.tapped = true
       mine.others.push(other.id)
     }
@@ -175,6 +188,15 @@ export function buildFixture(options: FixtureOptions): Fixture {
     // Seat 0 plays a partner pair; every other seat one commander.
     for (const template of seat === 0 ? PARTNERS : [pick(COMMANDERS, seat)]) {
       mine.command.push(add(template, seat, { Command: seat }).id)
+    }
+    // On the duel board the viewer's second partner is on the battlefield, in its creatures' lane.
+    const fielded = duel && seat === viewer ? mine.command[1] : undefined
+    if (fielded !== undefined) {
+      edit(fielded, (object) => {
+        object.zone = 'Battlefield'
+        object.permanent = { tapped: false, damage: 0, summoning_sick: false }
+      })
+      mine.creatures.push(fielded)
     }
     if (seat === viewer) {
       const hand: Template[] = [
@@ -252,7 +274,9 @@ export function buildFixture(options: FixtureOptions): Fixture {
     hand: seat === viewer ? zoneView(mine.hand) : hidden(5 + (seat % 3)),
     library: hidden(48 - seat),
     graveyard: zoneView(mine.graveyard),
-    command: zoneView(mine.command),
+    command: zoneView(
+      mine.command.filter((id) => objects.find((object) => object.id === id)?.zone !== 'Battlefield'),
+    ),
     commanders: mine.command.map((object, index) => ({ object, ...commanderCasts(seat, index) })),
     commander_lethal: 21,
     ...commanderDamage(seat, seats, cards),

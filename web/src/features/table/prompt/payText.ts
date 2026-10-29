@@ -30,7 +30,7 @@ export function spendWords(spend: Spend, nameOf: (id: ObjectId) => string): stri
 }
 
 /** "a", "a and b", "a, b and c". */
-function andList(items: readonly string[]): string {
+export function andList(items: readonly string[]): string {
   const last = items.at(-1)
   if (last === undefined) return ''
   return items.length === 1 ? last : `${items.slice(0, -1).join(', ')} and ${last}`
