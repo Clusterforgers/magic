@@ -24,7 +24,7 @@ use mtg_protocol::rest::PreconListItem;
 use thiserror::Error;
 use tokio::sync::Mutex;
 
-use crate::cards::{CardSource, CatalogError, Rules, card_facts, printed_card};
+use crate::cards::{CardSource, CatalogError, Rules, card_facts, identified, printed_card};
 use crate::deck_cards::Line;
 use crate::deck_choice::{commander_ids, format_issues, library_ids};
 use crate::recipe::FormatKind;
@@ -159,8 +159,8 @@ impl<'a> Judge<'a> {
                         let printed = printed_card(card);
                         let assembled = self.library.assemble(&printed, self.caps);
                         self.facts.insert(id.clone(), card_facts(card));
-                        self.definitions
-                            .insert(id.clone(), Arc::new(assembled.definition));
+                        let definition = identified(assembled.definition, &id);
+                        self.definitions.insert(id.clone(), Arc::new(definition));
                     }
                     lines.push(Line {
                         zone,
