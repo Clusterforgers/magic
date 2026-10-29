@@ -104,27 +104,46 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     }
 }
 
-/// Whether the characters can be those of an ability word: letters, a space, an apostrophe, a hyphen, "!" and a digit
-/// after a hyphen ("Nitro-9").
+/// Whether the characters can be those of an ability word: letters, a space, an apostrophe, a hyphen, "!", the card's
+/// own name (`~`) and a digit after a hyphen ("Nitro-9").
 fn w20b_ability_letters(word: &str) -> bool {
     let mut before = ' ';
     word.chars().all(|c| {
         let fits = c.is_alphabetic()
-            || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!')
+            || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!' | '~')
             || (c.is_ascii_digit() && matches!(before, '-' | '0'..='9'));
         before = c;
         fits
     })
 }
 
-/// The byte length of an ability word and its dash ("Landfall — "), when the line starts with one.
+/// Whether the text is a flavour name that holds a comma or a question mark ("In You, All Things Are Possible", "Do
+/// You Like Squirrels?"): up to five words that each begin with a capital letter or the card's name, so a clause
+/// ("At the beginning of your end step, draw a card") is never taken for one.
+fn t16a_flavour_name(word: &str) -> bool {
+    word.split(' ').count() <= 5
+        && word.split(' ').all(|part| {
+            part.chars()
+                .next()
+                .is_some_and(|c| c.is_uppercase() || c == '~')
+        })
+        && word.chars().all(|c| {
+            c.is_alphabetic() || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!' | '~' | ',' | '?')
+        })
+}
+
+/// The byte length of an ability word and its dash ("Landfall — "), when the line starts with one. Any name of up to
+/// forty characters is one, known or not ("Genomic Enhancement — "): it is flavor and the line reads without it.
 pub(super) fn ability_word_len(line: &str) -> Option<usize> {
     const DASH: &str = " \u{2014} ";
     let (at, _) = line.match_indices(DASH).next()?;
     let word = line.get(..at)?;
-    let is_word = word.chars().next().is_some_and(char::is_uppercase)
+    let is_word = word
+        .chars()
+        .next()
+        .is_some_and(|c| c.is_uppercase() || c == '~')
         && word.chars().count() <= 40
-        && w20b_ability_letters(word)
+        && (w20b_ability_letters(word) || t16a_flavour_name(word))
         && !word.starts_with("Choose");
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)
