@@ -46,6 +46,8 @@ export interface DevSearch {
   step?: Step
   /** `1` gives the table house rules that differ from its format's own, to look at the list in the top bar. */
   rules?: true
+  /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
+  cards?: 'real'
 }
 
 const whole = (value: unknown): number | undefined =>
@@ -53,7 +55,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=&rules=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=&rules=&cards=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -74,6 +76,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     stops:
       typeof search.stops === 'string' && parseStopSpec(search.stops).length > 0 ? search.stops : undefined,
     fc: search.fc === 'next' || search.fc === 'held' ? search.fc : undefined,
+    cards: search.cards === 'real' ? 'real' : undefined,
     step: typeof search.step === 'string' ? STEP_BY_NAME.get(search.step.toLowerCase()) : undefined,
     hand:
       typeof search.hand === 'number' &&

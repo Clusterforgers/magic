@@ -1,3 +1,4 @@
+import { HoverPicture } from '@/features/cards/CardPicture'
 import { EllipsisVerticalIcon, MinusIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -86,16 +87,22 @@ export function LineRow({ line, format, room, check, actions }: LineRowProps) {
           <PlusIcon aria-hidden="true" />
         </Button>
       </div>
-      <button
-        type="button"
-        aria-haspopup="dialog"
-        title={card.name}
-        data-slot="card-name"
-        onClick={(event) => actions.preview(card, event.currentTarget)}
-        className="order-1 min-h-8 min-w-0 justify-self-start truncate rounded-sm text-left text-sm underline-offset-4 hover:underline pointer-coarse:min-h-11 sm:order-none"
+      <HoverPicture
+        oracleId={card.oracle_id}
+        name={card.name}
+        className="order-1 justify-self-start sm:order-none"
       >
-        {card.name}
-      </button>
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          title={card.name}
+          data-slot="card-name"
+          onClick={(event) => actions.preview(card, event.currentTarget)}
+          className="order-1 min-h-8 min-w-0 justify-self-start truncate rounded-sm text-left text-sm underline-offset-4 hover:underline pointer-coarse:min-h-11 sm:order-none"
+        >
+          {card.name}
+        </button>
+      </HoverPicture>
       <span className="order-2 justify-self-end sm:order-none">
         <ManaCost cost={card.mana_cost} />
       </span>
