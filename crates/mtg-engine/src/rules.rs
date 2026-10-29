@@ -57,6 +57,13 @@ pub enum Rule {
     },
     /// No more than this many creatures can block each combat (CR 509.1b).
     BlockLimit(u32),
+    /// No more than `most` creatures each of the players controls can block each combat (CR 509.1b).
+    BlockLimitEach {
+        /// The most creatures each of them can block with.
+        most: u32,
+        /// The players whose blocks it limits.
+        who: Vec<PlayerId>,
+    },
     /// The spells can't be countered.
     CantBeCountered(Vec<ObjectRef>),
     /// The players can't gain life.
@@ -302,6 +309,7 @@ pub(crate) struct RulesInForce {
     attack_limit: Option<u32>,
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
+    block_limit_each: BTreeMap<PlayerId, u32>,
 }
 
 /// A tax on attacking in force, with whose it is.
@@ -412,6 +420,15 @@ impl RulesInForce {
             }
             Rule::BlockLimit(most) => {
                 self.block_limit = Some(self.block_limit.map_or(*most, |was| was.min(*most)));
+            }
+            Rule::BlockLimitEach { most, who } => {
+                for player in who {
+                    let least = self
+                        .block_limit_each
+                        .get(player)
+                        .map_or(*most, |was| (*was).min(*most));
+                    self.block_limit_each.insert(*player, least);
+                }
             }
             Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
             Rule::CantGainLife(players) => self.no_life_gain.extend(players),
@@ -566,6 +583,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackLimit(most) => Rule::AttackLimit(*most),
         GameRule::AttackLimitAt { most, at } => attack_limit_at(scope, *most, at)?,
         GameRule::BlockLimit(most) => Rule::BlockLimit(*most),
+        GameRule::BlockLimitEach { most, who } => Rule::BlockLimitEach {
+            most: *most,
+            who: scope.players(who)?,
+        },
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
         GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
         GameRule::NoLifeLossFromDamage(who) => Rule::NoLifeLossFromDamage(scope.players(who)?),
@@ -646,6 +667,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SkipDrawStep(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
+        Rule::BlockLimitEach { who, .. } => who.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::MayCast { who, only, .. } => {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
@@ -776,6 +798,7 @@ static NONE: RulesInForce = RulesInForce {
     attack_limit: None,
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
+    block_limit_each: BTreeMap::new(),
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
@@ -911,13 +934,16 @@ pub fn w10a_attack_limits_at(state: &GameState) -> Vec<(AttackTarget, usize)> {
         .collect()
 }
 
-/// The most creatures that may block together this combat, the least of the limits in force (CR 509.1b); none while no
-/// rule limits the declaration.
-pub fn block_limit(state: &GameState) -> Option<usize> {
-    state
-        .rules()
-        .block_limit
-        .map(|most| usize::try_from(most).unwrap_or(usize::MAX))
+/// The most creatures `player` may block with this combat, the least of the limits on every declaration and on theirs
+/// in force (CR 509.1b); none while no rule limits the declaration.
+pub fn block_limit(state: &GameState, player: PlayerId) -> Option<usize> {
+    let rules = state.rules();
+    let theirs = rules.block_limit_each.get(&player).copied();
+    let most = match (rules.block_limit, theirs) {
+        (Some(all), Some(each)) => Some(all.min(each)),
+        (all, each) => all.or(each),
+    };
+    most.map(|most| usize::try_from(most).unwrap_or(usize::MAX))
 }
 
 /// Whether the creature `id` attacks each combat if able: the one place the attack declaration reads this requirement.

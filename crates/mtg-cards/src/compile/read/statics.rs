@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 35] = [
+const TEMPLATES: [Template; 36] = [
     super::w9d_exert::w9d_exert,
     super::c11b_once::c11b_once,
     super::c8_eg_cast_itself::c8_eg_cast_itself,
@@ -59,6 +59,7 @@ const TEMPLATES: [Template; 35] = [
     as_entering,
     super::day_night::starts_the_day,
     super::prepare::enters_prepared,
+    super::w14a_limits::w14a_limit_while,
     rule,
     super::player_keywords::ability,
     lands::from_a_zone,
@@ -1493,8 +1494,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
     if from == ZoneKind::Graveyard {
         return super::c8_eg_cast_itself::c8_eg_texts(rule, condition);
     }
-    if condition.is_some() {
-        return Vec::new();
+    if let Some(condition) = condition {
+        return super::w14a_limits::w14a_limit_while_texts(rule, condition);
     }
     match (rule, from) {
         (GameRule::CantBeCountered(Ref::This), ZoneKind::Stack) => {
