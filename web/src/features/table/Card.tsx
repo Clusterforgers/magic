@@ -1,5 +1,4 @@
-import { memo, useMemo } from 'react'
-import { useShallow } from 'zustand/react/shallow'
+import { memo } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
@@ -17,6 +16,7 @@ import { fxAttr, fxSide } from './fx/model'
 import { useManualMenu } from './manual/useManualMenu'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import { combatRoleIn } from './selectors'
+import { useLinks } from './useLinks'
 import { usePreviewHandlers } from './usePreviewHandlers'
 
 /** Props of a card. */
@@ -61,16 +61,8 @@ export const Card = memo(function Card({
   words: extra,
 }: CardProps) {
   const object = usePlay((state) => state.objectsById[id])
-  // The names of what it is attached to and of what is attached to it, for its cue and its spoken name.
-  const hostName = usePlay((state) =>
-    object?.attached_to === undefined ? undefined : state.objectsById[object.attached_to]?.name,
-  )
-  const attachedNames = usePlay(
-    useShallow((state) =>
-      (object?.attachments ?? []).map((at) => state.objectsById[at]?.name ?? 'a permanent'),
-    ),
-  )
-  const links = useMemo(() => ({ host: hostName, attached: attachedNames }), [hostName, attachedNames])
+  // The names of what it is attached to, copies or shows the front of, and of what is attached to it.
+  const links = useLinks(object)
   const role = usePlay((state) => combatRoleIn(state, id))
   const marks = useMarksStore()
   const { highlight: marked, toggles, note } = useCardMark(id)
@@ -85,6 +77,7 @@ export const Card = memo(function Card({
   const manual = useManualMenu(id)
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true
+  const attached = object.attached_to !== undefined || object.attached_player !== undefined
   const markWords =
     highlight === undefined || (pressable && highlight === 'selected') ? '' : `, ${MARK_WORDS[highlight]}`
   const words = note === undefined ? markWords : `${markWords}, ${note.words}`
@@ -95,6 +88,8 @@ export const Card = memo(function Card({
       data-highlight={highlight}
       data-size={size}
       data-tapped={tapped || undefined}
+      data-attached={attached || undefined}
+      data-hosting={object.attachments === undefined ? undefined : object.attachments.length}
       data-doomed={outlook?.dies || undefined}
       data-fx={fxAttr(fx)}
       data-fx-side={fxSide(fx)}
