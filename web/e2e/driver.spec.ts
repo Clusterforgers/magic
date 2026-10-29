@@ -1,6 +1,6 @@
 // Goal: the driver's own helpers read a prompt as the pages draw it: the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield, which windows count as idle, and which defender an attack aims at.
 import { expect, test } from '@playwright/test'
-import { aimAt, isIdle, look, turnOf } from './driver'
+import { aimAt, attackersOffered, isIdle, look, turnOf } from './driver'
 import type { Card, Seen } from './driver'
 
 const card = (id: string): Card => ({ id, label: `Card ${id}`, land: false })
@@ -99,5 +99,23 @@ test.describe('driver helpers', () => {
       '<div data-decision="DeclareAttackers" data-decision-id="3"><button>Attack with all</button></div>',
     )
     expect(await aimAt(page, ['Ada'])).toBeNull()
+  })
+
+  test('a chosen blocker is offered the attackers the table marks legal, not the blockers', async ({
+    page,
+  }) => {
+    await page.setContent(`
+      <section aria-label="Bo's battlefield">
+        <button data-object-id="21" data-highlight="legal">Wolf</button>
+        <button data-object-id="22" data-highlight="dimmed">Bear</button>
+        <button data-object-id="23" data-highlight="legal">Elk</button>
+      </section>
+      <section aria-label="Ada's battlefield">
+        <button data-object-id="11" data-highlight="selected">Chosen</button>
+        <button data-object-id="12" data-highlight="legal">Other blocker</button>
+        <button data-object-id="13" data-highlight="dimmed">Land</button>
+      </section>`)
+    expect(await page.evaluate(attackersOffered, ['11', '12'])).toEqual(['21', '23'])
+    expect(await page.evaluate(attackersOffered, ['11', '12', '21', '23'])).toEqual([])
   })
 })

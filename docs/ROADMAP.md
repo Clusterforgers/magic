@@ -184,7 +184,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pl2b) The tiles of focus mode and of the phone's strip show the life chip and take the defender click (only the pod does today)
 - [ ] (pl2c) A pending block's arrow takes the colour of the preview's outcome for its pair, as a declared block does
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
-- [~] (pl2e) (confirm-blocks) The e2e test "game-over screen of a real game" in `layout.spec.ts` finishes: "Confirm blocks" stays disabled in a real two-seat game on main (not caused by a branch), so either the click-combat flow or the spec is wrong; fix it and say which
+- [ ] (pl2f) `full-game.spec.ts` asserts that Bo ends the turn in exactly the idle windows, but `isIdle` counts an untapped land (a legal mana ability) as something to play, so Bo ends the turn in more windows than are idle
+- [ ] (pl2g) `hand.spec.ts` counts `[data-region="hand"] button[data-object-id]` and now finds the commanders of the command zone too (hand=7 gives 9)
+- [ ] (pl2h) `browser.spec.ts` "a guest joins a public game" finds no button named "Mono Red Giants" in `chooseDeck` (`lobby.ts`), so the guest never picks a deck
 - [ ] (pl3a) `ObjectView` carries what a mana ability gives as data (mana, count, cost, sacrifice), so the corner strip and the preview stop reading the words of `activated` (an ability with a count by a condition, a chosen colour or an extra cost shows nothing today)
 - [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
 - [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
