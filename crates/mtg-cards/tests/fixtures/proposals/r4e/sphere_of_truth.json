@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"by":{"PreventUpTo":2},"when":{"Damage":{"to":"You"}},"condition":{"Matches":{"selector":[{"Color":"White"}],"subject":"This"}}} }]}] }

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":1,"toughness":0}},{"AddKeyword":"FirstStrike"}]}}],"when":{"PlayerAttacks":{"at":"Opponents","by":"You"}},"targets":[{"what":{"Object":["Attacking","ChosenSubtype"]}}]} }]}]}

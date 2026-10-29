@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":"{3}{G}","effects":[{"Rule":{"duration":"UntilEndOfTurn","rule":{"MustBlock":{"Target":0}}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]} }]}] }

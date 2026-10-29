@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cefa28e2-6a95-4aca-86f4-b0b741f61939",
+  "name": "Clip Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clip Wings",
+      "oracle_fingerprint": "bacd31f69e223b10293a769cc2d99a5b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

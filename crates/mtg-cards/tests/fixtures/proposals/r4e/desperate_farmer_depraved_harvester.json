@@ -1,0 +1,25 @@
+{
+  "oracle_id": "60d591f6-6d84-45d2-9d78-a2ef07a3e403",
+  "name": "Desperate Farmer // Depraved Harvester",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Desperate Farmer",
+      "oracle_fingerprint": "69bfcce979022b80b7df18dbda734b01",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 9, "end": 73 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Depraved Harvester",
+      "oracle_fingerprint": "8701c4216ab0c9a70ce992c6ad633b95",
+      "abilities": [{ "Keyword": "Lifelink" }]
+    }
+  ]
+}

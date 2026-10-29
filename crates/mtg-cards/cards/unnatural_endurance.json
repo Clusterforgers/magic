@@ -1,0 +1,29 @@
+{
+  "oracle_id": "63701aa6-d3b8-4af2-96a4-2dec27d6a661",
+  "name": "Unnatural Endurance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnatural Endurance",
+      "oracle_fingerprint": "6864bdbddf1c30593aa6d4547126694a",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Regenerate": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

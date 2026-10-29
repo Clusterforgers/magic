@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Replacement":{"by":{"Choose":"CreatureType"},"when":{"Enters":{"what":["This"]}},"from":"Battlefield"}},{"Static":{"affected": {"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}]}]}

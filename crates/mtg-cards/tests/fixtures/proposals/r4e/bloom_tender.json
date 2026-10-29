@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Vigilance"},{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":{"Distinct":{"of":[{"Type":"Instant"},{"ControlledBy":"You"}],"stat":"Colors"}}}}}]}}]} ]}

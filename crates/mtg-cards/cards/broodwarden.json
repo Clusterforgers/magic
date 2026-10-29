@@ -1,0 +1,25 @@
+{
+  "oracle_id": "14537413-3628-4152-b23f-78b0e9c416ac",
+  "name": "Broodwarden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broodwarden",
+      "oracle_fingerprint": "0900f66edba73f1634dfa7bb82f6acf4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Eldrazi Spawn" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

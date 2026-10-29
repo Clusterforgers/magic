@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5de63529-7dea-4018-bf46-afb4bc8b69fd",
+  "name": "Krark-Clan Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krark-Clan Ogre",
+      "oracle_fingerprint": "5b5ed5abc33f0de831f98104d85b412b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

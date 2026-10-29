@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"LoseLife":{"amount":1,"who":"Defending"}}],"when":{"Attacks":{"what":[{"ControlledBy":"You"},{"Subtype":"Sliver"}]}}}}]}] }

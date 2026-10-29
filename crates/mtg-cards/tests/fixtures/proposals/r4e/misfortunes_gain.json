@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Target":0}}},{"GainLife":{"amount":4,"who":{"OwnerOf":{"Target":0}}}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}]} ]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":["CantAttack","CantBlock"],"condition":{"Compare":{"left":{"Count":[{"Type":"Enchantment"}]},"op":"Gt","right":0}}}}] } ]}

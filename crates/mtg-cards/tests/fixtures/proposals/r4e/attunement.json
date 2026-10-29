@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"ReturnToHand":{"filter":[{"Type":"Enchantment"},{"Is":"This"}]}}],"effects":[{"Draw":{"count":3}},{"Discard":{"count":4}}]}}]}]}

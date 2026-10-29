@@ -1,0 +1,17 @@
+{
+  "oracle_id": "5b6c6dab-0687-4297-b215-89e699d65681",
+  "name": "Signpost Scarecrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Signpost Scarecrow",
+      "oracle_fingerprint": "9291591f91d7c4fad916b7361363dd92",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": { "cost": "{2}", "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }] }
+        }
+      ]
+    }
+  ]
+}

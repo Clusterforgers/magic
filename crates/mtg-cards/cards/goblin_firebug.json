@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ee337677-d898-40a5-9453-405d07ec12b1",
+  "name": "Goblin Firebug",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Firebug",
+      "oracle_fingerprint": "3daedd9cd7306a458f7c19bdd462c351",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

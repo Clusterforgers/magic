@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"},{"Subtype":"Forest"}]}}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":-3,"toughness":0}}]}}]} }]}]}

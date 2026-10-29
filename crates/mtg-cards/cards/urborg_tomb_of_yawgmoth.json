@@ -1,0 +1,19 @@
+{
+  "oracle_id": "db6174d7-211d-4817-b8e4-8384594c83f9",
+  "name": "Urborg, Tomb of Yawgmoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg, Tomb of Yawgmoth",
+      "oracle_fingerprint": "0841c98ca64399e622d389db3dfe739f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }] },
+            "mods": [{ "AddSubtype": "Swamp" }]
+          }
+        }
+      ]
+    }
+  ]
+}

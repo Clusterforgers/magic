@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap","Tap","Tap",{"TapPower":{"filter":[{"Type":"Creature"}],"power":1}},"Tap","Tap",{"TapPower":{"filter":[{"Type":"Creature"}],"power":1}}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}]}}] }]}

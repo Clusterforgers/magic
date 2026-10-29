@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Pay":{"cost":"{3}","unpaid":[{"Counter":{"what":{"Target":0}}}],"who":{"ControllerOf":{"Target":0}}}},{"If":{"condition":{"Matches":{"selector":[{"Subtype":"Wizard"}],"subject":"This"}},"then":[{"Draw":{}}]}}],"targets":[{"what":{"Object":["Spell"]}}]}}]}] }

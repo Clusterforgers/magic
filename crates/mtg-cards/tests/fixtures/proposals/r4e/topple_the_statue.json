@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Tap":{"what":{"Target":0}}},{"If":{"condition":{"Matches":{"selector":[{"Type":"Artifact"}],"subject":{"Target":0}}},"then":[{"Destroy":{"what":{"Target":0}}}]}},{"Draw":{}}],"targets":[{"what":{"Object":[]}}]}}
+
+] } ]}

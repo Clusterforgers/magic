@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DealDamage":{"amount":1,"to":{"Target":0},"source":"This"}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}] }]}

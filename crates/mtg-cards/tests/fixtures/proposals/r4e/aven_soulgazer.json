@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e7ac8c1d-d298-4d57-8e0e-c60c7e61b247",
+  "name": "Aven Soulgazer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aven Soulgazer",
+      "oracle_fingerprint": "918a06110b5ee13503d9b441a0201f37",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 7, "end": 49 }
+          }
+        }
+      ]
+    }
+  ]
+}

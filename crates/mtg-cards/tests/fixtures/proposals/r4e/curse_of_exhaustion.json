@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6659fae5-09d9-4095-8de3-643afd6ad3be",
+  "name": "Curse of Exhaustion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Curse of Exhaustion",
+      "oracle_fingerprint": "775f17c52bf5ebc01286c21704151e6c",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 15, "end": 73 }
+          }
+        }
+      ]
+    }
+  ]
+}
