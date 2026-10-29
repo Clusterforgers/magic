@@ -813,8 +813,10 @@ impl InvariantChecker {
         }
     }
 
-    /// A new holder of the initiative gets a new object and the old one, if still in the game, leaves it.
+    /// The objects of the command zone: a dungeon entered or completed, and a new holder of the initiative, who gets a
+    /// new object while the old one, if still in the game, leaves it.
     fn w15a_initiative_count(&mut self, event: &Event) {
+        self.expected_objects = w11d_dungeon_count(self.expected_objects, event);
         match event {
             Event::ObjectLeftGame { object } if self.w15a_initiative == Some(*object) => {
                 self.w15a_initiative = None;
@@ -912,7 +914,6 @@ impl InvariantChecker {
         ) {
             self.expected_objects += 1;
         }
-        self.expected_objects = w11d_dungeon_count(self.expected_objects, event);
         self.w15a_initiative_count(event);
         // The spell's card is part of the permanent, no object of its own.
         if matches!(event, Event::Mutated { .. }) {

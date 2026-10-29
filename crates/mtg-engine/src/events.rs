@@ -1052,7 +1052,6 @@ impl Event {
             Event::TokenCreated(token) => vec![token.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
             Event::Ventured(ventured) => vec![ventured.object],
-            Event::InitiativeTaken { object, .. } => vec![*object],
             Event::BecameCopy(copy) => vec![copy.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
@@ -1100,7 +1099,8 @@ impl Event {
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
             | Event::CardParted { permanent: object, .. }
-            | Event::ObjectLeftGame { object } => vec![*object],
+            | Event::ObjectLeftGame { object }
+            | Event::InitiativeTaken { object, .. } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()

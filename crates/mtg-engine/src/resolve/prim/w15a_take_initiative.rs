@@ -90,7 +90,10 @@ mod tests {
         let taken = take(&mut game, r#"{"TakeInitiative":{"who":"Opponents"}}"#);
         assert_ne!(object_of(&taken[0]), object_of(&first[0]));
         assert_eq!(game.w15a_initiative(), Some(FOE));
-        assert!(game.zone(Zone::Command(ME)).is_empty());
+        assert_eq!(
+            game.zone(Zone::Command(ME)),
+            &[] as &[mtg_core::ids::ObjectId]
+        );
         assert_eq!(game.zone(Zone::Command(FOE)).len(), 1);
         let both = take(&mut game, r#"{"TakeInitiative":{"who":"EachPlayer"}}"#);
         assert_eq!(both.len(), 2);
@@ -107,7 +110,10 @@ mod tests {
             reason: LossReason::Conceded,
         };
         apply_event(&mut game, &lost).unwrap();
-        assert!(take(&mut game, r#"{"TakeInitiative":{"who":"Opponents"}}"#).is_empty());
+        assert_eq!(
+            take(&mut game, r#"{"TakeInitiative":{"who":"Opponents"}}"#),
+            []
+        );
         let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
         let resolving = Resolving::begin(source.id());
         let cx = Cx {

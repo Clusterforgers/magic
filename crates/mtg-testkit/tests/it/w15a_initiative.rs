@@ -63,7 +63,10 @@ fn trigger_on_stack(driver: &Driver) -> bool {
 }
 
 fn holder(driver: &Driver) -> Option<usize> {
-    driver.state().w15a_initiative().map(|p| p.index())
+    driver
+        .state()
+        .w15a_initiative()
+        .map(mtg_core::ids::PlayerId::index)
 }
 
 #[rstest]
@@ -120,7 +123,7 @@ fn combat_damage_takes_the_initiative_and_the_holder_ventures_at_their_upkeep(
     );
     let seat1 = ventures(&driver).iter().filter(|v| v.0 == 1).count();
     assert_eq!(seat1, 1, "taking it in combat ventured");
-    driver.idle_until(2 + seats as u32, Step::Main1)?;
+    driver.idle_until(2 + u32::try_from(seats).unwrap(), Step::Main1)?;
     let seat1 = ventures(&driver).iter().filter(|v| v.0 == 1).count();
     assert_eq!(seat1, 2, "the holder ventured at their upkeep");
     let replayed = replay(&setup, driver.engine().events()).unwrap();
