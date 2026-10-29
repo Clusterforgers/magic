@@ -156,6 +156,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k1c) `/dev/table` screenshots of the four-seat Commander fixture (`commander-return` too) at 360, 390, 768, 1024, 1400, 1600x1000 and 1920 in both themes, with the layout gate and fit specs green
 - [ ] (k1d) The turn banner and the prompt bar never cover a battlefield row: at 1600x1000 in a four-seat game both lie over the opponents' permanents
 - [ ] (k1e) The divider between the commanders and the hand stays inside the hand dock (`HandDock.tsx` `hand-command`); at 1400x900 it rises about 30 px into the battlefield
+- [ ] (k1f) An attack arrow aimed at a player ends at the seat panel's edge, not over its life total and stats: `fit.spec.ts` fails "life is covered" on the `/dev/table` fixture, and the layout gate fails every table case of `layout.spec.ts` in both themes
 - [~] (k2) (k2-commander-builder) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
