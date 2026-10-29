@@ -362,11 +362,16 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     // Split second: no spell is cast and no ability that is not a mana ability is activated (CR 702.61a). Special
     // actions and mana abilities stay.
     let silenced = keywords::split_second_on_stack(state);
+    let w17b_forbidden = crate::w17b_statics::w17b_cant_cast(state, player);
     let castable: Vec<ObjectId> = hand
         .iter()
         .copied()
         .chain(ways::elsewhere(state, player))
-        .filter(|id| !silenced && ways::castable_now(state, player, *id, &pool, &all_mana, life))
+        .filter(|id| {
+            !silenced
+                && !w17b_forbidden
+                && ways::castable_now(state, player, *id, &pool, &all_mana, life)
+        })
         .collect();
     // A special action: no stack, so no target or modes are needed (CR 116.2f).
     let suspendable: Vec<ObjectId> = hand

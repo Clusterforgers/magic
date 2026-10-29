@@ -517,6 +517,8 @@ pub(super) fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
 fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     let rule = if r.words("play with the top card of your library revealed") {
         GameRule::RevealTop(Ref::You)
+    } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
+        rule
     } else if let Some(rule) = r.attempt(player_rule) {
         rule
     } else if let Some(rule) = r.attempt(super::w8a_declaration_limits::w8a_limit) {
@@ -1551,6 +1553,14 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {
             vec!["While voting, you may vote an additional time".to_owned()]
         }
+        (
+            GameRule::GraveyardCardsUntargetable
+            | GameRule::CantLoseGame { .. }
+            | GameRule::CantCastSpells { .. }
+            | GameRule::ToughnessAssignsDamage(_)
+            | GameRule::CountersRemain,
+            ZoneKind::Battlefield,
+        ) => super::w17b_statics::w17b_texts(rule),
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
         }

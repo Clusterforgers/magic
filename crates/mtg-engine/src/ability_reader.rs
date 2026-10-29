@@ -139,6 +139,20 @@ pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {
         .any(|rules| matches!(**rules, Ability::Rule { .. }))
 }
 
+/// Whether a card with this definition prints that counters remain on it as it changes zones (CR 122.2); the rule works
+/// in every zone, so the printed definition is read whatever the layers did.
+pub(crate) fn w17b_definition_keeps_counters(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(
+            &**rules,
+            Ability::Rule {
+                rule: mtg_cards::modify::GameRule::CountersRemain,
+                ..
+            }
+        )
+    })
+}
+
 /// Whether a card with this definition prints a cost modifier or a keyword that adds one (`GameState::possible`).
 pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
     let modifier = |rules: &Ability| matches!(rules, Ability::CostModifier { .. });

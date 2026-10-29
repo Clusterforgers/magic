@@ -149,6 +149,24 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         to: ZoneKind,
     },
+    /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
+    GraveyardCardsUntargetable,
+    /// The players can't lose the game, and the other players can't win it (CR 104.3).
+    CantLoseGame {
+        /// The players who can't lose.
+        who: Vec<PlayerId>,
+        /// The players who can't win.
+        winless: Vec<PlayerId>,
+    },
+    /// The players can't cast spells, only during this player's turns when one is named.
+    CantCastSpells {
+        /// The players who can't cast spells.
+        who: Vec<PlayerId>,
+        /// The player during whose turns they can't; every turn when absent.
+        turn: Option<PlayerId>,
+    },
+    /// Each creature the players control assigns combat damage equal to its toughness (CR 510.1a).
+    ToughnessAssignsDamage(Vec<PlayerId>),
 }
 
 /// A tax on attacking: whom it protects, which attackers it taxes and what each costs.
@@ -313,6 +331,8 @@ pub(crate) struct RulesInForce {
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
     block_limit_each: BTreeMap<PlayerId, u32>,
+    /// The rules about targets in graveyards, losing, casting and combat damage.
+    pub(crate) w17b: crate::w17b_statics::W17bRules,
 }
 
 /// A tax on attacking in force, with whose it is.
@@ -510,6 +530,10 @@ impl RulesInForce {
             }
             // Shields are read by the replacement step from the rule changes themselves.
             Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. } => {}
+            Rule::GraveyardCardsUntargetable
+            | Rule::CantLoseGame { .. }
+            | Rule::CantCastSpells { .. }
+            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule),
         }
     }
 }
@@ -542,32 +566,39 @@ fn attack_limit_at(scope: &Scope<'_>, most: u32, at: &Ref) -> Result<Rule, Resol
     })
 }
 
+/// The objects `who` names in `scope` that are in `zone` now: what the source is attached to for `Attached`.
+fn w17b_rule_objects(
+    scope: &Scope<'_>,
+    who: &Ref,
+    zone: Zone,
+) -> Result<Vec<ObjectRef>, ResolveError> {
+    let named = if matches!(who, Ref::Attached) {
+        scope
+            .state
+            .host_of(scope.source.id)
+            .and_then(|host| scope.state.object(host))
+            .map(GameObject::reference)
+            .into_iter()
+            .collect()
+    } else {
+        scope.objects(who)?
+    };
+    // An object that has changed zones since it was named is a new object (CR 400.7).
+    Ok(named
+        .into_iter()
+        .filter(|named| {
+            scope
+                .state
+                .object(named.id)
+                .is_some_and(|o| o.counter() == named.counter && o.zone() == zone)
+        })
+        .collect())
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
-    let objects = |who: &Ref, zone: Zone| -> Result<Vec<ObjectRef>, ResolveError> {
-        let named = if matches!(who, Ref::Attached) {
-            scope
-                .state
-                .host_of(scope.source.id)
-                .and_then(|host| scope.state.object(host))
-                .map(GameObject::reference)
-                .into_iter()
-                .collect()
-        } else {
-            scope.objects(who)?
-        };
-        // An object that has changed zones since it was named is a new object (CR 400.7).
-        Ok(named
-            .into_iter()
-            .filter(|named| {
-                scope
-                    .state
-                    .object(named.id)
-                    .is_some_and(|o| o.counter() == named.counter && o.zone() == zone)
-            })
-            .collect())
-    };
+    let objects = |who: &Ref, zone: Zone| w17b_rule_objects(scope, who, zone);
     Ok(match wanted {
         GameRule::DamageCantBePrevented { source, combat } => Rule::DamageCantBePrevented {
             source: source.clone(),
@@ -647,6 +678,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         // Eligibility is read from the definition when a seat is checked (`CardDefinition::can_be_commander`); no
         // rule is ever in force and an effect cannot start one.
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
+        GameRule::GraveyardCardsUntargetable
+        | GameRule::CantLoseGame { .. }
+        | GameRule::CantCastSpells { .. }
+        | GameRule::ToughnessAssignsDamage(_)
+        | GameRule::CountersRemain => crate::w17b_statics::w17b_lower(scope, wanted)?,
     })
 }
 
@@ -699,6 +735,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::DiesInstead { objects, .. } => objects.is_empty(),
+        Rule::GraveyardCardsUntargetable
+        | Rule::CantLoseGame { .. }
+        | Rule::CantCastSpells { .. }
+        | Rule::ToughnessAssignsDamage(_) => crate::w17b_statics::w17b_names_nothing(rule),
     }
 }
 
@@ -816,6 +856,7 @@ static NONE: RulesInForce = RulesInForce {
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
     block_limit_each: BTreeMap::new(),
+    w17b: crate::w17b_statics::W17B_NONE,
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.

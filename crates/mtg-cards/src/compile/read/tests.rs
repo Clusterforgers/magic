@@ -391,6 +391,7 @@ mod w15a_initiative;
 mod w15b_time;
 mod w15c_clash;
 mod w16a_writers;
+mod w17b_statics;
 mod w17c_cast_only;
 mod w17c_vote_again;
 mod w2b_each_of;

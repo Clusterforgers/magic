@@ -396,6 +396,7 @@ Doom Whisperer
 Doublecast
 Draconic Lore
 Drag to the Bottom
+Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
@@ -639,6 +640,7 @@ Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grisly Salvage
+Ground Seal
 Growing Ranks
 Grumgully, the Generous
 Gruul Cluestone
@@ -677,6 +679,7 @@ Hellkite Tyrant
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
+Herald of Eternal Dawn
 Herald of Hoofbeats
 Herald of War
 Herald of the Dreadhorde
@@ -1297,6 +1300,7 @@ Skirk Prospector
 Skitter Eel
 Skittering Crustacean
 Skizzik Surger
+Skullbriar, the Walking Grave
 Skullclamp
 Skullmulcher
 Skycloud Expanse

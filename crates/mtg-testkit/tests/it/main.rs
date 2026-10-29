@@ -470,6 +470,7 @@ mod w15a_initiative;
 mod w15b_out_of_time;
 mod w15c_clash;
 mod w17a_cascade_spells;
+mod w17b_statics;
 mod w17c_combat_spells;
 mod w17c_vote_again;
 mod w2b_read_ahead;

@@ -335,6 +335,29 @@ pub enum GameRule {
         /// The event that causes the trigger, as a triggered ability describes it.
         cause: TriggerPattern,
     },
+    /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
+    GraveyardCardsUntargetable,
+    /// The players can't lose the game (CR 104.3), and with `opponents_cant_win` their opponents can't win it.
+    CantLoseGame {
+        /// The players who can't lose.
+        who: Ref,
+        /// Their opponents can't win the game either.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        opponents_cant_win: bool,
+    },
+    /// The players can't cast spells, only during the turns of the rule's controller with `your_turn`.
+    CantCastSpells {
+        /// The players who can't cast spells.
+        who: Ref,
+        /// Only during the turns of the rule's controller.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        your_turn: bool,
+    },
+    /// Each creature the players control assigns combat damage equal to its toughness rather than its power (CR 510.1a).
+    ToughnessAssignsDamage(Ref),
+    /// Counters remain on the card as it moves to any zone other than a hand or a library (CR 122.2); the card reads it
+    /// in every zone, so the rule is written without `from`.
+    CountersRemain,
 }
 
 #[cfg(test)]
@@ -477,6 +500,23 @@ mod tests {
         r#"{"AdditionalLandPlays":{"who":"EachPlayer","count":2}}"#
     )]
     #[case(GameRule::CanBeCommander, r#""CanBeCommander""#)]
+    #[case(
+        GameRule::GraveyardCardsUntargetable,
+        r#""GraveyardCardsUntargetable""#
+    )]
+    #[case(
+        GameRule::CantLoseGame { who: Ref::You, opponents_cant_win: true },
+        r#"{"CantLoseGame":{"who":"You","opponents_cant_win":true}}"#
+    )]
+    #[case(
+        GameRule::CantCastSpells { who: Ref::Opponents, your_turn: true },
+        r#"{"CantCastSpells":{"who":"Opponents","your_turn":true}}"#
+    )]
+    #[case(
+        GameRule::ToughnessAssignsDamage(Ref::You),
+        r#"{"ToughnessAssignsDamage":"You"}"#
+    )]
+    #[case(GameRule::CountersRemain, r#""CountersRemain""#)]
     #[case(
         GameRule::TriggerAgain {
             cause: TriggerPattern::Attacks { what: Selector::this() }
