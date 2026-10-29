@@ -1,0 +1,4 @@
+{"name":"Three Tree City","faces":[{"name":"Three Tree City","abilities":[
+ {"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"CreatureType"}}},
+ {"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}},
+ {"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"]}}}}]}}]}]}
