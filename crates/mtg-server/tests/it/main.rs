@@ -18,6 +18,7 @@ mod lobby_http;
 mod lobby_listing;
 mod lobby_roster;
 mod manual_play;
+mod many_seats;
 mod net;
 mod open_seats;
 mod pace_leak;

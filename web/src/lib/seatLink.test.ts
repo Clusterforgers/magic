@@ -1,18 +1,17 @@
 // Goal: a seat link carries its token only in the fragment, reads back to the same seat and token, and anything malformed is refused instead of guessed at.
 import { describe, expect, it } from 'vitest'
-import { MAX_SEATS } from './limits'
 import { fragmentOf, parseSeatFragment, seatLinkPath, seatLinkUrl } from './seatLink'
+
+// Every seat a table can have is a number; these are the ones the cases try.
+const SEATS_TRIED = [0, 1, 2, 7, 11, 12, 13, 23, 63, 999]
 
 const GAME = '8f2c1a52-31de-4c77-9a35-0d1d3f6a7b10'
 const TOKEN = 'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90'
 
 describe('seatLinkPath', () => {
-  it.each(Array.from({ length: MAX_SEATS }, (_, seat) => seat))(
-    'has the documented form for seat %i',
-    (seat) => {
-      expect(seatLinkPath(GAME, seat, TOKEN)).toBe(`/game/${GAME}#seat=${seat}&token=${TOKEN}`)
-    },
-  )
+  it.each(SEATS_TRIED)('has the documented form for seat %i', (seat) => {
+    expect(seatLinkPath(GAME, seat, TOKEN)).toBe(`/game/${GAME}#seat=${seat}&token=${TOKEN}`)
+  })
 
   it('puts the token after the # and nowhere before it', () => {
     const url = new URL(seatLinkUrl('https://play.example', GAME, 1, TOKEN))
@@ -52,13 +51,10 @@ describe('fragmentOf', () => {
 })
 
 describe('parseSeatFragment', () => {
-  it.each(Array.from({ length: MAX_SEATS }, (_, seat) => seat))(
-    'reads back seat %i of its own link',
-    (seat) => {
-      const path = seatLinkPath(GAME, seat, TOKEN)
-      expect(parseSeatFragment(fragmentOf(path))).toEqual({ seat, token: TOKEN })
-    },
-  )
+  it.each(SEATS_TRIED)('reads back seat %i of its own link', (seat) => {
+    const path = seatLinkPath(GAME, seat, TOKEN)
+    expect(parseSeatFragment(fragmentOf(path))).toEqual({ seat, token: TOKEN })
+  })
 
   it('accepts the fragment with its leading # and in either order', () => {
     expect(parseSeatFragment('#seat=2&token=abc')).toEqual({ seat: 2, token: 'abc' })
@@ -85,7 +81,6 @@ describe('parseSeatFragment', () => {
     ['a seat with a leading zero', 'seat=01&token=abc'],
     ['a seat with an exponent', 'seat=1e1&token=abc'],
     ['an empty seat', 'seat=&token=abc'],
-    [`seat ${MAX_SEATS}, one past the last`, `seat=${MAX_SEATS}&token=abc`],
     ['a huge seat', 'seat=99999999999999999999&token=abc'],
   ])('refuses %s', (_name, fragment) => {
     expect(parseSeatFragment(fragment)).toBeNull()

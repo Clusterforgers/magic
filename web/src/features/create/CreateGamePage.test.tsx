@@ -3,11 +3,11 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { scaled } from '@/test-utils/loadFactor'
-import { MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS } from '@/lib/limits'
+import { MAX_NAME_CHARS } from '@/lib/limits'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 import { MADE_GAME, startServer, tokenOf } from '@/test-utils/fakeServer'
 import type { ServerScript } from '@/test-utils/fakeServer'
-import { openCreateForm } from '@/test-utils/createForm'
+import { openCreateForm, typeSeats } from '@/test-utils/createForm'
 import { DECKS } from '@/test-utils/decks'
 import { renderInRouter } from '@/test-utils/router'
 import { CreateGamePage } from './CreateGamePage'
@@ -24,7 +24,7 @@ const deckField = () => screen.getByLabelText('Your deck')
 const seatCount = () => screen.getByLabelText('Seats')
 const button = (name: string | RegExp) => screen.getByRole('button', { name })
 
-const seatCounts = Array.from({ length: MAX_SEATS - MIN_SEATS + 1 }, (_, i) => MIN_SEATS + i)
+const seatCounts = [2, 3, 4, 8, 12, 13, 24, 64]
 
 describe('loading the decks', () => {
   it('says it is loading, then shows the form', async () => {
@@ -82,14 +82,11 @@ describe('loading the decks', () => {
 })
 
 describe('the form as first shown', () => {
-  it('asks for the number of seats, defaulting to 2, and the creator’s own name and deck', async () => {
+  it('asks for the number of seats in a number field with no most, defaulting to 2, and the creator’s own name and deck', async () => {
     await openCreateForm()
-    expect(seatCount()).toHaveValue('2')
-    expect(
-      within(seatCount())
-        .getAllByRole('option')
-        .map((option) => option.textContent),
-    ).toEqual(seatCounts.map(String))
+    expect(seatCount()).toHaveValue(2)
+    expect(seatCount()).toHaveAttribute('type', 'number')
+    expect(seatCount()).not.toHaveAttribute('max')
     expect(nameField()).toHaveValue('Player 1')
     expect(deckField()).toHaveValue('mono-green')
   })
@@ -135,7 +132,7 @@ describe('the form as first shown', () => {
 describe('the number of seats', () => {
   it.each(seatCounts)('sends exactly the documented request for %i seats', async (count) => {
     const { server, user, router } = await openCreateForm()
-    await user.selectOptions(seatCount(), String(count))
+    await typeSeats(user, count)
     await user.click(button('Create game'))
     await waitFor(() => expect(server.creates).toHaveLength(1))
     expect(server.creates[0]).toEqual({
@@ -156,9 +153,9 @@ describe('the number of seats', () => {
     await user.clear(nameField())
     await user.type(nameField(), 'Ana')
     await user.selectOptions(deckField(), 'mono-white')
-    await user.selectOptions(seatCount(), '5')
-    await user.selectOptions(seatCount(), '3')
-    expect(seatCount()).toHaveValue('3')
+    await typeSeats(user, 5)
+    await typeSeats(user, 3)
+    expect(seatCount()).toHaveValue(3)
     expect(nameField()).toHaveValue('Ana')
     expect(deckField()).toHaveValue('mono-white')
     await user.click(button('Create game'))
@@ -166,6 +163,22 @@ describe('the number of seats', () => {
     expect(server.creates[0]).toMatchObject({
       seats: [{ name: 'Ana', deck: 'mono-white' }, { name: 'Player 2' }, { name: 'Player 3' }],
     })
+  })
+
+  it('lets a number below the fewest pass on the way to a larger one, and says so', async () => {
+    const { user } = await openCreateForm()
+    await typeSeats(user, 20)
+    expect(seatCount()).toHaveValue(20)
+    await user.clear(seatCount())
+    await user.type(seatCount(), '1')
+    expect(seatCount()).toBeInvalid()
+    expect(screen.getByText('A game needs at least 2 seats.')).toBeInTheDocument()
+    await user.type(seatCount(), '5')
+    expect(seatCount()).toHaveValue(15)
+    expect(seatCount()).toBeValid()
+    await user.clear(seatCount())
+    await user.tab()
+    expect(seatCount()).toHaveValue(15)
   })
 
   it('trims the name before sending it', async () => {

@@ -33,7 +33,7 @@ const SIZES: ReadonlyArray<[string, Viewport]> = [
   ['844x390', { width: 844, height: 390 }],
 ]
 
-const SEAT_COUNTS = [2, 3, 4, 5, 6, 8, 12]
+const SEAT_COUNTS = [2, 3, 4, 5, 6, 8, 12, 13, 24, 64]
 
 describe('breakpointOf', () => {
   it.each<[number, Breakpoint]>([
@@ -251,7 +251,7 @@ describe('chooseMode', () => {
   })
 
   it('draws focus from 5 seats whatever the width', () => {
-    for (const seatCount of [5, 6, 12]) {
+    for (const seatCount of [5, 6, 12, 13, 24, 64]) {
       expect(chooseMode({ seatCount, mainWidth: 5000 })).toBe('focus')
     }
   })
@@ -290,6 +290,26 @@ describe('the seat shape', () => {
 })
 
 describe('planTable', () => {
+  it.each([2, 3, 4, 8, 12, 13, 24, 40, 64])(
+    'plans a table of %i seats: a tile for every opponent, the active one first, compact from 8',
+    (seatCount) => {
+      const viewport = { width: 1920, height: 1080 }
+      const active = seatCount - 1
+      const plan = planTable({ viewport, seatCount, viewer: 0, active })
+      expect(plan.seats.mode).toBe(seatCount <= 4 ? 'grid' : 'focus')
+      expect(plan.seats.compact).toBe(seatCount >= 8)
+      expect(plan.seats.opponents).toHaveLength(seatCount - 1)
+      if (plan.seats.mode === 'focus') {
+        expect(plan.seats.tiles).toHaveLength(seatCount - 1)
+        expect(new Set(plan.seats.tiles).size).toBe(seatCount - 1)
+        expect(plan.seats.tiles[0]).toBe(active)
+        expect(plan.seats.boards).toHaveLength(1)
+      } else {
+        expect(plan.seats.boards).toEqual(plan.seats.opponents)
+      }
+    },
+  )
+
   it.each(SIZES)('puts the pod beside the board except on a phone: %s', (_name, viewport) => {
     const plan = planTable({ viewport, seatCount: 2, viewer: 0 })
     expect(plan.pod).toBe(viewport.width < 640 ? 'line' : 'aside')

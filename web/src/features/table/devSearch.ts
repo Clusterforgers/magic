@@ -20,7 +20,7 @@ export const MAX_DEV_PREVIEW_MS = 10_000
 
 /** The address parameters of `/dev/table`. */
 export interface DevSearch {
-  /** How many seats the fixture table has, 2 to 12; 4 when missing or wrong. */
+  /** How many seats the fixture table has, 2 or more; 4 when missing or wrong. */
   seats: number
   /** `duel`: two seats with 12 and 10 permanents of an early Commander game; `heavy`: two seats with 40 each. */
   board?: 'duel' | 'heavy'
@@ -83,7 +83,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const board = search.board === 'duel' || search.board === 'heavy' ? search.board : undefined
   return {
     // A board names a two-seat table.
-    seats: board !== undefined ? 2 : seats === undefined || seats < 2 || seats > 12 ? 4 : seats,
+    seats: board !== undefined ? 2 : seats === undefined || seats < 2 ? 4 : seats,
     board,
     mode,
     focus: focus === undefined || focus < 0 ? undefined : focus,

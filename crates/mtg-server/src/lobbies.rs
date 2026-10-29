@@ -23,7 +23,7 @@ use mtg_protocol::rest::{
 };
 use sha2::{Digest, Sha256};
 
-use crate::api::{ApiError, MAX_NAME_CHARS, MAX_SEATS, is_unsafe_in_names, read_json};
+use crate::api::{ApiError, MAX_NAME_CHARS, is_unsafe_in_names, read_json};
 use crate::auth::client_address;
 use crate::deck_choice::{self, Refused};
 use crate::game_id::GameId;
@@ -424,14 +424,14 @@ pub(crate) async fn release(
     Ok(StatusCode::NO_CONTENT)
 }
 
-/// A seat number in a path: one or two digits, with no leading zero, that name a seat any game
-/// could have.
+/// A seat number in a path: plain digits with no leading zero that fit a seat index. Whether the game
+/// has that seat is for the registry to say.
 fn seat_number(text: &str) -> Option<PlayerId> {
-    let plain = (1..=2).contains(&text.len())
+    let plain = !text.is_empty()
         && text.bytes().all(|b| b.is_ascii_digit())
         && (text.len() == 1 || !text.starts_with('0'));
     let number: usize = text.parse().ok().filter(|_| plain)?;
-    (number < MAX_SEATS).then(|| PlayerId::from_index(number))
+    Some(PlayerId::from_index(number))
 }
 
 /// `PUT /api/games/{id}/seats/{n}/deck`: the holder of seat `n` chooses the deck it plays, until
@@ -516,8 +516,11 @@ mod tests {
     #[case("9", Some(9))]
     #[case("10", Some(10))]
     #[case("11", Some(11))]
-    #[case("12", None)]
-    #[case("99", None)]
+    #[case("12", Some(12))]
+    #[case("63", Some(63))]
+    #[case("99", Some(99))]
+    #[case("1000", Some(1000))]
+    #[case("99999999999999999999999", None)]
     #[case("00", None)]
     #[case("01", None)]
     #[case("001", None)]
@@ -529,7 +532,7 @@ mod tests {
     #[case("", None)]
     #[case("one", None)]
     #[case("１", None)]
-    fn a_seat_number_is_one_or_two_plain_digits_of_a_seat_a_game_can_have(
+    fn a_seat_number_is_plain_digits_with_no_leading_zero(
         #[case] text: &str,
         #[case] seat: Option<usize>,
     ) {

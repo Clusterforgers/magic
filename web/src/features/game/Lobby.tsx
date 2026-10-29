@@ -7,6 +7,7 @@ import { PageShell } from '@/components/PageShell'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
+import { cn } from '@/lib/utils'
 import { loadInvites } from '@/lib/invites'
 import { gameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
@@ -23,6 +24,7 @@ import { LobbyQuestion } from './LobbyQuestion'
 import { LobbyRules } from './LobbyRules'
 import { LobbySeatRow } from './LobbySeatRow'
 import { LobbyVisibility } from './LobbyVisibility'
+import { seatListClasses } from './seatListShape'
 import { useDeckChoice } from './useDeckChoice'
 import { useLobbyAnnouncement } from './useLobbyAnnouncement'
 import { useLobbyControls } from './useLobbyControls'
@@ -187,7 +189,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
           <p data-slot="lobby-headline" className="text-base font-medium">
             {summary.headline}
           </p>
-          <ul aria-label="Seats" className="divide-y rounded-lg border">
+          <ul aria-label="Seats" className={cn('divide-y rounded-lg border', seatListClasses(rows.length))}>
             {rows.map((row) => (
               <LobbySeatRow
                 key={row.seat}

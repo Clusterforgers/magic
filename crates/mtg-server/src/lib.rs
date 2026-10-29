@@ -132,7 +132,7 @@ pub use actor::{
     GameConfig, MAX_CHAT_CHARS, StartError, resume_game, resume_game_with, spawn_game,
     spawn_game_with,
 };
-pub use api::{BODY_LIMIT, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS};
+pub use api::{BODY_LIMIT, GAME_BODY_LIMIT, MAX_NAME_CHARS, MIN_SEATS};
 pub use cards::{CardSource, CatalogError, printed_card};
 pub use config::{AuthConfig, ConfigError, ServerConfig};
 pub use dwell::{Dwell, MAX_DWELL_MS};

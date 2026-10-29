@@ -1,4 +1,4 @@
-// Goal: the seat arrangement is right for every table size 2 to 12 and every viewer seat: opponents in turn order after the viewer, grid mode with 1 to 3 columns, focus mode with one large opponent and a tile for each, and a default focus that follows the turn.
+// Goal: the seat arrangement is right for every table size from 2 up (12, 13 and 64 seats among them) and every viewer seat: opponents in turn order after the viewer, grid mode with 1 to 3 columns, focus mode with one large opponent and a tile for each, and a default focus that follows the turn.
 import { describe, expect, it } from 'vitest'
 import {
   arrangeSeats,
@@ -10,7 +10,7 @@ import {
 } from './layout'
 import type { TableMode } from './layout'
 
-const COUNTS = Array.from({ length: 11 }, (_, index) => index + 2)
+const COUNTS = [...Array.from({ length: 11 }, (_, index) => index + 2), 13, 16, 24, 40, 64]
 const viewersOf = (count: number): number[] => Array.from({ length: count }, (_, viewer) => viewer)
 const MODES: TableMode[] = ['grid', 'focus']
 
@@ -21,7 +21,7 @@ describe('defaultMode', () => {
 
   it('uses grid for up to 4 seats and focus from 5', () => {
     expect([2, 3, 4].map(defaultMode)).toEqual(['grid', 'grid', 'grid'])
-    expect([5, 8, 12].map(defaultMode)).toEqual(['focus', 'focus', 'focus'])
+    expect([5, 8, 12, 13, 24, 64].map(defaultMode)).toEqual(Array(6).fill('focus'))
   })
 })
 

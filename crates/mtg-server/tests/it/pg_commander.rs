@@ -739,8 +739,6 @@ async fn the_format_key_and_the_seat_count_are_checked_before_anything_is_made(p
         |n: usize| -> Vec<Value> { (0..n).map(|i| json!({"name": format!("P{i}")})).collect() };
     for (format, count, status, code) in [
         ("commander", 1, 400, "invalid_request"),
-        ("commander", 7, 400, "invalid_request"),
-        ("commander", 12, 400, "invalid_request"),
         ("modern", 2, 400, "unsupported_format"),
         ("Commander", 2, 400, "unsupported_format"),
     ] {
@@ -749,13 +747,19 @@ async fn the_format_key_and_the_seat_count_are_checked_before_anything_is_made(p
         assert_eq!(reply.status, status, "{format} {count}: {}", reply.text());
         assert_eq!(reply.error_code(), code, "{format} {count}");
     }
-    // Seats without a deck wait for their holders to choose one; a Normal game keeps its 12.
-    for (format, count) in [("commander", 2), ("commander", 6), ("normal", 12)] {
+    // Seats without a deck wait for their holders to choose one; no format has a most.
+    for (format, count) in [
+        ("commander", 2),
+        ("commander", 6),
+        ("commander", 24),
+        ("normal", 12),
+        ("normal", 24),
+    ] {
         let body = json!({"format": format, "seats": seats(count)});
         let reply = ann.post(server.addr, "/api/games", &body.to_string()).await;
         assert_eq!(reply.status, 201, "{format} {count}: {}", reply.text());
     }
-    assert_eq!(server.registry.len(), 3);
+    assert_eq!(server.registry.len(), 5);
 }
 
 #[sqlx::test(migrations = false)]
