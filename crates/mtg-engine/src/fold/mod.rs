@@ -9,6 +9,8 @@ mod opening;
 mod resolution;
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod w21a_atoms;
 mod zones;
 
 use std::collections::BTreeSet;
