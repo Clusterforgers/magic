@@ -5,6 +5,7 @@
 //! from the journal like any other answer.
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
 use super::Choice;
@@ -34,6 +35,20 @@ pub struct NumberOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub can_cancel: bool,
+    /// The total mana cost with X at 0, when the number is the X of a mana cost; left out otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub cost: Option<ManaCost>,
+    /// The generic mana each 1 of X adds to `cost` (2 for `{X}{X}`); left out while 0.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub per_x: u32,
+}
+
+// serde's `skip_serializing_if` passes the field by reference.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+fn is_zero(value: &u32) -> bool {
+    *value == 0
 }
 
 /// The answer to a number decision.
@@ -90,6 +105,8 @@ mod tests {
             except: Vec::new(),
             text: String::new(),
             can_cancel,
+            cost: None,
+            per_x: 0,
         }
     }
 
