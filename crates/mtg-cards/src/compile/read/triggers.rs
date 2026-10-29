@@ -43,6 +43,7 @@ pub fn graveyard_itself(pattern: &TriggerPattern) -> bool {
 pub fn itself_acts(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Attacks { what }
+        | TriggerPattern::Exerted { what }
         | TriggerPattern::ZoneChange {
             what,
             to: Some(ZoneKind::Battlefield),
@@ -66,6 +67,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::BecomesBlocked { what }
         | TriggerPattern::Unblocked { what }
         | TriggerPattern::Mutates { what }
+        | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
         | TriggerPattern::Untapped { what }
         | TriggerPattern::ZoneChange {
@@ -207,6 +209,9 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     }
     if !(r.word("when") || r.word("whenever")) {
         return None;
+    }
+    if let Some(found) = r.attempt(super::w9d_exert::w9d_event) {
+        return Some(found);
     }
     if let Some(found) = r.attempt(player_event) {
         return Some(found);
@@ -1324,6 +1329,7 @@ fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
 /// The event as the card words it, from "When" to the end of the event.
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
+        TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }
@@ -1337,11 +1343,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             player_verb(by, "sacrifice")?,
             subject_text(what)?
         )),
-        TriggerPattern::Milled {
-            what,
-            by,
-            per_player: false,
-        } => super::w8b_milled::w8b_text(what, by),
+        TriggerPattern::Milled { .. } => super::w8b_milled::w8b_text(pattern),
         TriggerPattern::BecomesMonarch { who } => Some(format!(
             "Whenever {} the monarch",
             player_verb(who, "become")?

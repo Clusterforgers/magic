@@ -179,6 +179,7 @@ Brain Freeze
 Brainstorm
 Branchblight Stalker
 Breath of Life
+Breezekeeper
 Briarblade Adept
 Bridled Bighorn
 Brightstone Ritual
@@ -289,6 +290,7 @@ Courser of Kruphix
 Court of Grace
 Crack in Time
 Cram Session
+Crawlspace
 Creeping Tar Pit
 Crib Swap
 Crocanura
@@ -376,6 +378,7 @@ Dismantling Blow
 Dismantling Wave
 Disrupt Decorum
 Distorting Wake
+Divine Visitation
 Diviner Spirit
 Dockside Extortionist
 Dokuchi Shadow-Walker
@@ -550,11 +553,13 @@ Gadwick, the Wizened
 Gaea's Cradle
 Gaea's Might
 Galadhrim Brigade
+Gallifrey Falls // No More
 Galvanic Iteration
 Galvanizing Sawship
 Game-Trail Changeling
 Garruk Wildspeaker
 Garruk, Primal Hunter
+Gatta and Luzzu
 Gavony Dawnguard
 Gemhide Sliver
 Gemrazer
@@ -740,11 +745,13 @@ Jo Grant
 Jodah's Codex
 Join the Maestros
 Jolting Merfolk
+Judoon Enforcers
 Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
 Kalemne's Captain
 Kalemne, Disciple of Iroas
+Kalitas, Traitor of Ghet
 Kalonian Hydra
 Kang, Temporal Tyrant
 Karador, Ghost Chieftain
@@ -862,6 +869,7 @@ Mardu Shadowspear
 Mardu Strike Leader
 Mariposa Military Base
 Maro
+Marrow Chomper
 Marwyn, the Nurturer
 Mask of Griselbrand
 Mask of Riddles
@@ -1001,6 +1009,7 @@ Pacifism
 Palace Jailer
 Paladin's Arms
 Pale Bears
+Panther Habit
 Panther Robot
 Paradise Druid
 Parhelion Patrol
@@ -1015,6 +1024,7 @@ Patron of the Vein
 Peacewalker Colossus
 Peema Outrider
 Pentad Prism
+Perch Protection
 Persist
 Personal Sanctuary
 Pestilent Syphoner
@@ -1267,6 +1277,7 @@ Skitter Eel
 Skittering Crustacean
 Skizzik Surger
 Skullclamp
+Skullmulcher
 Skycloud Expanse
 Skyhunter Strike Force
 Skymarcher Aspirant
@@ -1413,6 +1424,7 @@ Tectonic Reformation
 Teferi's Ageless Insight
 Teferi's Protection
 Tempestra, Dame of Games
+Temple Altisaur
 Temporal Manipulation
 Temur Devotee
 Tender Wildguide

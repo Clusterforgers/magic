@@ -1,0 +1,19 @@
+{
+  "id": "5b8e092a-610d-4cea-bb92-65e01954b5c4",
+  "oracle_id": "2296370c-fe34-4df6-92a5-260f1634bede",
+  "name": "Crawlspace",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dmr",
+  "collector_number": "217",
+  "rarity": "rare",
+  "released_at": "2023-01-13",
+  "digital": false,
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "No more than two creatures can attack you each combat.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

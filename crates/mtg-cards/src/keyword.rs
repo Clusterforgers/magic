@@ -330,6 +330,13 @@ pub enum Keyword {
     Harmonize(Cost),
     /// Read ahead (CR 702.155): as the Saga enters, its controller chooses a chapter number and it enters with that many lore counters; chapter abilities with a lower number don't trigger.
     ReadAhead,
+    /// Exert as it attacks (CR 701.43): its controller may exert the creature as it is declared an attacker; with
+    /// `once_per_turn`, only while it hasn't been exerted this turn ("If this creature hasn't been exerted this turn").
+    Exert {
+        /// Only while the creature hasn't been exerted this turn.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        once_per_turn: bool,
+    },
 }
 
 /// What a promised gift is (CR 702.174).
@@ -496,6 +503,7 @@ impl Keyword {
         "Emerge",
         "Harmonize",
         "Read ahead",
+        "Exert",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -654,6 +662,7 @@ impl Keyword {
             Keyword::Emerge(_) => "Emerge",
             Keyword::Harmonize(_) => "Harmonize",
             Keyword::ReadAhead => "Read ahead",
+            Keyword::Exert { .. } => "Exert",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
@@ -853,6 +862,9 @@ mod tests {
             Keyword::Emerge(Cost::default()),
             Keyword::Harmonize(Cost::default()),
             Keyword::ReadAhead,
+            Keyword::Exert {
+                once_per_turn: true,
+            },
         ]
     }
 

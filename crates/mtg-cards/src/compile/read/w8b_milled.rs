@@ -90,8 +90,16 @@ fn w8b_card(what: Selector) -> Option<Selector> {
     plain.then_some(what)
 }
 
-/// "Whenever a player mills a nonland card".
-pub(super) fn w8b_text(what: &Selector, by: &Ref) -> Option<String> {
+/// "Whenever a player mills a nonland card": the text of a `Milled` pattern that is not for each player.
+pub(super) fn w8b_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::Milled {
+        what,
+        by,
+        per_player: false,
+    } = pattern
+    else {
+        return None;
+    };
     let card = filter_text(&w8b_card(what.clone())?, false)?;
     Some(format!(
         "Whenever {} {} {card}",

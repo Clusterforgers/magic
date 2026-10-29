@@ -1,0 +1,16 @@
+{
+  "oracle_id": "ca04089c-24b6-465e-9303-ea28c0d6f3c7",
+  "name": "Judoon Enforcers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Judoon Enforcers",
+      "oracle_fingerprint": "574474eefb927034b0493b67be2fc400",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Rule": { "rule": { "AttackLimitAt": { "most": 1, "at": "You" } } } },
+        { "Keyword": { "Suspend": { "time": 6, "cost": "{1}{W}{R}" } } }
+      ]
+    }
+  ]
+}

@@ -109,9 +109,7 @@ pub fn process(
     let left = shields
         .iter()
         .filter_map(|effect| match &effect.rule {
-            Rule::PreventDamage(DamageShield {
-                left: Some(left), ..
-            }) => Some((effect.id, *left)),
+            Rule::PreventDamage(shield) => shield.left.map(|left| (effect.id, left)),
             _ => None,
         })
         .collect();
@@ -569,7 +567,10 @@ fn is_self(when: &ReplaceWhen) -> bool {
 /// Whether the engine can apply `by` to this kind of event.
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
-        ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventRemovingCounter(_) => {
+        ReplaceBy::PreventUpTo(_)
+        | ReplaceBy::PreventRemovingCounter(_)
+        | ReplaceBy::PreventAnd(_)
+        | ReplaceBy::PreventAllBut(_) => {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
@@ -624,6 +625,8 @@ impl Action {
                 ReplaceBy::Prevent
                     | ReplaceBy::PreventUpTo(_)
                     | ReplaceBy::PreventRemovingCounter(_)
+                    | ReplaceBy::PreventAnd(_)
+                    | ReplaceBy::PreventAllBut(_)
             )
         )
     }
@@ -785,7 +788,7 @@ impl Pass<'_> {
     ) -> Result<bool, EngineError> {
         let scope = Scope::announcing(self.state, source.controller, source.object);
         Ok(match (when, unit) {
-            (ReplaceWhen::TokenCreation { controller }, Unit::Tokens { controller: made }) => {
+            (ReplaceWhen::TokenCreation { controller, .. }, Unit::Tokens { controller: made }) => {
                 scope.players(controller)?.contains(made)
             }
             (
@@ -1286,7 +1289,8 @@ impl Pass<'_> {
             let by = match self.left.get(&effect.id) {
                 Some(0) => continue,
                 Some(left) => ReplaceBy::PreventUpTo(*left),
-                None => ReplaceBy::Prevent,
+                None if shield.then.is_empty() => ReplaceBy::Prevent,
+                None => ReplaceBy::PreventAnd(shield.then.clone()),
             };
             found.push(Candidate {
                 origin,
@@ -1446,6 +1450,7 @@ impl Pass<'_> {
                     "replacement effects went on without end".into(),
                 ));
             }
+            self.w9c_split_tokens(at);
             let candidates = self.candidates(at)?;
             let chosen = if candidates.is_empty() {
                 at += 1;
@@ -1712,6 +1717,12 @@ impl Pass<'_> {
                 }
                 self.slots.remove(at);
             }
+            (ReplaceBy::PreventAnd(effects), Unit::Damage { .. }) => {
+                self.w9c_prevent_and(at, candidate, effects, &unit, &applied);
+            }
+            (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
+                self.w9c_prevent_all_but(at, candidate, *kept, applied);
+            }
             (ReplaceBy::Instead(effects), _) => {
                 self.w5d_instead(at, candidate, effects, &unit, applied);
             }
@@ -1759,38 +1770,40 @@ impl Pass<'_> {
                 self.slots[at].applied.clone_from(&applied);
                 self.pull_drawn_commander(at, *player, &applied);
             }
-            (ReplaceBy::Devour { .. }, Unit::Enter { object, controller }) => {
-                return self.devour(at, candidate, by, *object, *controller, applied);
-            }
-            (ReplaceBy::Riot, Unit::Enter { object, controller }) => {
-                return self.riot(at, *object, *controller, applied);
-            }
-            (ReplaceBy::RevealOrTapped(of), Unit::Enter { object, controller }) => {
-                return self.reveal_or_tapped(at, candidate, of, (*object, *controller), applied);
-            }
-            (
-                ReplaceBy::TappedForCounters { counter, count },
-                Unit::Enter { object, controller },
-            ) => {
-                let got = (counter, *count);
-                return self.w13b_tapped_for_counters(
-                    at,
-                    candidate,
-                    got,
-                    (*object, *controller),
-                    applied,
-                );
-            }
-            (ReplaceBy::DayIfNeither, Unit::Enter { .. }) => {
-                self.day_if_neither(at, applied);
-                return Ok(Applied::Done);
-            }
             (_, Unit::Enter { object, controller }) => {
-                return self.enter(at, candidate, by, *object, *controller, applied);
+                let entering = (*object, *controller);
+                return self.w13b_apply_enter(at, candidate, by, entering, applied);
             }
             _ => self.slots[at].applied = applied,
         }
         Ok(Applied::Done)
+    }
+
+    /// Applies the replacement `by` of `candidate` to the permanent `object` entering under `controller`.
+    fn w13b_apply_enter(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        by: &ReplaceBy,
+        (object, controller): (ObjectId, PlayerId),
+        applied: Vec<Origin>,
+    ) -> Result<Applied, EngineError> {
+        match by {
+            ReplaceBy::Devour { .. } => self.devour(at, candidate, by, object, controller, applied),
+            ReplaceBy::Riot => self.riot(at, object, controller, applied),
+            ReplaceBy::RevealOrTapped(of) => {
+                self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
+            }
+            ReplaceBy::TappedForCounters { counter, count } => {
+                let got = (counter, *count);
+                self.w13b_tapped_for_counters(at, candidate, got, (object, controller), applied)
+            }
+            ReplaceBy::DayIfNeither => {
+                self.day_if_neither(at, applied);
+                Ok(Applied::Done)
+            }
+            _ => self.enter(at, candidate, by, object, controller, applied),
+        }
     }
 
     /// The Aura's umbra armor saves the creature: its damage is removed in place of its destruction, and the Aura is
@@ -2834,6 +2847,8 @@ mod shields;
 mod umbra;
 
 mod w5d_instead;
+
+mod w9c_prevent;
 
 #[cfg(test)]
 mod tests {

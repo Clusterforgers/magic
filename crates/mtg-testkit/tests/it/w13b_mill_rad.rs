@@ -187,7 +187,9 @@ fn w13b_tato_farmer_takes_a_land_milled_this_turn(
             .state()
             .objects()
             .filter(|o| o.card().name == "Forest" && o.zone() == Zone::Battlefield)
-            .filter(|o| o.permanent().is_some_and(|p| p.tapped()))
+            .filter(|o| o
+                .permanent()
+                .is_some_and(mtg_engine::object::PermanentState::tapped))
             .count(),
         1
     );
@@ -220,7 +222,7 @@ fn w13b_mariposa_enters_tapped_for_two_rad_counters(
         .state()
         .object(base)
         .and_then(|o| o.permanent())
-        .is_some_and(|p| p.tapped());
+        .is_some_and(mtg_engine::object::PermanentState::tapped);
     let counters: Vec<u32> = (0..seats)
         .map(|seat| {
             driver

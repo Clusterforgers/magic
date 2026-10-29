@@ -172,6 +172,9 @@ pub(super) fn w13b_wordings(ability: &Ability, texts: &mut Vec<String>) {
     texts.extend(w13b_milled_targets_wordings(ability));
 }
 
+/// The sentence the renderers write for a trigger limited to once each turn.
+const W13B_SAID: &str = " This ability triggers only once each turn.";
+
 /// "Do this only once each turn." for a trigger limited to once each turn whose one effect is a may.
 fn w13b_once_wordings(ability: &Ability, texts: &mut Vec<String>) {
     let Ability::Triggered {
@@ -185,11 +188,10 @@ fn w13b_once_wordings(ability: &Ability, texts: &mut Vec<String>) {
     if !matches!(effects.as_slice(), [Effect::May { .. }]) {
         return;
     }
-    const SAID: &str = " This ability triggers only once each turn.";
     let said: Vec<String> = texts
         .iter()
-        .filter(|text| text.ends_with(SAID))
-        .map(|text| text.replacen(SAID, " Do this only once each turn.", 1))
+        .filter(|text| text.ends_with(W13B_SAID))
+        .map(|text| text.replacen(W13B_SAID, " Do this only once each turn.", 1))
         .collect();
     texts.extend(said);
 }

@@ -227,6 +227,7 @@ const RUNS: &[&str] = &[
     "Rule.MustAttackPlayers",
     "Rule.AttackTax",
     "Rule.AttackLimit",
+    "Rule.AttackLimitAt",
     "Rule.BlockLimit",
     "Rule.MustBlock",
     "Rule.CantBeCountered",
@@ -390,6 +391,8 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
     "ReplaceBy.Instead",
+    "ReplaceBy.PreventAnd",
+    "ReplaceBy.PreventAllBut",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
     "ReplaceBy.Choose",
@@ -981,6 +984,7 @@ mod tests {
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
+    #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]

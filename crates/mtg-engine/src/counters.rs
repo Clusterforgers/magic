@@ -82,8 +82,7 @@ pub(crate) fn change(
     }
     let now = held.get(kind).copied().unwrap_or(0);
     let after = if delta > 0 {
-        now.checked_add(by)
-            .ok_or_else(|| invalid(format!("{by} more {kind:?} counters than can be counted")))?
+        now.saturating_add(by)
     } else {
         now.checked_sub(by)
             .ok_or_else(|| invalid(format!("cannot remove {by} {kind:?} counters from {now}")))?
@@ -276,7 +275,7 @@ mod tests {
     }
 
     #[test]
-    fn more_counters_than_can_be_counted_are_refused() {
+    fn more_counters_than_can_be_counted_stop_at_the_most() {
         let mut game = game();
         let me = Target::Player(ME);
         fold_all(
@@ -286,8 +285,8 @@ mod tests {
                 put(me, CounterKind::Charge, i32::MAX),
             ],
         );
-        assert!(apply_event(&mut game, &put(me, CounterKind::Charge, 2)).is_err());
-        assert_eq!(held_by(&game, me, &CounterKind::Charge), u32::MAX - 1);
+        apply_event(&mut game, &put(me, CounterKind::Charge, 2)).unwrap();
+        assert_eq!(held_by(&game, me, &CounterKind::Charge), u32::MAX);
     }
 
     #[test]

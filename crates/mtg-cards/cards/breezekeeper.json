@@ -1,0 +1,12 @@
+{
+  "oracle_id": "138439ad-76c6-4d75-8025-e68b94f68fa3",
+  "name": "Breezekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breezekeeper",
+      "oracle_fingerprint": "8b9f4d2504c79b61e8da8c57b2cb7486",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Phasing" }]
+    }
+  ]
+}

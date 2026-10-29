@@ -42,8 +42,9 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 34] = [
+const TEMPLATES: [Template; 36] = [
     super::w13b_mill_rad::w13b_tapped_for_counters,
+    super::w9d_exert::w9d_exert,
     super::c11b_once::c11b_once,
     super::c8_eg_cast_itself::c8_eg_cast_itself,
     super::c6_blk_draws::c6_blk_draw_replacement,
@@ -52,6 +53,7 @@ const TEMPLATES: [Template; 34] = [
     group_enters_tapped,
     group_enters_with,
     super::w5d_replaced::w5d_replaced,
+    super::w9c_replaced::w9c_replaced,
     life_gain::replacement,
     no_life_loss,
     copies::enters_as_copy,
@@ -1548,9 +1550,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::AttackTax { .. }, ZoneKind::Battlefield) => {
             super::attack_tax::static_texts(rule)
         }
-        (GameRule::AttackLimit(_) | GameRule::BlockLimit(_), ZoneKind::Battlefield) => {
-            super::w8a_declaration_limits::w8a_limit_texts(rule)
-        }
+        (
+            GameRule::AttackLimit(_) | GameRule::AttackLimitAt { .. } | GameRule::BlockLimit(_),
+            ZoneKind::Battlefield,
+        ) => super::w8a_declaration_limits::w8a_limit_texts(rule),
         _ => Vec::new(),
     }
 }

@@ -167,6 +167,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::c11a_ability_less::c11a_variants(ability) {
         return texts;
     }
+    if let Some(texts) = super::w9d_exert::w9d_variants(ability) {
+        return texts;
+    }
     if let Some(texts) = c10_dice_per_player::c10_dice_variants(ability) {
         return texts;
     }
@@ -1691,6 +1694,11 @@ impl Writer<'_> {
     /// "put a +1/+1 counter on ~", "remove two charge counters from target permanent", "move a
     /// +1/+1 counter from target creature onto ~".
     fn counters(&mut self, effect: &Effect) -> Option<String> {
+        if let Effect::RemoveCounters { from, .. } = effect
+            && let Some(lose) = super::w13b_mill_rad::w13b_loses_all_text(effect, *from != Ref::You)
+        {
+            return Some(format!("{} {lose}", self.player(from)?));
+        }
         Some(match effect {
             // A player gets counters: "target player gets four rad counters", "each opponent gets a poison counter".
             Effect::PutCounters { on, counter, count } if self.player_gets(on) => {
@@ -2087,12 +2095,6 @@ impl Writer<'_> {
                 ..
             } if super::w7b_player_counters::w7b_player_kind(counter) => {
                 super::w7b_player_counters::w7b_player_gets(effect)?
-            }
-            Effect::RemoveCounters { from, .. }
-                if super::w13b_mill_rad::w13b_loses_all_text(effect, false).is_some() =>
-            {
-                let lose = super::w13b_mill_rad::w13b_loses_all_text(effect, *from != Ref::You)?;
-                format!("{} {lose}", self.player(from)?)
             }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
@@ -2537,6 +2539,10 @@ impl Writer<'_> {
         if let Effect::ExtraTurn { who, .. } = effect {
             let subject = self.player(who)?;
             return super::turns::effect_text(effect, Some(&subject));
+        }
+        if super::w9c_replaced::w9c_is_shield(effect) {
+            let lead = self.name_target();
+            return Some(super::w9c_replaced::w9c_shield_text(lead));
         }
         if let Some(named) = prevention::c9_fight_named_source(effect) {
             let source = self.object(named)?;

@@ -487,8 +487,9 @@ fn change_life(
     gain: bool,
 ) -> Result<(), EngineError> {
     let player = player_mut(state, id)?;
-    match i32::try_from(amount) {
-        Ok(change) if change > 0 => {
+    // An amount past the largest life total changes it as far as it goes.
+    match i32::try_from(amount).unwrap_or(i32::MAX) {
+        change if change > 0 => {
             player.life = if gain {
                 player.life.saturating_add(change)
             } else {

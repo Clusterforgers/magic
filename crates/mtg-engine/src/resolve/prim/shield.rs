@@ -40,27 +40,29 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     let (
         ReplaceWhen::Damage { to, source, combat },
-        ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_),
+        ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventAnd(_),
     ) = (when, by)
     else {
         return Err(ResolveError::Unsupported("Effect.Shield"));
     };
-    let left = match by {
-        ReplaceBy::PreventUpTo(most) => Some(*most),
-        _ => None,
+    let (left, then) = match by {
+        ReplaceBy::PreventUpTo(most) => (Some(*most), Vec::new()),
+        ReplaceBy::PreventAnd(then) => (None, then.clone()),
+        _ => (None, Vec::new()),
     };
     let to = match to {
         None => None,
         Some(named) => Some(cx.scope.refs(named)?),
     };
     let (from, source) = c9_fight_fixed_sources(cx, source)?;
-    let rule = Rule::PreventDamage(DamageShield {
+    let rule = Rule::PreventDamage(Box::new(DamageShield {
         to,
         from,
         source,
         combat: *combat,
         left,
-    });
+        then,
+    }));
     if left == Some(0) {
         return Ok(Run::events(Vec::new()));
     }

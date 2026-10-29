@@ -15,9 +15,12 @@ use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption
 use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords;
-use crate::rules::{attack_limit, block_limit, must_attack, must_attack_players, must_block};
+use crate::rules::{
+    attack_limit, block_limit, must_attack, must_attack_players, must_block, w10a_attack_limits_at,
+};
 use crate::state::GameState;
 use crate::w8a_declaration_limits::w8a_check_limit;
+use crate::w10a_attack_limits_at::w10a_check_limits_at;
 use crate::zones::Zone;
 
 /// What an attacking creature is attacking.
@@ -371,6 +374,10 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         required: Vec::new(),
         mana: 0,
         most: attack_limit(state),
+        most_at: w10a_attack_limits_at(state)
+            .into_iter()
+            .filter(|(target, _)| defenders.contains(target))
+            .collect(),
     };
     attack_tax::describe(state, player, &mut options);
     // A creature that can't attack any defender is not required to (it is "able" only with one to attack), nor is one
@@ -531,13 +538,13 @@ pub(crate) fn check_attackers(
     }
     let declared: Vec<ObjectId> = answer.iter().map(|(object, _)| *object).collect();
     let excused = w8a_check_limit(options.most, &options.required, &declared)?;
+    w10a_check_limits_at(&options.most_at, answer)?;
     // CR 508.1d: every requirement that can be obeyed is; a creature that is able to attack must, unless the limit on
-    // the declaration is filled with creatures that must.
+    // the declaration or those at each defender it may attack for nothing are filled with creatures that must.
     if !excused
-        && options
-            .required
-            .iter()
-            .any(|required| !declared.contains(required))
+        && options.required.iter().any(|required| {
+            !declared.contains(required) && !options.w10a_excused_at(*required, answer)
+        })
     {
         return Err(IllegalAnswer::Required("attacker"));
     }
