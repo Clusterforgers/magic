@@ -341,8 +341,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (B3) (w1-precons-web) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
 - [~] (w1a) (w1-precons-web) Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
-- [ ] (w2e) The create form and the lobby chooser (Your decks, Built-in, Precons; blocked and checking rows) read well at 360, 390, 768, 1400 and 1920 px in both themes, with `/dev/lobby?format=commander&rules=1&account=1` screenshots reviewed and `layout.spec.ts` gating the new form
-- [ ] (w2f) Run `precon-game.spec.ts` (create form, chooser, join, Ready on a database with cards and precons) and the specs that now pick Normal on the create form (`accounts`, `settings`, `layout`, `lobby-controls`) green twice
+- [ ] (w2g) `precon-game.spec.ts` plays out every time: two of six runs stopped in the game (a four-seat table with no decision answered for 25 s after a YesNo about Coral Atoll, and a two-seat table where no spell was cast in nine turns), neither in the create form, the chooser or the lobby
 - [ ] (f1a) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
