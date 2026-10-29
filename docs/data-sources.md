@@ -53,6 +53,12 @@ MTG_REAL_DATA_DIR=/tmp/mtgdata cargo test -p mtg-import real_data:: -- --ignored
 
 The records of `mtg-cards/tests/fixtures/corpus/` (one `<slug>.json` file per card, named like the card's rules file in `mtg-cards/cards/`) are copies of Oracle Cards records, never typed by hand: `cargo test -p mtg-cards fixture_real::` compares each with the cached download by oracle id and names the card and field that differ, numbers by value so that 2 equals 2.0 (it reads the `mtg-cli` cache, or `MTG_REAL_DATA_DIR`, and says so when there is none). Every reader takes the directory sorted by file name and no test depends on that order: the `mtg-cards` tests read it through `Corpus::fixture`, and `mtg_testkit::corpus::scryfall_array` joins the files into the one JSON array the importer streams (the testkit and the server tests use it).
 
+## Tokens and pictures
+
+- **Tokens** are in Oracle Cards: 926 of layout `token` and 80 of `double_faced_token`, each with an oracle id. `ingest` stores them as cards with `is_deck_card` false, with the printing Oracle Cards brings, and Default Cards adds their other printings. All 1,006 have a picture. The database holds no link from a token to the cards that make it, so the server finds one by name and the facts a client gives ([server.md](server.md), Pictures).
+- **Pictures:** a printing's `image_uris` (or one set per face for transform, modal and reversible cards) hold `small`, `normal`, `large`, `png`, `art_crop` and `border_crop` links of the form `https://cards.scryfall.io/<size>/<front|back>/<a>/<b>/<printing or face id>.<jpg|png>?<time of change>`. The time in the query changes when Scryfall replaces the picture. A card Scryfall has no picture of has no `image_uris`.
+- The server fetches pictures from `scryfall.io` hosts only, with the politeness rules above (agent, `Accept`, 100 ms between requests, retries), and shows them as Scryfall serves them: never cropped, re-encoded, resized or marked.
+
 ## Mana cost strings
 
 Figures come from the oracle-cards file (38,753 cards).

@@ -527,7 +527,7 @@ async fn a_picture_is_fetched_once_kept_and_validated_by_its_tag(pool: PgPool) {
     for sent in sent {
         let reply = request(server.addr, "GET", &path, &[("If-None-Match", &sent)], b"").await;
         assert_eq!(reply.status, 304, "{sent}");
-        assert!(reply.body.is_empty());
+        assert_eq!(reply.body, Vec::<u8>::new());
         assert_eq!(reply.header("etag"), Some(tag.as_str()));
         assert_eq!(
             reply.header("cache-control"),
@@ -549,7 +549,7 @@ async fn a_picture_is_fetched_once_kept_and_validated_by_its_tag(pool: PgPool) {
         (head.status, head.header("etag")),
         (200, Some(tag.as_str()))
     );
-    assert!(head.body.is_empty());
+    assert_eq!(head.body, Vec::<u8>::new());
     assert_eq!(cdn.count(), 1);
 }
 
@@ -571,7 +571,7 @@ async fn a_matching_tag_needs_neither_cache_nor_cdn(pool: PgPool) {
     .await;
     assert_eq!(reply.status, 304);
     assert_eq!(cdn.count(), 0);
-    assert!(cached_files(dir.path()).is_empty());
+    assert_eq!(cached_files(dir.path()), Vec::<String>::new());
 }
 
 #[sqlx::test(migrations = false)]
@@ -624,7 +624,7 @@ async fn only_https_links_under_scryfall_io_are_fetched(pool: PgPool) {
         );
     }
     assert_eq!(cdn.count(), 0, "no request left the server");
-    assert!(cached_files(dir.path()).is_empty());
+    assert_eq!(cached_files(dir.path()), Vec::<String>::new());
 }
 
 #[sqlx::test(migrations = false)]

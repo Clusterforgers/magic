@@ -628,6 +628,33 @@ mod tests {
         );
     }
 
+    #[rstest]
+    #[case("0")]
+    #[case("-1")]
+    #[case("two gigabytes")]
+    #[case("1048577")]
+    fn bad_picture_cache_sizes(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_IMAGE_CACHE_MIB", text)]),
+            Err(ConfigError::BadImageCacheMib(text.to_owned()))
+        );
+    }
+
+    #[test]
+    fn the_picture_cache_follows_its_variables() {
+        let config = load(&[
+            ("MTG_IMAGE_CACHE", "/srv/pictures"),
+            ("MTG_IMAGE_CACHE_MIB", "64"),
+        ])
+        .unwrap();
+        assert_eq!(
+            config.images.cache_dir,
+            std::path::PathBuf::from("/srv/pictures")
+        );
+        assert_eq!(config.images.max_bytes, 64 * 1024 * 1024);
+        assert_eq!(load(&[]).unwrap().images.max_bytes, 2048 * 1024 * 1024);
+    }
+
     #[test]
     fn the_pace_defaults_skip_idle_seats_run_the_clocks_and_wait_a_dwell() {
         let pace = load(&[]).unwrap().game.pace;
