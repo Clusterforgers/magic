@@ -18,7 +18,12 @@ export function opensClauses(
 }
 
 /** Opens the list of a card's clauses below `at`; `opener` gets the focus back when it closes. */
-export function showClauses(store: MenuStore, id: ObjectId, at: HTMLElement, opener: HTMLElement | null): void {
+export function showClauses(
+  store: MenuStore,
+  id: ObjectId,
+  at: HTMLElement,
+  opener: HTMLElement | null,
+): void {
   const { left, bottom } = at.getBoundingClientRect()
   store.open({ id, kind: 'clauses', x: left, y: bottom, opener })
 }

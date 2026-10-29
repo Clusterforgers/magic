@@ -70,6 +70,18 @@ describe('the states fixture', () => {
     has('a merge', (o) => (o.merged?.length ?? 0) > 1),
     has('a prepared permanent', (o) => o.permanent?.prepared === true),
     has('a Class level', (o) => o.permanent?.level !== undefined),
+    has(
+      'an Aura with two clauses left to the table',
+      (o) => o.subtypes.includes('Aura') && (o.manual?.length ?? 0) === 2,
+    ),
+    has(
+      'a creature with one clause left to the table',
+      (o) => o.types.includes('Creature') && o.manual?.length === 1,
+    ),
+    has(
+      'a tapped creature with a long clause among several',
+      (o) => (o.manual ?? []).some((c) => c.text.length > 160) && o.permanent?.tapped === true,
+    ),
   ])('holds %s', (_, test) => {
     expect(objects.some(test)).toBe(true)
   })

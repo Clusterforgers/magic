@@ -107,7 +107,9 @@ function momentOf(event: EventView): { id: ObjectId; cast: boolean } | null {
   }
   if ('ManualAction' in shown) {
     const { action } = shown.ManualAction
-    return 'Move' in action && action.Move.to === 'Battlefield' ? { id: action.Move.object, cast: false } : null
+    return 'Move' in action && action.Move.to === 'Battlefield'
+      ? { id: action.Move.object, cast: false }
+      : null
   }
   return null
 }

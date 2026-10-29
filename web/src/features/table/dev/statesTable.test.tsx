@@ -64,6 +64,27 @@ describe('the table over the states fixture', () => {
     expect(container.querySelectorAll('[data-slot="card-status"]').length).toBeGreaterThan(0)
   })
 
+  it('marks the cards with clauses left to the table, says so in their names and lists them on h', async () => {
+    const { container, user } = draw()
+    const marked = [...container.querySelectorAll('button[data-object-id]')]
+      .filter((button) => button.querySelector('[data-slot="card-support"]') !== null)
+      .map((button) => button.getAttribute('aria-label') ?? '')
+    expect(marked.map((name) => name.split(',')[0]).sort()).toEqual([
+      'Observed Stasis',
+      'Verbose Oracle',
+      'Wild Mage Apprentice',
+    ])
+    expect(marked.every((name) => name.includes('some rules are played by hand, press H to read them'))).toBe(
+      true,
+    )
+    const stasis = card(container, /^Observed Stasis/)[0] as HTMLElement
+    stasis.focus()
+    await user.keyboard('h')
+    const list = within(document.body).getByRole('dialog', { name: 'Observed Stasis: rules played by hand' })
+    expect(within(list).getAllByRole('listitem')).toHaveLength(2)
+    expect(list).toHaveTextContent('loses all abilities and can’t attack or block')
+  })
+
   it('draws the face-down card of a rival as a back and the equal tokens as one stack of three', () => {
     const { container } = draw()
     expect(within(container).getAllByRole('img', { name: 'Face-down card' }).length).toBeGreaterThan(0)

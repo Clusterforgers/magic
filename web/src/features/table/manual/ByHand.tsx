@@ -66,7 +66,9 @@ export function ByHandMark({ object, spot, compact, text }: ByHandMarkProps) {
       // A finger on the mark is not the long press of the card's menu.
       onPointerDown={store === null ? undefined : (event) => event.stopPropagation()}
       className={cn(
-        'inline-flex h-6 min-w-6 items-center justify-center gap-1 rounded-full bg-support-manual font-semibold whitespace-nowrap text-background shadow-sm',
+        'inline-flex items-center justify-center gap-1 rounded-full bg-support-manual font-semibold whitespace-nowrap text-background shadow-sm',
+        // A text face is the fallback of a picture: its smallest size has no room for the full 24 px.
+        spot === 'chip' && compact ? 'h-5 min-w-5' : 'h-6 min-w-6',
         spot === 'corner' ? 'pointer-events-auto border border-background px-1' : 'px-2',
         store === null ? null : 'cursor-pointer hover:brightness-110',
         text,

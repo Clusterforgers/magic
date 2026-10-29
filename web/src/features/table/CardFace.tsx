@@ -73,7 +73,7 @@ export function CardFace(props: CardFaceProps) {
   const { object, size, fit = false, upright = false, stacked = false } = props
   const choice = useImageChoice()
   const width = useDrawnWidth(size, fit)
-  if (choice === 'text') return <TextFace {...props} byHand />
+  if (choice === 'text') return <TextFace {...props} />
   const turned = object.permanent?.tapped === true && !upright
   const box = fit ? null : SIZE[size].vars
   if (showsBack(object))
@@ -90,7 +90,7 @@ export function CardFace(props: CardFaceProps) {
       />
     )
   const source = imageSourceOf(object)
-  if (source === null) return <TextFace {...props} byHand />
+  if (source === null) return <TextFace {...props} />
   return (
     <ImageFace
       source={source}
@@ -134,8 +134,6 @@ const PARTS = {
 interface TextFaceProps extends CardFaceProps {
   /** Draw it as a card: the face of a token whose picture the server has none of. */
   card?: boolean
-  /** Draw the mark of clauses left to the table: only where no picture, and so no overlay, carries it. */
-  byHand?: boolean
 }
 
 /**
@@ -155,7 +153,6 @@ export function TextFace({
   stacked = false,
   links,
   card = false,
-  byHand = false,
 }: TextFaceProps) {
   const classes = SIZE[size]
   const parts = PARTS[card ? 'card' : 'plain']
@@ -207,7 +204,7 @@ export function TextFace({
           dark ? 'bg-black/25' : 'bg-foreground/5',
         )}
       >
-        {byHand ? <ByHandMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} /> : null}
+        <ByHandMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
         {chips.map(({ label, tone }) => (
           <span
             key={label}

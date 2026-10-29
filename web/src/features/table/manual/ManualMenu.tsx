@@ -259,7 +259,11 @@ export function ManualMenuHost() {
   if (target === null) return null
   const key = `${target.kind ?? 'menu'}:${target.id}:${target.x}:${target.y}`
   return createPortal(
-    target.kind === 'clauses' ? <ByHandPanel key={key} target={target} /> : <Panel key={key} target={target} />,
+    target.kind === 'clauses' ? (
+      <ByHandPanel key={key} target={target} />
+    ) : (
+      <Panel key={key} target={target} />
+    ),
     containerOf(target),
   )
 }

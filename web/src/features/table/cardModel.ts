@@ -400,7 +400,11 @@ export function cardLabel(
   parts.push(...statusWords(object, role, links))
   parts.push(...counterWords(object), ...linkWords(links))
   if ((object.manual ?? []).length > 0) {
-    parts.push(listKey === undefined ? 'some rules are played by hand' : `some rules are played by hand, press ${listKey} to read them`)
+    parts.push(
+      listKey === undefined
+        ? 'some rules are played by hand'
+        : `some rules are played by hand, press ${listKey} to read them`,
+    )
   }
   return parts.join(', ')
 }
