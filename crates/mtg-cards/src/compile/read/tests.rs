@@ -351,6 +351,8 @@ mod strive;
 mod sz3_writers;
 mod sz_more_writers;
 mod sz_writers;
+mod t15a_alt_costs;
+mod t15a_rewordings_writers;
 mod tail_alone;
 mod tail_pairs;
 mod tail_third;

@@ -209,6 +209,7 @@ mod spell_value;
 mod spells_cast_damage;
 mod standin;
 mod swaps;
+mod t15a_rewordings;
 mod tail_sentences;
 mod target_and;
 mod target_costs;
@@ -400,6 +401,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_w12a(ability, texts);
     add_w13a(ability, texts);
     add_w16a(ability, texts);
+    t15a_rewordings::add(texts);
 }
 
 /// Adds the wordings of the shapes the stored local-model proposals hit (r4d-d, r4b-d): an entry with counters under a
