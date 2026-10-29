@@ -169,7 +169,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
 - [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
-- [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
+- [~] (k3) (commander-e2e) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] (ts2) An Aura, Equipment or Fortification is drawn tucked under or beside its host and moves with it: the host's row holds its attachments right behind it and the fit counts the overlap (the marks and chips exist; the layout is the zones agent's)
 - [ ] (ts3) `groupPermanents` keeps apart permanents that differ in copy (and of what), shown face, face down, merge, prepared, level and the player an Aura enchants, so a copy never hides inside a stack of its original's tokens
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
