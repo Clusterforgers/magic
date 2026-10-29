@@ -57,7 +57,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
 "- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Emblems: objects in the command zone with abilities of their own that work from there, read and written by the compiler.
-- Incubate: the Incubator token with its Phyrexian back face, read and written by the compiler.
+- Incubate: the Incubator token with its Phyrexian back face, another player who incubates, the permanents exiled this way and the Phyrexians that died, read and written by the compiler.
 - Expend: the trigger on the turn's Nth mana spent on spells, read and written by the compiler.
 - Clash: the clash with an opponent, its win branch and "repeat this process", read and written by the compiler.
 - Triggers: every logged event, batches, the nth card or spell, "first time each turn", turn tallies, cast triggers, the Monarch and the city's blessing.
@@ -155,7 +155,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c2l3a) Plot: the special action from a hand, the plotted card cast free as a sorcery on a later turn, plot cost reductions; frees about 4 cards (Lock and Load, Pyretic Charge)
 - [ ] (c2l3b) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and paired triggers; frees about 3 cards (Silverblade Paladin, Breathkeeper Seraph, Donna Noble)
 - [ ] (c2l3c) The backup, emerge, harmonize, replicate, mayhem and afflict cards that wait on another wording, and "Discard any number of cards, then draw that many cards"; frees about 15 cards (Guardian Scalelord, Adipose Offspring, The Elder Dragon War)
-- [~] (r2da-c-a) (w14b-incubate-devour) Incubate wordings not read: "its controller incubates X", an X of the creatures "exiled this way", a cast trigger of a Phyrexian creature or artifact creature spell (Sunfall, Excise the Imperfect, Brimaz, Blight of Oreskos)
 - [~] (r2da-c-c) (w9d-exert) Exert as a creature attacks and the untap step it skips (Combat Celebrant, Glorybringer, Clockwork Droid, Arena of Glory)
 - [~] (r2da-c-f) (w11c-crimes-forecast-clash) Crimes: a turn tally of targeting an opponent, their permanents, spells or graveyard cards, "whenever you commit a crime" and "whenever an opponent commits a crime" (Bandit's Haul, Patrolling Peacemaker)
 - [~] (r2da-c-g) (w11c-crimes-forecast-clash) Forecast: an ability activated from the hand during its owner's upkeep by revealing the card (Skyscribing)
@@ -173,7 +172,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c4e) Cards that read the crew record and crew events and wait on a wording, and a Reconfigure corpus card; frees about 10 cards (Smogbelcher Chariot, Mindlink Mech, The Fantasticar)
 - [ ] (c5e) The rest of the cipher and hideaway cards; frees about 6 cards (Hidden Strings, Shelldock Isle)
 - [ ] (c6d-b) Phase-out durations and counts: until the source leaves, tapped as it phases in, phased out this way, phases-out and phases-in triggers; frees the precon cards Oubliette, Out of Time, The Moment and The War Doctor (and Teferi's Imp)
-- [~] (c6d-c) (w14b-incubate-devour) Devour X, devoured kinds and conditions: Thromok, Voracious Dragon, Hellkite Hatchling, Kresh, and a discard for each devoured creature (Tar Fiend); none of them is in a precon
+- [ ] (c6d-c) Devour X, devoured kinds and conditions: Thromok, Voracious Dragon, Hellkite Hatchling, Kresh, and a discard for each devoured creature (Tar Fiend); none of them is in a precon
 - [ ] (c6d-d) Gift "instead" spells left (Wildfire Howl, Dewdrop Cure, Into the Flood Maw) and entered-under-your-control-this-turn conditions (Zimone, Gargoyle Flock, Galadriel)
 - [ ] (r2de-c) Cast permissions left: "Once each turn" on any turn, a spell cast through a permission exiled instead of a graveyard, a card cast from its own graveyard or exile, exiled cards cast in a trigger, spells chosen from a graveyard and cast free; frees about 20 cards (Kess, Dissident Mage, Squee, the Immortal, Dire Fleet Daredevil, Diviner of Mist)
 - [ ] (r2r) Alternative costs left: life or energy instead of mana, fixed mana, impending, X in madness, a paid madness cost as a condition; frees about 8 cards (Xander's Pact, Nashi, Fist of Suns)

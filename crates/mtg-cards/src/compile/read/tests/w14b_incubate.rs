@@ -53,7 +53,10 @@ fn w14b_incubate_wordings_read_and_write_back(
 }
 
 #[rstest]
-#[case::no_where("Exile target nonland permanent. Its controller incubates X.", ClauseKind::Spell)]
+#[case::no_where(
+    "Exile target nonland permanent. Its controller incubates X.",
+    ClauseKind::Spell
+)]
 #[case::exiled_cards_of_a_hand(
     "Exile all creatures. Incubate X, where X is the number of cards exiled this way from your hand.",
     ClauseKind::Spell

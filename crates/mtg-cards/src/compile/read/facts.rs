@@ -70,7 +70,10 @@ fn died_under_texts(what: TurnTally, number: u32) -> Vec<String> {
 fn died_under_you(r: &mut Reader<'_>) -> Option<Condition> {
     let (number, noun) = if r.words("a nontoken creature") {
         (1, TurnTally::NontokenCreaturesDiedUnder)
-    } else if r.attempt(|r| (r.word("a") && r.name() == Some("Phyrexian")).then_some(())).is_some() {
+    } else if r
+        .attempt(|r| (r.word("a") && r.name() == Some("Phyrexian")).then_some(()))
+        .is_some()
+    {
         (1, TurnTally::PhyrexiansDiedUnder)
     } else if r.words("a creature") {
         (1, TurnTally::CreaturesDiedUnder)

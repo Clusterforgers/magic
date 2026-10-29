@@ -27,7 +27,9 @@ fn w14b_table(
     mine: Vec<Arc<CardDefinition>>,
 ) -> Scenario {
     let permanents = (0..lands).map(|_| plains()).chain(mine).map(ready);
-    Scenario::new(seats).hand(0, hand).battlefield(0, permanents.collect::<Vec<_>>())
+    Scenario::new(seats)
+        .hand(0, hand)
+        .battlefield(0, permanents.collect::<Vec<_>>())
 }
 
 /// Passes priority and pays automatically until nothing is on the stack.
@@ -55,7 +57,10 @@ fn w14b_incubators(driver: &Driver, seat: usize) -> Vec<u32> {
         .filter(|object| object.controller() == pid(seat) && object.card().name == "Incubator")
         .filter_map(|object| {
             let permanent = object.permanent()?;
-            Some((object.id(), permanent.counters_of(&CounterKind::PlusOnePlusOne)))
+            Some((
+                object.id(),
+                permanent.counters_of(&CounterKind::PlusOnePlusOne),
+            ))
         })
         .collect();
     found.sort_by_key(|(id, _)| *id);
@@ -68,7 +73,12 @@ fn w14b_replays(driver: &Driver) {
 }
 
 /// A creature of `generic` mana value, with a subtype or another card type when given.
-fn w14b_creature(name: &str, generic: u32, subtype: Option<&str>, artifact: bool) -> Arc<CardDefinition> {
+fn w14b_creature(
+    name: &str,
+    generic: u32,
+    subtype: Option<&str>,
+    artifact: bool,
+) -> Arc<CardDefinition> {
     let mut definition = (*creature(name, generic, &[], 2, 2)).clone();
     if let Some(subtype) = subtype {
         definition = definition.with_subtype(subtype);
@@ -106,7 +116,10 @@ fn w14b_sunfall_incubates_the_number_of_creatures_it_exiled(
     };
     let mut scenario = w14b_table(seats, vec![card("Sunfall").unwrap()], 5, beasts(0));
     for seat in 1..seats {
-        scenario = scenario.battlefield(seat, beasts(seat).into_iter().map(ready).collect::<Vec<_>>());
+        scenario = scenario.battlefield(
+            seat,
+            beasts(seat).into_iter().map(ready).collect::<Vec<_>>(),
+        );
     }
     let mut driver = Driver::from_scenario(scenario)?;
     driver.cast("Sunfall")?;
@@ -114,12 +127,14 @@ fn w14b_sunfall_incubates_the_number_of_creatures_it_exiled(
     let exiled = u32::try_from(seats * each).unwrap();
     assert_eq!(w14b_incubators(&driver, 0), [exiled]);
     for seat in 1..seats {
-        assert!(w14b_incubators(&driver, seat).is_empty());
+        assert_eq!(w14b_incubators(&driver, seat), Vec::<u32>::new());
     }
     let creatures_left = driver
         .state()
         .objects()
-        .filter(|object| object.zone() == Zone::Battlefield && object.card().name.starts_with("Beast"))
+        .filter(|object| {
+            object.zone() == Zone::Battlefield && object.card().name.starts_with("Beast")
+        })
         .count();
     assert_eq!(creatures_left, 0);
     w14b_replays(&driver);
@@ -145,11 +160,18 @@ fn w14b_excise_makes_the_controller_of_what_it_exiled_incubate(
     driver.cast_at("Excise the Imperfect", &[ogre])?;
     w14b_resolve(&mut driver)?;
     let exiled = driver.state().zone(Zone::Exile).iter().any(|id| {
-        driver.state().object(*id).is_some_and(|object| object.card().name == "Ogre")
+        driver
+            .state()
+            .object(*id)
+            .is_some_and(|object| object.card().name == "Ogre")
     });
     assert!(exiled);
     for seat in 0..seats {
-        let wanted: Vec<u32> = if seat == owner { vec![mana_value] } else { Vec::new() };
+        let wanted: Vec<u32> = if seat == owner {
+            vec![mana_value]
+        } else {
+            Vec::new()
+        };
         assert_eq!(w14b_incubators(&driver, seat), wanted, "seat {seat}");
     }
     w14b_replays(&driver);
@@ -165,7 +187,12 @@ fn w14b_brimaz_incubates_for_a_phyrexian_creature_or_an_artifact_creature_spell(
         w14b_creature("Clockwork Golem", 3, None, true),
         w14b_creature("Grizzly", 1, None, false),
     ];
-    let scenario = w14b_table(seats, hand, 6, vec![card("Brimaz, Blight of Oreskos").unwrap()]);
+    let scenario = w14b_table(
+        seats,
+        hand,
+        6,
+        vec![card("Brimaz, Blight of Oreskos").unwrap()],
+    );
     let mut driver = Driver::from_scenario(scenario)?;
     for name in ["Grizzly", "Phyrexian Scout", "Clockwork Golem"] {
         driver.cast(name)?;
@@ -173,7 +200,7 @@ fn w14b_brimaz_incubates_for_a_phyrexian_creature_or_an_artifact_creature_spell(
     }
     assert_eq!(w14b_incubators(&driver, 0), [2, 3]);
     for seat in 1..seats {
-        assert!(w14b_incubators(&driver, seat).is_empty());
+        assert_eq!(w14b_incubators(&driver, seat), Vec::<u32>::new());
     }
     w14b_replays(&driver);
     Ok(())
@@ -191,7 +218,11 @@ fn w14b_brimaz_proliferates_only_after_a_phyrexian_died_under_its_controller(
     ];
     let scenario = w14b_table(seats, vec![w14b_destroy()], 0, mine);
     let mut driver = Driver::from_scenario(scenario)?;
-    let victim = driver.target_named(if phyrexian_dies { "Phyrexian Scout" } else { "Grizzly" })?;
+    let victim = driver.target_named(if phyrexian_dies {
+        "Phyrexian Scout"
+    } else {
+        "Grizzly"
+    })?;
     driver.cast_at("Unmake", &[victim])?;
     w14b_resolve(&mut driver)?;
     // Through the end step of this turn and of the next player's turn, when nothing died.

@@ -140,12 +140,21 @@ fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
         && state
             .object(id)
             .is_some_and(|object| object.zone() == Zone::Battlefield);
-    let Some(chars) = dies.then(|| crate::characteristics::characteristics(state, id)).flatten() else {
+    let Some(chars) = dies
+        .then(|| crate::characteristics::characteristics(state, id))
+        .flatten()
+    else {
         return (false, false);
     };
     let phyrexian = Subtype("Phyrexian".to_owned());
-    let printed = state.object(id).map(|object| object.card().subtypes.clone()).unwrap_or_default();
-    (chars.types.contains(CardType::Creature), chars.has_subtype(&printed, &phyrexian))
+    let printed = state
+        .object(id)
+        .map(|object| object.card().subtypes.clone())
+        .unwrap_or_default();
+    (
+        chars.types.contains(CardType::Creature),
+        chars.has_subtype(&printed, &phyrexian),
+    )
 }
 
 /// Counts a creature put into a graveyard from the battlefield for its owner, and for the player who controlled it.

@@ -2068,10 +2068,6 @@ impl Writer<'_> {
                 let subject = self.player(who)?;
                 format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
             }
-            Effect::Incubate { who, .. } if *who != Ref::You => {
-                let subject = self.player(who)?;
-                format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
-            }
             Effect::Move {
                 what,
                 to: Destination::Hand,
@@ -2324,10 +2320,10 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
-            Effect::Incubate {
-                who: Ref::You,
-                count,
-            } => format!("incubate {}", points_text(count)?),
+            Effect::Incubate { who, count } => match who {
+                Ref::You => format!("incubate {}", points_text(count)?),
+                _ => format!("{} {}", self.player(who)?, self.predicate(effect, true)?),
+            },
             Effect::TimeTravel { who: Ref::You } => "time travel".to_owned(),
             Effect::Learn { who: Ref::You } => "learn".to_owned(),
             Effect::Monstrosity { count } => format!("monstrosity {}", points_text(count)?),
