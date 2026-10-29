@@ -59,7 +59,7 @@ impl ManualScript {
             .players()
             .iter()
             .filter(|p| p.is_in_game())
-            .map(|p| p.id())
+            .map(mtg_engine::player::Player::id)
             .collect();
         self.pick(&alive)
     }

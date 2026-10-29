@@ -75,7 +75,7 @@ fn at(moment: Moment) -> (Driver, PlayerId) {
         Moment::SpellOnStack => {
             let face = driver.target_player(1);
             driver.cast_at("Bolt", &[face]).unwrap();
-            assert!(!driver.state().zone(Zone::Stack).is_empty());
+            assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
             pid(1)
         }
         Moment::OthersPrompt => {
