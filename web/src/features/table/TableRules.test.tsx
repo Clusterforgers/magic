@@ -2,12 +2,15 @@
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { describeRules } from '@/lib/houseRules'
 import type { PlayState } from '@/play/store'
 import { indexById } from '@/play/view'
 import type { HouseRules } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
+import { fixtureGame } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
+import { parseDevSearch } from './devSearch'
 import { TableRules } from './TableRules'
 
 function show(format: string, rules: HouseRules | undefined) {
@@ -42,5 +45,27 @@ describe('the house rules in the top bar', () => {
       'Open hands',
       'No commander tax',
     ])
+  })
+})
+
+describe('/dev/table?rules=', () => {
+  it.each([
+    [1, true],
+    ['1', true],
+    [true, true],
+    [0, undefined],
+    ['yes', undefined],
+  ])('reads %j', (asked, rules) => {
+    expect(parseDevSearch({ rules: asked }).rules).toBe(rules)
+  })
+
+  it('gives the fixture table rules that differ from Commander\x27s own, and none by default', () => {
+    const state = (rules?: true) => fixtureGame({ seats: 2, rules }).session.store.getState()
+    expect(describeRules(state(true).view?.house_rules, 'Commander')).toEqual([
+      'Starting life 30',
+      'Open hands',
+      'No commander tax',
+    ])
+    expect(state().view?.house_rules).toBeUndefined()
   })
 })

@@ -69,7 +69,7 @@ export function DeckRow({
   const blocked = verdict.status === 'ready' && verdict.verdict.kind === 'blocked' ? verdict.verdict : null
   const line = blocked === null ? null : blockedLine(blocked.reasons)
   return (
-    <li data-deck-option={id} className="grid content-start gap-1">
+    <li data-deck-option={id} className="grid min-w-0 content-start gap-1">
       <Button
         type="button"
         variant="outline"

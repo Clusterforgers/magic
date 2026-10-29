@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { useDecks } from '@/features/create/useDecks'
 import { cardsText, formatLabel } from '@/features/decks/format'
 import { useDeckList } from '@/features/decks/useDeckList'
@@ -23,7 +24,13 @@ import type { LobbyApi } from './useLobbyControls'
 /** Decks shown before "Show more": every one shown is checked at the table. */
 const PAGE = 12
 
-const LIST = 'grid grid-cols-1 gap-2 sm:grid-cols-2'
+/** Precons shown before "Show more": each is checked at the table, and the server counts every check against the address. */
+const PRECON_PAGE = 6
+
+/** How long the precons shown hold still before they are checked, so a search being typed asks about none of its steps. */
+const CHECK_PAUSE_MS = 400
+
+const LIST = 'grid grid-cols-1 gap-2'
 
 const RUNS: VerdictState = { status: 'ready', verdict: { kind: 'runs' } }
 
@@ -226,15 +233,15 @@ export function PreconList({
 }: ListProps & { precons: Pick<PreconsApi, 'list'>; checks: Pick<DecksApi, 'check'> }) {
   const { state, reload } = usePreconChoices(precons)
   const [query, setQuery] = useState('')
-  const [shown, setShown] = useState(PAGE)
+  const [shown, setShown] = useState(PRECON_PAGE)
   const searchId = useId()
   const matches = state.status === 'ready' ? matchingPrecons(state.precons, query, format) : []
   const visible = matches.slice(0, shown)
-  const verdicts = useVerdicts(
-    checks,
-    game,
-    visible.map((precon) => `precon:${precon.code}`),
+  const wanted = useDebouncedValue(
+    visible.map((precon) => `precon:${precon.code}`).join('\n'),
+    CHECK_PAUSE_MS,
   )
+  const verdicts = useVerdicts(checks, game, wanted === '' ? [] : wanted.split('\n'))
   if (state.status === 'loading') return <Note slot="decks-loading">Loading the precons…</Note>
   if (state.status === 'failed') return <Failed message={state.message} onRetry={reload} />
   const options = matches.map((precon) => ({
@@ -261,7 +268,7 @@ export function PreconList({
             value={query}
             onChange={(event) => {
               setQuery(event.target.value)
-              setShown(PAGE)
+              setShown(PRECON_PAGE)
             }}
           />
         </div>
@@ -299,7 +306,7 @@ export function PreconList({
           })}
         </ul>
       )}
-      <More total={matches.length} shown={shown} onMore={() => setShown((n) => n + PAGE)} />
+      <More total={matches.length} shown={shown} onMore={() => setShown((n) => n + PRECON_PAGE)} />
     </div>
   )
 }

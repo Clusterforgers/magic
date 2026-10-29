@@ -20,7 +20,7 @@ import { parseStopSpec } from './stopSpec'
  * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const { seats, mode, focus, prompt, turn, step, fx, slow, preview, stops, fc } = useSearch({
+  const { seats, mode, focus, prompt, turn, step, fx, slow, preview, stops, fc, rules } = useSearch({
     from: '/dev/table',
   })
   const game = useMemo(
@@ -30,11 +30,12 @@ export function DevTableRoute() {
         prompt,
         turn,
         step,
+        rules,
         previewMs: preview,
         stops: stops === undefined ? undefined : parseStopSpec(stops),
         fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
       }),
-    [seats, prompt, turn, step, preview, stops, fc],
+    [seats, prompt, turn, step, rules, preview, stops, fc],
   )
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(

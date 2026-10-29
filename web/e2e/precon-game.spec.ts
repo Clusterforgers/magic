@@ -116,7 +116,8 @@ async function startTable(
   await expect(host.page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
   await expect(host.page.getByRole('radio', { name: /^Commander/ })).toBeChecked()
   await host.page.getByLabel('Seats').selectOption(String(accounts.length))
-  await host.page.getByRole('radio', { name: 'Invite only' }).check()
+  await host.page.getByText('Invite only', { exact: true }).click()
+  await expect(host.page.getByRole('radio', { name: 'Invite only' })).toBeChecked()
   await host.page.getByRole('button', { name: 'Create game' }).click()
   await expect(host.page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
   const code = (await host.page.locator('[data-slot="invite-code"]').textContent())?.trim() ?? ''

@@ -7,7 +7,7 @@ import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
-import type { FullControlMode, Step, Stop } from '@/protocol/generated'
+import type { FullControlMode, HouseRules, Step, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { buildFixture } from './fixture'
@@ -143,12 +143,22 @@ export interface FixtureGameOptions extends FixtureOptions {
   turn?: 'you'
   /** The step the turn is in, whatever the fixture or the prompt's moment has; theirs when left out. */
   step?: Step
+  /** House rules that differ from the format's own, from the start; none when left out. */
+  rules?: true
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
   /** The stops the viewer holds from the start; none when left out. */
   stops?: Stop[]
   /** The Full Control mode the viewer holds from the start; off when left out. */
   fullControl?: FullControlMode
+}
+
+/** The house rules `rules` gives the fixture table: two differ from Commander's own and one is its own. */
+const DEV_TABLE_RULES: HouseRules = {
+  starting_life: 30,
+  commander_tax: 0,
+  open_hands: true,
+  free_mulligans: 1,
 }
 
 /** A game context holding a fresh fixture table. */
@@ -161,10 +171,12 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   // and so may a state without any prompt, such as a seat that is already passing.
   const table = Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
   const moment = table === undefined ? built : table(built)
-  const fixture =
+  const stepped =
     options.step === undefined
       ? moment
       : { ...moment, view: { ...moment.view, turn: { ...moment.view.turn, step: options.step } } }
+  const fixture =
+    options.rules === true ? { ...stepped, view: { ...stepped.view, house_rules: DEV_TABLE_RULES } } : stepped
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
   if (options.stops !== undefined) store.setState({ stops: options.stops })
   if (options.fullControl !== undefined) store.setState({ fullControl: options.fullControl })

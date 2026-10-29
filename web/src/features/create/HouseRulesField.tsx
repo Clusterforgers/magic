@@ -20,7 +20,7 @@ function RuleRow({ spec, format, text, problem, onChange }: RuleRowProps) {
   const own = spec.fallback(format)
   const describedBy = `${id}-help${problem === null ? '' : ` ${id}-problem`}`
   return (
-    <div className="grid gap-1" data-rule={spec.id}>
+    <div className="grid content-start gap-1" data-rule={spec.id}>
       <Label htmlFor={id}>{spec.label}</Label>
       {spec.input.kind === 'choice' ? (
         <NativeSelect
@@ -106,18 +106,20 @@ export function HouseRulesField({ draft, problems, onChange }: HouseRulesFieldPr
           player sees it.
         </p>
         {ruleGroups(format).map((group) => (
-          <fieldset key={group.title} className="grid gap-4">
-            <legend className="mb-2 text-sm font-semibold">{group.title}</legend>
-            {group.specs.map((spec) => (
-              <RuleRow
-                key={spec.id}
-                spec={spec}
-                format={format}
-                text={draft.rules[spec.id] ?? ''}
-                problem={problems?.[spec.id] ?? null}
-                onChange={onChange}
-              />
-            ))}
+          <fieldset key={group.title}>
+            <legend className="mb-3 text-sm font-semibold">{group.title}</legend>
+            <div className="grid content-start gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+              {group.specs.map((spec) => (
+                <RuleRow
+                  key={spec.id}
+                  spec={spec}
+                  format={format}
+                  text={draft.rules[spec.id] ?? ''}
+                  problem={problems?.[spec.id] ?? null}
+                  onChange={onChange}
+                />
+              ))}
+            </div>
           </fieldset>
         ))}
       </div>

@@ -42,6 +42,8 @@ export interface DevSearch {
   fc?: 'next' | 'held'
   /** The step the turn is in, such as `main2` or `declareattackers`, to look at the theme of its phase; the fixture's own when missing. */
   step?: Step
+  /** `1` gives the table house rules that differ from its format's own, to look at the list in the top bar. */
+  rules?: true
 }
 
 const whole = (value: unknown): number | undefined =>
@@ -49,7 +51,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&fx=&slow=&preview=&stops=&fc=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&fx=&slow=&preview=&stops=&fc=&rules=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -71,6 +73,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
       typeof search.stops === 'string' && parseStopSpec(search.stops).length > 0 ? search.stops : undefined,
     fc: search.fc === 'next' || search.fc === 'held' ? search.fc : undefined,
     step: typeof search.step === 'string' ? STEP_BY_NAME.get(search.step.toLowerCase()) : undefined,
+    rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     preview:
       typeof search.preview === 'number' &&
       Number.isInteger(search.preview) &&

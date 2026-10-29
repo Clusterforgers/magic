@@ -192,12 +192,13 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         )}
       </div>
 
+      <FormatField
+        value={draft.format}
+        onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
+      />
+
       <div className="grid gap-6 md:grid-cols-2 md:items-start">
         <div className="grid content-start gap-6">
-          <FormatField
-            value={draft.format}
-            onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
-          />
           {draft.links ? (
             <SeatList
               draft={draft}
@@ -224,11 +225,6 @@ export function CreateForm({ api, decks }: CreateFormProps) {
               onChange={(visibility) => setDraft((current) => chooseVisibility(current, visibility))}
             />
           )}
-          <HouseRulesField
-            draft={draft}
-            problems={showProblems ? rules : null}
-            onChange={(id, text) => setDraft((current) => editRule(current, id, text))}
-          />
           <AdvancedOptions
             links={draft.links}
             linksAllowed={draft.format === 'normal'}
@@ -236,6 +232,12 @@ export function CreateForm({ api, decks }: CreateFormProps) {
           />
         </div>
       </div>
+
+      <HouseRulesField
+        draft={draft}
+        problems={showProblems ? rules : null}
+        onChange={(id, text) => setDraft((current) => editRule(current, id, text))}
+      />
 
       {showProblems && troubled > 0 ? (
         <Alert variant="destructive">

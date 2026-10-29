@@ -1,5 +1,5 @@
 // Goal: a guest in a lobby chooses a precon that the game's format takes (Commander precons in a Commander game, the rest in a Normal one), finds it by name, set or commander, sees the table's verdict on each shown precon before choosing, cannot press one the table cannot take, and sees the house rules of a listed game named in the lobby.
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { legalityIssue, reportCard, reportOf, summary } from '@/features/decks/fakeDecks'
 import { jsonResponse } from '@/test-utils/fakeFetch'
@@ -138,20 +138,23 @@ describe('the precons on offer', () => {
     expect(document.querySelector('[data-slot="precon-count"]')).toHaveTextContent('No precon matches.')
   })
 
-  it('shows twelve at a time and the rest on request, checking only the ones shown', async () => {
+  it('shows six at a time and the rest on request, checking only the ones shown and none while a search is typed', async () => {
     const many = Array.from({ length: 15 }, (_, n) =>
       precon(`Deck ${String(n).padStart(2, '0')}`, 'c20', ['A']),
     )
     const h = await openPrecons({ precons: many })
     await screen.findByRole('list', { name: 'Precons' })
-    expect(names()).toHaveLength(12)
-    await screen.findAllByText('Whole deck runs')
+    expect(names()).toHaveLength(6)
     const asked = () => h.server.calls.filter((call) => call.url === '/api/decks/check').length
-    expect(asked()).toBe(12)
-    await h.user.click(screen.getByRole('button', { name: 'Show more (3 left)' }))
-    expect(names()).toHaveLength(15)
+    expect(asked()).toBe(0)
+    await waitFor(() => expect(asked()).toBe(6))
     await screen.findAllByText('Whole deck runs')
-    expect(asked()).toBe(15)
+    await h.user.click(screen.getByRole('button', { name: 'Show more (9 left)' }))
+    expect(names()).toHaveLength(12)
+    await waitFor(() => expect(asked()).toBe(12))
+    await h.user.type(screen.getByRole('searchbox', { name: 'Search precons' }), 'Deck 14')
+    expect(names()).toHaveLength(1)
+    await waitFor(() => expect(asked()).toBe(13))
   })
 
   it('shows the table’s verdict on each precon, and a precon the table cannot take cannot be pressed', async () => {
