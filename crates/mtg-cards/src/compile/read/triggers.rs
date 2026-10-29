@@ -306,6 +306,11 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     {
         return Some(found);
     }
+    if at_least == 1
+        && let Some(found) = r.attempt(super::w15b_time::w15b_exiled_batch)
+    {
+        return Some(found);
+    }
     if at_least == 1 && r.words("cards leave your graveyard") {
         return Some(TriggerPattern::Batch(Box::new(
             TriggerPattern::ZoneChange {

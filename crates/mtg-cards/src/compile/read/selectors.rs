@@ -615,6 +615,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
             return Some(pred);
         }
         let stat = stat_word(r)?;
+        if let Some(pred) = super::w15b_time::w15b_at_most_counters(r, stat) {
+            return Some(pred);
+        }
         // The damage that triggered the ability: "mana value less than or equal to that damage".
         if stat == StatKind::ManaValue
             && r.triggered
@@ -734,6 +737,15 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             op: Cmp::Le,
             to: Amount::Triggering,
         } => "with mana value less than or equal to that damage".to_owned(),
+        Pred::Compare {
+            stat,
+            op,
+            to: to @ Amount::Counters { .. },
+        } => format!(
+            "with {} {}",
+            stat_name(*stat)?,
+            super::w15b_time::w15b_at_most_counters_text(*op, to)?
+        ),
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),

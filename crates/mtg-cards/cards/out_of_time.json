@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8491de1e-dc37-4a89-b4f7-56a2c668f0fc",
+  "name": "Out of Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Out of Time",
+      "oracle_fingerprint": "c1bc2969440d9b31194300405303aeff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "PhaseOut": {
+                  "what": { "Each": [{ "Type": "Creature" }] },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "time" },
+                  "count": { "PhasedOut": [{ "Type": "Creature" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Vanishing": 0 } }
+      ]
+    }
+  ]
+}

@@ -466,6 +466,7 @@ mod w13b_mill_rad;
 mod w14a_wanderer_mirri;
 mod w14b_incubate;
 mod w14c_proposal_pieces;
+mod w15b_out_of_time;
 mod w2b_read_ahead;
 mod w2c_destroyed;
 mod w2c_distinct;

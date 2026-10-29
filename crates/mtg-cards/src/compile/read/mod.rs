@@ -133,6 +133,7 @@ mod w14a_wanderer;
 mod w14b_or_spell;
 mod w14c_alt_costs;
 mod w14c_block_capacity;
+mod w15b_time;
 mod w2b_you_and;
 mod w2c_counts;
 mod w2d_villainous;

@@ -430,6 +430,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     super::w13b_mill_rad::w13b_wordings(ability, &mut texts);
     graveyard_wordings(ability, &mut texts);
     produced_wordings(&mut texts);
+    super::w15b_time::w15b_wordings(ability, &mut texts);
     texts
 }
 

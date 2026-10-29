@@ -1907,13 +1907,18 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     // The events of the batch together, after each of them: what looks back is judged against `pre`, the rest `post`.
     let (back, forward): (Vec<Happened>, Vec<Happened>) =
         all.into_iter().partition(Happened::looks_back);
+    let mut starts = Vec::new();
     for (state, watching, members) in [(pre, &before, back), (post, &after, forward)] {
         if !members.is_empty() {
+            starts.push(found.len());
             let together = Happened::Batch(members);
             let watching = watching.get_or_init(|| Watchers::of(state));
             permanents(state, watching, &together, &mut found, &mut used);
             elsewhere(state, &together, &mut found, &mut used);
         }
+    }
+    if let [back, forward] = starts[..] {
+        super::w15b_join::w15b_join_passes(&mut found, back, forward);
     }
     // A player who lost with the same events triggers nothing, though the state looked back at has them alive (CR 800.4a).
     found.retain(|triggered| post.is_alive(triggered.controller));

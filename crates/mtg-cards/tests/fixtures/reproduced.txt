@@ -308,6 +308,7 @@ Crush Contraband
 Crypt Ghast
 Crystal Barricade
 Crystal Quarry
+Culling Ritual
 Cultivate
 Curate
 Curse of Bounty
@@ -569,6 +570,7 @@ Garruk Wildspeaker
 Garruk, Primal Hunter
 Gatta and Luzzu
 Gavony Dawnguard
+Gaze of Granite
 Gemhide Sliver
 Gemrazer
 General's Enforcer
@@ -1014,6 +1016,7 @@ Orzhov Enforcer
 Orzhov Racketeers
 Otherworldly Gaze
 Oubliette
+Out of Time
 Overcharged Amalgam
 Overgrown Arch
 Overgrowth
@@ -1464,12 +1467,14 @@ The Celestus
 The Gaffer
 The Locust God
 The Modern Age // Vector Glider
+The Moment
 The Mycosynth Gardens
 The Scorpion God
 The Seriema
 The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
+The War Doctor
 The Warring Triad
 The Wise Mothman
 Thelonite Hermit
