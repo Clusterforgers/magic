@@ -153,7 +153,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (k1b) The one-line pods of three and four seats draw each commander as a small picture beside the command zone chip, both of a partner pair, and pass the layout gate
 - [ ] (k1c) `/dev/table` screenshots of the four-seat Commander fixture (`commander-return` too) at 360, 390, 768, 1024, 1400, 1600x1000 and 1920 in both themes, with the layout gate and fit specs green
-- [ ] (k2) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
+- [~] (k2) (k2-commander-builder) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
@@ -354,7 +354,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
 - [ ] (w1b) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
-- [ ] (w2g) `precon-game.spec.ts` plays out every time: two of six runs stopped in the game (a four-seat table with no decision answered for 25 s after a YesNo about Coral Atoll, and a two-seat table where no spell was cast in nine turns), neither in the create form, the chooser or the lobby
+- [~] (w2g) (ui-validate-1) `precon-game.spec.ts` plays out every time: two of six runs stopped in the game (a four-seat table with no decision answered for 25 s after a YesNo about Coral Atoll, and a two-seat table where no spell was cast in nine turns), neither in the create form, the chooser or the lobby
 - [ ] (f1a) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
