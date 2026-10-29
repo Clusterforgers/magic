@@ -1,11 +1,14 @@
-import { useMemo, useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { useCallback, useMemo, useState } from 'react'
+import { Check, Eraser, Swords, UsersRound, X } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
-import type { AttackerOption, AttackTarget, ObjectId } from '@/protocol/generated'
+import type { AttackerOption, AttackTarget, ObjectId, PlayerId } from '@/protocol/generated'
+import { useDefenderStore, usePublishDefenders } from '../../combat/defender'
 import { attacksAnswer, useBlockPreview } from '../../combat/forecast'
 import { usePublishPending } from '../../combat/pending'
 import { usePreviewRequest } from '../../combat/usePreviewRequest'
-import { attackSummary, distinctTargets, sameTarget, targetKey, uniqueNames } from '../combatText'
+import { usePreviewTarget } from '../../preview'
+import { attackSummary, distinctTargets, sameTarget, targetKey } from '../combatText'
+import { BarButton } from '../CombatBar'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
 import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -13,6 +16,7 @@ import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
+import { usePrimaryKey } from '../usePrimaryKey'
 import { useObjects, useTargetNames } from '../useCombatNames'
 
 /** The attacker's defender that is `aim`, else its first defender; undefined for an attacker with none. */
@@ -24,12 +28,15 @@ function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackT
 
 /**
  * DeclareAttackers: creatures that may attack are legal, the rest of the hand and battlefield dimmed. A click, Enter
- * or Space puts a creature in the attack or takes it out; with several defenders a creature goes where "Attack at"
- * says and can be re-aimed in the list under the buttons. Confirm sends the attack, No attack an empty one.
+ * or Space puts a creature in the attack or takes it out; its arrow to the defender says it attacks, no label is
+ * written on the card. With several defenders the one chosen now (a click on a pod, or the list in the bar) is where
+ * the next creature goes, and the last choice is where the next attack starts. Confirm sends the attack, No attack an
+ * empty one.
  */
 export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ options }) => {
   const { id, answer, selection } = usePrompt()
   const own = useOwnCardIds()
+  const defenderStore = useDefenderStore()
   // An attacker with no defender cannot attack; a creature listed twice counts once.
   const offered = useMemo(() => {
     const byId = new Map<ObjectId, AttackerOption>()
@@ -43,9 +50,25 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const names = useTargetNames(defenders)
   const several = defenders.length > 1
 
+  // The defender chosen now: the one picked, else the one picked last time, else the first.
   const [aimKey, setAimKey] = useState<string | null>(null)
-  const aim = defenders.find((target) => targetKey(target) === aimKey) ?? defenders[0]
+  const wanted = aimKey ?? defenderStore.remembered()
+  const aim = defenders.find((target) => targetKey(target) === wanted) ?? defenders[0]
   const [targets, setTargets] = useState<ReadonlyMap<ObjectId, AttackTarget>>(new Map())
+  const pickAim = useCallback(
+    (key: string): void => {
+      setAimKey(key)
+      defenderStore.remember(key)
+    },
+    [defenderStore],
+  )
+  const seats = useMemo(
+    () =>
+      several ? defenders.flatMap((target): PlayerId[] => ('Player' in target ? [target.Player] : [])) : [],
+    [several, defenders],
+  )
+  const pickSeat = useCallback((seat: PlayerId): void => pickAim(targetKey({ Player: seat })), [pickAim])
+  usePublishDefenders(seats, aim !== undefined && 'Player' in aim ? aim.Player : null, pickSeat)
 
   // The attack as declared so far: creatures in the order they were chosen, each with its defender.
   const declared = useMemo(
@@ -66,21 +89,24 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const attackMade = useMemo(() => attacksAnswer(drawn), [drawn])
   const previewStatus = usePreviewRequest(id, attackMade)
   const preview = useBlockPreview()
-  const creatures = useObjects(declaredIds)
-  const labels = useMemo(
-    () => uniqueNames(declaredIds.map((id, index) => ({ id, name: creatures[index]?.name ?? 'a creature' }))),
-    [declaredIds, creatures],
-  )
+
+  // The creature under the pointer or the focus: when it cannot attack the defender chosen, the bar says so.
+  const shown = usePreviewTarget()?.id
+  const [shownCreature] = useObjects(shown === undefined ? [] : [shown])
+  const shownOption = shown === undefined ? undefined : offered.get(shown)
+  const [instead] = shownOption?.defenders ?? []
+  const cannotAim =
+    aim === undefined ||
+    shownOption === undefined ||
+    instead === undefined ||
+    shownOption.defenders.some((target) => sameTarget(target, aim))
+      ? undefined
+      : `${shownCreature?.name ?? 'This creature'} cannot attack ${names.short(aim)}; it attacks ${names.short(instead)} instead.`
 
   const marks = useMemo(() => markCards(own, legal, declaredIds), [own, legal, declaredIds])
   const notes = useMemo<CardNotes>(
     () =>
-      new Map(
-        declared.map(({ object, target }) => [
-          object,
-          { label: `At ${names.short(target)}`, words: `attacking ${names.long(target)}` },
-        ]),
-      ),
+      new Map(declared.map(({ object, target }) => [object, { words: `attacking ${names.long(target)}` }])),
     [declared, names],
   )
 
@@ -109,27 +135,32 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     selection.set([...selection.ids, ...fresh])
   }
   const allAt = (): void => aimAll(declaredIds, aim)
-  const aimOne = (id: ObjectId, key: string): void => {
-    const target = offered.get(id)?.defenders.find((candidate) => targetKey(candidate) === key)
-    if (target !== undefined) setTargets((current) => new Map(current).set(id, target))
+  const elsewhere = aim !== undefined && declared.some(({ target }) => !sameTarget(target, aim))
+  const confirm = (): void => {
+    if (declared.length > 0)
+      answer({ DeclareAttackers: declared.map(({ object, target }) => [object, target]) })
   }
+  // With nothing focused, Enter confirms the attack that is chosen; Space is left alone.
+  usePrimaryKey({ space: () => undefined, enter: confirm }, declared.length > 0)
 
   const text =
     legal.length === 0
       ? 'None of your creatures can attack. Choose No attack to go on.'
-      : declared.length > 0
-        ? `${attackSummary(
-            declared.map((entry) => entry.target),
-            names,
-          )}. Confirm the attack, or keep choosing.`
-        : several
-          ? 'Choose the creatures that attack and who each one attacks, or choose No attack.'
-          : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
+      : cannotAim !== undefined
+        ? cannotAim
+        : declared.length > 0
+          ? `${attackSummary(
+              declared.map((entry) => entry.target),
+              names,
+            )}.`
+          : several && aim !== undefined
+            ? `Click creatures to attack ${names.short(aim)}, or click another player.`
+            : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
 
   return (
-    <PromptLayout text={text}>
+    <PromptLayout compact text={text}>
       {options.most === undefined ? null : (
-        <p data-slot="declaration-limit" className="basis-full text-sm text-muted-foreground">
+        <p data-slot="declaration-limit" className="basis-full text-xs text-muted-foreground">
           No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can attack this combat.
         </p>
       )}
@@ -137,83 +168,67 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         <p
           key={JSON.stringify(target)}
           data-slot="defender-limit"
-          className="basis-full text-sm text-muted-foreground"
+          className="basis-full text-xs text-muted-foreground"
         >
           No more than {most} {most === 1 ? 'creature' : 'creatures'} can attack {names.short(target)} this
           combat.
         </p>
       ))}
       {several && aim !== undefined ? (
-        <label className="flex items-center gap-2 text-sm">
-          Attack at
-          <NativeSelect
-            aria-label="Attack at"
-            value={targetKey(aim)}
-            onChange={(event) => setAimKey(event.target.value)}
-          >
-            {defenders.map((target) => (
-              <NativeSelectOption key={targetKey(target)} value={targetKey(target)}>
-                {names.long(target)}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </label>
+        <NativeSelect
+          size="sm"
+          className="max-w-44"
+          aria-label="Attack at"
+          value={targetKey(aim)}
+          onChange={(event) => pickAim(event.target.value)}
+        >
+          {defenders.map((target) => (
+            <NativeSelectOption key={targetKey(target)} value={targetKey(target)}>
+              {names.long(target)}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
       ) : null}
-      <Button variant="outline" className="h-10 px-4" disabled={legal.length === 0} onClick={attackWithAll}>
-        Attack with all
-      </Button>
-      {several && aim !== undefined && declared.length > 0 ? (
-        <Button variant="outline" className="h-10 px-4" onClick={allAt}>
-          All at {names.short(aim)}
-        </Button>
-      ) : null}
-      <Button
+      <BarButton
         variant="outline"
-        className="h-10 px-4"
+        icon={Swords}
+        label="Attack with all"
+        word="All"
+        disabled={legal.length === 0}
+        onClick={attackWithAll}
+      />
+      {several && aim !== undefined && elsewhere ? (
+        <BarButton
+          variant="outline"
+          icon={UsersRound}
+          label={`All at ${names.short(aim)}`}
+          word={`All at ${names.short(aim)}`}
+          onClick={allAt}
+        />
+      ) : null}
+      <BarButton
+        variant="outline"
+        icon={Eraser}
+        label="Clear"
+        word="Clear"
         disabled={declared.length === 0}
         onClick={selection.clear}
-      >
-        Clear
-      </Button>
-      <Button
-        className="h-10 px-4"
+      />
+      <BarButton
+        icon={Check}
+        label="Confirm attack"
+        word="Attack"
+        keepWord
         disabled={declared.length === 0}
-        onClick={() => answer({ DeclareAttackers: declared.map(({ object, target }) => [object, target]) })}
-      >
-        Confirm attack
-      </Button>
-      <Button variant="outline" className="h-10 px-4" onClick={() => answer({ DeclareAttackers: [] })}>
-        No attack
-      </Button>
-      {several && declared.length > 0 ? (
-        <ul
-          aria-label="Who each creature attacks"
-          data-slot="attack-targets"
-          className="grid max-h-44 basis-full gap-1 overflow-y-auto"
-        >
-          {declared.map(({ object, target }) => {
-            const name = labels.get(object) ?? 'a creature'
-            return (
-              <li key={object} className="flex items-center justify-between gap-2 text-sm">
-                <span className="min-w-0 truncate">{name}</span>
-                <NativeSelect
-                  size="sm"
-                  className="max-w-[60%]"
-                  aria-label={`Who ${name} attacks`}
-                  value={targetKey(target)}
-                  onChange={(event) => aimOne(object, event.target.value)}
-                >
-                  {(offered.get(object)?.defenders ?? []).map((candidate) => (
-                    <NativeSelectOption key={targetKey(candidate)} value={targetKey(candidate)}>
-                      {names.long(candidate)}
-                    </NativeSelectOption>
-                  ))}
-                </NativeSelect>
-              </li>
-            )
-          })}
-        </ul>
-      ) : null}
+        onClick={confirm}
+      />
+      <BarButton
+        variant="outline"
+        icon={X}
+        label="No attack"
+        word="No attack"
+        onClick={() => answer({ DeclareAttackers: [] })}
+      />
       {declared.length === 0 ? null : (
         <PreviewOutcome
           slot="attack-outcome"

@@ -77,7 +77,7 @@ export function Overlay({ object, role, size, turned, note, links }: OverlayProp
   const link = linkText(links)
   const corner = CORNER[turned ? 'turned' : 'upright']
   const hasFoot = damage !== undefined || counters.length > 0 || link !== null
-  const hasHead = head.length > 0 || sick || manual.length > 0 || note !== undefined
+  const hasHead = head.length > 0 || sick || manual.length > 0 || note?.label !== undefined
   return (
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">
       {sick ? (
@@ -153,7 +153,7 @@ export function Overlay({ object, role, size, turned, note, links }: OverlayProp
               {label}
             </span>
           ))}
-          {note === undefined ? null : (
+          {note?.label === undefined ? null : (
             <span data-slot="card-note" className={cn(MARK, 'bg-primary text-primary-foreground', text)}>
               <span className="truncate">{note.label}</span>
             </span>

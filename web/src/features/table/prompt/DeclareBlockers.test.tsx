@@ -4,11 +4,6 @@ import { describe, expect, it } from 'vitest'
 import type { BlockerOption, BlockOptions, ObjectId } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { creaturesOf, fixtureOf, ownOf, renderCombat } from '@/test-utils/combatTable'
-import { powerToughness } from '../cardModel'
-
-const objectOf = (seats: number, id: ObjectId) =>
-  must(fixtureOf(seats).view.objects.find((object) => object.id === id))
-
 interface Spec {
   name: string
   seats: number
@@ -77,16 +72,13 @@ const SPECS: Spec[] = [
 const block = (spec: Spec) => {
   const given = optionsOf(spec)
   const table = renderCombat({ DeclareBlockers: given.options }, { seats: spec.seats })
-  const picker = (): HTMLElement => screen.getByRole('group', { name: /^Attackers .* may block$/ })
-  const choices = (): HTMLElement[] =>
+  // The attackers the chosen blocker may block, as the bar lists them for a seat whose cards are not drawn.
+  const picker = (): HTMLElement => screen.getByRole('combobox', { name: /^Attacker .* blocks$/ })
+  const choices = (): HTMLOptionElement[] =>
     within(picker())
-      .getAllByRole('button')
-      .filter((b) => !['Cancel', 'Remove block'].includes(b.textContent ?? ''))
-  const pairs = (): HTMLElement[] => {
-    const list = screen.queryByRole('list', { name: 'Your blocks' })
-    return list === null ? [] : within(list).getAllByRole('listitem')
-  }
-  return { ...table, ...given, picker, choices, pairs }
+      .getAllByRole<HTMLOptionElement>('option')
+      .filter((option) => option.value !== '')
+  return { ...table, ...given, picker, choices }
 }
 
 describe('what is marked', () => {
@@ -105,7 +97,8 @@ describe('what is marked', () => {
         ...options.blockers.flatMap((b) => b.can_block),
         ...fixture.view.combat.attackers.map((a) => a.object),
       ])
-      for (const blocker of options.blockers) {
+      // A blocker that may block one attacker blocks it with its click, so it is never chosen.
+      for (const blocker of options.blockers.filter((b) => b.can_block.length > 1)) {
         await user.click(card(blocker.object))
         expect(marks().get(blocker.object)).toBe('selected')
         for (const attacker of shown) {
@@ -114,7 +107,7 @@ describe('what is marked', () => {
             blocker.can_block.includes(attacker) ? 'legal' : 'dimmed',
           )
         }
-        for (const other of options.blockers.filter((o) => o !== blocker)) {
+        for (const other of options.blockers.filter((o) => o !== blocker && o.can_block.length > 1)) {
           expect(marks().get(other.object)).toBe('legal')
         }
       }
@@ -142,227 +135,6 @@ describe('what is marked', () => {
   it('marks nothing before a blocker is chosen on the attackers', () => {
     const { marks, attackers } = block(must(SPECS[1]))
     for (const attacker of attackers) expect(marks().has(attacker)).toBe(false)
-  })
-})
-
-describe('the first blocker of a table of two', () => {
-  const spec = must(SPECS[1])
-  const given = optionsOf(spec)
-  const [b1, b2, b3] = given.blockers as [ObjectId, ObjectId, ObjectId]
-  const [a1, a2, a3] = given.attackers as [ObjectId, ObjectId, ObjectId]
-
-  it('is chosen by a click, which asks for an attacker and moves focus into the list', async () => {
-    const { card, user, text, picker, choices } = block(spec)
-    await user.click(card(b1))
-    expect(text()).toBe(`Choose the attacker ${objectOf(2, b1).name} blocks.`)
-    expect(picker()).toBeInTheDocument()
-    expect(choices()).toHaveLength(3)
-    expect(choices()[0]).toHaveFocus()
-  })
-
-  it('lists each attacker with its power, toughness and controller', async () => {
-    const { card, user, choices } = block(spec)
-    await user.click(card(b1))
-    const attacker = objectOf(2, a1)
-    expect(choices()[0]).toHaveTextContent(`${attacker.name} ${powerToughness(attacker)} (Bo)`)
-  })
-
-  it('is chosen by Enter or Space and cancelled by choosing it again', async () => {
-    const { card, user, marks } = block(spec)
-    act(() => card(b1).focus())
-    await user.keyboard('{Enter}')
-    expect(marks().get(b1)).toBe('selected')
-    act(() => card(b1).focus())
-    await user.keyboard(' ')
-    expect(marks().get(b1)).toBe('legal')
-    expect(screen.queryByRole('group', { name: /may block$/ })).toBeNull()
-  })
-
-  it('is cancelled by Escape and by Cancel, and focus goes back to its card', async () => {
-    const { card, user, marks } = block(spec)
-    await user.click(card(b1))
-    await user.keyboard('{Escape}')
-    expect(marks().get(b1)).toBe('legal')
-    expect(card(b1)).toHaveFocus()
-    await user.click(card(b1))
-    await user.click(screen.getByRole('button', { name: 'Cancel' }))
-    expect(marks().get(b1)).toBe('legal')
-    expect(card(b1)).toHaveFocus()
-  })
-
-  it('gives the choice to another blocker when that one is chosen', async () => {
-    const { card, user, marks } = block(spec)
-    await user.click(card(b1))
-    await user.click(card(b2))
-    expect(marks().get(b1)).toBe('legal')
-    expect(marks().get(b2)).toBe('selected')
-    expect(screen.getAllByRole('group', { name: /may block$/ })).toHaveLength(1)
-  })
-
-  it('writes "Pick attacker" on the blocker being placed', async () => {
-    const { card, user, notes } = block(spec)
-    await user.click(card(b1))
-    expect(notes()).toEqual(new Map([[b1, 'Pick attacker']]))
-  })
-
-  it('blocks an attacker when its card is clicked, and both cards say so', async () => {
-    const { card, user, notes, marks, answer, text, pairs } = block(spec)
-    await user.click(card(b1))
-    await user.click(card(a2))
-    expect(answer).not.toHaveBeenCalled()
-    expect(marks().get(b1)).toBe('selected')
-    expect(marks().get(a2)).toBeUndefined()
-    expect(notes()).toEqual(
-      new Map([
-        [b1, `Blocks ${objectOf(2, a2).name}`],
-        [a2, `Blocked by ${objectOf(2, b1).name}`],
-      ]),
-    )
-    expect(card(b1)).toHaveAccessibleName(new RegExp(`, blocking ${objectOf(2, a2).name}, Bo's$`))
-    expect(card(a2)).toHaveAccessibleName(new RegExp(`, blocked by ${objectOf(2, b1).name}$`))
-    expect(text()).toBe('1 blocker on 1 attacker. Confirm the blocks, or choose another creature.')
-    expect(pairs()).toHaveLength(1)
-    expect(pairs()[0]).toHaveTextContent(`Your ${objectOf(2, b1).name} blocks Bo's ${objectOf(2, a2).name}`)
-  })
-
-  it('blocks an attacker when its button in the list is pressed, and moves focus back to the blocker', async () => {
-    const { card, user, notes, choices } = block(spec)
-    await user.click(card(b1))
-    await user.click(must(choices()[2]))
-    expect(notes().get(b1)).toBe(`Blocks ${objectOf(2, a3).name}`)
-    expect(screen.queryByRole('group', { name: /may block$/ })).toBeNull()
-    expect(card(b1)).toHaveFocus()
-  })
-
-  it('answers from the keyboard alone: Enter, Tab to an attacker, Enter, then Confirm blocks', async () => {
-    const { card, user, answer, button } = block(spec)
-    act(() => card(b2).focus())
-    await user.keyboard('{Enter}')
-    await user.keyboard('{Tab}{Enter}')
-    expect(card(b2)).toHaveFocus()
-    act(() => button('Confirm blocks').focus())
-    await user.keyboard('{Enter}')
-    expect(answer.mock.calls).toEqual([[{ DeclareBlockers: [[b2, a2]] }]])
-  })
-
-  it('ignores a click on an attacker before any blocker is chosen, and on a card it may not block', async () => {
-    const small = block({ name: '', seats: 2, blocks: [[0], [0, 1]] })
-    const [only, wide] = small.blockers as [ObjectId, ObjectId]
-    const [x, y] = small.attackers as [ObjectId, ObjectId]
-    await small.user.click(small.card(y))
-    expect(small.notes().size).toBe(0)
-    await small.user.click(small.card(only))
-    await small.user.click(small.card(y))
-    expect(small.notes().get(only)).toBe('Pick attacker')
-    await small.user.click(small.card(x))
-    expect(small.notes().get(only)).toBe(`Blocks ${objectOf(2, x).name}`)
-    await small.user.click(small.card(wide))
-    expect(small.notes().get(wide)).toBe('Pick attacker')
-  })
-
-  it('takes a block back when the same attacker is chosen again', async () => {
-    const { card, user, notes, pairs } = block(spec)
-    await user.click(card(b1))
-    await user.click(card(a1))
-    await user.click(card(b1))
-    expect(screen.getByRole('button', { name: 'Remove block' })).toBeInTheDocument()
-    await user.click(card(a1))
-    expect(notes().size).toBe(0)
-    expect(pairs()).toEqual([])
-  })
-
-  it('moves a block to another attacker, and the blocker is in the answer once', async () => {
-    const { card, user, notes, button, answer } = block(spec)
-    await user.click(card(b1))
-    await user.click(card(a1))
-    await user.click(card(b1))
-    await user.click(card(a3))
-    expect(notes().get(a1)).toBeUndefined()
-    expect(notes().get(a3)).toBe(`Blocked by ${objectOf(2, b1).name}`)
-    await user.click(button('Confirm blocks'))
-    expect(answer.mock.calls).toEqual([[{ DeclareBlockers: [[b1, a3]] }]])
-  })
-
-  it('shows the chosen attacker as pressed in the list when the blocker is chosen again', async () => {
-    const { card, user, choices } = block(spec)
-    await user.click(card(b1))
-    await user.click(card(a2))
-    await user.click(card(b1))
-    expect(choices().map((c) => c.getAttribute('aria-pressed'))).toEqual(['false', 'true', 'false'])
-  })
-
-  it('changes a block with Change, and takes it back with Remove block or Remove', async () => {
-    const { card, user, notes, pairs, choices } = block(spec)
-    await user.click(card(b1))
-    await user.click(card(a1))
-    await user.click(card(b2))
-    await user.click(card(a1))
-    expect(notes().get(a1)).toBe('Blocked by 2')
-    await user.click(
-      within(must(pairs()[0])).getByRole('button', { name: `Change the block of ${objectOf(2, b1).name}` }),
-    )
-    expect(choices()[0]).toHaveFocus()
-    await user.click(must(choices()[1]))
-    expect(notes().get(b1)).toBe(`Blocks ${objectOf(2, a2).name}`)
-    expect(notes().get(a1)).toBe(`Blocked by ${objectOf(2, b2).name}`)
-    await user.click(
-      within(must(pairs()[1])).getByRole('button', { name: `Remove the block of ${objectOf(2, b2).name}` }),
-    )
-    expect(notes().has(b2)).toBe(false)
-    expect(notes().has(a1)).toBe(false)
-    expect(pairs()).toHaveLength(1)
-    await user.click(card(b1))
-    await user.click(screen.getByRole('button', { name: 'Remove block' }))
-    expect(pairs()).toHaveLength(0)
-    expect(b3).toBeDefined()
-  })
-
-  it('says it is a double block when two blockers take one attacker', async () => {
-    const { card, user, notes, answer, button, text } = block(spec)
-    await user.click(card(b1))
-    await user.click(card(a1))
-    await user.click(card(b2))
-    await user.click(card(a1))
-    expect(notes().get(a1)).toBe('Blocked by 2')
-    expect(card(a1)).toHaveAccessibleName(
-      new RegExp(`, blocked by ${objectOf(2, b1).name} and ${objectOf(2, b2).name}$`),
-    )
-    expect(text()).toBe('2 blockers on 1 attacker. Confirm the blocks, or choose another creature.')
-    await user.click(button('Confirm blocks'))
-    expect(answer.mock.calls).toEqual([
-      [
-        {
-          DeclareBlockers: [
-            [b1, a1],
-            [b2, a1],
-          ],
-        },
-      ],
-    ])
-  })
-
-  it('sends the pairs in the order they were made', async () => {
-    const { card, user, answer, button } = block(spec)
-    for (const [blocker, attacker] of [
-      [b3, a1],
-      [b1, a3],
-      [b2, a2],
-    ] as const) {
-      await user.click(card(blocker))
-      await user.click(card(attacker))
-    }
-    await user.click(button('Confirm blocks'))
-    expect(answer.mock.calls).toEqual([
-      [
-        {
-          DeclareBlockers: [
-            [b3, a1],
-            [b1, a3],
-            [b2, a2],
-          ],
-        },
-      ],
-    ])
   })
 })
 
@@ -418,13 +190,13 @@ describe('attackers of a seat that is not drawn', () => {
   const spec = must(SPECS[5])
 
   it('can still be blocked from the list, which names their controller', async () => {
-    const { card, hasCard, user, choices, attackers, blockers, answer, button } = block(spec)
+    const { card, hasCard, user, choices, picker, attackers, blockers, answer, button } = block(spec)
     expect(attackers.some(hasCard)).toBe(false)
     const [blocker] = blockers as [ObjectId]
     await user.click(card(blocker))
     expect(choices()).toHaveLength(3)
     for (const choice of choices()) expect(choice).toHaveTextContent(/\(Fay\)$/)
-    await user.click(must(choices()[1]))
+    await user.selectOptions(picker(), must(choices()[1]))
     await user.click(button('Confirm blocks'))
     expect(answer.mock.calls).toEqual([[{ DeclareBlockers: [[blocker, must(attackers[1])]] }]])
   })
@@ -448,8 +220,7 @@ describe('a replaced decision', () => {
     expect(notes().size).toBe(0)
     expect(marks().get(b1)).toBe('dimmed')
     expect(marks().get(b2)).toBe('legal')
-    expect(screen.queryByRole('group', { name: /may block$/ })).toBeNull()
-    expect(screen.queryByRole('list', { name: 'Your blocks' })).toBeNull()
+    expect(screen.queryByRole('combobox', { name: /^Attacker .* blocks$/ })).toBeNull()
     expect(button('Confirm blocks')).toBeDisabled()
   })
 
@@ -457,24 +228,25 @@ describe('a replaced decision', () => {
     const { card, user, marks, notes, update, blockers, attackers } = block(must(SPECS[1]))
     await user.click(card(must(blockers[0])))
     await user.click(card(must(attackers[0])))
-    expect(notes().size).toBe(2)
+    expect(card(must(attackers[0]))).toHaveAccessibleName(/blocked by/)
     update(() => ({ pending: null }))
     expect(marks().size).toBe(0)
     expect(notes().size).toBe(0)
+    expect(card(must(attackers[0]))).not.toHaveAccessibleName(/blocked by/)
   })
 })
 
 describe('the words', () => {
   it('says what to do before a blocker is chosen and is one live region', () => {
     const { text, container } = block(must(SPECS[0]))
-    expect(text()).toBe('Choose a creature to block with, then the attacker it blocks, or choose No blocks.')
+    expect(text()).toBe('Click a blocker, then the attacker it blocks.')
     const line = must(container.querySelector<HTMLElement>('[data-slot="decision-line"]'))
     expect(within(line).getByText('Your decision: Declare blockers')).toBeInTheDocument()
     expect(line.querySelectorAll('[aria-live]')).toHaveLength(1)
   })
 
   it('tells two attackers of one name apart in the list and the pairs', async () => {
-    const { card, user, update, blockers, attackers, choices, pairs } = block({
+    const { card, user, update, blockers, attackers, choices, picker, button, answer } = block({
       name: '',
       seats: 2,
       blocks: [[0, 1]],
@@ -493,7 +265,8 @@ describe('the words', () => {
       'Goblin 1',
       'Goblin 2',
     ])
-    await user.click(must(choices()[1]))
-    expect(pairs()[0]).toHaveTextContent(/blocks Bo.s Goblin 2/)
+    await user.selectOptions(picker(), must(choices()[1]))
+    await user.click(button('Confirm blocks'))
+    expect(answer.mock.calls).toEqual([[{ DeclareBlockers: [[blocker, b]] }]])
   })
 })

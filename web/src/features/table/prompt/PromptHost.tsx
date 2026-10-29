@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import type { ComponentType } from 'react'
 import { useGame, usePlay } from '@/features/game/gameContext'
+import { cn } from '@/lib/utils'
 import type { PendingDecision } from '@/play/store'
 import type { Answer, DecisionKind, ObjectId } from '@/protocol/generated'
 import { decisionName } from '../turnText'
@@ -14,6 +15,9 @@ import { PROMPTS } from './registry'
 import { ResponseClock } from './ResponseClock'
 
 const NOTHING: ReadonlySet<ObjectId> = new Set()
+
+/** The decisions that fit one row: a sentence, a few buttons and the clock as a line on the edge. */
+const COMPACT: ReadonlySet<string> = new Set(['DeclareAttackers', 'DeclareBlockers'])
 
 /**
  * The name of a decision kind: the key it came with, which is a kind of `PROMPTS` unless the server is newer than this
@@ -68,6 +72,7 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
   )
 
   const name = kindName(decision.kind)
+  const compact = COMPACT.has(name)
   const api = useMemo<PromptApi>(
     () => ({ id, name, decision, answer, selection }),
     [id, name, decision, answer, selection],
@@ -78,10 +83,13 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
         data-slot="decision-line"
         data-decision={name}
         data-decision-id={id}
-        className="grid max-w-full min-w-0 gap-1 rounded-md bg-muted px-3 py-1.5 sm:max-w-3xl"
+        className={cn(
+          'max-w-full min-w-0 rounded-md bg-muted px-3 sm:max-w-3xl',
+          compact ? 'relative flex flex-wrap items-center gap-x-3 overflow-hidden py-1' : 'grid gap-1 py-1.5',
+        )}
       >
         <PromptFor kind={decision.kind} />
-        <ResponseClock id={id} kind={clockKind(decision.kind)} />
+        <ResponseClock id={id} kind={clockKind(decision.kind)} compact={compact} />
       </div>
     </PromptContext>
   )

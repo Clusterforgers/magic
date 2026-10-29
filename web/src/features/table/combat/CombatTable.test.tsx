@@ -319,13 +319,13 @@ describe('the card preview', () => {
 })
 
 describe('the seat panels', () => {
-  it('show the attacked seat life as "life -> life after" with a lethal mark when it would end the game', () => {
+  it('show the attacked seat life as a chip with the change and a lethal mark when it would end the game', () => {
     const { table } = scene()
     const panel = must(table.life(0))
     expect(panel).toHaveAttribute('data-lethal', 'true')
-    expect(panel).toHaveTextContent('5→-1')
-    expect(panel).toHaveTextContent('Lethal')
-    expect(within(panel).getByText('Life would go from 5 to -1, which is lethal')).toHaveClass('sr-only')
+    expect(panel).toHaveTextContent('-6')
+    expect(panel).toHaveAccessibleName('Life would go from 5 to -1, which is lethal')
+    expect(panel.title).toMatch(/^Life would go from 5 to -1, which is lethal\n/)
   })
 
   it('show nothing on a seat nobody attacks', () => {
@@ -343,17 +343,17 @@ describe('the seat panels', () => {
     }
     table.setView({ combat_forecast: survived })
     const panel = must(table.life(0))
-    expect(panel).toHaveTextContent('20→16')
+    expect(panel).toHaveTextContent('-4')
+    expect(panel).toHaveAttribute('data-trend', 'down')
     expect(panel).not.toHaveAttribute('data-lethal')
-    expect(panel).not.toHaveTextContent('Lethal')
     table.setView({
       combat_forecast: {
         ...forecast,
         players: [{ player: 0, damage: 0, life: 20, life_after: 20, lethal: false }],
       },
     })
-    expect(must(table.life(0))).toHaveTextContent('No combat damage')
-    expect(screen.getByText('Takes no combat damage')).toHaveClass('sr-only')
+    expect(must(table.life(0))).toHaveTextContent('0')
+    expect(must(table.life(0))).toHaveAccessibleName('Takes no combat damage')
   })
 
   it('go when the forecast does', () => {
