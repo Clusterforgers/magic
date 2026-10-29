@@ -3,7 +3,6 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use mtg_cards::ability::Ability;
 use mtg_cards::modify::GameRule;
 use mtg_cards::refs::Ref;
 use mtg_cards::value::CounterKind;
@@ -163,13 +162,5 @@ pub(crate) fn w17b_restore_counters(object: &mut GameObject, kept: BTreeMap<Coun
 /// neither a hand nor a library.
 pub(crate) fn w17b_keeps_counters(object: &GameObject, to: Zone) -> bool {
     !matches!(to, Zone::Hand(_) | Zone::Library(_))
-        && object.card().rules.iter().any(|rules| {
-            matches!(
-                &**rules,
-                Ability::Rule {
-                    rule: GameRule::CountersRemain,
-                    ..
-                }
-            )
-        })
+        && crate::ability_reader::w17b_definition_keeps_counters(object.card())
 }
