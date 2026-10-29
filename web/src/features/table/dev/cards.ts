@@ -114,6 +114,16 @@ export const OTHERS: NonEmpty<Template> = [
   enchantment('Propaganda', cost(2, [0, 1, 0, 0, 0]), ['Blue']),
 ]
 
+/** A planeswalker for the other permanents' lane of the duel board. */
+export const PLANESWALKER: Template = {
+  name: 'Jace Beleren',
+  cost: cost(1, [0, 2, 0, 0, 0]),
+  supertypes: ['Legendary'],
+  types: ['Planeswalker'],
+  subtypes: ['Jace'],
+  colors: ['Blue'],
+}
+
 const instant = (name: string, mana: ManaCost, colors: Color[]): Template => ({
   name,
   cost: mana,

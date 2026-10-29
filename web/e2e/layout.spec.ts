@@ -185,6 +185,8 @@ const STOPS: readonly Stop[] = [
   },
   tableStop('The table (dev), 4 seats, your priority', 'seats=4&prompt=priority&turn=you', 'pass'),
   tableStop('The table (dev), 2 seats, the opening hand', 'seats=2&prompt=mulligan', 'keep'),
+  tableStop('The table (dev), the duel board, your priority', 'board=duel&prompt=priority&turn=you', 'pass'),
+  tableStop('The table (dev), the heavy board, declaring blockers', 'board=heavy&prompt=block', 'prompt'),
   tableStop('The table (dev), 4 seats, declaring attackers', 'seats=4&prompt=attack&turn=you', 'prompt'),
   tableStop('The table (dev), 4 seats, declaring blockers', 'seats=4&prompt=block', 'prompt'),
   tableStop(
@@ -271,6 +273,10 @@ test.describe('the gate itself', () => {
       <div style="width:300px;overflow:hidden"><button style="margin-left:250px;width:120px">Clipped</button></div>
       <div style="width:500px;height:10px"></div>
       <p style="font-size:9px">Tiny</p>
+      <section data-battlefield-seat="1"><div data-slot="battlefield-zone" style="height:60px">
+        <div data-lane="lands" style="width:100px;height:40px"></div>
+        <div data-lane="creatures" style="width:100px;height:40px;margin-top:-20px"></div>
+      </div></section>
       <button id="covered">Covered</button>
       <div style="position:fixed;inset:0"></div>
     </main></body></html>`)
@@ -280,6 +286,7 @@ test.describe('the gate itself', () => {
       'cut off: button "Clipped" 250..370',
       'cut off: div 0..500',
       'small text: 9px "Tiny"',
+      'lane: seat 1 lands over creatures',
       'Covered is covered',
       'Absent is missing',
     ])

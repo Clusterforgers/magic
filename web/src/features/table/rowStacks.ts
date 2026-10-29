@@ -6,10 +6,11 @@ import type { PlayState } from '@/play/store'
 import type { ObjectId, PlayerId, StateView } from '@/protocol/generated'
 import { combatRoleOf } from './cardModel'
 import type { RowKind } from './cardModel'
-import { fitRows, LAND_SCALE } from './fit'
-import type { Fit, FitBox, FitGroup } from './fit'
+import type { FitBox } from './fit'
 import { GROUP_OTHERS_BELOW, groupPermanents } from './group'
 import type { Groupable, Stack } from './group'
+import { fitLanes } from './laneFit'
+import type { LaneCounts, LaneFit } from './laneFit'
 import { splitBattlefield } from './selectors'
 import type { BattlefieldRows } from './selectors'
 
@@ -161,8 +162,8 @@ export interface SeatLayoutInput {
   /** The room inside the zone, or null where nothing is laid out (a test, a hidden zone). */
   box: FitBox | null
   stacks: SeatStacks
-  /** The rows in the order the zone draws them, from the top. */
-  order: readonly RowKind[]
+  /** `near` is the viewer's own board, `far` an opponent's: their bands mirror each other top to bottom. */
+  facing: 'near' | 'far'
   /** The keys of the stacks the player opened. */
   opened: ReadonlySet<string>
   /** The permanents a prompt marks as legal or selected: a stack holding one is held open. */
@@ -176,8 +177,8 @@ export interface SeatLayout {
   stacks: RowStacks
   /** True when identical cards that are no lands or tokens were merged too. */
   merged: boolean
-  /** The card width and wrapping of every row; null where there is no box. */
-  fit: Fit | null
+  /** The bands and lanes of the zone and their card size; null where there is no box. */
+  fit: LaneFit | null
 }
 
 function entriesOfRows(
@@ -189,26 +190,23 @@ function entriesOfRows(
   return { creatures: entries(rows.creatures), other: entries(rows.other), lands: entries(rows.lands) }
 }
 
-/** The rows of the fit, one box for each stack and one for each member of an open one, lands at their own scale. */
-export function fitGroups(rows: Record<RowKind, readonly RowEntry[]>, order: readonly RowKind[]): FitGroup[] {
-  return order.map((row) => ({
-    stacks: boxesOf(rows[row]),
-    ...(row === 'lands' ? { scale: LAND_SCALE } : {}),
-  }))
+/** The boxes of each lane: one for each stack and one for each member of an open one. */
+export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>): LaneCounts {
+  return { creatures: boxesOf(rows.creatures), other: boxesOf(rows.other), lands: boxesOf(rows.lands) }
 }
 
 /**
- * Draws a seat's battlefield: fits the zone with lands and tokens merged, and when the cards would fall under
+ * Draws a seat's battlefield: fits the zone's lanes with lands and tokens merged, and when the cards would fall under
  * `GROUP_OTHERS_BELOW` merges identical cards too and fits again. Every permanent takes one box, tapped or not, and
- * the boxes of the fit are exactly the ones the rows draw.
+ * the boxes of the fit are exactly the ones the lanes draw.
  */
-export function layoutSeat({ box, stacks, order, opened, marked }: SeatLayoutInput): SeatLayout {
+export function layoutSeat({ box, stacks, facing, opened, marked }: SeatLayoutInput): SeatLayout {
   const plain = entriesOfRows(stacks.plain, opened, marked)
   if (box === null) return { rows: plain, stacks: stacks.plain, merged: false, fit: null }
-  const plainFit = fitRows(box, fitGroups(plain, order))
+  const plainFit = fitLanes(box, laneCounts(plain), facing)
   if (plainFit.cardWidth >= GROUP_OTHERS_BELOW) {
     return { rows: plain, stacks: stacks.plain, merged: false, fit: plainFit }
   }
   const merged = entriesOfRows(stacks.merged, opened, marked)
-  return { rows: merged, stacks: stacks.merged, merged: true, fit: fitRows(box, fitGroups(merged, order)) }
+  return { rows: merged, stacks: stacks.merged, merged: true, fit: fitLanes(box, laneCounts(merged), facing) }
 }
