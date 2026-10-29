@@ -76,13 +76,20 @@ function showcase(first: number, viewer: number, ids: RealIds): ObjectView[] {
   ]
 }
 
+/** The card to look up for a face that is not the card's own name: the front of a transformed or modal double-faced card. */
+export const FRONT_OF: Readonly<Record<string, string>> = {
+  'Insectile Aberration': 'Delver of Secrets',
+  'Agadeem, the Undercrypt': "Agadeem's Awakening",
+}
+
 /** The fixture with every card it can name identified, and the showcase on the viewer's battlefield. */
 export function withRealCards(fixture: Fixture, ids: RealIds, viewer: number): Fixture {
-  const named = fixture.view.objects.map((object) =>
-    ids[object.name] === undefined || object.kind !== undefined
+  const named = fixture.view.objects.map((object) => {
+    const found = ids[FRONT_OF[object.name] ?? object.name]
+    return found === undefined || object.kind !== undefined
       ? object
-      : { ...object, identity: { oracle_id: ids[object.name] ?? '' } },
-  )
+      : { ...object, identity: { oracle_id: found } }
+  })
   const first = Math.max(0, ...named.map((object) => object.id)) + 1
   const extra = showcase(first, viewer, ids)
   const cards = [...(fixture.view.battlefield.cards ?? []), ...extra.map((object) => object.id)]

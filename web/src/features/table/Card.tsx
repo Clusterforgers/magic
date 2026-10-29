@@ -6,7 +6,6 @@ import { cardLabel } from './cardModel'
 import type { Highlight } from './cardModel'
 import { HIGHLIGHT, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
-import { AttachedMark } from './AttachedMark'
 import { CardFace } from './CardFace'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookWords } from './combat/forecastText'
@@ -109,7 +108,6 @@ export const Card = memo(function Card({
       )}
     >
       <CardFace object={object} role={role} size={size} fit={fit} cost={cost} note={note} links={links} />
-      {attached ? <AttachedMark /> : null}
       {outlook === null ? null : (
         <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
       )}

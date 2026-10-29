@@ -26,11 +26,6 @@ export type Groupable = Pick<
   | 'keywords'
   | 'permanent'
   | 'attached_to'
-  | 'attached_player'
-  | 'face'
-  | 'face_down'
-  | 'copy'
-  | 'merged'
 > & {
   /** The counters on it, by kind. */
   counters?: readonly (readonly [CounterKind, number])[]
@@ -91,17 +86,9 @@ function faceOf(permanent: Groupable): string {
     state?.tapped ?? false,
     state?.summoning_sick ?? false,
     state?.damage ?? 0,
-    state?.prepared ?? false,
-    state?.level ?? null,
     countersOf(permanent.counters),
     attachmentsOf(permanent.attachments),
     permanent.attached_to ?? null,
-    permanent.attached_player ?? null,
-    permanent.face ?? 0,
-    permanent.face_down ?? false,
-    // A copy of one thing is not a copy of another, and a copy is never a plain card of the same name.
-    permanent.copy === undefined ? null : (permanent.copy.of ?? -1),
-    (permanent.merged ?? []).map((part) => part.id),
   ])
 }
 

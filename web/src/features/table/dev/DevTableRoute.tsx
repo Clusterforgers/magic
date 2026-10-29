@@ -3,28 +3,38 @@ import { useEffect, useMemo, useState } from 'react'
 import { cardsApi } from '@/net/cards'
 import { GameContext } from '@/features/game/gameContext'
 import { GameTable } from '@/features/table/GameTable'
+import { setDetailFetcher } from '@/features/table/printed'
 import { TableOptionsContext } from '@/features/table/tableOptions'
 import { DevFxControls } from './DevFxControls'
 import { fixtureGame } from './devGame'
 import { FIXTURE_MARKER, buildFixture } from './fixture'
-import { SHOWCASE_NAMES, fetchRealIds } from './realCards'
+import { FRONT_OF, SHOWCASE_NAMES, fetchRealIds } from './realCards'
 import type { RealIds } from './realCards'
+import { printedDetail, STATES_BASE_PERMANENTS, withStates } from './states'
 import { parseStopSpec } from './stopSpec'
 
 /** The oracle ids of the fixture's cards from the server (`?cards=real`), read once; none until they arrive. */
-function useRealIds(on: boolean, seats: number, hand: number | undefined): RealIds | undefined {
+function useRealIds(
+  on: boolean,
+  seats: number,
+  hand: number | undefined,
+  states: boolean,
+): RealIds | undefined {
   const [ids, setIds] = useState<RealIds | undefined>(undefined)
   useEffect(() => {
     if (!on) return
     let live = true
-    const names = buildFixture({ seats, hand }).view.objects.map((object) => object.name)
-    void fetchRealIds(cardsApi, [...names, ...SHOWCASE_NAMES]).then((found) => {
+    const table = states
+      ? withStates(buildFixture({ seats, hand, permanents: STATES_BASE_PERMANENTS }))
+      : buildFixture({ seats, hand })
+    const names = table.view.objects.map((object) => object.name)
+    void fetchRealIds(cardsApi, [...names, ...SHOWCASE_NAMES, ...Object.values(FRONT_OF)]).then((found) => {
       if (live) setIds(found)
     })
     return () => {
       live = false
     }
-  }, [on, seats, hand])
+  }, [on, seats, hand, states])
   return on ? ids : undefined
 }
 
@@ -40,27 +50,28 @@ function useRealIds(on: boolean, seats: number, hand: number | undefined): RealI
  * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards } =
+  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards, states } =
     useSearch({
       from: '/dev/table',
     })
-  const real = useRealIds(cards === 'real', seats, hand)
-  const game = useMemo(
-    () =>
-      fixtureGame({
-        seats,
-        prompt,
-        turn,
-        step,
-        hand,
-        rules,
-        previewMs: preview,
-        stops: stops === undefined ? undefined : parseStopSpec(stops),
-        fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
-        real,
-      }),
-    [seats, prompt, turn, step, hand, rules, preview, stops, fc, real],
-  )
+  const real = useRealIds(cards === 'real', seats, hand, states === true)
+  const game = useMemo(() => {
+    // The state cards compare with printed numbers that come from the fixture, unless real cards bring their own.
+    if (states === true) setDetailFetcher(cards === 'real' ? (id) => cardsApi.get(id) : printedDetail)
+    return fixtureGame({
+      states,
+      seats,
+      prompt,
+      turn,
+      step,
+      hand,
+      rules,
+      previewMs: preview,
+      stops: stops === undefined ? undefined : parseStopSpec(stops),
+      fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
+      real,
+    })
+  }, [seats, prompt, turn, step, hand, rules, states, cards, preview, stops, fc, real])
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
     () => ({ mode, focus, effects: fx === undefined ? undefined : true, effectsSlow: slow }),

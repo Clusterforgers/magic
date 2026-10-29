@@ -2,7 +2,54 @@
 import { describe, expect, it } from 'vitest'
 import type { ObjectView } from '@/protocol/generated'
 import { card, permanent } from '@/test-utils/cards'
-import { cardLabel, isLethal, showsBackFace, statusChips, statusWords } from './cardModel'
+import { cardLabel, counterChips, isLethal, showsBackFace, statusChips, statusWords } from './cardModel'
+
+describe('counterChips', () => {
+  it.each<[string, ObjectView['counters'], string[]]>([
+    ['no counters', undefined, []],
+    ['a +1/+1 counter, tinted up', [['+1/+1', 1]], ['+1/+1:1:up']],
+    ['-1/-1 counters, tinted down with a minus sign', [['-1/-1', 2]], ['−1/−1:2:down']],
+    [
+      'poison and charge by their symbols',
+      [
+        ['poison', 1],
+        ['charge', 4],
+      ],
+      ['☠:1:plain', '⚡:4:plain'],
+    ],
+    ['a named kind by its name', [[{ Other: 'oil' }, 3]], ['oil:3:plain']],
+    [
+      'loyalty is left to the stat box',
+      [
+        ['loyalty', 4],
+        ['charge', 1],
+      ],
+      ['⚡:1:plain'],
+    ],
+  ])('gives %s', (_, counters, expected) => {
+    const chips = counterChips(permanent({}, { counters }))
+    expect(chips.map(({ symbol, count, tone }) => `${symbol}:${count}:${tone}`)).toEqual(expected)
+  })
+})
+
+describe('the chip kinds', () => {
+  it('groups each state with the corner it is drawn in', () => {
+    const object = permanent(
+      { tapped: true, summoning_sick: true, damage: 1, prepared: true },
+      { copy: {}, face_down: true },
+    )
+    const kinds = statusChips(object, 'blocking').map(({ label, kind }) => `${label}:${kind}`)
+    expect(kinds).toEqual([
+      'Tapped:tapped',
+      'Sick:sick',
+      '1 dmg:damage',
+      'Blocking:role',
+      'Face down:identity',
+      'Copy:identity',
+      'Prepared:identity',
+    ])
+  })
+})
 
 const chips = (object: ObjectView) => statusChips(object, null).map(({ label, tone }) => `${label}:${tone}`)
 

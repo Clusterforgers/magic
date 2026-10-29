@@ -129,14 +129,24 @@ describe('what a card says aloud about its other faces and originals', () => {
 })
 
 describe('what is attached', () => {
-  it('marks an attachment and says what it is attached to', () => {
-    const { container } = renderCard(
-      permanent({}, { attached_to: 5, name: 'Pacifism', types: ['Enchantment'] }),
+  it('marks an attachment, names its host on the picture and says what it is attached to', async () => {
+    const { container } = await loaded(
+      permanent({}, { identity: IDENTITY, attached_to: 5, name: 'Pacifism', types: ['Enchantment'] }),
       [card({ id: 5, name: 'Hill Giant', attachments: [ID] })],
     )
     expect(screen.getByRole('button')).toHaveAttribute('data-attached', 'true')
-    expect(container.querySelector('[data-slot="attached-mark"]')).not.toBeNull()
+    const mark = must(container.querySelector('[data-slot="card-attached-to"]'))
+    expect(mark).toHaveTextContent('Hill Giant')
+    expect(mark.closest('[data-slot="card-marks-foot"]')).not.toBeNull()
     expect(screen.getByRole('button')).toHaveAccessibleName(/attached to Hill Giant/)
+  })
+
+  it('lists on the host picture what is attached to it', async () => {
+    const { container } = await loaded(permanent({}, { identity: IDENTITY, attachments: [5, 6] }), [
+      card({ id: 5, name: 'Pacifism', attached_to: ID }),
+      card({ id: 6, name: 'Boots', attached_to: ID }),
+    ])
+    expect(container.querySelector('[data-slot="card-attachment"]')).toHaveTextContent('Pacifism, Boots')
   })
 
   it('names the player a Curse enchants', () => {

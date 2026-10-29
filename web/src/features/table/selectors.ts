@@ -20,63 +20,23 @@ type Objects = Readonly<Record<ObjectId, ObjectView>>
 // The shared battlefield is split once per view, however many seats ask.
 const splits = new WeakMap<StateView, ReadonlyMap<PlayerId, BattlefieldRows>>()
 
-/**
- * The attachments that travel with a host: an Aura, Equipment or Fortification sits in its host's row, right behind
- * it, while the host is on the battlefield under the same controller. One attached to another seat's permanent or
- * to a player stays in its own controller's row, where its "On <host>" chip names the host.
- */
-function escorts(ids: readonly ObjectId[], objects: Objects): ReadonlyMap<ObjectId, ObjectId[]> {
-  const onBattlefield = new Set(ids)
-  const byHost = new Map<ObjectId, ObjectId[]>()
-  for (const id of ids) {
-    const object = objects[id]
-    const host = object?.attached_to === undefined ? undefined : objects[object.attached_to]
-    if (object === undefined || host === undefined || host.id === id) continue
-    if (host.controller !== object.controller || !onBattlefield.has(host.id)) continue
-    byHost.set(host.id, [...(byHost.get(host.id) ?? []), id])
-  }
-  return byHost
-}
-
 /** The battlefield by controller and row. Cached per view; a view is never changed, only replaced. */
 export function splitBattlefield(view: StateView, objects: Objects): ReadonlyMap<PlayerId, BattlefieldRows> {
   const cached = splits.get(view)
   if (cached !== undefined) return cached
   const bySeat = new Map<PlayerId, BattlefieldRows>()
-  const ids = view.battlefield.cards ?? NO_IDS
-  const byHost = escorts(ids, objects)
-  const escorted = new Set([...byHost.values()].flat())
-  const placed = new Set<ObjectId>()
-  const place = (id: ObjectId, rows: BattlefieldRows, row: RowKind): void => {
-    if (placed.has(id)) return
-    placed.add(id)
-    rows[row].push(id)
-    for (const attachment of byHost.get(id) ?? NO_IDS) place(attachment, rows, row)
-  }
-  // An attachment is placed with its host; one whose chain of hosts is a loop is placed on its own afterwards.
-  for (const pass of [false, true]) {
-    for (const id of ids) {
-      const object = objects[id]
-      if (object === undefined || (!pass && escorted.has(id))) continue
-      let rows = bySeat.get(object.controller)
-      if (rows === undefined) {
-        rows = { creatures: [], other: [], lands: [] }
-        bySeat.set(object.controller, rows)
-      }
-      place(id, rows, rowOf(object))
+  for (const id of view.battlefield.cards ?? NO_IDS) {
+    const object = objects[id]
+    if (object === undefined) continue
+    let rows = bySeat.get(object.controller)
+    if (rows === undefined) {
+      rows = { creatures: [], other: [], lands: [] }
+      bySeat.set(object.controller, rows)
     }
+    rows[rowOf(object)].push(id)
   }
   splits.set(view, bySeat)
   return bySeat
-}
-
-const ROW_KINDS: readonly RowKind[] = ['creatures', 'other', 'lands']
-
-/** The row of its controller's battlefield that holds a permanent: its own, or its host's while it travels with one. */
-export function rowHolding(view: StateView, objects: Objects, object: ObjectView): RowKind {
-  const rows = splitBattlefield(view, objects).get(object.controller)
-  const held = rows === undefined ? undefined : ROW_KINDS.find((row) => rows[row].includes(object.id))
-  return held ?? rowOf(object)
 }
 
 /** The ids in one row of a seat's battlefield; wrap in `useShallow`. */

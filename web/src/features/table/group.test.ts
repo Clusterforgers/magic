@@ -143,42 +143,6 @@ describe('what merges and what stays apart', () => {
       () => ({ attachments: [91, 90] }),
       true,
     ],
-    ['a host or none for an attached permanent', none, () => ({ attached_to: 90 }), false],
-    ['a player it is attached to', none, () => ({ attached_player: 1 }), false],
-    [
-      'another player it is attached to',
-      () => ({ attached_player: 0 }),
-      () => ({ attached_player: 1 }),
-      false,
-    ],
-    ['a transformed face or none', none, () => ({ face: 1 }), false],
-    ['the same face', () => ({ face: 1 }), () => ({ face: 1 }), true],
-    ['an explicit front face or none', none, () => ({ face: 0 }), true],
-    ['lying face down or not', none, () => ({ face_down: true }), false],
-    ['a copy or a plain one of the same name', none, () => ({ copy: {} }), false],
-    ['copies of different originals', () => ({ copy: { of: 5 } }), () => ({ copy: { of: 6 } }), false],
-    ['copies of the same original', () => ({ copy: { of: 5 } }), () => ({ copy: { of: 5 } }), true],
-    [
-      'a copy of a hidden original or of a visible one',
-      () => ({ copy: {} }),
-      () => ({ copy: { of: 5 } }),
-      false,
-    ],
-    ['a merged stack or none', none, () => ({ merged: [{ id: 80, name: 'Gemrazer' }] }), false],
-    [
-      'different merged cards',
-      () => ({ merged: [{ id: 80, name: 'Gemrazer' }] }),
-      () => ({ merged: [{ id: 81, name: 'Gemrazer' }] }),
-      false,
-    ],
-    ['being prepared', none, () => ({ permanent: state({ prepared: true }) }), false],
-    ['a level', none, () => ({ permanent: state({ level: 1 }) }), false],
-    [
-      'different levels',
-      () => ({ permanent: state({ level: 1 }) }),
-      () => ({ permanent: state({ level: 2 }) }),
-      false,
-    ],
   ]
 
   describe.each(BASES)('%s', (_, make, options) => {

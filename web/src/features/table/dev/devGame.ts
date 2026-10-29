@@ -15,6 +15,7 @@ import type { RealIds } from './realCards'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
+import { STATES_BASE_PERMANENTS, withStates } from './states'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -149,6 +150,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   step?: Step
   /** House rules that differ from the format's own, from the start; none when left out. */
   rules?: true
+  /** A permanent for every state a card shows joins the table (`dev/states.ts`), on a table with fewer permanents. */
+  states?: true
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
   /** The stops the viewer holds from the start; none when left out. */
@@ -167,7 +170,9 @@ const DEV_TABLE_RULES: HouseRules = {
 
 /** A game context holding a fresh fixture table. */
 export function fixtureGame(options: FixtureGameOptions): GameContextValue {
-  const plain = buildFixture(options.turn === 'you' ? { ...options, active: options.viewer ?? 0 } : options)
+  const sized = options.states === true ? { ...options, permanents: STATES_BASE_PERMANENTS } : options
+  const laid = buildFixture(sized.turn === 'you' ? { ...sized, active: sized.viewer ?? 0 } : sized)
+  const plain = options.states === true ? withStates(laid) : laid
   const built = options.real === undefined ? plain : withRealCards(plain, options.real, options.viewer ?? 0)
   const store = createPlayStore()
   const name = options.prompt ?? ''

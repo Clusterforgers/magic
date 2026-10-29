@@ -96,6 +96,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Views: `ObjectView.identity` names the oracle id (and the chosen printing) of a card the viewer identifies, `ObjectView.activated` words its activated abilities with the addresses `PriorityOptions.abilities` offers, `EventBatch.shown` names a card revealed and hidden in one batch, `TableView.spectator` marks a spectator's view and `PlayerView.citys_blessing` the city's blessing.
 - Card images: the server serves the picture of a card, printing or token from a disk cache that fills from the Scryfall CDN under the politeness rules, and warms the pictures of a starting game in the background (`docs/server.md`, Pictures).
 - Card images in the web: table cards, hand, stack and preview draw the picture with the state over it, the builder through the same endpoints, and "Card images" in the table menu turns them off (`docs/web.md`, Card images).
+- Table states: small corner marks over a card's picture for damage (warning at lethal), counters by kind, attachments, summoning sickness (icon and dim), face down, back face, copy, merge, prepared and level; the real numbers of a token and a face-down creature; a token without a picture drawn as a card; `/dev/table?states=1` shows them all at once (`docs/web.md`, Card images).
 - Commander at the table: commander cards and tax chips in the pods, commander damage per source with the lethal amount, casting from the command zone in the hand dock with the tax, the return choice and commander damage in the log (`docs/web.md`).
 
 ## M3 Card system
@@ -158,7 +159,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
-- [~] (ts1) (table-states) Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
+- [ ] (ts2) An Aura, Equipment or Fortification is drawn tucked under or beside its host and moves with it: the host's row holds its attachments right behind it and the fit counts the overlap (the marks and chips exist; the layout is the zones agent's)
+- [ ] (ts3) `groupPermanents` keeps apart permanents that differ in copy (and of what), shown face, face down, merge, prepared, level and the player an Aura enchants, so a copy never hides inside a stack of its original's tokens
+- [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
+- [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
+- [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [~] (ma1) (manual-menu) Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes

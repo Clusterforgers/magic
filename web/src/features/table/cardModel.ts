@@ -225,6 +225,37 @@ export function counterLabels(object: ObjectView): string[] {
     .map(([kind, count]) => (count === 1 ? counterName(kind) : `${counterName(kind)} ×${count}`))
 }
 
+/** A counter as a small chip on a picture: the kind's symbol and how many, tinted for the kinds that move power and toughness. */
+export interface CounterChip {
+  key: string
+  /** The kind's symbol: "+1/+1", "−1/−1", a skull for poison, a bolt for charge, else its name. */
+  symbol: string
+  count: number
+  tone: 'up' | 'down' | 'plain'
+}
+
+const COUNTER_SYMBOL: Partial<Record<string, string>> = {
+  '+1/+1': '+1/+1',
+  '-1/-1': '−1/−1',
+  poison: '☠',
+  charge: '⚡',
+}
+
+/** The counters of a permanent as chips, loyalty left to the stat box. */
+export function counterChips(object: ObjectView): CounterChip[] {
+  return countersOf(object)
+    .filter(([kind]) => kind !== 'loyalty')
+    .map(([kind, count]) => {
+      const name = counterName(kind)
+      return {
+        key: name,
+        symbol: COUNTER_SYMBOL[name] ?? name,
+        count,
+        tone: kind === '+1/+1' ? 'up' : kind === '-1/-1' ? 'down' : 'plain',
+      }
+    })
+}
+
 /** The same counters in words, loyalty included, for a screen reader: "2 +1/+1 counters", "loyalty 3". */
 export function counterWords(object: ObjectView): string[] {
   return countersOf(object).map(([kind, count]) =>
@@ -267,10 +298,14 @@ export function abilityWords(ability: AbilityDef): string {
 /** How a state chip reads: plain, or a warning. */
 export type ChipTone = 'plain' | 'danger'
 
+/** What a state chip is about: a picture gives each kind its own place and size. */
+export type ChipKind = 'tapped' | 'sick' | 'damage' | 'role' | 'identity'
+
 /** One short state of a permanent, as a chip on its face. */
 export interface StatusChip {
   label: string
   tone: ChipTone
+  kind: ChipKind
 }
 
 /** Whether the damage marked on a permanent is as much as its toughness, which is above zero: it will be destroyed. */
@@ -290,22 +325,24 @@ const mergedCount = (object: ObjectView): number => object.merged?.length ?? 1
 /** The chips of a permanent's state, as drawn on the card face. */
 export function statusChips(object: ObjectView, role: CombatRole | null): StatusChip[] {
   const chips: StatusChip[] = []
-  const add = (label: string, tone: ChipTone = 'plain'): void => {
-    chips.push({ label, tone })
+  const add = (kind: ChipKind, label: string, tone: ChipTone = 'plain'): void => {
+    chips.push({ label, tone, kind })
   }
   const state = object.permanent
-  if (state?.tapped === true) add('Tapped')
-  if (state?.summoning_sick === true) add('Sick')
-  if (state !== null && state.damage > 0) add(`${state.damage} dmg`, isLethal(object) ? 'danger' : 'plain')
-  if (role === 'attacking') add('Attacking')
-  if (role === 'blocked') add('Blocked')
-  if (role === 'blocking') add('Blocking')
-  if (object.face_down === true) add('Face down')
-  if (showsBackFace(object)) add('Back face')
-  if (object.copy !== undefined) add('Copy')
-  if (mergedCount(object) > 1) add(`Merged ×${mergedCount(object)}`)
-  if (state?.prepared === true) add('Prepared')
-  if (state?.level !== undefined) add(`Level ${state.level}`)
+  if (state?.tapped === true) add('tapped', 'Tapped')
+  if (state?.summoning_sick === true) add('sick', 'Sick')
+  if (state !== null && state.damage > 0) {
+    add('damage', `${state.damage} dmg`, isLethal(object) ? 'danger' : 'plain')
+  }
+  if (role === 'attacking') add('role', 'Attacking')
+  if (role === 'blocked') add('role', 'Blocked')
+  if (role === 'blocking') add('role', 'Blocking')
+  if (object.face_down === true) add('identity', 'Face down')
+  if (showsBackFace(object)) add('identity', 'Back face')
+  if (object.copy !== undefined) add('identity', 'Copy')
+  if (mergedCount(object) > 1) add('identity', `Merged ×${mergedCount(object)}`)
+  if (state?.prepared === true) add('identity', 'Prepared')
+  if (state?.level !== undefined) add('identity', `Level ${state.level}`)
   return chips
 }
 

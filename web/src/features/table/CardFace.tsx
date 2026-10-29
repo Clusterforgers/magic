@@ -13,7 +13,7 @@ import {
   statusChips,
   typeLine,
 } from './cardModel'
-import type { CombatRole, Links } from './cardModel'
+import type { CombatRole, Frame, Links } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
@@ -48,6 +48,17 @@ function nameLinesOf(turned: boolean, full: boolean, size: CardSize): string {
   return full ? 'line-clamp-2' : 'line-clamp-3'
 }
 
+// A token's frame keeps its colour on the border and takes the back's fill.
+const TOKEN_BORDER: Record<Frame, string> = {
+  white: 'border-border-strong',
+  blue: 'border-mana-blue',
+  black: 'border-mana-black',
+  red: 'border-mana-red',
+  green: 'border-mana-green',
+  gold: 'border-mana-gold',
+  colorless: 'border-mana-colorless',
+}
+
 // The edges stay inside the 6 px between boxes of a line and the 4 px between lines.
 const PILE = 'shadow-[2px_2px_0_0_var(--color-border-strong),4px_4px_0_0_var(--color-border)]'
 
@@ -69,8 +80,11 @@ export function CardFace(props: CardFaceProps) {
         box={box}
         turned={turned}
         label={object.face_down === true ? 'Face-down card' : 'Hidden card'}
-        faceDown={object.face_down === true}
+        object={object}
+        role={props.role}
         size={size}
+        note={props.note}
+        links={props.links}
       />
     )
   const source = imageSourceOf(object)
@@ -121,6 +135,8 @@ export function TextFace({
   const loyalty = loyaltyOf(object)
   const modified = statBadge(object, usePrinted(object), loyalty)?.modified ?? null
   const nameLines = nameLinesOf(turned, full, size)
+  // A token whose picture is missing still looks like a card: the card back's colours, its name, "Token" and its type.
+  const token = object.kind === 'Token'
   return (
     <span
       data-slot="card-face"
@@ -131,7 +147,7 @@ export function TextFace({
         stacked ? PILE : 'shadow-sm',
         turned ? 'h-[calc(var(--card-w)*5/7)]' : 'h-(--card-h)',
         fit ? null : classes.vars,
-        FRAME[frame],
+        token ? cn(TOKEN_BORDER[frame], 'bg-card-back text-white') : FRAME[frame],
       )}
     >
       <span className={cn(classes.name, 'px-1 pt-0.5 leading-tight font-semibold')}>
@@ -148,7 +164,10 @@ export function TextFace({
       {/* The place for card art: fill this slot when ObjectView carries an image id. */}
       <span
         data-slot="card-art"
-        className="mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm bg-foreground/5 p-0.5"
+        className={cn(
+          'mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm p-0.5',
+          token ? 'bg-black/25' : 'bg-foreground/5',
+        )}
       >
         {chips.map(({ label, tone }) => (
           <span
@@ -213,8 +232,15 @@ export function TextFace({
         )}
       </span>
       {full ? (
-        <span className={cn(classes.text, 'line-clamp-2 px-1 leading-tight text-muted-foreground')}>
-          {typeLine(object)}
+        <span
+          data-slot="card-type-line"
+          className={cn(
+            classes.text,
+            'line-clamp-2 px-1 leading-tight',
+            token ? 'text-white/85' : 'text-muted-foreground',
+          )}
+        >
+          {token ? `Token ${typeLine(object)}` : typeLine(object)}
         </span>
       ) : null}
       {full && keywords !== null ? (
