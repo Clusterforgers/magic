@@ -239,6 +239,7 @@ const RUNS: &[&str] = &[
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
+    "Rule.BlockLimitEach",
     "Rule.MustBlock",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
@@ -1000,6 +1001,7 @@ mod tests {
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
     #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]
+    #[case::w14a_block_limit_each("Rule.BlockLimitEach", true)]
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]

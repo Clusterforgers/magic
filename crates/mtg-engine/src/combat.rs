@@ -465,7 +465,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             *able.entry(*attacker).or_default() += 1;
         }
     }
-    let most = block_limit(state);
+    let most = block_limit(state, player);
     let together: BTreeSet<ObjectId> = blockable
         .iter()
         .copied()

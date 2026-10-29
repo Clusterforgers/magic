@@ -2829,6 +2829,12 @@ impl Walker<'_> {
                     w.at("at", |w| w.problem("a limit on the attacks protects you or this planeswalker"));
                 }
             }),
+            GameRule::BlockLimitEach { most, who } => self.at(tag, |w| {
+                if *most == 0 {
+                    w.problem("a limit on a declaration lets at least one creature in");
+                }
+                w.at("who", |w| w.reference(who, Kind::Player));
+            }),
             GameRule::AttackLimit(most) | GameRule::BlockLimit(most) => {
                 if *most == 0 {
                     self.at(tag, |w| w.problem("a limit on a declaration lets at least one creature in"));

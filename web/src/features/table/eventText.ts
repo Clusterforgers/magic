@@ -196,7 +196,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     const { left } = rule.PreventDamage
     what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`
   } else if ('Regenerate' in rule) what = `${n.card(rule.Regenerate.id)} gets a regeneration shield`
-  else what = 'Triggered abilities trigger an additional time'
+  else if ('BlockLimitEach' in rule) {
+    const { most, who } = rule.BlockLimitEach
+    what = `${seats(who)} can't block with more than ${most} ${most === 1 ? 'creature' : 'creatures'}`
+  } else what = 'Triggered abilities trigger an additional time'
   return `${what}${durationWords(duration, source, n)}`
 }
 
