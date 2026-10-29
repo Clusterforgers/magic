@@ -324,8 +324,8 @@ The server is settled first, then the web is built once against the final types.
 
 ## M7 Product
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
-- [ ] (B3) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
-- [ ] Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
+- [~] (B3) (w1-precons-web) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
+- [~] (w1a) (w1-precons-web) Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
 - [ ] House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
 - [ ] Precons as a third kind of deck in the lobby picker (`docs/server.md`, `docs/deck-check.md`)
 - [ ] (hr5c) The lobby picker shows each deck's verdict at the table before joining, through `POST /api/decks/check` (`docs/server.md`, Precons)
