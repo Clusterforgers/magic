@@ -36,6 +36,8 @@ mod pg_failed_games;
 mod pg_game;
 mod pg_game_close;
 mod pg_house_rules;
+mod pg_image_warm;
+mod pg_images;
 mod pg_join_codes;
 mod pg_join_http;
 mod pg_lobby;

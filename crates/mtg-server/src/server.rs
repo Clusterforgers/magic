@@ -25,6 +25,7 @@ use crate::auth::{self, Auth};
 use crate::card_api;
 use crate::cards::CardSource;
 use crate::config::ServerConfig;
+use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
 use crate::{api, decks, lobbies, my_games, precon_api, ws};
@@ -115,6 +116,11 @@ impl Server {
         pool: PgPool,
         cards: CardSource,
     ) -> Result<Server, RecordError> {
+        let cards = if cards.images().is_some() {
+            cards
+        } else {
+            cards.with_images(Images::new(&config.images))
+        };
         let auth = Auth::new(&config.auth, Some(pool.clone()));
         let registry = Registry::with_card_source(&config, pool, cards.clone());
         let resumed = registry.resume().await?;
@@ -262,6 +268,15 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/demo-decks", get(api::decks))
         .route("/api/cards", get(card_api::search))
         .route("/api/cards/{oracle_id}", get(card_api::detail))
+        .route(
+            "/api/images/oracle/{oracle_id}/{face}/{size}",
+            get(images::by_oracle),
+        )
+        .route(
+            "/api/images/printing/{printing_id}/{face}/{size}",
+            get(images::by_printing),
+        )
+        .route("/api/images/token/{face}/{size}", get(images::by_token))
         .route("/api/decks", get(decks::list).post(decks::create))
         .route("/api/decks/import", post(decks::import))
         .route("/api/decks/check", post(decks::check))
@@ -310,8 +325,9 @@ pub(crate) fn router(state: AppState) -> Router {
             api::same_site_only,
         ))
         .layer(cors)
-        // Responses carry tokens and live state: never cache them, never sniff them.
-        .layer(SetResponseHeaderLayer::overriding(
+        // Responses carry tokens and live state: never cache them (the pictures say otherwise for
+        // themselves), never sniff them.
+        .layer(SetResponseHeaderLayer::if_not_present(
             CACHE_CONTROL,
             HeaderValue::from_static("no-store"),
         ))

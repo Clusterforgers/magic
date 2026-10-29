@@ -1,47 +1,29 @@
-/** Pure sizing of the hand dock: the card width its height allows, how far the cards overlap to fit its width, and how far a card rises. */
+/** Pure sizing of the hand dock: the card width its height allows, the rows a large hand wraps into, and how far a card rises. */
 import { CARD_ASPECT, FIT_LIMITS } from './fit'
-
-/** When the hand overlaps, at least this share of every card (but the last) still shows. */
-export const HAND_MIN_SHOWN = 0.62
 
 /** A hovered or focused card rises by this share of its height. */
 export const HAND_LIFT = 0.4
 
-/** Under a coarse pointer every card keeps this much of its width showing: a 44 px target. */
-export const HAND_TOUCH_PX = 44
+/** The narrowest card of a hand in px: its name (up to three lines of 9 letters) and its cost still read. */
+export const HAND_FLOOR_PX = 68
+
+/** The space between neighbours of a row in px. */
+export const HAND_GAP_PX = 4
+
+/** The most rows a hand wraps into. */
+export const HAND_MAX_ROWS = 3
+
+/**
+ * The top of a card that always shows, in px: two lines of name and the cost row. A row that another row lies over
+ * shows this much, so the name and the cost of every card read without a hover; it is also over the 44 px target of a
+ * touch screen.
+ */
+export const HAND_HEAD_PX = 54
 
 /** The widest card the hand dock of this height (px) holds in one line: its height over the card's shape, between the fit limits. */
 export function handCardWidth(height: number): number {
   const fits = Number.isFinite(height) ? Math.floor(height / CARD_ASPECT) : FIT_LIMITS.minWidth
   return Math.max(FIT_LIMITS.minWidth, Math.min(FIT_LIMITS.maxWidth, fits))
-}
-
-/** How the cards of a hand sit in a line. */
-export interface HandFan {
-  /** The space between neighbours in px; negative when they overlap. */
-  gap: number
-  /** True when even the most overlap leaves the line wider than the dock, so it scrolls sideways. */
-  scrolls: boolean
-}
-
-/**
- * The gap between cards that fits `count` cards of `cardWidth` in a dock `width` wide: the normal gap while they fit,
- * then an overlap just big enough, and past `HAND_MIN_SHOWN` of each card (or `strip` px, if that is more) a line
- * that scrolls.
- */
-export function handFan(
-  width: number,
-  count: number,
-  cardWidth: number,
-  gap: number = FIT_LIMITS.gap,
-  strip = 0,
-): HandFan {
-  if (count <= 1) return { gap, scrolls: false }
-  const step = Math.floor((Math.max(0, width) - cardWidth) / (count - 1))
-  if (step >= cardWidth + gap) return { gap, scrolls: false }
-  const least = Math.min(cardWidth, Math.max(Math.ceil(cardWidth * HAND_MIN_SHOWN), strip))
-  if (step >= least) return { gap: step - cardWidth, scrolls: false }
-  return { gap: least - cardWidth, scrolls: true }
 }
 
 /** What `handLayout` needs. */
@@ -51,44 +33,62 @@ export interface HandInput {
   /** The height the cards may take in px, less the padding. */
   height: number
   count: number
-  /** A touch screen: every card keeps a strip of `HAND_TOUCH_PX` showing. */
+  /** A touch screen: a hand that does not fit keeps the full card size and scrolls, since a thumb needs the room. */
   coarse?: boolean
 }
 
-/** The size, spacing and lift of the cards of a hand. */
+/** The size, rows and lift of the cards of a hand. */
 export interface HandLayout {
   /** One card's box in px, 5:7. */
   box: { width: number; height: number }
-  /** The space between neighbours in px, negative while they overlap. */
+  /** The space between neighbours of a row in px. */
   gap: number
-  /** The line is wider than the dock even at the most overlap, so it scrolls sideways. */
+  /** The rows the hand wraps into; the cards are in reading order, row by row. */
+  rows: number
+  /** The cards of the first (longest) row. */
+  perRow: number
+  /** How far a row lies over the row before it, in px: the card's height less `HAND_HEAD_PX`; 0 for one row. */
+  overlap: number
+  /** Even a single row of the smallest card is wider than the dock, so it scrolls sideways. */
   scrolls: boolean
   /** How far a hovered or focused card rises, in px: `HAND_LIFT` of its height. */
   lift: number
 }
 
 /**
- * The cards as tall as the dock allows, side by side while they fit and overlapping by just enough before they do not.
- * A hand that would still scroll gets smaller cards first, down to the floor of the fit engine; a touch screen keeps
- * its card size and scrolls instead, since its strips are what a thumb needs.
+ * The cards as tall as the dock allows in one row, none under another. A hand that does not fit shrinks the cards down
+ * to `HAND_FLOOR_PX` first, then wraps into two or three balanced rows, each lying over the one before it so that its
+ * top (name and cost) shows, and scrolls only when even that does not hold it.
  */
 export function handLayout({ width, height, count, coarse = false }: HandInput): HandLayout {
-  const strip = coarse ? HAND_TOUCH_PX : 0
   const widest = handCardWidth(height)
-  let cardWidth = widest
-  let fan = handFan(width, count, cardWidth, FIT_LIMITS.gap, strip)
-  if (fan.scrolls && !coarse) {
-    for (let next = widest - FIT_LIMITS.step; ; next -= FIT_LIMITS.step) {
-      cardWidth = Math.max(next, FIT_LIMITS.minWidth)
-      fan = handFan(width, count, cardWidth)
-      if (!fan.scrolls || cardWidth === FIT_LIMITS.minWidth) break
+  const floor = Math.min(widest, HAND_FLOOR_PX)
+  const room = Math.max(0, width)
+  const cards = Math.max(1, count)
+  const heightOf = (cardWidth: number) => Math.round(cardWidth * CARD_ASPECT)
+  const make = (cardWidth: number, rows: number, perRow: number, scrolls: boolean): HandLayout => {
+    const boxHeight = heightOf(cardWidth)
+    return {
+      box: { width: cardWidth, height: boxHeight },
+      gap: HAND_GAP_PX,
+      rows,
+      perRow,
+      overlap: rows > 1 ? Math.max(0, boxHeight - HAND_HEAD_PX) : 0,
+      scrolls,
+      lift: Math.round(boxHeight * HAND_LIFT),
     }
   }
-  const boxHeight = Math.round(cardWidth * CARD_ASPECT)
-  return {
-    box: { width: cardWidth, height: boxHeight },
-    gap: fan.gap,
-    scrolls: fan.scrolls,
-    lift: Math.round(boxHeight * HAND_LIFT),
+  for (let rows = 1; rows <= HAND_MAX_ROWS && rows <= cards; rows += 1) {
+    const perRow = Math.ceil(cards / rows)
+    for (let cardWidth = widest; ; cardWidth = Math.max(floor, cardWidth - FIT_LIMITS.step)) {
+      const boxHeight = heightOf(cardWidth)
+      const stack = boxHeight + (rows - 1) * Math.min(boxHeight, HAND_HEAD_PX)
+      const holds = rows === 1 || stack <= height
+      if (holds && perRow * cardWidth + (perRow - 1) * HAND_GAP_PX <= room) {
+        return make(cardWidth, rows, perRow, false)
+      }
+      if (cardWidth === floor) break
+    }
   }
+  return make(coarse ? widest : floor, 1, cards, true)
 }

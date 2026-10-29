@@ -1,3 +1,5 @@
+import { setImageChoice, useImageChoice } from '@/features/cards/imageSetting'
+import type { ImageChoice } from '@/features/cards/imageSetting'
 import { MenuIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
@@ -12,6 +14,11 @@ const THEMES: ReadonlyArray<{ value: ThemeChoice; label: string }> = [
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
   { value: 'system', label: 'System' },
+]
+
+const IMAGE_CHOICES: ReadonlyArray<{ value: ImageChoice; label: string }> = [
+  { value: 'on', label: 'On' },
+  { value: 'text', label: 'Text only' },
 ]
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -59,6 +66,7 @@ export function TableMenu({
 }: TableMenuProps) {
   const { choice, setChoice } = useTheme()
   const concede = usePlay(canConcede)
+  const images = useImageChoice()
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger
@@ -99,6 +107,21 @@ export function TableMenu({
                 variant={choice === value ? 'default' : 'ghost'}
                 aria-pressed={choice === value}
                 onClick={() => setChoice(parseChoice(value))}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+        </Section>
+        <Section title="Card images">
+          <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
+            {IMAGE_CHOICES.map(({ value, label }) => (
+              <Button
+                key={value}
+                size="sm"
+                variant={images === value ? 'default' : 'ghost'}
+                aria-pressed={images === value}
+                onClick={() => setImageChoice(value)}
               >
                 {label}
               </Button>

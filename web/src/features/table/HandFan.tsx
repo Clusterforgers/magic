@@ -3,7 +3,9 @@ import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { Card } from './Card'
 import type { CardSize } from './cardSize'
+import { HAND_HEAD_PX } from './handFit'
 import type { HandLayout } from './handFit'
+import { CardWidthContext } from './ImageFace'
 import { useRoving } from './useRoving'
 
 interface HandFanProps {
@@ -13,19 +15,24 @@ interface HandFanProps {
   label: string
   /** Which parts of a face are drawn; the box too, unless `layout` fits it. */
   size: CardSize
-  /** The box, gap and lift from the dock's room; without it the cards take their usual size, side by side. */
+  /** The face draws the mana cost even when `size` is compact. */
+  cost?: boolean
+  /** The box, gap, rows and lift from the dock's room; without it the cards take their usual size, side by side. */
   layout?: HandLayout | undefined
 }
 
 /**
- * The cards of the hand as a fan: neighbours overlap, later ones over earlier, and a hovered or keyboard-focused
- * card comes to the front and rises by its lift (a fraction of its height, `HAND_LIFT`). The list has one tab stop and
- * the arrow keys, Home and End move along it. It is as tall as the cards plus the lift and stands on the bottom of the
- * dock: the part above the cards takes no pointer, so the table under it stays clickable, and a fan that scrolls
- * keeps the lifted card inside its own box.
+ * The cards of the hand: one row while they fit, else two or three, each row lying over the one before it so that its
+ * top (name and cost) shows. A hovered or keyboard-focused card comes to the front and a card of a row another row
+ * lies over rises by its lift (a fraction of its height, `HAND_LIFT`, at least what shows it whole). The list has one
+ * tab stop and the arrow keys, Home and End move along it in reading order. It is as tall as the rows plus the lift and
+ * stands on the bottom of the dock: the part above the cards takes no pointer, so the table under it stays clickable,
+ * and a line that scrolls keeps the lifted card inside its own box.
  */
-export function HandFan({ ids, label, size, layout }: HandFanProps) {
+export function HandFan({ ids, label, size, cost = false, layout }: HandFanProps) {
   const roving = useRoving(ids)
+  const rows = layout?.rows ?? 1
+  const perRow = layout?.perRow ?? ids.length
   const style =
     layout === undefined
       ? undefined
@@ -33,38 +40,60 @@ export function HandFan({ ids, label, size, layout }: HandFanProps) {
           '--card-w': `${layout.box.width}px`,
           '--card-h': `${layout.box.height}px`,
           '--card-gap': `${layout.gap}px`,
-          '--hand-lift': `${layout.lift}px`,
+          '--hand-lift': `${rows > 1 ? Math.max(layout.lift, layout.overlap) : layout.lift}px`,
+          ...(rows > 1 ? { width: `${perRow * layout.box.width + (perRow - 1) * layout.gap + 8}px` } : null),
         } as CSSProperties)
   return (
-    <ul
-      role="list"
-      aria-label={label}
-      data-slot="hand-fan"
-      data-scrolls={layout?.scrolls || undefined}
-      onFocus={roving.onFocus}
-      onKeyDown={roving.onKeyDown}
-      style={style}
-      className={cn(
-        'pointer-events-none flex max-w-full items-end overflow-x-auto overflow-y-hidden px-1 pb-1 [scrollbar-width:thin]',
-        layout === undefined ? 'gap-1.5 pt-1' : 'pt-(--hand-lift)',
-      )}
-    >
-      {ids.map((id) => (
-        <li
-          key={id}
-          data-slot="hand-slot"
-          // The slot stays put under the pointer while its card rises, so the hover never lets go of it.
-          className={cn(
-            'group/slot pointer-events-auto relative flex hover:z-10 focus-within:z-10',
-            layout !== undefined && '[&:not(:first-child)]:ml-(--card-gap)',
-          )}
-        >
-          {/* Faces are tinted and see-through; the backing keeps an overlapped neighbour from showing through. */}
-          <div className="rounded-md bg-table motion-safe:transition-transform motion-safe:duration-fast motion-safe:ease-out group-hover/slot:-translate-y-[40%] group-has-focus-visible/slot:-translate-y-[40%] pointer-coarse:group-focus-within/slot:-translate-y-[40%]">
-            <Card id={id} size={size} fit={layout !== undefined} tabbable={id === roving.current} />
-          </div>
-        </li>
-      ))}
-    </ul>
+    <CardWidthContext.Provider value={layout?.box.width ?? null}>
+      <ul
+        role="list"
+        aria-label={label}
+        data-slot="hand-fan"
+        data-scrolls={layout?.scrolls || undefined}
+        data-rows={rows}
+        onFocus={roving.onFocus}
+        onKeyDown={roving.onKeyDown}
+        style={style}
+        className={cn(
+          'pointer-events-none flex max-w-full items-end overflow-x-auto overflow-y-hidden px-1 pb-1 [scrollbar-width:thin]',
+          layout === undefined ? 'gap-1.5 pt-1' : 'gap-x-(--card-gap) pt-(--hand-lift)',
+          rows > 1 && 'flex-wrap content-start justify-center',
+          layout?.scrolls === true && 'pb-3',
+        )}
+      >
+        {ids.map((id, index) => {
+          // A row another row lies over keeps only its top as its slot, so the slots of the row below start right under it.
+          const back = rows > 1 && Math.floor(index / perRow) < rows - 1
+          return (
+            <li
+              key={id}
+              data-slot="hand-slot"
+              data-back={back || undefined}
+              style={back ? { height: HAND_HEAD_PX } : undefined}
+              // The slot stays put under the pointer while its card rises, so the hover never lets go of it.
+              className="group/slot pointer-events-auto relative flex items-start hover:z-10 focus-within:z-10"
+            >
+              {/* Faces are tinted and see-through; the backing keeps an overlapped neighbour from showing through. */}
+              <div
+                className={cn(
+                  'rounded-md bg-table motion-safe:transition-transform motion-safe:duration-fast motion-safe:ease-out',
+                  // The row nothing lies over is whole already; a lift there would only cover the row above.
+                  (rows === 1 || back) &&
+                    'group-hover/slot:-translate-y-(--hand-lift) group-has-focus-visible/slot:-translate-y-(--hand-lift) pointer-coarse:group-focus-within/slot:-translate-y-(--hand-lift)',
+                )}
+              >
+                <Card
+                  id={id}
+                  size={size}
+                  cost={cost}
+                  fit={layout !== undefined}
+                  tabbable={id === roving.current}
+                />
+              </div>
+            </li>
+          )
+        })}
+      </ul>
+    </CardWidthContext.Provider>
   )
 }

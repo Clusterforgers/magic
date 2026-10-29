@@ -40,8 +40,12 @@ export interface DevSearch {
   stops?: string
   /** The Full Control mode the viewer already holds, `next` or `held`; off when missing. */
   fc?: 'next' | 'held'
+  /** Cards in the viewer's hand (0 to 24), to look at a large hand; 7 when missing. */
+  hand?: number
   /** The step the turn is in, such as `main2` or `declareattackers`, to look at the theme of its phase; the fixture's own when missing. */
   step?: Step
+  /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
+  cards?: 'real'
 }
 
 const whole = (value: unknown): number | undefined =>
@@ -49,7 +53,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&fx=&slow=&preview=&stops=&fc=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -70,7 +74,15 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     stops:
       typeof search.stops === 'string' && parseStopSpec(search.stops).length > 0 ? search.stops : undefined,
     fc: search.fc === 'next' || search.fc === 'held' ? search.fc : undefined,
+    cards: search.cards === 'real' ? 'real' : undefined,
     step: typeof search.step === 'string' ? STEP_BY_NAME.get(search.step.toLowerCase()) : undefined,
+    hand:
+      typeof search.hand === 'number' &&
+      Number.isInteger(search.hand) &&
+      search.hand >= 0 &&
+      search.hand <= 24
+        ? search.hand
+        : undefined,
     preview:
       typeof search.preview === 'number' &&
       Number.isInteger(search.preview) &&

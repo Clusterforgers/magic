@@ -1,3 +1,6 @@
+import { useImageChoice } from '@/features/cards/imageSetting'
+import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
+import type { ImageSize } from '@/features/cards/images'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import {
@@ -13,6 +16,7 @@ import {
 import type { CombatRole, Links } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
+import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
 import { ManaPips } from './ManaPips'
 import type { CardNote } from './prompt/marks'
 
@@ -22,6 +26,8 @@ interface CardFaceProps {
   size: CardSize
   /** The box comes from an enclosing row (`Card` `fit`); `size` then only picks which parts of the face are drawn. */
   fit?: boolean
+  /** A compact face also draws the mana cost. */
+  cost?: boolean
   /** Keep a tapped card upright, as the preview does: it says "tapped" in words instead. */
   upright?: boolean
   /** What the active prompt writes on the card, such as "At Ana"; drawn after the status labels. */
@@ -30,6 +36,8 @@ interface CardFaceProps {
   stacked?: boolean
   /** What it is attached to and what is attached to it, by name: a cue beside the counters. */
   links?: Links | undefined
+  /** The picture size to ask for; the one the drawn width needs when left out. */
+  imageSize?: ImageSize
 }
 
 /** The lines of name a face can spare: a face on its side is low, and a compact one has no cost or type line. */
@@ -42,16 +50,57 @@ function nameLinesOf(turned: boolean, full: boolean, size: CardSize): string {
 const PILE = 'shadow-[2px_2px_0_0_var(--color-border-strong),4px_4px_0_0_var(--color-border)]'
 
 /**
- * What a card looks like: name, cost, a place for art, type line and power/toughness, in its colour. Plain
+ * A card of the table: its picture with the state over it (`ImageFace`), the neutral back for a card the viewer may
+ * not see, or the text face when pictures are off ("Card images": Text only) or the card has no picture source. The
+ * text face stays under a picture while it loads and when it is missing.
+ */
+export function CardFace(props: CardFaceProps) {
+  const { object, size, fit = false, upright = false, stacked = false } = props
+  const choice = useImageChoice()
+  const width = useDrawnWidth(size, fit)
+  if (choice === 'text') return <TextFace {...props} />
+  const turned = object.permanent?.tapped === true && !upright
+  const box = fit ? null : SIZE[size].vars
+  if (showsBack(object))
+    return (
+      <BackFace
+        box={box}
+        turned={turned}
+        label={object.face_down === true ? 'Face-down card' : 'Hidden card'}
+      />
+    )
+  const source = imageSourceOf(object)
+  if (source === null) return <TextFace {...props} />
+  return (
+    <ImageFace
+      source={source}
+      box={box}
+      turned={turned}
+      stacked={stacked}
+      imageSize={props.imageSize ?? imageSizeFor(width)}
+      object={object}
+      role={props.role}
+      size={size}
+      note={props.note}
+      links={props.links}
+    >
+      <TextFace {...props} stacked={false} />
+    </ImageFace>
+  )
+}
+
+/**
+ * What a card looks like as text: name, cost, a place for art, type line and power/toughness, in its colour. Plain
  * `span`s so it can sit inside a button. A tapped card lies on its side inside the box of an upright one: a landscape
  * face as wide as the box and five sevenths as high, its text upright and as large as ever, plus the word "Tapped"
  * (never colour alone). A row therefore counts one box for it, tapped or not.
  */
-export function CardFace({
+export function TextFace({
   object,
   role,
   size,
   fit = false,
+  cost = false,
   upright = false,
   note,
   stacked = false,
@@ -80,10 +129,10 @@ export function CardFace({
         FRAME[frame],
       )}
     >
-      <span className={cn('px-1 pt-0.5 leading-tight font-semibold', classes.name)}>
+      <span className={cn(classes.name, 'px-1 pt-0.5 leading-tight font-semibold')}>
         <span className={cn('block break-words hyphens-auto', nameLines)}>{object.name}</span>
       </span>
-      {full && object.mana_cost !== null ? (
+      {(full || (cost && !turned)) && object.mana_cost !== null ? (
         <ManaPips
           pips={costPips(object.mana_cost)}
           sizeClass={classes.pip}
@@ -156,12 +205,12 @@ export function CardFace({
         )}
       </span>
       {full ? (
-        <span className={cn('line-clamp-2 px-1 leading-tight text-muted-foreground', classes.text)}>
+        <span className={cn(classes.text, 'line-clamp-2 px-1 leading-tight text-muted-foreground')}>
           {typeLine(object)}
         </span>
       ) : null}
       {full && keywords !== null ? (
-        <span data-slot="card-keywords" className={cn('line-clamp-2 px-1 leading-tight', classes.text)}>
+        <span data-slot="card-keywords" className={cn(classes.text, 'line-clamp-2 px-1 leading-tight')}>
           {keywords}
         </span>
       ) : null}
@@ -171,8 +220,8 @@ export function CardFace({
         <span
           data-slot={pt === null ? 'card-loyalty' : undefined}
           className={cn(
-            'self-end rounded-tl-md bg-foreground px-1.5 leading-snug font-bold text-background tabular-nums',
             classes.name,
+            'self-end rounded-tl-md bg-foreground px-1.5 leading-snug font-bold text-background tabular-nums',
           )}
         >
           {pt ?? loyalty}

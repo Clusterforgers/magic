@@ -10,6 +10,8 @@ import { indexById } from '@/play/view'
 import type { FullControlMode, Step, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
+import { withRealCards } from './realCards'
+import type { RealIds } from './realCards'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
@@ -139,6 +141,8 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
  * `turn: 'you'` for the viewer's own turn (it overrides `active`).
  */
 export interface FixtureGameOptions extends FixtureOptions {
+  /** Oracle ids by name (`?cards=real`): the cards get identities and the showcase joins the viewer's battlefield. */
+  real?: RealIds
   prompt?: string
   turn?: 'you'
   /** The step the turn is in, whatever the fixture or the prompt's moment has; theirs when left out. */
@@ -153,7 +157,8 @@ export interface FixtureGameOptions extends FixtureOptions {
 
 /** A game context holding a fresh fixture table. */
 export function fixtureGame(options: FixtureGameOptions): GameContextValue {
-  const built = buildFixture(options.turn === 'you' ? { ...options, active: options.viewer ?? 0 } : options)
+  const plain = buildFixture(options.turn === 'you' ? { ...options, active: options.viewer ?? 0 } : options)
+  const built = options.real === undefined ? plain : withRealCards(plain, options.real, options.viewer ?? 0)
   const store = createPlayStore()
   const name = options.prompt ?? ''
   const prompt = Object.hasOwn(DEV_PROMPTS, name) ? DEV_PROMPTS[name] : undefined

@@ -7,6 +7,7 @@ use thiserror::Error;
 
 use crate::actor::GameConfig;
 use crate::dwell::Dwell;
+use crate::images::ImageConfig;
 use crate::pace::MAX_CLOCK_SECS;
 use crate::passwords::HashCost;
 
@@ -74,6 +75,9 @@ pub enum ConfigError {
     /// `MTG_TRUSTED_PROXIES` is not a whole number from 0 to 16.
     #[error("MTG_TRUSTED_PROXIES must be a whole number from 0 to 16, got {0:?}")]
     BadTrustedProxies(String),
+    /// `MTG_IMAGE_CACHE_MIB` is not a whole number of mebibytes from 1 to 1048576.
+    #[error("MTG_IMAGE_CACHE_MIB must be a whole number from 1 to 1048576, got {0:?}")]
+    BadImageCacheMib(String),
 }
 
 /// Most reverse proxies `MTG_TRUSTED_PROXIES` may name.
@@ -250,6 +254,8 @@ pub struct ServerConfig {
     pub shutdown_grace: Duration,
     /// Accounts, sessions and the limits around them.
     pub auth: AuthConfig,
+    /// The picture cache and its upstream.
+    pub images: ImageConfig,
 }
 
 impl Default for ServerConfig {
@@ -264,6 +270,7 @@ impl Default for ServerConfig {
             retention: Retention::default(),
             shutdown_grace: Duration::from_secs(5),
             auth: AuthConfig::default(),
+            images: ImageConfig::default(),
         }
     }
 }
@@ -271,7 +278,8 @@ impl Default for ServerConfig {
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
-    /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and `MTG_TRUSTED_PROXIES` from the process
+    /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_IMAGE_CACHE` and
+    /// `MTG_IMAGE_CACHE_MIB` from the process
     /// environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
@@ -357,6 +365,7 @@ impl ServerConfig {
                 _ => return Err(ConfigError::BadTrustedProxies(text)),
             };
         }
+        config.images = ImageConfig::from_lookup(&get)?;
         Ok(config)
     }
 }
@@ -617,6 +626,33 @@ mod tests {
             load(&[("MTG_TRUSTED_PROXIES", text)]),
             Err(ConfigError::BadTrustedProxies(text.to_owned()))
         );
+    }
+
+    #[rstest]
+    #[case("0")]
+    #[case("-1")]
+    #[case("two gigabytes")]
+    #[case("1048577")]
+    fn bad_picture_cache_sizes(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_IMAGE_CACHE_MIB", text)]),
+            Err(ConfigError::BadImageCacheMib(text.to_owned()))
+        );
+    }
+
+    #[test]
+    fn the_picture_cache_follows_its_variables() {
+        let config = load(&[
+            ("MTG_IMAGE_CACHE", "/srv/pictures"),
+            ("MTG_IMAGE_CACHE_MIB", "64"),
+        ])
+        .unwrap();
+        assert_eq!(
+            config.images.cache_dir,
+            std::path::PathBuf::from("/srv/pictures")
+        );
+        assert_eq!(config.images.max_bytes, 64 * 1024 * 1024);
+        assert_eq!(load(&[]).unwrap().images.max_bytes, 2048 * 1024 * 1024);
     }
 
     #[test]

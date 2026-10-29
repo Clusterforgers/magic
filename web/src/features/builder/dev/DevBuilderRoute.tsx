@@ -1,4 +1,5 @@
 import { useSearch } from '@tanstack/react-router'
+import { cardsApi } from '@/net/cards'
 import { useMemo } from 'react'
 import { deckView, startDecks } from '@/features/decks/fakeDecks'
 import { createDecksApi } from '@/net/decks'
@@ -16,7 +17,7 @@ import { BUILDER_FIXTURE_MARKER, fixtureCards, fixtureCheck, fixtureDetails, fix
  * "Checking…" can be seen, and Save works as if a server answered it: the saved deck is the one checked.
  */
 export function DevBuilderRoute() {
-  const { deck } = useSearch({ from: '/dev/builder' })
+  const { deck, cards } = useSearch({ from: '/dev/builder' })
   const world = useMemo(() => {
     const view = fixtureView(deck)
     const pool = fixtureCards()
@@ -64,7 +65,12 @@ export function DevBuilderRoute() {
       <p className="sr-only" data-fixture={BUILDER_FIXTURE_MARKER}>
         Development deck builder with the {deck} deck
       </p>
-      <Builder key={deck} view={world.view} api={world.api} cards={world.cards.api} />
+      <Builder
+        key={deck}
+        view={world.view}
+        api={world.api}
+        cards={cards === 'real' ? cardsApi : world.cards.api}
+      />
     </>
   )
 }
