@@ -53,16 +53,14 @@ const resized = (): void => {
   })
 }
 
-const NEAR: readonly RowKind[] = ['creatures', 'other', 'lands']
-const FAR: readonly RowKind[] = ['lands', 'other', 'creatures']
-
 /** What the layout says for a seat's battlefield in a box, rows in the order the zone draws them. */
 function expected(table: TableHarness, seat: number, facing: 'near' | 'far', box: FitBox, grouped = false) {
-  const order = facing === 'near' ? NEAR : FAR
   const stacks = battlefieldStacks(table.store.getState(), seat, grouped)
-  const fit = layoutSeat({ box, stacks, order, opened: new Set(), marked: new Set() }).fit
+  const fit = layoutSeat({ box, stacks, facing, opened: new Set(), marked: new Set() }).fit
   if (fit === null) throw new Error('a box was given, so the layout fits')
-  return { fit, order }
+  const lanes = fit.bands.flatMap((band) => band.lanes)
+  const place = (row: RowKind) => must(lanes.find((lane) => lane.lane === row))
+  return { fit, order: lanes.map((lane) => lane.lane), place }
 }
 
 const rowOf = (seat: number, row: RowKind): HTMLElement => {
@@ -98,11 +96,11 @@ describe('a battlefield with room', () => {
     room.height = box.height
     const table = renderTable({ seats: 2 })
     for (const seat of [0, 1]) {
-      const { fit, order } = expected(table, seat, seat === 0 ? 'near' : 'far', box)
-      order.forEach((row, index) => {
-        const placed = fit.layout[index]
-        expect(widthOf(rowOf(seat, row)), `${seat} ${row}`).toBe(`${placed?.width}px`)
-        expect(heightOf(rowOf(seat, row)), `${seat} ${row}`).toBe(`${placed?.height}px`)
+      const { order, place } = expected(table, seat, seat === 0 ? 'near' : 'far', box)
+      order.forEach((row) => {
+        const placed = place(row)
+        expect(widthOf(rowOf(seat, row)), `${seat} ${row}`).toBe(`${placed.width}px`)
+        expect(heightOf(rowOf(seat, row)), `${seat} ${row}`).toBe(`${placed.height}px`)
       })
     }
   })
@@ -149,8 +147,8 @@ describe('a battlefield with room', () => {
     room.width = 420
     room.height = 160
     resized()
-    const { fit, order } = expected(table, 1, 'far', { width: 420, height: 160 })
-    expect(widthOf(rowOf(1, 'creatures'))).toBe(`${fit.layout[order.indexOf('creatures')]?.width}px`)
+    const { place } = expected(table, 1, 'far', { width: 420, height: 160 })
+    expect(widthOf(rowOf(1, 'creatures'))).toBe(`${place('creatures').width}px`)
     expect(widthOf(rowOf(1, 'creatures'))).not.toBe(before)
   })
 
@@ -185,11 +183,11 @@ describe('a battlefield with stacks', () => {
     room.height = box.height
     const table = renderTable({ seats: 2, options: { stacks: true } })
     for (const seat of [0, 1]) {
-      const { fit, order } = expected(table, seat, seat === 0 ? 'near' : 'far', box, true)
-      order.forEach((row, index) => {
-        const placed = must(fit.layout[index])
+      const { order, place } = expected(table, seat, seat === 0 ? 'near' : 'far', box, true)
+      order.forEach((row) => {
+        const placed = place(row)
         const items = rowOf(seat, row).querySelectorAll(':scope > li')
-        expect(items, `${seat} ${row}`).toHaveLength(placed.stacks)
+        expect(items, `${seat} ${row}`).toHaveLength(placed.boxes)
         expect(widthOf(rowOf(seat, row)), `${seat} ${row}`).toBe(`${placed.width}px`)
         for (const button of rowOf(seat, row).querySelectorAll('button[data-object-id]')) {
           expect(button).toHaveClass('w-(--card-w)', 'h-(--card-h)')
@@ -203,9 +201,9 @@ describe('a battlefield with stacks', () => {
     room.height = 240
     const table = renderTable({ seats: 2, options: { stacks: true } })
     const plain = expected(table, 1, 'far', { width: 700, height: 240 }, false).fit
-    const stacked = expected(table, 1, 'far', { width: 700, height: 240 }, true).fit
+    const { fit: stacked, place } = expected(table, 1, 'far', { width: 700, height: 240 }, true)
     expect(stacked.cardWidth).toBeGreaterThanOrEqual(plain.cardWidth)
-    expect(widthOf(rowOf(1, 'creatures'))).toBe(`${must(stacked.layout[2]).width}px`)
+    expect(widthOf(rowOf(1, 'creatures'))).toBe(`${place('creatures').width}px`)
   })
 
   it('shows the count and the fade at the 44 px floor', () => {

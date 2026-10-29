@@ -40,7 +40,7 @@ function useRealIds(on: boolean, seats: number, hand: number | undefined): RealI
  * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards } =
+  const { seats, board, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards } =
     useSearch({
       from: '/dev/table',
     })
@@ -49,6 +49,7 @@ export function DevTableRoute() {
     () =>
       fixtureGame({
         seats,
+        board,
         prompt,
         turn,
         step,
@@ -59,7 +60,7 @@ export function DevTableRoute() {
         fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
         real,
       }),
-    [seats, prompt, turn, step, hand, rules, preview, stops, fc, real],
+    [seats, board, prompt, turn, step, hand, rules, preview, stops, fc, real],
   )
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(

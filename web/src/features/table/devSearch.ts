@@ -22,6 +22,8 @@ export const MAX_DEV_PREVIEW_MS = 10_000
 export interface DevSearch {
   /** How many seats the fixture table has, 2 to 12; 4 when missing or wrong. */
   seats: number
+  /** `duel`: two seats with 12 and 10 permanents of an early Commander game; `heavy`: two seats with 40 each. */
+  board?: 'duel' | 'heavy'
   /** The layout to open in; the default for the seat count when missing. */
   mode?: TableMode
   /** The opponent to open focused; the one following the turn when missing. */
@@ -55,7 +57,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=&rules=&cards=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=&rules=&cards=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -64,8 +66,11 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     typeof search.slow === 'number' && search.slow > 1 && search.slow <= MAX_DEV_SLOW
       ? search.slow
       : undefined
+  const board = search.board === 'duel' || search.board === 'heavy' ? search.board : undefined
   return {
-    seats: seats === undefined || seats < 2 || seats > 12 ? 4 : seats,
+    // A board names a two-seat table.
+    seats: board !== undefined ? 2 : seats === undefined || seats < 2 || seats > 12 ? 4 : seats,
+    board,
     mode,
     focus: focus === undefined || focus < 0 ? undefined : focus,
     prompt: typeof search.prompt === 'string' ? search.prompt : undefined,

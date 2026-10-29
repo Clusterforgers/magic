@@ -60,6 +60,7 @@
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-table: var(--table);
+  --color-lane: var(--lane);
   --color-raised: var(--raised);
   --color-foreground: var(--foreground);
   --color-muted-foreground: var(--muted-foreground);
@@ -135,6 +136,8 @@
   --background: oklch(0.985 0.004 265);
   --surface: oklch(1 0 0);
   --table: oklch(0.955 0.006 265);
+  /* The ground of a lane of permanents on the table. */
+  --lane: oklch(0.915 0.008 265);
   --raised: oklch(1 0 0);
   --foreground: oklch(0.2 0.02 265);
   --muted-foreground: oklch(0.48 0.02 265);
@@ -220,6 +223,7 @@
   --background: oklch(0.17 0.012 265);
   --surface: oklch(0.215 0.014 265);
   --table: oklch(0.145 0.012 265);
+  --lane: oklch(0.185 0.014 265);
   --raised: oklch(0.26 0.016 265);
   --foreground: oklch(0.96 0.005 265);
   --muted-foreground: oklch(0.72 0.015 265);
