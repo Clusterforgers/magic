@@ -6,6 +6,7 @@ use mtg_engine::apply_event;
 use mtg_engine::events::{Event, ZoneCause};
 use mtg_engine::manual::{ManualAction, ManualZone};
 use mtg_engine::object::ObjectRef;
+use mtg_engine::resolve::Shown;
 use mtg_engine::snapshot::Snapshot;
 use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
@@ -180,6 +181,11 @@ pub struct EventBatch {
     pub objects: Vec<ObjectView>,
     /// Objects the viewer could see before the batch and cannot see now.
     pub gone: Vec<ObjectId>,
+    /// The cards the batch showed the viewer (a reveal, a look) that are hidden from them after it, as they saw them
+    /// when shown, so the log can name them; left out while there are none. The client keeps them out of its view.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectView>>", optional)]
+    pub shown: Vec<ObjectView>,
 }
 
 fn count(len: usize) -> u32 {
@@ -559,6 +565,8 @@ pub fn project_events(
 ) -> Result<Vec<EventBatch>, ProtocolError> {
     let mut state = before.clone();
     let mut views: Vec<Vec<EventView>> = viewers.iter().map(|_| Vec::new()).collect();
+    let mut sightings: Vec<Vec<ObjectView>> = viewers.iter().map(|_| Vec::new()).collect();
+    let mut known = shown_now(before);
     for event in events {
         for (list, viewer) in views.iter_mut().zip(viewers) {
             list.push(match redact(&state, event, *viewer) {
@@ -567,24 +575,61 @@ pub fn project_events(
             });
         }
         apply_event(&mut state, event)?;
+        record_sightings(&state, &mut known, viewers, &mut sightings);
     }
     Ok(viewers
         .iter()
         .zip(views)
-        .map(|(viewer, events)| {
+        .zip(sightings)
+        .map(|((viewer, events), sighted)| {
             let seen = visible_objects(before, *viewer);
             let now = visible_objects(&state, *viewer);
             // Nothing precedes the first batch, so a client that joined before the game starts needs every object.
             let ObjectDiff { objects, gone } = diff(&seen, &now, from_seq == 0);
+            let shown = sighted
+                .into_iter()
+                .filter(|card| !now.iter().any(|object| object.id == card.id))
+                .collect();
             EventBatch {
                 from_seq,
                 events,
                 table: Box::new(TableView::of(&state, *viewer)),
                 objects,
                 gone,
+                shown,
             }
         })
         .collect())
+}
+
+/// The cards the resolution in progress has shown so far, and to whom.
+fn shown_now(state: &GameState) -> Vec<Shown> {
+    state
+        .resolving()
+        .map(|resolving| resolving.shown().to_vec())
+        .unwrap_or_default()
+}
+
+/// Adds to each viewer's sightings the cards shown to them since `known`, as they see them now (the first sighting of
+/// a card is kept), and moves `known` on.
+fn record_sightings(
+    state: &GameState,
+    known: &mut Vec<Shown>,
+    viewers: &[PlayerId],
+    sightings: &mut [Vec<ObjectView>],
+) {
+    let now = shown_now(state);
+    for shown in now.iter().filter(|shown| !known.contains(shown)) {
+        for (list, viewer) in sightings.iter_mut().zip(viewers) {
+            let id = shown.card.id;
+            if shown.to.is_some_and(|seat| seat != *viewer) || list.iter().any(|seen| seen.id == id)
+            {
+                continue;
+            }
+            list.extend(ObjectView::of(state, *viewer, id));
+        }
+    }
+    *known = now;
 }
 
 #[cfg(test)]

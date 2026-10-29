@@ -66,6 +66,7 @@ mod rest_lobbies;
 mod rest_precons;
 mod saga_transform_view;
 mod seat_deck;
+mod shown_view;
 mod spell_copy_view;
 mod spell_x_hidden;
 mod split_second_view;

@@ -88,7 +88,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Mill and rad counters: mill triggers per card, per batch and per player, target bounds from a mill batch, cards milled this turn, the radiation rule, entering tapped for rad counters, costs reduced per rad counter and losing all rad counters.
 - Statics of the rules: cards in graveyards that can't be targeted, players who can't lose or win, opponents who can't cast on your turn, combat damage by toughness and counters that remain as a card changes zones.
 - Popularity coverage: `mtg-cli coverage --all` ranks the blockers of every Commander-legal card by the EDHREC rank of the cards they hold back, shows the Verified share by rank bucket and lists the cards of the top 2,000 that are not Verified (`docs/data-sources.md`).
-- Card identity and ability wording in views: `ObjectView.identity` names the oracle id of a card the viewer identifies, and `ObjectView.activated` words its activated abilities with the addresses `PriorityOptions.abilities` offers.
+- Card identity, ability wording and shown cards in views: `ObjectView.identity` names the oracle id of a card the viewer identifies, and `ObjectView.activated` words its activated abilities with the addresses `PriorityOptions.abilities` offers; `EventBatch.shown` names a card revealed and hidden in one batch.
 
 ## M3 Card system
 
@@ -114,7 +114,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test
 
 ### Manual cards and views
-- [~] (v1b) (v1a-ability-wording) A card revealed and moved to a hidden zone in one batch reaches every seat it was shown to as it was seen (`EventBatch.shown`), so the log names it
 - [~] (v1c) (v1c-spectator-printing) A spectator audience: `StateView::for_spectator` and `TableView.spectator`, so a client tells a spectator's view from a seat's without counting seats
 - [~] (v1d) (v1c-spectator-printing) The printing a deck line chose reaches the game (`DeckRef::Oracle` and the catalog), so `ObjectView.identity.printing_id` names it and the table draws that art
 - [~] (v1e) (v1c-spectator-printing) The city's blessing in the player view (`PlayerView.citys_blessing`, public), so the table shows the badge without reading events
