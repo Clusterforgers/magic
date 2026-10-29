@@ -11,18 +11,23 @@ import type { Api } from '@/net/api'
 import { CreateForm } from './CreateForm'
 import { useDecks } from './useDecks'
 
-// The shape of the form while the decks are on their way: a heading, the format choice and two seats.
+// The shape of the form while the decks are on their way: a heading, then the game's column and the options' column.
 function FormSkeleton() {
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-5">
       <div className="grid gap-2">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-5 w-full max-w-md" />
       </div>
-      <Skeleton className="h-9 w-56" />
-      <div className="grid gap-3">
-        <Skeleton className="h-36 rounded-xl" />
-        <Skeleton className="h-36 rounded-xl" />
+      <div className="grid gap-5 md:grid-cols-2 md:gap-x-8">
+        <div className="grid content-start gap-5">
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-36 rounded-xl" />
+        </div>
+        <div className="grid content-start gap-5">
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-12 rounded-xl" />
+        </div>
       </div>
     </div>
   )
@@ -35,14 +40,14 @@ export function CreateGamePage({ api = sharedApi }: { api?: Api }) {
   // The form names the creator's own seat after the account, so it waits until the server has said who that is.
   const unknownAccount = useAuth((auth) => auth.status === 'loading')
   return (
-    <PageShell>
+    <PageShell width="wide">
       {state.status === 'loading' || (state.status === 'ready' && unknownAccount) ? (
         <Loading label="Loading the decks…">
           <FormSkeleton />
         </Loading>
       ) : null}
       {state.status === 'failed' ? (
-        <div className="grid gap-4">
+        <div className="mx-auto grid w-full max-w-page gap-4">
           <h1 className="sr-only">Create a game</h1>
           <Alert variant="destructive">
             <CircleAlertIcon aria-hidden="true" />
@@ -57,7 +62,7 @@ export function CreateGamePage({ api = sharedApi }: { api?: Api }) {
         </div>
       ) : null}
       {state.status === 'ready' && state.decks.length === 0 ? (
-        <div className="grid gap-4">
+        <div className="mx-auto grid w-full max-w-page gap-4">
           <h1 className="sr-only">Create a game</h1>
           <Alert variant="warning">
             <CircleAlertIcon aria-hidden="true" />

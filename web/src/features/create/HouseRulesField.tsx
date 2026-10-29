@@ -108,7 +108,7 @@ export function HouseRulesField({ draft, problems, onChange }: HouseRulesFieldPr
         {ruleGroups(format).map((group) => (
           <fieldset key={group.title}>
             <legend className="mb-3 text-sm font-semibold">{group.title}</legend>
-            <div className="grid content-start gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid content-start gap-x-6 gap-y-4 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
               {group.specs.map((spec) => (
                 <RuleRow
                   key={spec.id}

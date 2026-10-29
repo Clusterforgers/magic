@@ -27,26 +27,28 @@ export function HostFields({ draft, decks, problems, onEdit, onCount }: HostFiel
   const nameProblem = problems?.name ?? null
   const deckProblem = problems?.deck ?? null
   return (
-    <section aria-labelledby="players-title" className="grid content-start gap-4">
+    <section aria-labelledby="players-title" className="grid content-start gap-3">
       <h2 id="players-title" className="text-lg font-semibold">
         Players
       </h2>
-      <SeatCountField count={draft.seats.length} onCount={onCount} />
-      <div className="grid gap-2">
-        <Label htmlFor={nameId}>Your name</Label>
-        <Input
-          id={nameId}
-          value={seat.name}
-          autoComplete="off"
-          aria-invalid={nameProblem !== null}
-          aria-describedby={nameProblem === null ? undefined : `${nameId}-problem`}
-          onChange={(event) => onEdit(seat.id, { name: event.target.value })}
-        />
-        {nameProblem === null ? null : (
-          <p id={`${nameId}-problem`} className="text-sm text-destructive">
-            {nameProblem}
-          </p>
-        )}
+      <div className="grid items-start gap-4 lg:grid-cols-2">
+        <SeatCountField count={draft.seats.length} onCount={onCount} />
+        <div className="grid gap-2">
+          <Label htmlFor={nameId}>Your name</Label>
+          <Input
+            id={nameId}
+            value={seat.name}
+            autoComplete="off"
+            aria-invalid={nameProblem !== null}
+            aria-describedby={nameProblem === null ? undefined : `${nameId}-problem`}
+            onChange={(event) => onEdit(seat.id, { name: event.target.value })}
+          />
+          {nameProblem === null ? null : (
+            <p id={`${nameId}-problem`} className="text-sm text-destructive">
+              {nameProblem}
+            </p>
+          )}
+        </div>
       </div>
       {draft.format === 'normal' ? (
         <div className="grid gap-2">

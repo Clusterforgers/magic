@@ -24,7 +24,7 @@ export function FormatField({ value, onChange }: FormatFieldProps) {
   return (
     <fieldset className="grid gap-2" data-slot="format-field">
       <legend className="mb-1 text-lg font-semibold">Format</legend>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
         {FORMATS.map((format) => (
           <label
             key={format.value}

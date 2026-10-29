@@ -143,20 +143,23 @@ export function CreateForm({ api, decks }: CreateFormProps) {
 
   if (made !== null) {
     return (
-      <GameCreated
-        created={made.created}
-        request={made.request}
-        decks={decks}
-        origin={window.location.origin}
-        onAnother={() => setMade(null)}
-        onOpenSeat={(seat, token) =>
-          void navigate({
-            to: '/game/$gameId',
-            params: { gameId: made.created.game },
-            hash: fragmentOf(seatLinkPath(made.created.game, seat, token)),
-          })
-        }
-      />
+      // The page is wide for the form's two columns; the links to share read best at the width of a page.
+      <div className="mx-auto w-full max-w-page">
+        <GameCreated
+          created={made.created}
+          request={made.request}
+          decks={decks}
+          origin={window.location.origin}
+          onAnother={() => setMade(null)}
+          onOpenSeat={(seat, token) =>
+            void navigate({
+              to: '/game/$gameId',
+              params: { gameId: made.created.game },
+              hash: fragmentOf(seatLinkPath(made.created.game, seat, token)),
+            })
+          }
+        />
+      </div>
     )
   }
 
@@ -167,7 +170,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
       ref={formRef}
       noValidate
       aria-labelledby="create-title"
-      className="grid gap-6"
+      className="grid gap-5 [&_:is(input,select,summary)]:scroll-mb-24"
       onSubmit={(event) => void submit(event)}
     >
       <div>
@@ -192,13 +195,12 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         )}
       </div>
 
-      <FormatField
-        value={draft.format}
-        onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
-      />
-
-      <div className="grid gap-6 md:grid-cols-2 md:items-start">
-        <div className="grid content-start gap-6">
+      <div className="grid gap-5 md:grid-cols-2 md:items-start md:gap-x-8" data-slot="create-columns">
+        <div className="grid content-start gap-5" data-slot="create-game-column">
+          <FormatField
+            value={draft.format}
+            onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
+          />
           {draft.links ? (
             <SeatList
               draft={draft}
@@ -218,13 +220,18 @@ export function CreateForm({ api, decks }: CreateFormProps) {
             />
           )}
         </div>
-        <div className="grid content-start gap-6">
+        <div className="grid content-start gap-5" data-slot="create-options-column">
           {draft.links ? null : (
             <VisibilityField
               value={draft.visibility}
               onChange={(visibility) => setDraft((current) => chooseVisibility(current, visibility))}
             />
           )}
+          <HouseRulesField
+            draft={draft}
+            problems={showProblems ? rules : null}
+            onChange={(id, text) => setDraft((current) => editRule(current, id, text))}
+          />
           <AdvancedOptions
             links={draft.links}
             linksAllowed={draft.format === 'normal'}
@@ -232,12 +239,6 @@ export function CreateForm({ api, decks }: CreateFormProps) {
           />
         </div>
       </div>
-
-      <HouseRulesField
-        draft={draft}
-        problems={showProblems ? rules : null}
-        onChange={(id, text) => setDraft((current) => editRule(current, id, text))}
-      />
 
       {showProblems && troubled > 0 ? (
         <Alert variant="destructive">
@@ -258,8 +259,12 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         </Alert>
       )}
 
-      <div>
-        <Button type="submit" size="lg" loading={pending}>
+      {/* Sticks to the bottom of the window, so a long form (a phone, an open disclosure) keeps the button in reach. */}
+      <div
+        data-slot="create-footer"
+        className="sticky bottom-0 z-10 -mx-4 border-t bg-background px-4 py-3 sm:-mx-6 sm:px-6"
+      >
+        <Button type="submit" size="lg" loading={pending} className="w-full sm:w-auto">
           {pending ? 'Creating the game…' : 'Create game'}
         </Button>
       </div>
