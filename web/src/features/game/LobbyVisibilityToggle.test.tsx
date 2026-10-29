@@ -47,9 +47,9 @@ describe('what the host sees', () => {
       LISTED,
       INVITE,
       'Remove Bo from the game',
-      'Mono Green StompersNormal, Green, 60 cards',
-      'Mono Red GiantsNormal, Red, 60 cards',
-      'Mono White WeeniesNormal, White, 60 cards',
+      'Mono Green StompersNormal, Green, 60 cardsWhole deck runs',
+      'Mono Red GiantsNormal, Red, 60 cardsWhole deck runs',
+      'Mono White WeeniesNormal, White, 60 cardsWhole deck runs',
       'Ready',
       'Close game',
     ])

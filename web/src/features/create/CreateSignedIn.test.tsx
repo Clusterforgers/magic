@@ -23,6 +23,7 @@ const create = () => screen.getByRole('button', { name: 'Create game' })
 async function openCreate(accounts: AccountsScript = {}) {
   const app = await renderApp('/new', { accounts: { users, ...accounts } })
   await screen.findByRole('form', { name: 'Create a game' })
+  await app.user.click(screen.getByRole('radio', { name: /^Normal/ }))
   return app
 }
 

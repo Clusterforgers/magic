@@ -49,7 +49,7 @@ pub struct ManualClause {
 
 /// Which printed card a definition is: what a client needs to find its image and text. The server sets it; the rules
 /// never read it.
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct CardIdentity {
     /// The Scryfall oracle id of the card.
@@ -58,6 +58,13 @@ pub struct CardIdentity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub printing_id: Option<String>,
+}
+
+// The printing only labels the art, so a game hashes the same whichever printings its decks chose.
+impl std::hash::Hash for CardIdentity {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.oracle_id.hash(state);
+    }
 }
 
 /// How the faces of a card with more than one are used (CR 708 to 715).

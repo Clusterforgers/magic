@@ -123,6 +123,7 @@ test('a deleted account goes home signed out, loses its games and its username c
   try {
     await register(page, ada)
     await page.goto('/new')
+    await page.getByRole('radio', { name: /^Normal/ }).check()
     await expect(createForm(page)).toBeVisible()
     await page.getByRole('button', { name: 'Create game' }).click()
     await expect(page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()

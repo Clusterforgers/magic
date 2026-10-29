@@ -58,13 +58,12 @@ describe('the visibility choice', () => {
 })
 
 describe('Advanced', () => {
-  it('starts closed and holds the format and the link for every seat', async () => {
+  it('starts closed and holds the link for every seat', async () => {
     const { user } = await openCreateForm()
     const details = screen.getByText('Advanced').closest('details')
     expect(details).not.toHaveAttribute('open')
     await user.click(screen.getByText('Advanced'))
     expect(details).toHaveAttribute('open')
-    expect(screen.getByRole('radio', { name: 'Normal' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Give every seat its own link' })).not.toBeChecked()
     expect(
       screen.getByRole('checkbox', { name: 'Give every seat its own link' }),

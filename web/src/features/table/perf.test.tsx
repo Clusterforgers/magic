@@ -224,9 +224,10 @@ describe('a decision at the same table', () => {
   beforeEach(reset)
 
   const handOf = (view: StateView): number[] => must(view.players[0]?.hand.cards)
-  /** The viewer's own cards: the hand and the 40 permanents, which a Priority prompt marks. */
+  /** The viewer's own cards: the two commanders in the dock, the hand and the 40 permanents, which a Priority prompt marks. */
   const ownOf = (view: StateView): Set<number> =>
     new Set([
+      ...(view.players[0]?.command.cards ?? []),
       ...handOf(view),
       ...view.objects
         .filter((object) => object.zone === 'Battlefield' && object.controller === 0)
@@ -247,7 +248,7 @@ describe('a decision at the same table', () => {
   it('redraws each of the viewer cards once when it arrives, and no other card and no row', () => {
     const { h, view } = mount()
     const own = ownOf(view())
-    expect(own.size).toBe(47)
+    expect(own.size).toBe(49)
     reset()
     act(() => h.deliver(priority(5, options(view()))))
     expect(new Set(probe.faces.keys())).toEqual(own)

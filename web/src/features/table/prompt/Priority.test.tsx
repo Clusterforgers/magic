@@ -21,7 +21,11 @@ const untapped = battlefield.filter(
 )
 const lands = untapped.filter((object) => isLand(object.id)).map((object) => object.id)
 const rock = must(untapped.find((object) => !isLand(object.id)))
-const OWN: ObjectId[] = [...hand, ...battlefield.map((object) => object.id)]
+const OWN: ObjectId[] = [
+  ...(view.players[0]?.command.cards ?? []),
+  ...hand,
+  ...battlefield.map((object) => object.id),
+]
 
 const [land1, land2, land3] = lands as [ObjectId, ObjectId, ObjectId]
 const [play1, play2] = handLands as [ObjectId, ObjectId]
@@ -126,6 +130,20 @@ describe('what is marked', () => {
       expect(marks()).toEqual(new Map(OWN.map((id) => [id, legal.has(id) ? 'legal' : 'dimmed'])))
     },
   )
+
+  it.each([
+    ['none of them', []],
+    ['one of three', [spell2]],
+    ['two of three', [spell1, spell3]],
+  ])('highlights in the hand only the spells the game says can be paid for: %s', async (_name, castable) => {
+    const { marks, card, user, answer } = renderPriority(options({ castable }))
+    for (const spell of [spell1, spell2, spell3]) {
+      const can = castable.includes(spell)
+      expect(marks().get(spell)).toBe(can ? 'legal' : 'dimmed')
+      await user.click(card(spell))
+      if (!can) expect(answer).not.toHaveBeenCalledWith({ Priority: { CastSpell: spell } })
+    }
+  })
 
   it('marks nothing of an opponent, the stack, a graveyard or a command zone', () => {
     const { marks } = renderPriority(options({ playable_lands: [play1], castable: [spell1] }))

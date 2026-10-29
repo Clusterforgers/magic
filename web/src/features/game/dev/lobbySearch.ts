@@ -15,7 +15,12 @@ export interface DevLobbySearch {
   /** The seats that have chosen no deck yet (everybody else plays one). */
   nodeck?: number[]
   /** `1` makes this page a signed-in player, whose chooser lists stored decks beside the built-in ones. */
+  /** `1` makes this page a signed-in player, whose chooser lists stored decks beside the built-in ones. */
   account?: true
+  /** `commander` makes the game a Commander game: the chooser lists Commander decks and precons, not built-in decks. */
+  format?: 'commander'
+  /** `1` gives the game house rules that differ from its format's own. */
+  rules?: true
 }
 
 const FEWEST_SEATS = 2
@@ -38,7 +43,7 @@ function seatList(value: unknown, seats: number): number[] {
   return [...new Set(found)].sort((a, b) => a - b)
 }
 
-/** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=`; the router has already parsed numbers and lists. */
+/** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=&format=&rules=`; the router has already parsed numbers and lists. */
 export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySearch {
   const asked = whole(search.seats)
   const seats = asked === undefined || asked < FEWEST_SEATS || asked > MOST_SEATS ? 4 : asked
@@ -54,5 +59,7 @@ export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySe
     nodeck: nodeck.length > 0 ? nodeck : undefined,
     // The router feeds its own answer back in, so what this returns must read as itself (`true`).
     account: search.account === true || search.account === 1 || search.account === '1' ? true : undefined,
+    format: search.format === 'commander' ? 'commander' : undefined,
+    rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
   }
 }

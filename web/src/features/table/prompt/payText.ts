@@ -1,7 +1,7 @@
 /** The PayMana prompt in plain words: what a cost asks for and what to do next. */
 import type { Color, ManaCost, ManaSymbol, ManaType, ObjectId } from '@/protocol/generated'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from '../manaSymbols'
-import { manaOf, manaValue } from './payment'
+import { madeOf, manaValue } from './payment'
 import type { Spend } from './payment'
 
 const NAME: Record<ManaType, string> = {
@@ -20,7 +20,10 @@ export function manaName(mana: ManaType): string {
 
 /** What a piece of the payment is, in words: "green from Forest", "red from your pool". */
 export function spendWords(spend: Spend, nameOf: (id: ObjectId) => string): string {
-  const what = manaName(manaOf(spend))
+  const made = madeOf(spend)
+  const [first] = made
+  const alike = first !== undefined && made.every((mana) => mana === first)
+  const what = alike && made.length > 1 ? `${made.length} ${manaName(first)}` : andList(made.map(manaName))
   return spend.kind === 'pool'
     ? `${what} from your pool`
     : `${what} from ${nameOf(spend.option.source.object)}`

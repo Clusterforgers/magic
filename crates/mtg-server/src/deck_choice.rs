@@ -150,6 +150,7 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         format: judged.format.to_owned(),
         manual_cards: manual_cards(&judged.report),
     };
+    let printings = printings_of(&judged.lines, false);
     ChosenDeck::led(
         judged.library,
         judged.cards,
@@ -157,7 +158,7 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         judged.leaders,
         note,
     )
-    .map(|chosen| chosen.with_own_issues(own_issues))
+    .map(|chosen| chosen.with_own_issues(own_issues).with_printings(printings))
     .map_err(|error| {
         tracing::error!(%error, "a precon could not be fingerprinted");
         Refused::Failed(ApiError::new(
@@ -211,11 +212,14 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     };
     let chosen =
         ChosenDeck::led(ids, library, commander_ids, commanders, note).map_err(unreadable)?;
+    let printings = printings_of(&lines, companion.is_some());
     let chosen = match companion {
         Some((id, card)) => chosen.with_companion(id, card).map_err(unreadable)?,
         None => chosen,
     };
-    Ok(chosen.with_own_issues(report.legality.clone()))
+    Ok(chosen
+        .with_own_issues(report.legality.clone())
+        .with_printings(printings))
 }
 
 /// The cards of a deck as the game is given them.
@@ -334,6 +338,27 @@ fn zone_ids(lines: &[Line], zone: DeckZone) -> Vec<String> {
         .filter(|line| line.zone == zone)
         .flat_map(|line| std::iter::repeat_n(line.oracle_id.clone(), line.count as usize))
         .collect()
+}
+
+/// The printing of every card of a zone, a line's copies one after the other, in line order, `None` for the cards of
+/// a line that named none: the entries of [`zone_ids`], one for one.
+fn zone_printings(lines: &[Line], zone: DeckZone) -> Vec<Option<String>> {
+    lines
+        .iter()
+        .filter(|line| line.zone == zone)
+        .flat_map(|line| std::iter::repeat_n(line.printing_id.clone(), line.count as usize))
+        .collect()
+}
+
+/// The printings of the cards a game plays, in the order `ChosenDeck::with_printings` reads them: the main deck, the
+/// commanders, then the companion when the game plays one (`companion`).
+pub(crate) fn printings_of(lines: &[Line], companion: bool) -> Vec<Option<String>> {
+    let mut printings = zone_printings(lines, DeckZone::Main);
+    printings.extend(zone_printings(lines, DeckZone::Commander));
+    if companion {
+        printings.extend(zone_printings(lines, DeckZone::Companion));
+    }
+    printings
 }
 
 /// The oracle id of every card of the main deck, a line's copies one after the other, in line order:
@@ -576,6 +601,42 @@ mod tests {
         ];
         assert_eq!(library_ids(&lines), ["b", "b", "a", "a", "a", "b"]);
         assert_eq!(library_ids(&[]), Vec::<String>::new());
+    }
+
+    fn printed(zone: DeckZone, id: &str, printing: Option<&str>, count: u32) -> Line {
+        Line {
+            printing_id: printing.map(str::to_owned),
+            ..line(zone, id, count)
+        }
+    }
+
+    #[rstest]
+    #[case::the_companion_is_played(true, &[Some("p"), Some("p"), None, Some("q"), Some("k"), Some("c")])]
+    #[case::no_companion_is_played(false, &[Some("p"), Some("p"), None, Some("q"), Some("k")])]
+    fn the_printings_follow_the_cards_of_the_library_the_commanders_and_the_companion(
+        #[case] companion: bool,
+        #[case] wanted: &[Option<&str>],
+    ) {
+        let lines = [
+            printed(DeckZone::Main, "a", Some("p"), 2),
+            printed(DeckZone::Sideboard, "x", Some("never"), 4),
+            printed(DeckZone::Main, "b", None, 1),
+            printed(DeckZone::Commander, "c", Some("k"), 1),
+            printed(DeckZone::Main, "a", Some("q"), 1),
+            printed(DeckZone::Companion, "d", Some("c"), 1),
+        ];
+        // The library's lines come first, then the commanders, whatever order the lines are in.
+        let printings = printings_of(&lines, companion);
+        assert_eq!(
+            printings.iter().map(Option::as_deref).collect::<Vec<_>>(),
+            wanted
+        );
+        assert_eq!(
+            library_ids(&lines).len(),
+            4,
+            "one entry for each library card"
+        );
+        assert_eq!(printings_of(&[], companion), Vec::<Option<String>>::new());
     }
 
     #[rstest]

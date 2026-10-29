@@ -120,9 +120,8 @@ describe('the real page provider over the real table', () => {
     const tip = point(path(`attack:${attacker.object}`, '.combat-head'))
     expect(distanceTo(panelBox(0), tip)).toBeGreaterThan(0)
     expect(distanceTo(panelBox(0), tip)).toBeLessThanOrEqual(3.01)
-    // The panel holds cards (a graveyard, a commander, a hand), each with a face; none of them is where the line ends.
+    // No card of the viewer (its commanders wait in the hand dock) is where the line ends.
     const inside = [...document.querySelectorAll('[data-seat="0"] button[data-object-id]')]
-    expect(inside.length).toBeGreaterThan(0)
     for (const card of inside) {
       expect(distanceTo(faceBox(Number(card.getAttribute('data-object-id'))), tip)).toBeGreaterThan(3.01)
     }

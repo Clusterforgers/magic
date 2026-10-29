@@ -18,9 +18,14 @@ import type { ZoneView } from "./ZoneView";
  */
 export type TableView = { 
 /**
- * The seat this view was built for.
+ * The seat this view was built for. A spectator's view names the number of seats, which is no seat (see `spectator`).
  */
 viewer: PlayerId, 
+/**
+ * Whether the viewer is a spectator, no seat of the table: every public zone is listed and no hand unless the table
+ * has open hands. Told in every table of that viewer, so a client never counts seats; left out for a seat.
+ */
+spectator?: boolean, 
 /**
  * Name of the format being played.
  */

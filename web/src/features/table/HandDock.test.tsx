@@ -29,7 +29,7 @@ const dock = (): HTMLElement => must(document.querySelector<HTMLElement>('[data-
 const cardsOf = (): HTMLElement[] => [...hand().querySelectorAll<HTMLElement>('button[data-object-id]')]
 const vars = (name: string): number => Number.parseInt(hand().style.getPropertyValue(name), 10)
 
-/** The table with `count` cards in the viewer's hand. */
+/** The table with `count` cards in the viewer's hand and no commander waiting beside them, so the hand has the whole dock. */
 function withHand(count: number): (state: PlayState) => PlayState {
   return (state) => {
     const view = clone(must(state.view))
@@ -41,6 +41,7 @@ function withHand(count: number): (state: PlayState) => PlayState {
       ),
     ]
     must(view.players[0]).hand = { count, cards: ids }
+    must(view.players[0]).commanders = undefined
     return { ...state, view, objectsById: indexById(view.objects) }
   }
 }

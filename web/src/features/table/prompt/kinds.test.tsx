@@ -29,6 +29,7 @@ const BUILT: DecisionName[] = [
   'Discard',
   'ChooseTargets',
   'OrderTriggers',
+  'ChooseNumber',
 ]
 
 describe('the registry', () => {

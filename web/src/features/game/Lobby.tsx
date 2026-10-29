@@ -8,13 +8,17 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
 import { loadInvites } from '@/lib/invites'
+import { gameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
+import { preconsApi as sharedPrecons } from '@/net/precons'
+import type { PreconsApi } from '@/net/precons'
 import { DeckChooser } from './DeckChooser'
 import { useGame, usePlay } from './gameContext'
 import { Invites } from './Invites'
 import { JoinInvite } from './JoinInvite'
 import { lobbyRows, mayReady, removable, summaryText } from './lobbyModel'
 import { LobbyQuestion } from './LobbyQuestion'
+import { LobbyRules } from './LobbyRules'
 import { LobbySeatRow } from './LobbySeatRow'
 import { LobbyVisibility } from './LobbyVisibility'
 import { useDeckChoice } from './useDeckChoice'
@@ -34,6 +38,8 @@ export interface LobbyProps {
   api: LobbyApi
   /** The signed-in account's decks, for the deck chooser: the shared client in the app. */
   decks: DecksApi
+  /** The precons for the deck chooser: the shared client in the app. */
+  precons?: Pick<PreconsApi, 'list'>
   /** This seat's token, or undefined when the page acts through the signed-in session. */
   token: string | undefined
 }
@@ -47,7 +53,7 @@ export interface LobbyProps {
  * first. The server pushes the roster at every change; before the socket opens (and while it is down) the REST
  * lookup stands in.
  */
-export function Lobby({ api, decks, token }: LobbyProps) {
+export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps) {
   const { game, session, lookup } = useGame()
   const { seat, seatCount, status, roster } = usePlay(
     useShallow((state) => ({
@@ -61,6 +67,8 @@ export function Lobby({ api, decks, token }: LobbyProps) {
   const open = status === 'open'
   const host = seat === HOST_SEAT
   const known = lookup.game?.visibility
+  const tableFormat = lookup.game?.format ?? 'normal'
+  const tableRules = lookup.game?.house_rules
   const controls = useLobbyControls({ api, game, token, started: lookup.game?.started === true })
   const visibility = useVisibility({
     api,
@@ -127,6 +135,7 @@ export function Lobby({ api, decks, token }: LobbyProps) {
         ) : (
           <LobbyVisibility visibility={known} />
         )}
+        <LobbyRules rules={tableRules} format={tableFormat} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:items-start">
@@ -194,6 +203,9 @@ export function Lobby({ api, decks, token }: LobbyProps) {
             <DeckChooser
               api={api}
               decks={decks}
+              precons={precons}
+              game={game}
+              format={gameFormat(tableFormat)}
               signedIn={signedIn}
               current={mine?.deck}
               ready={ready}

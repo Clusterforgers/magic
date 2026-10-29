@@ -1,3 +1,4 @@
+import { CardPicture } from '@/features/cards/CardPicture'
 import { CircleAlertIcon, InfoIcon, ShieldCheckIcon } from 'lucide-react'
 import { Fragment, useId } from 'react'
 import type { ComponentProps, ReactNode } from 'react'
@@ -211,6 +212,18 @@ function Body({ card, api }: { card: CardHit; api: CardsApi }) {
         <DialogDescription>{card.type_line}</DialogDescription>
         <SupportMark support={support} className="justify-self-start" />
       </header>
+      <div data-slot="preview-pictures" className="flex gap-2">
+        {Array.from({ length: hasManyFaces(card) ? 2 : 1 }, (_, face) => (
+          <CardPicture
+            key={face}
+            oracleId={card.oracle_id}
+            name={card.name}
+            face={face}
+            alt={face === 0 ? card.name : ''}
+            className="w-40 max-w-[calc(50%-0.25rem)]"
+          />
+        ))}
+      </div>
       {state.status === 'loading' ? (
         <Loading label="Loading the card…" className="grid gap-2">
           <Skeleton className="h-4 w-1/3" />

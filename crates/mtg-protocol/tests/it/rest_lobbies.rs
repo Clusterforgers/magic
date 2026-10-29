@@ -100,6 +100,7 @@ fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> 
         result,
         visibility,
         manual_play: false,
+        house_rules: None,
     }
 }
 
@@ -413,6 +414,7 @@ fn the_bindings_carry_the_game_browser_types() {
         "result: GameResult | null",
         "visibility: Visibility",
         "manual_play: boolean",
+        "house_rules?: HouseRules",
     ] {
         assert!(files["GameInfo.ts"].contains(field), "{field}");
     }
@@ -475,4 +477,23 @@ fn the_manual_play_flag_must_be_a_flag(#[case] flag: Option<Value>) {
     }
     assert!(serde_json::from_value::<LobbyGame>(row).is_err());
     assert!(serde_json::from_value::<GameInfo>(info).is_err());
+}
+
+#[test]
+fn the_game_lookup_names_house_rules_only_when_some_are_set() {
+    let none = lookup(false, None, Visibility::Invite);
+    let bare = serde_json::to_value(&none).unwrap();
+    assert!(bare.get("house_rules").is_none());
+
+    let rules = mtg_core::house::HouseRules {
+        starting_life: Some(30),
+        ..Default::default()
+    };
+    let info = GameInfo {
+        house_rules: Some(rules),
+        ..none
+    };
+    let value = serde_json::to_value(&info).unwrap();
+    assert_eq!(value["house_rules"], json!({ "starting_life": 30 }));
+    assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), info);
 }

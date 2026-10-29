@@ -17,6 +17,9 @@ pub const DEFAULT_BASE: &str = "https://api.anthropic.com";
 /// The longest wait between two tries.
 const MAX_WAIT: Duration = Duration::from_secs(60);
 
+/// Time beyond the client timeout after which a request is dropped by force, so that nothing a connection does can hang a run.
+const DEADLINE_GRACE: Duration = Duration::from_secs(5);
+
 /// How much of an unparsed error body is kept in a message.
 const BODY_KEPT: usize = 300;
 
@@ -99,6 +102,7 @@ pub struct HttpClient<D> {
     key: Option<ApiKey>,
     attempts: u32,
     backoff: Duration,
+    timeout: Duration,
     progress: Progress,
     dialect: D,
 }
@@ -133,6 +137,7 @@ impl<D: Dialect> HttpClient<D> {
             key,
             attempts: config.attempts.max(1),
             backoff: config.backoff,
+            timeout: config.timeout,
             progress,
             dialect,
         })
@@ -166,9 +171,22 @@ impl<D: Dialect> HttpClient<D> {
         }
     }
 
+    /// One try, cancelled when it outlives the timeout (and a grace for the client's own timer to fire first).
+    async fn send_bounded(&self, request: &Request) -> Result<Response, ModelError> {
+        tokio::time::timeout(self.timeout + DEADLINE_GRACE, self.send_once(request))
+            .await
+            .unwrap_or(Err(ModelError::Timeout {
+                after: self.timeout,
+            }))
+    }
+
     fn transport_error(&self, error: reqwest::Error) -> ModelError {
         let error = error.without_url();
-        if error.is_connect() {
+        if error.is_timeout() {
+            ModelError::Timeout {
+                after: self.timeout,
+            }
+        } else if error.is_connect() {
             ModelError::Unreachable {
                 endpoint: self.endpoint.clone(),
                 detail: error_chain(&error),
@@ -181,7 +199,7 @@ impl<D: Dialect> HttpClient<D> {
     async fn send_with_retries(&self, request: &Request) -> Result<Response, ModelError> {
         let mut attempt = 1;
         loop {
-            match self.send_once(request).await {
+            match self.send_bounded(request).await {
                 Err(error) if attempt < self.attempts && error.is_retryable() => {
                     let wait = error
                         .retry_after()

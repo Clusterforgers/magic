@@ -17,6 +17,8 @@ describe('clockText', () => {
     ['ChooseModeCancel', 2, 'Cancelling for you in 2 s'],
     ['ChooseCards', 10, 'Choosing the first cards for you in 10 s'],
     ['ChooseCardsNone', 6, 'Choosing no cards for you in 6 s'],
+    ['ChooseNumber', 5, 'Choosing the smallest number for you in 5 s'],
+    ['ChooseNumberCancel', 4, 'Cancelling for you in 4 s'],
     ['OrderCards', 10, 'Keeping the order for you in 10 s'],
   ] as const)('%s with %i s left reads "%s"', (kind, seconds, text) => {
     expect(clockText(kind, seconds)).toBe(text)
@@ -75,6 +77,12 @@ describe('clockKind', () => {
     ],
     ['a choice of two cards', cards(2, 3), 'ChooseCards'],
     ['a choice of up to some cards, which the server answers with none', cards(0, 2), 'ChooseCardsNone'],
+    ['a number', { ChooseNumber: { source: 1, min: 0, max: 3 } }, 'ChooseNumber'],
+    [
+      'a number that can be backed out of',
+      { ChooseNumber: { source: 1, min: 0, max: 3, can_cancel: true } },
+      'ChooseNumberCancel',
+    ],
     ['an order of cards', KINDS.OrderCards, 'OrderCards'],
   ])('tells %s as %s', (_what, kind, expected) => {
     expect(clockKind(kind)).toBe(expected)

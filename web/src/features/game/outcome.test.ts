@@ -22,7 +22,7 @@ describe('describeLoss', () => {
     ['Poison', 'had too many poison counters'],
     ['Conceded', 'conceded'],
     ['OpponentReachedLife', 'lost to a player at the winning life total'],
-    ['CommanderDamage', 'was dealt 21 or more combat damage by one commander'],
+    ['CommanderDamage', 'lost to commander damage'],
     [{ Format: 'commander damage' }, 'lost: commander damage'],
   ])('puts %j as "%s"', (reason, words) => {
     expect(describeLoss(reason)).toBe(words)

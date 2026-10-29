@@ -56,6 +56,7 @@ async function makeGame(
 /** The create form, filled in by a person who gives a name and takes the rest as it is. */
 async function createFromForm(page: Page, seats: number): Promise<void> {
   await page.goto('/new')
+  await page.getByRole('radio', { name: /^Normal/ }).check()
   await expect(page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
   await page.getByLabel('Seats').selectOption(String(seats))
   await page.getByLabel('Your name').fill(unique('Host'))
@@ -132,6 +133,16 @@ const STOPS: readonly Stop[] = [
       await page.goto('/new')
       await page.getByText('Advanced', { exact: true }).click()
       await expect(page.getByRole('checkbox', { name: 'Give every seat its own link' })).toBeVisible()
+    },
+  },
+  {
+    name: 'Create a game, with House rules open',
+    fitsFrom: Infinity,
+    actions: { 'Create game': 'main form button[type="submit"]' },
+    async open(page) {
+      await page.goto('/new')
+      await page.locator('[data-slot="house-rules"] summary').click()
+      await expect(page.getByLabel('Starting life')).toBeVisible()
     },
   },
   {

@@ -1,6 +1,7 @@
-/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay automatically and Cancel answer once, a chosen source can be taken back, and a new decision starts clean. */
+/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay automatically and Cancel answer once (Pay automatically is disabled with its reason when the game offers none), a source that cannot finish the payment is not offered, a chosen source can be taken back, and a new decision starts clean. */
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import { AUTO_REASON } from './kinds/PayMana'
 import type { Answer, ObjectId, PayOptions, Payment } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { cost, manaOfLetter, poolOf, source } from '@/test-utils/mana'
@@ -12,7 +13,11 @@ const view = fixture.view
 const byId = new Map(view.objects.map((object) => [object.id, object]))
 const hand = must(view.players[0]?.hand.cards)
 const battlefield = view.objects.filter((object) => object.zone === 'Battlefield' && object.controller === 0)
-const OWN: ObjectId[] = [...hand, ...battlefield.map((object) => object.id)]
+const OWN: ObjectId[] = [
+  ...(view.players[0]?.command.cards ?? []),
+  ...hand,
+  ...battlefield.map((object) => object.id),
+]
 const lands = battlefield
   .filter((object) => object.types.includes('Land') && object.permanent?.tapped === false)
   .map((object) => object.id)
@@ -269,7 +274,7 @@ const PAYMENTS: [string, string, string, Sources, string[], Payment][] = [
     '',
     [
       [0, 'GU'],
-      [1, 'G'],
+      [1, 'U'],
     ],
     ['0/U', '1'],
     payment(
@@ -286,7 +291,7 @@ const PAYMENTS: [string, string, string, Sources, string[], Payment][] = [
     '',
     [
       [0, 'GU'],
-      [1, 'R'],
+      [1, 'G'],
     ],
     ['0/G', '1'],
     payment(
@@ -631,7 +636,12 @@ describe('a land with several kinds of mana', () => {
   })
 
   it('does not ask when two abilities make the same mana, and adds the first', async () => {
-    const { land, user, chips } = renderPay(payOptions('{2}', [[0, 'RR']]))
+    const { land, user, chips } = renderPay(
+      payOptions('{2}', [
+        [0, 'RR'],
+        [1, 'R'],
+      ]),
+    )
     await user.click(land(0))
     expect(screen.queryByRole('group', { name: `Mana from ${nameOf(0)}` })).toBeNull()
     expect(chips()).toEqual([`Remove red from ${nameOf(0)}`])
@@ -730,9 +740,18 @@ describe('Pay automatically, Cancel and Confirm', () => {
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
   })
 
-  it('has no Pay automatically when the game offers none', () => {
+  it('disables Pay automatically with its reason when the game offers none', () => {
     renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false }))
-    expect(screen.queryByRole('button', { name: 'Pay automatically' })).toBeNull()
+    const auto = screen.getByRole('button', { name: 'Pay automatically' })
+    expect(auto).toBeDisabled()
+    expect(auto).toHaveAccessibleDescription(AUTO_REASON)
+    expect(screen.getByText(AUTO_REASON)).toBeVisible()
+  })
+
+  it('shows no reason while the game can pay automatically', () => {
+    renderPay(payOptions('{U}', [[0, 'U']]))
+    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeEnabled()
+    expect(screen.queryByText(AUTO_REASON)).toBeNull()
   })
 
   it.each([
@@ -911,7 +930,7 @@ describe('the keyboard', () => {
     const { land, user, confirm, answer } = renderPay(
       payOptions('{1}{U}', [
         [0, 'GU'],
-        [1, 'G'],
+        [1, 'U'],
       ]),
     )
     act(() => land(0).focus())
@@ -1056,8 +1075,8 @@ describe('what the player is told', () => {
     )
   })
 
-  it('says when nothing left can pay', async () => {
-    const { steps, text, land } = renderPay(
+  it('offers no source that cannot finish the payment, and says nothing can pay', async () => {
+    const { text, land, user, chips } = renderPay(
       payOptions(
         '{U}{U}',
         [
@@ -1068,11 +1087,19 @@ describe('what the player is told', () => {
         { auto_available: false },
       ),
     )
-    await steps(['0', '1'])
-    expect(land(1)).toHaveAttribute('data-highlight', 'dimmed')
+    // One Island alone leaves a blue no other source makes, so it is not offered.
+    expect(land(0)).toHaveAttribute('data-highlight', 'dimmed')
+    await user.click(land(0))
+    expect(chips()).toEqual([])
     expect(text()).toBe(
-      `Added blue from ${nameOf(0)}. Still to pay: 1 blue. Nothing left can pay it; remove a choice or cancel.`,
+      'You cannot pay 2 blue for Selesnya Evangel with the mana you have. Cancel to go back.',
     )
+  })
+
+  it('says what is still owed when floating mana starts a payment the sources finish', async () => {
+    const { steps, text } = renderPay(payOptions('{U}{U}', [[0, 'U']], { pool: poolOf('U') }))
+    await steps(['pool:U'])
+    expect(text()).toContain('Still to pay: 1 blue.')
   })
 
   it('says so at once when the spell cannot be paid for', () => {

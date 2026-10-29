@@ -12,7 +12,7 @@ const hand = must(view.players[0]?.hand.cards)
 const battlefield = view.objects
   .filter((object) => object.zone === 'Battlefield' && object.controller === 0)
   .map((object) => object.id)
-const OWN: ObjectId[] = [...hand, ...battlefield]
+const OWN: ObjectId[] = [...(view.players[0]?.command.cards ?? []), ...hand, ...battlefield]
 const COUNTS = [0, 1, 2, 3, 4, 5, 6, 7]
 
 interface Kind {

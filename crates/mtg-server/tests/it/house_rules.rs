@@ -94,6 +94,53 @@ async fn the_rules_of_the_turn_and_life_are_listed_with_the_game() {
     assert_eq!(listed_rules(&server).await, [Some(rules)]);
 }
 
+/// The lookup of an invite-only game, which no game browser lists, made with `house_rules` (none when `None`).
+async fn lookup_of_invite_game(server: &TestServer, house_rules: Option<Value>) -> Value {
+    let mut body = json!({
+        "format": "normal",
+        "visibility": "invite",
+        "seats": [
+            { "name": "Ann", "deck": "mono-green" },
+            { "name": "Bo", "deck": "mono-red" },
+        ],
+    });
+    if let Some(rules) = house_rules {
+        body["house_rules"] = rules;
+    }
+    let made = call(
+        server.addr,
+        "POST",
+        "/api/games",
+        Some(&body.to_string()),
+        &[],
+    )
+    .await;
+    assert_eq!(made.status, 201, "{}", made.text());
+    let id = made.json()["game"].as_str().unwrap().to_owned();
+    let reply = call(server.addr, "GET", &format!("/api/games/{id}"), None, &[]).await;
+    assert_eq!(reply.status, 200, "{}", reply.text());
+    reply.json()
+}
+
+#[tokio::test]
+async fn the_lookup_of_an_invite_only_game_names_its_rules() {
+    let server = server().await;
+    let rules = json!({ "starting_life": 30, "mulligan_style": "vancouver" });
+    let lookup = lookup_of_invite_game(&server, Some(rules.clone())).await;
+    assert_eq!(lookup["house_rules"], rules);
+    assert_eq!(listed_rules(&server).await, Vec::<Option<Value>>::new());
+}
+
+#[rstest]
+#[case::absent(None)]
+#[case::empty(Some(json!({})))]
+#[tokio::test]
+async fn the_lookup_of_a_game_without_rules_names_none(#[case] rules: Option<Value>) {
+    let server = server().await;
+    let lookup = lookup_of_invite_game(&server, rules).await;
+    assert!(lookup.get("house_rules").is_none(), "{lookup}");
+}
+
 #[rstest]
 #[case::absent(None)]
 #[case::empty(Some(json!({})))]

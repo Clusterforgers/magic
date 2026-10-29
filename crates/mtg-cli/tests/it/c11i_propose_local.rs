@@ -72,6 +72,7 @@ async fn send(
             json_mode,
             schema: false,
             max_answer_tokens: 16_384,
+            reasoning: None,
         },
         key,
         &config(base),

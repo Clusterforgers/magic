@@ -8,6 +8,7 @@ import { ConcedeDialog } from './ConcedeDialog'
 import { canConcede } from './selectors'
 import { SideSheetButton } from './SideTabs'
 import { TableMenu } from './TableMenu'
+import { TableRules } from './TableRules'
 import type { TableMode } from './layout'
 import { TurnBadge } from './TurnBadge'
 import { StepLadder } from './turn/StepLadder'
@@ -70,6 +71,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
       <TurnBadge />
       <StepLadder />
       <span className="ml-auto" />
+      <TableRules />
       <SideSheetButton compact={compact} />
       <TableMenu
         compact={compact}

@@ -309,7 +309,8 @@ describe('graveyard and exile', () => {
 
 describe('the one-line pod', () => {
   it('keeps the whole pod in a single row: identity first, then the chips', () => {
-    show(2, undefined, 'line')
+    // Without the commander damage it took, Cy has nothing for the status row.
+    show(2, (view) => void (must(view.players[2]).commander_damage = undefined), 'line')
     const cy = panel('Cy')
     const row = must(cy.firstElementChild)
     expect(row).toContainElement(cy.querySelector('h3'))

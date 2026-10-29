@@ -1,3 +1,4 @@
+import { HoverPicture } from '@/features/cards/CardPicture'
 import { EllipsisVerticalIcon } from 'lucide-react'
 import { useId } from 'react'
 import { Button } from '@/components/ui/button'
@@ -44,15 +45,17 @@ export function ResultRow({ card, draft, onAdd, onPreview }: ResultRowProps) {
         className="relative grid min-h-11 min-w-0 flex-1 grid-cols-[minmax(0,1fr)] rounded-lg px-2 py-1 transition-colors duration-fast ease-out hover:bg-accent data-full:opacity-50"
       >
         <span className="flex min-w-0 items-center justify-between gap-2">
-          <button
-            type="button"
-            aria-haspopup="dialog"
-            title={card.name}
-            onClick={(event) => onPreview(card, event.currentTarget)}
-            className="relative z-10 -my-1 min-w-0 truncate rounded-sm py-1 text-left text-sm font-medium underline-offset-4 hover:underline"
-          >
-            {card.name}
-          </button>
+          <HoverPicture oracleId={card.oracle_id} name={card.name}>
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              title={card.name}
+              onClick={(event) => onPreview(card, event.currentTarget)}
+              className="relative z-10 -my-1 min-w-0 truncate rounded-sm py-1 text-left text-sm font-medium underline-offset-4 hover:underline"
+            >
+              {card.name}
+            </button>
+          </HoverPicture>
           <ManaCost cost={card.mana_cost} />
         </span>
         <span
