@@ -209,6 +209,10 @@ mod spell_value;
 mod spells_cast_damage;
 mod standin;
 mod swaps;
+mod t17b_conditions;
+mod t17b_durations;
+mod t17b_each;
+mod t17b_protection;
 mod tail_sentences;
 mod target_and;
 mod target_costs;
@@ -400,6 +404,17 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_w12a(ability, texts);
     add_w13a(ability, texts);
     add_w16a(ability, texts);
+    add_t17b(ability, texts);
+}
+
+/// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
+/// a pump other than the turn, several targets that each change, protection from a group, and the conditions of a static
+/// ability about a count, an Equipment or an Aura attached, or the cards drawn.
+fn add_t17b(ability: &Ability, texts: &mut Vec<String>) {
+    t17b_durations::add(ability, texts);
+    t17b_each::add(ability, texts);
+    t17b_protection::add(ability, texts);
+    t17b_conditions::add(ability, texts);
 }
 
 /// Adds the wordings of the shapes the stored local-model proposals hit (r4d-d, r4b-d): an entry with counters under a
