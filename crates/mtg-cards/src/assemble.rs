@@ -991,6 +991,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         layout: Layout::Normal,
         manual: Vec::new(),
         faces: Vec::new(),
+        identity: None,
     }
 }
 

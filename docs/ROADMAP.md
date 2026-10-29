@@ -87,6 +87,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Exert: the choice in the attack declaration, `Exerted` and `ExertEnded`, the untap step of the exerting player it skips and its "When you do" and "Whenever you exert a creature" triggers.
 - Mill and rad counters: mill triggers per card, per batch and per player, target bounds from a mill batch, cards milled this turn, the radiation rule, entering tapped for rad counters, costs reduced per rad counter and losing all rad counters.
 - Statics of the rules: cards in graveyards that can't be targeted, players who can't lose or win, opponents who can't cast on your turn, combat damage by toughness and counters that remain as a card changes zones.
+- Card identity in views: `ObjectView.identity` names the oracle id of a card the viewer identifies, set by the server on every card it reads.
 
 ## M3 Card system
 
@@ -112,10 +113,11 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test
 
 ### Manual cards and views
-- [~] (v1a) (v1-views-final) The activated abilities of an object in its view with their oracle wording (`ObjectView.activated`, the loyalty abilities' text), so a menu names what `PriorityOptions.abilities` offers
+- [ ] (v1a) The activated abilities of an object in its view with their oracle wording (`ObjectView.activated`, the loyalty abilities' text), so a menu names what `PriorityOptions.abilities` offers
 - [ ] (v1b) A card revealed and moved to a hidden zone in one batch reaches every seat it was shown to as it was seen (`EventBatch.shown`), so the log names it
 - [ ] (v1c) A spectator audience: `StateView::for_spectator` and `TableView.spectator`, so a client tells a spectator's view from a seat's without counting seats
-- [ ] (v1d) Card identity in the view: the oracle id and the printing of an object the viewer identifies (`ObjectView.oracle_id`, `printing_id`), filled by the server from the seat's deck, so the table draws the art and the full rules text
+- [ ] (v1d) The printing a deck line chose reaches the game (`DeckRef::Oracle` and the catalog), so `ObjectView.identity.printing_id` names it and the table draws that art
+- [ ] (v1e) The city's blessing in the player view (`PlayerView.citys_blessing`, public), so the table shows the badge without reading events
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
