@@ -23,6 +23,11 @@ describe('?menu=', () => {
   ])('reads %j as %j', (value, expected) => {
     expect(parseDevSearch({ menu: value }).menu).toBe(expected)
   })
+
+  it.each([1, 'hand', 'opp'])('keeps what it made of %j when the router reads it again', (value) => {
+    const once = parseDevSearch({ menu: value })
+    expect(parseDevSearch(once as unknown as Record<string, unknown>).menu).toBe(once.menu)
+  })
 })
 
 describe('the card the menu opens on', () => {

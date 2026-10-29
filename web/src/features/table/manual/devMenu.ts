@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import type { ObjectId, PlayerId, StateView } from '@/protocol/generated'
 import type { DevMenu } from '../devSearch'
 
-/** How many animation frames the table gets to draw the card before the request gives up. */
-const FRAMES = 120
+/** How many times, 100 ms apart, the table gets to draw the card before the request gives up. */
+const TRIES = 100
 
 /** The cards `kind` names, the best first: a creature with counters shows the most of the menu. */
 export function menuCandidates(view: StateView, viewer: PlayerId, kind: DevMenu): ObjectId[] {
@@ -43,13 +43,14 @@ export function rightClickFirst(ids: readonly ObjectId[], root: ParentNode = doc
 export function useOpenDevMenu(ids: readonly ObjectId[] | undefined): void {
   useEffect(() => {
     if (ids === undefined) return
-    let frame = 0
-    let left = FRAMES
+    let timer = 0
+    let left = TRIES
+    // A timer and not a frame: a page that is not shown draws no frames.
     const tick = (): void => {
       if (rightClickFirst(ids) || (left -= 1) <= 0) return
-      frame = window.requestAnimationFrame(tick)
+      timer = window.setTimeout(tick, 100)
     }
-    frame = window.requestAnimationFrame(tick)
-    return () => window.cancelAnimationFrame(frame)
+    timer = window.setTimeout(tick, 100)
+    return () => window.clearTimeout(timer)
   }, [ids])
 }

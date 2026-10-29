@@ -56,7 +56,8 @@ export interface DevSearch {
 export type DevMenu = 'permanent' | 'hand' | 'opponent'
 
 function menuOf(value: unknown): DevMenu | undefined {
-  if (value === 1 || value === true || value === '1') return 'permanent'
+  // The router parses an address again with what it made of it, so the names it made stay valid.
+  if (value === 1 || value === true || value === '1' || value === 'permanent') return 'permanent'
   if (value === 'hand') return 'hand'
   return value === 'opp' || value === 'opponent' ? 'opponent' : undefined
 }
