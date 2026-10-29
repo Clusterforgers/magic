@@ -137,7 +137,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
 - [~] (w3b) (w3-prompts-a) The DivideAmount prompt: the total split among the targets, each at least one
 - [~] (w3c) (w3-prompts-a) The ChooseCosts prompt: the optional costs the player can pay, as toggles
-- [ ] (w3i) A replacement candidate carries the words of its own effect, so the ChooseReplacement prompt shows the one ability that applies instead of the whole card text (`ReplacementCandidate`)
+- [ ] (w3k) A replacement candidate carries the words of its own effect, so the ChooseReplacement prompt shows the one ability that applies instead of the whole card text (`ReplacementCandidate`)
 - [ ] (w3j) A scry is one screen: the engine asks the split and the order of both piles in one decision, so the player orders the top pile where the cards are split instead of in the two `OrderCards` that follow
 - [ ] (w3f) The payment prompt spends restricted mana by hand, read against `PayOptions.spend`
 - [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise
@@ -272,7 +272,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
-- [~] (t17b) (t17b-continuous-writers) Writers for the continuous effects of spells and activated abilities, then for modified power and toughness and added keywords of statics; 51 stored local-model proposals wait on them (`docs/cards-dsl.md`, Model-assisted reading)
+- [ ] (t17b) Writers left for the continuous effects of the stored local-model proposals: statics over a group by attachment or subtype list ("Enchanted creatures you control get +2/+2", "Equipped Warriors you control have double strike", "Each creature that's a Barbarian, a Warrior, or a Berserker gets +2/+2"), "for each of its colors" and "for each Aura attached to it" amounts, abilities in quotes granted to a group, and a target spell or permanent that becomes a color (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (t15b) The checker writers for four accepted-in-principle proposals of the popular cards: Boseiju, Who Endures ("That player may search their library for a land card with a basic land type, put it onto the battlefield, then shuffle"), Takenuma, Abandoned Mire (mill then return a creature or planeswalker card), Sink into Stupor ("target spell or nonland permanent an opponent controls") and Ragavan, Nimble Pilferer (exile the top card of that player's library, until end of turn you may cast it)
 - [ ] (t15c) A counter that exiles the spell instead of putting it into its owner's graveyard, and the free cast "if it's not your turn": Force of Negation
 - [ ] (t15d) Mana whose spell can't be countered ("Spend this mana only to cast a creature spell of the chosen type, and that spell can't be countered"): Cavern of Souls, Delighted Halfling
