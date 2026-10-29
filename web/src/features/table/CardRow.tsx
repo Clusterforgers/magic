@@ -44,6 +44,12 @@ interface CardRowProps {
    * px (the name line). Only with `box`.
    */
   fan?: { pile: number; head: number } | undefined
+  /**
+   * The tuck of a battlefield lane (`LanePlace.tuck` and `lift`): every box is `lift` px taller, the card standing at
+   * its foot, and each attachment tucked behind a host (`RowEntry.tucked`) shows its top `each` px above the next.
+   * Only with `box` and `stacks`.
+   */
+  tuck?: { each: number; lift: number } | undefined
   /** One line that scrolls sideways instead of wrapping onto more lines. */
   single?: boolean
   className?: string
@@ -64,6 +70,44 @@ function entriesById(stacks: readonly RowEntry[] | undefined): ReadonlyMap<Objec
   return byId
 }
 
+/** Every host with attachments tucked behind it, by id, to those attachments. */
+function tuckedById(stacks: readonly RowEntry[] | undefined): ReadonlyMap<ObjectId, readonly ObjectId[]> {
+  const byId = new Map<ObjectId, readonly ObjectId[]>()
+  for (const entry of stacks ?? []) {
+    const host = entry.ids[0]
+    if (entry.tucked !== undefined && entry.tucked.length > 0 && host !== undefined)
+      byId.set(host, entry.tucked)
+  }
+  return byId
+}
+
+interface TuckedProps {
+  ids: readonly ObjectId[]
+  size: CardSize
+  each: number
+  lift: number
+  /** The roving tab stop of the row, which may be one of them. */
+  current: ObjectId | null
+}
+
+/**
+ * The attachments behind a host, deepest first: the last lies `each` px above the host, every other `each` px above
+ * the one after it, so each shows its name line. They keep their own cards, which a prompt marks and a click picks.
+ */
+function TuckedCards({ ids, size, each, lift, current }: TuckedProps) {
+  return ids.map((id, at) => (
+    <div
+      key={id}
+      data-tucked={id}
+      // The ground under each card keeps a dimmed or translucent face from showing the one behind it.
+      className="absolute left-0 rounded-md bg-lane"
+      style={{ top: lift - (ids.length - at) * each, zIndex: at }}
+    >
+      <Card id={id} size={size} fit tabbable={id === current} />
+    </div>
+  ))
+}
+
 /**
  * A list of cards with one tab stop: Tab enters it, the arrow keys, Home and End move along it. Stacks open and close
  * in place; the card that was focused (or the stack it was in) keeps the focus, and Escape closes the stack the focus
@@ -79,6 +123,7 @@ export function CardRow({
   box,
   gap,
   fan,
+  tuck,
   single = false,
   className,
 }: CardRowProps) {
@@ -86,6 +131,8 @@ export function CardRow({
   const list = useRef<HTMLUListElement>(null)
   const focusAfter = useRef<ObjectId | null>(null)
   const entryOf = useMemo(() => entriesById(stacks), [stacks])
+  const tuckedOf = useMemo(() => tuckedById(stacks), [stacks])
+  const behind = useMemo(() => new Set([...tuckedOf.values()].flat()), [tuckedOf])
   const width = box?.width
   const height = box?.height
   const style = useMemo<CSSProperties | undefined>(() => {
@@ -122,8 +169,10 @@ export function CardRow({
     if (focused !== null && entry?.open === true && !entry.held) toggle(focused)
   }
   if (ids.length === 0 && ghosts.length === 0) return null
-  const items = ghosts.length === 0 ? ids : withGhosts(ids, ghosts)
+  const shown = behind.size === 0 ? ids : ids.filter((id) => !behind.has(id))
+  const items = ghosts.length === 0 ? shown : withGhosts(shown, ghosts)
   const fit = box !== undefined
+  const lifted = fit && tuck !== undefined && tuck.lift > 0 ? tuck : undefined
   const spaced = fit && gap !== undefined
   const fanned = fit && fan !== undefined && fan.pile > 1
   return (
@@ -161,10 +210,17 @@ export function CardRow({
             spaced && 'relative hover:z-10 focus-within:z-10 [&:not(:first-child)]:ml-(--card-gap)',
             // No raise on hover: a raised card would cover the head of the next one under the pointer.
             fanned && 'relative has-focus-visible:z-10',
+            // Every box of a lane with a tuck is as tall, so the cards of a line stand on one foot.
+            lifted !== undefined && 'relative isolate',
           )
+          const behindHost = tuckedOf.get(item)
           if (entry !== undefined && !entry.open) {
             return (
-              <li key={item} className={itemClass}>
+              <li
+                key={item}
+                className={itemClass}
+                style={lifted === undefined ? undefined : { paddingTop: lifted.lift }}
+              >
                 <CardStack
                   id={item}
                   count={entry.ids.length}
@@ -183,8 +239,34 @@ export function CardRow({
               key={item}
               data-stack-open={entry !== undefined && entry.ids[0] === item ? entry.ids.length : undefined}
               className={cn(itemClass, closes && 'relative')}
+              style={lifted === undefined ? undefined : { paddingTop: lifted.lift }}
             >
-              <Card id={item} size={size} fit={fit} tabbable={tabbable} />
+              {lifted !== undefined && behindHost !== undefined ? (
+                <TuckedCards
+                  ids={behindHost}
+                  size={size}
+                  each={lifted.each}
+                  lift={lifted.lift}
+                  current={roving.current}
+                />
+              ) : null}
+              {behindHost === undefined ? (
+                <Card id={item} size={size} fit={fit} tabbable={tabbable} />
+              ) : (
+                <div
+                  data-host={item}
+                  className="relative flex rounded-md bg-lane"
+                  style={{ zIndex: behindHost.length }}
+                >
+                  <Card id={item} size={size} fit={fit} tabbable={tabbable} />
+                </div>
+              )}
+              {lifted === undefined && behindHost !== undefined
+                ? // Before the zone is measured there is no tuck to draw: the attachments follow their host.
+                  behindHost.map((id) => (
+                    <Card key={id} id={id} size={size} fit={fit} tabbable={id === roving.current} />
+                  ))
+                : null}
               {closes ? (
                 <button
                   type="button"

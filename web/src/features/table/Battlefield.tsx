@@ -55,11 +55,28 @@ interface LaneProps {
   /** The fanned piles of a lands lane (`LanePlace.pile` and `head`); missing or 1 for a plain lane. */
   pile?: number | undefined
   head?: number | undefined
+  /** The tuck of the lane (`LanePlace.tuck` and `lift`); missing or 0 without attachments tucked at a host. */
+  tuck?: number | undefined
+  lift?: number | undefined
 }
 
 /** One lane of a seat's permanents; it redraws only when its stacks, their state or its sizes change. */
 const Lane = memo(
-  function Lane({ seat, lane, label, size, entries, onToggle, width, height, span, pile, head }: LaneProps) {
+  function Lane({
+    seat,
+    lane,
+    label,
+    size,
+    entries,
+    onToggle,
+    width,
+    height,
+    span,
+    pile,
+    head,
+    tuck,
+    lift,
+  }: LaneProps) {
     const ghosts = useGhosts(seat, lane)
     const ids = useMemo(() => visibleIds(entries), [entries])
     const box = useMemo<CardBox | undefined>(
@@ -69,6 +86,10 @@ const Lane = memo(
     const fan = useMemo(
       () => (pile === undefined || head === undefined || pile < 2 ? undefined : { pile, head }),
       [pile, head],
+    )
+    const tucks = useMemo(
+      () => (tuck === undefined || lift === undefined || lift <= 0 ? undefined : { each: tuck, lift }),
+      [tuck, lift],
     )
     if (ids.length === 0 && ghosts.length === 0) return null
     return (
@@ -87,6 +108,7 @@ const Lane = memo(
           size={faceOf(width, lane === 'lands' ? 'compact' : size)}
           box={box}
           fan={fan}
+          tuck={tucks}
         />
       </div>
     )
@@ -103,6 +125,8 @@ const Lane = memo(
     a.span === b.span &&
     a.pile === b.pile &&
     a.head === b.head &&
+    a.tuck === b.tuck &&
+    a.lift === b.lift &&
     sameEntries(a.entries, b.entries),
 )
 
@@ -209,6 +233,8 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
                   span={'span' in place ? place.span : undefined}
                   pile={'pile' in place ? place.pile : undefined}
                   head={'head' in place ? place.head : undefined}
+                  tuck={'tuck' in place ? place.tuck : undefined}
+                  lift={'lift' in place ? place.lift : undefined}
                 />
               ))}
             </div>

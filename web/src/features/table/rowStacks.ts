@@ -18,6 +18,8 @@ import type { BattlefieldRows } from './selectors'
 export interface StackIds {
   key: string
   ids: readonly ObjectId[]
+  /** The attachments tucked behind a lone host (`tuckedOf`); left out while it has none. */
+  tucked?: readonly ObjectId[]
 }
 
 /** The stacks of one seat by row. */
@@ -39,15 +41,55 @@ export const NO_SEAT_STACKS: SeatStacks = { plain: NO_STACKS, merged: NO_STACKS 
 
 type Objects = PlayState['objectsById']
 
-const idsOf = (stacks: readonly Stack[]): StackIds[] =>
-  stacks.map((stack) => ({ key: stack.key, ids: stack.members.map((member) => member.id) }))
+/** The order attachments tuck in: Auras, then Equipment, then Fortifications, then anything else attached. */
+const TUCK_ORDER = ['Aura', 'Equipment', 'Fortification']
+
+const tuckRank = (subtypes: readonly string[] | undefined): number => {
+  const rank = TUCK_ORDER.findIndex((kind) => subtypes?.includes(kind) === true)
+  return rank === -1 ? TUCK_ORDER.length : rank
+}
+
+/**
+ * Whether a permanent is drawn tucked behind its host instead of in a box of its own: it is attached to a permanent
+ * the viewer sees on the battlefield.
+ */
+export function isTucked(objects: Objects, id: ObjectId): boolean {
+  const host = objects[id]?.attached_to
+  return host !== undefined && objects[host]?.zone === 'Battlefield'
+}
+
+/** The attachments drawn behind a host, deepest first: Auras, then Equipment, then Fortifications, each in id order. */
+export function tuckedOf(objects: Objects, host: ObjectId): ObjectId[] {
+  const attached = (objects[host]?.attachments ?? []).filter(
+    (id) => objects[id]?.zone === 'Battlefield' && objects[id]?.attached_to === host,
+  )
+  return attached
+    .map((id) => ({ id, rank: tuckRank(objects[id]?.subtypes) }))
+    .sort((a, b) => a.rank - b.rank || a.id - b.id)
+    .map((entry) => entry.id)
+}
+
+/** A stack's ids, with the attachments tucked behind it when it is a lone host. */
+function withTucked(key: string, ids: readonly ObjectId[], objects: Objects): StackIds {
+  const host = ids.length === 1 ? ids[0] : undefined
+  const tucked = host === undefined ? [] : tuckedOf(objects, host)
+  return tucked.length === 0 ? { key, ids } : { key, ids, tucked }
+}
 
 function stacksOfRows(rows: BattlefieldRows, objects: Objects, view: StateView): SeatStacks {
+  const idsOf = (stacks: readonly Stack[]): StackIds[] =>
+    stacks.map((stack) =>
+      withTucked(
+        stack.key,
+        stack.members.map((member) => member.id),
+        objects,
+      ),
+    )
   const permanents = (row: RowKind): Groupable[] => {
     const list: Groupable[] = []
     for (const id of rows[row]) {
       const object = objects[id]
-      if (object === undefined) continue
+      if (object === undefined || isTucked(objects, id)) continue
       const role = combatRoleOf(view.combat, id)
       list.push(role === null ? object : { ...object, role })
     }
@@ -70,7 +112,8 @@ function stacksOfRows(rows: BattlefieldRows, objects: Objects, view: StateView):
 // The stacks of a view are worked out once however many rows ask, as the split of the battlefield is.
 const cache = new WeakMap<StateView, Map<PlayerId, SeatStacks>>()
 
-const alone = (ids: readonly ObjectId[]): StackIds[] => ids.map((id) => ({ key: `#${id}`, ids: [id] }))
+const alone = (ids: readonly ObjectId[], objects: Objects): StackIds[] =>
+  ids.filter((id) => !isTucked(objects, id)).map((id) => withTucked(`#${id}`, [id], objects))
 
 /**
  * The stacks of one seat's battlefield, in the order of each row; with `grouped` false every permanent is a stack of
@@ -82,7 +125,12 @@ export function battlefieldStacks(state: PlayState, seat: PlayerId, grouped = tr
   if (!grouped) {
     const rows = splitBattlefield(view, state.objectsById).get(seat)
     if (rows === undefined) return NO_SEAT_STACKS
-    const single = { creatures: alone(rows.creatures), other: alone(rows.other), lands: alone(rows.lands) }
+    const objects = state.objectsById
+    const single = {
+      creatures: alone(rows.creatures, objects),
+      other: alone(rows.other, objects),
+      lands: alone(rows.lands, objects),
+    }
     return { plain: single, merged: single }
   }
   let seats = cache.get(view)
@@ -99,9 +147,12 @@ export function battlefieldStacks(state: PlayState, seat: PlayerId, grouped = tr
   return stacks
 }
 
-/** Every permanent of the rows, row after row. */
+/** Every permanent of the rows, row after row, each host followed by the attachments tucked behind it. */
 export function idsOfRows(rows: RowStacks): ObjectId[] {
-  return [...rows.creatures, ...rows.other, ...rows.lands].flatMap((stack) => stack.ids)
+  return [...rows.creatures, ...rows.other, ...rows.lands].flatMap((stack) => [
+    ...stack.ids,
+    ...(stack.tucked ?? []),
+  ])
 }
 
 /** The key of the stack that holds `id`, if any. */
@@ -121,10 +172,16 @@ export interface RowEntry {
   open: boolean
   /** A prompt needs each member, so the player cannot close the stack. */
   held: boolean
+  /** The attachments tucked behind a lone host, deepest first; left out while it has none. */
+  tucked?: readonly ObjectId[]
 }
 
 function entryOf(stack: StackIds, opened: ReadonlySet<string>, marked: ReadonlySet<ObjectId>): RowEntry {
-  if (stack.ids.length < 2) return { ids: stack.ids, open: false, held: false }
+  if (stack.ids.length < 2) {
+    return stack.tucked === undefined
+      ? { ids: stack.ids, open: false, held: false }
+      : { ids: stack.ids, open: false, held: false, tucked: stack.tucked }
+  }
   const held = stack.ids.some((id) => marked.has(id))
   return { ids: stack.ids, open: held || opened.has(stack.key), held }
 }
@@ -134,10 +191,25 @@ export function boxesOf(entries: readonly RowEntry[]): number {
   return entries.reduce((sum, entry) => sum + (entry.open ? entry.ids.length : 1), 0)
 }
 
-/** The ids a row draws, in order: the first member of a closed stack, every member of an open one. */
+/**
+ * The ids a row draws, in order: the first member of a closed stack, every member of an open one, and after a host
+ * the attachments tucked behind it, so the arrow keys reach them.
+ */
 export function visibleIds(entries: readonly RowEntry[]): ObjectId[] {
-  return entries.flatMap((entry) => (entry.open || entry.ids.length < 2 ? entry.ids : entry.ids.slice(0, 1)))
+  return entries.flatMap((entry) => [
+    ...(entry.open || entry.ids.length < 2 ? entry.ids : entry.ids.slice(0, 1)),
+    ...(entry.tucked ?? []),
+  ])
 }
+
+/** The most attachments tucked behind one host of a row; 0 when none is. */
+export function depthOf(entries: readonly RowEntry[]): number {
+  return entries.reduce((most, entry) => Math.max(most, entry.tucked?.length ?? 0), 0)
+}
+
+const sameIds = (a: readonly ObjectId[] | undefined, b: readonly ObjectId[] | undefined): boolean =>
+  a === b ||
+  (a !== undefined && b !== undefined && a.length === b.length && a.every((id, at) => id === b[at]))
 
 /** Whether two rows draw the same stacks in the same state; keys are no part of it, ids and openness are. */
 export function sameEntries(a: readonly RowEntry[], b: readonly RowEntry[]): boolean {
@@ -150,8 +222,8 @@ export function sameEntries(a: readonly RowEntry[], b: readonly RowEntry[]): boo
           other !== undefined &&
           entry.open === other.open &&
           entry.held === other.held &&
-          entry.ids.length === other.ids.length &&
-          entry.ids.every((id, at) => id === other.ids[at])
+          sameIds(entry.ids, other.ids) &&
+          sameIds(entry.tucked, other.tucked)
         )
       }))
   )
@@ -190,9 +262,19 @@ function entriesOfRows(
   return { creatures: entries(rows.creatures), other: entries(rows.other), lands: entries(rows.lands) }
 }
 
-/** The boxes of each lane: one for each stack and one for each member of an open one. */
+/** The boxes of each lane (one for each stack and one for each member of an open one) and its deepest tuck. */
 export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>): LaneCounts {
-  return { creatures: boxesOf(rows.creatures), other: boxesOf(rows.other), lands: boxesOf(rows.lands) }
+  const counts: LaneCounts = {
+    creatures: boxesOf(rows.creatures),
+    other: boxesOf(rows.other),
+    lands: boxesOf(rows.lands),
+  }
+  const tucked = {
+    creatures: depthOf(rows.creatures),
+    other: depthOf(rows.other),
+    lands: depthOf(rows.lands),
+  }
+  return tucked.creatures + tucked.other + tucked.lands === 0 ? counts : { ...counts, tucked }
 }
 
 /**

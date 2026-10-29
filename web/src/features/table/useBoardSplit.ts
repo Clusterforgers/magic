@@ -7,8 +7,12 @@ import type { Regions, SeatPlan } from './layout'
 import { STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 
 const parse = (key: string): LaneCounts => {
-  const [lands = 0, creatures = 0, other = 0] = key.split(',').map(Number)
-  return { lands, creatures, other }
+  const [lands = 0, creatures = 0, other = 0, tuckedLands = 0, tuckedCreatures = 0, tuckedOther = 0] = key
+    .split(',')
+    .map(Number)
+  const counts: LaneCounts = { lands, creatures, other }
+  if (tuckedLands + tuckedCreatures + tuckedOther === 0) return counts
+  return { ...counts, tucked: { lands: tuckedLands, creatures: tuckedCreatures, other: tuckedOther } }
 }
 
 /**
@@ -20,8 +24,8 @@ export function useBoardSplit(regions: Regions, plan: SeatPlan, reserve = 0): Re
   const key = usePlay((state) =>
     [plan.viewer, ...plan.boards]
       .map((seat) => {
-        const { lands, creatures, other } = seatCounts(state, seat, grouped)
-        return `${lands},${creatures},${other}`
+        const { lands, creatures, other, tucked } = seatCounts(state, seat, grouped)
+        return `${lands},${creatures},${other},${tucked?.lands ?? 0},${tucked?.creatures ?? 0},${tucked?.other ?? 0}`
       })
       .join('|'),
   )

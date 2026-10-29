@@ -66,6 +66,8 @@ export interface DevSearch {
   rules?: true
   /** `1` gives the viewer and the rivals a permanent for every state a card shows (`dev/states.ts`), to look at them all at once. */
   states?: true
+  /** `1` adds the attachments scene (`dev/equip.ts`): five attachments on one creature, an opponent's Aura on yours, yours on theirs, a Curse and an unattached Equipment. */
+  equip?: true
   /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
   cards?: 'real'
   /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
@@ -123,6 +125,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     menu: menuOf(search.menu),
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
+    equip: search.equip === true || search.equip === 1 || search.equip === '1' ? true : undefined,
     preview:
       typeof search.preview === 'number' &&
       Number.isInteger(search.preview) &&

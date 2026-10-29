@@ -6,6 +6,7 @@ import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
 import { battlefieldStacks } from './rowStacks'
+import type { StackIds } from './rowStacks'
 
 /** The boxes of the lanes of your board and of each opponent's board drawn. */
 export interface BoardCounts {
@@ -16,7 +17,19 @@ export interface BoardCounts {
 /** The closed stacks of a seat's lanes, one box each, as the board draws them before any stack opens. */
 export function seatCounts(state: PlayState, seat: PlayerId, grouped = true): LaneCounts {
   const { plain } = battlefieldStacks(state, seat, grouped)
-  return { lands: plain.lands.length, creatures: plain.creatures.length, other: plain.other.length }
+  const counts: LaneCounts = {
+    lands: plain.lands.length,
+    creatures: plain.creatures.length,
+    other: plain.other.length,
+  }
+  const deepest = (row: readonly StackIds[]): number =>
+    Math.max(0, ...row.map((stack) => stack.tucked?.length ?? 0))
+  const tucked = {
+    lands: deepest(plain.lands),
+    creatures: deepest(plain.creatures),
+    other: deepest(plain.other),
+  }
+  return tucked.lands + tucked.creatures + tucked.other === 0 ? counts : { ...counts, tucked }
 }
 
 /** The counts of the viewer's board and of every opponent's board of a plan. */

@@ -54,8 +54,31 @@ export const LANE_LIMITS: LaneLimits = {
   fanHeadMin: 20,
 }
 
-/** The boxes each lane holds: one per stack, one per member of an open stack. */
-export type LaneCounts = Record<RowKind, number>
+/**
+ * The boxes each lane holds (one per stack, one per member of an open stack) and, in `tucked`, the most attachments
+ * tucked behind one host of the lane; a lane left out of `tucked` has none.
+ */
+export type LaneCounts = Record<RowKind, number> & { tucked?: Partial<Record<RowKind, number>> }
+
+/** The least px of a tucked attachment that shows above the next card when many share a host. */
+export const TUCK_MIN_PX = 12
+
+/** The most of a card's height that the attachments tucked behind it may take above it. */
+export const TUCK_MAX_SHARE = 0.5
+
+/**
+ * The px of each of `depth` attachments tucked behind a card `height` px tall that shows above the next: the name
+ * line of a fanned land while the fan stays under `TUCK_MAX_SHARE` of the card, else an equal share of that, at least
+ * `TUCK_MIN_PX`; 0 without attachments.
+ */
+export function tuckOf(height: number, depth: number, limits: LaneLimits = LANE_LIMITS): number {
+  if (depth <= 0) return 0
+  const head = Math.min(height, Math.max(limits.fanHeadMin, Math.round(height * limits.fanHead)))
+  if (head * depth <= height * TUCK_MAX_SHARE) return head
+  return Math.max(TUCK_MIN_PX, Math.floor((height * TUCK_MAX_SHARE) / depth))
+}
+
+const depthOf = (counts: LaneCounts, lane: RowKind): number => Math.max(0, counts.tucked?.[lane] ?? 0)
 
 /** One lane at the chosen size. */
 export interface LanePlace {
@@ -76,6 +99,10 @@ export interface LanePlace {
   head: number
   /** The height the lane takes in px. */
   tall: number
+  /** The px each tucked attachment shows above the card in front of it (`tuckOf`); 0 in a lane without one. */
+  tuck: number
+  /** The px above each card of the lane that its deepest tuck takes: every line is `height + lift` tall. */
+  lift: number
 }
 
 /** One band: lanes side by side. */
@@ -111,14 +138,17 @@ function placeLane(
   cardWidth: number,
   lines: number,
   limits: LaneLimits,
+  depth = 0,
 ): LanePlace {
   const width = Math.max(1, Math.round(cardWidth * scaleOf(lane)))
   const height = Math.max(1, Math.round(width * CARD_ASPECT))
+  const tuck = tuckOf(height, depth, limits)
+  const lift = tuck * Math.max(0, depth)
   const columns = Math.ceil(boxes / lines)
   const used = Math.ceil(boxes / columns)
   const span = columns * (width + limits.gap) - limits.gap
-  const tall = used * height + (used - 1) * limits.rowGap
-  return { lane, boxes, width, height, columns, lines: used, span, pile: 1, head: 0, tall }
+  const tall = used * (height + lift) + (used - 1) * limits.rowGap
+  return { lane, boxes, width, height, columns, lines: used, span, pile: 1, head: 0, tall, tuck, lift }
 }
 
 /** The lands in `piles` fanned piles side by side, each land showing its head above the next. */
@@ -155,15 +185,18 @@ function placeBand(
   const most = Math.max(...full.map((lane) => counts[lane]))
   let best: BandPlace | null = null
   for (let lines = 1; lines <= most && best === null; lines += 1) {
-    const placed = full.map((lane) => placeLane(lane, counts[lane], cardWidth, lines, limits))
+    const placed = full.map((lane) =>
+      placeLane(lane, counts[lane], cardWidth, lines, limits, depthOf(counts, lane)),
+    )
     if (spanOf(placed, limits.laneGap) <= boxWidth) best = bandOf(placed)
   }
-  if (!full.includes('lands') || counts.lands < 2) return best
+  // A land with an attachment tucked behind it stands on its own: the lands lane is not fanned then.
+  if (!full.includes('lands') || counts.lands < 2 || depthOf(counts, 'lands') > 0) return best
   for (let piles = counts.lands - 1; piles >= 1; piles -= 1) {
     const placed = full.map((lane) =>
       lane === 'lands'
         ? fanLane(counts.lands, cardWidth, piles, limits)
-        : placeLane(lane, counts[lane], cardWidth, 1, limits),
+        : placeLane(lane, counts[lane], cardWidth, 1, limits, depthOf(counts, lane)),
     )
     if (spanOf(placed, limits.laneGap) > boxWidth) continue
     const fanned = bandOf(placed)
@@ -223,7 +256,7 @@ function hiddenBelow(bands: readonly BandPlace[], boxHeight: number, limits: Lan
         continue
       }
       for (let line = 0; line < lane.lines; line += 1) {
-        const bottom = top + (line + 1) * lane.height + line * limits.rowGap
+        const bottom = top + (line + 1) * (lane.height + lane.lift) + line * limits.rowGap
         if (bottom > boxHeight) hidden += Math.min(lane.columns, lane.boxes - line * lane.columns)
       }
     }
@@ -307,7 +340,11 @@ export function fitLanes(
   // A box narrower than one card a lane: a band each, one box a line.
   const bands = placeShape('three', counts, minWidth, Number.MAX_SAFE_INTEGER, limits, 'near') ?? []
   const narrow = bands.map((band) =>
-    bandOf(band.lanes.map((lane) => placeLane(lane.lane, lane.boxes, minWidth, lane.boxes, limits))),
+    bandOf(
+      band.lanes.map((lane) =>
+        placeLane(lane.lane, lane.boxes, minWidth, lane.boxes, limits, depthOf(counts, lane.lane)),
+      ),
+    ),
   )
   const height = heightOf(narrow, limits.bandGap)
   return {
