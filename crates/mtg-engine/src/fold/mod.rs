@@ -595,6 +595,10 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         Event::ExertEnded { object, player } => {
             crate::w11a_exert::w11a_fold_ended(state, *object, *player)
         }
+        Event::Ventured(ventured) => crate::w11d_dungeon::w11d_fold_ventured(state, ventured),
+        Event::DungeonCompleted { player, object } => {
+            crate::w11d_dungeon::w11d_fold_completed(state, *player, *object)
+        }
         other => Err(invalid(format!("unhandled event {other:?}"))),
     }
 }

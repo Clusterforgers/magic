@@ -84,6 +84,19 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [{ CoinFlipped: { player: 1, won: true } }, 'Bo wins a coin flip'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
+  Ventured: [
+    {
+      Ventured: {
+        player: 1,
+        object: 9,
+        dungeon: 'Lost Mine of Phandelver',
+        room: 0,
+        room_name: 'Cave Entrance',
+      },
+    },
+    'Bo ventures into Cave Entrance (Lost Mine of Phandelver)',
+  ],
+  DungeonCompleted: [{ DungeonCompleted: { player: 1, object: 9 } }, 'Bo completes a dungeon'],
   Explored: [{ Explored: { object: 3, player: 1 } }, 'Forest explores'],
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
   Exerted: [{ Exerted: { object: 3, player: 1 } }, 'Forest is exerted'],

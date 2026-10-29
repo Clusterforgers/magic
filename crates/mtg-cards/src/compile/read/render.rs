@@ -1276,6 +1276,7 @@ fn is_imperative(effect: &Effect) -> bool {
             Effect::Scry { who: Ref::You, .. }
                 | Effect::Surveil { who: Ref::You, .. }
                 | Effect::Proliferate { who: Ref::You }
+                | Effect::Venture { who: Ref::You, .. }
                 | Effect::Incubate { who: Ref::You, .. }
                 | Effect::TimeTravel { who: Ref::You }
                 | Effect::Draw { who: Ref::You, .. }
@@ -2401,6 +2402,18 @@ impl Writer<'_> {
             Effect::CreateEmblem { who, abilities } => {
                 let subject = self.player(who)?;
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
+            }
+            Effect::Venture { who, undercity } => {
+                let into = if *undercity {
+                    "Undercity"
+                } else {
+                    "the dungeon"
+                };
+                if *who == Ref::You {
+                    format!("venture into {into}")
+                } else {
+                    format!("{} ventures into {into}", self.player(who)?)
+                }
             }
             Effect::BecomeMonarch { who } => format!(
                 "{} {} the monarch",

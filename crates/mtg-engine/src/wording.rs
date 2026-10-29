@@ -436,6 +436,18 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
         }
+        TriggerPattern::Ventured {
+            who: by,
+            room: None,
+        } => {
+            let (name, s) = who(by);
+            (format!("{name} venture{s} into the dungeon"), false)
+        }
+        TriggerPattern::Ventured { room: Some(_), .. } => ("you enter this room".to_owned(), false),
+        TriggerPattern::CompletedDungeon { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} complete{s} a dungeon"), false)
+        }
         TriggerPattern::BecomesMonarch { who: by } => {
             let (name, s) = who(by);
             (format!("{name} become{s} the monarch"), false)

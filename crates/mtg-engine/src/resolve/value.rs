@@ -1580,6 +1580,19 @@ impl<'a> Scope<'a> {
         self.state.turn().step().phase() == crate::turn::Phase::Combat
     }
 
+    /// Whether a player `who` names holds the designation of the condition: has completed a dungeon, is the monarch,
+    /// was it as the turn began, or has the city's blessing.
+    fn w11d_designation(&self, condition: &Condition, who: &Ref) -> Result<bool, ResolveError> {
+        let began = self.state.monarch_at_turn_start();
+        Ok(self.players(who)?.iter().any(|player| match condition {
+            Condition::CompletedDungeon(_) => self.state.w11d_completed(*player) > 0,
+            // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
+            Condition::Monarch(_) => self.state.monarch() == Some(*player),
+            Condition::MonarchAtTurnStart(_) => began == Some(*player),
+            _ => self.state.has_citys_blessing(*player),
+        }))
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -1628,23 +1641,10 @@ impl<'a> Scope<'a> {
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
-            Condition::Monarch(who) => {
-                let players = self.players(who)?;
-                // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
-                players
-                    .iter()
-                    .any(|player| self.state.monarch() == Some(*player))
-            }
-            Condition::MonarchAtTurnStart(who) => {
-                let began = self.state.monarch_at_turn_start();
-                self.players(who)?
-                    .iter()
-                    .any(|player| began == Some(*player))
-            }
-            Condition::CitysBlessing(who) => self
-                .players(who)?
-                .iter()
-                .any(|player| self.state.has_citys_blessing(*player)),
+            Condition::CompletedDungeon(who)
+            | Condition::Monarch(who)
+            | Condition::MonarchAtTurnStart(who)
+            | Condition::CitysBlessing(who) => self.w11d_designation(condition, who)?,
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),

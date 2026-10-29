@@ -330,6 +330,28 @@ pub enum TriggerPattern {
         )]
         by: Ref,
     },
+    /// A player ventures into the dungeon ("whenever you venture into the dungeon"), or, with `room`, enters that room
+    /// of the dungeon that is the source (a room ability, CR 309.4c); `Triggering` is that player.
+    Ventured {
+        /// Who ventures.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The room of the source dungeon, as an index into its rooms.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        room: Option<u8>,
+    },
+    /// A player completes a dungeon ("whenever you complete a dungeon", CR 309.7); `Triggering` is that player.
+    CompletedDungeon {
+        /// Who completes it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player becomes the monarch ("whenever you become the monarch"); `Triggering` is that player.
     BecomesMonarch {
         /// Who becomes it.

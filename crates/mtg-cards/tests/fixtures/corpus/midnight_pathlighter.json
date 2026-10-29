@@ -1,0 +1,29 @@
+{
+  "id": "8eb6f699-1b5d-412b-a697-ee94b7be07a6",
+  "oracle_id": "e49228d6-6488-4cbc-aa53-303afd3a549b",
+  "name": "Midnight Pathlighter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "afc",
+  "collector_number": "52",
+  "rarity": "rare",
+  "released_at": "2021-07-23",
+  "digital": false,
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Creatures you control can't be blocked except by legendary creatures.\nWhenever one or more creatures you control deal combat damage to a player, venture into the dungeon. (Enter the first room or advance to the next room.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Venture into the dungeon"
+  ]
+}

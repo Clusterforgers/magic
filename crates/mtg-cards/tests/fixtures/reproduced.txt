@@ -417,6 +417,7 @@ Dualcaster Mage
 Duchess, Wayward Tavernkeep
 Dueling Grounds
 Dungeon Geists
+Dungeon Map
 Dunland Crebain
 Durkwood Baloth
 Dusk Charger
@@ -903,6 +904,7 @@ Mesmeric Orb
 Methods of the Mighty
 Metropolis Reformer
 Midnight Banshee
+Midnight Pathlighter
 Migratory Greathorn
 Migratory Route
 Millikin

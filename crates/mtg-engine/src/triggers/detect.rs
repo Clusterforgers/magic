@@ -157,6 +157,14 @@ enum Happened {
     Surveilled { player: PlayerId, nth: u32 },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
+    /// A player ventured into `room` of the dungeon `object`.
+    Ventured {
+        player: PlayerId,
+        object: ObjectId,
+        room: u8,
+    },
+    /// A player completed a dungeon.
+    CompletedDungeon { player: PlayerId },
     /// The game became day or night, which it was `from` (neither at the first change).
     DayNightChanged {
         from: Option<DayNight>,
@@ -865,6 +873,14 @@ fn about_players_and_permanents(
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
+        Event::Ventured(ventured) => found.push(Happened::Ventured {
+            player: ventured.player,
+            object: ventured.object,
+            room: ventured.room,
+        }),
+        Event::DungeonCompleted { player, .. } => {
+            found.push(Happened::CompletedDungeon { player: *player });
+        }
         Event::DayNightChanged { to } => found.push(Happened::DayNightChanged {
             from: look
                 .earlier
@@ -1235,6 +1251,16 @@ fn matching_event(
             )
         }
         (
+            TriggerPattern::Ventured { who, room },
+            Happened::Ventured {
+                player,
+                object,
+                room: entered,
+            },
+        ) => (by(who, player)
+            && room.is_none_or(|room| room == *entered && scope.source.id == *object))
+        .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        (
             TriggerPattern::DiceRolled { who, highest },
             Happened::DiceRolled {
                 player,
@@ -1246,6 +1272,7 @@ fn matching_event(
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
+        | (TriggerPattern::CompletedDungeon { who }, Happened::CompletedDungeon { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
         | (TriggerPattern::CoinFlipWon { who }, Happened::CoinFlipWon { player })
         | (TriggerPattern::Amassed { who }, Happened::Amassed { player })

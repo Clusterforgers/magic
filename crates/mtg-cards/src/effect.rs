@@ -640,6 +640,16 @@ pub enum Effect {
         /// The creature it fights.
         with: Ref,
     },
+    /// "Venture into the dungeon" (CR 701.49): the player enters the first room of a dungeon they choose, or moves one
+    /// room down along an arrow; "venture into Undercity" (`undercity`) enters only Undercity.
+    Venture {
+        /// Who ventures.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// Whether it is "venture into Undercity".
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        undercity: bool,
+    },
     /// The player becomes the monarch (CR 724).
     BecomeMonarch {
         /// Who becomes it.

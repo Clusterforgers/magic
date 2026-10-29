@@ -43,6 +43,7 @@ import type { Surveilled } from "./Surveilled";
 import type { Target } from "./Target";
 import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
+import type { W11dVentured } from "./W11dVentured";
 import type { Zone } from "./Zone";
 import type { ZoneCause } from "./ZoneCause";
 
@@ -617,7 +618,15 @@ player: PlayerId, } } | { "CitysBlessingGained": {
 /**
  * Who got it.
  */
-player: PlayerId, } } | { "Learned": { 
+player: PlayerId, } } | { "Ventured": W11dVentured } | { "DungeonCompleted": { 
+/**
+ * Who completed it.
+ */
+player: PlayerId, 
+/**
+ * The dungeon.
+ */
+object: ObjectId, } } | { "Learned": { 
 /**
  * Who learned.
  */
