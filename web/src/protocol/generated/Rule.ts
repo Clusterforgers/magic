@@ -17,7 +17,15 @@ most: number,
 /**
  * The players and planeswalkers it protects.
  */
-at: Array<AttackTarget>, } } | { "BlockLimit": number } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "PlayersHave": { 
+at: Array<AttackTarget>, } } | { "BlockLimit": number } | { "BlockLimitEach": { 
+/**
+ * The most creatures each of them can block with.
+ */
+most: number, 
+/**
+ * The players whose blocks it limits.
+ */
+who: Array<PlayerId>, } } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "NoLifeLossFromDamage": Array<PlayerId> } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "PlayersHave": { 
 /**
  * The players.
  */
