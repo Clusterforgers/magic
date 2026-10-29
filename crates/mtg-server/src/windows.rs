@@ -159,6 +159,9 @@ pub(crate) fn passes_for(
 }
 
 #[cfg(test)]
+mod boards;
+
+#[cfg(test)]
 mod tests {
     //! Goal: the verdict (ask, pass at once, pass after a dwell) is the rule table for every combination of whose turn, step, stack, stop, Full Control mode, yield and ability to act; a seat that cannot act waits at every default window but its own main phase with an empty stack, a stop interrupts a yield and Full Control ignores it; windows are read from the table alone, for the seat's own side and objects.
     use super::*;
@@ -179,7 +182,7 @@ mod tests {
 
     /// The default windows, spelled out by hand: the steps of a turn that are one whoever's turn it is, and the main
     /// phases that are one only on the seat's own turn.
-    fn default_by_the_table(step: Step, own_turn: bool, others_object: bool) -> bool {
+    pub(super) fn default_by_the_table(step: Step, own_turn: bool, others_object: bool) -> bool {
         const EVERY_TURN: [Step; 2] = [Step::DeclareAttackers, Step::DeclareBlockers];
         const OWN_TURN_ONLY: [Step; 2] = [Step::Main1, Step::Main2];
         others_object || EVERY_TURN.contains(&step) || (own_turn && OWN_TURN_ONLY.contains(&step))
@@ -187,7 +190,12 @@ mod tests {
 
     /// The windows where a seat that cannot act waits, spelled out by hand: every default window but the seat's own
     /// main phase with an empty stack.
-    fn dwells_by_the_table(step: Step, own_turn: bool, stack: bool, others_object: bool) -> bool {
+    pub(super) fn dwells_by_the_table(
+        step: Step,
+        own_turn: bool,
+        stack: bool,
+        others_object: bool,
+    ) -> bool {
         let own_main_with_an_empty_stack =
             own_turn && [Step::Main1, Step::Main2].contains(&step) && !stack;
         default_by_the_table(step, own_turn, others_object) && !own_main_with_an_empty_stack
@@ -244,7 +252,7 @@ mod tests {
     /// passes at once, a stop asks, a default window asks a seat that can act and makes one that cannot wait unless it
     /// is the seat's own main phase with an empty stack, and the rest of the game passes at once.
     #[allow(clippy::fn_params_excessive_bools)]
-    fn expected_verdict(
+    pub(super) fn expected_verdict(
         default: bool,
         dwells: bool,
         stop: bool,

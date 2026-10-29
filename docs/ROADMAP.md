@@ -131,8 +131,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 The server is settled first, then the web is built once against the final types.
 
-- [~] (g0f) (g0f-idle-windows) A seat is passed for at a priority window with only mana abilities to use: `windows.rs` `asks` asks on `PriorityOptions.can_act` (`priority.rs` `can_act`: lands, castable spells, abilities that are not mana abilities, special actions; mana abilities never count), a held stop, Full Control or a yield, so the idle windows of the smoke runs (2 to 15 of 27 to 48 decisions per game) come from one of those: find which (a costly mana ability listed by `other_abilities`, a stop the seat holds) and pass the window as idle, with a test over the window table in `windows.rs`
 - [ ] (g0g) The hand dock holds hands of 9 to 16 cards in two rows below 1000 px of height: at 1400x900 a hand of 9 or more scrolls, since two rows need 150 px of cards (`HAND_CLAMP` in `layout.ts`, or more of the width from the controls dock beside it)
+- [ ] (g0h) The e2e driver counts an idle window as one with no legal hand card (`web/e2e/driver.ts` `drive`): count it only when no hand card, board object or command-zone card is legal, since the server asks exactly the seats that have a play (a Clue, an equip, a scry land, a commander to cast); in seeded four-seat bot games it asks 0 idle windows of 380 to 420 priority windows, 50 to 190 of them with abilities as the only play
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
 - [~] (w3b) (w3-prompts-a) The DivideAmount prompt: the total split among the targets, each at least one
