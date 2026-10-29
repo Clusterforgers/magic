@@ -14,17 +14,17 @@ import { useDecks } from './useDecks'
 // The shape of the form while the decks are on their way: a heading, then the game's column and the options' column.
 function FormSkeleton() {
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-4">
       <div className="grid gap-2">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-5 w-full max-w-md" />
       </div>
-      <div className="grid gap-5 md:grid-cols-2 md:gap-x-8">
-        <div className="grid content-start gap-5">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-x-8">
+        <div className="grid content-start gap-6">
           <Skeleton className="h-28 rounded-xl" />
           <Skeleton className="h-36 rounded-xl" />
         </div>
-        <div className="grid content-start gap-5">
+        <div className="grid content-start gap-4">
           <Skeleton className="h-28 rounded-xl" />
           <Skeleton className="h-12 rounded-xl" />
         </div>

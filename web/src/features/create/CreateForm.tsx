@@ -170,7 +170,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
       ref={formRef}
       noValidate
       aria-labelledby="create-title"
-      className="grid gap-5 [&_:is(input,select,summary)]:scroll-mb-24"
+      className="grid gap-4 [&_:is(input,select,summary)]:scroll-mb-24"
       onSubmit={(event) => void submit(event)}
     >
       <div>
@@ -195,8 +195,8 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         )}
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 md:items-start md:gap-x-8" data-slot="create-columns">
-        <div className="grid content-start gap-5" data-slot="create-game-column">
+      <div className="grid gap-4 md:grid-cols-2 md:items-start md:gap-x-8" data-slot="create-columns">
+        <div className="grid content-start gap-6" data-slot="create-game-column">
           <FormatField
             value={draft.format}
             onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
@@ -220,7 +220,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
             />
           )}
         </div>
-        <div className="grid content-start gap-5" data-slot="create-options-column">
+        <div className="grid content-start gap-4" data-slot="create-options-column">
           {draft.links ? null : (
             <VisibilityField
               value={draft.visibility}
