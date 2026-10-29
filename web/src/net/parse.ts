@@ -284,6 +284,7 @@ const OBJECT_KINDS: Record<ObjectKind, true> = {
   Ability: true,
   Emblem: true,
   Dungeon: true,
+  Initiative: true,
 }
 
 // A card, token, ability or emblem; the server leaves the field out for a card, and the other two fields out when empty.

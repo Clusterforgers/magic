@@ -15,6 +15,7 @@ impl Writer<'_> {
             win,
             lose,
             until: false,
+            with: None,
         }) = effects.first()
         else {
             return None;

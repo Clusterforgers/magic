@@ -51,11 +51,13 @@ const SPELL_RULES: [&str; 4] = [
 ];
 
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
-/// may cast this spell without paying its mana cost."
+/// may cast this spell without paying its mana cost.", or an alternative cost "..., you may pay 4 life rather than pay
+/// this spell's mana cost."
 fn is_spell_rule(body: &str) -> bool {
     SPELL_RULES.iter().any(|rule| body.starts_with(rule))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell without paying its mana cost"))
+        || body.contains(" rather than pay this spell's mana cost")
 }
 
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];

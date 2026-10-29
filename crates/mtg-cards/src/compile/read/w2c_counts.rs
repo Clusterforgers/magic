@@ -137,8 +137,11 @@ fn w2c_destroyed(r: &mut Reader<'_>, form: Form, verb: &str) -> Option<Amount> {
         r.need(verb)?;
         preds.push(Pred::ControlledBy(Ref::You));
     }
-    r.need("destroyed this way")?;
-    Some(Amount::Destroyed(Selector(preds)))
+    if r.words("destroyed this way") {
+        return Some(Amount::Destroyed(Selector(preds)));
+    }
+    r.need("exiled this way")?;
+    Some(Amount::Exiled(Selector(preds)))
 }
 
 /// What `w2c_destroyed_each` reads, written back; `None` for any other amount.
@@ -152,8 +155,13 @@ pub(super) fn w2c_destroyed_all_text(amount: &Amount) -> Option<String> {
 }
 
 fn w2c_destroyed_text(amount: &Amount, form: Form, verb: &str) -> Option<String> {
-    let Amount::Destroyed(Selector(preds)) = amount else {
+    let (Amount::Destroyed(Selector(preds)) | Amount::Exiled(Selector(preds))) = amount else {
         return None;
+    };
+    let done = if matches!(amount, Amount::Exiled(_)) {
+        "exiled"
+    } else {
+        "destroyed"
     };
     let yours = Pred::ControlledBy(Ref::You);
     let kinds: Vec<Pred> = preds
@@ -169,8 +177,8 @@ fn w2c_destroyed_text(amount: &Amount, form: Form, verb: &str) -> Option<String>
     }
     let phrase = phrase_text(&Selector(kinds.clone()), form)?;
     Some(if kinds.len() == preds.len() {
-        format!("{phrase} destroyed this way")
+        format!("{phrase} {done} this way")
     } else {
-        format!("{phrase} you controlled that {verb} destroyed this way")
+        format!("{phrase} you controlled that {verb} {done} this way")
     })
 }

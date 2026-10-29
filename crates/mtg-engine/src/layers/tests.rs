@@ -232,6 +232,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::CanBlockOnly(_)
             | mtg_cards::modify::Modification::MinBlockers(_)
             | mtg_cards::modify::Modification::MaxBlockers(_)
+            | mtg_cards::modify::Modification::BlocksAdditional(_)
             | mtg_cards::modify::Modification::Goaded => {}
         }
     }

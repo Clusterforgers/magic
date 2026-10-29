@@ -380,6 +380,11 @@ fn deal(
 /// `forecast::combat_forecast` runs this function for: the real step asks the controllers first.
 pub(crate) fn damage_events(state: &GameState, pass: DamagePass) -> Vec<Event> {
     let mut events = Vec::new();
+    let divided = crate::w14c_block_capacity::w14c_blocker_shares(
+        state,
+        state.combat().attackers(),
+        |blocker| strike_power(state, blocker, pass),
+    );
     for attacker in state.combat().attackers() {
         if let Some(power) = strike_power(state, attacker.object(), pass) {
             let rules = keywords::damage_rules(state, attacker.object());
@@ -393,11 +398,15 @@ pub(crate) fn damage_events(state: &GameState, pass: DamagePass) -> Vec<Event> {
         }
         for &blocker in attacker.blockers() {
             if let Some(power) = strike_power(state, blocker, pass) {
+                let share = divided
+                    .get(&(blocker, attacker.object()))
+                    .copied()
+                    .unwrap_or(power);
                 events.extend(combat_dealt(
                     state,
                     blocker,
                     DamageTarget::Object(attacker.object()),
-                    power,
+                    share,
                 ));
             }
         }

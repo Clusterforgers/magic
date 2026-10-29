@@ -26,6 +26,8 @@ enum Params {
     Number,
     /// Words (`creature`, `from red`).
     Text,
+    /// A number, or nothing (vanishing without a number, CR 702.63a).
+    W15bNumberOrNone,
     /// Words that name a kind, then a number or `X` (`3`, `artifact 1`, `Food 3`).
     Counted,
 }
@@ -207,7 +209,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("soulshift", Params::Number),
     ("toxic", Params::Number),
     ("tribute", Params::Number),
-    ("vanishing", Params::Number),
+    ("vanishing", Params::W15bNumberOrNone),
     ("devour", Params::Counted),
     ("frenzy", Params::Number),
     ("mobilize", Params::Number),
@@ -277,6 +279,7 @@ fn plausible(params: Params, rest: &str) -> bool {
         Params::Number => {
             rest == "X" || (!rest.is_empty() && rest.chars().all(|c| c.is_ascii_digit()))
         }
+        Params::W15bNumberOrNone => rest.is_empty() || plausible(Params::Number, rest),
         Params::Text => rest.chars().next().is_some_and(char::is_alphabetic),
         Params::Counted => {
             let (words, number) = rest.rsplit_once(' ').unwrap_or(("", rest));
@@ -407,6 +410,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "cumulative upkeep" => spell_cost(rest).map(Keyword::CumulativeUpkeep),
+        "vanishing" if rest.is_empty() => Some(Keyword::Vanishing(0)),
         "vanishing" => positive(rest).map(Keyword::Vanishing),
         "fading" => positive(rest).map(Keyword::Fading),
         "graft" => positive(rest).map(Keyword::Graft),
@@ -1233,6 +1237,7 @@ mod tests {
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
     #[case::vanishing("Vanishing 3", Keyword::Vanishing(3))]
+    #[case::w15b_vanishing_alone("Vanishing", Keyword::Vanishing(0))]
     #[case::fading("Fading 5", Keyword::Fading(5))]
     #[case::backup("Backup 2", Keyword::Backup { count: 2, abilities: vec![] })]
     #[case::saddle("Saddle 2", Keyword::Saddle(2))]

@@ -1,0 +1,23 @@
+{
+  "id": "b79b3153-8874-458d-8e7e-cf97c6c1887c",
+  "oracle_id": "b59053d5-b5f2-44aa-a29c-7f3908d86577",
+  "name": "High Ground",
+  "lang": "en",
+  "layout": "normal",
+  "set": "10e",
+  "collector_number": "20",
+  "rarity": "uncommon",
+  "released_at": "2007-07-13",
+  "digital": false,
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Each creature you control can block an additional creature each combat.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

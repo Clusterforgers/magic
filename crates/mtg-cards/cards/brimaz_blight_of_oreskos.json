@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a6e7cbfc-6d5a-4a67-9dad-d512d3c97bda",
+  "name": "Brimaz, Blight of Oreskos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brimaz, Blight of Oreskos",
+      "oracle_fingerprint": "52788e31cd4fea879cef2873ccce5e4f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "AnyOf": [{ "Subtype": "Phyrexian" }, { "Type": "Artifact" }] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "Incubate": { "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PhyrexiansDiedUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

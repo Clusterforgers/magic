@@ -26,7 +26,34 @@
     {
       "name": "Twisted Caverns",
       "text": "Target creature can't attack until your next turn.",
-      "ability": { "Spell": { "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }], "effects": [{ "Continuous": { "affected": { "Target": 0 }, "mods": ["CantAttack"], "duration": "UntilYourNextTurn" } }] } },
+      "ability": {
+        "Spell": {
+          "targets": [
+            {
+              "what": {
+                "Object": [
+                  {
+                    "Type": "Creature"
+                  }
+                ]
+              }
+            }
+          ],
+          "effects": [
+            {
+              "Continuous": {
+                "affected": {
+                  "Target": 0
+                },
+                "mods": [
+                  "CantAttack"
+                ],
+                "duration": "UntilYourNextTurn"
+              }
+            }
+          ]
+        }
+      },
       "leads_to": [
         "Lost Level"
       ]
@@ -44,7 +71,33 @@
       "text": "Exile the top two cards of your library. You may play them.",
       "leads_to": [
         "Deep Mines"
-      ]
+      ],
+      "ability": {
+        "Spell": {
+          "effects": [
+            {
+              "ExileTop": {
+                "count": 2,
+                "as": "impulse"
+              }
+            },
+            {
+              "Rule": {
+                "rule": {
+                  "MayCast": {
+                    "from": "Exile",
+                    "only": {
+                      "Bound": "impulse"
+                    },
+                    "play": true
+                  }
+                },
+                "duration": "Forever"
+              }
+            }
+          ]
+        }
+      }
     },
     {
       "name": "Muiral's Graveyard",

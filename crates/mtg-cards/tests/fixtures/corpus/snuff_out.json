@@ -1,0 +1,23 @@
+{
+  "id": "75bbe89f-09af-494e-b58e-271f64bde4b5",
+  "oracle_id": "324824cb-f938-401c-b9b5-d8908b431ef0",
+  "name": "Snuff Out",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gvl",
+  "collector_number": "53",
+  "rarity": "common",
+  "released_at": "2014-12-05",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "If you control a Swamp, you may pay 4 life rather than pay this spell's mana cost.\nDestroy target nonblack creature. It can't be regenerated.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": []
+}

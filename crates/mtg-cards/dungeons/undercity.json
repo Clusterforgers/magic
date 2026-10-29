@@ -65,7 +65,79 @@
     {
       "name": "Throne of the Dead Three",
       "text": "Reveal the top ten cards of your library. Put a creature card from among them onto the battlefield with three +1/+1 counters on it. It gains hexproof until your next turn. Then shuffle.",
-      "leads_to": []
+      "leads_to": [],
+      "ability": {
+        "Spell": {
+          "effects": [
+            {
+              "LookAtTop": {
+                "count": 10,
+                "as": "top"
+              }
+            },
+            {
+              "Reveal": {
+                "what": {
+                  "Bound": "top"
+                }
+              }
+            },
+            {
+              "Choose": {
+                "from": {
+                  "Each": [
+                    {
+                      "In": "Library"
+                    },
+                    {
+                      "Is": {
+                        "Bound": "top"
+                      }
+                    },
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                },
+                "as": "kept"
+              }
+            },
+            {
+              "Move": {
+                "what": {
+                  "Bound": "kept"
+                },
+                "to": {
+                  "Battlefield": {
+                    "counters": [
+                      [
+                        "+1/+1",
+                        3
+                      ]
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "Continuous": {
+                "affected": {
+                  "Bound": "kept"
+                },
+                "mods": [
+                  {
+                    "AddKeyword": "Hexproof"
+                  }
+                ],
+                "duration": "UntilYourNextTurn"
+              }
+            },
+            {
+              "Shuffle": {}
+            }
+          ]
+        }
+      }
     }
   ]
 }

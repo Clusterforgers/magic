@@ -380,12 +380,20 @@ pub const FROM_HAND: &str = "spell";
 /// most one nonland card of their hand, and casts it for free.
 pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("you may cast a spell")?;
-    let limit = r.attempt(|r| {
-        r.need("with mana value")?;
-        let count = points(r)?;
-        r.need("or less").map(|()| count)
-    });
-    r.need("from your hand without paying its mana cost")?;
+    let read_limit = |r: &mut Reader<'_>| {
+        r.attempt(|r| {
+            r.need("with mana value")?;
+            let count = points(r)?;
+            r.need("or less").map(|()| count)
+        })
+    };
+    let mut limit = read_limit(r);
+    r.need("from your hand")?;
+    // "a spell from your hand with mana value 8 or less" (Marvo, Deep Operative) names the limit after the hand.
+    if limit.is_none() {
+        limit = read_limit(r);
+    }
+    r.need("without paying its mana cost")?;
     let mut from = vec![
         Pred::In(ZoneKind::Hand),
         Pred::OwnedBy(Ref::You),

@@ -21,6 +21,9 @@ pub(super) fn from_hand(spell: &mut Vec<Pred>, r: &mut Reader<'_>) {
 /// "Whenever you cast an instant spell", "Whenever an opponent casts a spell", "Whenever you cast a spell from your
 /// hand": the spell cast and who casts it.
 pub(super) fn cast_text(what: &Selector, by: &Ref) -> Option<String> {
+    if let Some(spell) = super::w14b_or_spell::w14b_text(what) {
+        return Some(format!("Whenever {} {spell}", player_verb(by, "cast")?));
+    }
     let hand = Pred::CastFrom(ZoneKind::Hand);
     let from_hand = *by == Ref::You && what.0.contains(&hand);
     let mut preds = vec![Pred::Spell];

@@ -407,6 +407,30 @@ impl RandomBot {
         }
     }
 
+    /// A random attacker or none for each creature that may block; a creature that can block an additional creature may
+    /// take more of the others.
+    fn w14c_random_blocks(
+        &mut self,
+        options: &mtg_engine::decision::BlockOptions,
+    ) -> Vec<(ObjectId, ObjectId)> {
+        let mut blocks = Vec::new();
+        for option in &options.blockers {
+            // One extra slot stands for "do not block".
+            let pick = self.rng.index(option.can_block.len() + 1);
+            let Some(attacker) = option.can_block.get(pick) else {
+                continue;
+            };
+            blocks.push((option.object, *attacker));
+            for other in option.can_block.iter().filter(|a| *a != attacker) {
+                let named = blocks.iter().filter(|(b, _)| *b == option.object).count();
+                if named <= option.extra && self.rng.index(2) == 0 {
+                    blocks.push((option.object, *other));
+                }
+            }
+        }
+        blocks
+    }
+
     /// Answers `decision` with a uniformly random legal choice.
     pub fn choose(&mut self, decision: &Decision) -> Answer {
         // The decision that follows a declaration with a cost is the payment of it.
@@ -433,14 +457,7 @@ impl RandomBot {
             DecisionKind::PayMana(options) => Answer::PayMana(self.pay_for(options, paying_attack)),
             DecisionKind::DeclareAttackers(options) => self.w11a_attack_answer(options),
             DecisionKind::DeclareBlockers(options) => {
-                let mut blocks = Vec::new();
-                for option in &options.blockers {
-                    // One extra slot stands for "do not block".
-                    let pick = self.rng.index(option.can_block.len() + 1);
-                    if let Some(attacker) = option.can_block.get(pick) {
-                        blocks.push((option.object, *attacker));
-                    }
-                }
+                let mut blocks = self.w14c_random_blocks(options);
                 // An attacker that may be blocked by few creatures only (one at most) keeps the first blockers it got.
                 for (attacker, most) in &options.max_blockers {
                     let mut kept = 0;

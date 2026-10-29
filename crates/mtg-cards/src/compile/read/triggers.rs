@@ -306,6 +306,11 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     {
         return Some(found);
     }
+    if at_least == 1
+        && let Some(found) = r.attempt(super::w15b_time::w15b_exiled_batch)
+    {
+        return Some(found);
+    }
     if at_least == 1 && r.words("cards leave your graveyard") {
         return Some(TriggerPattern::Batch(Box::new(
             TriggerPattern::ZoneChange {
@@ -487,6 +492,9 @@ fn w2e_cycled(r: &mut Reader<'_>, by: Ref) -> Option<TriggerPattern> {
 
 /// The spell of a cast or a copy, "an instant or sorcery spell", without the noun: the pattern is about a spell already.
 fn w2e_spell(r: &mut Reader<'_>) -> Option<Vec<Pred>> {
+    if let Some(spell) = super::w14b_or_spell::w14b_read(r) {
+        return Some(spell);
+    }
     let mut spell = subject(r)?.0;
     if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
         return None;
@@ -611,6 +619,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
     } else if verb == if third { "wins" } else { "win" } {
+        if r.words("a clash") {
+            return Some(TriggerPattern::W15cClashWon { who: by });
+        }
         r.need("a coin flip")?;
         Some(TriggerPattern::CoinFlipWon { who: by })
     } else if verb == if third { "rolls" } else { "roll" } {
@@ -1064,6 +1075,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(Condition::CitysBlessing(Ref::You))
     } else if r.words("you've completed a dungeon") {
         Some(Condition::CompletedDungeon(Ref::You))
+    } else if r.words("you have the initiative") {
+        Some(Condition::Initiative(Ref::You))
     } else {
         super::day_night::condition(r)
     }
@@ -1088,6 +1101,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
         }
         Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
         Condition::CompletedDungeon(Ref::You) => "you've completed a dungeon".to_owned(),
+        Condition::Initiative(Ref::You) => "you have the initiative".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
         _ => return super::day_night::condition_text(condition),
     })
@@ -1442,6 +1456,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::DayNightChanges { to } => Some(super::day_night::changes_text(*to)),
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
+        }
+        TriggerPattern::W15cClashWon { who } => {
+            Some(format!("Whenever {} a clash", player_verb(who, "win")?))
         }
         TriggerPattern::CoinFlipWon { who } => {
             Some(format!("Whenever {} a coin flip", player_verb(who, "win")?))

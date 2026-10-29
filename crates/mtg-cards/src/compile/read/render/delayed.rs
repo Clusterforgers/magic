@@ -23,7 +23,7 @@ impl Writer<'_> {
                 when:
                     TriggerPattern::StepBegins {
                         step: Step::End,
-                        whose: Ref::EachPlayer,
+                        whose,
                     },
                 once: true,
                 this_turn: false,
@@ -34,6 +34,7 @@ impl Writer<'_> {
         else {
             return None;
         };
+        let step = super::super::w14a_wanderer::w14a_end_step(whose, exiled)?;
         let [
             Effect::Move {
                 what: Ref::Bound(moved),
@@ -68,7 +69,7 @@ impl Writer<'_> {
             vec![
                 format!("exile {}", self.object(what)?),
                 format!(
-                    "return {cards} to the battlefield{tapped} under {control} control at the beginning of the next end step"
+                    "return {cards} to the battlefield{tapped} under {control} control at the beginning of {step}"
                 ),
             ],
             2,

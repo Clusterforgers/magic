@@ -664,6 +664,13 @@ pub enum Event {
         /// The dungeon.
         object: ObjectId,
     },
+    /// A player took the initiative (CR 725); `object` stands for it in their command zone.
+    InitiativeTaken {
+        /// Who took it.
+        player: PlayerId,
+        /// The initiative's object.
+        object: ObjectId,
+    },
     /// A player learned (CR 701.48): the discard and the draw are the events that follow it.
     Learned {
         /// Who learned.
@@ -815,6 +822,16 @@ pub enum Event {
         object: ObjectId,
         /// Its controller, who drew and discarded.
         player: PlayerId,
+    },
+    /// A player clashed with an opponent (CR 701.23) after both revealed and placed their top cards; `won` when the
+    /// clashing player won.
+    Clashed {
+        /// Who clashed.
+        player: PlayerId,
+        /// The opponent clashed with.
+        opponent: PlayerId,
+        /// The clashing player won.
+        won: bool,
     },
     /// A creature was exerted as it was declared an attacker (CR 701.43): it won't untap during the next untap step of
     /// `player`, who exerted it.
@@ -992,6 +1009,7 @@ impl Event {
             | Event::Learned { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
+            | Event::Clashed { .. }
             | Event::Proliferated { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }
@@ -1092,7 +1110,8 @@ impl Event {
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
             | Event::CardParted { permanent: object, .. }
-            | Event::ObjectLeftGame { object } => vec![*object],
+            | Event::ObjectLeftGame { object }
+            | Event::InitiativeTaken { object, .. } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()

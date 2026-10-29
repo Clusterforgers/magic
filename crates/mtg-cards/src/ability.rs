@@ -213,6 +213,10 @@ pub enum Ability {
         /// The cast is open only while this holds for the caster; always when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         condition: Option<Condition>,
+        /// What is paid in place of the mana cost ("You may sacrifice a Mountain rather than pay this spell's mana cost.",
+        /// CR 118.9); nothing when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        cost: Option<Cost>,
     },
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),

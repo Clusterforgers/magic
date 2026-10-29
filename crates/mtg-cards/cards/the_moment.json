@@ -1,0 +1,56 @@
+{
+  "oracle_id": "8a5259cc-224d-4748-b764-63ad0e4e02f1",
+  "name": "The Moment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Moment",
+      "oracle_fingerprint": "51014658b0cc177ceaea8bf62759bf50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "PhaseOut": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Counters": { "on": "This", "counter": { "Other": "time" } } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              { "Sacrifice": { "filter": ["This"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

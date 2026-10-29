@@ -70,6 +70,7 @@ pub(super) fn w9b_clash(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         win,
         lose: Vec::new(),
         until,
+        with: None,
     });
     Some(effects)
 }

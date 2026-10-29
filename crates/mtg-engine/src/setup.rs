@@ -459,6 +459,7 @@ impl GameState {
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),
             w11d: crate::w11d_dungeon::W11dDungeons::default(),
+            w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
             companions,
         };

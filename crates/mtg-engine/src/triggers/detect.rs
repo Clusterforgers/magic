@@ -157,6 +157,8 @@ enum Happened {
     Surveilled { player: PlayerId, nth: u32 },
     /// A player became the monarch.
     BecameMonarch { player: PlayerId },
+    /// A player took the initiative.
+    TookInitiative { player: PlayerId },
     /// A player ventured into `room` of the dungeon `object`.
     Ventured {
         player: PlayerId,
@@ -174,6 +176,8 @@ enum Happened {
     Proliferated { player: PlayerId },
     /// A player won a coin flip.
     CoinFlipWon { player: PlayerId },
+    /// A player won a clash.
+    W15cClashWon { player: PlayerId },
     /// A player rolled a die: `first` for the first die of a roll, `highest` when it rolled its number of faces.
     DiceRolled {
         player: PlayerId,
@@ -873,6 +877,9 @@ fn about_players_and_permanents(
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
+        Event::InitiativeTaken { player, .. } => {
+            found.push(Happened::TookInitiative { player: *player });
+        }
         Event::Ventured(ventured) => found.push(Happened::Ventured {
             player: ventured.player,
             object: ventured.object,
@@ -903,6 +910,11 @@ fn about_players_and_permanents(
             first: c11e_first_die(look.earlier, *player),
             highest: result == sides,
         }),
+        Event::Clashed {
+            player, won: true, ..
+        } => {
+            found.push(Happened::W15cClashWon { player: *player });
+        }
         Event::CoinFlipped { player, won: true } => {
             found.push(Happened::CoinFlipWon { player: *player });
         }
@@ -1215,6 +1227,45 @@ fn becomes_target(
         .then(|| cause(state, subjects))
 }
 
+/// What `pattern` finds in the player actions of a game: a venture, a die roll, a crime and the mana spent in a turn.
+fn matching_player_action(
+    pattern: &TriggerPattern,
+    happened: &Happened,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
+    match (pattern, happened) {
+        (
+            TriggerPattern::Ventured { who, room },
+            Happened::Ventured {
+                player,
+                object,
+                room: entered,
+            },
+        ) => (by(who, player)
+            && room.is_none_or(|room| room == *entered && scope.source.id == *object))
+        .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        (
+            TriggerPattern::DiceRolled { who, highest },
+            Happened::DiceRolled {
+                player,
+                first,
+                highest: rolled_highest,
+            },
+        ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
+            .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {
+            by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
+        (TriggerPattern::Expend { who, n }, Happened::Expended { player, from, to }) => {
+            (by(who, player) && *from < *n && *n <= *to)
+                .then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
+        _ => None,
+    }
+}
+
 /// What `pattern` finds in the events about a player or a permanent: damage, life, cards drawn, discarded and cycled,
 /// taps, counters, blocks and attachments. The subjects of the cause (`Ref::Triggering`) are the recipient of damage and
 /// the player who tapped for mana alone, so that damage to "that player" hits no creature that dealt it or land that was
@@ -1258,42 +1309,18 @@ fn matching_event(
                 },
             )
         }
-        (
-            TriggerPattern::Ventured { who, room },
-            Happened::Ventured {
-                player,
-                object,
-                room: entered,
-            },
-        ) => (by(who, player)
-            && room.is_none_or(|room| room == *entered && scope.source.id == *object))
-        .then(|| counted(state, vec![Target::Player(*player)], 0)),
-        (
-            TriggerPattern::DiceRolled { who, highest },
-            Happened::DiceRolled {
-                player,
-                first,
-                highest: rolled_highest,
-            },
-        ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
-            .then(|| counted(state, vec![Target::Player(*player)], 0)),
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
+        | (TriggerPattern::TakesInitiative { who }, Happened::TookInitiative { player })
         | (TriggerPattern::CompletedDungeon { who }, Happened::CompletedDungeon { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
         | (TriggerPattern::CoinFlipWon { who }, Happened::CoinFlipWon { player })
+        | (TriggerPattern::W15cClashWon { who }, Happened::W15cClashWon { player })
         | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
         | (TriggerPattern::Surveilled { who }, Happened::Surveilled { player, .. })
         | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
-        (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {
-            by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
-        }
-        (TriggerPattern::Expend { who, n }, Happened::Expended { player, from, to }) => {
-            (by(who, player) && *from < *n && *n <= *to)
-                .then(|| counted(state, vec![Target::Player(*player)], 0))
-        }
         (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
             // The card is read where the batch left it: in the hand it was drawn into, or wherever an effect sent it since.
             let drawn = object(*card)?;
@@ -1324,7 +1351,8 @@ fn matching_event(
             },
         ) => (from != to && wanted.is_none_or(|wanted| wanted == *to))
             .then(|| cause(state, Vec::new())),
-        _ => matching_permanents(pattern, happened, scope),
+        _ => matching_player_action(pattern, happened, scope)
+            .or_else(|| matching_permanents(pattern, happened, scope)),
     }
 }
 
@@ -1907,13 +1935,18 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     // The events of the batch together, after each of them: what looks back is judged against `pre`, the rest `post`.
     let (back, forward): (Vec<Happened>, Vec<Happened>) =
         all.into_iter().partition(Happened::looks_back);
+    let mut starts = Vec::new();
     for (state, watching, members) in [(pre, &before, back), (post, &after, forward)] {
         if !members.is_empty() {
+            starts.push(found.len());
             let together = Happened::Batch(members);
             let watching = watching.get_or_init(|| Watchers::of(state));
             permanents(state, watching, &together, &mut found, &mut used);
             elsewhere(state, &together, &mut found, &mut used);
         }
+    }
+    if let [back, forward] = starts[..] {
+        super::w15b_join::w15b_join_passes(&mut found, back, forward);
     }
     // A player who lost with the same events triggers nothing, though the state looked back at has them alive (CR 800.4a).
     found.retain(|triggered| post.is_alive(triggered.controller));

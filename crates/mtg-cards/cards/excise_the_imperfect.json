@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d3264482-2a5a-45e8-987f-593b8aceac12",
+  "name": "Excise the Imperfect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excise the Imperfect",
+      "oracle_fingerprint": "31ca89c6d8471ea9eeab3936f3ac1cce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Incubate": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "count": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

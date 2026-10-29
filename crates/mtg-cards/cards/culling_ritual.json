@@ -21,11 +21,7 @@
                 }
               },
               {
-                "AddMana": {
-                  "mana": {
-                    "AnyCombination": { "count": { "Destroyed": [] }, "among": ["Black", "Green"] }
-                  }
-                }
+                "AddMana": { "mana": { "OneOf": ["Black", "Green"] }, "times": { "Destroyed": [] } }
               }
             ]
           }

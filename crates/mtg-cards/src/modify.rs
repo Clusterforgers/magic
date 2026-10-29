@@ -86,6 +86,9 @@ pub enum Modification {
     MinBlockers(u32),
     /// The object can't be blocked by more than this many creatures (a restriction, no layer).
     MaxBlockers(u32),
+    /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
+    /// additional creature each combat" (CR 509.1a).
+    BlocksAdditional(u32),
     /// The object is goaded by the controller of the effect or ability (CR 701.15; a restriction, no layer): it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded,
@@ -130,6 +133,7 @@ impl Modification {
             | Modification::CanBlockOnly(_)
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlocksAdditional(_)
             | Modification::Goaded => None,
         }
     }
@@ -268,6 +272,14 @@ pub enum GameRule {
     },
     /// No more than this many creatures can block each combat: a restriction on the whole declaration (CR 509.1b).
     BlockLimit(u32),
+    /// No more than `most` creatures each player `who` names controls can block each combat ("each opponent can't
+    /// block with more than one creature this combat"): a restriction on each of their declarations (CR 509.1b).
+    BlockLimitEach {
+        /// The most creatures each of them can block with, at least one.
+        most: u32,
+        /// The players whose blocks it limits.
+        who: Ref,
+    },
     /// The spells can't be countered.
     CantBeCountered(Ref),
     /// The players can't gain life.
@@ -365,6 +377,7 @@ mod tests {
     #[case(Modification::Goaded, None)]
     #[case(Modification::MinBlockers(2), None)]
     #[case(Modification::MaxBlockers(1), None)]
+    #[case(Modification::BlocksAdditional(1), None)]
     #[case(Modification::CanBlockOnly(Selector(vec![crate::refs::Pred::HasKeyword(Keyword::Flying)])), None)]
     #[case(Modification::CantBeBlockedBy(Selector(vec![crate::refs::Pred::Type(CardType::Creature)])), None)]
     fn layers_follow_the_kind(#[case] modification: Modification, #[case] layer: Option<&str>) {
@@ -431,6 +444,10 @@ mod tests {
         r#"{"AttackLimitAt":{"most":2,"at":"You"}}"#
     )]
     #[case(GameRule::BlockLimit(2), r#"{"BlockLimit":2}"#)]
+    #[case(
+        GameRule::BlockLimitEach { most: 1, who: Ref::Opponents },
+        r#"{"BlockLimitEach":{"most":1,"who":"Opponents"}}"#
+    )]
     #[case(
         GameRule::CantGainLife(Ref::EachPlayer),
         r#"{"CantGainLife":"EachPlayer"}"#

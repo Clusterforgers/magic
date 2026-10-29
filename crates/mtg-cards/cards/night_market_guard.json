@@ -1,0 +1,12 @@
+{
+  "oracle_id": "3a7a27fe-60f0-4a21-a1c1-5fef8a528391",
+  "name": "Night Market Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Market Guard",
+      "oracle_fingerprint": "46d6f46c130e330dc8ecd63ca51db02a",
+      "abilities": [{ "Static": { "affected": "This", "mods": [{ "BlocksAdditional": 1 }] } }]
+    }
+  ]
+}

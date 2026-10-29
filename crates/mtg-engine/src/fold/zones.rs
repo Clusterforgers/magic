@@ -2,7 +2,7 @@
 
 use mtg_cards::definition::Layout;
 use mtg_cards::value::CastWay;
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::opening::same_cards;
@@ -27,14 +27,7 @@ pub(super) fn move_object(
     if !state.zones.exists(to) {
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
-    // Whether it is a creature as it leaves the battlefield for a graveyard, before the move changes what it is; no other move
-    // asks, so no other move works the layers out.
-    let was_creature = matches!(to, Zone::Graveyard(_))
-        && state
-            .object(id)
-            .is_some_and(|object| object.zone() == Zone::Battlefield)
-        && crate::characteristics::characteristics(state, id)
-            .is_some_and(|chars| chars.types.contains(CardType::Creature));
+    let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
     if to == Zone::Battlefield {
@@ -127,6 +120,9 @@ pub(super) fn move_object(
         if was_creature {
             tally_death(state, (owner, controlled_by), token);
         }
+        if w14b_phyrexian {
+            state.tally(controlled_by, Tally::W14bPhyrexianDiedUnder);
+        }
     }
     // A token is a token only on the battlefield (CR 111.7): anywhere else it ceases to exist.
     if token && !matches!(to, Zone::Battlefield | Zone::Stack) {
@@ -135,6 +131,30 @@ pub(super) fn move_object(
     // Each card of a merged permanent that left is an object of its own in the new zone (CR 729.3).
     crate::merged::scatter(state, merged, owner, to, placement);
     Ok(())
+}
+
+/// Whether the object is a creature and whether it is a Phyrexian as it leaves the battlefield for a graveyard, before the
+/// move changes what it is; no other move asks, so no other move works the layers out.
+fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
+    let dies = matches!(to, Zone::Graveyard(_))
+        && state
+            .object(id)
+            .is_some_and(|object| object.zone() == Zone::Battlefield);
+    let Some(chars) = dies
+        .then(|| crate::characteristics::characteristics(state, id))
+        .flatten()
+    else {
+        return (false, false);
+    };
+    let phyrexian = Subtype("Phyrexian".to_owned());
+    let printed = state
+        .object(id)
+        .map(|object| object.card().subtypes.clone())
+        .unwrap_or_default();
+    (
+        chars.types.contains(CardType::Creature),
+        chars.has_subtype(&printed, &phyrexian),
+    )
 }
 
 /// Counts a creature put into a graveyard from the battlefield for its owner, and for the player who controlled it.

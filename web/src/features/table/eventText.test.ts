@@ -83,6 +83,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [{ CoinFlipped: { player: 1, won: true } }, 'Bo wins a coin flip'],
+  Clashed: [{ Clashed: { player: 1, opponent: 2, won: false } }, 'Bo loses a clash with Cy'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
   Ventured: [
     {
@@ -97,6 +98,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Bo ventures into Cave Entrance (Lost Mine of Phandelver)',
   ],
   DungeonCompleted: [{ DungeonCompleted: { player: 1, object: 9 } }, 'Bo completes a dungeon'],
+  InitiativeTaken: [{ InitiativeTaken: { player: 1, object: 9 } }, 'Bo takes the initiative'],
   Explored: [{ Explored: { object: 3, player: 1 } }, 'Forest explores'],
   Connived: [{ Connived: { object: 3, player: 1 } }, 'Forest connives'],
   Exerted: [{ Exerted: { object: 3, player: 1 } }, 'Forest is exerted'],
@@ -737,6 +739,14 @@ describe('events with more than one shape', () => {
       "Hill Giant can't be blocked by more than 1 creature until end of turn",
     ],
     [
+      effect(objects(2), { BlocksAdditional: 1 }, 'UntilEndOfTurn'),
+      'Hill Giant can block an additional creature each combat until end of turn',
+    ],
+    [
+      effect(objects(2), { BlocksAdditional: 2 }, 'UntilEndOfTurn'),
+      'Hill Giant can block an additional 2 creatures each combat until end of turn',
+    ],
+    [
       effect(objects(2), { CantAttackYou: { you: 1, attacked: 'Both' } }, 'UntilEndOfTurn'),
       "Hill Giant can't attack Bo or planeswalkers Bo controls until end of turn",
     ],
@@ -855,6 +865,10 @@ describe('events with more than one shape', () => {
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
     ],
     [ruleEffect({ TriggerAgain: null }, 'Forever'), 'Triggered abilities trigger an additional time'],
+    [
+      ruleEffect({ BlockLimitEach: { most: 1, who: [1] } }, 'UntilEndOfCombat'),
+      "Bo can't block with more than 1 creature until end of combat",
+    ],
   ])('says what a change to a rule does (%#)', (created, text) => {
     expect(say({ RuleCreated: { effect: created } })).toBe(text)
   })

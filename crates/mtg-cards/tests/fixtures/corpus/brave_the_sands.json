@@ -1,0 +1,23 @@
+{
+  "id": "09ab8b60-cdb1-43a8-b180-b562bb89b5a1",
+  "oracle_id": "4e89bd75-f59d-4f08-be51-5660fbbba3c2",
+  "name": "Brave the Sands",
+  "lang": "en",
+  "layout": "normal",
+  "set": "cm2",
+  "collector_number": "19",
+  "rarity": "uncommon",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Creatures you control have vigilance.\nEach creature you control can block an additional creature each combat.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

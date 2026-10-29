@@ -1,0 +1,33 @@
+{
+  "oracle_id": "324824cb-f938-401c-b9b5-d8908b431ef0",
+  "name": "Snuff Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snuff Out",
+      "oracle_fingerprint": "d32c1690d70da2d8cf261e8ee9bd20a0",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": [{ "PayLife": 4 }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

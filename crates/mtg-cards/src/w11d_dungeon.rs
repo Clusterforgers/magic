@@ -255,8 +255,8 @@ mod tests {
             [
                 ("Lost Mine of Phandelver", false, 7, true),
                 ("Dungeon of the Mad Mage", false, 9, false),
-                ("Tomb of Annihilation", false, 5, false),
-                ("Undercity", true, 9, false),
+                ("Tomb of Annihilation", false, 5, true),
+                ("Undercity", true, 9, true),
             ]
         );
         let mine = w11d_dungeon("Lost Mine of Phandelver").unwrap();

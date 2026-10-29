@@ -1,0 +1,27 @@
+{
+  "id": "203186e6-843d-4296-ab27-10ac444e651c",
+  "oracle_id": "38aa31bd-7145-43b9-9409-463d9ad6cd69",
+  "name": "Two-Headed Giant of Foriys",
+  "lang": "en",
+  "layout": "normal",
+  "set": "me4",
+  "collector_number": "139",
+  "rarity": "uncommon",
+  "released_at": "2011-01-10",
+  "digital": true,
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Giant",
+  "oracle_text": "Trample\nThis creature can block an additional creature each combat.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ]
+}

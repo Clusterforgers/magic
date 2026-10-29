@@ -94,6 +94,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('MaxBlockers' in modification) {
     return `can't be blocked by more than ${modification.MaxBlockers} ${modification.MaxBlockers === 1 ? 'creature' : 'creatures'}`
   }
+  if ('BlocksAdditional' in modification) {
+    const more = modification.BlocksAdditional
+    return `can block an additional ${more === 1 ? 'creature' : `${more} creatures`} each combat`
+  }
   if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
   if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
   if ('SetTypes' in modification) {
@@ -196,7 +200,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     const { left } = rule.PreventDamage
     what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`
   } else if ('Regenerate' in rule) what = `${n.card(rule.Regenerate.id)} gets a regeneration shield`
-  else what = 'Triggered abilities trigger an additional time'
+  else if ('BlockLimitEach' in rule) {
+    const { most, who } = rule.BlockLimitEach
+    what = `${seats(who)} can't block with more than ${most} ${most === 1 ? 'creature' : 'creatures'}`
+  } else what = 'Triggered abilities trigger an additional time'
   return `${what}${durationWords(duration, source, n)}`
 }
 
@@ -533,9 +540,16 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const { player, won } = event.CoinFlipped
     return line(`${n.seat(player)} ${won ? 'wins' : 'loses'} a coin flip`)
   }
+  if ('Clashed' in event) {
+    const { player, opponent, won } = event.Clashed
+    return line(`${n.seat(player)} ${won ? 'wins' : 'loses'} a clash with ${n.seat(opponent)}`)
+  }
   if ('Ventured' in event) {
     const v = event.Ventured
     return line(`${n.seat(v.player)} ventures into ${v.room_name} (${v.dungeon})`)
+  }
+  if ('InitiativeTaken' in event) {
+    return line(`${n.seat(event.InitiativeTaken.player)} takes the initiative`)
   }
   if ('DungeonCompleted' in event) {
     return line(`${n.seat(event.DungeonCompleted.player)} completes a dungeon`)

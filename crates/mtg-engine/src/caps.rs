@@ -65,6 +65,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
     "Trigger.CoinFlipWon",
+    "Trigger.W15cClashWon",
     "Trigger.DiceRolled",
     "Trigger.Explored",
     "Trigger.Connived",
@@ -97,6 +98,7 @@ const RUNS: &[&str] = &[
     "Amount.LowestHand",
     "Amount.LifeLostThisWay",
     "Amount.Destroyed",
+    "Amount.Exiled",
     "Amount.PhasedOut",
     "Amount.Distinct",
     "Amount.DieResult",
@@ -206,6 +208,9 @@ const RUNS: &[&str] = &[
     "Trigger.Ventured",
     "Trigger.CompletedDungeon",
     "Condition.CompletedDungeon",
+    "Effect.TakeInitiative",
+    "Trigger.TakesInitiative",
+    "Condition.Initiative",
     "Effect.CreateEmblem",
     "Condition.Monarch",
     "Condition.MonarchAtTurnStart",
@@ -238,6 +243,7 @@ const RUNS: &[&str] = &[
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
+    "Rule.BlockLimitEach",
     "Rule.MustBlock",
     "Rule.CantBeCountered",
     "Rule.CantGainLife",
@@ -282,6 +288,7 @@ const RUNS: &[&str] = &[
     "Mod.CanBlockOnly",
     "Mod.MinBlockers",
     "Mod.MaxBlockers",
+    "Mod.BlocksAdditional",
     "Mod.Goaded",
     "Effect.DelayedTrigger",
     "Effect.If",
@@ -999,6 +1006,7 @@ mod tests {
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]
     #[case::w10a_attack_limit_at("Rule.AttackLimitAt", true)]
     #[case::w8a_block_limit("Rule.BlockLimit", true)]
+    #[case::w14a_block_limit_each("Rule.BlockLimitEach", true)]
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]

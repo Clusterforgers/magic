@@ -57,6 +57,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         state.rules_cache.reset();
     }
     w2c_note_destroyed(state, event);
+    w14b_note_exiled(state, event);
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -322,6 +323,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
         | Event::Learned { .. }
+        | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. } | Event::DieRolled { .. } | Event::CoinFlipped { .. } => {
             c11e_draw_random(state, event);
@@ -528,6 +530,25 @@ fn w2c_note_destroyed(state: &mut GameState, event: &Event) {
     }
 }
 
+/// A permanent exiled while a spell or ability resolves is kept, as the object it was, for "exiled this way".
+fn w14b_note_exiled(state: &mut GameState, event: &Event) {
+    let Event::ZoneChanged {
+        object,
+        from: Zone::Battlefield,
+        to: Zone::Exile,
+        ..
+    } = event
+    else {
+        return;
+    };
+    let Some(was) = state.object(*object).map(GameObject::reference) else {
+        return;
+    };
+    if let Some(resolving) = state.resolving.as_mut() {
+        resolving.w14b_exiled.push(was);
+    }
+}
+
 /// A player loses life to an effect: the loss, and the sum "the life lost this way" reads while a spell or ability resolves.
 fn lose_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
     change_life(state, id, amount, false)?;
@@ -596,6 +617,9 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::w11a_exert::w11a_fold_ended(state, *object, *player)
         }
         Event::Ventured(ventured) => crate::w11d_dungeon::w11d_fold_ventured(state, ventured),
+        Event::InitiativeTaken { player, object } => {
+            crate::w15a_initiative::w15a_fold_taken(state, *player, *object)
+        }
         Event::DungeonCompleted { player, object } => {
             crate::w11d_dungeon::w11d_fold_completed(state, *player, *object)
         }

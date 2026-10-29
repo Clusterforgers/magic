@@ -74,7 +74,7 @@ fn item(r: &mut Reader<'_>) -> Option<CostItem> {
 }
 
 /// A run of mana symbols other than the tap symbols.
-fn mana(r: &mut Reader<'_>) -> Option<ManaCostX> {
+pub(super) fn mana(r: &mut Reader<'_>) -> Option<ManaCostX> {
     let mut text = String::new();
     while let Some(symbol) =
         r.attempt(|r| r.symbol().filter(|symbol| !matches!(*symbol, "T" | "Q")))
@@ -610,7 +610,7 @@ fn choice_text(costs: &[Cost]) -> Option<String> {
 }
 
 /// `text` with its first letter in lower case.
-fn lowered(text: &str) -> String {
+pub(super) fn lowered(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
