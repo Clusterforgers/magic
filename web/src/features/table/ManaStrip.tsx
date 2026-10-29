@@ -4,8 +4,9 @@ import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { foldGives, givesNow, manaAbilitiesOf } from './manaMade'
 import { ManaMade } from './ManaMade'
 
-// Scales with the card (`--card-w`) between a legible and a small symbol.
-const SYMBOL = 'size-[clamp(8px,calc(var(--card-w)*0.09),13px)] text-[0.4rem]'
+// The symbol and the glyph in it scale with the card (`--card-w`); the glyph is part of the picture, not text to read.
+const SYMBOL =
+  'size-[clamp(8px,calc(var(--card-w)*0.09),13px)] text-[length:clamp(4px,calc(var(--card-w)*0.045),7px)]'
 
 /** The preview's line for a permanent that taps for mana: "Taps for" and the symbols, in words to a screen reader. */
 export function ManaPreviewLine({ object }: { object: ObjectView }) {
