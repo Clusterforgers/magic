@@ -1678,6 +1678,7 @@ impl Pass<'_> {
                 };
             }
         }
+        w13a_moved::w13a_without_counters_on_moved(&mut events);
         events.extend(used);
         events
     }
@@ -2817,6 +2818,7 @@ mod shields;
 #[cfg(test)]
 mod umbra;
 
+mod w13a_moved;
 mod w5d_instead;
 
 #[cfg(test)]

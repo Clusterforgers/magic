@@ -702,3 +702,20 @@ proptest! {
         prop_assert!(outcome.is_ok(), "{:?}", outcome.err());
     }
 }
+
+/// The input the proptest above found: Vraska's Fall made Ravenous Slime and another opponent's creature go together,
+/// and the Slime's exile put counters on the Slime after it had died.
+#[test]
+fn five_seats_of_long_non_singleton_decks_in_any_colour_play_to_their_end() {
+    let house = HouseRules {
+        deck: DeckRules {
+            singleton: Some(false),
+            colour_identity: Some(false),
+            deck_size: Some(126),
+            max_copies: None,
+        },
+        ..HouseRules::default()
+    };
+    let outcome = play_game(game_under(5, 7626, &house), 7626);
+    assert!(outcome.is_ok(), "{:?}", outcome.err());
+}
