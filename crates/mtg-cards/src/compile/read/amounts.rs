@@ -158,6 +158,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
                 stat: StatKind::Colors,
             });
         }
+        if let Some(colors) = super::t17b_attached::of_its_colors(r) {
+            return Some(colors);
+        }
         if let Some(phased) = super::w11b_phase::w11b_phased_each(r) {
             return Some(phased);
         }
@@ -181,6 +184,7 @@ fn holds(pred: &Pred) -> bool {
     match pred {
         // An attacking or blocking creature is on the battlefield, and the card does not say so.
         Pred::ControlledBy(_)
+        | Pred::AttachedTo(_)
         | Pred::OwnedBy(_)
         | Pred::In(_)
         | Pred::Attacking
@@ -273,6 +277,9 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             } else {
                 format!("{phrase} on the battlefield")
             }
+        }
+        Amount::Stat { of, .. } if *of != Ref::Triggering => {
+            super::t17b_attached::of_its_colors_text(counted)?
         }
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
         Amount::Players(Ref::Bound(_)) => super::vote::w2d_tally_text(counted, false)?,

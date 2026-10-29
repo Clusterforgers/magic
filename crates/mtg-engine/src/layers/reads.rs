@@ -216,6 +216,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Saddled(who)
         | Pred::SharesName(who)
         | Pred::DamagedBy(who)
+        | Pred::AttachedTo(who)
         | Pred::SameCard(who) => reads_of_ref(who),
         Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),

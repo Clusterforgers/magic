@@ -725,6 +725,12 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     let x_free = std::mem::replace(&mut r.x_free, false);
     let outer = std::mem::replace(&mut r.where_x, named);
     let granting = std::mem::replace(&mut r.static_grant, true);
+    // "Enchanted creature gets +1/+1 for each Aura attached to it": "it" is the card or what it is attached to.
+    let itself = matches!(affected, Ref::This | Ref::Attached).then(|| affected.clone());
+    let outer_subject = r.subject.clone();
+    if itself.is_some() {
+        r.subject = itself;
+    }
     let mods = r.attempt(|r| {
         // "Enchanted creature is a Treefolk with base power and toughness 0/4 and loses all abilities."
         if affected == Ref::Attached
@@ -737,6 +743,7 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     r.x_free = x_free;
     r.where_x = outer;
     r.static_grant = granting;
+    r.subject = outer_subject;
     let mut mods = mods?;
     if named {
         let count = where_x::counted(r)?;

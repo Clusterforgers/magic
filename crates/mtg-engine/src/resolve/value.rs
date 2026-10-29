@@ -1029,7 +1029,8 @@ impl<'a> Scope<'a> {
             | Pred::SharesColor(_)
             | Pred::XInCost
             | Pred::Goaded
-            | Pred::HasAttached(_) => self.w6d_pred(pred, seen)?,
+            | Pred::HasAttached(_)
+            | Pred::AttachedTo(_) => self.w6d_pred(pred, seen)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,

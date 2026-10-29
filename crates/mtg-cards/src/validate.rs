@@ -449,6 +449,7 @@ impl<'a> Walker<'a> {
             | Pred::Crewed(r)
             | Pred::Saddled(r)
             | Pred::DamagedBy(r)
+            | Pred::AttachedTo(r)
             | Pred::SameCard(r) => {
                 self.reference(r, Kind::Object);
             }
