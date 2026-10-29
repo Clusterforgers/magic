@@ -52,7 +52,7 @@ The server runs the engine's check in the game's format when a seat chooses a de
 ## Highlighting
 
 - Deck list and builder: every card that is not `Verified` gets an icon, a word (Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The header counts them ("96 of 100 verified, 3 manual, 1 partial") with an "issues only" filter and a sort that puts them first.
-- Card preview: the oracle text with the unsupported clauses underlined and the reason beside it.
+- Card preview: the oracle text with the unsupported clauses underlined and the reason beside it, and a "Mark important to fix" button for any card (`web.md`, Fix marks).
 - Not-validated list: `/decks/unvalidated` (every saved deck) and `/decks/$deckId/unvalidated` (one) list each card that is not `Verified` with its unread clauses, each the quoted span of the card's oracle text beside its plain reason, the decks that hold it, a filter by state and a "Copy as text" button; the cards of most decks come first, so the owner sees what to fix first (`web.md`). The precon details quote the same clauses.
 - Game: a card in play with manual text carries a small "manual" badge for every seat, and its prompt quotes only the unsupported clause.
 - Lobby and precon browser: each seat's deck and each precon shows its state, so the coverage target (100% of the chosen precons) is a visible list.
@@ -63,7 +63,7 @@ Not built yet, in order of value:
 
 1. Smoke test: run the deck through bot games in the engine (the testkit harness) and cache the result by `deck_hash`. "Tested in 20 bot games" backs the static label and catches crashes in card combinations.
 2. Swap suggestions: for a flagged card, verified cards of the same type, mana value and colour identity, one click to swap.
-3. Demand-ranked backlog: every flagged card in every saved deck counts toward the coverage dashboard, so implementation follows what the table plays.
+3. Demand-ranked backlog: every flagged card in every saved deck counts toward the coverage dashboard, so implementation follows what the table plays. Fix marks are the first signal of it: a player marks a card as important to fix and `mtg-cli fix-marks` and `check-rules --gaps --marks` rank by the marks ([server.md](server.md), Fix marks).
 4. Table setting "verified decks only" for friends who want no manual steps; the default allows manual play with a visible note to all seats.
 5. History: the last few checks per deck (date, engine version, result), which explains why a marker went away.
 6. Paste-a-list check without an account, and `mtg-cli check <file>` for the same report.

@@ -48,6 +48,8 @@ pub enum Command {
     Compile(CompileArgs),
     /// Check proposed rules files (written by hand or by a model) against stored cards: valid, read back as the printed text, and their support state.
     CheckRules(CheckRulesArgs),
+    /// List the cards players marked as important to fix, the most marked first, with each card's support state and newest note.
+    FixMarks(FixMarksArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
     /// Ask a model for the rules of cards and keep the proposals the checker accepts (needs `ANTHROPIC_API_KEY` and costs money; --dry-run sends nothing).
@@ -189,9 +191,22 @@ pub struct CheckRulesArgs {
     #[arg(long, value_name = "FILE")]
     pub gaps: Option<PathBuf>,
 
+    /// With `--gaps`: read the fix marks players made from the database, rank the gaps that free the most marked cards
+    /// first and add a `marks` column (the fix marks on the cards a gap alone holds back) to the ledger and the table.
+    #[arg(long, requires = "gaps")]
+    pub marks: bool,
+
     /// The rules files (JSON); with `--card`, exactly one.
     #[arg(value_name = "FILE", required = true)]
     pub files: Vec<PathBuf>,
+}
+
+/// Options of `fix-marks`.
+#[derive(Debug, Args)]
+pub struct FixMarksArgs {
+    /// How many cards the table lists, the most marked first.
+    #[arg(long, value_name = "N", default_value_t = 50)]
+    pub limit: u32,
 }
 
 /// The API `propose` asks.
@@ -558,6 +573,38 @@ mod tests {
             ),
             (card, verbose, bundle, write.map(PathBuf::from), files)
         );
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "fix-marks"], 50)]
+    #[case(&["mtg-cli", "fix-marks", "--limit", "7"], 7)]
+    fn fix_marks_lists_fifty_cards_unless_told_otherwise(
+        #[case] args: &[&str],
+        #[case] limit: u32,
+    ) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::FixMarks(args) = cli.command else {
+            panic!("expected fix-marks");
+        };
+        assert_eq!(args.limit, limit);
+    }
+
+    #[test]
+    fn marks_belong_to_a_ledger() {
+        let with = [
+            "mtg-cli",
+            "check-rules",
+            "--gaps",
+            "l.tsv",
+            "--marks",
+            "a.json",
+        ];
+        let Command::CheckRules(args) = Cli::try_parse_from(with).unwrap().command else {
+            panic!("expected check-rules");
+        };
+        assert!(args.marks);
+        assert!(Cli::try_parse_from(["mtg-cli", "check-rules", "--marks", "a.json"]).is_err());
+        assert!(Cli::try_parse_from(["mtg-cli", "fix-marks", "--limit", "x"]).is_err());
     }
 
     #[rstest]

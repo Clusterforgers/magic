@@ -28,7 +28,7 @@ use crate::config::ServerConfig;
 use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, decks, lobbies, my_games, precon_api, ws};
+use crate::{api, decks, fix_marks, lobbies, my_games, precon_api, ws};
 
 struct Inner {
     config: ServerConfig,
@@ -287,6 +287,11 @@ pub(crate) fn router(state: AppState) -> Router {
                 .delete(decks::remove),
         )
         .route("/api/decks/{id}/export", get(decks::export))
+        .route("/api/fix-marks", get(fix_marks::list))
+        .route(
+            "/api/fix-marks/{oracle_id}",
+            put(fix_marks::put).delete(fix_marks::remove),
+        )
         .route("/api/precons", get(precon_api::list))
         .route("/api/precons/{code}", get(precon_api::get_one))
         .route("/api/games", post(api::create_game))

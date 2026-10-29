@@ -16,6 +16,7 @@ pub mod coverage_all;
 pub mod error;
 pub mod fetch;
 pub mod files;
+pub mod fix_marks;
 pub mod forge;
 pub mod gaps;
 pub mod http;
@@ -114,6 +115,10 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             Ok(compile::compile(&db, &args).await?.render())
         }
         Command::CheckRules(args) => check_rules_command(cli.database_url, &cache, &args).await,
+        Command::FixMarks(args) => {
+            let db = connect(cli.database_url).await?;
+            fix_marks::fix_marks(&db, &args).await
+        }
         Command::ForgeCheck(args) => {
             let db = connect(cli.database_url).await?;
             forge::forge_check(&db, &args).await
@@ -151,7 +156,21 @@ async fn check_rules_command(
     let (Some(path), Some(ranks)) = (&args.gaps, &ranks) else {
         return Ok(checked.render(args.verbose));
     };
-    gaps::write_ledger(&checked, ranks, path).await
+    let marks = if args.marks {
+        Some(fix_mark_counts(&db).await?)
+    } else {
+        None
+    };
+    gaps::write_ledger(&checked, ranks, marks.as_ref(), path).await
+}
+
+/// The fix marks players made, by oracle id (`check-rules --gaps --marks`).
+async fn fix_mark_counts(db: &Database) -> Result<gaps::Marks, CliError> {
+    let ranked = db.fix_marks().ranked(None).await?;
+    Ok(ranked
+        .into_iter()
+        .map(|mark| (mark.oracle_id.to_string(), mark.marks))
+        .collect())
 }
 
 /// The database the URL names, or the error that asks for one.
