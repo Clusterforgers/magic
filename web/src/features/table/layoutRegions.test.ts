@@ -62,14 +62,14 @@ describe('regionSizes', () => {
   })
 
   it.each([
-    ['1920x1080', 'xl', 'column', 320, 44, 88, 183.6],
-    ['1440x900', 'l', 'column', 316.8, 44, 81, 153],
-    ['1366x768', 'l', 'column', 300.52, 44, 69.12, 130.56],
-    ['1280x720', 'l', 'column', 281.6, 44, 64.8, 122.4],
-    ['1024x768', 'm', 'rail', 44, 44, 69.12, 130.56],
-    ['390x844', 'xs', 'sheet', 0, 44, 75.96, 118.16],
-    ['768x1024', 's', 'sheet', 0, 44, 88, 174.08],
-    ['844x390', 's', 'sheet', 0, 32, 56, 112],
+    ['1920x1080', 'xl', 'column', 320, 44, 72, 140.4],
+    ['1440x900', 'l', 'column', 316.8, 44, 63, 117],
+    ['1366x768', 'l', 'column', 300.52, 44, 56, 99.84],
+    ['1280x720', 'l', 'column', 281.6, 44, 56, 96],
+    ['1024x768', 'm', 'rail', 44, 44, 56, 99.84],
+    ['390x844', 'xs', 'sheet', 0, 44, 59.08, 118.16],
+    ['768x1024', 's', 'sheet', 0, 44, 71.68, 133.12],
+    ['844x390', 's', 'sheet', 0, 32, 56, 96],
   ])(
     'sizes a %s window: %s, side %s %i px, bar %i, shared %f, hand %f',
     (name, breakpoint, side, sideWidth, bar, shared, hand) => {
@@ -118,7 +118,7 @@ describe('regionSizes', () => {
     ['1280x720', 288],
     ['390x844', 337.6],
     // A window so low that the strip and the opponents are less than 40 %: the sheet takes them and no more.
-    ['844x390', 56 + (390 - 32 - 56 - 112) / 2.15],
+    ['844x390', 56 + (390 - 32 - 56 - 96) / 2.15],
   ])('lets the sheet of a %s window grow %f px up over the opponents', (name, most) => {
     const viewport = must(SIZES.find(([label]) => label === name)?.[1])
     expect(regionSizes(viewport).sheet).toBeCloseTo(most, 6)
@@ -181,7 +181,7 @@ function readClamp(css: string): { min: number; vh: number; max: number } {
 describe('the CSS templates', () => {
   it('writes the rows the design names for a wide window', () => {
     expect(gridRows({ phone: false, landscape: false })).toBe(
-      '44px minmax(0, 1fr) clamp(56px, 9dvh, 88px) minmax(0, 1.15fr) clamp(112px, 17dvh, 200px)',
+      '44px minmax(0, 1fr) clamp(56px, 7dvh, 72px) minmax(0, 1.15fr) clamp(96px, 13dvh, 168px)',
     )
   })
 

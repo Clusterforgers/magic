@@ -52,16 +52,23 @@ interface LaneProps {
   width?: number | undefined
   height?: number | undefined
   span?: number | undefined
+  /** The fanned piles of a lands lane (`LanePlace.pile` and `head`); missing or 1 for a plain lane. */
+  pile?: number | undefined
+  head?: number | undefined
 }
 
 /** One lane of a seat's permanents; it redraws only when its stacks, their state or its sizes change. */
 const Lane = memo(
-  function Lane({ seat, lane, label, size, entries, onToggle, width, height, span }: LaneProps) {
+  function Lane({ seat, lane, label, size, entries, onToggle, width, height, span, pile, head }: LaneProps) {
     const ghosts = useGhosts(seat, lane)
     const ids = useMemo(() => visibleIds(entries), [entries])
     const box = useMemo<CardBox | undefined>(
       () => (width === undefined || height === undefined ? undefined : { width, height }),
       [width, height],
+    )
+    const fan = useMemo(
+      () => (pile === undefined || head === undefined || pile < 2 ? undefined : { pile, head }),
+      [pile, head],
     )
     if (ids.length === 0 && ghosts.length === 0) return null
     return (
@@ -79,6 +86,7 @@ const Lane = memo(
           label={label}
           size={faceOf(width, lane === 'lands' ? 'compact' : size)}
           box={box}
+          fan={fan}
         />
       </div>
     )
@@ -93,6 +101,8 @@ const Lane = memo(
     a.width === b.width &&
     a.height === b.height &&
     a.span === b.span &&
+    a.pile === b.pile &&
+    a.head === b.head &&
     sameEntries(a.entries, b.entries),
 )
 
@@ -175,7 +185,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing }: Bat
               key={lanes.map((lane) => lane.lane).join('-')}
               data-slot="board-band"
               className={cn(
-                'flex shrink-0 items-start gap-4',
+                'flex shrink-0 items-start gap-3',
                 lanes.length === 1 && lanes[0]?.lane === 'creatures' ? 'justify-center' : 'justify-between',
               )}
             >
@@ -191,6 +201,8 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing }: Bat
                   width={'width' in place ? place.width : undefined}
                   height={'height' in place ? place.height : undefined}
                   span={'span' in place ? place.span : undefined}
+                  pile={'pile' in place ? place.pile : undefined}
+                  head={'head' in place ? place.head : undefined}
                 />
               ))}
             </div>

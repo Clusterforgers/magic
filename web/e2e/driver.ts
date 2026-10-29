@@ -276,7 +276,8 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       }
       const source = now.board[0]
       if (source === undefined) break
-      await card(page, source.id).click()
+      // The head of the card: a land of a fanned pile shows only its name line above the next.
+      await card(page, source.id).click({ position: { x: 10, y: 6 } })
       // A land that makes more than one kind of mana asks which: a coloured choice is taken before a colourless one.
       const pressed = card(page, source.id).and(page.locator('[aria-pressed="true"]'))
       const choices = page.locator('[data-slot="mana-choice"] button')

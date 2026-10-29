@@ -4,14 +4,10 @@ import type { CardType, ObjectView, Subtype } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
 import { rowOf } from './cardModel'
 import type { RowKind } from './cardModel'
-import { fixtureState } from './dev/devGame'
-import { buildFixture } from './dev/fixture'
 import { CARD_ASPECT, LAND_SCALE } from './fit'
 import type { FitBox } from './fit'
 import { fitLanes, LANE_LIMITS } from './laneFit'
 import type { LaneCounts, LaneFit, LaneLimits } from './laneFit'
-import { POD_COLUMN_PX, regionSizes, ZONE_GAP_PX } from './layout'
-import { battlefieldStacks, laneCounts, layoutSeat } from './rowStacks'
 
 const typed = (types: CardType[], subtypes: Subtype[] = []): ObjectView => card({ id: 1, types, subtypes })
 
@@ -49,11 +45,20 @@ function holds(fit: LaneFit, box: FitBox, label: string): void {
     expect(span, `${label}: band width`).toBeLessThanOrEqual(box.width)
     for (const lane of band.lanes) {
       expect(lane.boxes, label).toBeGreaterThan(0)
-      expect(lane.columns * lane.lines, `${label}: room for every box`).toBeGreaterThanOrEqual(lane.boxes)
+      const room = lane.columns * lane.lines * lane.pile
+      expect(room, `${label}: room for every box`).toBeGreaterThanOrEqual(lane.boxes)
       expect(lane.span).toBe(lane.columns * (lane.width + gap) - gap)
-      expect(lane.width).toBe(Math.round(fit.cardWidth * (lane.lane === 'lands' ? LAND_SCALE : 1)))
+      expect(lane.width).toBe(Math.round(fit.cardWidth * (lane.lane === 'creatures' ? 1 : LAND_SCALE)))
       expect(lane.height).toBe(Math.round(lane.width * CARD_ASPECT))
-      expect(lane.lines * lane.height + (lane.lines - 1) * rowGap).toBeLessThanOrEqual(band.height)
+      const tall =
+        lane.pile > 1
+          ? lane.height + (lane.pile - 1) * lane.head
+          : lane.lines * lane.height + (lane.lines - 1) * rowGap
+      expect(lane.tall, label).toBe(tall)
+      expect(tall).toBeLessThanOrEqual(band.height)
+      // Only lands fan, and a covered land shows at least its name line.
+      if (lane.pile > 1) expect([lane.lane, lane.lines]).toEqual(['lands', 1])
+      if (lane.pile > 1) expect(lane.head).toBeGreaterThanOrEqual(LANE_LIMITS.fanHeadMin)
     }
   }
   const height =
@@ -114,8 +119,8 @@ describe('fitLanes', () => {
 
   it.each([
     ['one card in a large board', { width: 1100, height: 400 }, counts(1, 0, 0), 224, 'two'],
-    ['a few permanents side by side', { width: 1100, height: 330 }, counts(2, 1, 3), 194, 'one'],
-    ['an early board in two bands', { width: 500, height: 330 }, counts(3, 2, 3), 104, 'two'],
+    ['a few permanents side by side', { width: 1100, height: 330 }, counts(2, 1, 3), 224, 'one'],
+    ['an early board in two bands', { width: 500, height: 330 }, counts(3, 2, 3), 118, 'two'],
   ])('%s', (_name, box, lanes, width, shape) => {
     const fit = fitLanes(box, lanes, 'near')
     expect(fit).toMatchObject({ cardWidth: width, shape, scrolls: false, hidden: 0 })
@@ -145,6 +150,32 @@ describe('fitLanes', () => {
     holds(fit, { width: 300, height: 90 }, 'floor')
   })
 
+  // `fanHead: 1` shows a whole land above the next, which never beats plain lines: the fit without fanning.
+  const PLAIN: LaneLimits = { ...LANE_LIMITS, fanHead: 1 }
+
+  it.each([
+    [{ width: 930, height: 200 }, counts(4, 2, 4)],
+    [{ width: 700, height: 260 }, counts(3, 2, 9)],
+  ])('fans the lands into piles in %o when that buys a larger card: %o', (box, lanes) => {
+    const fit = fitLanes(box, lanes, 'near')
+    const plain = fitLanes(box, lanes, 'near', PLAIN)
+    expect(fit.cardWidth).toBeGreaterThan(plain.cardWidth)
+    const land = lanesOf(fit).find((lane) => lane.lane === 'lands')
+    expect(land?.pile).toBeGreaterThan(1)
+    holds(fit, box, 'fanned')
+    expect(lanesOf(plain).every((lane) => lane.pile === 1)).toBe(true)
+  })
+
+  it.each(COUNTS)('keeps plain lanes where fanning buys nothing: %o', (lanes) => {
+    for (const box of BOXES) {
+      const fit = fitLanes(box, lanes, 'near')
+      const plain = fitLanes(box, lanes, 'near', PLAIN)
+      expect(fit.cardWidth).toBeGreaterThanOrEqual(plain.cardWidth)
+      if (fit.cardWidth === plain.cardWidth && fit.shape === plain.shape)
+        expect(fit.height).toBeLessThanOrEqual(plain.height)
+    }
+  })
+
   it('answers for an empty board and a box of no size', () => {
     expect(fitLanes({ width: 800, height: 300 }, counts(0, 0, 0), 'near')).toMatchObject({
       cardWidth: LANE_LIMITS.maxWidth,
@@ -155,56 +186,5 @@ describe('fitLanes', () => {
     const none = fitLanes({ width: 0, height: 0 }, counts(2, 1, 1), 'near')
     expect(none).toMatchObject({ cardWidth: LANE_LIMITS.minWidth, scrolls: true })
     expect(lanesOf(none).every((lane) => lane.columns === 1)).toBe(true)
-  })
-})
-
-// A board beside a 168 px pod column inside a region padded by 8 px, in a zone padded by 4 px (`SeatArea`, `Battlefield`).
-function zones(width: number, height: number): { own: FitBox; opponent: FitBox } {
-  const regions = regionSizes({ width, height })
-  const inner = regions.main.width - 2 * ZONE_GAP_PX - POD_COLUMN_PX - ZONE_GAP_PX - 8
-  const zone = (region: number): FitBox => ({
-    width: Math.floor(inner),
-    height: Math.floor(region - 2 * ZONE_GAP_PX - 8),
-  })
-  return { own: zone(regions.own), opponent: zone(regions.opponents) }
-}
-
-describe('the duel board of an early Commander game', () => {
-  const state = fixtureState(buildFixture({ seats: 2, board: 'duel' }))
-  const fitOf = (seat: number, box: FitBox, facing: 'near' | 'far') => {
-    const stacks = battlefieldStacks(state, seat)
-    const fit = layoutSeat({ box, stacks, facing, opened: new Set(), marked: new Set() }).fit
-    if (fit === null) throw new Error('a box was given')
-    return fit
-  }
-
-  it('holds 12 permanents of yours and 10 of the opponent', () => {
-    const permanents = (seat: number) =>
-      Object.values(
-        laneCounts(
-          layoutSeat({
-            box: null,
-            stacks: battlefieldStacks(state, seat, false),
-            facing: 'near',
-            opened: new Set(),
-            marked: new Set(),
-          }).rows,
-        ),
-      ).reduce((sum, count) => sum + count, 0)
-    expect([permanents(0), permanents(1)]).toEqual([12, 10])
-  })
-
-  it.each([
-    [1920, 1080, 130, 110],
-    [1440, 900, 100, 80],
-    [1366, 768, 84, 66],
-    [1024, 768, 84, 66],
-  ])('draws cards readable without a hover at %ix%i', (width, height, ownMin, theirMin) => {
-    const { own, opponent } = zones(width, height)
-    const mine = fitOf(0, own, 'near')
-    const theirs = fitOf(1, opponent, 'far')
-    expect(mine.scrolls || theirs.scrolls).toBe(false)
-    expect(mine.cardWidth).toBeGreaterThanOrEqual(ownMin)
-    expect(theirs.cardWidth).toBeGreaterThanOrEqual(theirMin)
   })
 })

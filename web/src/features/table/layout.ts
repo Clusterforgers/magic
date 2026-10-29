@@ -171,9 +171,9 @@ export interface HeightClamp {
 export const TOP_BAR_PX = 44
 export const TOP_BAR_LANDSCAPE_PX = 32
 /** The shared strip between the opponents and the own board. */
-export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 9, max: 88 }
+export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
 /** The hand dock; a phone held upright gets the lower one. */
-export const HAND_CLAMP: HeightClamp = { min: 112, vh: 17, max: 200 }
+export const HAND_CLAMP: HeightClamp = { min: 96, vh: 13, max: 168 }
 export const HAND_PHONE_CLAMP: HeightClamp = { min: 96, vh: 14, max: 120 }
 /** The own board is this many times as tall as the opponents' area (`minmax(0, 1.15fr)` against `minmax(0, 1fr)`). */
 export const OWN_SHARE = 1.15
@@ -259,12 +259,21 @@ export function regionSizes(viewport: Viewport): Regions {
 
 const clampCss = (range: HeightClamp): string => `clamp(${range.min}px, ${range.vh}dvh, ${range.max}px)`
 
-/** The `grid-template-rows` of the table's main area: top bar, opponents, shared strip, own board, hand dock. */
-export function gridRows(regions: Pick<Regions, 'phone' | 'landscape'>): string {
+/**
+ * The `grid-template-rows` of the table's main area: top bar, opponents, shared strip, own board, hand dock. The two
+ * board rows share what is left by the weights of `opponents` and `own` (a split, `boardSplit.ts`), else 1 to `OWN_SHARE`.
+ */
+export function gridRows(
+  regions: Pick<Regions, 'phone' | 'landscape'> & Partial<Pick<Regions, 'opponents' | 'own'>>,
+): string {
   const bar = regions.landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const hand = clampCss(regions.phone ? HAND_PHONE_CLAMP : HAND_CLAMP)
-  return `${bar}px minmax(0, 1fr) ${clampCss(SHARED_CLAMP)} minmax(0, ${OWN_SHARE}fr) ${hand}`
+  const weighted = (regions.opponents ?? 0) > 0 && (regions.own ?? 0) > 0
+  const [theirs, own] = weighted ? [weight(regions.opponents), weight(regions.own)] : [1, OWN_SHARE]
+  return `${bar}px minmax(0, ${theirs}fr) ${clampCss(SHARED_CLAMP)} minmax(0, ${own}fr) ${hand}`
 }
+
+const weight = (px: number | undefined): number => Math.round((px ?? 0) * 100) / 100
 
 /**
  * The widest the controls dock gets, in px: the pass buttons in one row; with the stop ladder and Full Control in a

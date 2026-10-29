@@ -24,7 +24,16 @@ import { useStable } from './useStable'
  * scrolls inside itself past that. It never grows down over your board, which holds the cards a prompt asks you to
  * click, nor over the hand dock or the controls, and it lies over no card of the opponents' boards.
  */
-export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?: number }) {
+export function SharedStrip({
+  sheetMax,
+  inset = 0,
+  onOverhang,
+}: {
+  sheetMax: number
+  inset?: number
+  /** Hears how far the sheet stands above the strip, in px. */
+  onOverhang?: ((px: number) => void) | undefined
+}) {
   const name = useSeatNamer()
   const stage = usePlay((state) => state.view?.stage ?? 'PreGame')
   const priority = usePlay((state) => state.view?.priority ?? null)
@@ -35,7 +44,7 @@ export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?:
   const strip = useRef<HTMLElement>(null)
   const sheet = useRef<HTMLDivElement>(null)
   useEdgeFade(sheet)
-  useSheetOverhang(strip, sheet)
+  useSheetOverhang(strip, sheet, onOverhang)
   return (
     <section
       ref={strip}
