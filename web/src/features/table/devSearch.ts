@@ -44,6 +44,8 @@ export interface DevSearch {
   hand?: number
   /** The step the turn is in, such as `main2` or `declareattackers`, to look at the theme of its phase; the fixture's own when missing. */
   step?: Step
+  /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
+  cards?: 'real'
 }
 
 const whole = (value: unknown): number | undefined =>
@@ -72,6 +74,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     stops:
       typeof search.stops === 'string' && parseStopSpec(search.stops).length > 0 ? search.stops : undefined,
     fc: search.fc === 'next' || search.fc === 'held' ? search.fc : undefined,
+    cards: search.cards === 'real' ? 'real' : undefined,
     step: typeof search.step === 'string' ? STEP_BY_NAME.get(search.step.toLowerCase()) : undefined,
     hand:
       typeof search.hand === 'number' &&

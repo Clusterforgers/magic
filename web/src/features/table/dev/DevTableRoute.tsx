@@ -1,12 +1,32 @@
 import { useSearch } from '@tanstack/react-router'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { cardsApi } from '@/net/cards'
 import { GameContext } from '@/features/game/gameContext'
 import { GameTable } from '@/features/table/GameTable'
 import { TableOptionsContext } from '@/features/table/tableOptions'
 import { DevFxControls } from './DevFxControls'
 import { fixtureGame } from './devGame'
-import { FIXTURE_MARKER } from './fixture'
+import { FIXTURE_MARKER, buildFixture } from './fixture'
+import { SHOWCASE_NAMES, fetchRealIds } from './realCards'
+import type { RealIds } from './realCards'
 import { parseStopSpec } from './stopSpec'
+
+/** The oracle ids of the fixture's cards from the server (`?cards=real`), read once; none until they arrive. */
+function useRealIds(on: boolean, seats: number, hand: number | undefined): RealIds | undefined {
+  const [ids, setIds] = useState<RealIds | undefined>(undefined)
+  useEffect(() => {
+    if (!on) return
+    let live = true
+    const names = buildFixture({ seats, hand }).view.objects.map((object) => object.name)
+    void fetchRealIds(cardsApi, [...names, ...SHOWCASE_NAMES]).then((found) => {
+      if (live) setIds(found)
+    })
+    return () => {
+      live = false
+    }
+  }, [on, seats, hand])
+  return on ? ids : undefined
+}
 
 /**
  * `/dev/table?seats=2|4|12&mode=grid|focus&focus=<seat>&prompt=priority&turn=you&fx=damage&slow=5&preview=3000`: the
@@ -20,9 +40,10 @@ import { parseStopSpec } from './stopSpec'
  * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc } = useSearch({
+  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, cards } = useSearch({
     from: '/dev/table',
   })
+  const real = useRealIds(cards === 'real', seats, hand)
   const game = useMemo(
     () =>
       fixtureGame({
@@ -34,8 +55,9 @@ export function DevTableRoute() {
         previewMs: preview,
         stops: stops === undefined ? undefined : parseStopSpec(stops),
         fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
+        real,
       }),
-    [seats, prompt, turn, step, hand, preview, stops, fc],
+    [seats, prompt, turn, step, hand, preview, stops, fc, real],
   )
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
