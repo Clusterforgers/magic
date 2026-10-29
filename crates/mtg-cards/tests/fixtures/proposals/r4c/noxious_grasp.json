@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Target":0}}},{"GainLife":{"amount":1}}],"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]},{"AnyOf":[{"Color":"Green"},{"Color":"White"}]}]}}]} }]} ]}

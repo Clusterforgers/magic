@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Target":0}}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"AnyOf":[{"Compare":{"op":"Ge","stat":"Power","to":4}},{"Compare":{"op":"Ge","stat":"Toughness","to":4}}]}]}}]}}]}] }

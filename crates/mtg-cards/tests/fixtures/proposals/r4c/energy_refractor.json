@@ -1,0 +1,22 @@
+{
+  "oracle_id": "fd9dde4c-bacd-48d8-b4c9-a6a04f0b3338",
+  "name": "Energy Refractor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Energy Refractor",
+      "oracle_fingerprint": "697905e3b7b88cbbe07215576e1e8867",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": { "cost": "{2}", "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }] }
+        }
+      ]
+    }
+  ]
+}

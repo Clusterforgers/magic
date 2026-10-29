@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Shield":{"by":"Prevent","duration":"UntilEndOfTurn","when":{"Damage":{"to":{"Target":0}}}}}],"targets":[{"what":"AnyTarget"}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Activated":{"cost":[{"Discard":{}}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"SetPT":{"power":4,"toughness":2}}]}}]} }]}] }

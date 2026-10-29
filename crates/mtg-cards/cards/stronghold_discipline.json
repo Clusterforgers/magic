@@ -1,0 +1,38 @@
+{
+  "oracle_id": "90e46d04-9d53-4a24-aff0-f8c61e1db97d",
+  "name": "Stronghold Discipline",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stronghold Discipline",
+      "oracle_fingerprint": "bc2d4b978d2e900fff1c2a4e3660c88b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "player" },
+                        "amount": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

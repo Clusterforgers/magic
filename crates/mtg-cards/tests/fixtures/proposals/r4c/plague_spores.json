@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}},{"Destroy":{"what":{"Target":1},"regenerate":false}}],"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"Color":"Black"}}]}},{"what":{"Object":[{"Type":"Land"}]}}]}}]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Discard":{"who":"Triggering"}}],"when":{"SpellCast":{"what":[{"Color":"Green"},{"Color":"White"}]}}}}]}]}

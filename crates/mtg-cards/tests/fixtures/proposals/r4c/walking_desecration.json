@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{B}"},{"TapPermanents":{"filter":[{"Targeting":[{"ControlledBy":"You"}]}],"count":"X"} }],"effects":[{"Rule":{"duration":"UntilEndOfTurn","rule":{"MustAttack":{"Each":[{"Type":"Creature"},"ChosenSubtype"]}}}}]} }]}]}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3f9ab49b-81fc-487e-8613-e30afcae164d",
+  "name": "Dust Corona",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dust Corona",
+      "oracle_fingerprint": "580422dce9089c8d9e61e2f62f355e73",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "CantBeBlockedBy": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

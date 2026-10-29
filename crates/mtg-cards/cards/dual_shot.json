@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e56056dc-637e-4229-ae2c-dfd06d24086b",
+  "name": "Dual Shot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dual Shot",
+      "oracle_fingerprint": "e62fdee0ea0370880950a8af0b9659e4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

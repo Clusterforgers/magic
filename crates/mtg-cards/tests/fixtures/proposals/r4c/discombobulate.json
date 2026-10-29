@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Counter":{"what":{"Target":0}}},{"LookAtTop":{"as":"top","count":4}},{ "Move":{"to":{"Library":{"place":"Top","order":"Chosen"}},"what":{"Bound":"top"}}}],"targets":[{"what":{"Object":[{"Type":"Instant"},{"Type":"Sorcery"}]}}]}}]} ]}

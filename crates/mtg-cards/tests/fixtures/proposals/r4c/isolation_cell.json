@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Pay":{"cost":"{2}","who":"Triggering"}}],"when":{"SpellCast":{"by":"Opponents","what":[{"Type":"Creature"}]}},"if":{"Not":{"Matches":{"selector":[{"HasKeyword":"Lifelink"}],"subject":"Triggering"}}}}} ]}]}

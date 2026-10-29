@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"Choose":{"as":"cards","from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"}]},"count":{"max":2,"min":2}}},{"Reveal":{"what":{"Bound":"cards"}}},{"Draw":{}}]}}]}]}

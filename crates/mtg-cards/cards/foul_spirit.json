@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d8177d08-a603-42e9-9350-890eac05e184",
+  "name": "Foul Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foul Spirit",
+      "oracle_fingerprint": "726b3a785b05037ca9a0a18ff3ad14ce",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

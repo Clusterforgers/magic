@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Draw":{}}],"when":{"ZoneChange":{"what":[{"Is":"This"}],"to":"Battlefield"}}}},{"Rule":{"rule":{"MayCast":{"what":[{"Subtype":"Hero"}],"who":"You"} }}}]}] }

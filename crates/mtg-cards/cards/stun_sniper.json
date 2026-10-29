@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f5bdf226-7a83-469b-bc49-87af388d9020",
+  "name": "Stun Sniper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stun Sniper",
+      "oracle_fingerprint": "ed8eab3782eaf9e5d10880b9d775e9fb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 1 } },
+              { "Tap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

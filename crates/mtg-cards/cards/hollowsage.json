@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4e1efd99-8bfc-4650-a430-a754578facbd",
+  "name": "Hollowsage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollowsage",
+      "oracle_fingerprint": "aa4483f9f09dfec7bc3aa5441c62f42f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "May": { "effects": [{ "Discard": { "who": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

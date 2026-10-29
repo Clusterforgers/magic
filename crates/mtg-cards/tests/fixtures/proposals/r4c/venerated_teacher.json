@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"PutCounters":{"counter":"loyalty","on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"HasKeyword":"Lifelink"}]},"count":2}}],"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}}} }]}]}

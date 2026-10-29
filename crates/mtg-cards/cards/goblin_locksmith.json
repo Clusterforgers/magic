@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d692adcf-8ab5-4208-85d1-c75285a85c59",
+  "name": "Goblin Locksmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Locksmith",
+      "oracle_fingerprint": "c32715e001b088cae07a502ea9bdf70b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "This" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Defender" }] },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

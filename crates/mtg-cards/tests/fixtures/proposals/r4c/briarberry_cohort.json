@@ -1,0 +1,3 @@
+{"faces":[{"abilities":[{"Keyword":"Flying"},{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"condition":{"Compare":{"left":{"Count":["This",{"Color":"Blue"},{"Type":"Creature"},{"ControlledBy":"You"}] },"op":"Ge","right":2}}}}]}
+
+   																	] }

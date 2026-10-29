@@ -1,0 +1,20 @@
+{
+  "oracle_id": "46334ae3-e496-4f15-8033-0f42ee0ae375",
+  "name": "Bottle Golems",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bottle Golems",
+      "oracle_fingerprint": "e988203a07ea9e85e2671ad2400be42a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

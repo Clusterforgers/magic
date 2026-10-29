@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"DealDamage":{"amount":2,"to":{"Target":0}}},{"DealDamage":{"amount":3,"to":{"Target":0}}}],"targets":[{"what":"AnyTarget"}]}}]}]}

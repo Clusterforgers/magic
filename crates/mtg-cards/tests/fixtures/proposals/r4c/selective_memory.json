@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"Search":{"as":"card","filter":[{"Not":{"Type":"Land"}}]}},{"Exile":{"what":{"Bound":"card"}}},{"Shuffle":{}}]}}]}]}

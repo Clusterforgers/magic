@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ce5ca56a-fce8-4e19-807f-7b8638fe4bcf",
+  "name": "Mudhole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mudhole",
+      "oracle_fingerprint": "cccecf0aa20ba4a3a7d9fcd89bf52e46",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

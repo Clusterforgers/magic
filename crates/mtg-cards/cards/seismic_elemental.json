@@ -1,0 +1,29 @@
+{
+  "oracle_id": "61ec78da-979c-45cf-8be6-12aa24dc833a",
+  "name": "Seismic Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seismic Elemental",
+      "oracle_fingerprint": "a99d7de1c43a867b9f409561ab1fe212",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

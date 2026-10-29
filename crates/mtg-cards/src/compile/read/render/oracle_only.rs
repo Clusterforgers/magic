@@ -227,6 +227,13 @@ mod uncounterable_group;
 mod unless;
 mod untap_lands;
 mod untapped_cost;
+mod w12a_exactly;
+mod w12a_is_this;
+mod w12a_it_self;
+mod w12a_minus_zero;
+mod w12a_next_upkeep;
+mod w12a_that_target;
+mod w12a_their_graveyard;
 mod w4a_if;
 mod w4a_if_conditions;
 mod w4a_if_instead;
@@ -369,6 +376,20 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_w5c(ability, texts);
     add_w5a(ability, texts);
     add_w8c(ability, texts);
+    add_w12a(ability, texts);
+}
+
+/// Adds the wordings of the shapes the stored local-model proposals hit (r4d): the next turn's upkeep, a target said
+/// again as "it" or "that creature", the source said "it" after its own trigger, the source named through a selector,
+/// a target player's exile from their graveyard, a count of exactly a number and a penalty "-N/-0".
+fn add_w12a(ability: &Ability, texts: &mut Vec<String>) {
+    w12a_is_this::add(ability, texts);
+    w12a_that_target::add(ability, texts);
+    w12a_their_graveyard::add(ability, texts);
+    w12a_exactly::add(ability, texts);
+    w12a_next_upkeep::add(ability, texts);
+    w12a_it_self::add(ability, texts);
+    w12a_minus_zero::add(texts);
 }
 
 /// Adds the wordings of the shapes the stored local-model proposals hit (r4b): a tap after the effects on its target,

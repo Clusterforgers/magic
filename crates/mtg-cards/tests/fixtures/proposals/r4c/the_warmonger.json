@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"ExileFromGraveyard":{ "filter":[{"Is":"This"}]} }],"effects":[{"Continuous":{"affected":{"Each":[{"ControlledBy":"You"},{"Type":"Creature"}]},"duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":2,"toughness":0}},{"AddKeyword":"Haste"}]}}]} }]}]}

@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Activated":{"cost":[{"Discard":{}}],"effects":[{"Continuous":{"affected":"This","duration":"UntilEndOfTurn","mods":[{"AddKeyword":"FirstStrike"},{"AddKeyword":"Haste"}]}}]} }]}]}

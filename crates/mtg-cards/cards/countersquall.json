@@ -1,0 +1,22 @@
+{
+  "oracle_id": "6df620b8-1e54-4f63-8556-12c75e5679af",
+  "name": "Countersquall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Countersquall",
+      "oracle_fingerprint": "915b31a81dab05d1d4eef8f75de453c4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

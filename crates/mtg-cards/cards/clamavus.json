@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d772b16b-31db-48aa-8bb6-da32f45eebe4",
+  "name": "Clamavus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clamavus",
+      "oracle_fingerprint": "f6a54f9b36d696cc1d98d5b6678801dd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "You" }, { "Type": "Creature" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": { "by": 1, "of": { "Counters": { "on": "This", "counter": "+1/+1" } } }
+                  },
+                  "toughness": {
+                    "Times": { "by": 1, "of": { "Counters": { "on": "This", "counter": "+1/+1" } } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

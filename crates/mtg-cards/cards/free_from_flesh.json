@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e4a96cc7-8a4f-4007-8477-e1f30720db7b",
+  "name": "Free from Flesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Free from Flesh",
+      "oracle_fingerprint": "65b16b7f9ecd939d3235c010e8f5b70d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "oil" }, "count": 2 }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

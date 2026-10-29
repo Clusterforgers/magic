@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Spell":{"effects":[{"DelayedTrigger":{"effects":[{"DealDamage":{"amount":3,"to":{"Each":[{"Type":"Creature"}]}}}],"when":{"StepBegins":{"step":"BeginCombat"}},"this_turn":true}}]} }]}] }

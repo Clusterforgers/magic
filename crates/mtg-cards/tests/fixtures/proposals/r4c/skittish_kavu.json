@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"Color":"White"},{"Color":"Blue"},{"ControlledBy":"Opponents"}]},"op":"Eq","right":0}}} } ]} ]}

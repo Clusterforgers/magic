@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"DealDamage":{"amount":1,"to":{"ControllerOf":{"Target":0}}}}],"when":{"Blocks":{"what":[{"Type":"Creature"}]}}, "targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}] }]}

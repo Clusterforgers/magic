@@ -1,0 +1,1 @@
+{"faces":[{"abilities":[{"Triggered":{"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":["CantBlock"]}}],"when":{"Attacks":{"what":[{"Is":"This"}]}}, "targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}]} ]}

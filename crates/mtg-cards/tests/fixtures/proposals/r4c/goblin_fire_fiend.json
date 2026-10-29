@@ -1,0 +1,34 @@
+{
+  "oracle_id": "61f84dbb-e9bb-45b1-a30e-c631be6ad25c",
+  "name": "Goblin Fire Fiend",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Goblin Fire Fiend",
+      "oracle_fingerprint": "c4d773a891defcbab9ce701e0f178d5c",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "the proposed rules do not cover this clause",
+            "span": { "start": 6, "end": 44 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
