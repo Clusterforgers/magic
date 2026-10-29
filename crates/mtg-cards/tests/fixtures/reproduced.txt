@@ -400,6 +400,7 @@ Door of Destinies
 Doublecast
 Draconic Lore
 Drag to the Bottom
+Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
@@ -643,6 +644,7 @@ Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grisly Salvage
+Ground Seal
 Growing Ranks
 Grumgully, the Generous
 Gruul Cluestone
@@ -681,6 +683,7 @@ Hellkite Tyrant
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
+Herald of Eternal Dawn
 Herald of Hoofbeats
 Herald of War
 Herald of the Dreadhorde
@@ -736,6 +739,7 @@ Inspired Sphinx
 Inspiring Statuary
 Intelligence Bobblehead
 Into the Roil
+Into the Time Vortex
 Intrepid Rabbit
 Invading Manticore
 Invisible Force Field
@@ -1305,6 +1309,7 @@ Skirk Prospector
 Skitter Eel
 Skittering Crustacean
 Skizzik Surger
+Skullbriar, the Walking Grave
 Skullclamp
 Skullmulcher
 Skycloud Expanse
@@ -1504,6 +1509,7 @@ Thriving Grove
 Thriving Heath
 Thriving Isle
 Thriving Moor
+Throes of Chaos
 Throne of the High City
 Thunder-Thrash Elder
 Thunderclap Drake

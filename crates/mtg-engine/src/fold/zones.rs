@@ -48,6 +48,7 @@ pub(super) fn move_object(
     state.commanders.moved(id);
     // A new zone makes it a new object (CR 400.7); what was announced for it on the stack goes with the stack.
     object.counter += 1;
+    let w17b_kept = crate::w17b_statics::w17b_kept_counters(object, to);
     object.card_counters.clear();
     // A spell cast face down becomes a permanent that lies face down (CR 708.4); any other move shows the card (CR 708.9).
     if !(from == Zone::Stack
@@ -110,6 +111,7 @@ pub(super) fn move_object(
     } else if to != Zone::Stack {
         object.controller = object.owner;
     }
+    crate::w17b_statics::w17b_restore_counters(object, w17b_kept);
     let (owner, token) = (object.owner, object.kind == ObjectKind::Token);
     let entered = object.reference();
     if to == Zone::Battlefield {

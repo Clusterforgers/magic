@@ -144,7 +144,7 @@ fn enchant_is_read_on_an_aura_only(#[case] type_line: &str, #[case] expected: Im
 
 #[rstest]
 #[case::flash_on_an_instant("Instant", "Flash")]
-#[case::keywords_on_a_sorcery("Sorcery", "Cascade\nStorm")]
+#[case::keywords_on_a_sorcery("Sorcery", "Storm\nConvoke")]
 #[case::keyword_list_on_an_instant("Instant", "Convoke, delve")]
 fn a_spell_of_only_keywords_is_left_to_the_table(#[case] type_line: &str, #[case] text: &str) {
     let compiled = check(&card_of(vec![face("Test Card", type_line, text)]));

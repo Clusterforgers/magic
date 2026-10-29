@@ -67,7 +67,8 @@ fn w21a_libraries(scenario: Scenario, seats: usize) -> Scenario {
     })
 }
 
-const W21A_PURGE: &str = r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},"Modified"]}}}]}}"#;
+const W21A_PURGE: &str =
+    r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},"Modified"]}}}]}}"#;
 const W21A_RECALL: &str = r#"{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"},"GravedThisTurn"]},"to":"Hand"}}]}}"#;
 const W21A_INSIGHT: &str = r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Tallied":{"who":"You","what":"CardsLeftGraveyard"}},"op":"Ge","right":1}},"then":[{"Draw":{}}]}}]}}"#;
 
@@ -96,13 +97,21 @@ fn w21a_modified_graved_and_left_graveyard_decide_a_turn(
         .graveyard_named(0, ["Grizzly Bears"])
         .battlefield(
             seats - 1,
-            [with_counters(ready(free_creature("Ogre", 3, 3)), counter, 1)],
+            [with_counters(
+                ready(free_creature("Ogre", 3, 3)),
+                counter,
+                1,
+            )],
         );
     let mut driver = Driver::from_scenario(w21a_libraries(scenario, seats))?;
     let before = w21a_hand(&driver);
     driver.cast("Insight")?;
     w21a_resolve(&mut driver)?;
-    assert_eq!(w21a_hand(&driver), before - 1, "no card left a graveyard yet");
+    assert_eq!(
+        w21a_hand(&driver),
+        before - 1,
+        "no card left a graveyard yet"
+    );
     driver.cast("Purge")?;
     w21a_resolve(&mut driver)?;
     assert!(matches!(w21a_zone(&driver, "Bear"), Zone::Graveyard(_)));
@@ -111,8 +120,14 @@ fn w21a_modified_graved_and_left_graveyard_decide_a_turn(
     driver.cast("Recall")?;
     w21a_resolve(&mut driver)?;
     assert!(matches!(w21a_zone(&driver, "Bear"), Zone::Hand(_)));
-    assert!(matches!(w21a_zone(&driver, "Grizzly Bears"), Zone::Graveyard(_)), "there since before the turn");
-    assert!(matches!(w21a_zone(&driver, "Ogre"), Zone::Graveyard(_)), "another owner's graveyard");
+    assert!(
+        matches!(w21a_zone(&driver, "Grizzly Bears"), Zone::Graveyard(_)),
+        "there since before the turn"
+    );
+    assert!(
+        matches!(w21a_zone(&driver, "Ogre"), Zone::Graveyard(_)),
+        "another owner's graveyard"
+    );
     let before = w21a_hand(&driver);
     driver.cast("Second Insight")?;
     w21a_resolve(&mut driver)?;
@@ -122,7 +137,8 @@ fn w21a_modified_graved_and_left_graveyard_decide_a_turn(
 }
 
 const W21A_VEIL: &str = r#"{"Spell":{"effects":[{"Manifest":{}}]}}"#;
-const W21A_UNMASK: &str = r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},"FaceDown"]}}}]}}"#;
+const W21A_UNMASK: &str =
+    r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},"FaceDown"]}}}]}}"#;
 const W21A_MEASURE: &str = r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Ge","to":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]}}}]}}}]}}"#;
 const W21A_JAB: &str = r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}"#;
 const W21A_WARD: &str = r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"TargetsPlayer":"You"}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#;
@@ -169,16 +185,20 @@ fn w21a_face_down_compared_power_and_a_spell_at_you_decide_a_turn(
     assert_eq!(face_down, 1, "the manifested card");
     driver.cast("Unmask")?;
     w21a_resolve(&mut driver)?;
-    let face_down_left = driver
-        .state()
-        .zone(Zone::Battlefield)
-        .iter()
-        .any(|id| driver.state().object(*id).is_some_and(|o| o.face_down().is_some()));
+    let face_down_left = driver.state().zone(Zone::Battlefield).iter().any(|id| {
+        driver
+            .state()
+            .object(*id)
+            .is_some_and(|o| o.face_down().is_some())
+    });
     assert!(!face_down_left, "the face-down creature is destroyed");
     assert_eq!(w21a_zone(&driver, "Elf"), Zone::Battlefield);
     driver.cast("Measure")?;
     w21a_resolve(&mut driver)?;
-    assert!(matches!(w21a_zone(&driver, "Ogre"), Zone::Graveyard(_)), "power 3, three lands");
+    assert!(
+        matches!(w21a_zone(&driver, "Ogre"), Zone::Graveyard(_)),
+        "power 3, three lands"
+    );
     assert_eq!(w21a_zone(&driver, "Elf"), Zone::Battlefield, "power 1");
     let me = driver.target_player(0);
     let life = driver.state().players()[0].life();
@@ -186,7 +206,11 @@ fn w21a_face_down_compared_power_and_a_spell_at_you_decide_a_turn(
     let jab = driver.target_named("Jab")?;
     driver.cast_at("Ward Off", &[jab])?;
     w21a_resolve(&mut driver)?;
-    assert_eq!(driver.state().players()[0].life(), life, "the Jab is countered");
+    assert_eq!(
+        driver.state().players()[0].life(),
+        life,
+        "the Jab is countered"
+    );
     assert!(matches!(w21a_zone(&driver, "Jab"), Zone::Graveyard(_)));
     w21a_replays(&driver);
     Ok(())

@@ -108,6 +108,7 @@ pub mod triggers;
 pub mod turn;
 pub mod w11d_dungeon;
 pub mod w15a_initiative;
+pub mod w17b_statics;
 pub mod w6b_emblems;
 pub mod zones;
 

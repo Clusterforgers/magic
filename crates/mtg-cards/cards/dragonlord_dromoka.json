@@ -1,0 +1,17 @@
+{
+  "oracle_id": "82cdd612-3322-4372-810f-1ff106ea8e6a",
+  "name": "Dragonlord Dromoka",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonlord Dromoka",
+      "oracle_fingerprint": "ec9b3f6173e95d7def3666ca52e62987",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Rule": { "rule": { "CantCastSpells": { "who": "Opponents", "your_turn": true } } } }
+      ]
+    }
+  ]
+}

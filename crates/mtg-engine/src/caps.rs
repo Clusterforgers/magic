@@ -253,6 +253,7 @@ const RUNS: &[&str] = &[
     "Rule.PlayersHave",
     "Rule.CantDraw",
     "Rule.CantSearch",
+    "Rule.VoteAgain",
     "Rule.SkipExtraTurns",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
@@ -261,6 +262,11 @@ const RUNS: &[&str] = &[
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.DamageCantBePrevented",
+    "Rule.GraveyardCardsUntargetable",
+    "Rule.CantLoseGame",
+    "Rule.CantCastSpells",
+    "Rule.ToughnessAssignsDamage",
+    "Rule.CountersRemain",
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
@@ -341,6 +347,7 @@ const RUNS: &[&str] = &[
     "Keyword.Entwine",
     "Ability.AdditionalCost",
     "Ability.FreeCast",
+    "Ability.CastOnly",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
     "Keyword.Evoke",
@@ -898,6 +905,11 @@ mod tests {
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
+    #[case::w17b_untargetable_graveyards("Rule.GraveyardCardsUntargetable", true)]
+    #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
+    #[case::w17b_cant_cast("Rule.CantCastSpells", true)]
+    #[case::w17b_toughness_damage("Rule.ToughnessAssignsDamage", true)]
+    #[case::w17b_counters_remain("Rule.CountersRemain", true)]
     #[case::partner("Keyword.Partner", true)]
     #[case::partner_with("Keyword.PartnerWith", true)]
     #[case::partner_group("Keyword.PartnerGroup", true)]

@@ -743,7 +743,9 @@ pub(crate) fn grantable(
     way: Option<CastWay>,
 ) -> bool {
     // Players cannot cast spells while a spell with split second is on the stack, whatever lets them (CR 702.61a, 101.2).
-    if crate::keywords::split_second_on_stack(state) {
+    if crate::keywords::split_second_on_stack(state)
+        || crate::w17b_statics::w17b_cant_cast(state, player)
+    {
         return false;
     }
     if faces::is_multi_face(state, id) {
@@ -848,6 +850,9 @@ pub(crate) fn castable_as_is(
     let Some(card) = state.object(id) else {
         return false;
     };
+    if !w17c_cast_only_holds(state, player, card) {
+        return false;
+    }
     let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
     let base = help::offered(state, player, id, &[]);
@@ -906,4 +911,14 @@ pub(crate) fn lands_elsewhere(state: &GameState, player: PlayerId) -> Vec<Object
             })
         })
         .collect()
+}
+
+/// Whether every "Cast this spell only ..." of the card holds for `player` now (CR 601.3): "only during combat", "only
+/// during combat on an opponent's turn".
+fn w17c_cast_only_holds(state: &GameState, player: PlayerId, card: &GameObject) -> bool {
+    let scope = Scope::announcing(state, player, card.reference());
+    ability_reader::printed_rules(card.card()).all(|rule| match &**rule {
+        Ability::CastOnly { condition } => scope.holds(condition).unwrap_or(false),
+        _ => true,
+    })
 }

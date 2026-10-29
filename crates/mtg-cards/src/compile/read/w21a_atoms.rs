@@ -69,7 +69,7 @@ const W21A_LEFT_GRAVEYARD: &str = "a card left your graveyard this turn";
 /// "a card left your graveyard this turn": at least one card left the controller's graveyard this turn.
 pub(super) fn w21a_condition(r: &mut Reader<'_>) -> Option<crate::value::Condition> {
     (r.words(W21A_LEFT_GRAVEYARD) || r.words("one or more cards left your graveyard this turn"))
-        .then(|| crate::value::Condition::Compare {
+        .then_some(crate::value::Condition::Compare {
             left: Amount::Tallied {
                 who: Ref::You,
                 what: crate::value::TurnTally::CardsLeftGraveyard,

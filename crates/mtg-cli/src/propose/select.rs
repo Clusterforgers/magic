@@ -1,5 +1,6 @@
 //! Which cards a run asks about: the ones named, or a seeded sample of the stored cards nothing covers yet.
 
+use std::collections::BTreeSet;
 use std::str::FromStr;
 
 use mtg_cards::compile::compile;
@@ -98,8 +99,8 @@ fn is_verified(card: &PrintedCard, caps: &Caps) -> bool {
 }
 
 /// The positions of at most `count` cards for a sample: cards with a text, no hand-written file and a support state other
-/// than `Verified`, short ones first (by buckets of 100 characters), within a bucket in the order of the seed. The same seed
-/// gives the same cards whatever order the cards come in.
+/// than `Verified` (among the oracle ids of `within` when given), short ones first (by buckets of 100 characters), within
+/// a bucket in the order of the seed. The same seed gives the same cards whatever order the cards come in.
 pub fn sample(
     cards: &[PrintedCard],
     library: &Library,
@@ -107,6 +108,7 @@ pub fn sample(
     count: usize,
     seed: u64,
     letters: Option<&Letters>,
+    within: Option<&BTreeSet<String>>,
 ) -> Vec<usize> {
     let length = |card: &PrintedCard| {
         card.faces
@@ -118,6 +120,7 @@ pub fn sample(
         .iter()
         .enumerate()
         .filter(|(_, card)| letters.is_none_or(|letters| letters.admit(&card.name)))
+        .filter(|(_, card)| within.is_none_or(|within| within.contains(&card.oracle_id)))
         .filter(|(_, card)| library.card(&card.oracle_id).is_none())
         .filter(|(_, card)| card.faces.iter().any(|face| !face.oracle_text.is_empty()))
         .map(|(at, card)| (length(card) / BUCKET, rank(seed, &card.oracle_id), at))
@@ -133,7 +136,7 @@ pub fn sample(
 #[cfg(test)]
 mod tests {
     //! Goal: letters select names by their first letter as file names fold it, names select cards in any case and report
-    //! what is missing, and a sample is short first, seeded, and leaves out cards a file or the compiler already covers.
+    //! what is missing, and a sample is short first, seeded, leaves out cards a file or the compiler already covers, and keeps its order within a pool.
     use mtg_cards::PrintedFace;
     use rstest::rstest;
 
@@ -217,10 +220,10 @@ mod tests {
             card("Gamma Short", "Wibble every quux."),
             hand_written,
         ];
-        let first = sample(&cards, library, &caps, 2, 7, None);
+        let first = sample(&cards, library, &caps, 2, 7, None, None);
         assert_eq!(
             first,
-            sample(&cards, library, &caps, 2, 7, None),
+            sample(&cards, library, &caps, 2, 7, None, None),
             "same seed, same cards"
         );
         assert_eq!(first.len(), 2);
@@ -228,7 +231,7 @@ mod tests {
             first.iter().all(|at| *at != 0),
             "the long card comes after the short ones"
         );
-        let all = sample(&cards, library, &caps, 10, 7, None);
+        let all = sample(&cards, library, &caps, 10, 7, None, None);
         assert_eq!(&all[..2], &first[..], "a smaller count is a prefix");
         assert_eq!(all.len(), 4, "the covered card is left out");
         assert!(!all.contains(&4));
@@ -237,8 +240,11 @@ mod tests {
             picked.iter().map(|at| from[*at].name.clone()).collect()
         };
         assert_eq!(
-            names(&sample(&reversed, library, &caps, 3, 7, None), &reversed),
-            names(&sample(&cards, library, &caps, 3, 7, None), &cards),
+            names(
+                &sample(&reversed, library, &caps, 3, 7, None, None),
+                &reversed
+            ),
+            names(&sample(&cards, library, &caps, 3, 7, None, None), &cards),
             "the order of the cards does not matter"
         );
     }
@@ -253,8 +259,42 @@ mod tests {
         ];
         let letters: Letters = "M-Z".parse().unwrap();
         assert_eq!(
-            sample(&cards, library, &caps, 5, 1, Some(&letters)),
+            sample(&cards, library, &caps, 5, 1, Some(&letters), None),
             vec![1]
+        );
+    }
+
+    #[rstest]
+    #[case::one_seed(1)]
+    #[case::another_seed(42)]
+    fn a_sample_within_a_pool_keeps_the_order_of_the_whole_sample(#[case] seed: u64) {
+        let library = mtg_cards::builtin::library().unwrap();
+        let caps = mtg_engine::caps();
+        let long = "Frobnicate the quux whenever a wibble gloops thrice. ".repeat(4);
+        let cards = vec![
+            card("Zed Long", &long),
+            card("Alpha Short", "Frobnicate the quux."),
+            card("Beta Short", "Gloop the wibble twice."),
+            card("Gamma Short", "Wibble every quux."),
+        ];
+        let within: BTreeSet<String> =
+            ["id-Zed Long", "id-Gamma Short", "id-Alpha Short", "id-Gone"]
+                .into_iter()
+                .map(str::to_owned)
+                .collect();
+        let whole = sample(&cards, library, &caps, 10, seed, None, None);
+        let kept: Vec<usize> = whole
+            .into_iter()
+            .filter(|at| within.contains(&cards[*at].oracle_id))
+            .collect();
+        let picked = sample(&cards, library, &caps, 10, seed, None, Some(&within));
+        assert_eq!(picked, kept);
+        assert_eq!(picked.len(), 3);
+        assert_eq!(picked.last(), Some(&0), "the long card still comes last");
+        assert_eq!(
+            sample(&cards, library, &caps, 2, seed, None, Some(&within)),
+            picked[..2],
+            "a resumed run takes the same cards first"
         );
     }
 }

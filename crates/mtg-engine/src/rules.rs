@@ -86,6 +86,8 @@ pub enum Rule {
     CantDraw(Vec<PlayerId>),
     /// The players can't search libraries.
     CantSearch(Vec<PlayerId>),
+    /// The players may vote an additional time (CR 701.38d).
+    VoteAgain(Vec<PlayerId>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
     /// The players play with the top card of their library revealed.
@@ -147,6 +149,24 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         to: ZoneKind,
     },
+    /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
+    GraveyardCardsUntargetable,
+    /// The players can't lose the game, and the other players can't win it (CR 104.3).
+    CantLoseGame {
+        /// The players who can't lose.
+        who: Vec<PlayerId>,
+        /// The players who can't win.
+        winless: Vec<PlayerId>,
+    },
+    /// The players can't cast spells, only during this player's turns when one is named.
+    CantCastSpells {
+        /// The players who can't cast spells.
+        who: Vec<PlayerId>,
+        /// The player during whose turns they can't; every turn when absent.
+        turn: Option<PlayerId>,
+    },
+    /// Each creature the players control assigns combat damage equal to its toughness (CR 510.1a).
+    ToughnessAssignsDamage(Vec<PlayerId>),
 }
 
 /// A tax on attacking: whom it protects, which attackers it taxes and what each costs.
@@ -296,6 +316,7 @@ pub(crate) struct RulesInForce {
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
+    vote_again: BTreeSet<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
@@ -310,6 +331,8 @@ pub(crate) struct RulesInForce {
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
     block_limit_each: BTreeMap<PlayerId, u32>,
+    /// The rules about targets in graveyards, losing, casting and combat damage.
+    pub(crate) w17b: crate::w17b_statics::W17bRules,
 }
 
 /// A tax on attacking in force, with whose it is.
@@ -446,6 +469,7 @@ impl RulesInForce {
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
@@ -506,6 +530,10 @@ impl RulesInForce {
             }
             // Shields are read by the replacement step from the rule changes themselves.
             Rule::PreventDamage(_) | Rule::Regenerate(_) | Rule::DiesInstead { .. } => {}
+            Rule::GraveyardCardsUntargetable
+            | Rule::CantLoseGame { .. }
+            | Rule::CantCastSpells { .. }
+            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule),
         }
     }
 }
@@ -538,32 +566,39 @@ fn attack_limit_at(scope: &Scope<'_>, most: u32, at: &Ref) -> Result<Rule, Resol
     })
 }
 
+/// The objects `who` names in `scope` that are in `zone` now: what the source is attached to for `Attached`.
+fn w17b_rule_objects(
+    scope: &Scope<'_>,
+    who: &Ref,
+    zone: Zone,
+) -> Result<Vec<ObjectRef>, ResolveError> {
+    let named = if matches!(who, Ref::Attached) {
+        scope
+            .state
+            .host_of(scope.source.id)
+            .and_then(|host| scope.state.object(host))
+            .map(GameObject::reference)
+            .into_iter()
+            .collect()
+    } else {
+        scope.objects(who)?
+    };
+    // An object that has changed zones since it was named is a new object (CR 400.7).
+    Ok(named
+        .into_iter()
+        .filter(|named| {
+            scope
+                .state
+                .object(named.id)
+                .is_some_and(|o| o.counter() == named.counter && o.zone() == zone)
+        })
+        .collect())
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
-    let objects = |who: &Ref, zone: Zone| -> Result<Vec<ObjectRef>, ResolveError> {
-        let named = if matches!(who, Ref::Attached) {
-            scope
-                .state
-                .host_of(scope.source.id)
-                .and_then(|host| scope.state.object(host))
-                .map(GameObject::reference)
-                .into_iter()
-                .collect()
-        } else {
-            scope.objects(who)?
-        };
-        // An object that has changed zones since it was named is a new object (CR 400.7).
-        Ok(named
-            .into_iter()
-            .filter(|named| {
-                scope
-                    .state
-                    .object(named.id)
-                    .is_some_and(|o| o.counter() == named.counter && o.zone() == zone)
-            })
-            .collect())
-    };
+    let objects = |who: &Ref, zone: Zone| w17b_rule_objects(scope, who, zone);
     Ok(match wanted {
         GameRule::DamageCantBePrevented { source, combat } => Rule::DamageCantBePrevented {
             source: source.clone(),
@@ -609,6 +644,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
@@ -642,6 +678,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         // Eligibility is read from the definition when a seat is checked (`CardDefinition::can_be_commander`); no
         // rule is ever in force and an effect cannot start one.
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
+        GameRule::GraveyardCardsUntargetable
+        | GameRule::CantLoseGame { .. }
+        | GameRule::CantCastSpells { .. }
+        | GameRule::ToughnessAssignsDamage(_)
+        | GameRule::CountersRemain => crate::w17b_statics::w17b_lower(scope, wanted)?,
     })
 }
 
@@ -672,6 +713,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
+        | Rule::VoteAgain(players)
         | Rule::SkipExtraTurns(players)
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
@@ -693,6 +735,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::DiesInstead { objects, .. } => objects.is_empty(),
+        Rule::GraveyardCardsUntargetable
+        | Rule::CantLoseGame { .. }
+        | Rule::CantCastSpells { .. }
+        | Rule::ToughnessAssignsDamage(_) => crate::w17b_statics::w17b_names_nothing(rule),
     }
 }
 
@@ -795,6 +841,7 @@ static NONE: RulesInForce = RulesInForce {
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
+    vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
@@ -809,6 +856,7 @@ static NONE: RulesInForce = RulesInForce {
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
     block_limit_each: BTreeMap::new(),
+    w17b: crate::w17b_statics::W17B_NONE,
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
@@ -1052,6 +1100,11 @@ pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
         .get(&player)
         .copied()
         .unwrap_or_default()
+}
+
+/// Whether `player` may vote an additional time while voting (CR 701.38d).
+pub fn w17c_votes_again(state: &GameState, player: PlayerId) -> bool {
+    state.rules().vote_again.contains(&player)
 }
 
 /// Whether `player` can't search libraries: the one place a search reads this rule.

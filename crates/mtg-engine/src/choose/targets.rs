@@ -264,7 +264,8 @@ pub(crate) fn legal_from(
     };
     legal.retain(|target| match target {
         Target::Object(object) => {
-            !keywords::protects(state, object.id, source.id, controller)
+            !crate::w17b_statics::w17b_shielded_in_graveyard(state, object.id)
+                && !keywords::protects(state, object.id, source.id, controller)
                 && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
         }
         Target::Player(player) => {

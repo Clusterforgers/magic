@@ -582,9 +582,11 @@ fn build(printed: &PrintedCard, mut faces: Vec<Face>, listed: &mut [Clause]) -> 
     }
     let read = listed.iter().filter(|clause| clause.read).count();
     let unread = listed.len() - read;
-    // A `Full` instant or sorcery must have a `Spell` ability (`check_printed`), which only keyword lines cannot give.
+    // A `Full` instant or sorcery must have a `Spell` ability (`check_printed`), which only keyword lines cannot give,
+    // cascade aside.
     let spell_missing = printed.faces.iter().zip(&faces).any(|(shown, face)| {
         is_spell(shown)
+            && !crate::validate::w17a_casting_does_something(&face.abilities)
             && !face
                 .abilities
                 .iter()
@@ -724,6 +726,12 @@ mod tests {
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
     #[case::whitespace_only("Creature \u{2014} Bear", "  \n ", None)]
     #[case::spell_with_only_a_keyword("Instant", "Flash", Some(ImplStatus::Manual))]
+    #[case::w17a_spell_with_only_cascade("Sorcery", "Cascade\nRebound", Some(ImplStatus::Full))]
+    #[case::w17a_spell_with_cascade_and_an_unread_line(
+        "Sorcery",
+        "Cascade\nWish for a card.",
+        Some(ImplStatus::Partial)
+    )]
     #[case::spell_with_keyword_and_effect(
         "Instant",
         "Kicker {1}\nDraw a card.",

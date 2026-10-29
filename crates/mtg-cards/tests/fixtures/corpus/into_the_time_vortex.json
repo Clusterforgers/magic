@@ -1,0 +1,26 @@
+{
+  "id": "9c1763b6-c83b-4a76-af58-64c0a6418326",
+  "oracle_id": "ad9d969e-def5-45a3-b65b-0c776f62ef0e",
+  "name": "Into the Time Vortex",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "165",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{4}{R}",
+  "cmc": 5,
+  "type_line": "Sorcery",
+  "oracle_text": "Cascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)\nRebound (If you cast this spell from your hand, exile it as it resolves. At the beginning of your next upkeep, you may cast this card from exile without paying its mana cost.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Rebound",
+    "Cascade"
+  ]
+}

@@ -218,6 +218,12 @@ pub enum Ability {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         cost: Option<Cost>,
     },
+    /// "Cast this spell only during combat." (CR 601.3): the spell is cast only while the condition holds for the caster,
+    /// in every way it can be cast.
+    CastOnly {
+        /// What must hold as the spell is cast.
+        condition: Condition,
+    },
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),
     /// A clause of the oracle text the data does not model; the table resolves it by hand.

@@ -10,15 +10,48 @@ use crate::choose::{
 };
 use crate::resolve::{Cx, Next, ResolveError, Run};
 
-/// The players who vote, the controller first, in turn order; a player who has left the game does not vote.
-fn voters(cx: &Cx<'_>) -> Vec<PlayerId> {
+/// The ballots of a vote, the controller first, in turn order; a player who has left the game does not vote. A player
+/// who may vote an additional time (CR 701.38d) casts a second ballot right after the first, which they may leave
+/// blank (`true`).
+fn voters(cx: &Cx<'_>) -> Vec<(PlayerId, bool)> {
     let state = cx.state();
-    state.turn_order_from(cx.scope.controller)
+    state
+        .turn_order_from(cx.scope.controller)
+        .into_iter()
+        .flat_map(|player| {
+            let again = crate::rules::w17c_votes_again(state, player);
+            std::iter::once((player, false)).chain(again.then_some((player, true)))
+        })
+        .collect()
 }
+
+/// The option of an additional ballot that casts no vote.
+const W17C_NO_VOTE: &str = "No additional vote";
 
 /// How a name is shown in the question and in the options: the words of the card.
 fn shown(name: &str) -> String {
     name.replace('_', " ")
+}
+
+/// One chooser for each ballot of the vote; an additional ballot also offers `blank`, which casts no vote.
+fn w17c_choosers(
+    cx: &Cx<'_>,
+    options: &[ChoiceOption],
+    blank: &ChoiceOption,
+    text: &str,
+) -> Vec<OptionChooser> {
+    voters(cx)
+        .into_iter()
+        .map(|(player, again)| OptionChooser {
+            player,
+            options: options
+                .iter()
+                .chain(again.then_some(blank))
+                .cloned()
+                .collect(),
+            text: text.to_owned(),
+        })
+        .collect()
 }
 
 /// The step is done with these names bound and goes on with the next effect.
@@ -52,15 +85,12 @@ fn named(cx: &Cx<'_>, names: &[String], secret: bool) -> Result<Run, ResolveErro
             .collect::<Vec<_>>()
             .join(" or ")
     );
-    let voters = voters(cx);
-    let choosers: Vec<OptionChooser> = voters
-        .iter()
-        .map(|player| OptionChooser {
-            player: *player,
-            options: options.clone(),
-            text: text.clone(),
-        })
-        .collect();
+    let blank = if secret {
+        ChoiceOption::Secret(W17C_NO_VOTE.to_owned())
+    } else {
+        ChoiceOption::Label(W17C_NO_VOTE.to_owned())
+    };
+    let choosers = w17c_choosers(cx, &options, &blank, &text);
     let taken = match pick_options(cx, &choosers)? {
         Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
         Optioned::Done(taken) => taken,
@@ -113,14 +143,8 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
         Vec::new()
     } else if objects.is_empty() {
         let options: Vec<ChoiceOption> = players.iter().map(|p| ChoiceOption::Player(*p)).collect();
-        let choosers: Vec<OptionChooser> = seats
-            .iter()
-            .map(|player| OptionChooser {
-                player: *player,
-                options: options.clone(),
-                text: "Vote for a player.".to_owned(),
-            })
-            .collect();
+        let blank = ChoiceOption::Label(W17C_NO_VOTE.to_owned());
+        let choosers = w17c_choosers(cx, &options, &blank, "Vote for a player.");
         match pick_options(cx, &choosers)? {
             Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
             Optioned::Done(taken) => taken
@@ -131,10 +155,10 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
     } else {
         let selections: Vec<Selection> = seats
             .iter()
-            .map(|player| Selection {
+            .map(|(player, again)| Selection {
                 player: *player,
                 from: objects.clone(),
-                min: 1,
+                min: usize::from(!again),
                 max: 1,
                 text: "Vote for a permanent or card.".to_owned(),
             })

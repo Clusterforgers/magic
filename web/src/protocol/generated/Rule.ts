@@ -33,7 +33,7 @@ who: Array<PlayerId>,
 /**
  * The keyword they have.
  */
-keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
+keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
 /**
  * The players who may cast.
  */
@@ -81,4 +81,20 @@ objects: Array<ObjectRef>,
 /**
  * Where they go instead.
  */
-to: unknown, } };
+to: unknown, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+/**
+ * The players who can't lose.
+ */
+who: Array<PlayerId>, 
+/**
+ * The players who can't win.
+ */
+winless: Array<PlayerId>, } } | { "CantCastSpells": { 
+/**
+ * The players who can't cast spells.
+ */
+who: Array<PlayerId>, 
+/**
+ * The player during whose turns they can't; every turn when absent.
+ */
+turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> };
