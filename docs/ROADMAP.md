@@ -97,6 +97,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Card images: the server serves the picture of a card, printing or token from a disk cache that fills from the Scryfall CDN under the politeness rules, and warms the pictures of a starting game in the background (`docs/server.md`, Pictures).
 - Card images in the web: table cards, hand, stack and preview draw the picture with the state over it, the builder through the same endpoints, and "Card images" in the table menu turns them off (`docs/web.md`, Card images).
 - Commander at the table: commander cards and tax chips in the pods, commander damage per source with the lethal amount, casting from the command zone in the hand dock with the tax, the return choice and commander damage in the log (`docs/web.md`).
+- Table lanes: every board draws lands, creatures and other permanents in fixed lanes, mirrored for opponents, at the largest card size that fits (`laneFit.ts`), with `/dev/table?board=duel` and `board=heavy` and a layout gate rule for lanes.
 
 ## M3 Card system
 
@@ -159,7 +160,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
 - [~] (ts1) (table-states) Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
-- [~] (pl1) (table-lanes) The battlefield draws each seat's permanents in lanes by type (lands, creatures, other permanents such as artifacts, enchantments and planeswalkers) with the command zone, graveyard and exile in their own corner, and sizes the cards to fill the room a board has: at two seats a card is large and easy to read, at four seats still legible, with the layout gate and fit specs green
+- [ ] (pl1a) One card size across every visible board and a height split between the opponents and your board weighted by their lanes, so a sparse board lends room to a crowded one (the duel board reaches 150 px cards at 1440x900)
+- [ ] (pl1b) Lands overlap in a fanned pile as the last resort before a board scrolls, the name of each land in view
+- [ ] (pl1c) A seat's corner beside its lanes draws the commanders, the top card of the graveyard and the exile as pictures with their counts, in place of the pod chips
+- [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [~] (pl2) (combat-clicks) Attacking and blocking by clicking: a click on a creature attacks (the arrow says so, no label on the card), a second click takes it back; to block, click your creature and then the attacker it blocks (one click when only one attacker can be blocked), a second click undoes; the prompt sheet is compact, and the life each seat would have after damage shows as a small chip on its pod without taking room
 - [~] (pl3) (mana-display) Mana shows what it is: the payment prompt's sources, the mana pool and the cards that make mana show the symbols and the amount each gives ({C}{C} for Sol Ring, one coloured symbol for a basic land)
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
