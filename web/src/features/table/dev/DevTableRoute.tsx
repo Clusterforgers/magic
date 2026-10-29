@@ -40,24 +40,10 @@ function useRealIds(on: boolean, seats: number, hand: number | undefined): RealI
  * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const {
-    seats,
-    mode,
-    focus,
-    prompt,
-    turn,
-    step,
-    hand,
-    fx,
-    slow,
-    preview,
-    stops,
-    fc,
-    rules,
-    cards,
-  } = useSearch({
-    from: '/dev/table',
-  })
+  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards } =
+    useSearch({
+      from: '/dev/table',
+    })
   const real = useRealIds(cards === 'real', seats, hand)
   const game = useMemo(
     () =>
