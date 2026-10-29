@@ -19,6 +19,8 @@ interface FixMarkButtonProps {
   api: FixMarksApi
   /** `prominent` for a card the game does not run whole, `quiet` for any other card. */
   emphasis?: 'prominent' | 'quiet'
+  /** An icon alone for a row of a list: no words, no note; a refusal floats under the icon. */
+  compact?: boolean
   className?: string
 }
 
@@ -96,6 +98,7 @@ export function FixMarkButton({
   name,
   api,
   emphasis = 'prominent',
+  compact = false,
   className,
 }: FixMarkButtonProps) {
   const marks = useFixMarks(api)
@@ -103,6 +106,37 @@ export function FixMarkButton({
   const marked = mark !== undefined
   if (marks.unavailable) return null
   const busy = marks.loading || marks.pending
+  if (compact) {
+    return (
+      <span data-slot="fix-mark" data-compact className={cn('relative inline-flex', className)}>
+        <Button
+          type="button"
+          size="icon-sm"
+          variant={marked ? 'secondary' : 'ghost'}
+          aria-label={`Mark ${name} important to fix`}
+          aria-pressed={marked}
+          aria-disabled={busy}
+          title={marked ? 'Marked important to fix' : 'Mark important to fix'}
+          className={marked ? undefined : 'text-muted-foreground'}
+          onClick={() => {
+            if (busy) return
+            marks.clearError()
+            marks.press({ oracleId, name, marked: !marked, note: null })
+          }}
+        >
+          <FlagIcon aria-hidden="true" className={marked ? 'fill-current' : undefined} />
+        </Button>
+        {marks.error === null ? null : (
+          <p
+            role="alert"
+            className="absolute top-full right-0 z-20 mt-1 w-56 rounded-md border border-destructive bg-popover p-2 text-xs text-destructive shadow-e2"
+          >
+            {describeMarkError(marks.error)}
+          </p>
+        )}
+      </span>
+    )
+  }
   return (
     <div data-slot="fix-mark" className={cn('grid justify-items-start gap-1', className)}>
       <div className="flex flex-wrap items-center gap-1">

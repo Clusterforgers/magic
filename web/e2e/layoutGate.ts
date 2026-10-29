@@ -17,7 +17,7 @@ export interface Rules {
 }
 
 /** Under the lg breakpoint the builder shows one pane and a switch picks it; from there up the switch is gone. */
-export async function showPane(page: Page, pane: 'Search' | 'Deck'): Promise<void> {
+export async function showPane(page: Page, pane: 'Search' | 'Deck' | 'Stats'): Promise<void> {
   const choose = page
     .getByRole('group', { name: 'Show' })
     .getByRole('button', { name: new RegExp(`^${pane}`) })

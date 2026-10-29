@@ -244,6 +244,21 @@ const STOPS: readonly Stop[] = [
       await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeAttached()
     },
   },
+  {
+    name: 'The deck builder (dev), the stats and the cards played by hand opened',
+    fitsFrom: 640,
+    actions: { Save: 'text:Save' },
+    afterResize: (page) => showPane(page, 'Stats'),
+    async open(page) {
+      await page.goto(`${DEV_WEB_URL}/dev/builder`)
+      await showPane(page, 'Stats')
+      for (const name of [/^Stats/, /^Played by hand/]) {
+        const heading = page.getByRole('region', { name: 'Deck', exact: true }).getByRole('button', { name })
+        if ((await heading.getAttribute('aria-expanded')) !== 'true') await heading.click()
+      }
+      await expect(page.getByRole('list', { name: 'Cards played by hand' })).toBeVisible()
+    },
+  },
 ]
 
 for (const theme of THEMES) {

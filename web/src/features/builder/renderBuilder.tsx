@@ -7,10 +7,13 @@ import { createAuthStore } from '@/features/auth/store'
 import { deckView, lineOf, startDecks } from '@/features/decks/fakeDecks'
 import type { DecksScript } from '@/features/decks/fakeDecks'
 import { createDecksApi } from '@/net/decks'
+import type { FixMarksApi } from '@/net/fixMarks'
 import type { CardHit, DeckView } from '@/protocol/generated'
 import { startAccounts } from '@/test-utils/accountsServer'
 import { renderInRouter } from '@/test-utils/router'
 import { BuilderPage } from './BuilderPage'
+import { DECK_LOOK_KEY } from './deckLook'
+import type { DeckLook } from './deckLook'
 import { cardHit, startCards } from './fakeCards'
 import type { CardsScript } from './fakeCards'
 import { withCheck } from './fakeCheck'
@@ -66,10 +69,15 @@ export interface BuilderScript {
   check?: CheckScript
   /** False to return before the deck pane is drawn, for a deck that does not load. */
   wait?: boolean
+  /** How the deck pane draws its cards; the text list unless a test asks for pictures. */
+  look?: DeckLook
+  /** The fix-mark endpoints the builder is given, if any. */
+  fixMarks?: FixMarksApi
 }
 
 /** The builder signed in as Ada over `script`'s servers; resolves once the deck pane is drawn. */
 export async function renderBuilder(script: BuilderScript = {}) {
+  window.localStorage.setItem(DECK_LOOK_KEY, script.look ?? 'list')
   const view = deckView({
     id: 'deck-1',
     name: 'Burn',
@@ -91,7 +99,7 @@ export async function renderBuilder(script: BuilderScript = {}) {
   const store = createAuthStore({ api: accounts.api })
   const rendered = await renderInRouter(
     <AuthProvider store={store}>
-      <BuilderPage deckId={view.id} api={api} cards={cards.api} />
+      <BuilderPage deckId={view.id} api={api} cards={cards.api} fixMarks={script.fixMarks} />
     </AuthProvider>,
   )
   if (script.wait !== false) await screen.findByRole('region', { name: 'Deck' })

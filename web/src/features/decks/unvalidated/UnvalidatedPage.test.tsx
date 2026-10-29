@@ -6,14 +6,20 @@ import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import { cardsApi } from '@/net/cards'
 import { decksApi } from '@/net/decks'
+import type { FixMarksApi } from '@/net/fixMarks'
 import { renderApp } from '@/test-utils/appHarness'
 import { renderInRouter } from '@/test-utils/router'
+import { fixMarksClient } from '../../fixmarks/client'
 import { deckView } from '../fakeDecks'
 import { FIXTURE_DECKS, fixtureCardsApi, fixtureDecksApi } from './fixture'
 import type { FixtureOptions } from './fixture'
 import { UnvalidatedPage } from './UnvalidatedPage'
 
-async function renderPage({ deckId, ...fixture }: { deckId?: string } & FixtureOptions = {}) {
+async function renderPage({
+  deckId,
+  fixMarks,
+  ...fixture
+}: { deckId?: string; fixMarks?: FixMarksApi } & FixtureOptions = {}) {
   const decks = fixtureDecksApi(fixture)
   const cards = fixtureCardsApi(fixture)
   const auth = createAuthStore({
@@ -22,7 +28,12 @@ async function renderPage({ deckId, ...fixture }: { deckId?: string } & FixtureO
   })
   const view = await renderInRouter(
     <AuthContext value={auth}>
-      <UnvalidatedPage {...(deckId === undefined ? {} : { deckId })} api={decks} cards={cards} />
+      <UnvalidatedPage
+        {...(deckId === undefined ? {} : { deckId })}
+        api={decks}
+        cards={cards}
+        fixMarks={fixMarks}
+      />
     </AuthContext>,
   )
   return { ...view, decks, cards, user: userEvent.setup() }
@@ -65,6 +76,35 @@ const FULL_TEXT = [
   `Mystic Remora (Stale) - decks: ${CHAOS}`,
   '  - "Cumulative upkeep {1} / Whenever an opponent casts a noncreature spell, you may draw a card unless that player pays {4}.": Its text changed since the rules were written, so it is played by hand',
 ].join('\n')
+
+describe('the fix-mark button', () => {
+  const api = () => ({
+    list: vi.fn(async () => []),
+    mark: vi.fn(async (oracleId: string) => ({
+      oracle_id: oracleId,
+      name: 'x',
+      note: null,
+      created_at: '2026-10-29T12:00:00Z',
+    })),
+    unmark: vi.fn(async () => undefined),
+  })
+
+  it('is on every card of the list, which are all cards the game does not run whole, when the endpoints are given', async () => {
+    fixMarksClient.clear()
+    const { user } = await renderPage({ fixMarks: api() })
+    const list = await settled()
+    const buttons = within(list).getAllByRole('button', { name: 'Mark important to fix' })
+    expect(buttons).toHaveLength(cardNames(list).length)
+    await waitFor(() => expect(buttons[0]).toHaveAttribute('aria-disabled', 'false'))
+    await user.click(buttons[0] as HTMLElement)
+    expect(buttons[0]).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('is not drawn without them', async () => {
+    await renderPage()
+    expect(within(await settled()).queryByRole('button', { name: 'Mark important to fix' })).toBeNull()
+  })
+})
 
 describe('every saved deck', () => {
   it('lists each card once, the cards of most decks first, then by name', async () => {

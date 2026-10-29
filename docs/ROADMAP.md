@@ -62,7 +62,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Attachments: Auras on permanents and players, Equipment, Reconfigure, living weapon, umbra armor and Aura grants.
 - Replacement and prevention: enters tapped or with counters, damage shields, regeneration, protection, death shields and conditional "instead" replacements.
 - Costs and casting: CR 601.2 announcement with modes, X, alternative and additional costs, casting restrictions such as "only during combat", kickers, cost modifiers and conditional reductions, reductions by counts of the turn and for the first spell of a kind, activated abilities that change their own cost, free casts and Strive, casts of a target card with the exile of that spell, and permissions that work once during each of your turns.."
-"- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
+  "- Mana: restricted mana and spend filters, filter lands, triggered and counted mana, storage lands, mana costs with mills and counters, and mana kept past the step.
 - Emblems: objects in the command zone with abilities of their own that work from there, read and written by the compiler.
 - Incubate: the Incubator token with its Phyrexian back face, another player who incubates, the permanents exiled this way and the Phyrexians that died, read and written by the compiler.
 - Expend: the trigger on the turn's Nth mana spent on spells, read and written by the compiler.
@@ -100,6 +100,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Card images in the web: table cards, hand, stack and preview draw the picture with the state over it, the builder through the same endpoints, and "Card images" in the table menu turns them off (`docs/web.md`, Card images).
 - Table states: small corner marks over a card's picture for damage (warning at lethal), counters by kind, attachments, summoning sickness (icon and dim), face down, back face, copy, merge, prepared and level; the real numbers of a token and a face-down creature; a token without a picture drawn as a card; `/dev/table?states=1` shows them all at once (`docs/web.md`, Card images).
 - Fix marks: a player marks a card as important to fix (`PUT /api/fix-marks/{oracle_id}`, a toggle with an optional note in the card preview), the marks are stored per account, `mtg-cli fix-marks` ranks the cards by marks with their support state, and `check-rules --gaps --marks` weighs the gap ledger by them (`docs/server.md`, Fix marks).
+- Deck builder views: the deck as pictures grouped by type (or the dense list), a stats disclosure (support counts, lands, colours, curve, types), a Played by hand list with each card's reasons, a save bar that says what blocks saving, and the fix-mark flag on deck lines, tiles, search hits and the not-validated list (`docs/web.md`, `/decks/$deckId`).
 - Commander at the table: commander cards and tax chips in the pods, commander damage per source with the lethal amount, casting from the command zone in the hand dock with the tax, the return choice and commander damage in the log (`docs/web.md`).
 - Manual actions at the table: a menu on every card (right click, long press, `m`, the Menu key, Shift+F10) of the actions the protocol allows, the clauses a card leaves to the table in the menu and quoted in the log, and every manual action as a log line with who took it (`docs/web.md`, Manual menu).
 - Table lanes: every board draws lands, creatures and other permanents in fixed lanes, mirrored for opponents, at the largest card size that fits (`laneFit.ts`), with `/dev/table?board=duel` and `board=heavy` and a layout gate rule for lanes.
@@ -109,11 +110,13 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the order listed.
 
 ### Costs and casting
+
 - [ ] (g2e) The mode prompt offers a mode with X in its target filter only when some payable X has its targets, so choosing a mode never backs the cast out
 - [ ] (g5c) Convoke and delve picks are public to every seat in the protocol projection, with a hidden-information test
 - [ ] (g6d) Cost parts other than mana for multikicker, suspend, overload, foretell, ward and `Pay`; frees about 5 cards (Arrogant Poet, Owlin Shieldmage, Skullmane Baku)
 
 ### Faces and copies
+
 - [ ] (n1d3) Meld (CR 712.4): two cards exile and return as one permanent with the combined back face and leave as two objects; frees 3 cards (Bruna, Gisela, Brisela)
 - [ ] (n1d6) The day and night wordings left; frees about 10 corpus cards (Celestus Sanctifier, Angel of Eternal Dawn, Tovolar, Dire Overlord)
 - [ ] (n2b) Face-down remaining: manifest dread and of chosen cards, face-up and face-down predicates, turn-up conditions, morph costs beyond mana; frees about 14 cards (Write into Being, Whisperwood Elemental, Fathom Seer)
@@ -125,12 +128,15 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (o1d) A transformed permanent that dies reads its trigger from the face it showed, and a copy-granted static reads it from the copy that left in the same batch
 
 ### Attachments
+
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test
 
 ### Manual cards and views
+
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## M4 Commander
+
 - [ ] (m4c) Companion conditions that need more than the card (mana value parity, an activated ability, a shared type, one mana symbol) in rules, engine and deck check; frees about 4 cards (Jegantha, Kaheera, Gyruda)
 
 ## M5 Table and prompts
@@ -181,9 +187,11 @@ The server is settled first, then the web is built once against the final types.
 - [~] (pm1) (manual-anytime) Manual actions at any time: a seat applies a manual action to its cards (and counters and tapping to any permanent, life and player counters on itself) whenever it likes, on any turn, with a stack, whether or not the card is supported or the seat holds priority, so a card that does not do what it should is fixed by hand and an ability the engine does not play is played by hand (tokens, counters, damage, mana, draws, zone moves); the engine applies it between decisions, the log names it and replays reproduce it
 - [ ] (lb1a) The precon list item carries the commanders' cards (picture, colour identity), so a precon row in the lobby chooser shows its commanders and the chooser filters precons by colour identity
 - [~] (pn1) (no-seat-limit) No limit on the number of players for any format: the create form, the server and the engine accept any number of seats from two up, and the table lays out as many as there are
-- [ ] (fx1a) `FixMarkButton` (`features/fixmarks`) is mounted in the deck page rows, the lobby deck view and the table card menu (only on cards that are not Verified; the card preview has it for every card)
 - [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
-- [ ] (db1) The deck builder gets a user-experience pass: card pictures large enough to read, the deck grouped by type with counts, a stats panel (curve, colours, types), the full deck preview shared with the lobby, per-card "play by hand" and "fix this" controls, clear support marks
+- [ ] (fx1c) `FixMarkButton` is mounted in the lobby deck view (the large card of the shared deck preview) and in the table card menu, for a card that is not Verified
+- [ ] (db1a) A deck entry can be marked "play by hand" by its owner (also for a Verified card), so a card that misbehaves is fixed at the table: a flag on `DeckLineBody` and the stored line, the engine hosting the card as manual, the check counting it as played by hand
+- [ ] (db1b) The builder's cards played by hand quote the words of the card each reason covers (the spans of `useCardTexts`), as the not-validated page does
+- [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ma3) Shuffle, reveal and a note on a card as manual actions (`ManualAction::Shuffle`, `Reveal` and a note in the view), with entries in the card menu
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
@@ -198,11 +206,13 @@ The server is settled first, then the web is built once against the final types.
 ## M6 Coverage
 
 ### Target
+
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,450 of 6,429 precon cards, 69.2%; 83.5% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
 - [ ] (t14b) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often
 
 ### Mana and costs
+
 - [ ] (c1j) A mana ability that takes permanents and is used more than once in a payment may take its own source with its last use (Skirk Prospector)
 - [ ] (c1k) The triggered mana abilities of a nonland permanent and with a condition (Kinnan, Bonder Prodigy)
 - [ ] (c1l) Mana abilities still unread: Domain counts, X mana by a where clause, counted sacrifices, a cost's mana value, mana not for generic costs; frees about 8 cards (Springjack Pasture, Illuminor Szeras, Neheb)
@@ -214,6 +224,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c13b) The rest of the commander free casts and strive spells; frees about 10 cards (Deflecting Swat, Twinflame, Reinterpret)
 
 ### Keywords and cast ways
+
 - [ ] (c2g) Keywords given to spells beyond convoke, improvise and delve, and keywords with a cost given to cards in a hand or graveyard; frees about 20 cards (Ghost Ark, Past in Flames, Zhulodok)
 - [ ] (c2d) The cards that print scavenge, transmute, awaken, gravestorm or sunburst and wait on another wording; frees about 15 cards (Brainspoil, Ondu Rising, Dodgy Jalopy)
 - [ ] (c2l3a) Plot: the special action from a hand, the plotted card cast free as a sorcery on a later turn, plot cost reductions; frees about 4 cards (Lock and Load, Pyretic Charge)
@@ -241,6 +252,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1aug) Extra turns and phases: a loss at the extra turn's end step, its restrictions, attacks alone, combats with chosen attackers, extra-turn costs; frees about 20 cards (Final Fortune, Medomai, Moraug)
 
 ### Statics, attachments and mutate
+
 - [ ] (c7l) The attacking player who chooses the target and the mode of a trigger the Curse controls (Curse of Inertia)
 - [ ] (c7m) Quoted abilities that are rules or make tokens, and the outlaw spend restriction (Nerd Rage, Tarmogoyf Nest, Discreet Retreat)
 - [ ] (c7n) "they gain decayed" after a choice of a card in each player's graveyard (Ghouls' Night Out)
@@ -257,6 +269,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r2db-a) Several statics, or a player rule and statics, in one sentence, and hexproof from the Aura controller's opponents; frees about 6 cards (Tenza, Godo's Maul, Nighthowler, Sigarda, Heron's Grace)
 
 ### Compiler wordings
+
 - [ ] (t16b) Mana that marks the spell it pays for ("If this mana is spent to cast a creature spell, that creature enters with an additional +1/+1 counter on it"): needs the provenance of a mana unit in the engine; frees Biophagus
 - [ ] (t16c) The follow-up of a destroy read and written by the compiler ("If an artifact is destroyed this way, its controller draws a card" as an `If` of `Performed`; the checker writes it, the compiler does not read it); frees Acolyte Hybrid
 - [ ] (t16d) The single wording left on 29 Warhammer 40,000 cards without a corpus file: "the next spell you cast this turn has cascade" (Dark Apostle, Sloppity Bilepiper), "must attack with at least one creature each combat" (Seeker of Slaanesh), "life lost this turn" as an amount (Abaddon the Despoiler, Mortarion), "a card exiled with it" (Redemptor Dreadnought, Helbrute), "choose ... at random" (Chaos Defiler)
@@ -300,6 +313,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
+
 - [ ] (t17b) Writers left for the continuous effects of the stored local-model proposals: statics over a group by attachment or subtype list ("Enchanted creatures you control get +2/+2", "Equipped Warriors you control have double strike", "Each creature that's a Barbarian, a Warrior, or a Berserker gets +2/+2"), "for each of its colors" and "for each Aura attached to it" amounts, abilities in quotes granted to a group, and a target spell or permanent that becomes a color (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (t15b) The checker writers for four accepted-in-principle proposals of the popular cards: Boseiju, Who Endures ("That player may search their library for a land card with a basic land type, put it onto the battlefield, then shuffle"), Takenuma, Abandoned Mire (mill then return a creature or planeswalker card), Sink into Stupor ("target spell or nonland permanent an opponent controls") and Ragavan, Nimble Pilferer (exile the top card of that player's library, until end of turn you may cast it)
 - [ ] (t15c) A counter that exiles the spell instead of putting it into its owner's graveyard, and the free cast "if it's not your turn": Force of Negation
@@ -379,10 +393,12 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1ag) The map names the 84 unnamed items of the `forge-check` report and the verb of each of the 594 marked without one that the DSL has
 
 ### Layouts
+
 - [ ] (c11) Rooms, Battles, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 - [ ] (c11c) The other 24 transforming Sagas, the two precon flip cards and the `prepare` layout's back face; frees about 37 cards (Budoka Gardener, Nezumi Graverobber)
 
 ### Tooling
+
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
 - [ ] (t5a) The Postgres lock covers only the `sqlx::test` tests: the other tests of `mtg-server` and `mtg-cli` run outside it (one full check: 398 s under the lock, 1,087 s waiting for it)
 - [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds: over 90% is `Engine::apply` (`priority_options` with `castable_as_is` and `provided_here` 36%, `triggers::detect` 24%, `layers::compute` 14%, whole-object clones), the testkit harness is about 7%, so the next cut is in the engine; building `mtg-cards` at opt-level 3 and mimalloc in the testkit save about 5% of test CPU and slow every rebuild, so they are not adopted
@@ -392,6 +408,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand (`docs/deck-check.md`)
 
 ## M7 Product
+
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
@@ -404,6 +421,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 
 ## M8 Polish and deploy
+
 - [ ] Animations beyond the table feedback (`docs/web.md`), sounds, replays, solo play against bots
 - [ ] Performance profile on real hardware with real card art
 - [ ] (p1a) Block options test evasion once per attacker and per blocker (0.4 s at 1,500 against 1,500 today), and a death re-derives the layers only when an effect reads it

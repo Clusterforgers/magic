@@ -157,6 +157,27 @@ export function identityOfCards(cards: readonly Pick<PreviewCard, 'identity'>[])
   return COLOURS.filter((letter) => all.has(letter))
 }
 
+/** Copies of the lands in `cards`. */
+export const landCopies = (cards: readonly PreviewCard[]): number =>
+  copiesOf(cards.filter((card) => kindOf(card.typeLine) === 'land'))
+
+/**
+ * Copies of the spells in `cards` by colour identity, in WUBRG order with `C` last for the colourless; a colour or `C`
+ * without copies is left out, lands are not counted, and a card of two colours counts under both.
+ */
+export function colourCounts(cards: readonly PreviewCard[]): { letter: string; count: number }[] {
+  const counts = new Map<string, number>()
+  for (const card of cards) {
+    if (kindOf(card.typeLine) === 'land') continue
+    const letters = card.identity.length === 0 ? ['C'] : card.identity
+    for (const letter of letters) counts.set(letter, (counts.get(letter) ?? 0) + card.count)
+  }
+  return [...COLOURS, 'C'].flatMap((letter) => {
+    const count = counts.get(letter) ?? 0
+    return count === 0 ? [] : [{ letter, count }]
+  })
+}
+
 /** The commanders' identity, or the deck's own when it has no commander. */
 export const identityOfDeck = (deck: DeckPreviewData): string[] =>
   identityOfCards(deck.commanders.length > 0 ? deck.commanders : [...deck.cards, ...deck.sideboard])

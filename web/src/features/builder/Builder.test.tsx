@@ -22,6 +22,9 @@ afterEach(() => {
 })
 
 const pane = () => within(deckPane())
+// The marker beside the name; the support counts show a Verified mark of their own.
+const marker = () => deckPane().querySelector('[data-marker]')
+const markedAs = (state: string) => waitFor(() => expect(marker()).toHaveAttribute('data-marker', state))
 const ADA = { username: 'Ada_L', password: 'correct horse battery' }
 const users = { [ADA.username]: ADA.password }
 
@@ -118,7 +121,7 @@ describe('Save', () => {
     await user.type(pane().getByRole('textbox', { name: 'Deck name' }), '  ')
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
     await user.click(pane().getByRole('button', { name: 'Save' }))
-    expect(await pane().findByText('Verified')).toBeInTheDocument()
+    await markedAs('verified')
     expect(decks.updated).toEqual([
       {
         id: 'deck-1',
@@ -206,7 +209,7 @@ describe('Save', () => {
     await waitFor(() => expect(pane().getByRole('button', { name: 'Save' })).not.toHaveAttribute('aria-busy'))
     expect(copies('Lightning Bolt')).toBe(6)
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
-    expect(pane().queryByText('Verified')).toBeNull()
+    expect(marker()).not.toHaveAttribute('data-marker', 'verified')
   })
 
   it('keeps the edits and the reason when the server refuses, and saves on the next press', async () => {
@@ -226,7 +229,7 @@ describe('Save', () => {
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
     expect(copies('Lightning Bolt')).toBe(5)
     await user.click(pane().getByRole('button', { name: 'Save' }))
-    expect(await pane().findByText('Verified')).toBeInTheDocument()
+    await markedAs('verified')
     expect(pane().queryByRole('alert')).toBeNull()
     expect(decks.updated).toHaveLength(2)
   })
@@ -268,7 +271,7 @@ describe('leaving the page', () => {
     await user.click(screen.getByRole('button', { name: 'Add one Lightning Bolt' }))
     expect(leave().defaultPrevented).toBe(true)
     await user.click(pane().getByRole('button', { name: 'Save' }))
-    await pane().findByText('Verified')
+    await markedAs('verified')
     expect(leave().defaultPrevented).toBe(false)
   })
 
@@ -404,7 +407,12 @@ describe('the fit of the page', () => {
     expect(page()).toHaveAttribute('data-width', 'wide')
     const panes = searchPane().parentElement
     expect(panes).toBe(deckPane().parentElement)
-    expect(panes).toHaveClass('min-h-0', 'flex-1', 'lg:grid-cols-2', 'grid-rows-[minmax(0,1fr)]')
+    expect(panes).toHaveClass(
+      'min-h-0',
+      'flex-1',
+      'lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]',
+      'grid-rows-[minmax(0,1fr)]',
+    )
     for (const element of [searchPane(), deckPane()]) expect(element).toHaveClass('min-h-0', 'flex-col')
   })
 

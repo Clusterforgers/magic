@@ -10,6 +10,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { SupportGlyph } from '@/features/decks/SupportMark'
+import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
+import type { FixMarksApi } from '@/net/fixMarks'
 import type { CardHit, DeckZone } from '@/protocol/generated'
 import { copiesOf, hasRoom } from './deckEdit'
 import { outsideOf, outsideWords } from './identity'
@@ -25,6 +28,8 @@ interface ResultRowProps {
   onAdd: (card: CardHit, zone: DeckZone) => void
   /** Opens the preview of the card; `opener` is the control focus returns to. */
   onPreview: (card: CardHit, opener: HTMLElement) => void
+  /** The fix-mark endpoints; with them a card that is not Verified gets the flag. */
+  fixMarks?: FixMarksApi
 }
 
 /**
@@ -32,12 +37,13 @@ interface ResultRowProps {
  * it opens the card's preview, and a menu beside it adds to the sideboard, the command zone or the companion slot. It
  * says how many copies the deck holds.
  */
-export function ResultRow({ card, draft, identity = null, onAdd, onPreview }: ResultRowProps) {
+export function ResultRow({ card, draft, identity = null, onAdd, onPreview, fixMarks }: ResultRowProps) {
   const outside = identity === null ? [] : outsideOf(card, identity)
   const describedBy = useId()
   const inDeck = copiesOf(draft, card.oracle_id)
   const full = !hasRoom(draft)
   const others = zonesFor(draft.format).filter((zone) => zone !== 'main')
+  const issue = card.support !== 'verified'
   return (
     <li data-card={card.oracle_id} className="flex items-center gap-1">
       {/* The add button covers the body without holding it, since the name inside is a button of its own. The one
@@ -60,7 +66,10 @@ export function ResultRow({ card, draft, identity = null, onAdd, onPreview }: Re
               {card.name}
             </button>
           </HoverPicture>
-          <ManaCost cost={card.mana_cost} />
+          <span className="flex shrink-0 items-center gap-2">
+            <ManaCost cost={card.mana_cost} />
+            {issue ? <SupportGlyph support={card.support} className="relative z-10" /> : null}
+          </span>
         </span>
         <span
           id={describedBy}
@@ -85,6 +94,9 @@ export function ResultRow({ card, draft, identity = null, onAdd, onPreview }: Re
           className="absolute inset-0 rounded-lg aria-disabled:cursor-not-allowed"
         />
       </div>
+      {issue && fixMarks !== undefined ? (
+        <FixMarkButton compact oracleId={card.oracle_id} name={card.name} api={fixMarks} />
+      ) : null}
       <DropdownMenu>
         <DropdownMenuTrigger
           render={

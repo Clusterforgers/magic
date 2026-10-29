@@ -1,5 +1,6 @@
 import { LoaderCircleIcon, TriangleAlertIcon } from 'lucide-react'
 import { useId } from 'react'
+import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
@@ -26,6 +27,8 @@ interface CheckBarProps {
   onIssuesOnly: (on: boolean) => void
   sort: SortKey
   onSort: (sort: SortKey) => void
+  /** Controls that sit before the switch and the sort, such as the choice of how cards are drawn. */
+  leading?: ReactNode
 }
 
 /**
@@ -44,6 +47,7 @@ export function CheckBar({
   onIssuesOnly,
   sort,
   onSort,
+  leading,
 }: CheckBarProps) {
   const id = useId()
   const checking = status === 'checking'
@@ -71,6 +75,7 @@ export function CheckBar({
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        {leading}
         <div className="flex h-8 items-center gap-2 pointer-coarse:h-11">
           <Switch
             id={`${id}-only`}

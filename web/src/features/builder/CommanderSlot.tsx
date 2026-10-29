@@ -55,7 +55,7 @@ function Tile({
         issue ? supportEdge(check.support) : 'border-l-border',
       )}
     >
-      <CardPicture oracleId={card.oracle_id} name={card.name} size="small" alt="" className="w-14" />
+      <CardPicture oracleId={card.oracle_id} name={card.name} size="normal" alt="" className="w-20 sm:w-28" />
       <div className="grid min-w-0 flex-1 content-start gap-1">
         <button
           type="button"

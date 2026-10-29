@@ -1,9 +1,9 @@
 // Goal: a support mark says its state in a word beside an icon of its own and an edge in its own colour, hides the icon from a screen reader, and no two states share a word, an icon or an edge, so colour never carries the meaning alone.
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from './format'
-import { SupportMark, supportEdge } from './SupportMark'
+import { SupportGlyph, SupportMark, supportEdge, supportRing } from './SupportMark'
 
 const STATES: readonly Support[] = ['verified', 'partial', 'manual', 'stale', 'unplayable']
 
@@ -43,5 +43,27 @@ describe('SupportMark', () => {
   it('takes a class for placement', () => {
     const { container } = render(<SupportMark support="manual" className="ml-2" />)
     expect(container.querySelector('[data-support]')).toHaveClass('ml-2')
+  })
+})
+
+describe('supportRing', () => {
+  it.each(STATES)('draws the ring of a %s card in the colour of its state', (support) => {
+    expect(supportRing(support)).toBe(`ring-support-${support}`)
+  })
+
+  it('gives the five states five rings', () => {
+    expect(new Set(STATES.map(supportRing)).size).toBe(STATES.length)
+  })
+})
+
+describe('SupportGlyph', () => {
+  it.each(STATES)('shows %s as an icon named by its word, in its own colours', (support) => {
+    const { container } = render(<SupportGlyph support={support} />)
+    const glyph = screen.getByRole('img', { name: SUPPORT_LABEL[support] })
+    expect(glyph).toHaveAttribute('title', SUPPORT_LABEL[support])
+    expect(glyph).toHaveAttribute('data-support', support)
+    expect(glyph).toHaveClass(`text-support-${support}`)
+    expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+    expect(glyph).toHaveTextContent('')
   })
 })
