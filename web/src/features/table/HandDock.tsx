@@ -12,6 +12,9 @@ import { useContentBox } from './useZoneFit'
 /** Room kept round the line, so the focus ring of the first and last card is not cut by the line's scrolling. */
 const PAD_PX = 4
 
+/** A card narrower than this draws the compact face (name and cost); from here it draws the type line and the rest too. */
+const NORMAL_FACE_PX = 76
+
 /**
  * The hand dock, the bottom edge of the table: the viewer's cards as a fan as tall as the dock allows, side by side
  * while they fit and overlapping just enough when they do not (at least 62 % of a card shows), a hovered or focused card
@@ -39,7 +42,7 @@ export const HandDock = memo(function HandDock({ seat }: { seat: PlayerId }) {
     <section
       aria-label="Your hand"
       data-region="hand"
-      className="flex min-h-0 min-w-0 items-center justify-center border-t bg-table p-2"
+      className="flex min-h-0 min-w-0 items-center justify-center border-t bg-table px-1 py-1"
     >
       <div ref={zone} className="flex size-full min-h-0 min-w-0 items-end justify-center">
         {cards === null ? (
@@ -50,7 +53,8 @@ export const HandDock = memo(function HandDock({ seat }: { seat: PlayerId }) {
           <HandFan
             ids={cards}
             label={`${owner}'s hand`}
-            size={layout !== undefined && layout.box.width < 76 ? 'compact' : 'normal'}
+            size={layout !== undefined && layout.box.width < NORMAL_FACE_PX ? 'compact' : 'normal'}
+            cost
             layout={layout}
           />
         )}

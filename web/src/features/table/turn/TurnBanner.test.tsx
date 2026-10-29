@@ -13,6 +13,7 @@ beforeEach(useCueClock)
 afterEach(() => {
   vi.useRealTimers()
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 function reduceMotion(): void {
@@ -164,5 +165,20 @@ describe('what it does for a reader and for an answer', () => {
     renderTable({ seats: 2 })
     expect(banner()).toBeNull()
     expect(document.querySelector('[data-slot="turn-announcement"]')).toBeNull()
+  })
+})
+
+describe('where it sits', () => {
+  it('hangs on the top edge of the strip when the sheet cannot be measured, and covers nothing', () => {
+    renderCueTable()
+    expect(banner()).toHaveClass('absolute', 'inset-x-0', 'bottom-full')
+    expect(banner()).not.toHaveClass('inset-0')
+  })
+
+  it.each([88, 190, 360])('hangs 4 px above a sheet of %i px, however tall a prompt makes it', (height) => {
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(height)
+    renderCueTable()
+    expect(banner()?.style.bottom).toBe(`${height + 4}px`)
+    expect(banner()).not.toHaveClass('bottom-full')
   })
 })

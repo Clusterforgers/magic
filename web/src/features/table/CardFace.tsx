@@ -22,6 +22,8 @@ interface CardFaceProps {
   size: CardSize
   /** The box comes from an enclosing row (`Card` `fit`); `size` then only picks which parts of the face are drawn. */
   fit?: boolean
+  /** A compact face also draws the mana cost. */
+  cost?: boolean
   /** Keep a tapped card upright, as the preview does: it says "tapped" in words instead. */
   upright?: boolean
   /** What the active prompt writes on the card, such as "At Ana"; drawn after the status labels. */
@@ -52,6 +54,7 @@ export function CardFace({
   role,
   size,
   fit = false,
+  cost = false,
   upright = false,
   note,
   stacked = false,
@@ -80,10 +83,10 @@ export function CardFace({
         FRAME[frame],
       )}
     >
-      <span className={cn('px-1 pt-0.5 leading-tight font-semibold', classes.name)}>
+      <span className={cn(classes.name, 'px-1 pt-0.5 leading-tight font-semibold')}>
         <span className={cn('block break-words hyphens-auto', nameLines)}>{object.name}</span>
       </span>
-      {full && object.mana_cost !== null ? (
+      {(full || (cost && !turned)) && object.mana_cost !== null ? (
         <ManaPips
           pips={costPips(object.mana_cost)}
           sizeClass={classes.pip}
@@ -156,12 +159,12 @@ export function CardFace({
         )}
       </span>
       {full ? (
-        <span className={cn('line-clamp-2 px-1 leading-tight text-muted-foreground', classes.text)}>
+        <span className={cn(classes.text, 'line-clamp-2 px-1 leading-tight text-muted-foreground')}>
           {typeLine(object)}
         </span>
       ) : null}
       {full && keywords !== null ? (
-        <span data-slot="card-keywords" className={cn('line-clamp-2 px-1 leading-tight', classes.text)}>
+        <span data-slot="card-keywords" className={cn(classes.text, 'line-clamp-2 px-1 leading-tight')}>
           {keywords}
         </span>
       ) : null}
@@ -171,8 +174,8 @@ export function CardFace({
         <span
           data-slot={pt === null ? 'card-loyalty' : undefined}
           className={cn(
-            'self-end rounded-tl-md bg-foreground px-1.5 leading-snug font-bold text-background tabular-nums',
             classes.name,
+            'self-end rounded-tl-md bg-foreground px-1.5 leading-snug font-bold text-background tabular-nums',
           )}
         >
           {pt ?? loyalty}

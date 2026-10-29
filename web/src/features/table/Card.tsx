@@ -25,6 +25,8 @@ export interface CardProps {
   size?: CardSize
   /** The box (`--card-w` by `--card-h`) comes from the row the card sits in, which fits it to its zone; `size` then only picks the face. */
   fit?: boolean
+  /** A compact face still draws the mana cost: the hand, where the cost decides what can be cast. */
+  cost?: boolean
   /** False takes the card out of the tab order; a row keeps exactly one of its cards tabbable. */
   tabbable?: boolean
   /** Overrides the mark the active prompt gives this card (see `prompt/marks.ts`): legal, dimmed or chosen. */
@@ -49,6 +51,7 @@ export const Card = memo(function Card({
   id,
   size = 'normal',
   fit = false,
+  cost = false,
   tabbable = true,
   highlight: given,
   onSelect: givenSelect,
@@ -101,7 +104,7 @@ export const Card = memo(function Card({
         highlight === undefined ? null : HIGHLIGHT[highlight],
       )}
     >
-      <CardFace object={object} role={role} size={size} fit={fit} note={note} links={links} />
+      <CardFace object={object} role={role} size={size} fit={fit} cost={cost} note={note} links={links} />
       {outlook === null ? null : (
         <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
       )}

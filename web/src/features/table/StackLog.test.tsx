@@ -109,10 +109,19 @@ describe('stack panel', () => {
 describe('log panel', () => {
   const log = () => screen.getByRole('log', { name: 'Game log' })
 
-  it('prints one line for every event of the log', () => {
+  it('prints a line for every event worth one and one for each round of passes', () => {
     const { store } = renderTable({ seats: 4, ui: <LogPanel /> })
-    expect(within(log()).getAllByRole('listitem')).toHaveLength(store.getState().log.length)
-    expect(store.getState().log.length).toBeGreaterThanOrEqual(50)
+    const events = store.getState().log
+    expect(events.length).toBeGreaterThanOrEqual(50)
+    const priority = events.filter(
+      ({ event }) => 'Public' in event && /^Priority/.test(Object.keys(event.Public)[0] ?? ''),
+    )
+    expect(priority.length).toBeGreaterThan(0)
+    // Every grant and every pass leaves the log, and a round of them comes back as one line.
+    const lines = within(log()).getAllByRole('listitem')
+    expect(lines.length).toBeGreaterThanOrEqual(events.length - priority.length)
+    expect(lines.length).toBeLessThan(events.length)
+    expect(log()).not.toHaveTextContent(/receives priority|passes priority/)
   })
 
   it('writes the events as sentences with the seats named by the lookup', () => {
@@ -124,11 +133,17 @@ describe('log panel', () => {
     expect(log()).toHaveTextContent('Alice shuffles their library')
   })
 
-  it('draws priority passes and other minor events quietly', () => {
+  it('draws a round of passes quietly, with the passing seats as colour dots and named for a screen reader', () => {
     renderTable({ seats: 4, ui: <LogPanel /> })
-    const passes = within(log()).getAllByText(/passes priority$/)
+    const passes = within(log()).getAllByText(/^All pass$/)
     expect(passes.length).toBeGreaterThan(0)
-    for (const line of passes) expect(line).toHaveClass('text-muted-foreground')
+    for (const text of passes) {
+      const line = must(text.closest('li'))
+      expect(line).toHaveClass('text-muted-foreground')
+      expect(line.querySelectorAll('[data-slot="seat-dot"]')).toHaveLength(4)
+      expect(line).toHaveTextContent(/^All pass: .+ pass$/)
+      for (const name of ['Alice', 'Bo', 'Cy', 'Dee']) expect(line).toHaveTextContent(name)
+    }
     expect(within(log()).getByText('Alice casts Lightning Bolt')).not.toHaveClass('text-muted-foreground')
   })
 

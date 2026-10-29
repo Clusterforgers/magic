@@ -1,4 +1,4 @@
-// Goal: the hand dock draws the viewer's cards as a fan as tall as the dock allows, with the normal gap while they fit its width and an overlap of at least 62 % showing when they do not (smaller cards before a scroll, and 44 px strips under a touch screen), drops to the short card face under 76 px, rises a hovered or focused card by 40 % and opens its preview, moves focus along the hand with the arrow keys, keeps one tab stop, takes no pointer above the cards, and says so when the hand is empty or hidden, for 1 to 20 cards.
+// Goal: the hand dock draws the viewer's cards as tall as the dock allows, side by side in one row while they fit, then in two or three rows that lie over each other with the top (name and cost) of every card showing, shrinks the cards to 68 px before it wraps and scrolls only past three rows, draws the cost on the short card face under 76 px, rises a hovered or focused card by 40 % and opens its preview, moves focus along the hand with the arrow keys, keeps one tab stop, takes no pointer above the cards, and says so when the hand is empty or hidden, for 1 to 20 cards.
 import { act, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -81,23 +81,25 @@ describe('with a size', () => {
     expect(vars('--hand-lift')).toBe(expected.lift)
   })
 
-  it('keeps the normal gap of 6 px while the seven cards fit the width', () => {
+  it('keeps the gap of 4 px and one row of whole cards while the seven cards fit the width', () => {
     room.width = 900
     room.height = 106
     renderTable({ seats: 2 })
-    expect(vars('--card-gap')).toBe(6)
+    expect(vars('--card-gap')).toBe(4)
+    expect(hand()).toHaveAttribute('data-rows', '1')
   })
 
-  it('overlaps the cards, smaller than the dock is tall, in a dock too narrow for them side by side', () => {
+  it('shrinks the cards to 68 px and scrolls, never overlaps them, in a dock too narrow for seven side by side', () => {
     room.width = 300
     room.height = 106
     renderTable({ seats: 2 })
-    expect(vars('--card-gap')).toBeLessThan(0)
-    expect(vars('--card-w')).toBeLessThan(handCardWidth(106 - 8))
-    expect(hand()).not.toHaveAttribute('data-scrolls')
+    expect(vars('--card-gap')).toBeGreaterThanOrEqual(0)
+    expect(vars('--card-w')).toBe(68)
+    expect(hand()).toHaveAttribute('data-scrolls', 'true')
+    expect(hand()).toHaveAttribute('data-rows', '1')
   })
 
-  it('draws the whole face of a card from 76 px wide and the short one under it', () => {
+  it('draws the whole face of a card from 76 px wide, and the short one with its cost under it', () => {
     room.width = 900
     room.height = 175
     const { unmount } = renderTable({ seats: 2 })
@@ -107,6 +109,8 @@ describe('with a size', () => {
     renderTable({ seats: 2 })
     expect(handCardWidth(90 - 8)).toBeLessThan(76)
     expect(new Set(cardsOf().map((each) => each.getAttribute('data-size')))).toEqual(new Set(['compact']))
+    // The cost is on the short face too: the hand is where it decides what can be cast.
+    expect(hand().querySelectorAll('[role="img"][aria-label^="Mana cost"]').length).toBeGreaterThan(0)
   })
 
   it('never makes a card narrower than the 44 px floor of the fit engine', () => {
@@ -121,18 +125,40 @@ describe('with a size', () => {
 describe('the fan for 1 to 20 cards', () => {
   it.each([1, 2, 7, 12, 20])('draws %i cards as the layout says, in one list of one tab stop', (count) => {
     room.width = 560
-    room.height = 120
+    room.height = 160
     renderTable({ seats: 2, state: withHand(count) })
-    const expected = layoutOf(560, 120, count)
+    const expected = layoutOf(560, 160, count)
     expect(cardsOf()).toHaveLength(count)
     expect(cardsOf().filter((each) => each.getAttribute('tabindex') === '0')).toHaveLength(1)
     expect(vars('--card-w')).toBe(expected.box.width)
     expect(vars('--card-gap')).toBe(expected.gap)
     expect(hand().hasAttribute('data-scrolls')).toBe(expected.scrolls)
-    // 62 % of every card but the last shows, and the line fits the dock unless it scrolls.
-    const step = expected.box.width + expected.gap
-    if (count > 1) expect(step).toBeGreaterThanOrEqual(Math.ceil(expected.box.width * 0.62))
-    if (!expected.scrolls) expect(expected.box.width + (count - 1) * step).toBeLessThanOrEqual(560 - 8)
+    expect(hand()).toHaveAttribute('data-rows', String(expected.rows))
+    // Every row fits the dock unless the line scrolls.
+    if (!expected.scrolls) {
+      expect(expected.perRow * expected.box.width + (expected.perRow - 1) * expected.gap).toBeLessThanOrEqual(
+        560 - 8,
+      )
+    }
+  })
+
+  it('wraps a hand that does not fit one row into rows that show the top of every card', () => {
+    room.width = 602
+    room.height = 161
+    renderTable({ seats: 2, state: withHand(12) })
+    expect(hand()).toHaveAttribute('data-rows', '2')
+    expect(hand()).not.toHaveAttribute('data-scrolls')
+    const slots = [...hand().querySelectorAll<HTMLElement>('[data-slot="hand-slot"]')]
+    expect(slots).toHaveLength(12)
+    // The six cards of the first row keep only their top 54 px as a slot, so the second row starts right under it.
+    expect(slots.filter((slot) => slot.hasAttribute('data-back'))).toHaveLength(6)
+    for (const slot of slots.slice(0, 6)) expect(slot.style.height).toBe('54px')
+    for (const slot of slots.slice(6)) expect(slot.style.height).toBe('')
+    expect(hand()).toHaveClass('flex-wrap')
+    // The list is in reading order, so the arrow keys still go from the last card of a row to the first of the next.
+    expect(cardsOf().map((each) => each.getAttribute('data-object-id'))).toEqual(
+      slots.map((slot) => must(slot.querySelector('button')).getAttribute('data-object-id')),
+    )
   })
 
   it('rises a card by 40 % of its height and keeps the room for it above the cards', () => {
@@ -146,16 +172,32 @@ describe('the fan for 1 to 20 cards', () => {
     for (const slot of slots) {
       expect(slot).toHaveClass('pointer-events-auto', 'hover:z-10', 'focus-within:z-10')
       const lifter = must(slot.firstElementChild)
-      expect(lifter.className).toContain('group-hover/slot:-translate-y-[40%]')
-      expect(lifter.className).toContain('group-has-focus-visible/slot:-translate-y-[40%]')
-      expect(lifter.className).toContain('pointer-coarse:group-focus-within/slot:-translate-y-[40%]')
+      expect(lifter.className).toContain('group-hover/slot:-translate-y-(--hand-lift)')
+      expect(lifter.className).toContain('group-has-focus-visible/slot:-translate-y-(--hand-lift)')
+      expect(lifter.className).toContain('pointer-coarse:group-focus-within/slot:-translate-y-(--hand-lift)')
       expect(lifter.className).toContain('motion-safe:transition-transform')
       // An opaque backing, so the face of an overlapped neighbour does not show through a tinted one.
       expect(lifter).toHaveClass('rounded-md', 'bg-table')
     }
   })
 
-  it('keeps a strip of 44 px of every card under a touch screen, and scrolls rather than overlap more', () => {
+  it('lifts only the cards a row lies over when the hand has rows, whole by at least the part that is covered', () => {
+    room.width = 602
+    room.height = 161
+    renderTable({ seats: 2, state: withHand(12) })
+    const expected = layoutOf(602, 161, 12)
+    expect(expected.overlap).toBeGreaterThan(0)
+    expect(vars('--hand-lift')).toBeGreaterThanOrEqual(expected.overlap)
+    const slots = [...hand().querySelectorAll<HTMLElement>('[data-slot="hand-slot"]')]
+    for (const slot of slots) {
+      const lifts = must(slot.firstElementChild).className.includes(
+        'group-hover/slot:-translate-y-(--hand-lift)',
+      )
+      expect(lifts).toBe(slot.hasAttribute('data-back'))
+    }
+  })
+
+  it('keeps the size of the cards under a touch screen and scrolls what does not fit', () => {
     vi.stubGlobal(
       'matchMedia',
       (query: string) =>
@@ -168,9 +210,9 @@ describe('the fan for 1 to 20 cards', () => {
     room.width = 300
     room.height = 120
     renderTable({ seats: 2, state: withHand(12) })
-    expect(vars('--card-w') + vars('--card-gap')).toBeGreaterThanOrEqual(44)
     expect(hand()).toHaveAttribute('data-scrolls', 'true')
     expect(vars('--card-w')).toBe(handCardWidth(120 - 8))
+    expect(vars('--card-gap')).toBeGreaterThanOrEqual(0)
   })
 })
 
