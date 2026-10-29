@@ -139,6 +139,27 @@ Each theme has `phase-<id>` (accent), `phase-<id>-soft` (tint, lightness 0.95 li
 - Colour-blind: any two accents, and an accent and the gold of your turn, differ by CIEDE2000 [S33] 12 or more under full vision, protanopia, deuteranopia and tritanopia [S32].
 - Motion: a change of theme fades in 200 ms and is immediate under reduced motion. Nothing waits for a theme, and none adds a delay to an answer.
 
+## Attachments
+
+An Aura, Equipment or Fortification is read at its host, as Arena and MTGO draw it: the attachment lies behind the host with its name line showing above it, the host carries a mark for what each attachment gives, and a move between hosts is drawn as an arrow and said in the log.
+
+| Part | Shows | Data |
+|---|---|---|
+| Tuck | every attachment on a permanent lies behind its host, whoever controls it, each showing its top `tuck` px (the name line) above the one in front; the host stands at the foot of its box; an attachment takes no box of its own | `ObjectView.attachments`, `attached_to` |
+| Fit | a lane's line is `height + depth × tuck` tall, `depth` the most attachments tucked at one host of the lane; `tuck` is the land fan's head (`max(fanHeadMin, 0.14 h)`) while the fan stays under half the card's height, then `max(12, h / 2 / depth)`; a lands lane with a tuck is not fanned | `LaneCounts.tucked` |
+| Order | Auras, then Equipment, then Fortifications, each in id order; the first lies deepest, the last right behind the host | view only |
+| Grant marks | one mark per attachment on the host's foot stack, in the tuck order: "+2/+2", a keyword's name ("Flying", "Lifelink"), "Pro red", "Umbra" (an umbra armor Aura: the host survives destruction), a restriction ("Can't attack", "No abilities"); a compact face shows the count and an icon; tokens `success` for a raise, `destructive` for a lowering or a restriction, `foreground` on `surface` for a keyword | `ObjectView.gives` |
+| Preview | the host's preview lists each attachment as one line: its name, its controller when it is not the host's, and what it gives; the attachment's own preview names its host | `gives`, `attached_to` |
+| Foreign | an attachment another seat controls carries a 2 px dashed edge in `border-strong` on its tucked card and "Bo's" before its name in the mark and the preview (Pacifism on your creature, your Aura on an opponent's) | `controller` |
+| On a player | an Aura or Curse on a player stays in its controller's other lane with "On Bo" (`card-attached-to`); the enchanted player's pod or tile shows a chip with its name, and the preview of either names the other | `attached_player` |
+| Unattached | an Equipment or Fortification on no host stays in its controller's other lane with a dashed "Unattached" chip at its foot | `attached_to` missing |
+| Move | `Attached` draws an arrow from the old host (or the attachment's own place) to the new host with the combat overlay's `connect` (`combat/geometry.ts`), 450 ms, and the log says "Bonesplitter moves from Hill Giant to Llanowar Elves" or "Pacifism enchants Hill Giant"; `Unattached` says "Bonesplitter becomes unattached from Hill Giant" | the previous view's `attached_to` |
+| Reduced motion | the arrow is drawn still for 1 s and fades in 100 ms; the tuck has no motion | none |
+
+- Many: five attachments on one host keep a name line each of 21 px at 150 px cards and 14 px at 100 px; the marks wrap into a second column of the foot stack, and the preview always lists them all.
+- Phone (390 px): a tuck shows the attachment's colour edge only below 76 px cards; the marks are the count and an icon, and the long-press preview carries the list.
+- `gives` is the engine's account of each attachment's continuous effects on its host as the layers apply them now: `{ power, toughness, keywords, rules }` with `rules` the restrictions it adds (`CantAttack`, `CantBlock`, `LoseAbilities`, `DoesntUntap`, `CantBeBlocked`, `SetController`, `SetPowerToughness`); left out while the attachment gives nothing. The view cannot work it out: `abilities` carries mana abilities only and a card's words do not say what a condition or a layer leaves of them.
+
 ## Game browser and lobby
 
 `/` becomes Play: open games, Create game and Join with a code. Create moves to `/new`, an invite opens `/join/$code`, My games stays; a signed-in user also gets "Continue" for a running game. Visibility follows Steamworks lobbies (private, public, a joinable flag) [S23] and Unity's, which hide private lobbies from queries and join them by code [S29].
