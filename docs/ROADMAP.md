@@ -36,7 +36,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Model-assisted reading: (r3) the next sample, (r2dge), (r2ec) a specialist model.
 - Commander and server: (m4c) the companion conditions and a corpus card.
 - Tooling: (dep) dependencies, alone between rounds; (t1) a flaky test; (t5a) the Postgres lock scope; (t5b) the testkit time.
-- After the card system: "Views complete", the Gate, then the web (M5 prompts for the decision kinds the engine asks, the manual-action menu, table states) and M7.
+- Playable first: "Views complete" (v1), then the web in this order: card images (a1, a2), the table states, the manual-action menu, the prompts for the decision kinds, the playtest polish (f1b), the deploy (d1) and the not-validated list (f1a). Coverage rounds and the Gate run beside it.
 - After each round: `mtg-cli ingest` and `compile` refresh the real database, `coverage` is re-run and the numbers go on the M6 target line; `fetch scryfall --printings` fills the printings once.
 
 ## Done
@@ -130,6 +130,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts lock the creatures a rule requires, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
+- [ ] (a1) Card images: the server serves the normal and art-crop image of a card identity (printing, face, token) from a disk cache filled from the Scryfall CDN, and the text face stands in while an image loads or does not exist (`docs/server.md`, `docs/data-sources.md`)
+- [ ] (a2) The table, hand, stack, preview, deck builder and lobby draw the real card image, unaltered as Scryfall's image terms require, with tapped state, counters, attachments, loyalty and support marks over it, with `/dev/table` screenshots at six sizes in both themes (`docs/web.md`)
 - [ ] Table states: counters, attachments, loyalty, faces, face-down cards, copies, command zone, commander damage and support marks, with `/dev/table` screenshots at six sizes in both themes
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] Manual actions on any card: a menu and log entries
@@ -137,6 +139,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Playwright games with corpus decks that ask every decision kind
 - [ ] (c5h) The table's event text has a line for the rule `MustAttackPlayers` (Encore) instead of the generic trigger line
 - [ ] (c5i) The attack prompt offers the exert of a creature that may be exerted (`AttackerOption.exert`, `Answer::DeclareExerting`) and the table marks an exerted permanent
+- [ ] (f1b) Playtest polish of the table, builder and lobby against the UI wishes (fits the viewport, clear turn indicators, open-games list, card images at every size), with `/dev/*` screenshots at six sizes in both themes, so the first real games can start
 
 ## M6 Coverage
 
@@ -320,6 +323,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand (`docs/deck-check.md`)
 
 ## M7 Product
+- [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
 - [ ] (B3) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
 - [ ] Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
 - [ ] House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
@@ -331,8 +335,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 
 ## M8 Polish and deploy
-- [ ] (f1b) Polish pass of the playable table, builder and lobby against the UI wishes (fits the viewport, clear turn indicators, open-games list), with `/dev/*` screenshots at six sizes in both themes
 - [ ] Animations beyond the table feedback (`docs/web.md`), sounds, replays, solo play against bots
-- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Performance profile on real hardware with real card art
 - [ ] (p1a) Block options test evasion once per attacker and per blocker (0.4 s at 1,500 against 1,500 today), and a death re-derives the layers only when an effect reads it
