@@ -247,7 +247,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
 
 /// Whether `If-None-Match` names `tag`. The comparison is the weak one a `GET` uses, `*` matches
 /// any listing, and a list of tags matches when any one does.
-fn tag_matches(headers: &HeaderMap, tag: &str) -> bool {
+pub(crate) fn tag_matches(headers: &HeaderMap, tag: &str) -> bool {
     headers
         .get_all(IF_NONE_MATCH)
         .iter()
