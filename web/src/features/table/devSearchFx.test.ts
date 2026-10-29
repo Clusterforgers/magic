@@ -12,7 +12,20 @@ describe('?fx=', () => {
   })
 
   it('names the moves the table buttons are made from', () => {
-    expect([...DEV_FX]).toEqual(['attack', 'block', 'damage', 'death', 'life', 'enter'])
+    expect([...DEV_FX]).toEqual([
+      'attack',
+      'block',
+      'damage',
+      'death',
+      'life',
+      'enter',
+      'cast',
+      'activate',
+      'resolve',
+      'counter',
+      'land',
+      'draw',
+    ])
   })
 })
 

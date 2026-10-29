@@ -8,6 +8,7 @@ import { maybePrimaryButton, primaryButton } from '@/test-utils/passControls'
 import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { FIRST_MOVE_MS } from './dev/DevFxControls'
 import { FIXTURE_MARKER } from './dev/fixture'
+import { DEV_FX } from './devSearch'
 
 /** The real route tree, loaded fresh so the route sees the `import.meta.env.DEV` the test has set. */
 async function visit(url: string) {
@@ -212,7 +213,7 @@ describe('/dev/table with table effects', () => {
   it('offers a button for every move, with or without `fx`', async () => {
     await visit('/dev/table?seats=2')
     await screen.findByRole('region', { name: 'Game table' })
-    expect(buttons()).toEqual(['attack', 'block', 'damage', 'death', 'life', 'enter'])
+    expect(buttons()).toEqual([...DEV_FX])
     expect(document.querySelector('[data-fx]')).toBeNull()
   })
 

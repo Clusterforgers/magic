@@ -7,7 +7,23 @@ import { STEP_LABEL } from './turnText'
 const STEP_BY_NAME = new Map((Object.keys(STEP_LABEL) as Step[]).map((step) => [step.toLowerCase(), step]))
 
 /** The moves `?fx=` can play on the fixture table, to look at the table effects (`dev/fxScenarios.ts`). */
-export const DEV_FX = ['attack', 'block', 'damage', 'death', 'life', 'enter'] as const
+export const DEV_FX = [
+  'attack',
+  'block',
+  'damage',
+  'death',
+  'life',
+  'enter',
+  'cast',
+  'activate',
+  'resolve',
+  'counter',
+  'land',
+  'draw',
+] as const
+
+/** The moves of `DEV_FX` that are moments of play (a cast and what follows), drawn by the travel layer. */
+export const DEV_PLAYS = ['cast', 'activate', 'resolve', 'counter', 'land', 'draw'] as const
 
 /** One of `DEV_FX`. */
 export type DevFx = (typeof DEV_FX)[number]

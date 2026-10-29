@@ -9,6 +9,7 @@ import type {
   AttackTarget,
   Event,
   EventBatch,
+  EventView,
   ObjectId,
   ObjectView,
   PlayerId,
@@ -17,6 +18,7 @@ import type {
 } from '@/protocol/generated'
 import type { DevFx } from '../devSearch'
 import { applyBatchToStore } from './applyBatch'
+import { hiddenDraw, PLAY_MOVES } from './playScenes'
 
 /** The table a move changes, and the means to change it. */
 interface Scene {
@@ -223,6 +225,8 @@ const MOVES: Record<DevFx, (scene: Scene) => Event[]> = {
     }
     return events
   },
+
+  ...PLAY_MOVES,
 }
 
 /** The batch for `kind` from the table in `state`, or null when there is no table or the move has nothing to do. */
@@ -251,16 +255,21 @@ export function devBatch(kind: DevFx, state: PlayState): EventBatch | null {
   }
   const events = MOVES[kind](scene)
   if (events.length === 0) return null
+  const hidden = kind === 'draw' ? [hiddenDraw(scene)] : []
   next.objects.sort((a, b) => a.id - b.id)
+  const left = new Set(next.objects.map((object) => object.id))
   return {
     from_seq: seq,
-    events: events.map((event) => ({ Public: event })),
+    events: [
+      ...events.map((event): EventView => ({ Public: event })),
+      ...hidden.map((event): EventView => ({ Hidden: event })),
+    ],
     table: tableOf(next),
     objects: [...touched].flatMap((id) => {
       const object = byId.get(id)
-      return object === undefined || sameJson(original.get(id), object) ? [] : [object]
+      return object === undefined || !left.has(id) || sameJson(original.get(id), object) ? [] : [object]
     }),
-    gone: [],
+    gone: view.objects.flatMap((object) => (left.has(object.id) ? [] : [object.id])),
   }
 }
 
