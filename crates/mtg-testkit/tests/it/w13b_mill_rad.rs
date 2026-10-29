@@ -1,4 +1,4 @@
-//! Goal: the mill and rad leftovers at tables of two to four seats: the rad mill of seat 0 makes Screeching Scorchbeast create a token for each nonland card once a turn, Zellix make one Horror for the player who milled creatures, The Wise Mothman offer as many targets as nonland cards were milled, and Tato Farmer put a land milled this turn (never one put there earlier) onto the battlefield; Mariposa Military Base enters tapped with two rad counters for its controller only when they say so; each game replays to the live state.
+//! Goal: the mill and rad leftovers at tables of two to four seats: the rad mill of seat 0 makes Screeching Scorchbeast create a token for each nonland card once a turn, Zellix make one Horror for the player who milled creatures, The Wise Mothman offer as many targets as nonland cards were milled, and Tato Farmer put a land milled this turn (never one put there earlier) onto the battlefield; Mariposa Military Base enters tapped with two rad counters for its controller only when they say so; an activation whose sacrifice Kalitas turns into a Zombie keeps the id of its ability apart from the token; each game replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -7,7 +7,7 @@ use common::copying::replays;
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::YesNoChoice;
-use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::{Driver, Scenario, ScriptError};
@@ -235,6 +235,60 @@ fn w13b_mariposa_enters_tapped_for_two_rad_counters(
     let mut expected = vec![0; seats];
     expected[0] = if yes { 2 } else { 0 };
     assert_eq!(counters, expected);
+    replays(&driver, &setup);
+    Ok(())
+}
+
+/// An activation whose sacrifice Kalitas turns into an exile and a Zombie: the ability on the stack and the token of
+/// one batch get ids of their own.
+#[rstest]
+fn w13b_a_sacrifice_replaced_by_a_token_leaves_the_activated_ability_its_id(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mine = || {
+        let swamps = (0..2).map(|_| mtg_testkit::ready(mtg_testkit::cards::swamp()));
+        let named = ["Erebos, Bleak-Hearted", "Grizzly Bears"];
+        swamps
+            .chain(named.map(|name| mtg_testkit::ready(mtg_testkit::corpus::card(name).unwrap())))
+            .collect::<Vec<_>>()
+    };
+    let scenario = || {
+        (0..seats).fold(
+            Scenario::new(seats)
+                .at(2, 0, Step::Main1)
+                .battlefield(0, mine())
+                .battlefield_named(seats - 1, ["Kalitas, Traitor of Ghet"]),
+            |scenario, seat| scenario.library_named(seat, std::iter::repeat_n("Grizzly Bears", 10)),
+        )
+    };
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    let bears = driver.id_of("Grizzly Bears")?;
+    driver.begin_activation("Erebos, Bleak-Hearted")?;
+    for _ in 0..20 {
+        match &driver.decision()?.kind {
+            DecisionKind::Priority(_) => break,
+            DecisionKind::ChooseTargets(_) => {
+                let kalitas = driver.target_named("Kalitas, Traitor of Ghet")?;
+                driver.choose_targets(&[kalitas])?;
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(PayChoice::Auto))?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    assert_eq!(
+        driver
+            .state()
+            .object(bears)
+            .map(mtg_engine::object::GameObject::zone),
+        Some(Zone::Exile)
+    );
+    assert_eq!(w13b_tokens(&driver, "Zombie"), 1);
+    assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
     replays(&driver, &setup);
     Ok(())
 }
