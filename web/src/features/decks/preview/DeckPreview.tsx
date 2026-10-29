@@ -51,7 +51,7 @@ function Legality({ legality }: { legality: PreviewLegality }) {
   if (verdict === 'unknown') return null
   return (
     <div data-slot="legality" data-verdict={verdict} className="grid gap-1 text-sm">
-      <p className="flex items-center gap-1.5 font-medium">
+      <p className="flex items-center gap-2 font-medium">
         {verdict === 'legal' ? (
           <CheckIcon aria-hidden="true" className="size-4 text-support-verified" />
         ) : verdict === 'illegal' ? (
@@ -68,7 +68,7 @@ function Legality({ legality }: { legality: PreviewLegality }) {
       {reasons.length === 0 ? null : (
         <ul
           aria-label={`Why the deck is not legal in ${format}`}
-          className="list-disc pl-5 text-xs text-destructive"
+          className="list-disc pl-6 text-xs text-destructive"
         >
           {reasons.map((reason) => (
             <li key={reason} className="[overflow-wrap:anywhere]">
@@ -109,7 +109,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
     <article
       aria-labelledby={titleId}
       data-slot="deck-preview"
-      className={cn('@container grid min-w-0 content-start gap-5', className)}
+      className={cn('@container grid min-w-0 content-start gap-4', className)}
     >
       <header className="flex min-w-0 flex-wrap gap-4">
         {commanders.length === 0 ? null : (
@@ -132,7 +132,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
           </ul>
         )}
         <div className="grid min-w-0 flex-1 basis-44 content-start gap-2">
-          <div className="grid gap-0.5">
+          <div className="grid gap-1">
             <h3 id={titleId} className="text-lg leading-tight font-semibold [overflow-wrap:anywhere]">
               {deck.name}
             </h3>
@@ -184,16 +184,12 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
                 )
               })}
             </div>
-            <ul aria-label="Cards by support" className="flex flex-wrap gap-x-3 gap-y-1.5">
+            <ul aria-label="Cards by support" className="flex flex-wrap gap-x-3 gap-y-2">
               {SUPPORT_SHOWN.map((support) => {
                 const count = stats.support[support]
                 const always = support === 'verified' || support === 'partial' || support === 'manual'
                 return count === 0 && !always ? null : (
-                  <li
-                    key={support}
-                    data-support-count={support}
-                    className="flex items-center gap-1.5 text-sm"
-                  >
+                  <li key={support} data-support-count={support} className="flex items-center gap-2 text-sm">
                     <SupportMark support={support} />
                     <span className="font-medium tabular-nums">{count}</span>
                   </li>
@@ -204,7 +200,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
           </section>
 
           {stats.size === 0 ? null : (
-            <div className="grid gap-5 @md:grid-cols-2" data-slot="deck-stats">
+            <div className="grid gap-4 @md:grid-cols-2" data-slot="deck-stats">
               <ManaCurve curve={stats.curve} />
               <TypeBars types={stats.types} />
             </div>
@@ -226,11 +222,11 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
 /** What stands under the header while the cards load: the support line, the bars and a grid of cards. */
 export function DeckPreviewSkeleton({ className }: { className?: string }) {
   return (
-    <div data-slot="deck-preview-loading" aria-busy="true" className={cn('grid gap-5', className)}>
+    <div data-slot="deck-preview-loading" aria-busy="true" className={cn('grid gap-4', className)}>
       <span className="sr-only">Loading the cards…</span>
       <Skeleton className="h-16" />
       <Skeleton className="h-24" />
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-2.5">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-3">
         {Array.from({ length: 12 }, (_, index) => (
           <Skeleton key={index} className="aspect-[5/7] rounded-lg" />
         ))}

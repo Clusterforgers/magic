@@ -39,7 +39,7 @@ function Pictures({ entry, commanders }: { entry: DeckEntry; commanders: DeckEnt
     )
   }
   return (
-    <span aria-hidden="true" data-slot="deck-pictures" className="flex shrink-0 -space-x-5">
+    <span aria-hidden="true" data-slot="deck-pictures" className="flex shrink-0 -space-x-4">
       {commanders.slice(0, 2).map((card) => (
         <CardPicture
           key={card.oracleId}

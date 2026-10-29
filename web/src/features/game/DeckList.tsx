@@ -62,7 +62,7 @@ function Rows() {
         Loading the decks…
       </p>
       {Array.from({ length: 5 }, (_, index) => (
-        <Skeleton key={index} className="h-[4.5rem] rounded-lg" />
+        <Skeleton key={index} className="h-18 rounded-lg" />
       ))}
     </div>
   )

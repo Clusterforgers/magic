@@ -107,14 +107,14 @@ function Tile({ card, onOpen }: { card: PreviewCard; onOpen: (card: PreviewCard)
 export function CardGroups({ groups }: { groups: readonly CardGroup[] }) {
   const [zoomed, setZoomed] = useState<PreviewCard | null>(null)
   return (
-    <div data-slot="card-groups" className="grid gap-5">
+    <div data-slot="card-groups" className="grid gap-4">
       {groups.map((group) => (
         <section key={group.kind} aria-label={group.label} data-group={group.kind} className="grid gap-2">
           <h4 className="flex items-baseline justify-between gap-2 border-b pb-1 text-sm font-semibold">
             {group.label}
             <span className="font-normal text-muted-foreground tabular-nums">{copiesOf(group.cards)}</span>
           </h4>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-2.5 pt-1.5">
+          <ul className="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-3 pt-2">
             {group.cards.map((card) => (
               <Tile key={card.oracleId} card={card} onOpen={setZoomed} />
             ))}

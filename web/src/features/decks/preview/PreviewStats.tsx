@@ -16,7 +16,7 @@ export function ManaCurve({ curve }: { curve: readonly number[] }) {
             key={curveLabel(bucket)}
             data-bucket={bucket}
             aria-label={`Mana value ${curveLabel(bucket)}: ${count} ${count === 1 ? 'card' : 'cards'}`}
-            className="flex h-full min-w-0 flex-col items-center justify-end gap-0.5"
+            className="flex h-full min-w-0 flex-col items-center justify-end gap-1"
           >
             <span aria-hidden="true" className="text-label text-muted-foreground tabular-nums">
               {count}
@@ -26,7 +26,7 @@ export function ManaCurve({ curve }: { curve: readonly number[] }) {
               className="w-full rounded-t-sm bg-primary"
               style={{ height: `${Math.round((count / peak) * 62)}%`, minHeight: count > 0 ? 2 : 0 }}
             />
-            <span aria-hidden="true" className="w-full border-t pt-0.5 text-center text-label tabular-nums">
+            <span aria-hidden="true" className="w-full border-t pt-1 text-center text-label tabular-nums">
               {curveLabel(bucket)}
             </span>
           </li>

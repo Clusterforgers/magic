@@ -224,7 +224,7 @@ export function DeckChooser({
           {wide ? (
             <div
               data-slot="deck-pane"
-              className="surface min-h-[18rem] min-w-0 overflow-y-auto overscroll-contain p-4"
+              className="surface min-h-72 min-w-0 overflow-y-auto overscroll-contain p-4"
             >
               {pane(false)}
             </div>
