@@ -190,6 +190,7 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     what = `Radiation makes ${seats(rule.RadiationGainsLife)} gain life rather than lose life`
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
+  else if ('VoteAgain' in rule) what = `${seats(rule.VoteAgain)} may vote an additional time`
   else if ('RevealTop' in rule)
     what = `${seats(rule.RevealTop)} play with the top card of their library revealed`
   else if ('MayCast' in rule) {

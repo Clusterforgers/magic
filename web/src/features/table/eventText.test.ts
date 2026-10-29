@@ -824,6 +824,10 @@ describe('events with more than one shape', () => {
       "Ana, Bo and Cy can't search libraries while Jace Beleren stays",
     ],
     [
+      ruleEffect({ VoteAgain: [0] }, 'WhileSourceOnBattlefield', { id: 6, counter: 0 }),
+      'Ana may vote an additional time while Jace Beleren stays',
+    ],
+    [
       ruleEffect({ RevealTop: [2] }, 'UntilEndOfTurn'),
       'Cy play with the top card of their library revealed until end of turn',
     ],

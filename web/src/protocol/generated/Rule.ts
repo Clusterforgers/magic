@@ -33,7 +33,7 @@ who: Array<PlayerId>,
 /**
  * The keyword they have.
  */
-keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
+keyword: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
 /**
  * The players who may cast.
  */
