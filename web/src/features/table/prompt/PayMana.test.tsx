@@ -269,7 +269,7 @@ const PAYMENTS: [string, string, string, Sources, string[], Payment][] = [
     '',
     [
       [0, 'GU'],
-      [1, 'G'],
+      [1, 'U'],
     ],
     ['0/U', '1'],
     payment(
@@ -286,7 +286,7 @@ const PAYMENTS: [string, string, string, Sources, string[], Payment][] = [
     '',
     [
       [0, 'GU'],
-      [1, 'R'],
+      [1, 'G'],
     ],
     ['0/G', '1'],
     payment(
@@ -631,7 +631,7 @@ describe('a land with several kinds of mana', () => {
   })
 
   it('does not ask when two abilities make the same mana, and adds the first', async () => {
-    const { land, user, chips } = renderPay(payOptions('{2}', [[0, 'RR']]))
+    const { land, user, chips } = renderPay(payOptions('{2}', [[0, 'RR'], [1, 'R']]))
     await user.click(land(0))
     expect(screen.queryByRole('group', { name: `Mana from ${nameOf(0)}` })).toBeNull()
     expect(chips()).toEqual([`Remove red from ${nameOf(0)}`])
