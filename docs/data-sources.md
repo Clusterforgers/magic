@@ -19,7 +19,7 @@ cargo run -p mtg-cli -- fetch scryfall --printings   # and Default Cards, every 
 cargo run -p mtg-cli -- fetch decks      # the 198 Commander precons, about 100 MiB
 cargo run -p mtg-cli -- ingest           # applies the migrations, then loads the cache
 cargo run -p mtg-cli -- status           # cache, row counts, latest import runs
-cargo run -p mtg-cli -- coverage         # compiler and engine coverage of the precons, ranked blockers (--deck, --top)
+cargo run -p mtg-cli -- coverage         # compiler and engine coverage of the precons, ranked blockers (--deck, --top, --all, --out)
 cargo run -p mtg-cli -- compile          # stores the rules the compiler reads as card_rules rows (--all, --card <name>)
 ```
 
@@ -40,6 +40,11 @@ cargo run -p mtg-cli -- compile          # stores the rules the compiler reads a
   - A row has the oracle id, the rules as JSON, the status (`full` or `partial`), the fingerprint of the printed data the compiler read and the version of the compiler. A card whose row has the same fingerprint and version is left as it is; any other is compiled again and its row replaced. A card the compiler reads nothing of, or whose rules fail a check, has no row (a row it had is removed, and the card is listed as invalid with the first two problems); a card a hand-written file covers has none either, and the file is checked as a file of its own against the stored card, so an erratum names the card.
   - Rows of cards that are no longer stored as deck cards are removed whatever the selection; with a selection no other row is touched. Rows are written in batches of 500 and a rerun finishes what a failed run left.
   - The summary lists the rows written, replaced, unchanged and removed, the rules held for the cards looked at by state, and the cards left out (hand-written with the count of files that fail the stored card, nothing to read, compiled rules invalid; each invalid card is listed with the first two problems). `status` shows how many rows are stored.
+
+- **`coverage`** judges the cards of the stored precons (`--deck <code or name part>` picks some) and ranks the blockers that hold cards back (`--top <n>` rows per ranking, 20 by default); `docs/cards-dsl.md` has the blockers.
+  - `--all` takes every stored card whose `commander` legality is `legal` or `restricted` instead of the precons. It prints the cards by state, the share of verified cards among the 100, 500, 1,000, 2,000 and 5,000 most played cards of the pool, all ranked cards and the cards without a rank, and three rankings of blockers: by the cards each holds back alone, by the cards it holds back in all, and by the popularity weight of those cards.
+  - The popularity is the Scryfall `edhrec_rank` (1 is the most played), read at run time from the cached Oracle Cards file by oracle id; the database does not store it. A card weighs `1 / (rank + 100)`, a card without a rank weighs as the last rank of the file, and a blocker's weight is the sum over the cards it holds back, shown as its share of the pool's total weight with the lowest rank among those cards (`best`).
+  - `--out <file>` writes the cards that are not verified among the first 2,000 of the pool by rank, one `rank<TAB>state<TAB>name<TAB>first blocker` line each in rank order, for the sweep agents. The first blocker is the first of the card's blockers in report order: unread clauses, engine primitives, printed gaps, rules.
 
 Real-data tests are ignored by default; they need downloaded files:
 

@@ -87,6 +87,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Exert: the choice in the attack declaration, `Exerted` and `ExertEnded`, the untap step of the exerting player it skips and its "When you do" and "Whenever you exert a creature" triggers.
 - Mill and rad counters: mill triggers per card, per batch and per player, target bounds from a mill batch, cards milled this turn, the radiation rule, entering tapped for rad counters, costs reduced per rad counter and losing all rad counters.
 - Statics of the rules: cards in graveyards that can't be targeted, players who can't lose or win, opponents who can't cast on your turn, combat damage by toughness and counters that remain as a card changes zones.
+- Popularity coverage: `mtg-cli coverage --all` ranks the blockers of every Commander-legal card by the EDHREC rank of the cards they hold back, shows the Verified share by rank bucket and lists the cards of the top 2,000 that are not Verified (`docs/data-sources.md`).
 
 ## M3 Card system
 
@@ -143,7 +144,6 @@ The server is settled first, then the web is built once against the final types.
 ### Target
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,450 of 6,429 precon cards, 69.2%; 83.5% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
-- [~] (t14a) (w22a-coverage-all) `mtg-cli coverage --all` ranks the blockers over every Commander-legal card, each weighted by its popularity rank (the Scryfall EDHREC rank), so a clause that serves several cards outside the precons is read first; the top 2,000 cards by rank are the first target (618 are not Verified)
 - [ ] (t14b) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often
 
 ### Mana and costs
