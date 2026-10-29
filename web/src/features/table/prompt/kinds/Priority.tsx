@@ -4,7 +4,8 @@ import { usePlay } from '@/features/game/gameContext'
 import type { ManaOption, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { ManaChoice } from '../ManaChoice'
-import { markCards, useCardMarks } from '../marks'
+import { handNotes } from '../../handReason'
+import { markCards, NO_NOTES, useCardMarks, useCardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { PassControls } from '../PassControls'
 import { PromptLayout } from '../PromptLayout'
@@ -55,6 +56,13 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
     else selection.set([id])
   }
   useCardMarks(marks, act)
+  const view = usePlay((state) => state.view)
+  const objectsById = usePlay((state) => state.objectsById)
+  const notes = useMemo(
+    () => (view === null ? NO_NOTES : handNotes(view, objectsById, options)),
+    [view, objectsById, options],
+  )
+  useCardNotes(notes)
 
   const pick = (option: ManaOption): void => {
     answer({ Priority: { ActivateMana: option.source } })

@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GameTable } from '@/features/table/GameTable'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
-import { DEV_FX } from '../devSearch'
+import { DEV_FX, DEV_PLAYS } from '../devSearch'
 import type { DevFx } from '../devSearch'
 import { FX_MS } from '../fx/model'
 import { DevFxControls, FIRST_MOVE_MS } from './DevFxControls'
@@ -53,6 +53,8 @@ describe('the buttons', () => {
     const before = seq()
     press(kind)
     expect(seq()).toBeGreaterThan(before)
+    // The moments of play fly on the travel layer (ui1b); the rest decorate the cards.
+    if (DEV_PLAYS.some((play) => play === kind)) return
     expect(decorated(container) + container.querySelectorAll('li[data-ghost]').length).toBeGreaterThan(0)
   })
 

@@ -167,7 +167,12 @@ describe('what is marked', () => {
   it('says in each name whether a card is available', () => {
     const { card } = renderPriority(options({ playable_lands: [play1] }))
     expect(card(play1)).toHaveAccessibleName(/, available$/)
-    expect(card(spell1)).toHaveAccessibleName(/, not available$/)
+    // A hand card that is not offered says why, in its name and in the hint its foot shows on hover and focus.
+    expect(card(spell1)).toHaveAccessibleName(/, not available, (sorcery speed|needs mana|not now)$/)
+    expect(card(spell1).querySelector('[data-slot="card-hint"]')?.textContent).toMatch(
+      /^(Sorcery speed|Needs mana|Not now)$/,
+    )
+    expect(card(play1).querySelector('[data-slot="card-hint"]')).toBeNull()
     expect(card(play1)).not.toHaveAttribute('aria-pressed')
   })
 })

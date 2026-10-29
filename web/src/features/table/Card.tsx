@@ -107,9 +107,13 @@ export const Card = memo(function Card({
       {...manual}
       className={cn(
         // The box is the same tapped or not (the face lies down inside it), so a row counts one box per card.
-        'relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
+        'group/card relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
         fit ? null : SIZE[size].vars,
         highlight === undefined ? null : HIGHLIGHT[highlight],
+        // A card that says why it is dimmed is read whole while it says so.
+        note?.hint === undefined
+          ? null
+          : 'hover:opacity-100 hover:saturate-100 focus-visible:opacity-100 focus-visible:saturate-100',
       )}
     >
       <CardFace object={object} role={role} size={size} fit={fit} cost={cost} note={note} links={links} />
@@ -120,6 +124,15 @@ export const Card = memo(function Card({
         entry.kind === 'damaged' ? <FxFloat key={entry.token} kind="damaged" amount={entry.amount} /> : null,
       )}
       <ManaStrip id={id} />
+      {note?.hint === undefined ? null : (
+        <span
+          aria-hidden="true"
+          data-slot="card-hint"
+          className="pointer-events-none absolute inset-x-0.5 bottom-0.5 z-10 hidden truncate rounded-sm bg-background/95 px-1 text-center text-xs leading-5 font-semibold text-foreground shadow-sm ring-1 ring-foreground/20 group-hover/card:block group-focus-visible/card:block"
+        >
+          {note.hint}
+        </span>
+      )}
     </button>
   )
 })

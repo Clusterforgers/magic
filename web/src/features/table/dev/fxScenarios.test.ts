@@ -1,14 +1,16 @@
-// Goal: every dev move (attack, block, damage, death, life, enter) builds a batch that follows on from the table, folds into a consistent table and derives the effects its name promises at any table size, and can be played again and again, each time on other creatures, without ever breaking the table or running out.
+// Goal: every dev move (attack, block, damage, death, life, enter, and the moments of play: cast, activate, resolve, counter, land, draw) builds a batch that follows on from the table, folds into a consistent table and derives the effects or moves its name promises at any table size, and can be played again and again, each time on other cards, without ever breaking the table or running out.
 import { describe, expect, it } from 'vitest'
 import { createPlayStore } from '@/play/store'
 import type { PlayStore } from '@/play/store'
 import type { StateView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
-import { DEV_FX } from '../devSearch'
+import { DEV_FX, DEV_PLAYS } from '../devSearch'
 import type { DevFx } from '../devSearch'
 import { deriveEffects } from '../fx/derive'
 import { batchBetween } from '../fx/batch'
 import type { Effect } from '../fx/model'
+import { anchorOf, deriveMoves } from '../fx/moves'
+import type { Moves } from '../fx/moves'
 import { applyBatchToStore } from './applyBatch'
 import { fixtureState } from './devGame'
 import { buildFixture } from './fixture'
@@ -28,7 +30,31 @@ function effectsOf(store: PlayStore, kind: DevFx): Effect[] {
   return deriveEffects(step.before, step.after, step.events)
 }
 
+/** Plays `kind` and returns the moves and marks the travel layer would play for it. */
+function movesOf(store: PlayStore, kind: DevFx): Moves {
+  const before = store.getState()
+  expect(playDevFx(store, kind), `${kind} did nothing`).toBe(true)
+  const step = must(batchBetween(before, store.getState()), 'a batch the effects layer sees')
+  return deriveMoves(step.before, step.after, step.events)
+}
+
+/** Plays `kind` and returns a key for everything it shows: its effects, else its moves and marks. */
+function shownBy(store: PlayStore, kind: DevFx): string[] {
+  if (!DEV_PLAYS.some((play) => play === kind))
+    return effectsOf(store, kind).map((effect) => ('object' in effect ? `${effect.object}` : effect.kind))
+  const { moves, marks } = movesOf(store, kind)
+  return [
+    ...moves.map((move) => `${move.kind} ${move.object}`),
+    ...marks.map((mark) => `${mark.kind} ${mark.object}`),
+  ]
+}
+
 const kinds = (effects: Effect[]): string[] => effects.map((effect) => effect.kind)
+
+const shape = ({ moves }: Moves): string[] =>
+  moves.map(
+    (move) => `${move.kind} ${anchorOf(move.from)} > ${anchorOf(move.to)}${move.spotlight ? ' *' : ''}`,
+  )
 
 /** What every table must keep true however it came about. */
 function expectConsistent(view: StateView): void {
@@ -59,7 +85,8 @@ describe('each move', () => {
     expect(batch.from_seq).toBe(state.seq)
     expect(batch.events.length).toBeGreaterThan(0)
     expect(batch.gone).toEqual([])
-    expect(batch.events.every((event) => 'Public' in event)).toBe(true)
+    // Only the opponent's draw is hidden from the viewer.
+    expect(batch.events.filter((event) => 'Hidden' in event)).toHaveLength(kind === 'draw' ? 1 : 0)
     // It lists only objects that exist and that it changed.
     const ids = new Set(must(state.view).objects.map((object) => object.id))
     for (const object of batch.objects) {
@@ -135,27 +162,56 @@ describe('what each move shows', () => {
   })
 })
 
+describe('what each moment of play shows', () => {
+  it.each<[DevFx, string[], string[]]>([
+    ['cast', ['cast 0:hand > stack'], ['targeted']],
+    ['activate', ['activated 0:battlefield > stack'], ['activated', 'targeted']],
+    ['resolve', ['resolved stack > 0:graveyard'], ['resolved']],
+    [
+      'counter',
+      ['cast 0:hand > stack *', 'countered stack > 0:graveyard', 'resolved stack > 0:graveyard'],
+      ['targeted', 'countered', 'resolved'],
+    ],
+    ['land', ['landed 0:hand > 0:battlefield'], []],
+    ['draw', ['drawn 0:library > 0:hand', 'drawn 1:library > 1:hand'], ['drawn']],
+  ])('%s', (kind, moves, marks) => {
+    const shown = movesOf(table(), kind)
+    expect(shape(shown)).toEqual(moves)
+    expect(shown.marks.map((mark) => mark.kind)).toEqual(marks)
+  })
+
+  it('resolve on an empty stack has the opponent cast a creature that passes through it onto the battlefield', () => {
+    const store = table()
+    for (let n = 0; n < 3; n += 1) movesOf(store, 'resolve')
+    expect(must(store.getState().view).stack.count).toBe(0)
+    expect(shape(movesOf(store, 'resolve'))).toEqual([
+      'cast 1:hand > stack *',
+      'resolved stack > 1:battlefield',
+    ])
+  })
+})
+
 describe('played again and again', () => {
-  it.each(DEV_FX)('%s works ten times in a row on other creatures and keeps the table consistent', (kind) => {
+  it.each(DEV_FX)('%s works ten times in a row on other cards and keeps the table consistent', (kind) => {
     const store = table()
     let previous = ''
     for (let n = 0; n < 10; n += 1) {
-      const effects = effectsOf(store, kind)
-      expect(effects.length, `press ${n + 1}`).toBeGreaterThan(0)
-      expectConsistent(must(store.getState().view))
-      // Damage that is only a mark: whoever takes it lives.
       if (kind === 'damage') {
-        for (const effect of effects) {
+        // Damage that is only a mark: whoever takes it lives.
+        for (const effect of effectsOf(store, kind)) {
           if (effect.kind !== 'damaged' || !('object' in effect)) continue
           const hurt = must(store.getState().objectsById[effect.object])
           expect(must(hurt.permanent).damage, `object ${effect.object}`).toBeLessThan(must(hurt.toughness))
         }
+        expectConsistent(must(store.getState().view))
+        continue
       }
-      // A move that picks creatures never picks the same ones for the same job twice running, so every press shows.
-      if (kind === 'attack' || kind === 'enter' || kind === 'death') {
-        const key = JSON.stringify(
-          effects.map((effect) => ('object' in effect ? effect.object : effect.kind)),
-        )
+      const shown = shownBy(store, kind)
+      expect(shown.length, `press ${n + 1}`).toBeGreaterThan(0)
+      expectConsistent(must(store.getState().view))
+      // A move that picks cards never picks the same ones for the same job twice running, so every press shows.
+      if (kind !== 'block' && kind !== 'life' && kind !== 'draw') {
+        const key = JSON.stringify(shown)
         expect(key, `press ${n + 1}`).not.toBe(previous)
         previous = key
       }
@@ -186,7 +242,7 @@ describe('at other table sizes', () => {
   it.each([2, 3, 4, 6, 12])('every move works at %i seats', (seats) => {
     const store = table(seats)
     for (const kind of DEV_FX) {
-      expect(effectsOf(store, kind).length, `${kind} at ${seats} seats`).toBeGreaterThan(0)
+      expect(shownBy(store, kind).length, `${kind} at ${seats} seats`).toBeGreaterThan(0)
       expectConsistent(must(store.getState().view))
     }
   })
