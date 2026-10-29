@@ -48,6 +48,8 @@ fn args(deck: Option<&str>) -> CoverageArgs {
     CoverageArgs {
         deck: deck.map(str::to_owned),
         top: 20,
+        all: false,
+        out: None,
     }
 }
 

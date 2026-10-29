@@ -12,6 +12,7 @@ pub mod cache;
 pub mod check_rules;
 pub mod compile;
 pub mod coverage;
+pub mod coverage_all;
 pub mod error;
 pub mod fetch;
 pub mod files;
@@ -19,6 +20,7 @@ pub mod forge;
 pub mod http;
 pub mod ingest;
 pub mod pacer;
+pub mod popularity;
 pub mod progress;
 pub mod propose;
 pub mod status;
@@ -121,7 +123,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         }
         Command::Coverage(args) => {
             let db = connect(cli.database_url).await?;
-            coverage::coverage(&db, &args).await
+            coverage::report(&db, &cache, &args).await
         }
         Command::Promote(args) => {
             let db = connect(cli.database_url).await?;
