@@ -129,7 +129,12 @@ export const ChooseNumberPrompt: PromptComponent<'ChooseNumber'> = ({ options })
             <ManaPips pips={costPips(total)} sizeClass={SIZE.compact.pip} label="Total cost" />
           </span>
         )}
-        <Button type="submit" className="h-10 px-4" data-slot="number-confirm" disabled={problem !== undefined}>
+        <Button
+          type="submit"
+          className="h-10 px-4"
+          data-slot="number-confirm"
+          disabled={problem !== undefined}
+        >
           {problem === undefined ? `Choose ${value}` : 'Choose'}
         </Button>
         {options.can_cancel === true ? (

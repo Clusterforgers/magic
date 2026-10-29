@@ -262,7 +262,14 @@ export function covers(cost: ManaCost, spends: readonly Spend[], life: LifeSymbo
   if (!exact(cost, spends, life)) return false
   // With a source that costs mana the engine also refuses a part that could be left out (`mana_cost::spent`).
   if (!spends.some((spend) => spend.kind === 'tap' && costsMana(spend.option))) return true
-  return spends.every((_, at) => !exact(cost, spends.filter((__, other) => other !== at), life))
+  return spends.every(
+    (_, at) =>
+      !exact(
+        cost,
+        spends.filter((__, other) => other !== at),
+        life,
+      ),
+  )
 }
 
 /** True when some way of reading the payment meets the cost with nothing owed and nothing over. */
@@ -291,7 +298,9 @@ function lifeSupersets(cost: ManaCost, life: LifeSymbols, maxLife: number): Life
   const open = cost.flatMap((symbol, index) => (canPayLife(symbol) && !life.includes(index) ? [index] : []))
   let found: LifeSymbols[] = [life]
   for (const index of open) found = [...found, ...found.map((set) => [...set, index])]
-  return found.filter((set) => lifeOf(set) <= Math.max(maxLife, lifeOf(life))).sort((a, b) => a.length - b.length)
+  return found
+    .filter((set) => lifeOf(set) <= Math.max(maxLife, lifeOf(life)))
+    .sort((a, b) => a.length - b.length)
 }
 
 /**

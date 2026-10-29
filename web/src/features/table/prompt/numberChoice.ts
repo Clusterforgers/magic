@@ -11,9 +11,7 @@ export function topOf(options: NumberOptions): number {
 
 /** True when `n` may be answered: a whole number from `min` to `max` that `except` does not name. */
 export function isAllowed(options: NumberOptions, n: number): boolean {
-  return (
-    Number.isInteger(n) && n >= options.min && n <= topOf(options) && !(options.except ?? []).includes(n)
-  )
+  return Number.isInteger(n) && n >= options.min && n <= topOf(options) && !(options.except ?? []).includes(n)
 }
 
 /** The allowed number nearest to `from` in the direction `by` (+1 or -1), or `from` when there is none that way. */

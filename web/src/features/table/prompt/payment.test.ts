@@ -520,7 +520,7 @@ const sourcesOf = (names: readonly SourceName[]): ManaOption[] =>
   names.map((name, at) => SOURCES[name](at + 1))
 const tapsOf = (names: readonly SourceName[]): Spend[] =>
   sourcesOf(names).map((option) => ({ kind: 'tap', option }))
-const only = <T,>(value: T | undefined): T => {
+const only = <T>(value: T | undefined): T => {
   if (value === undefined) throw new Error('a test names a source it does not list')
   return value
 }

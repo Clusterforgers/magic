@@ -78,7 +78,11 @@ describe('clockKind', () => {
     ['a choice of two cards', cards(2, 3), 'ChooseCards'],
     ['a choice of up to some cards, which the server answers with none', cards(0, 2), 'ChooseCardsNone'],
     ['a number', { ChooseNumber: { source: 1, min: 0, max: 3 } }, 'ChooseNumber'],
-    ['a number that can be backed out of', { ChooseNumber: { source: 1, min: 0, max: 3, can_cancel: true } }, 'ChooseNumberCancel'],
+    [
+      'a number that can be backed out of',
+      { ChooseNumber: { source: 1, min: 0, max: 3, can_cancel: true } },
+      'ChooseNumberCancel',
+    ],
     ['an order of cards', KINDS.OrderCards, 'OrderCards'],
   ])('tells %s as %s', (_what, kind, expected) => {
     expect(clockKind(kind)).toBe(expected)

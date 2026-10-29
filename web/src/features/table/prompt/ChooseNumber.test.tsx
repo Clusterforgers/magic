@@ -13,8 +13,10 @@ const X = 'Choose a value for X.'
 function mount(given: Partial<NumberOptions> = {}) {
   const options: NumberOptions = { source, min: 0, max: 5, text: X, ...given }
   const table = renderDecision({ ChooseNumber: options })
-  const field = (): HTMLInputElement => screen.getByRole('spinbutton', { name: options.text || 'Number' }) as HTMLInputElement
-  const confirm = (): HTMLElement => must(table.container.querySelector<HTMLElement>('[data-slot="number-confirm"]'))
+  const field = (): HTMLInputElement =>
+    screen.getByRole('spinbutton', { name: options.text || 'Number' }) as HTMLInputElement
+  const confirm = (): HTMLElement =>
+    must(table.container.querySelector<HTMLElement>('[data-slot="number-confirm"]'))
   return { ...table, options, field, confirm }
 }
 
