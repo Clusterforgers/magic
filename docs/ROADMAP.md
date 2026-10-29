@@ -72,7 +72,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Faces and copies: multi-face cards, transform, fuse, daybound, Sagas, Classes, flip cards, copiable values, token, spell and ability copies, copy groups and prepare cards.
 - Face-down objects: morph, megamorph, disguise, manifest and cloak with their compiler wordings and views.
 - Commander: house rules, the format rules, the deck check, Partner, the companion in the engine and at the table, and both modes for a commander's controller.
-- Zone moves: moves by a choice, linked exiles, exact and X targets, random picks from a graveyard, reveal until a match and mass moves.
+- Zone moves: moves by a choice, linked exiles, exact and X targets, random picks from a graveyard, reveal until a match, takes from among the top cards and mass moves.
 - Tokens: kinds, named and legendary tokens, sized tokens, quoted abilities on tokens and results bound to the tokens made.
 - Chance and choices: dice tables, coin flips, votes, piles, repeat for each player or object, planechase votes and modes at random, once each turn, once ever, repeated or one or more.
 - Fights and targets: fights of two targets, ability counters, second targets kept apart, targets for each opponent and the chosen player.
