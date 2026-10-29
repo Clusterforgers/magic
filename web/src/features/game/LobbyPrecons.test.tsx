@@ -98,8 +98,10 @@ async function openPrecons({
   return h
 }
 
-const names = (): string[] =>
-  screen.getAllByRole('option').map((item) => item.querySelector('span span')?.textContent ?? '')
+// The rows of the list: the support filter's own options are options too.
+const deckRows = (): HTMLElement[] =>
+  screen.queryAllByRole('option').filter((row) => row.hasAttribute('data-deck-option'))
+const names = (): string[] => deckRows().map((item) => item.querySelector('span span')?.textContent ?? '')
 
 // Choose the way a player does: select the row, then press Use this deck.
 async function use(h: Awaited<ReturnType<typeof openPrecons>>, name: RegExp): Promise<void> {
@@ -136,7 +138,7 @@ describe('the precons on offer', () => {
     expect(names()[0]).toMatch(/^Merciless Rage/)
     await h.user.clear(search)
     await h.user.type(search, 'nothing like this')
-    expect(screen.queryByRole('option')).toBeNull()
+    expect(deckRows()).toHaveLength(0)
     expect(document.querySelector('[data-slot="deck-count"]')).toHaveTextContent('No deck matches.')
   })
 

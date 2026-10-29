@@ -65,6 +65,9 @@ async function open({
   return { choose, user: userEvent.setup() }
 }
 
+// The rows of the list: the support filter's own options are options too.
+const deckRows = (): HTMLElement[] =>
+  screen.queryAllByRole('option').filter((row) => row.hasAttribute('data-deck-option'))
 const option = (name: string | RegExp): HTMLElement => screen.getByRole('option', { name })
 const pane = (): HTMLElement => screen.getByText((_, node) => node?.getAttribute('data-slot') === 'deck-pane')
 
@@ -113,9 +116,7 @@ describe('search and filters', () => {
     const { user } = await open({ format: 'normal' })
     await screen.findByRole('option', { name: /^Burn/ })
     await user.type(screen.getByRole('searchbox'), query)
-    expect(screen.queryAllByRole('option').map((row) => row.getAttribute('data-deck-option'))).toHaveLength(
-      names.length,
-    )
+    expect(deckRows().map((row) => row.getAttribute('data-deck-option'))).toHaveLength(names.length)
     for (const name of names)
       expect(screen.getByRole('option', { name: new RegExp(name) })).toBeInTheDocument()
     if (names.length === 0) expect(screen.getByText('No deck matches.')).toBeInTheDocument()
@@ -130,7 +131,7 @@ describe('search and filters', () => {
     const { user } = await open({ format: 'normal' })
     await screen.findByRole('option', { name: /^Burn/ })
     await user.selectOptions(screen.getByRole('combobox', { name: 'Support' }), label)
-    expect(screen.getAllByRole('option').map((row) => row.textContent ?? '')).toHaveLength(names.length)
+    expect(deckRows().map((row) => row.textContent ?? '')).toHaveLength(names.length)
     for (const name of names)
       expect(screen.getByRole('option', { name: new RegExp(`^${name}`) })).toBeInTheDocument()
   })
@@ -139,13 +140,13 @@ describe('search and filters', () => {
     width(true)
     const { user } = await open({ switches: { decks: 'many' } })
     await screen.findByRole('option', { name: /Atraxa Superfriends/ })
-    const all = screen.getAllByRole('option').length
+    const all = deckRows().length
     await user.click(screen.getByRole('button', { name: 'Red' }))
-    const red = screen.getAllByRole('option').length
+    const red = deckRows().length
     expect(red).toBeLessThan(all)
     expect(red).toBeGreaterThan(0)
     await user.click(screen.getByRole('button', { name: /Clear filters/ }))
-    expect(screen.getAllByRole('option')).toHaveLength(all)
+    expect(deckRows()).toHaveLength(all)
   })
 })
 
@@ -230,7 +231,9 @@ describe('states', () => {
   it('shows skeleton rows while the list loads', async () => {
     width(true)
     await open({ switches: { list: 'loading' } })
-    expect(await screen.findByRole('status', { name: '' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(document.querySelector('[data-slot="decks-loading"]')).toHaveAttribute('aria-busy', 'true'),
+    )
     expect(document.querySelector('[data-slot="decks-loading"]')).not.toBeNull()
   })
 
