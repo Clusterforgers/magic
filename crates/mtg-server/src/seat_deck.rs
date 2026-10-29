@@ -13,6 +13,7 @@ use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_protocol::SeatDeck;
 
+use crate::cards::with_printings;
 use crate::deck_choice::format_issues;
 use crate::demo::{self, DemoDeck};
 use crate::recipe::{DeckFingerprint, DeckRef, FingerprintError, FormatKind, GameRecipe};
@@ -108,10 +109,42 @@ impl ChosenDeck {
                 cards: oracle_ids,
                 commanders: commander_ids,
                 companion: None,
+                printings: Vec::new(),
             },
             note,
             own_issues: Arc::from([]),
         })
+    }
+
+    /// The deck with the printing each deck line chose: one entry for every card of the library, then of the
+    /// commanders, then the companion, `None` for a card whose line named none. The cards carry it in their identity
+    /// and the recipe keeps it for a resumed game; the fingerprint is the same. A built-in deck has no printings and
+    /// stays as it is.
+    #[must_use]
+    pub fn with_printings(mut self, printings: Vec<Option<String>>) -> ChosenDeck {
+        let DeckRef::Oracle {
+            printings: kept, ..
+        } = &mut self.deck
+        else {
+            return self;
+        };
+        if printings.iter().all(Option::is_none) {
+            return self;
+        }
+        let (library, leaders) = (self.cards.len(), self.commanders.len());
+        let all: Vec<Arc<CardDefinition>> = self
+            .cards
+            .iter()
+            .chain(self.commanders.iter())
+            .chain(self.companion.iter())
+            .cloned()
+            .collect();
+        let mut printed = with_printings(&all, &printings);
+        self.companion = printed.split_off(library + leaders).pop();
+        self.commanders = printed.split_off(library).into();
+        self.cards = printed.into();
+        *kept = printings;
+        self
     }
 
     /// The deck with `card` (its oracle id is `oracle_id`) as the seat's companion (CR 702.139): the
@@ -494,5 +527,90 @@ mod tests {
         );
         assert!(!decks.has(1) && !decks.has(2));
         assert!(!decks.changed());
+    }
+}
+
+#[cfg(test)]
+mod printing_tests {
+    //! Goal: a chosen deck takes the printing of each deck line for the cards of its library, its commanders and its companion, keeps them in its recipe, keeps its fingerprint, and ignores a list that names none and a built-in deck.
+    #![allow(clippy::unwrap_used, clippy::expect_used)]
+
+    use mtg_cards::vanilla;
+    use mtg_core::color::Color;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::cards::identified;
+
+    fn card(name: &str, id: &str) -> Arc<CardDefinition> {
+        let bare = vanilla::creature(name, 1, &[Color::Green], 2, 2);
+        Arc::new(identified((*bare).clone(), id))
+    }
+
+    fn deck() -> ChosenDeck {
+        let note = SeatDeck {
+            name: "Greens".to_owned(),
+            format: "commander".to_owned(),
+            manual_cards: 0,
+        };
+        let bear = card("Bear", "bear");
+        let library = vec![bear.clone(), bear, card("Elk", "elk")];
+        ChosenDeck::led(
+            vec!["bear".into(), "bear".into(), "elk".into()],
+            library,
+            vec!["chief".into()],
+            vec![card("Chief", "chief")],
+            note,
+        )
+        .unwrap()
+        .with_companion("pal".into(), card("Pal", "pal"))
+        .unwrap()
+    }
+
+    fn printing(card: &CardDefinition) -> Option<&str> {
+        card.identity.as_ref()?.printing_id.as_deref()
+    }
+
+    #[rstest]
+    #[case::each_position(vec![Some("a"), Some("b"), None, Some("c"), Some("d")])]
+    #[case::copies_in_one_printing(vec![Some("a"), Some("a"), Some("e"), None, None])]
+    #[case::only_the_companion(vec![None, None, None, None, Some("d")])]
+    fn a_position_takes_the_printing_of_its_line(#[case] printings: Vec<Option<&str>>) {
+        let printings: Vec<Option<String>> = printings
+            .into_iter()
+            .map(|p| p.map(str::to_owned))
+            .collect();
+        let plain = deck();
+        let printed = deck().with_printings(printings.clone());
+        let seen: Vec<Option<&str>> = printed
+            .cards()
+            .iter()
+            .chain(printed.commanders())
+            .chain(printed.companion())
+            .map(|card| printing(card))
+            .collect();
+        let wanted: Vec<Option<&str>> = printings.iter().map(Option::as_deref).collect();
+        assert_eq!(seen, wanted);
+        assert_eq!(printed.fingerprint(), plain.fingerprint());
+        assert_eq!(printed.cards().len(), 3);
+        assert_eq!(printed.commanders().len(), 1);
+        // The recipe of a lobby with the deck names the printings.
+        let decks = SeatDecks::new(FormatKind::Commander, 1, vec![Some(printed)]);
+        let recipe = decks.recipe().unwrap();
+        assert!(
+            matches!(&recipe.decks[0], DeckRef::Oracle { printings: kept, .. } if kept == &printings)
+        );
+    }
+
+    #[test]
+    fn a_list_that_names_nothing_and_a_built_in_deck_stay_as_they_are() {
+        let plain = deck();
+        let same = deck().with_printings(vec![None; 5]);
+        assert_eq!(same.reference(), plain.reference());
+        assert!(same.cards().iter().all(|card| printing(card).is_none()));
+        let demo = ChosenDeck::demo(demo::find("mono-green").unwrap()).unwrap();
+        let named = demo.clone().with_printings(vec![Some("x".to_owned()); 60]);
+        assert_eq!(named.reference(), demo.reference());
+        assert!(named.cards().iter().all(|card| card.identity.is_none()));
     }
 }

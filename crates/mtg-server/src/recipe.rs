@@ -31,6 +31,7 @@ use thiserror::Error;
 pub use fingerprint::{DeckFingerprint, FINGERPRINT_VERSION, FingerprintError};
 
 use crate::api::MAX_SEATS;
+use crate::cards::with_printings;
 use crate::demo;
 
 /// The format a game follows.
@@ -100,16 +101,23 @@ pub enum DeckRef {
         /// companion reads.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         companion: Option<String>,
+        /// The printing each deck line chose, one entry for every card of `cards`, then of `commanders`, then the
+        /// companion, `None` for a card whose line named none; it only labels the card for the table's art
+        /// (`ObjectView.identity`) and changes nothing the game does. Left out of the stored form when no card has
+        /// one, which is also how a recipe stored before printings reads; a short list leaves the rest without.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        printings: Vec<Option<String>>,
     },
 }
 
 impl DeckRef {
-    /// A deck of oracle ids without commanders or a companion.
+    /// A deck of oracle ids without commanders, a companion or printings.
     pub fn oracle(cards: Vec<String>) -> DeckRef {
         DeckRef::Oracle {
             cards,
             commanders: Vec::new(),
             companion: None,
+            printings: Vec::new(),
         }
     }
 }
@@ -122,6 +130,7 @@ impl fmt::Display for DeckRef {
                 cards,
                 commanders,
                 companion,
+                ..
             } => {
                 write!(f, "deck of {} cards", cards.len())?;
                 if !commanders.is_empty() {
@@ -331,6 +340,7 @@ impl GameRecipe {
                     cards,
                     commanders,
                     companion,
+                    ..
                 } => Some(cards.iter().chain(commanders).chain(companion)),
                 DeckRef::Demo { .. } => None,
             })
@@ -403,6 +413,7 @@ impl GameRecipe {
                     cards,
                     commanders,
                     companion,
+                    printings,
                 } => {
                     let ids: Vec<String> = cards
                         .iter()
@@ -410,9 +421,10 @@ impl GameRecipe {
                         .chain(companion)
                         .cloned()
                         .collect();
-                    let mut library = catalog
+                    let library = catalog
                         .deck(&ids)
                         .map_err(|ids| RecipeError::UnknownCards { seat, ids })?;
+                    let mut library = with_printings(&library, printings);
                     let mut rest = library.split_off(cards.len());
                     let companion = if companion.is_some() {
                         rest.pop()
@@ -1032,6 +1044,7 @@ mod tests {
             cards: library_ids(),
             commanders: commanders.iter().map(|id| (*id).to_owned()).collect(),
             companion: None,
+            printings: Vec::new(),
         }
     }
 
