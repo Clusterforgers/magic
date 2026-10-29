@@ -10,6 +10,7 @@ import { FIXTURE_MARKER, buildFixture } from './fixture'
 import { SHOWCASE_NAMES, fetchRealIds } from './realCards'
 import type { RealIds } from './realCards'
 import { parseStopSpec } from './stopSpec'
+import { menuCandidates, useOpenDevMenu } from '../manual/devMenu'
 
 /** The oracle ids of the fixture's cards from the server (`?cards=real`), read once; none until they arrive. */
 function useRealIds(on: boolean, seats: number, hand: number | undefined): RealIds | undefined {
@@ -40,7 +41,7 @@ function useRealIds(on: boolean, seats: number, hand: number | undefined): RealI
  * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards } =
+  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards, menu } =
     useSearch({
       from: '/dev/table',
     })
@@ -61,6 +62,12 @@ export function DevTableRoute() {
       }),
     [seats, prompt, turn, step, hand, rules, preview, stops, fc, real],
   )
+  const view = game.session.store.getState().view
+  const candidates = useMemo(
+    () => (menu === undefined || view === null ? undefined : menuCandidates(view, view.viewer, menu)),
+    [menu, view],
+  )
+  useOpenDevMenu(candidates)
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
     () => ({ mode, focus, effects: fx === undefined ? undefined : true, effectsSlow: slow }),

@@ -132,7 +132,7 @@ interface Destination {
 }
 
 const DESTINATIONS: readonly Destination[] = [
-  { to: 'Battlefield', label: 'the battlefield', zone: 'battlefield' },
+  { to: 'Battlefield', label: 'battlefield', zone: 'battlefield' },
   { to: 'Hand', label: 'hand', zone: 'hand' },
   { to: 'Graveyard', label: 'graveyard', zone: 'graveyard' },
   { to: 'Exile', label: 'exile', zone: 'exile' },

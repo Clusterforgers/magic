@@ -81,8 +81,18 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
     disconnect: () => undefined,
     ready: () => false,
     notReady: () => false,
-    answer() {
-      if (store.getState().pending === null) return false
+    answer(given) {
+      const { pending, log, seat } = store.getState()
+      if (pending === null) return false
+      // A manual action changes nothing here but the log, and the seat keeps priority, as the engine has it.
+      if (typeof given === 'object' && 'Priority' in given) {
+        const action = given.Priority
+        if (typeof action === 'object' && 'Manual' in action) {
+          const event = { Public: { ManualAction: { player: seat ?? 0, action: action.Manual } } } as const
+          store.setState({ log: [...log, { seq: (log.at(-1)?.seq ?? -1) + 1, event }] })
+          return true
+        }
+      }
       store.setState({ pending: null, preview: null, clock: null })
       return true
     },
