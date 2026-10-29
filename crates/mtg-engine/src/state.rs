@@ -126,6 +126,10 @@ pub(crate) enum Tally {
     DiedNontokenUnder,
     /// A Phyrexian put into a graveyard from the battlefield (counted for the player who controlled it as it died).
     W14bPhyrexianDiedUnder,
+    /// A card that left a graveyard for any zone (counted for its owner).
+    W21aLeftGraveyard,
+    /// A card put into a graveyard from the battlefield (counted for the card as it lies there).
+    W21aGraved,
     /// A creature declared as an attacker (counted for its controller, once for each creature).
     Attackers,
     /// A Vehicle that became crewed (counted for the object).

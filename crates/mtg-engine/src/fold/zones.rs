@@ -13,7 +13,7 @@ use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords::OptionalKind;
 use crate::library::{Scried, Surveilled};
-use crate::object::{FaceDown, GameObject, ObjectKind, PermanentState};
+use crate::object::{FaceDown, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
@@ -117,6 +117,7 @@ pub(super) fn move_object(
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
     }
+    w21a_tally_graveyards(state, (from, to), owner, entered);
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::Graved);
         if was_creature {
@@ -133,6 +134,22 @@ pub(super) fn move_object(
     // Each card of a merged permanent that left is an object of its own in the new zone (CR 729.3).
     crate::merged::scatter(state, merged, owner, to, placement);
     Ok(())
+}
+
+/// Counts a card that left a graveyard for its owner, and a card put into a graveyard from the battlefield for the card as
+/// it lies there (`Pred::GravedThisTurn`).
+fn w21a_tally_graveyards(
+    state: &mut GameState,
+    (from, to): (Zone, Zone),
+    owner: PlayerId,
+    card: ObjectRef,
+) {
+    if matches!(from, Zone::Graveyard(_)) && !matches!(to, Zone::Graveyard(_)) {
+        state.tally(owner, Tally::W21aLeftGraveyard);
+    }
+    if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
+        state.tally_object(card, None, Tally::W21aGraved);
+    }
 }
 
 /// Whether the object is a creature and whether it is a Phyrexian as it leaves the battlefield for a graveyard, before the

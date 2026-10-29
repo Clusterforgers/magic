@@ -105,6 +105,10 @@ fn near_misses_are_left_to_the_table(#[case] text: &str) {
     "Enchanted creature has ward {2}. (Whenever it becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)",
     false
 )]
+#[case::the_modified_reminder(
+    "Modified creatures you control have haste. (Equipment, Auras you control, and counters are modifications.)",
+    false
+)]
 #[case::a_counter_the_clause_puts(
     "Put a shield counter on target creature. (If it would be dealt damage or destroyed, remove a shield counter instead.)",
     true

@@ -92,7 +92,7 @@ fn a_block_restriction_reads_into_the_selector_of_blockers(
 
 #[rstest]
 #[case::power_without_a_comparison("Creatures with power less than 3 can't block it.")]
-#[case::another_stat("Creatures with toughness less than this creature's power can't block it.")]
+#[case::another_stat("Creatures with toughness less than this creature's loyalty can't block it.")]
 #[case::an_unread_object("Creatures with power less than this creature's power can't block them.")]
 #[case::except_nothing("~ can't be blocked except by creatures.")]
 fn a_near_miss_is_left_to_the_table(#[case] text: &str) {

@@ -147,6 +147,7 @@ Blackblade Reforged
 Blade of Selves
 Bladed Bracers
 Blasphemous Act
+Blast Zone
 Blastoderm
 Blaze
 Blazing Archon
@@ -158,6 +159,7 @@ Blood Seeker
 Blood for the Blood God!
 Bloodbraid Elf
 Bloodghast
+Bloodline Pretender
 Bloom Hulk
 Body Count
 Body Double
@@ -212,6 +214,7 @@ Capsize
 Captivating Crew
 Capture of Jingzhou
 Caravan Escort
+Carmen, Cruel Skymarcher
 Carnage Tyrant
 Carrion Grub
 Cascade Bluffs
@@ -394,6 +397,7 @@ Domesticated Hydra
 Dominate
 Doom Blade
 Doom Whisperer
+Door of Destinies
 Doublecast
 Draconic Lore
 Drag to the Bottom
@@ -786,6 +790,8 @@ Kenrith's Transformation
 Kessig Wolf Run
 Kill! Maim! Burn!
 Kimoyo Beads
+Kindred Boon
+Kindred Discovery
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
@@ -973,6 +979,7 @@ Nantuko Husk
 Nantuko Vigilante
 Nardole, Resourceful Cyborg
 Nature's Embrace
+Necroplasm
 Necropolis Regent
 Necroskitter
 Nessian Asp
@@ -1037,6 +1044,7 @@ Pale Bears
 Panther Habit
 Panther Robot
 Paradise Druid
+Paradise Plume
 Parhelion Patrol
 Pariah
 Patagia Viper
@@ -1147,6 +1155,7 @@ Redcap Heelslasher
 Redemption Choir
 Redress Fate
 Reflecting Pool
+Reflections of Littjara
 Reforge the Soul
 Regal Behemoth
 Reiterate
@@ -1340,6 +1349,7 @@ Souvenir Snatcher
 Sower of Temptation
 Space Marine Devastator
 Spawn of Mayhem
+Species Specialist
 Spectral Rider
 Spellbreaker Behemoth
 Sphere of Safety
@@ -1571,6 +1581,7 @@ Universal Automaton
 Universal Surveillance
 Unstable Molecule Suit
 Urabrask the Hidden
+Urza's Incubator
 Urza's Mine
 Urza's Power Plant
 Urza's Tower
@@ -1587,6 +1598,7 @@ Vanguard Suppressor
 Vanishing Verse
 Vanishment
 Vanquish the Horde
+Vanquisher's Banner
 Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer

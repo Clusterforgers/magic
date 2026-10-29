@@ -254,6 +254,9 @@ pub enum TurnTally {
     /// The Phyrexians put into a graveyard from the battlefield while the players read controlled them ("if a Phyrexian died
     /// under your control this turn"), tokens included. Added up over the players.
     PhyrexiansDiedUnder,
+    /// The cards that left the graveyards of the players read this turn, to any zone ("if a card left your graveyard this
+    /// turn"). Added up over the players.
+    CardsLeftGraveyard,
 }
 
 /// Which result of the latest die roll an amount reads.

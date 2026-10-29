@@ -1402,7 +1402,7 @@ mod tests {
     #[case::ward_sacrificing_a_made_up_kind("Ward\u{2014}Sacrifice a frobnicator.")]
     #[case::ward_with_a_cost_that_is_a_sentence("Ward\u{2014}Draw a card.")]
     #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
-    #[case::enchant_with_a_quality_the_table_keeps("Enchant noncommander creature")]
+    #[case::enchant_with_a_quality_the_table_keeps("Enchant suspected creature")]
     #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]

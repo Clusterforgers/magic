@@ -238,6 +238,15 @@ pub enum Pred {
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),
+    /// Is modified (CR 700.9): a permanent with a counter on it, an Equipment attached, or an Aura its controller controls attached.
+    Modified,
+    /// Lies face down: a face-down permanent, or a card exiled face down.
+    FaceDown,
+    /// A spell or ability on the stack with a target that is one of the players the reference names ("spell that targets you").
+    TargetsPlayer(Ref),
+    /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
+    /// put there from the battlefield this turn").
+    GravedThisTurn,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.

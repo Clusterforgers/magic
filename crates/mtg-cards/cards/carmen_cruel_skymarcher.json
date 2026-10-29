@@ -24,11 +24,10 @@
               {
                 "what": {
                   "Object": [
-                    { "In": "Graveyard" },
-                    { "OwnedBy": "You" },
                     {
                       "AnyOf": [
                         { "Type": "Artifact" },
+                        { "Type": "Battle" },
                         { "Type": "Creature" },
                         { "Type": "Enchantment" },
                         { "Type": "Land" },
@@ -41,7 +40,9 @@
                         "op": "Le",
                         "to": { "Stat": { "of": "This", "stat": "Power" } }
                       }
-                    }
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
                   ]
                 },
                 "bounds": { "min": 0, "max": 1 }

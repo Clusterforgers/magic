@@ -274,7 +274,7 @@ fn whole_clauses_of_cards_are_read(#[case] text: &str) {
 )]
 #[case::a_name_is_not_a_subtype("Whenever ~ or another Commander you control dies, draw a card.")]
 #[case::an_unknown_adjective(
-    "Whenever ~ or another modified creature you control dies, draw a card."
+    "Whenever ~ or another suspected creature you control dies, draw a card."
 )]
 #[case::paired("Whenever ~ or a creature it's paired with is dealt damage, draw a card.")]
 #[case::the_wrong_verb_form("Whenever ~ or another Elf you control enter, draw a card.")]

@@ -201,9 +201,13 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::HasCounter(_)
         | Pred::XInCost
         | Pred::HasAnyCounter
-        | Pred::Named(_) => Traits::NONE,
+        | Pred::Named(_)
+        | Pred::FaceDown
+        | Pred::GravedThisTurn => Traits::NONE,
+        Pred::Modified => Traits::CONTROL,
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
+        | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::AttackingPlayer(who)
         | Pred::ExiledWith(who)

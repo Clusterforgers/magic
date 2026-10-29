@@ -19,8 +19,8 @@
             "when": {
               "ZoneChange": {
                 "what": [
-                  "Other",
                   { "Type": "Creature" },
+                  "Other",
                   { "ControlledBy": "You" },
                   "ChosenSubtype"
                 ],

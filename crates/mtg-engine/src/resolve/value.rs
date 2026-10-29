@@ -22,6 +22,7 @@ use thiserror::Error;
 use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
+mod w21a_atoms;
 mod w6d_shares;
 use crate::abilities::Cause;
 use crate::announce::{kicked_with, payments};
@@ -313,8 +314,10 @@ impl<'a> Scope<'a> {
             | TurnTally::NontokenCreaturesDied
             | TurnTally::CreaturesDiedUnder
             | TurnTally::NontokenCreaturesDiedUnder
-            | TurnTally::PhyrexiansDiedUnder => {
+            | TurnTally::PhyrexiansDiedUnder
+            | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
+                    TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
                     TurnTally::CreaturesAttacked => Tally::Attackers,
                     TurnTally::CreaturesDied => Tally::Died,
@@ -1108,6 +1111,9 @@ impl<'a> Scope<'a> {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
+            Pred::Modified | Pred::FaceDown | Pred::TargetsPlayer(_) | Pred::GravedThisTurn => {
+                self.w21a_pred(pred, reference, seen)?
+            }
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
         })
