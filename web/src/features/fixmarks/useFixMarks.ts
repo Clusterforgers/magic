@@ -81,7 +81,8 @@ export function useFixMarks(api: FixMarksApi): FixMarks {
         return { previous }
       },
       onSuccess: (view) => {
-        if (view !== null) fixMarksClient.setQueryData<FixMarkView[]>(KEY, (marks = []) => withMark(marks, view))
+        if (view !== null)
+          fixMarksClient.setQueryData<FixMarkView[]>(KEY, (marks = []) => withMark(marks, view))
       },
       onError: (_error, _request, context) => {
         if (context?.previous === undefined) fixMarksClient.removeQueries({ queryKey: KEY })

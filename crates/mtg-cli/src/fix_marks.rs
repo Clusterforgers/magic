@@ -193,10 +193,10 @@ mod tests {
         );
         let expected = [
             "fix marks (top 3 of 9 marked cards; marks: accounts that marked the card)",
-            "  #  marks  support     card      note",
-            "  1     12  partial     Sol Ring  adds the wrong mana",
-            "  2      2  manual      Opt",
-            "  3      1  unknown     Gone",
+            "  # marks  support     card      note",
+            "  1    12  partial     Sol Ring  adds the wrong mana",
+            "  2     2  manual      Opt",
+            "  3     1  unknown     Gone",
         ];
         assert_eq!(text, expected.join("\n"));
     }

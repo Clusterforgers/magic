@@ -128,7 +128,7 @@ async fn a_list_is_the_accounts_own_marks_newest_first(pool: PgPool) {
     let theirs = marks(&server, &bo).await;
     assert_eq!(theirs.len(), 1);
     assert_eq!(theirs[0]["note"], "bo's");
-    let cy = register(server.addr, "cy", PASSWORD).await;
+    let cy = register(server.addr, "cyril", PASSWORD).await;
     assert_eq!(marks(&server, &cy).await.len(), 0);
 }
 

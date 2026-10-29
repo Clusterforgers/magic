@@ -28,7 +28,8 @@ export interface FixMarksApi {
 }
 
 function readView(item: unknown): FixMarkView | null {
-  if (!isRecord(item) || !isText(item.oracle_id) || !isText(item.name) || !isText(item.created_at)) return null
+  if (!isRecord(item) || !isText(item.oracle_id) || !isText(item.name) || !isText(item.created_at))
+    return null
   if (item.note !== null && !isText(item.note)) return null
   return { oracle_id: item.oracle_id, name: item.name, note: item.note, created_at: item.created_at }
 }

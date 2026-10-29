@@ -67,7 +67,7 @@ fn the_bindings_carry_the_fix_mark_types() {
         assert!(files.contains_key(needed), "missing {needed}");
         assert!(files["index.ts"].contains(needed.trim_end_matches(".ts")));
     }
-    assert!(files["FixMarkBody.ts"].contains("note?: string | null"));
+    assert!(files["FixMarkBody.ts"].contains("note: string | null"));
     assert!(files["FixMarkView.ts"].contains("note: string | null"));
     assert!(files["FixMarkList.ts"].contains("marks: Array<FixMarkView>"));
 }

@@ -6,7 +6,9 @@ import { DeckError } from '@/net/decks'
 export function marksUnavailable(error: unknown): boolean {
   return (
     error instanceof DeckError &&
-    (error.code === 'unauthenticated' || error.code === 'cards_unavailable' || error.code === 'decks_unavailable')
+    (error.code === 'unauthenticated' ||
+      error.code === 'cards_unavailable' ||
+      error.code === 'decks_unavailable')
   )
 }
 
@@ -14,7 +16,8 @@ export function marksUnavailable(error: unknown): boolean {
 export function describeMarkError(error: unknown): string {
   if (error instanceof DeckError) {
     if (error.code === 'not_found') return 'The server does not know this card, so it was not marked.'
-    if (error.code === 'invalid_request') return 'The note was not accepted. Make it shorter or remove odd characters.'
+    if (error.code === 'invalid_request')
+      return 'The note was not accepted. Make it shorter or remove odd characters.'
     if (error.code === 'unauthenticated') return 'Your session has ended. Sign in again to mark cards.'
   }
   return describeDeckError(error)

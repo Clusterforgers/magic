@@ -91,7 +91,13 @@ function NoteEditor({
  * marked card also offers an optional note of up to 280 characters in a popover. Nothing is shown to a visitor without
  * a session or on a server without a card database.
  */
-export function FixMarkButton({ oracleId, name, api, emphasis = 'prominent', className }: FixMarkButtonProps) {
+export function FixMarkButton({
+  oracleId,
+  name,
+  api,
+  emphasis = 'prominent',
+  className,
+}: FixMarkButtonProps) {
   const marks = useFixMarks(api)
   const mark = marks.markOf(oracleId)
   const marked = mark !== undefined
