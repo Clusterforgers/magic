@@ -23,6 +23,7 @@ export type { CardCopy } from "./CardCopy";
 export type { CardDetail } from "./CardDetail";
 export type { CardFaceView } from "./CardFaceView";
 export type { CardHit } from "./CardHit";
+export type { CardIdentity } from "./CardIdentity";
 export type { CardImages } from "./CardImages";
 export type { CardSearchPage } from "./CardSearchPage";
 export type { CardSuggestion } from "./CardSuggestion";
