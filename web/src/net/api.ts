@@ -3,7 +3,16 @@
  * here; the game browser's and the game lookup's are generated (`mtg_protocol::rest`) and read in `parseLobbies.ts`.
  * Every response is checked at runtime before it is returned.
  */
-import type { Color, GameInfo, Joined, LobbyGame, PlayerId, SeatDeck, Visibility } from '@/protocol/generated'
+import type {
+  Color,
+  GameInfo,
+  HouseRules,
+  Joined,
+  LobbyGame,
+  PlayerId,
+  SeatDeck,
+  Visibility,
+} from '@/protocol/generated'
 import { isCount, isRecord, isText } from './check'
 import { LobbyError, lobbyFailure } from './lobbyErrors'
 import { readGameInfo, readJoined, readLobbyList, readSeatDeck, readVisibility } from './parseLobbies'
@@ -16,14 +25,16 @@ export interface SeatRequest {
   deck?: string
 }
 
-/** The body of `createGame`; the server only plays "normal" for now. */
+/** The body of `createGame`: a Normal game, or a Commander game (2 to 6 seats) for a Commander precon. */
 export interface CreateGameRequest {
-  format: 'normal'
+  format: 'normal' | 'commander'
   seats: SeatRequest[]
   /** Who may find and join the game; invite-only when left out. */
   visibility?: Visibility
   /** How many seats from seat 0 get a token (1 to the seat count); the rest are open. Every seat when left out. */
   held?: number
+  /** What differs from the format's own rules ([`HouseRules`], docs/engine.md); left out for none. */
+  house_rules?: HouseRules
 }
 
 /** A seat's secret token, shown once at creation; it opens that seat's WebSocket. */

@@ -1,5 +1,7 @@
 /** The create-game form as plain data: defaults, edits, the server's own checks, and the request body. */
-import { MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS } from '@/lib/limits'
+import { requestRules, rulesFromTexts } from '@/lib/houseRules'
+import type { GameFormat, RuleTexts } from '@/lib/houseRules'
+import { COMMANDER_POD, MAX_COMMANDER_SEATS, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS } from '@/lib/limits'
 import type { CreateGameRequest, DeckInfo } from '@/net/api'
 import type { Visibility } from '@/protocol/generated'
 
@@ -18,6 +20,10 @@ export interface Draft {
   visibility: Visibility
   /** Every seat is named here and gets its own link, as before open seats: the game is invite only and holds them all. */
   links: boolean
+  /** The format the game is made in. */
+  format: GameFormat
+  /** The house rules being edited, as field text by rule id; an empty text keeps the format's value. */
+  rules: RuleTexts
 }
 
 /** What is wrong with one seat, in words for the person filling in the form; null for fine. */
@@ -25,6 +31,14 @@ export interface SeatProblems {
   name: string | null
   deck: string | null
 }
+
+/** The DOM id of seat `id`'s name field; the form focuses it after the seat is added. */
+/** The most seats a game of `format` holds. */
+export const maxSeats = (format: GameFormat): number =>
+  format === 'commander' ? MAX_COMMANDER_SEATS : MAX_SEATS
+
+/** The seats a new game of `format` starts with. */
+export const startSeats = (format: GameFormat): number => (format === 'commander' ? COMMANDER_POD : MIN_SEATS)
 
 /** The DOM id of seat `id`'s name field; the form focuses it after the seat is added. */
 export const nameFieldId = (id: number): string => `seat-${id}-name`
@@ -60,20 +74,24 @@ function withSeat(draft: Draft, decks: readonly DeckInfo[]): Draft {
 }
 
 /**
- * The form as first shown: `MIN_SEATS` seats named Player 1, Player 2, ..., on different decks while the server has
- * them, listed in the game browser, the other seats open. `host`, the signed-in creator's username, names the first
+ * The form as first shown: a Commander game (a pod of four seats, or two in Normal) with seats named Player 1, Player 2,
+ * ..., on different decks while the server has them, listed in the game browser, the other seats open. `host`, the signed-in creator's username, names the first
  * seat, which is the creator's own.
  */
-export function defaultDraft(decks: readonly DeckInfo[], host?: string): Draft {
-  let draft: Draft = { seats: [], nextId: 0, visibility: 'public', links: false }
-  for (let i = 0; i < MIN_SEATS; i += 1) draft = withSeat(draft, decks)
+export function defaultDraft(
+  decks: readonly DeckInfo[],
+  host?: string,
+  format: GameFormat = 'commander',
+): Draft {
+  let draft: Draft = { seats: [], nextId: 0, visibility: 'public', links: false, format, rules: {} }
+  for (let i = 0; i < startSeats(format); i += 1) draft = withSeat(draft, decks)
   const first = draft.seats[0]
   return host === undefined || first === undefined ? draft : editSeat(draft, first.id, { name: host })
 }
 
 /** The form with one more seat, or as it was when it is full. */
 export function addSeat(draft: Draft, decks: readonly DeckInfo[]): Draft {
-  return draft.seats.length >= MAX_SEATS ? draft : withSeat(draft, decks)
+  return draft.seats.length >= maxSeats(draft.format) ? draft : withSeat(draft, decks)
 }
 
 /** The form without seat `id`, or as it was when only `MIN_SEATS` are left. */
@@ -84,7 +102,7 @@ export function removeSeat(draft: Draft, id: number): Draft {
 
 /** The form with `count` seats (kept between `MIN_SEATS` and `MAX_SEATS`): new ones at the end, or the last ones gone. */
 export function resizeSeats(draft: Draft, decks: readonly DeckInfo[], count: number): Draft {
-  const target = Math.min(MAX_SEATS, Math.max(MIN_SEATS, Math.trunc(count)))
+  const target = Math.min(maxSeats(draft.format), Math.max(MIN_SEATS, Math.trunc(count)))
   if (target === draft.seats.length) return draft
   let next = draft
   while (next.seats.length < target) next = withSeat(next, decks)
@@ -99,6 +117,23 @@ export function editSeat(draft: Draft, id: number, change: Partial<Pick<SeatDraf
 /** The form with who may find the game changed. */
 export function chooseVisibility(draft: Draft, visibility: Visibility): Draft {
   return { ...draft, visibility }
+}
+
+/**
+ * The form in another format. The seat count follows: a count the old format started with becomes the new format's, any
+ * other stays or is cut to the new format's most. A link per seat is the earlier Normal flow, so it ends; the rules
+ * typed stay with the form.
+ */
+export function chooseFormat(draft: Draft, decks: readonly DeckInfo[], format: GameFormat): Draft {
+  if (format === draft.format) return draft
+  const wanted = draft.seats.length === startSeats(draft.format) ? startSeats(format) : draft.seats.length
+  const next: Draft = { ...draft, format, links: format === 'commander' ? false : draft.links }
+  return resizeSeats(next, decks, wanted)
+}
+
+/** The form with the text of one house rule changed. */
+export function editRule(draft: Draft, id: string, text: string): Draft {
+  return { ...draft, rules: { ...draft.rules, [id]: text } }
 }
 
 /** The form with a link for every seat turned on or off; what was typed stays. */
@@ -122,11 +157,13 @@ export function nameProblem(name: string): string | null {
  */
 export function problemsOf(draft: Draft, decks: readonly DeckInfo[]): Map<number, SeatProblems> {
   const known = new Set(decks.map((deck) => deck.id))
+  // A Commander game asks for no deck here: the creator chooses one in the lobby, where each shows whether it plays.
+  const wantsDeck = draft.format === 'normal'
   return new Map(
     draft.seats.map((seat, index): [number, SeatProblems] => [
       seat.id,
       draft.links || index === 0
-        ? { name: nameProblem(seat.name), deck: known.has(seat.deck) ? null : 'Choose a deck.' }
+        ? { name: nameProblem(seat.name), deck: !wantsDeck || known.has(seat.deck) ? null : 'Choose a deck.' }
         : { name: null, deck: null },
     ]),
   )
@@ -137,26 +174,39 @@ export function problemCount(problems: ReadonlyMap<number, SeatProblems>): numbe
   return [...problems.values()].filter((p) => p.name !== null || p.deck !== null).length
 }
 
+/** What is wrong with each house rule's text, by rule id; empty when every text is fine. */
+export function ruleProblems(draft: Draft): Readonly<Record<string, string>> {
+  return rulesFromTexts(draft.rules, draft.format).problems
+}
+
 /**
- * The body for `POST /api/games`: the format is always "normal" and names go out trimmed. A link per seat holds every
- * seat, each with the deck the form gave it, and is invite only; otherwise only the creator's seat is held, with its
- * deck, and the others, which the server never reads a name for, go out as `Player N` and with no deck: whoever takes
- * a seat chooses its deck in the lobby.
+ * The body for `POST /api/games`: the format, names trimmed and the house rules that differ from the format's. A link
+ * per seat holds every seat, each with the deck the form gave it, and is invite only. Otherwise only the creator's seat
+ * is held, with its deck in a Normal game and none in Commander (the lobby's chooser judges decks against the table),
+ * and the others, which the server never reads a name for, go out as `Player N` with no deck: whoever takes a seat
+ * chooses its deck in the lobby.
  */
 export function toRequest(draft: Draft): CreateGameRequest {
+  const house = requestRules(draft.rules, draft.format)
+  const rules = house === undefined ? {} : { house_rules: house }
   if (draft.links) {
     return {
-      format: 'normal',
+      format: draft.format,
       seats: draft.seats.map((seat) => ({ name: seat.name.trim(), deck: seat.deck })),
       visibility: 'invite',
+      ...rules,
     }
   }
   return {
-    format: 'normal',
-    seats: draft.seats.map((seat, index) =>
-      index === 0 ? { name: seat.name.trim(), deck: seat.deck } : { name: `Player ${index + 1}` },
-    ),
+    format: draft.format,
+    seats: draft.seats.map((seat, index) => {
+      if (index !== 0) return { name: `Player ${index + 1}` }
+      return draft.format === 'normal'
+        ? { name: seat.name.trim(), deck: seat.deck }
+        : { name: seat.name.trim() }
+    }),
     visibility: draft.visibility,
     held: 1,
+    ...rules,
   }
 }

@@ -1,16 +1,17 @@
 import { ChevronRight } from 'lucide-react'
 import { useId } from 'react'
-import { Pill } from '@/components/Pill'
 import { Label } from '@/components/ui/label'
 
 interface AdvancedOptionsProps {
   /** A link for every seat is on. */
   links: boolean
+  /** A link per seat is a Normal-format flow: Commander decks are chosen in the lobby. */
+  linksAllowed: boolean
   onLinks(links: boolean): void
 }
 
-/** The options behind a disclosure: the format, and the earlier way of making a game with a link for every seat. */
-export function AdvancedOptions({ links, onLinks }: AdvancedOptionsProps) {
+/** The options behind a disclosure: the earlier way of making a game, with a link for every seat. */
+export function AdvancedOptions({ links, linksAllowed, onLinks }: AdvancedOptionsProps) {
   const linksId = useId()
   return (
     <details className="group surface">
@@ -22,25 +23,12 @@ export function AdvancedOptions({ links, onLinks }: AdvancedOptionsProps) {
         Advanced
       </summary>
       <div className="grid gap-4 border-t px-4 py-4">
-        <fieldset className="grid gap-2">
-          <legend className="mb-1 text-sm font-medium">Format</legend>
-          <div className="flex flex-wrap gap-2">
-            <label className="flex min-h-9 items-center gap-2 rounded-lg border border-border-strong px-3 py-2 text-sm has-checked:border-primary has-checked:bg-muted pointer-coarse:min-h-11">
-              <input type="radio" name="format" value="normal" defaultChecked className="accent-primary" />
-              Normal
-            </label>
-            <label className="flex min-h-9 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground pointer-coarse:min-h-11">
-              <input type="radio" name="format" value="commander" disabled />
-              Commander
-              <Pill>coming soon</Pill>
-            </label>
-          </div>
-        </fieldset>
         <div className="flex items-start gap-3">
           <input
             id={linksId}
             type="checkbox"
             checked={links}
+            disabled={!linksAllowed}
             aria-describedby={`${linksId}-help`}
             className="mt-1 accent-primary"
             onChange={(event) => onLinks(event.target.checked)}
@@ -50,6 +38,7 @@ export function AdvancedOptions({ links, onLinks }: AdvancedOptionsProps) {
             <p id={`${linksId}-help`} className="text-sm text-muted-foreground">
               Name each seat and choose its deck yourself, then send every player the link for their seat. The
               game is invite only.
+              {linksAllowed ? '' : ' It needs the Normal format.'}
             </p>
           </div>
         </div>

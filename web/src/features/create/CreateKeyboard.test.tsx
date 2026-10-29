@@ -42,9 +42,8 @@ describe('reading order', () => {
   it('gives every control on the form an accessible name', async () => {
     const { user } = await openCreateForm()
     await user.click(screen.getByText('Advanced'))
-    for (const control of screen.getAllByRole('textbox')) expect(control).toHaveAccessibleName('Your name')
-    for (const control of screen.getAllByRole('combobox'))
-      expect(control).toHaveAccessibleName(/^(Seats|Your deck)$/)
+    for (const control of screen.getAllByRole('textbox')) expect(control).toHaveAccessibleName()
+    for (const control of screen.getAllByRole('combobox')) expect(control).toHaveAccessibleName()
     for (const control of screen.getAllByRole('button')) expect(control).toHaveAccessibleName()
     for (const control of screen.getAllByRole('radio')) expect(control).toHaveAccessibleName()
     for (const control of screen.getAllByRole('checkbox')) expect(control).toHaveAccessibleName()

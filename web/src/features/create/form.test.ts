@@ -6,7 +6,7 @@ import {
   addSeat,
   chooseLinks,
   chooseVisibility,
-  defaultDraft,
+  defaultDraft as defaultDraftIn,
   editSeat,
   nameProblem,
   problemCount,
@@ -16,6 +16,10 @@ import {
   toRequest,
 } from './form'
 import type { Draft } from './form'
+
+// These tests are about the Normal form; the Commander one is in formats.test.ts.
+const defaultDraft = (decks: Parameters<typeof defaultDraftIn>[0], host?: string): Draft =>
+  defaultDraftIn(decks, host, 'normal')
 
 const grown = (to: number, decks = DECKS): Draft => {
   let draft = defaultDraft(decks)
