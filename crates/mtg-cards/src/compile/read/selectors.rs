@@ -732,7 +732,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
             Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),
             Pred::EnteredThisTurn => "that didn't enter this turn".to_owned(),
-            _ => return super::w21a_atoms::w21a_suffix_text(pred, form),
+            _ => {
+                return super::w6d_shares::w6d_suffix_text(pred, form)
+                    .or_else(|| super::w21a_atoms::w21a_suffix_text(pred, form));
+            }
         },
         Pred::Compare {
             stat: StatKind::ManaValue,
