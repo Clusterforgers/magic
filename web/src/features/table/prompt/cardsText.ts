@@ -125,4 +125,5 @@ export function cardPlaceWords(place: number, count: number): string {
 }
 
 /** What only a screen reader hears after the sentence of the order prompt: where the list starts and the keys. */
-export const ORDER_KEYS = 'The top card is first. Alt with the up or down arrow moves the focused card.'
+export const ORDER_KEYS =
+  'The top card is first. Alt with the arrow keys moves the focused card; a number key goes to the card at that place.'

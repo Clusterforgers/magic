@@ -59,7 +59,7 @@ describe('the list at first', () => {
   ])('with the words %j reads "%s" and tells a screen reader where the list starts', (text, sentence) => {
     const { text: said } = mount(hand.slice(0, 3), text)
     expect(said()).toBe(
-      `${sentence} The top card is first. Alt with the up or down arrow moves the focused card.`,
+      `${sentence} The top card is first. Alt with the arrow keys moves the focused card; a number key goes to the card at that place.`,
     )
   })
 

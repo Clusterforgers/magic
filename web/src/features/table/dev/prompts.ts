@@ -21,6 +21,7 @@ import { forecastScene, withBlockForecast } from './combatScene'
 import { assignDamage } from './damagePrompt'
 import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
+import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 
 /** Builds the decision the viewer of a fixture faces. */
 export type DevPrompt = (fixture: Fixture) => PendingDecision
@@ -437,6 +438,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-low-life': payLowLife,
   'commander-return': commanderReturn,
   ...EFFECT_PROMPTS,
+  ...LOOKED_PROMPTS,
 }
 
 /**
@@ -480,6 +482,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'yield-turn': quietMoment('Upkeep', false, false),
   'commander-return': commanderReturnTable,
   ...EFFECT_MOMENTS,
+  ...LOOKED_MOMENTS,
 }
 
 /**

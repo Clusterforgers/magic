@@ -137,8 +137,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
 - [~] (w3b) (w3-prompts-a) The DivideAmount prompt: the total split among the targets, each at least one
 - [~] (w3c) (w3-prompts-a) The ChooseCosts prompt: the optional costs the player can pay, as toggles
-- [~] (w3d) (w3-prompts-b) The ChooseReplacement prompt: which replacement effect applies first
-- [~] (w3e) (w3-prompts-b) Scry and cards put back: top and bottom piles in order
+- [ ] (w3i) A replacement candidate carries the words of its own effect, so the ChooseReplacement prompt shows the one ability that applies instead of the whole card text (`ReplacementCandidate`)
+- [ ] (w3j) A scry is one screen: the engine asks the split and the order of both piles in one decision, so the player orders the top pile where the cards are split instead of in the two `OrderCards` that follow
 - [ ] (w3f) The payment prompt spends restricted mana by hand, read against `PayOptions.spend`
 - [ ] (w3g) The payment prompt taps creatures for convoke and artifacts for improvise
 - [ ] (w3i) A prompt kind the web has not built yet offers a way on (decline the optional cost, or cancel the cast), so a seat facing a gift spell such as Consumed by Greed is not left without a button

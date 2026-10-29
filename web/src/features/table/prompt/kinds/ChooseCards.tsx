@@ -21,6 +21,7 @@ import {
 } from '../cardsText'
 import { askerWords, numberKey } from '../choiceText'
 import { uniqueNames } from '../combatText'
+import { awayOf } from '../lookText'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
@@ -29,6 +30,7 @@ import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
 import { useObjects } from '../useCombatNames'
 import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
+import { ScryCards } from './ScryCards'
 
 /** Up to this many cards on offer are drawn with their cost and type line; a longer list uses the compact face, so a row is more cards. */
 const NORMAL_UP_TO = 5
@@ -45,14 +47,14 @@ function candidateOf(element: EventTarget | null): ObjectId | null {
 }
 
 /**
- * ChooseCards: cards picked from a list (a discard, a sacrifice, a search). The cards on offer are drawn from the
+ * The pick of cards from a list (a discard, a sacrifice, a search). The cards on offer are drawn from the
  * views, in a grid that scrolls inside itself, and are chosen by a click, Enter or Space, or the number keys; the
  * cards of the table that are on offer are marked the way targets are. With room for one a press on another card
  * changes the choice, with room for several a full choice closes the rest, and Confirm waits until the number is
  * legal. A long list (a search) gets a filter box. The choice goes in the order it was made. The server's answer at
  * the deadline is the first `min` cards of the list, so focus starts on the first card.
  */
-export const ChooseCardsPrompt: PromptComponent<'ChooseCards'> = ({ options }) => {
+const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   const { answer, selection } = usePrompt()
   const own = useOwnCardIds()
   const from = useMemo(() => distinctCards(options.from), [options.from])
@@ -205,4 +207,16 @@ export const ChooseCardsPrompt: PromptComponent<'ChooseCards'> = ({ options }) =
       </div>
     </PromptLayout>
   )
+}
+
+/**
+ * ChooseCards: a pick from a list, or, when the cards are the top of a library and the question is the engine's scry
+ * or surveil ("Put any number of the cards on the bottom of your library."), the split of those cards into the pile
+ * that stays on top and the pile that goes away (`ScryCards`). Both answer with the cards chosen.
+ */
+export const ChooseCardsPrompt: PromptComponent<'ChooseCards'> = ({ options }) => {
+  const from = useMemo(() => distinctCards(options.from), [options.from])
+  const zones = useObjects(from).map((object) => object?.zone)
+  const kind = awayOf(options, from.length, zones)
+  return kind === null ? <PickCards options={options} /> : <ScryCards options={options} kind={kind} />
 }
