@@ -112,7 +112,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (m4) A Fortification that is also a creature (CR 301.6): the attachment check and a test
 
 ### Manual cards and views
-- [ ] Views complete: every object state, the activatable abilities with cost and target wording, a spectator audience, and reveals moved to a hidden zone in one batch (`docs/protocol.md`)
+- [~] (v1) (v1-views-final) Views complete: every object state, the activatable abilities with cost and target wording, a spectator audience, and reveals moved to a hidden zone in one batch (`docs/protocol.md`)
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
@@ -143,7 +143,7 @@ The server is settled first, then the web is built once against the final types.
 ### Target
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers recorded here (4,450 of 6,429 precon cards, 69.2%; 83.5% of the copies)
 - [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
-- [ ] (t14a) `mtg-cli coverage --all` ranks the blockers over every Commander-legal card, each weighted by its popularity rank (the Scryfall EDHREC rank), so a clause that serves several cards outside the precons is read first; the top 2,000 cards by rank are the first target (618 are not Verified)
+- [~] (t14a) (w22a-coverage-all) `mtg-cli coverage --all` ranks the blockers over every Commander-legal card, each weighted by its popularity rank (the Scryfall EDHREC rank), so a clause that serves several cards outside the precons is read first; the top 2,000 cards by rank are the first target (618 are not Verified)
 - [ ] (t14b) `mtg-cli propose --forge-hint` adds the Forge script lines of a card (read at run time from a checkout, nothing copied into the repository) to the prompt, and an A/B against `--solved-examples` on the same sample says which hint the checker accepts more often
 
 ### Mana and costs
@@ -325,11 +325,13 @@ The server is settled first, then the web is built once against the final types.
 - [ ] House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
 - [ ] Precons as a third kind of deck in the lobby picker (`docs/server.md`, `docs/deck-check.md`)
 - [ ] (hr5c) The lobby picker shows each deck's verdict at the table before joining, through `POST /api/decks/check` (`docs/server.md`, Precons)
+- [ ] (f1a) A list of the cards of a deck, or of every saved deck, that the game does not run whole, each with its unread clauses and the reason, as a page and as copyable text, so the owner can name the cards to fix first (`docs/deck-check.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 
 ## M8 Polish and deploy
+- [ ] (f1b) Polish pass of the playable table, builder and lobby against the UI wishes (fits the viewport, clear turn indicators, open-games list), with `/dev/*` screenshots at six sizes in both themes
 - [ ] Animations beyond the table feedback (`docs/web.md`), sounds, replays, solo play against bots
 - [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Performance profile on real hardware with real card art
