@@ -39,6 +39,11 @@ interface CardRowProps {
    * focused card comes to the front. Only with `box`.
    */
   gap?: number
+  /**
+   * Fanned piles of `pile` cards each, filled pile by pile: every card lies over the one before it but its top `head`
+   * px (the name line). Only with `box`.
+   */
+  fan?: { pile: number; head: number } | undefined
   /** One line that scrolls sideways instead of wrapping onto more lines. */
   single?: boolean
   className?: string
@@ -73,6 +78,7 @@ export function CardRow({
   size,
   box,
   gap,
+  fan,
   single = false,
   className,
 }: CardRowProps) {
@@ -86,8 +92,12 @@ export function CardRow({
     if (width === undefined || height === undefined) return undefined
     const vars: Record<string, string> = { '--card-w': `${width}px`, '--card-h': `${height}px` }
     if (gap !== undefined) vars['--card-gap'] = `${gap}px`
-    return vars as CSSProperties
-  }, [width, height, gap])
+    if (fan === undefined || fan.pile < 2) return vars as CSSProperties
+    return {
+      ...vars,
+      gridTemplateRows: `repeat(${fan.pile - 1}, ${fan.head}px) ${height}px`,
+    } as CSSProperties
+  }, [width, height, gap, fan])
   // Opening or closing swaps the stack's button for its members or back; the focus goes to the first card.
   useLayoutEffect(() => {
     const id = focusAfter.current
@@ -115,6 +125,7 @@ export function CardRow({
   const items = ghosts.length === 0 ? ids : withGhosts(ids, ghosts)
   const fit = box !== undefined
   const spaced = fit && gap !== undefined
+  const fanned = fit && fan !== undefined && fan.pile > 1
   return (
     <CardWidthContext.Provider value={width ?? null}>
       <ul
@@ -128,8 +139,14 @@ export function CardRow({
         style={style}
         className={cn(
           // A fitted row keeps the gaps `fit.ts` counts (6 px across, 4 px between lines); the zone around it has the padding.
-          spaced ? 'flex gap-0' : fit ? 'flex gap-x-1.5 gap-y-1' : 'flex gap-1.5 p-1',
-          single ? 'overflow-x-auto' : 'flex-wrap',
+          fanned
+            ? 'grid grid-flow-col items-start gap-x-1.5'
+            : spaced
+              ? 'flex gap-0'
+              : fit
+                ? 'flex gap-x-1.5 gap-y-1'
+                : 'flex gap-1.5 p-1',
+          !fanned && (single ? 'overflow-x-auto' : 'flex-wrap'),
           className,
         )}
       >
@@ -142,6 +159,8 @@ export function CardRow({
           const itemClass = cn(
             'flex',
             spaced && 'relative hover:z-10 focus-within:z-10 [&:not(:first-child)]:ml-(--card-gap)',
+            // No raise on hover: a raised card would cover the head of the next one under the pointer.
+            fanned && 'relative has-focus-visible:z-10',
           )
           if (entry !== undefined && !entry.open) {
             return (

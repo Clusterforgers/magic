@@ -1,4 +1,4 @@
-import { memo, useContext, useMemo, useState } from 'react'
+import { memo, useCallback, useContext, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useFullBleed } from '@/components/appChrome'
@@ -23,6 +23,8 @@ import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
 import { SideSheet, SideTabs } from './SideTabs'
 import { TableGrid } from './TableGrid'
+import { useBoardSplit } from './useBoardSplit'
+import { sheetReserve } from './boardSplit'
 import { TableOptionsContext } from './tableOptions'
 import { TopBar } from './TopBar'
 import { useViewport } from './useViewport'
@@ -51,7 +53,10 @@ const Table = memo(function Table() {
     () => planTable({ viewport, seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed, active }),
     [viewport, seatCount, seat, mode, chosen, followed, active],
   )
-  const { regions, seats: plan } = table
+  const { seats: plan } = table
+  const [overhang, setOverhang] = useState(0)
+  const onOverhang = useCallback((px: number) => setOverhang(sheetReserve(px)), [])
+  const regions = useBoardSplit(table.regions, plan, overhang)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
 
@@ -91,6 +96,7 @@ const Table = memo(function Table() {
                       shared={
                         <SharedStrip
                           sheetMax={regions.sheet}
+                          onOverhang={onOverhang}
                           inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
                         />
                       }

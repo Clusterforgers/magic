@@ -103,6 +103,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Commander at the table: commander cards and tax chips in the pods, commander damage per source with the lethal amount, casting from the command zone in the hand dock with the tax, the return choice and commander damage in the log (`docs/web.md`).
 - Manual actions at the table: a menu on every card (right click, long press, `m`, the Menu key, Shift+F10) of the actions the protocol allows, the clauses a card leaves to the table in the menu and quoted in the log, and every manual action as a log line with who took it (`docs/web.md`, Manual menu).
 - Table lanes: every board draws lands, creatures and other permanents in fixed lanes, mirrored for opponents, at the largest card size that fits (`laneFit.ts`), with `/dev/table?board=duel` and `board=heavy` and a layout gate rule for lanes.
+- Card sizes: the board rows split by what each board holds, your creatures the largest cards, opponents at four fifths of yours or more, lands fanned in piles where that buys size, a thinner strip and hand dock (`boardSplit.ts`, duel board 150/120 px at 1440x900).
 
 ## M3 Card system
 
@@ -167,8 +168,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
 - [ ] (ts5) A token's printed power and toughness reach the view (with `a2d`), so a buffed or debuffed token is tinted green or red as a card is; today a token's real numbers show plain
 - [ ] (ts6) `/dev/table?states=1` screenshots at the six sizes in both themes settle the marks on compact faces (under 76 px, where an attachment mark is an icon) and on tapped pictures
-- [ ] (pl1a) One card size across every visible board and a height split between the opponents and your board weighted by their lanes, so a sparse board lends room to a crowded one (the duel board reaches 150 px cards at 1440x900)
-- [ ] (pl1b) Lands overlap in a fanned pile as the last resort before a board scrolls, the name of each land in view
 - [ ] (pl1c) A seat's corner beside its lanes draws the commanders, the top card of the graveyard and the exile as pictures with their counts, in place of the pod chips
 - [ ] (pl1d) A permanent that dies as the last of its lane keeps its ghost while the effect plays (an empty lane has no place in the fit)
 - [ ] (pl2a) The forecast lists the life an attacker's controller gains (lifelink of an attacker) so its pod shows the "+N" chip too (`PlayerForecast` covers attacked seats only)

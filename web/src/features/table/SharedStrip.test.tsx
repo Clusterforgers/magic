@@ -2,8 +2,7 @@
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
-import { renderTable } from '@/test-utils/tableHarness'
-import { regionSizes } from './layout'
+import { renderTable, tablePlanOf } from '@/test-utils/tableHarness'
 import type { Viewport } from './layout'
 
 const strip = (): HTMLElement => screen.getByRole('region', { name: 'Turn and priority' })
@@ -26,7 +25,7 @@ describe('the strip and its sheet', () => {
     ['390x844', { width: 390, height: 844 }],
   ])('lets the sheet grow to the most the layout allows at %s', (_name, viewport) => {
     renderTable({ seats: 2, options: { viewport } })
-    const most = Math.floor(regionSizes(viewport).sheet)
+    const most = Math.floor(tablePlanOf(viewport, 2).regions.sheet)
     expect(strip().style.getPropertyValue('--sheet-max')).toBe(`${most}px`)
     expect(sheet()).toHaveClass('max-h-(--sheet-max)')
     // 40 % of the window at the most, and never further up than the top bar.

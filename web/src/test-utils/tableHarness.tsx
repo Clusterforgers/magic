@@ -8,7 +8,10 @@ import { fixtureLookup, fixtureSession, fixtureState } from '@/features/table/de
 import { buildFixture } from '@/features/table/dev/fixture'
 import type { Fixture } from '@/features/table/dev/fixture'
 import { GameTable } from '@/features/table/GameTable'
-import { TableOptionsContext } from '@/features/table/tableOptions'
+import { boardCounts, splitRegions } from '@/features/table/boardSplit'
+import { planTable } from '@/features/table/layout'
+import type { TablePlan, Viewport } from '@/features/table/layout'
+import { STACKS_BY_DEFAULT, TableOptionsContext } from '@/features/table/tableOptions'
 import type { TableOptions } from '@/features/table/tableOptions'
 import type { Session } from '@/play/session'
 import { createPlayStore } from '@/play/store'
@@ -59,6 +62,16 @@ export function renderLiveTable(session: Session, lookup: GameLookup, options: T
     </GameContext>,
   )
   return { user: userEvent.setup(), container: view.container, unmount: view.unmount }
+}
+
+/** The plan `GameTable` draws for a fixture of `seats` seats in a window, its board rows split as the table splits them. */
+export function tablePlanOf(viewport: Viewport, seats: number): TablePlan {
+  const plan = planTable({ viewport, seatCount: seats, viewer: 0 })
+  const state = fixtureState(buildFixture({ seats }))
+  return {
+    ...plan,
+    regions: splitRegions(plan.regions, plan.seats, boardCounts(state, plan.seats, STACKS_BY_DEFAULT)),
+  }
 }
 
 /** Renders `GameTable` (or `setup.ui`) inside a game context built from a fixture. */

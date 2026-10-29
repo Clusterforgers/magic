@@ -44,8 +44,9 @@ function Area({ area, className, children }: { area: string; className?: string;
 }
 
 /**
- * The frame of the table, exactly the window high: a main area of five rows (bar 44 px, opponents `1fr`, shared
- * strip, your board `1.15fr`, hand dock beside the controls dock) and, from L up, the side column to its right.
+ * The frame of the table, exactly the window high: a main area of five rows (bar 44 px, opponents, shared
+ * strip, your board, hand dock beside the controls dock; the two boards split by `boardSplit.ts`) and, from L up, the
+ * side column to its right.
  * Every region has `min-height: 0`, so a zone that cannot fit scrolls inside itself and the page never does.
  */
 export function TableGrid({

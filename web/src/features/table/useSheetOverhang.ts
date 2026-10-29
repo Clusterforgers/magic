@@ -13,6 +13,7 @@ export const SHEET_OVERHANG_VAR = '--sheet-overhang'
 export function useSheetOverhang(
   strip: RefObject<HTMLElement | null>,
   sheet: RefObject<HTMLElement | null>,
+  onOverhang?: (px: number) => void,
 ): void {
   useLayoutEffect(() => {
     const row = strip.current
@@ -20,7 +21,9 @@ export function useSheetOverhang(
     const main = row?.closest<HTMLElement>('[data-slot="table-main"]')
     if (row == null || lid == null || main == null) return undefined
     const publish = (): void => {
-      main.style.setProperty(SHEET_OVERHANG_VAR, `${Math.max(0, lid.offsetHeight - row.offsetHeight)}px`)
+      const overhang = Math.max(0, lid.offsetHeight - row.offsetHeight)
+      main.style.setProperty(SHEET_OVERHANG_VAR, `${overhang}px`)
+      onOverhang?.(overhang)
     }
     publish()
     const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(publish) : null
@@ -30,5 +33,5 @@ export function useSheetOverhang(
       observer?.disconnect()
       main.style.removeProperty(SHEET_OVERHANG_VAR)
     }
-  }, [strip, sheet])
+  }, [strip, sheet, onOverhang])
 }

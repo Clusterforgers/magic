@@ -251,8 +251,10 @@ test.describe('the development table with 40 permanents a seat', () => {
     await page.locator(THINGS.primary).waitFor()
     await atEverySize(page, ['hand', 'life', 'primary'], onTable('the duel board'))
     for (const [width, height, own, theirs] of [
-      [1920, 1080, 130, 110],
-      [1440, 900, 100, 80],
+      [1920, 1080, 190, 160],
+      [1440, 900, 150, 120],
+      // A three-line prompt stands above the strip here: the opponent keeps the name and P/T face.
+      [1280, 720, 100, 60],
     ] as const) {
       await page.setViewportSize({ width, height })
       // The narrowest creature of each board, and whether any board scrolls inside itself.
