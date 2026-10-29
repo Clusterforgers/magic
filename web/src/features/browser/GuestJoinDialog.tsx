@@ -29,6 +29,8 @@ interface Props {
   onCancel(): void
   /** The dialog has finished closing. */
   onClosed(): void
+  /** The words of the submit button; "Join game" by default. */
+  submitLabel?: string
 }
 
 /** "Join Bo's game": what a guest is called at the table. The name is remembered for the next join. */
@@ -41,6 +43,7 @@ export function GuestJoinDialog({
   onSubmit,
   onCancel,
   onClosed,
+  submitLabel = 'Join game',
 }: Props) {
   const [name, setName] = useState(loadGuestName)
   const [problem, setProblem] = useState<string | null>(null)
@@ -109,7 +112,7 @@ export function GuestJoinDialog({
               Cancel
             </Button>
             <Button type="submit" loading={pending}>
-              Join game
+              {submitLabel}
             </Button>
           </div>
         </form>

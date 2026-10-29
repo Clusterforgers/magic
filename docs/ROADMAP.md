@@ -49,6 +49,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - First-game smoke test: two accounts play real precons from the lobby through turn 9, and four accounts a Commander game through turn 6, in real browsers (`web/e2e/precon-game.spec.ts`).
 - Web: the game UI with prompts for all eight decision kinds, the N-seat table with log, stack and animations, lobby, account pages, the UI rebuild and clock-free e2e tests.
 - Table readability: the hand keeps every card's name and cost readable (one row down to 68 px, then rows that show each card's top, scrolling only past that), the turn band hangs above the prompt sheet, and the log folds a round of passes into one line of colour dots.
+- Precon browser: `/precons` lists every precon with its deck check, details with each card's support mark and a copyable list of the cards played by hand, and one-click play.
 - Decks: list, import, export, builder and the deck check with the Verified marker; the importers pass the 29-deck corpus.
 - Compiler: reader framework, renderer with goldens, corpus ratchet, templates for every ability shape, counted amounts with domain and stored `card_rules` (`docs/cards-dsl.md`).
 - Changes of control: targets, groups, the enchanted permanent, one target for each opponent with the untap and keywords after it, an untap before the taking, a base size or a creature type for the turn, each player taking back what they own, exchanges of control and a targeting spell or ability countered unless its controller pays (`docs/engine.md`, `docs/cards-dsl.md`).
@@ -132,7 +133,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 The server is settled first, then the web is built once against the final types.
 
-- [~] (g0) (g0-smoke-game) Smoke test: two accounts play a precon game in real browsers from the lobby into the turns; every blocker found becomes a lettered roadmap line and the script stays as the first Playwright game
 - [~] (g0a) (w2-lobby-commander) The create form and the lobby deck chooser pick a precon and the Commander format, so `precon-game.spec.ts` (`startTable` makes the game with `POST /api/games` and `PUT .../deck`) plays from the UI alone; joins with (w1a) and (k2)
 - [~] (g0b) (w3-payment) A hand highlights only the cards the seat can pay for, and the payment prompt disables "Pay automatically" with its reason when the mana cannot cover the cost (manual pair, `failure-bo` page text: "That answer is not allowed: invalid payment" with the prompt left open)
 - [~] (g0e) (w3-payment) Paying by hand cannot go wrong: the prompt keeps a source that would overpay or that needs mana made before it from being tapped, instead of the server refusing the confirm ("payment provides 4 mana but the cost is 3" with Sol Ring and two more sources; "the mana cost of ManaSource ... cannot be paid from the mana made before it"; both in runs with `autoPay: false`, whose seat now pays automatically in `precon-game.spec.ts`)
@@ -148,6 +148,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
 - [ ] (a2c) The support mark on the table tells Partial from Manual: `ObjectView` needs the card's support state (a view field), since manual clauses alone do not say which
 - [ ] (a2d) A token whose power or toughness changed keeps its picture: the token lookup matches the printed values, which the view does not carry
+- [ ] (a2e) The precon details dialog shows each card's picture through `CardPicture` and the hover picture, as the builder does
 - [ ] (k1) Commander at the table: each commander in the command zone with its cast count and tax, casting it from there with the tax in the cast options, the choice to return it to the command zone, and commander damage on every pod with the lethal amount, with `/dev/table` screenshots of a four-seat game at six sizes in both themes
 - [ ] (k2) Commander in the builder and lobby: a commander slot with partner and background pairs, colour identity in the filters and the check, Commander as the default format of a new game with its house rules named (`docs/deck-check.md`)
 - [ ] (k3) Playwright: a four-seat Commander game with precon decks plays from the lobby through mulligans, command zone casts and commander damage to a winner
@@ -263,6 +264,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (r1auj) Piles that the controller separates or of permanents and targets (Steam Augury, Boneyard Parley, Make an Example, Whims of the Fates)
 
 ### Model-assisted reading
+- [ ] (t17a) `mtg-cli check-rules --gaps FILE` writes the ledger of everything that holds stored proposals back (missing writers by node kind, invalid and mismatch reasons, missing primitives), ranked by the cards each gap would free, weighted by popularity, so implementers take the largest gap first and a new writer verifies the stored proposals without a model call
+- [ ] (t17b) Writers for the continuous effects of spells and activated abilities, then for modified power and toughness and added keywords of statics; 51 stored local-model proposals wait on them (`docs/cards-dsl.md`, Model-assisted reading)
 - [~] (t15a) (t15a-popular-1) The 42 not-Verified cards among the 300 most popular Commander cards (`mtg-cli coverage --all --out`; Path of Ancestry, Mana Drain, Smothering Tithe, Sylvan Library, Force of Will, Mana Vault, The One Ring) read whole, or skipped with the missing piece as a lettered line
 - [~] (r3) (the local bulk run of gpt-oss:20b with --schema, run by the orchestrator) Keep sampling the precon cards that are not yet Verified with `mtg-cli propose` and `mtg-cli check-rules`, adding writers for the wordings the checker accepts (`docs/cards-dsl.md`, Model-assisted reading)
 - [ ] (t9a-a) Soulbond: pairing as either creature enters, "as long as ~ is paired" statics and "~ or a creature it's paired with" triggers (Silverblade Paladin, Donna Noble, Breathkeeper Seraph)
@@ -344,8 +347,7 @@ The server is settled first, then the web is built once against the final types.
 
 ## M7 Product
 - [ ] (d1) Dockerfile, Kustomize manifests for k3s, Postgres, ingress and TLS on the user's domain, so friends can join a table (`docs/PLAN.md`, Deployment)
-- [~] (B3) (w1-precons-web) Each precon's deck-check state in the web's precon browser (`GET /api/precons`; `docs/server.md`, Precons)
-- [~] (w1a) (w1-precons-web) Precon browser with one-click play in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"`
+- [ ] (w1b) The precon details quote each unread clause of a card (its span of oracle text) beside the reason, through the clause spans in `PreconCardView` or one batch read of the cards, and the Copy list holds them (`docs/web.md`, `/precons`)
 - [~] (w2b) (w2-lobby-commander) House rules in the web: the create-game form sets them, the lobby and table name those that differ, and the Mulligan prompt names hand size and scry
 - [~] (w2a) (w2-lobby-commander) Precons as a third kind of deck in the lobby picker (`docs/server.md`, `docs/deck-check.md`)
 - [~] (hr5c) (w2-lobby-commander) The lobby picker shows each deck's verdict at the table before joining, through `POST /api/decks/check` (`docs/server.md`, Precons)

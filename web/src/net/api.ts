@@ -16,9 +16,9 @@ export interface SeatRequest {
   deck?: string
 }
 
-/** The body of `createGame`; the server only plays "normal" for now. */
+/** The body of `createGame`: a Normal game, or a Commander game (2 to 6 seats) for a Commander precon. */
 export interface CreateGameRequest {
-  format: 'normal'
+  format: 'normal' | 'commander'
   seats: SeatRequest[]
   /** Who may find and join the game; invite-only when left out. */
   visibility?: Visibility
