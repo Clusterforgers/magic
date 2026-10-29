@@ -120,7 +120,7 @@ export const Card = memo(function Card({
       {fx.map((entry) =>
         entry.kind === 'damaged' ? <FxFloat key={entry.token} kind="damaged" amount={entry.amount} /> : null,
       )}
-      <ManaStrip id={id} size={size} />
+      <ManaStrip id={id} />
     </button>
   )
 })

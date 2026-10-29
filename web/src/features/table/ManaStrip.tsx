@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
-import type { CardSize } from './cardSize'
 import { foldGives, givesNow, manaAbilitiesOf } from './manaMade'
 import { ManaMade } from './ManaMade'
 
@@ -25,16 +24,16 @@ export function ManaPreviewLine({ object }: { object: ObjectView }) {
  * of the art and the rules text): only on a permanent the seat may tap for mana now, so a tapped land, an opponent's
  * land and a card in a hand draw nothing. Decoration without a pointer; the preview says the same in words.
  */
-export function ManaStrip({ id, size }: { id: ObjectId; size: CardSize }) {
+export function ManaStrip({ id }: { id: ObjectId }) {
   const object = usePlay((state) => state.objectsById[id])
   const seat = usePlay((state) => state.seat)
   const gives = useMemo(() => (object === undefined ? null : givesNow(object, seat)), [object, seat])
-  if (gives === null || size === 'compact') return null
+  if (gives === null) return null
   return (
     <span
       aria-hidden="true"
       data-slot="mana-strip"
-      className="pointer-events-none absolute bottom-[1.5%] left-[3%] z-10 flex max-w-[70%] overflow-hidden rounded-full bg-background/75 px-0.5 py-px"
+      className="pointer-events-none absolute bottom-[1.5%] left-[3%] z-10 flex max-w-[55%] overflow-hidden rounded-full bg-background/75 px-0.5 py-px"
     >
       <ManaMade gives={gives} sizeClass={SYMBOL} className="flex-nowrap gap-x-0.5" />
     </span>

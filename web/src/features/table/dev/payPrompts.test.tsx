@@ -1,4 +1,4 @@
-/** Goal: `?prompt=pay|pay-short|pay-locked|pay-hybrid|pay-low-life` hands the viewer, at every seat count, a payment decision the wire parser accepts, and the two hybrid ones show a cost with every kind of symbol, the life row with a switch for each Phyrexian symbol, and a payment that can be completed with life and sent. */
+/** Goal: `?prompt=pay|pay-short|pay-locked|pay-hybrid|pay-low-life|pay-sources` hands the viewer, at every seat count, a payment decision the wire parser accepts, and the two hybrid ones show a cost with every kind of symbol, the life row with a switch for each Phyrexian symbol, and a payment that can be completed with life and sent. */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -11,7 +11,7 @@ import { must } from '@/test-utils/batches'
 import { costText } from '../cardModel'
 import { fixtureGame } from './devGame'
 
-const NAMES = ['pay', 'pay-short', 'pay-locked', 'pay-hybrid', 'pay-low-life'] as const
+const NAMES = ['pay', 'pay-short', 'pay-locked', 'pay-hybrid', 'pay-low-life', 'pay-sources'] as const
 
 function options(prompt: string, seats = 2): PayOptions {
   const { pending } = fixtureGame({ seats, prompt }).session.store.getState()

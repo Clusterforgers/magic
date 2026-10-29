@@ -72,7 +72,7 @@ export function ManaSources({ sources, nameOf, legal, taken, onAct }: ManaSource
             aria-label={`Tap ${many ? `a ${group.name}` : group.name} for ${madeWords(group.gives)}${
               many ? `, ${used.length} of ${group.ids.length} used` : ''
             }`}
-            className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-pressed:bg-primary/15"
+            className="h-8 gap-1.5 px-2 text-xs aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-pressed:bg-primary/15"
             onClick={() => {
               if (target !== undefined) onAct(target)
             }}
