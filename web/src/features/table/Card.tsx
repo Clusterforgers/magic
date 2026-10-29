@@ -96,7 +96,12 @@ export const Card = memo(function Card({
       data-doomed={outlook?.dies || undefined}
       data-fx={fxAttr(fx)}
       data-fx-side={fxSide(fx)}
-      aria-label={cardLabel(object, role, links) + (extra === undefined ? '' : `, ${extra}`) + words + outlookWords(outlook)}
+      aria-label={
+        cardLabel(object, role, links) +
+        (extra === undefined ? '' : `, ${extra}`) +
+        words +
+        outlookWords(outlook)
+      }
       aria-pressed={highlight === undefined || !pressable ? undefined : highlight === 'selected'}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}

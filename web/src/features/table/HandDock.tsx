@@ -88,7 +88,10 @@ export const HandDock = memo(function HandDock({ seat }: { seat: PlayerId }) {
     >
       <div ref={zone} className="flex size-full min-h-0 min-w-0 items-end justify-center gap-1">
         {cards === null || waiting.size === 0 ? null : (
-          <div data-slot="hand-command" className="flex shrink-0 items-end border-r border-foreground/15 pr-1">
+          <div
+            data-slot="hand-command"
+            className="flex shrink-0 items-end border-r border-foreground/15 pr-1"
+          >
             <HandFan
               ids={[...waiting.keys()]}
               label={`${owner}'s commanders in the command zone`}

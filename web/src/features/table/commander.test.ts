@@ -17,7 +17,12 @@ import {
 } from './commander'
 import type { CommanderDestination, DamageLevel } from './commander'
 
-const ATRAXA: ManaCost = [{ Colored: 'White' }, { Colored: 'Blue' }, { Colored: 'Black' }, { Colored: 'Green' }]
+const ATRAXA: ManaCost = [
+  { Colored: 'White' },
+  { Colored: 'Blue' },
+  { Colored: 'Black' },
+  { Colored: 'Green' },
+]
 const KRENKO: ManaCost = [{ Generic: 2 }, { Colored: 'Red' }, { Colored: 'Red' }]
 
 describe('the tax chip', () => {
@@ -97,12 +102,42 @@ describe('commander damage', () => {
 
 describe('the return choice', () => {
   it.each<[string, Zone | undefined, CommanderDestination | null, string, string]>([
-    ['Put Atraxa into the command zone?', { Graveyard: 0 }, 'graveyard', 'No leaves it in your graveyard.', 'Leave in graveyard'],
+    [
+      'Put Atraxa into the command zone?',
+      { Graveyard: 0 },
+      'graveyard',
+      'No leaves it in your graveyard.',
+      'Leave in graveyard',
+    ],
     ['Put Atraxa into the command zone?', 'Exile', 'exile', 'No leaves it in exile.', 'Leave in exile'],
-    ['Put Atraxa into the command zone instead of a hand?', 'Battlefield', 'hand', 'No puts it into your hand.', 'Put into hand'],
-    ['Put Atraxa into the command zone instead of a library?', 'Battlefield', 'library', 'No puts it into your library.', 'Put into library'],
-    ['Put Atraxa into the command zone instead of a graveyard?', 'Battlefield', 'graveyard', 'No leaves it in your graveyard.', 'Leave in graveyard'],
-    ['Put Atraxa into the command zone instead of exile?', 'Stack', 'exile', 'No leaves it in exile.', 'Leave in exile'],
+    [
+      'Put Atraxa into the command zone instead of a hand?',
+      'Battlefield',
+      'hand',
+      'No puts it into your hand.',
+      'Put into hand',
+    ],
+    [
+      'Put Atraxa into the command zone instead of a library?',
+      'Battlefield',
+      'library',
+      'No puts it into your library.',
+      'Put into library',
+    ],
+    [
+      'Put Atraxa into the command zone instead of a graveyard?',
+      'Battlefield',
+      'graveyard',
+      'No leaves it in your graveyard.',
+      'Leave in graveyard',
+    ],
+    [
+      'Put Atraxa into the command zone instead of exile?',
+      'Stack',
+      'exile',
+      'No leaves it in exile.',
+      'Leave in exile',
+    ],
     ['', 'Battlefield', null, 'No leaves it where it is.', 'Leave it'],
   ])('%s from %j goes to %s', (text, zone, destination, detail, label) => {
     expect(commanderDestination(text, zone)).toBe(destination)
@@ -111,7 +146,9 @@ describe('the return choice', () => {
   })
 
   it('asks in the name of the commander', () => {
-    expect(returnQuestion('Atraxa, Praetors’ Voice')).toBe('Return Atraxa, Praetors’ Voice to the command zone?')
+    expect(returnQuestion('Atraxa, Praetors’ Voice')).toBe(
+      'Return Atraxa, Praetors’ Voice to the command zone?',
+    )
   })
 })
 

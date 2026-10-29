@@ -76,7 +76,13 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
       hit === undefined
         ? describeEvent(event, names)
         : {
-            text: commanderDamageLine(names.card(hit.source), hit.amount, names.seat(hit.player), hit.total, hit.lethal),
+            text: commanderDamageLine(
+              names.card(hit.source),
+              hit.amount,
+              names.seat(hit.player),
+              hit.total,
+              hit.lethal,
+            ),
             minor: false,
           }
     lines.push({ seq, text: line.text, minor: line.minor, passed: [], spoken: '' })

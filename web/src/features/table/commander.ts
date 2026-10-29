@@ -74,7 +74,8 @@ export type CommanderDestination = 'graveyard' | 'exile' | 'hand' | 'library'
  */
 export function commanderDestination(text: string, zone: Zone | undefined): CommanderDestination | null {
   const instead = /instead of (?:a |the )?(graveyard|exile|hand|library)/.exec(text)?.[1]
-  if (instead === 'graveyard' || instead === 'exile' || instead === 'hand' || instead === 'library') return instead
+  if (instead === 'graveyard' || instead === 'exile' || instead === 'hand' || instead === 'library')
+    return instead
   if (zone === undefined || typeof zone === 'string') return zone === 'Exile' ? 'exile' : null
   return 'Graveyard' in zone ? 'graveyard' : null
 }

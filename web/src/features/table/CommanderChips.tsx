@@ -91,7 +91,12 @@ export function TaxChips({ chips, density, className }: ChipsProps) {
       aria-label={chip.words}
       title={chip.words}
       data-slot="commander-tax"
-      className={cn(SHAPE[density], density !== 'tile' && 'bg-muted', 'min-w-0 text-muted-foreground', className)}
+      className={cn(
+        SHAPE[density],
+        density !== 'tile' && 'bg-muted',
+        'min-w-0 text-muted-foreground',
+        className,
+      )}
     >
       <Crown aria-hidden="true" className="size-3.5 shrink-0" />
       <span aria-hidden="true" className="truncate tabular-nums">
@@ -113,7 +118,13 @@ export function DamageChips({ chips, density, className }: ChipsProps) {
         title={chip.words}
         data-slot="commander-damage"
         data-level={level}
-        className={cn(SHAPE[density], 'min-w-0', LEVEL_TONE[level], level !== 'plain' && 'font-semibold', className)}
+        className={cn(
+          SHAPE[density],
+          'min-w-0',
+          LEVEL_TONE[level],
+          level !== 'plain' && 'font-semibold',
+          className,
+        )}
       >
         <Swords aria-hidden="true" className="size-3.5 shrink-0" />
         <span aria-hidden="true" className="truncate tabular-nums">

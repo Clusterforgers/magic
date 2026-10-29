@@ -43,12 +43,27 @@ const hit = (source: number, amount: number, seat = 1): EventView =>
 describe('commander hits', () => {
   it.each<[string, EventView[], [number, number, number][]]>([
     ['one hit in the damage step', [damageStep, hit(ATRAXA, 7)], [[1, 7, 14]]],
-    ['two hits count back from the view', [damageStep, hit(ATRAXA, 7), granted, damageStep, hit(ATRAXA, 7)], [[1, 7, 7], [4, 7, 14]]],
+    [
+      'two hits count back from the view',
+      [damageStep, hit(ATRAXA, 7), granted, damageStep, hit(ATRAXA, 7)],
+      [
+        [1, 7, 7],
+        [4, 7, 14],
+      ],
+    ],
     ['a creature that is no commander', [damageStep, hit(BEAR, 3)], []],
     ['a commander after priority (an ability)', [damageStep, granted, hit(ATRAXA, 2)], []],
     ['a commander outside combat', [pub({ StepBegan: { step: 'Main1' } }), hit(ATRAXA, 2)], []],
-    ['a hit to a creature', [damageStep, pub({ DamageDealt: { source: ATRAXA, target: { Object: BEAR }, amount: 3 } })], []],
-    ['first strike damage', [pub({ StepBegan: { step: 'FirstStrikeDamage' } }), hit(ATRAXA, 4)], [[1, 4, 14]]],
+    [
+      'a hit to a creature',
+      [damageStep, pub({ DamageDealt: { source: ATRAXA, target: { Object: BEAR }, amount: 3 } })],
+      [],
+    ],
+    [
+      'first strike damage',
+      [pub({ StepBegan: { step: 'FirstStrikeDamage' } }), hit(ATRAXA, 4)],
+      [[1, 4, 14]],
+    ],
   ])('%s', (_, events, expected) => {
     const hits = commanderHits(events, PLAYERS)
     expect([...hits].map(([index, h]) => [index, h.amount, h.total])).toEqual(expected)
@@ -67,9 +82,18 @@ describe('commander hits', () => {
 describe('the lines of the return choice', () => {
   const names = { seat: () => 'Alice', card: () => 'Atraxa' }
   it.each<[Event, string]>([
-    [{ ZoneChanged: { object: ATRAXA, from: { Graveyard: 0 }, to: { Command: 0 }, cause: 'Moved' } }, 'Atraxa returns to the command zone'],
-    [{ ZoneChanged: { object: ATRAXA, from: 'Battlefield', to: { Command: 0 }, cause: 'Destroyed' } }, 'Atraxa is destroyed and returns to the command zone'],
-    [{ ZoneChanged: { object: ATRAXA, from: 'Battlefield', to: { Command: 0 }, cause: 'StateBased' } }, 'Atraxa returns to the command zone'],
+    [
+      { ZoneChanged: { object: ATRAXA, from: { Graveyard: 0 }, to: { Command: 0 }, cause: 'Moved' } },
+      'Atraxa returns to the command zone',
+    ],
+    [
+      { ZoneChanged: { object: ATRAXA, from: 'Battlefield', to: { Command: 0 }, cause: 'Destroyed' } },
+      'Atraxa is destroyed and returns to the command zone',
+    ],
+    [
+      { ZoneChanged: { object: ATRAXA, from: 'Battlefield', to: { Command: 0 }, cause: 'StateBased' } },
+      'Atraxa returns to the command zone',
+    ],
     [{ CommanderStayed: { object: ATRAXA } }, 'Atraxa stays out of the command zone'],
   ])('%j reads %s', (event, text) => {
     expect(describeEvent({ Public: event }, names).text).toBe(text)

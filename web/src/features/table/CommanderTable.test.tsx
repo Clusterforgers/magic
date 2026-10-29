@@ -68,10 +68,11 @@ describe('the pods', () => {
     // Seat 0's partners seen from seat 1 across a duel, whose pods have room for cards.
     show(undefined, buildFixture({ seats: 2, viewer: 1 }))
     const list = within(pod(0)).getByRole('list', { name: "Alice's command zone" })
-    expect(within(list).getAllByRole('button').map((card) => card.getAttribute('aria-label'))).toEqual([
-      expect.stringMatching(/^Tymna the Weaver/),
-      expect.stringMatching(/^Thrasios, Triton Hero/),
-    ])
+    expect(
+      within(list)
+        .getAllByRole('button')
+        .map((card) => card.getAttribute('aria-label')),
+    ).toEqual([expect.stringMatching(/^Tymna the Weaver/), expect.stringMatching(/^Thrasios, Triton Hero/)])
     expect(chips(pod(0), 'commander-tax')).toEqual([
       'Tymna the Weaver: cast 1 time from the command zone, tax 2 mana',
     ])
@@ -81,7 +82,10 @@ describe('the pods', () => {
     const fixture = must(DEV_TABLES['commander-return'])(FIXTURE)
     renderTable({ fixture, options: { viewport: { width: 1920, height: 1080 } } })
     expect(pod(3)).toHaveTextContent('Eliminated: lost to commander damage')
-    expect(must(pod(3).querySelector('[data-slot="commander-damage"]'))).toHaveAttribute('data-level', 'lethal')
+    expect(must(pod(3).querySelector('[data-slot="commander-damage"]'))).toHaveAttribute(
+      'data-level',
+      'lethal',
+    )
   })
 })
 
@@ -102,6 +106,7 @@ describe('your commanders in the hand dock', () => {
     const pending = must(DEV_PROMPTS['priority'])(fixture)
     renderTable({ fixture, state: (state) => ({ ...state, pending }) })
     const list = screen.getByRole('list', { name: "Alice's commanders in the command zone" })
-    for (const card of within(list).getAllByRole('button')) expect(card).toHaveAttribute('data-highlight', 'legal')
+    for (const card of within(list).getAllByRole('button'))
+      expect(card).toHaveAttribute('data-highlight', 'legal')
   })
 })

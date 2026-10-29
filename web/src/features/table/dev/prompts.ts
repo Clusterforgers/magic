@@ -80,7 +80,10 @@ const commanderReturn: DevPrompt = ({ view }) => {
   const name = view.objects.find((object) => object.id === id)?.name ?? 'the commander'
   return {
     id: 1,
-    decision: { player: view.viewer, kind: { YesNo: { source: id, text: `Put ${name} into the command zone?` } } },
+    decision: {
+      player: view.viewer,
+      kind: { YesNo: { source: id, text: `Put ${name} into the command zone?` } },
+    },
   }
 }
 

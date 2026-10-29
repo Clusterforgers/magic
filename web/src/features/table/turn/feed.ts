@@ -135,7 +135,13 @@ function newestLine(
     if (view === undefined) continue
     const hit = hits.get(index)
     if (hit !== undefined) {
-      const text = commanderDamageLine(names.card(hit.source), hit.amount, names.seat(hit.player), hit.total, hit.lethal)
+      const text = commanderDamageLine(
+        names.card(hit.source),
+        hit.amount,
+        names.seat(hit.player),
+        hit.total,
+        hit.lethal,
+      )
       return { kind: 'event', text }
     }
     const line = describeEvent(sameForEverySeat(view), names)

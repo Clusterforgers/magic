@@ -23,9 +23,13 @@ function mount(fixture: Fixture, source: number, text: string) {
   const table = renderTable({
     fixture,
     session: { answer },
-    state: (state) => ({ ...state, pending: { id: 3, decision: { player: 0, kind: { YesNo: { source, text } } } } }),
+    state: (state) => ({
+      ...state,
+      pending: { id: 3, decision: { player: 0, kind: { YesNo: { source, text } } } },
+    }),
   })
-  const said = (): string => must(table.container.querySelector('[data-slot="prompt-text"]')).textContent ?? ''
+  const said = (): string =>
+    must(table.container.querySelector('[data-slot="prompt-text"]')).textContent ?? ''
   return { ...table, answer, user, said }
 }
 
@@ -33,10 +37,30 @@ describe('the return choice', () => {
   const name = nameOf(PLAIN, partner(PLAIN))
   it.each([
     [RETURN, `Put ${name} into the command zone?`, 'No leaves it in your graveyard.', 'Leave in graveyard'],
-    [PLAIN, `Put ${name} into the command zone instead of a hand?`, 'No puts it into your hand.', 'Put into hand'],
-    [PLAIN, `Put ${name} into the command zone instead of a library?`, 'No puts it into your library.', 'Put into library'],
-    [PLAIN, `Put ${name} into the command zone instead of exile?`, 'No leaves it in exile.', 'Leave in exile'],
-    [PLAIN, `Put ${name} into the command zone instead of a graveyard?`, 'No leaves it in your graveyard.', 'Leave in graveyard'],
+    [
+      PLAIN,
+      `Put ${name} into the command zone instead of a hand?`,
+      'No puts it into your hand.',
+      'Put into hand',
+    ],
+    [
+      PLAIN,
+      `Put ${name} into the command zone instead of a library?`,
+      'No puts it into your library.',
+      'Put into library',
+    ],
+    [
+      PLAIN,
+      `Put ${name} into the command zone instead of exile?`,
+      'No leaves it in exile.',
+      'Leave in exile',
+    ],
+    [
+      PLAIN,
+      `Put ${name} into the command zone instead of a graveyard?`,
+      'No leaves it in your graveyard.',
+      'Leave in graveyard',
+    ],
   ])('asks about %#: %s', (fixture, text, detail, noLabel) => {
     const { said } = mount(fixture, partner(fixture), text)
     expect(said()).toBe(`Return ${name} to the command zone? ${detail} Press Y for yes or N for no.`)
@@ -49,7 +73,9 @@ describe('the return choice', () => {
     ['Leave in graveyard', false],
   ])('a click on %s answers %s once', async (label, yes) => {
     const table = mount(RETURN, partner(RETURN), `Put ${name} into the command zone?`)
-    await table.user.click(screen.getByRole('button', { name: label === 'Return' ? 'Return to the command zone' : label }))
+    await table.user.click(
+      screen.getByRole('button', { name: label === 'Return' ? 'Return to the command zone' : label }),
+    )
     expect(table.answer).toHaveBeenCalledTimes(1)
     expect(table.answer.mock.calls[0]?.[0]).toEqual({ YesNo: yes })
   })
