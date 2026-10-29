@@ -123,20 +123,11 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 The server is settled first, then the web is built once against the final types.
 
-<<<<<<< HEAD
-- [~] (g0) (g0-smoke-game) Smoke test: two accounts play a precon game in real browsers from the lobby into the turns; every blocker found becomes a lettered roadmap line and the script stays as the first Playwright game
 - [~] (g0a) (w2-lobby-commander) The create form and the lobby deck chooser pick a precon and the Commander format, so `precon-game.spec.ts` (`startTable` makes the game with `POST /api/games` and `PUT .../deck`) plays from the UI alone; joins with (w1a) and (k2)
 - [~] (g0b) (w3-payment) A hand highlights only the cards the seat can pay for, and the payment prompt disables "Pay automatically" with its reason when the mana cannot cover the cost (manual pair, `failure-bo` page text: "That answer is not allowed: invalid payment" with the prompt left open)
 - [~] (g0c) (w4-table-readability) The hand fan keeps every card's name and cost readable at 1600x1000 (names cut off in `verified/17-bo-PayMana.png` and `four-seats/25-bo-turn-5-Priority.png`) and the turn splash never covers a prompt (`verified/17-bo-PayMana.png`)
 - [~] (g0e) (w3-payment) Paying by hand cannot go wrong: the prompt keeps a source that would overpay or that needs mana made before it from being tapped, instead of the server refusing the confirm ("payment provides 4 mana but the cost is 3" with Sol Ring and two more sources; "the mana cost of ManaSource ... cannot be paid from the mana made before it"; both in runs with `autoPay: false`, whose seat now pays automatically in `precon-game.spec.ts`)
 - [~] (g0d) (w4-table-readability) The log folds the "receives priority" and "passes priority" lines of a step into one line and a seat's priority windows with only mana abilities to use are passed (four seats: eight lines a step, `four-seats/25-bo-turn-5-Priority.png`; idle windows in 2 to 15 of 27 to 48 decisions)
-=======
-- [ ] (g0a) The create form and the lobby deck chooser pick a precon and the Commander format, so `precon-game.spec.ts` (`startTable` makes the game with `POST /api/games` and `PUT .../deck`) plays from the UI alone; joins with (w1a) and (k2)
-- [ ] (g0b) A hand highlights only the cards the seat can pay for, and the payment prompt disables "Pay automatically" with its reason when the mana cannot cover the cost (manual pair, `failure-bo` page text: "That answer is not allowed: invalid payment" with the prompt left open)
-- [ ] (g0c) The hand fan keeps every card's name and cost readable at 1600x1000 (names cut off in `verified/17-bo-PayMana.png` and `four-seats/25-bo-turn-5-Priority.png`) and the turn splash never covers a prompt (`verified/17-bo-PayMana.png`)
-- [ ] (g0e) Paying by hand cannot go wrong: the prompt keeps a source that would overpay or that needs mana made before it from being tapped, instead of the server refusing the confirm ("payment provides 4 mana but the cost is 3" with Sol Ring and two more sources; "the mana cost of ManaSource ... cannot be paid from the mana made before it"; both in runs with `autoPay: false`, whose seat now pays automatically in `precon-game.spec.ts`)
-- [ ] (g0d) The log folds the "receives priority" and "passes priority" lines of a step into one line and a seat's priority windows with only mana abilities to use are passed (four seats: eight lines a step, `four-seats/25-bo-turn-5-Priority.png`; idle windows in 2 to 15 of 27 to 48 decisions)
->>>>>>> g0-smoke-game
 - [ ] The companion in the web: a seat-panel slot from `PlayerView.companion`, `BringCompanion` in the priority menu and the deck builder's companion issue
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the answer to a one-option decision (`docs/arena-flow.md`)
 - [~] (w3a) (w3-payment) Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and cards put back; the payment prompt for X, restricted mana, convoke and delve
