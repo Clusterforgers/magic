@@ -50,6 +50,18 @@ export interface DevSearch {
   states?: true
   /** `real` identifies the cards by the card search of a running server, so the table draws real pictures. */
   cards?: 'real'
+  /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
+  menu?: DevMenu
+}
+
+/** The cards `?menu=` opens the manual menu on. */
+export type DevMenu = 'permanent' | 'hand' | 'opponent'
+
+function menuOf(value: unknown): DevMenu | undefined {
+  // The router parses an address again with what it made of it, so the names it made stay valid.
+  if (value === 1 || value === true || value === '1' || value === 'permanent') return 'permanent'
+  if (value === 'hand') return 'hand'
+  return value === 'opp' || value === 'opponent' ? 'opponent' : undefined
 }
 
 const whole = (value: unknown): number | undefined =>
@@ -57,7 +69,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=&rules=&states=&cards=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -87,6 +99,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
       search.hand <= 24
         ? search.hand
         : undefined,
+    menu: menuOf(search.menu),
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
     preview:

@@ -13,6 +13,7 @@ import { ForecastMarks } from './combat/ForecastMarks'
 import { FxFloat } from './fx/FxFloat'
 import { useCardFx } from './fx/hooks'
 import { fxAttr, fxSide } from './fx/model'
+import { useManualMenu } from './manual/useManualMenu'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import { combatRoleIn } from './selectors'
 import { useLinks } from './useLinks'
@@ -73,6 +74,7 @@ export const Card = memo(function Card({
   const promptSelects = given === undefined && (marked === 'legal' || marked === 'selected')
   const onSelect = givenSelect ?? (promptSelects ? marks.select : undefined)
   const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : () => onSelect(id))
+  const manual = useManualMenu(id)
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true
   const attached = object.attached_to !== undefined || object.attached_player !== undefined
@@ -100,6 +102,7 @@ export const Card = memo(function Card({
       aria-pressed={highlight === undefined || !pressable ? undefined : highlight === 'selected'}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
+      {...manual}
       className={cn(
         // The box is the same tapped or not (the face lies down inside it), so a row counts one box per card.
         'relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',

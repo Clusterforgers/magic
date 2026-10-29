@@ -12,6 +12,7 @@ import { FRONT_OF, SHOWCASE_NAMES, fetchRealIds } from './realCards'
 import type { RealIds } from './realCards'
 import { printedDetail, STATES_BASE_PERMANENTS, withStates } from './states'
 import { parseStopSpec } from './stopSpec'
+import { menuCandidates, useOpenDevMenu } from '../manual/devMenu'
 
 /** The oracle ids of the fixture's cards from the server (`?cards=real`), read once; none until they arrive. */
 function useRealIds(
@@ -50,10 +51,26 @@ function useRealIds(
  * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const { seats, mode, focus, prompt, turn, step, hand, fx, slow, preview, stops, fc, rules, cards, states } =
-    useSearch({
-      from: '/dev/table',
-    })
+  const {
+    seats,
+    mode,
+    focus,
+    prompt,
+    turn,
+    step,
+    hand,
+    fx,
+    slow,
+    preview,
+    stops,
+    fc,
+    rules,
+    cards,
+    states,
+    menu,
+  } = useSearch({
+    from: '/dev/table',
+  })
   const real = useRealIds(cards === 'real', seats, hand, states === true)
   const game = useMemo(() => {
     // The state cards compare with printed numbers that come from the fixture, unless real cards bring their own.
@@ -62,6 +79,7 @@ export function DevTableRoute() {
       states,
       seats,
       prompt,
+      holding: menu === undefined ? undefined : true,
       turn,
       step,
       hand,
@@ -71,7 +89,13 @@ export function DevTableRoute() {
       fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
       real,
     })
-  }, [seats, prompt, turn, step, hand, rules, states, cards, preview, stops, fc, real])
+  }, [seats, prompt, menu, turn, step, hand, rules, states, cards, preview, stops, fc, real])
+  const view = game.session.store.getState().view
+  const candidates = useMemo(
+    () => (menu === undefined || view === null ? undefined : menuCandidates(view, view.viewer, menu)),
+    [menu, view],
+  )
+  useOpenDevMenu(candidates)
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
     () => ({ mode, focus, effects: fx === undefined ? undefined : true, effectsSlow: slow }),
