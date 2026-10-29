@@ -596,6 +596,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithCounters { .. }
         | ReplaceBy::Choose(_)
         | ReplaceBy::PayLifeOrTapped(_)
+        | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
@@ -1767,6 +1768,10 @@ impl Pass<'_> {
             (ReplaceBy::RevealOrTapped(of), Unit::Enter { object, controller }) => {
                 return self.reveal_or_tapped(at, candidate, of, (*object, *controller), applied);
             }
+            (ReplaceBy::TappedForCounters { counter, count }, Unit::Enter { object, controller }) => {
+                let got = (counter, *count);
+                return self.w13b_tapped_for_counters(at, candidate, got, (*object, *controller), applied);
+            }
             (ReplaceBy::DayIfNeither, Unit::Enter { .. }) => {
                 self.day_if_neither(at, applied);
                 return Ok(Applied::Done);
@@ -2795,6 +2800,8 @@ mod dredge;
 mod reveal;
 
 mod riot;
+
+mod w13b_tapped_for_counters;
 
 mod c6_blk_draw_step;
 

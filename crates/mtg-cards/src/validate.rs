@@ -2972,6 +2972,7 @@ impl Walker<'_> {
             ReplaceBy::Tapped
             | ReplaceBy::Choose(_)
             | ReplaceBy::PayLifeOrTapped(_)
+            | ReplaceBy::TappedForCounters { .. }
             | ReplaceBy::RevealOrTapped(_)
             | ReplaceBy::Riot
             | ReplaceBy::DayIfNeither
@@ -2990,6 +2991,9 @@ impl Walker<'_> {
                 self.at("of", |w| w.selector(of));
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
+            ReplaceBy::TappedForCounters { count: 0, .. } => {
+                self.problem("entering tapped for no counters is a plain choice");
+            }
             ReplaceBy::RevealOrTapped(of) => self.at("of", |w| w.selector(of)),
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");

@@ -23,6 +23,10 @@ fn w13b_probe() {
         ("{5}, {T}: Draw a card.", ClauseKind::Activated),
         ("Target player loses all rad counters. Sacrifice this artifact.", ClauseKind::Spell),
         ("Target player loses all rad counters.", ClauseKind::Spell),
+        ("{1}, {T}: Choose one that hasn't been chosen \u{2014}\n\u{2022} Stimpak \u{2014} Draw a card.\n\u{2022} Fancy Lads Snack Cakes \u{2014} Create a Food token.\n\u{2022} RadAway \u{2014} Target player loses all rad counters. Sacrifice this artifact.", ClauseKind::Activated),
+        ("{1}, {T}: Choose one that hasn't been chosen \u{2014}\n\u{2022} Stimpak \u{2014} Draw a card.\n\u{2022} RadAway \u{2014} Target player loses all rad counters.", ClauseKind::Activated),
+        ("{1}, {T}: Choose one that hasn't been chosen \u{2014}\n\u{2022} Stimpak \u{2014} Draw a card.\n\u{2022} Radaway \u{2014} You gain 1 life. Sacrifice this artifact.", ClauseKind::Activated),
+        ("{1}, {T}: Choose one that hasn't been chosen \u{2014}\n\u{2022} Stimpak \u{2014} Draw a card.\n\u{2022} Radaway \u{2014} Target player gains 1 life.", ClauseKind::Activated),
     ] {
         let read = clause(text, kind, false);
         eprintln!("{text}\n  => {}\n", read.map(|a| serde_json::to_string(&a).unwrap_or_default()).unwrap_or_else(|| "NONE".into()));

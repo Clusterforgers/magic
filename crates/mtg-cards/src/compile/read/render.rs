@@ -2088,6 +2088,12 @@ impl Writer<'_> {
             } if super::w7b_player_counters::w7b_player_kind(counter) => {
                 super::w7b_player_counters::w7b_player_gets(effect)?
             }
+            Effect::RemoveCounters { from, .. }
+                if super::w13b_mill_rad::w13b_loses_all_text(effect, false).is_some() =>
+            {
+                let lose = super::w13b_mill_rad::w13b_loses_all_text(effect, *from != Ref::You)?;
+                format!("{} {lose}", self.player(from)?)
+            }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. }

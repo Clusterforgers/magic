@@ -8,8 +8,8 @@ use super::tokens::Reader;
 use crate::ability::{Ability, Limit};
 use crate::effect::Effect;
 use crate::refs::{Bounds, Ref, TargetSpec, Targetable};
-use crate::trigger::TriggerPattern;
-use crate::value::Amount;
+use crate::trigger::{ReplaceBy, TriggerPattern};
+use crate::value::{Amount, CounterKind};
 
 /// The limit of a trigger whose one effect is a may, worded as an instruction.
 pub(super) const W13B_DO_THIS_ONCE: &str = "do this only once each turn";
@@ -52,6 +52,89 @@ pub(super) fn w13b_may_get(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         who: Ref::You,
         effects: vec![got],
     }])
+}
+
+/// "counter you have" after "for each rad": the counters of a kind a player holds that you have.
+pub(super) fn w13b_you_have(r: &mut Reader<'_>, counter: &CounterKind) -> Option<Amount> {
+    super::w7b_player_counters::w7b_player_kind(counter).then_some(())?;
+    r.attempt(|r| r.words("counter you have").then_some(()))?;
+    Some(Amount::Counters {
+        on: Ref::You,
+        counter: counter.clone(),
+    })
+}
+
+/// "rad counter you have": what "for each" counts for the counters of a kind you hold.
+pub(super) fn w13b_you_have_text(counter: &CounterKind) -> Option<String> {
+    super::w7b_player_counters::w7b_player_kind(counter).then_some(())?;
+    Some(format!("{} counter you have", counters::kind_text(counter)?))
+}
+
+/// "You may have this land enter tapped. If you do, you get two rad counters.": the entry its controller may tap for
+/// counters by word.
+pub(super) fn w13b_tapped_for_counters(r: &mut Reader<'_>) -> Option<Ability> {
+    r.need("you may have")?;
+    r.source().then_some(())?;
+    r.need("enter tapped")?;
+    r.punct('.').then_some(())?;
+    r.need("if you do")?;
+    r.punct(',').then_some(())?;
+    r.need("you get")?;
+    let (counter, count) = counters::entering(r)?;
+    super::w7b_player_counters::w7b_player_kind(&counter).then_some(())?;
+    let Amount::Fixed(count) = count else {
+        return None;
+    };
+    let count = u32::try_from(count).ok().filter(|count| *count > 0)?;
+    r.sentence_end().then_some(())?;
+    Some(super::statics::replacement(
+        ReplaceBy::TappedForCounters { counter, count },
+        None,
+    ))
+}
+
+/// The wording of [`w13b_tapped_for_counters`].
+pub(super) fn w13b_tapped_texts(counter: &CounterKind, count: u32) -> Vec<String> {
+    let count = i32::try_from(count).ok();
+    count
+        .and_then(|count| counters::text(counter, &Amount::Fixed(count)))
+        .map(|got| format!("You may have ~ enter tapped. If you do, you get {got}"))
+        .into_iter()
+        .collect()
+}
+
+/// "all rad counters" after "loses": every counter of a kind by word that the player has is removed.
+pub(super) fn w13b_loses_all(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    r.word("all").then_some(())?;
+    let counter = counters::kind(r)?;
+    r.need("counters")?;
+    super::w7b_player_counters::w7b_player_kind(&counter).then_some(())?;
+    Some(Effect::RemoveCounters {
+        from: who.clone(),
+        count: Amount::Counters {
+            on: who,
+            counter: counter.clone(),
+        },
+        counter: Some(counter),
+        up_to: false,
+    })
+}
+
+/// "lose all rad counters" ("loses" in the third person) for the removal [`w13b_loses_all`] reads.
+pub(super) fn w13b_loses_all_text(effect: &Effect, third: bool) -> Option<String> {
+    let Effect::RemoveCounters {
+        from,
+        counter: Some(counter),
+        count: Amount::Counters { on, counter: kind },
+        up_to: false,
+    } = effect
+    else {
+        return None;
+    };
+    (on == from && kind == counter && super::w7b_player_counters::w7b_player_kind(counter))
+        .then_some(())?;
+    let verb = if third { "loses" } else { "lose" };
+    Some(format!("{verb} all {} counters", counters::kind_text(counter)?))
 }
 
 /// The wordings these leftovers add to the ones `texts` holds for `ability`.

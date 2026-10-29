@@ -656,6 +656,14 @@ pub enum ReplaceBy {
     Choose(EntersChoice),
     /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
     PayLifeOrTapped(u32),
+    /// As the permanent enters, its controller may have it enter tapped; if they do, they get the counters ("you may have
+    /// this land enter tapped. If you do, you get two rad counters").
+    TappedForCounters {
+        /// The kind of counter the player gets.
+        counter: CounterKind,
+        /// How many.
+        count: u32,
+    },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.

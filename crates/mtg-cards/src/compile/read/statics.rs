@@ -42,7 +42,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 33] = [
+const TEMPLATES: [Template; 34] = [
+    super::w13b_mill_rad::w13b_tapped_for_counters,
     super::c11b_once::c11b_once,
     super::c8_eg_cast_itself::c8_eg_cast_itself,
     super::c6_blk_draws::c6_blk_draw_replacement,
@@ -123,7 +124,7 @@ fn no_life_loss_texts(condition: Option<&Condition>) -> Vec<String> {
 }
 
 /// The replacement of the card's own entering.
-fn replacement(by: ReplaceBy, condition: Option<Condition>) -> Ability {
+pub(super) fn replacement(by: ReplaceBy, condition: Option<Condition>) -> Ability {
     Ability::Replacement {
         when: ReplaceWhen::Enters {
             what: Selector::this(),
@@ -1326,6 +1327,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
         (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
+        (ReplaceBy::TappedForCounters { counter, count }, None) => {
+            super::w13b_mill_rad::w13b_tapped_texts(counter, *count)
+        }
         (ReplaceBy::DayIfNeither, None) => {
             vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
         }
