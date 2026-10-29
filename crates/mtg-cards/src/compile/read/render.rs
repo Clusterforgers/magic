@@ -421,6 +421,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = super::c11c_had_counters::c11c_had_wordings(&texts);
     texts.extend(more);
+    super::w13b_mill_rad::w13b_wordings(ability, &mut texts);
     graveyard_wordings(ability, &mut texts);
     produced_wordings(&mut texts);
     texts

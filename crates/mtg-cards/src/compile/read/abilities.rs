@@ -23,12 +23,15 @@ fn at_restriction(r: &mut Reader<'_>) -> bool {
         || super::c11a_ability_less::c11a_at_less(r)
         || r.lookahead(|r| r.words(ONCE_EACH_TURN).then_some(()))
             .is_some()
+        || r
+            .lookahead(|r| r.words(super::w13b_mill_rad::W13B_DO_THIS_ONCE).then_some(()))
+            .is_some()
 }
 
 /// "This ability triggers only once each turn." after the effects of a triggered ability.
 fn once_each_turn(r: &mut Reader<'_>) -> Option<Limit> {
     r.attempt(|r| {
-        r.words(ONCE_EACH_TURN).then_some(())?;
+        (r.words(ONCE_EACH_TURN) || r.words(super::w13b_mill_rad::W13B_DO_THIS_ONCE)).then_some(())?;
         r.sentence_end().then_some(Limit::OncePerTurn)
     })
 }
