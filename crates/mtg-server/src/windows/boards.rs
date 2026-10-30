@@ -262,7 +262,7 @@ fn commander_game(seed: u64, limit: usize) -> Asked {
 
 #[rstest]
 fn a_table_of_bots_is_asked_no_priority_window_that_is_not_a_play(#[values(1, 2, 3)] seed: u64) {
-    let asked = commander_game(seed, 1_500);
+    let asked = commander_game(seed, 3_000);
     assert_eq!(asked.idle, 0, "{asked:?}");
     assert!(asked.windows > 20, "the seats play: {asked:?}");
     assert!(asked.abilities_only > 0, "boards with abilities: {asked:?}");
