@@ -528,6 +528,7 @@ mod dk1a_rune_of_sustenance;
 mod dk1a_shardmages_rescue;
 
 // deck-casting
+mod dk1c2_pearl_ear;
 mod dk1d_demonic_embrace;
 mod dk1d_disturb;
 mod dk1d_permit_costs;

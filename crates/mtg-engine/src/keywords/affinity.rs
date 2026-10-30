@@ -17,18 +17,24 @@ impl KeywordRules for Affinity {
         let Keyword::Affinity(kind) = keyword else {
             return Vec::new();
         };
-        let mut counted = kind.0.clone();
-        counted.push(Pred::ControlledBy(Ref::You));
-        vec![Ability::CostModifier {
-            applies_to: Selector::this(),
-            change: CostChange::Reduce,
-            mana: mtg_cards::mana::ManaCostX::new(
-                0,
-                mtg_core::mana::ManaCost::from_symbols([mtg_core::mana::ManaSymbol::Generic(1)]),
-            ),
-            per: Amount::Count(Selector(counted)),
-            condition: None,
-        }]
+        vec![reduction(kind)]
+    }
+}
+
+/// The cost reduction of an affinity for the permanents `kind` names: {1} less for each one the spell's caster controls. A
+/// spell that is given affinity has the same reduction (`announce/modifiers.rs`).
+pub(crate) fn reduction(kind: &Selector) -> Ability {
+    let mut counted = kind.0.clone();
+    counted.push(Pred::ControlledBy(Ref::You));
+    Ability::CostModifier {
+        applies_to: Selector::this(),
+        change: CostChange::Reduce,
+        mana: mtg_cards::mana::ManaCostX::new(
+            0,
+            mtg_core::mana::ManaCost::from_symbols([mtg_core::mana::ManaSymbol::Generic(1)]),
+        ),
+        per: Amount::Count(Selector(counted)),
+        condition: None,
     }
 }
 

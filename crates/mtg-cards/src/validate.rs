@@ -2740,12 +2740,16 @@ impl Walker<'_> {
         let helps = |m: &Modification| {
             matches!(
                 m,
-                Modification::AddKeyword(Keyword::Convoke | Keyword::Improvise | Keyword::Delve)
+                Modification::AddKeyword(
+                    Keyword::Convoke | Keyword::Improvise | Keyword::Delve | Keyword::Affinity(_)
+                )
             )
         };
         if !mods.iter().all(helps) {
             self.at("mods", |w| {
-                w.problem("a spell is given only convoke, improvise or delve by a static ability");
+                w.problem(
+                    "a spell is given only convoke, improvise, delve or affinity by a static ability",
+                );
             });
         }
     }
@@ -3791,6 +3795,7 @@ mod tests {
     #[case::a_static_ability_from_the_graveyard(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Mountain"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}"#, &["Ability.Static", "Ability.From", "Keyword.Haste", "Mod.AddKeyword"])]
     #[case::trigger_from_the_graveyard(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"limit":"OncePerTurn","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.Limit", "Ability.From", "Effect.Draw", "Trigger.StepBegins"])]
     #[case::a_cast_permission_with_added_costs(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard","additional":[{"PayLife":3},{"Discard":{}}]}},"from":"Graveyard"}}"#, &["Ability.From", "Ability.Rule", "Cost.Discard", "Cost.PayLife", "Rule.MayCast"])]
+    #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
@@ -4478,6 +4483,10 @@ mod tests {
     #[case::a_permission_for_a_player(
         r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","only":"You","play":true}},"duration":"UntilEndOfTurn"}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.only: expected an object but this is a player"
+    )]
+    #[case::a_spell_given_flying(
+        r#"{"Static":{"affected":{"Each":["Spell"]},"mods":[{"AddKeyword":"Flying"}]}}"#,
+        "faces[0].abilities[0].Static.mods: a spell is given only convoke, improvise, delve or affinity by a static ability"
     )]
     #[case::a_permission_cost_with_no_part(
         r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","additional":[]}},"duration":"UntilEndOfTurn"}}]}}"#,

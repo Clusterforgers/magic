@@ -1,7 +1,9 @@
 //! Keywords given to spells: "Nonartifact spells you cast have improvise.", "Artifact spells you cast have convoke.",
-//! "Noncreature spells have convoke." A `Static` over the spells a selector names whose changes are the keywords that
-//! help pay for a spell (convoke, improvise, delve), the ones the engine reads on a spell.
+//! "Noncreature spells have convoke.", "Enchantment spells you cast have affinity for Auras." A `Static` over the spells a
+//! selector names whose changes are the keywords that help pay for a spell (convoke, improvise, delve, affinity), the ones
+//! the engine reads on a spell.
 
+use super::selectors::{Form, phrase, phrase_text};
 use super::statics::{cost_subject, cost_subject_text, statics};
 use super::tokens::Reader;
 use crate::ability::Ability;
@@ -9,7 +11,7 @@ use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::refs::{Pred, Ref, Selector};
 
-/// The keywords a static ability gives to spells, as the words of the card.
+/// The keywords without data a static ability gives to spells, as the words of the card.
 const HELPING: [(&str, Keyword); 3] = [
     ("convoke", Keyword::Convoke),
     ("improvise", Keyword::Improvise),
@@ -29,6 +31,9 @@ pub(super) fn ability(r: &mut Reader<'_>) -> Option<Ability> {
 }
 
 fn keyword(r: &mut Reader<'_>) -> Option<Modification> {
+    if r.words("affinity for") {
+        return phrase(r, Form::All).map(|kind| Modification::AddKeyword(Keyword::Affinity(kind)));
+    }
     HELPING
         .iter()
         .find(|(name, _)| r.word(name))
@@ -51,13 +56,16 @@ pub(super) fn texts(affected: &Ref, mods: &[Modification]) -> Vec<String> {
 
 /// The keywords given, joined with "and".
 fn given_text(mods: &[Modification]) -> Option<String> {
-    let names: Option<Vec<&str>> = mods
+    let names: Option<Vec<String>> = mods
         .iter()
         .map(|modification| match modification {
+            Modification::AddKeyword(Keyword::Affinity(kind)) => {
+                Some(format!("affinity for {}", phrase_text(kind, Form::All)?))
+            }
             Modification::AddKeyword(keyword) => HELPING
                 .iter()
                 .find(|(_, helping)| helping == keyword)
-                .map(|(name, _)| *name),
+                .map(|(name, _)| (*name).to_owned()),
             _ => None,
         })
         .collect();

@@ -4,7 +4,7 @@
 //! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
-mod affinity;
+pub(crate) mod affinity;
 mod afflict;
 mod afterlife;
 pub(crate) mod aftermath;
