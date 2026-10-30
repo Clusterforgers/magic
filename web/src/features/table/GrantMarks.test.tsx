@@ -50,13 +50,30 @@ describe('the grant marks', () => {
     expect(texts(container)).toEqual([...FIVE].reverse())
   })
 
-  it('caps the marks with the number of attachments left out', () => {
+  it('sums the attachments past the room into one mark, which names them in its title', () => {
     const { attaches } = stackOf(scene())
     const { container } = render(
       <GrantMarks attaches={attaches} compact={false} room={3} span={400} text="" />,
     )
-    expect(texts(container)).toEqual(FIVE.slice(0, 2))
-    expect(texts(container, 'card-grants-more')).toEqual(['+3'])
+    expect(texts(container)).toEqual(FIVE.slice(0, 1))
+    expect(texts(container, 'card-grants-more')).toEqual(['+5/+1 Umbra Trample Reach Haste Shroud'])
+    const rest = must(container.querySelector<HTMLElement>('[data-slot="card-grants-more"]'))
+    expect(rest.title).toBe(
+      '4 more attachments: +5/+1, umbra armor, so it is not destroyed, trample, reach, haste and shroud',
+    )
+  })
+
+  it('writes a mark in whole words over two lines where its width does not hold them in one', () => {
+    const { attaches } = stackOf(scene())
+    const { container } = render(
+      <GrantMarks attaches={attaches} compact={false} room={9} span={75} text="" />,
+    )
+    const first = must(container.querySelector<HTMLElement>('[data-slot="card-grant"]'))
+    expect([...first.querySelectorAll('.truncate')].map((line) => line.textContent)).toEqual([
+      '+3/+3 First',
+      'strike',
+    ])
+    expect(first).toHaveTextContent('+3/+3 First strike')
   })
 
   it.each([
@@ -120,11 +137,11 @@ describe('the foot stack of a picture', () => {
     return must(container.querySelector<HTMLElement>('[data-slot="card-marks-foot"]'))
   }
 
-  it('lists the marks that fit, the last attachment at the top, with "+N" for the rest', () => {
+  it('lists the marks that fit and sums the rest in the lines that are left', () => {
     const stack = foot('normal', 96)
-    // 96 px wide is 134 px high: three lines, so two marks and the count of the other three.
-    expect(texts(stack, 'card-grants-more')).toEqual(['+3'])
-    expect(texts(stack)).toEqual(['+2/+0 …', '+3/+3 …'])
+    // 96 px wide is 134 px high: three lines, so one mark of one line and the sum of the other four in two.
+    expect(texts(stack)).toEqual(['+3/+3 …'])
+    expect(texts(stack, 'card-grants-more')).toEqual(['+5/+1 Umbra …'])
   })
 
   it('has room for all five on a large face', () => {

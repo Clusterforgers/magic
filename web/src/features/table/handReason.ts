@@ -54,7 +54,7 @@ export function manaAtHand(view: StateView, options: PriorityOptions): number {
 
 /**
  * The note of every card in the viewer's hand that cannot be played now: its reason's label drawn on hover and focus,
- * and the same words for a screen reader.
+ * the same words for a screen reader and the reason's line for the card's preview.
  */
 export function handNotes(
   view: StateView,
@@ -66,8 +66,8 @@ export function handNotes(
     const object = objectsById[id]
     const reason = object === undefined ? null : unplayableReason(object, view, options)
     if (reason === null) continue
-    const { label } = REASON_WORDS[reason]
-    notes.set(id, { hint: label, words: label.toLowerCase() })
+    const { label, line } = REASON_WORDS[reason]
+    notes.set(id, { hint: label, line, words: label.toLowerCase() })
   }
   return notes
 }

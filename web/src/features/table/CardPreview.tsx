@@ -12,6 +12,7 @@ import { useSeatNamer } from './names'
 import { dockOf, usePreviewStore, usePreviewTarget } from './preview'
 import type { Dock, PreviewTarget } from './preview'
 import { attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
+import { useCardMark } from './prompt/marks'
 import { combatRoleIn } from './selectors'
 import { useLinks } from './useLinks'
 
@@ -46,6 +47,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       : combatText(state.view.combat, id, name, (other) => state.objectsById[other]?.name ?? 'a card'),
   )
   const links = useLinks(object)
+  const reason = useCardMark(id).note?.line
   const gone = object === undefined
 
   useEffect(() => {
@@ -84,6 +86,14 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       </div>
       <div className={cn('grid content-start gap-1 text-sm', wide ? 'mt-3' : 'min-w-0 flex-1')}>
         <p className="font-semibold">{object.name}</p>
+        {reason === undefined ? null : (
+          <p
+            data-slot="preview-reason"
+            className="w-fit rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-foreground"
+          >
+            {reason}.
+          </p>
+        )}
         {object.mana_cost === null ? null : <p>Mana cost {costText(object.mana_cost)}</p>}
         <p>{typeLine(object)}</p>
         {pt === null ? null : <p>Power/toughness {pt}</p>}

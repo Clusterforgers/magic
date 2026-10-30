@@ -1,6 +1,6 @@
 // Goal: the page an invite link opens takes a guest from the link to the lobby: /join/{code}, typed in lower case with a hyphen as people paste it, shows the code grouped in capitals, asks for a name on the page, opens the seat the server gave in the lobby (the seat link in the address fragment survives a reload) and shows the new name to the host; a code no game has ends in one sentence with the ways to Play and to Create a game, a link that holds no code says so without a request, and both pages fit the window at 1280x720 and 390 wide without scrolling.
 import { expect, test } from '@playwright/test'
-import type { Page } from '@playwright/test'
+import type { Browser, Page } from '@playwright/test'
 import { seatRows } from './lobby'
 import { WEB_URL } from './ports'
 
@@ -25,6 +25,22 @@ async function fitsEveryWindow(page: Page): Promise<void> {
     expect(overflow, `${size.width}x${size.height}`).toEqual({ across: 0, down: 0 })
   }
   if (before !== null) await page.setViewportSize(before)
+}
+
+/**
+ * Checks that the join page of `path` fits every window, on a page of its own: the page that takes the click keeps
+ * one window size from its first frame to the click.
+ */
+async function joinPageFits(browser: Browser, path: string): Promise<void> {
+  const context = await browser.newContext()
+  try {
+    const page = await context.newPage()
+    await page.goto(path)
+    await expect(page.getByRole('button', { name: 'Join game' })).toBeVisible()
+    await fitsEveryWindow(page)
+  } finally {
+    await context.close()
+  }
 }
 
 test('a guest follows an invite link, gives a name on the page and lands in the lobby', async ({
@@ -66,13 +82,14 @@ test('a guest follows an invite link, gives a name on the page and lands in the 
     await hostPage.goto(`/game/${created.game}#seat=${hostSeat.seat}&token=${hostSeat.token}`)
     await expect(hostPage.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
 
+    await joinPageFits(browser, `/join/${grouped}`)
+
     // As a link survives a chat message: lower case with a hyphen in the middle.
     await guestPage.goto(`/join/${grouped.toLowerCase()}`)
     await expect(guestPage.getByRole('heading', { level: 1, name: 'Join a game' })).toBeVisible()
     await expect(guestPage.getByText(grouped, { exact: true })).toBeVisible()
     const name = guestPage.getByLabel('Your name')
     await expect(name).toBeFocused()
-    await fitsEveryWindow(guestPage)
 
     await name.fill('Ivy')
     await guestPage.getByRole('button', { name: 'Join game' }).click()

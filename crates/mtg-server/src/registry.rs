@@ -568,6 +568,8 @@ impl Registry {
             code_digest: Some(*code.digest().as_bytes()),
         };
         let house_rules = setup.house_rules.clone();
+        // The seed is the whole game: with it and the recipe's decks a failing run replays exactly.
+        tracing::info!(game = %id, seed = setup.seed, seats, "game created");
         let format = recipe
             .as_ref()
             .map_or(options.format, |recipe| recipe.format);

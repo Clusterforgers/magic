@@ -1,0 +1,62 @@
+/** Goal: `?prompt=priority-abilities` hands the viewer, at every seat count, a Priority decision the wire parser accepts whose abilities are worded on the viewer's own creatures, graveyard card and commander, and the table draws them legal, asks which of two, and clears the prompt once one is activated. */
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
+import { GameContext } from '@/features/game/gameContext'
+import { GameTable } from '@/features/table/GameTable'
+import { TableOptionsContext } from '@/features/table/tableOptions'
+import { parseMessage } from '@/net/parse'
+import { must } from '@/test-utils/batches'
+import { fixtureGame } from './devGame'
+
+const sceneOf = (seats: number) => {
+  const game = fixtureGame({ seats, prompt: 'priority-abilities' })
+  const { pending, view } = game.session.store.getState()
+  const { decision, id } = must(pending)
+  if (!('Priority' in decision.kind)) throw new Error('not a priority decision')
+  return { game, view: must(view), options: decision.kind.Priority, decision, id }
+}
+
+describe('?prompt=priority-abilities', () => {
+  it.each([2, 4, 12])('offers worded abilities of the viewer’s own cards at %i seats', (seats) => {
+    const { view, options, decision, id } = sceneOf(seats)
+    const offered = must(options.abilities)
+    expect(offered).toHaveLength(5)
+    for (const ability of offered) {
+      const object = must(view.objects.find((o) => o.id === ability.object))
+      expect(object.activated?.some((entry) => entry.ability?.ability === ability.ability)).toBe(true)
+      const zone = typeof object.zone === 'object' ? Object.keys(object.zone)[0] : object.zone
+      expect(['Battlefield', 'Graveyard', 'Command']).toContain(zone)
+      expect(object.controller).toBe(0)
+    }
+    expect(parseMessage({ type: 'Decision', id, decision }).ok).toBe(true)
+  })
+
+  it('is drawn legal on the table, asks which of two abilities and clears when one is activated', async () => {
+    const { game, options, view } = sceneOf(2)
+    const count = (id: number): number => must(options.abilities).filter((a) => a.object === id).length
+    const onBattlefield = must(options.abilities).filter(
+      (a) => must(view.objects.find((o) => o.id === a.object)).zone === 'Battlefield',
+    )
+    const single = must(onBattlefield.find((a) => count(a.object) === 1)).object
+    const double = must(onBattlefield.find((a) => count(a.object) === 2)).object
+    render(
+      <GameContext value={game}>
+        <TableOptionsContext value={{}}>
+          <GameTable />
+        </TableOptionsContext>
+      </GameContext>,
+    )
+    const user = userEvent.setup()
+    const card = (id: number): HTMLElement =>
+      must(document.querySelector<HTMLElement>(`button[data-object-id="${id}"]`))
+    expect(card(single)).toHaveAttribute('data-highlight', 'legal')
+    expect(card(double)).toHaveAttribute('data-highlight', 'legal')
+    await user.click(card(double))
+    expect(screen.getAllByRole('menuitem')).toHaveLength(2)
+    await user.keyboard('{Escape}')
+    expect(game.session.store.getState().pending).not.toBeNull()
+    await user.click(card(single))
+    expect(game.session.store.getState().pending).toBeNull()
+  })
+})

@@ -90,6 +90,19 @@ describe('moves', () => {
     expect(chip?.body).toMatch(/width:\s*var\(--fx-chip-w\)/)
   })
 
+  it('frames the viewer’s own spotlight with the plain border, the rival’s with the strong one', () => {
+    const rules = rulesIn(outside)
+    const caption = rules.find((rule) => rule.selector === '.fx-spotlight-caption')
+    const own = rules.filter((rule) => rule.selector.startsWith('.fx-spotlight[data-own]'))
+    expect(caption?.body).toContain('var(--border-strong)')
+    expect(own).toHaveLength(2)
+    for (const rule of own) {
+      expect(rule.body, rule.selector).toContain('var(--border)')
+      expect(rule.body, rule.selector).not.toContain('--border-strong')
+      expect(rule.body, rule.selector).not.toMatch(/pointer-events:\s*auto/)
+    }
+  })
+
   it('eases as the app stylesheet does', () => {
     expect(app).toContain(`--ease-out: ${EASE_OUT};`)
   })

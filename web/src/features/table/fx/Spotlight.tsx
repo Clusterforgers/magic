@@ -28,13 +28,14 @@ function useTargetsLine(spotlight: SpotlightPlan): string {
  * The spell of a cast by another seat, or of one that passes through the stack inside the batch, standing large over
  * the shared strip: the card at a readable size and under it who casts what and at what. It comes in and goes out in
  * 150 ms each within `--fx-spotlight-ms`; under reduced motion it appears and goes without motion for the same time.
- * A card the viewer cannot identify shows its back. The picture takes no pointer and is gone when the time is up.
+ * A card the viewer cannot identify shows its back. The picture takes no pointer and is gone when the time is up. The
+ * viewer's own cast (`own`) stands shorter, in a frame of lower contrast, and says "You cast".
  */
 export function Spotlight({ spotlight, travel }: { spotlight: SpotlightPlan; travel: Travel }) {
   const root = useRef<HTMLDivElement>(null)
   const seat = useSeatNamer()
   const aims = useTargetsLine(spotlight)
-  const { box, card, look, faceDown, still } = spotlight
+  const { box, card, look, faceDown, still, own } = spotlight
   useLayoutEffect(() => {
     const element = root.current
     if (element === null || typeof element.animate !== 'function') {
@@ -53,6 +54,7 @@ export function Spotlight({ spotlight, travel }: { spotlight: SpotlightPlan; tra
       ref={root}
       data-slot="fx-spotlight"
       data-still={still || undefined}
+      data-own={own || undefined}
       className="fx-spotlight"
       style={style}
     >
@@ -62,7 +64,9 @@ export function Spotlight({ spotlight, travel }: { spotlight: SpotlightPlan; tra
         back={faceDown}
       />
       <div data-slot="fx-spotlight-caption" className="fx-spotlight-caption">
-        <p className="truncate text-xs text-muted-foreground">{seat(spotlight.caster)} casts</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {own ? 'You cast' : `${seat(spotlight.caster)} casts`}
+        </p>
         <p className="truncate text-sm font-semibold">{name}</p>
         {aims === '' ? null : <p className="truncate text-xs">→ {aims}</p>}
       </div>

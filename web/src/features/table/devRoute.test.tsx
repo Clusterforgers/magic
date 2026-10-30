@@ -210,12 +210,24 @@ describe('/dev/table with table effects', () => {
       (button) => button.textContent ?? '',
     )
 
-  it('offers a button for every move, with or without `fx`', async () => {
-    await visit('/dev/table?seats=2')
-    await screen.findByRole('region', { name: 'Game table' })
-    expect(buttons()).toEqual([...DEV_FX])
-    expect(document.querySelector('[data-fx]')).toBeNull()
-  })
+  it.each(['?seats=2&bar=1', '?seats=2&bar=1&fx=cast'])(
+    'offers a button for every move once `bar=1` opens it (%s)',
+    async (search) => {
+      await visit(`/dev/table${search}`)
+      await screen.findByRole('region', { name: 'Game table' })
+      expect(buttons()).toEqual(['Effects', ...DEV_FX])
+      expect(document.querySelector('[data-fx]')).toBeNull()
+    },
+  )
+
+  it.each(['?seats=2', '?seats=2&fx=cast', '?seats=2&bar=0'])(
+    'folds the bar behind one button for %s',
+    async (search) => {
+      await visit(`/dev/table${search}`)
+      await screen.findByRole('region', { name: 'Game table' })
+      expect(buttons()).toEqual(['Effects'])
+    },
+  )
 
   // A fake clock: the move waits for FIRST_MOVE_MS of the test's time, however long the page took to load.
   it('plays the move named by `fx` once the page has loaded, with the effect on', async () => {
@@ -234,7 +246,7 @@ describe('/dev/table with table effects', () => {
   })
 
   it('plays a move when its button is pressed, which changes the table either way', async () => {
-    await visit('/dev/table?seats=2')
+    await visit('/dev/table?seats=2&bar=1')
     await screen.findByRole('region', { name: 'Game table' })
     const bo = (): string =>
       document.querySelector('section[data-seat="1"] [data-slot="life"]')?.textContent ?? ''
@@ -246,7 +258,7 @@ describe('/dev/table with table effects', () => {
   })
 
   it('draws the effect of a pressed button once the address has asked for effects', async () => {
-    await visit('/dev/table?seats=2&fx=enter')
+    await visit('/dev/table?seats=2&fx=enter&bar=1')
     await screen.findByRole('region', { name: 'Game table' })
     await act(async () => screen.getByRole('button', { name: 'life' }).click())
     expect(document.querySelector('[data-slot="life"][data-fx]')).not.toBeNull()

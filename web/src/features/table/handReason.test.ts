@@ -127,7 +127,7 @@ describe('unplayableReason with the server reason', () => {
     const view = viewOf(MAIN)
     const { objectsById } = momentOf(view)
     expect([...handNotes(view, objectsById, told('Targets'))]).toEqual([
-      [MY_HAND_CARD, { hint: 'No targets', words: 'no targets' }],
+      [MY_HAND_CARD, { hint: 'No targets', line: 'Nothing it can target', words: 'no targets' }],
     ])
   })
 
@@ -159,7 +159,10 @@ describe('handNotes', () => {
     const view = viewOf({ ...MAIN, own: false })
     const { objectsById } = momentOf(view)
     expect([...handNotes(view, objectsById, NONE)]).toEqual([
-      [MY_HAND_CARD, { hint: REASON_WORDS.Timing.label, words: 'sorcery speed' }],
+      [
+        MY_HAND_CARD,
+        { hint: REASON_WORDS.Timing.label, line: REASON_WORDS.Timing.line, words: 'sorcery speed' },
+      ],
     ])
     expect(handNotes(view, objectsById, { ...NONE, castable: [MY_HAND_CARD] }).size).toBe(0)
   })

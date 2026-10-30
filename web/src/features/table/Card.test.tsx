@@ -222,7 +222,7 @@ describe('seams for the decision layer', () => {
     await user.keyboard('{Enter}')
     await user.keyboard(' ')
     expect(onSelect).toHaveBeenCalledTimes(3)
-    expect(onSelect).toHaveBeenCalledWith(ID)
+    expect(onSelect).toHaveBeenCalledWith(ID, button())
   })
 
   it('does not need an onSelect', async () => {

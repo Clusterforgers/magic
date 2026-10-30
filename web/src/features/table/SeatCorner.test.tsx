@@ -315,7 +315,7 @@ describe('the size of the pictures', () => {
     expect(alice.style.gridTemplateColumns).toBe('repeat(1, 92px)')
   })
 
-  it('keeps the chips and the small cards of the pod where the column has no room for the least picture', () => {
+  it('keeps one row of zone chips, with no card cut by the column, where there is no room for the least picture', () => {
     above(74)
     show({ room: { height: 100, card: 120 } })
     const bo = pod('Bo')
@@ -324,7 +324,26 @@ describe('the size of the pictures', () => {
       '5',
     )
     expect(within(bo).getByRole('button', { name: 'Exile 2 cards, opens the list' })).toHaveTextContent('2')
-    expect(size(within(bo).getByRole('list', { name: "Bo's command zone" }))).toBe('44px')
+    expect(within(bo).getByRole('button', { name: /^Command zone/ })).toBeInTheDocument()
+    const row = must(bo.querySelector<HTMLElement>('[data-slot="corner-chips"]'))
+    expect(row).toHaveClass('grid-cols-3')
+    expect(within(row).getAllByRole('button')).toHaveLength(3)
+    expect(within(bo).queryByRole('list', { name: "Bo's command zone" })).toBeNull()
     expect(bo.querySelector('[data-slot="commander-chips"] [data-slot="commander-tax"]')).not.toBeNull()
+  })
+
+  it.each<[string, number, 'picture' | 'chips']>([
+    ['a column of 160 px (a room of 62 px under the blocks)', 160, 'picture'],
+    ['a column of 159 px (a room of 61 px under the blocks)', 159, 'chips'],
+  ])('is a picture or chips whole, never a cut card: %s', (_name, height, form) => {
+    above(74)
+    show({ room: { height, card: 120 } })
+    const bo = pod('Bo')
+    expect(bo.querySelector('[data-slot="seat-corner"]') !== null).toBe(form === 'picture')
+    expect(bo.querySelector('[data-slot="corner-chips"]') !== null).toBe(form === 'chips')
+    // The commander card is drawn only inside the pictures: 44 px cards are not stacked beside the chips.
+    expect(within(bo).queryAllByRole('list', { name: "Bo's command zone" })).toHaveLength(
+      form === 'picture' ? 1 : 0,
+    )
   })
 })

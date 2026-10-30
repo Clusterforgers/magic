@@ -17,14 +17,14 @@ export interface PreviewHandlers {
  * handles (`onClick`: the card plays, taps or is chosen) pins nothing: it is an act and not a request to look, and a
  * pinned preview covers a part of the table (the prompt among it) until it is closed.
  */
-export function usePreviewHandlers(id: ObjectId, onClick?: () => void): PreviewHandlers {
+export function usePreviewHandlers(id: ObjectId, onClick?: (card: HTMLElement) => void): PreviewHandlers {
   const preview = usePreviewStore()
   // An element that leaves the screen while hovered gets no pointer-leave.
   useEffect(() => () => preview.hide(id), [preview, id])
   return {
     onClick(event) {
       if (onClick !== undefined) {
-        onClick()
+        onClick(event.currentTarget)
         return
       }
       preview.pin(id, anchorOf(event.currentTarget))

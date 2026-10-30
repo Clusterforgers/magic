@@ -1,4 +1,4 @@
-// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock; the game-over screen of a real game fits the window too.
+// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats with 40 permanents a seat, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
@@ -349,6 +349,71 @@ test.describe('the development table with 40 permanents a seat', () => {
         `${size.width}x${size.height}: the opponent's pictures`,
       ).toBeGreaterThanOrEqual(44)
       expect(opponent.inside, `${size.width}x${size.height}: the pictures are inside the column`).toBe(true)
+    }
+  })
+
+  // The scene of five attachments on one creature, an opponent's Aura on yours, yours on theirs, a Curse and an Equipment on nothing.
+  for (const [name, query] of [
+    ['four seats', 'equip=1&prompt=priority&turn=you'],
+    ['the duel board', 'board=duel&equip=1&prompt=priority&turn=you'],
+  ] as const) {
+    test(`fits at every size with the attachments scene on ${name}`, async ({ page }) => {
+      await page.goto(`${DEV_WEB_URL}/dev/table?${query}`)
+      await page.locator(THINGS.primary).waitFor()
+      await atEverySize(page, ['hand', 'life', 'primary'], onTable(`the attachments scene on ${name}`))
+    })
+  }
+
+  test('writes the grant marks in whole words and the opponent’s corner as whole pictures or whole chips, at every size', async ({
+    page,
+  }) => {
+    // What a page shows of its marks and of the cards in its pod columns, read in one step.
+    const read = () =>
+      page.evaluate(() => {
+        const marks = [
+          ...document.querySelectorAll('[data-slot="card-grant"], [data-slot="card-grants-more"]'),
+        ].map((mark) => ({
+          text: mark.textContent ?? '',
+          // A line that the box cuts has more text than room (`truncate`): its word is cut.
+          cut: [...mark.querySelectorAll('.truncate')].some(
+            (line) => line.scrollWidth > line.clientWidth + 0.5,
+          ),
+          font: parseFloat(getComputedStyle(mark).fontSize),
+        }))
+        const columns = [...document.querySelectorAll('[data-slot="pod-column"]')].map((column) => {
+          const box = column.getBoundingClientRect()
+          const cards = [...column.querySelectorAll('[data-object-id]')]
+          return {
+            picture: column.querySelector('[data-slot="seat-corner"]') !== null,
+            cards: cards.length,
+            outside: cards.filter((card) => {
+              const rect = card.getBoundingClientRect()
+              return rect.top < box.top - 0.5 || rect.bottom > box.bottom + 0.5
+            }).length,
+          }
+        })
+        return { marks, columns }
+      })
+    await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&equip=1`)
+    await page.locator('[data-slot="card-grant"]').first().waitFor()
+    for (const size of SIZES) {
+      await page.setViewportSize({ width: size.width, height: size.height })
+      await page.waitForTimeout(300)
+      const { marks, columns } = await read()
+      const label = `${size.width}x${size.height}`
+      expect(
+        marks.filter((mark) => mark.cut).map((mark) => mark.text),
+        `${label}: marks cut by their box`,
+      ).toEqual([])
+      expect(
+        marks.filter((mark) => mark.font < 11).map((mark) => mark.text),
+        `${label}: marks under 11 px`,
+      ).toEqual([])
+      // A corner of pictures keeps every card inside its column; a corner of chips draws no card at all.
+      for (const column of columns) {
+        expect(column.outside, `${label}: a card of a pod column leaves it`).toBe(0)
+        if (!column.picture) expect(column.cards, `${label}: a column of chips has no card`).toBe(0)
+      }
     }
   })
 

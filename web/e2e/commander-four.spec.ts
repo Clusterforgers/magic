@@ -19,6 +19,9 @@ test.skip(
   'set E2E_DATABASE_URL to a database with cards and precons to run this',
 )
 
+// The server's engine seed is pinned (`seeds.ts`): with a random one this game ends in a winner in four runs of five,
+// with the pinned one in every run, and a failure replays with the seed that `attachFailure` attaches.
+
 /** House rules that shorten the game: a low life total, so the attacks of a few turns end it. */
 const HOUSE_RULES = { 'Starting life': process.env['E2E_LIFE'] ?? '12' }
 /** The turn the run stops at without a winner, which is a failure that names the table. */

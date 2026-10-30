@@ -70,6 +70,19 @@
     0 4px 12px color-mix(in oklch, var(--foreground) 25%, transparent);
 }
 
+/* The viewer's own cast: the same card in a frame of lower contrast, since the viewer has just chosen it. */
+.fx-spotlight[data-own] > span {
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 2px 8px color-mix(in oklch, var(--foreground) 15%, transparent);
+}
+
+.fx-spotlight[data-own] .fx-spotlight-caption {
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 2px 6px color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
 /*
  * A mark: what a spell, ability or move did to a card, a stack chip or a flying card, as a badge with an icon and a
  * short word. The colour of the kind is on its edge and its icon; the words stay `--foreground` on `--card`. It stands

@@ -18,6 +18,7 @@ import type {
   YieldUntil,
 } from '@/protocol/generated'
 import { forecastScene, withBlockForecast } from './combatScene'
+import { abilitiesTable, withAbilities } from './abilityScene'
 import { assignDamage } from './damagePrompt'
 import { ANNOUNCE_PROMPTS } from './announcePrompts'
 import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
@@ -404,6 +405,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-main': priority,
   'priority-end': priority,
   'priority-wait': priority,
+  // The same with abilities to activate on two creatures, a graveyard card and the commander (`dev/abilityScene.ts`).
+  'priority-abilities': withAbilities(priority),
   attack,
   block,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
@@ -480,6 +483,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-main': quietMoment('Main1', true),
   'priority-end': quietMoment('End', true),
   'priority-wait': quietMoment('Upkeep', false),
+  'priority-abilities': abilitiesTable,
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
   'yield-resolve': (fixture) =>

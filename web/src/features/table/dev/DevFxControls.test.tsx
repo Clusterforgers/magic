@@ -1,4 +1,4 @@
-// Goal: the dev effect buttons play their move on the table once for every press and show its effect (which ends on its own), and a move named in the address plays once, FIRST_MOVE_MS after the page loads, and never after the page is gone.
+// Goal: the Effects bar is folded behind one button that opens and folds it (opened at the start by `open`), its move buttons play their move on the table once for every press and show its effect (which ends on its own), and a move named in the address plays once, FIRST_MOVE_MS after the page loads, and never after the page is gone.
 import { act, fireEvent, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GameTable } from '@/features/table/GameTable'
@@ -17,13 +17,13 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-function mount(initial?: DevFx, effects = true) {
+function mount(initial?: DevFx, effects = true, open = true) {
   const table = renderTable({
     options: { effects },
     ui: (
       <>
         <GameTable />
-        <DevFxControls initial={initial} />
+        <DevFxControls initial={initial} open={open} />
       </>
     ),
   })
@@ -41,11 +41,54 @@ function mount(initial?: DevFx, effects = true) {
 
 const decorated = (container: HTMLElement): number => container.querySelectorAll('[data-fx]').length
 
+describe('the fold', () => {
+  const group = (): HTMLElement => screen.getByRole('group', { name: 'Table effects (development)' })
+  const toggle = (): HTMLElement => screen.getByRole('button', { name: 'Effects' })
+
+  it('is one button and no move until it is opened', () => {
+    mount(undefined, true, false)
+    expect([...group().querySelectorAll('button')]).toEqual([toggle()])
+    expect(toggle()).toHaveAttribute('aria-expanded', 'false')
+    expect(toggle()).not.toHaveAttribute('aria-controls')
+    expect(screen.queryByRole('button', { name: 'life' })).toBeNull()
+  })
+
+  it('opens and folds again with the button, and a move still plays after it', () => {
+    const { press, seq } = mount(undefined, true, false)
+    fireEvent.click(toggle())
+    expect(toggle()).toHaveAttribute('aria-expanded', 'true')
+    expect(
+      group().querySelector(`#${CSS.escape(toggle().getAttribute('aria-controls') ?? '')}`),
+    ).not.toBeNull()
+    const before = seq()
+    press('life')
+    expect(seq()).toBeGreaterThan(before)
+    fireEvent.click(toggle())
+    expect(screen.queryByRole('button', { name: 'life' })).toBeNull()
+  })
+
+  it('starts open when asked to', () => {
+    mount()
+    expect(toggle()).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  it('plays the move of the address with the bar folded', () => {
+    const { seq, advance } = mount('death', true, false)
+    const before = seq()
+    advance(FIRST_MOVE_MS)
+    expect(seq()).toBeGreaterThan(before)
+    expect(screen.queryByRole('button', { name: 'death' })).toBeNull()
+  })
+})
+
 describe('the buttons', () => {
-  it('are one group with one button for each move', () => {
+  it('are one group with the toggle and one button for each move', () => {
     mount()
     const group = screen.getByRole('group', { name: 'Table effects (development)' })
-    expect([...group.querySelectorAll('button')].map((button) => button.textContent)).toEqual([...DEV_FX])
+    expect([...group.querySelectorAll('button')].map((button) => button.textContent)).toEqual([
+      'Effects',
+      ...DEV_FX,
+    ])
   })
 
   it.each(DEV_FX)('%s plays its move once for a press and shows its effect', (kind) => {

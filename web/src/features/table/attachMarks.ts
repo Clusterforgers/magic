@@ -1,5 +1,7 @@
 /** What the attachments of a host give it, as the marks on its face, the words of its spoken name and the lines of its preview. Pure. */
 import type { GivenRule, GivesView, ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
+import { layoutWords } from './markLayout'
+import type { LayoutOptions } from './markLayout'
 import { tuckRank } from './rowStacks'
 
 /** What a host needs to tell its own attachments from foreign ones. */
@@ -12,40 +14,57 @@ export type MarkTone = 'raise' | 'restrict' | 'plain'
 export interface GiveItem {
   /** "+2/+2", "Flying", "Pro red", "Umbra", "Can't attack". */
   text: string
+  /** The same in fewer, whole words for a narrow mark: "No attack", "Pacified", "Indestr."; the text itself when it is short. */
+  brief: string
   /** "+2/+2", "flying", "protection from red", "umbra armor: the host is not destroyed". */
   words: string
   tone: MarkTone
 }
 
-interface RuleWords {
-  text: string
-  words: string
-  tone: MarkTone
-}
+type RuleWords = GiveItem
 
+const give = (text: string, brief: string, words: string, tone: MarkTone): RuleWords => ({
+  text,
+  brief,
+  words,
+  tone,
+})
+
+// Every rule the engine names has its words here: a rule left out is a type error.
 const RULES: Record<GivenRule, RuleWords> = {
-  CantAttack: { text: "Can't attack", words: "can't attack", tone: 'restrict' },
-  CantAttackYou: { text: "Can't attack you", words: "can't attack its controller", tone: 'restrict' },
-  CantBlock: { text: "Can't block", words: "can't block", tone: 'restrict' },
-  CanBlockOnly: { text: 'Blocks few', words: 'can block only some attackers', tone: 'restrict' },
-  CantBeBlocked: { text: 'Unblockable', words: "can't be blocked", tone: 'raise' },
-  CantBeBlockedBy: { text: 'Evasive', words: "can't be blocked by some creatures", tone: 'raise' },
-  BlockerLimit: { text: 'Block limit', words: 'needs or allows only some blockers', tone: 'plain' },
-  BlocksAdditional: { text: 'Extra blocks', words: 'can block additional creatures', tone: 'raise' },
-  DoesntUntap: { text: "Doesn't untap", words: "doesn't untap", tone: 'restrict' },
-  CantBeTurnedFaceUp: { text: 'Stays face down', words: "can't be turned face up", tone: 'restrict' },
-  LoseAbilities: { text: 'Loses abilities', words: 'loses all abilities', tone: 'restrict' },
-  LoseKeyword: { text: 'Loses a keyword', words: 'loses a keyword', tone: 'restrict' },
-  GainAbility: { text: 'New ability', words: 'gains an ability', tone: 'raise' },
-  SetController: { text: 'Stolen', words: 'changes controller', tone: 'restrict' },
-  SwitchPowerToughness: { text: 'Swaps P/T', words: 'power and toughness are switched', tone: 'plain' },
-  ChangeTypes: { text: 'New types', words: 'changes its types', tone: 'plain' },
-  SetColors: { text: 'New colour', words: 'changes its colour', tone: 'plain' },
-  Goaded: { text: 'Goaded', words: 'is goaded', tone: 'restrict' },
-  UmbraArmor: { text: 'Umbra', words: 'umbra armor, so it is not destroyed', tone: 'raise' },
+  CantAttack: give("Can't attack", 'No attack', "can't attack", 'restrict'),
+  CantAttackYou: give("Can't attack you", 'Spares you', "can't attack its controller", 'restrict'),
+  CantBlock: give("Can't block", 'No block', "can't block", 'restrict'),
+  CanBlockOnly: give('Blocks few', 'Blocks few', 'can block only some attackers', 'restrict'),
+  CantBeBlocked: give('Unblockable', 'Evades', "can't be blocked", 'raise'),
+  CantBeBlockedBy: give('Evasive', 'Evasive', "can't be blocked by some creatures", 'raise'),
+  BlockerLimit: give('Block limit', 'Blockers', 'needs or allows only some blockers', 'plain'),
+  BlocksAdditional: give('Extra blocks', 'More blocks', 'can block additional creatures', 'raise'),
+  DoesntUntap: give("Doesn't untap", 'No untap', "doesn't untap", 'restrict'),
+  CantBeTurnedFaceUp: give('Stays face down', 'Face down', "can't be turned face up", 'restrict'),
+  LoseAbilities: give('Loses abilities', 'Blanked', 'loses all abilities', 'restrict'),
+  LoseKeyword: give('Loses a keyword', 'No keyword', 'loses a keyword', 'restrict'),
+  GainAbility: give('New ability', 'Ability', 'gains an ability', 'raise'),
+  SetController: give('Stolen', 'Stolen', 'changes controller', 'restrict'),
+  SwitchPowerToughness: give('Swaps P/T', 'P/T swap', 'power and toughness are switched', 'plain'),
+  ChangeTypes: give('New types', 'Types', 'changes its types', 'plain'),
+  SetColors: give('New colour', 'Colour', 'changes its colour', 'plain'),
+  Goaded: give('Goaded', 'Goaded', 'is goaded', 'restrict'),
+  UmbraArmor: give('Umbra', 'Umbra', 'umbra armor, so it is not destroyed', 'raise'),
 }
 
-const BOTH: RuleWords = { text: "Can't attack or block", words: "can't attack or block", tone: 'restrict' }
+const BOTH = give("Can't attack or block", 'Pacified', "can't attack or block", 'restrict')
+
+const BRIEF_KEYWORDS: Readonly<Record<string, string>> = {
+  indestructible: 'Indestr.',
+  'pro multicolored': 'Pro multi',
+  'pro monocolored': 'Pro mono',
+}
+
+/** The keyword in a narrow mark: the long ones shortened, the rest as they are. */
+function briefKeyword(short: string): string {
+  return BRIEF_KEYWORDS[short.toLowerCase()] ?? short
+}
 
 const signed = (n: number): string => (n < 0 ? `${n}` : `+${n}`)
 
@@ -72,8 +91,10 @@ export function itemsOf(gives: GivesView | undefined): GiveItem[] {
   const items: GiveItem[] = []
   if (gives.set !== undefined) {
     const [power, toughness] = gives.set
+    const text = `Set ${power}/${toughness}`
     items.push({
-      text: `Set ${power}/${toughness}`,
+      text,
+      brief: text,
       words: `power and toughness set to ${power}/${toughness}`,
       tone: 'plain',
     })
@@ -82,7 +103,7 @@ export function itemsOf(gives: GivesView | undefined): GiveItem[] {
   const toughness = gives.toughness ?? 0
   if (power !== 0 || toughness !== 0) {
     const text = `${signed(power)}/${signed(toughness)}`
-    items.push({ text, words: text, tone: statTone(power, toughness) })
+    items.push({ text, brief: text, words: text, tone: statTone(power, toughness) })
   }
   const rules = gives.rules ?? []
   // Pacifism and its kin say both at once.
@@ -92,7 +113,8 @@ export function itemsOf(gives: GivesView | undefined): GiveItem[] {
     items.push(both && rule === 'CantAttack' ? BOTH : RULES[rule])
   }
   for (const keyword of gives.keywords ?? []) {
-    items.push({ text: shortKeyword(keyword), words: lowerFirst(keyword), tone: 'plain' })
+    const text = shortKeyword(keyword)
+    items.push({ text, brief: briefKeyword(text), words: lowerFirst(keyword), tone: 'plain' })
   }
   return items
 }
@@ -116,6 +138,8 @@ export interface Attach {
   /** The attachment's controller when it is not the host's, else undefined. */
   foreign: PlayerId | undefined
   items: readonly GiveItem[]
+  /** What it gives as the view says it, for summing the marks past the room. */
+  gives?: GivesView | undefined
 }
 
 /** The attachments of a host in the order they tuck (Auras, Equipment, Fortifications, each by id), with what each gives. */
@@ -129,6 +153,7 @@ export function attachesOf(host: HostRef, attachments: readonly ObjectView[]): A
       name: attachment.name,
       foreign: attachment.controller === host.controller ? undefined : attachment.controller,
       items: itemsOf(attachment.gives),
+      gives: attachment.gives,
     }))
 }
 
@@ -136,8 +161,10 @@ export function attachesOf(host: HostRef, attachments: readonly ObjectView[]): A
 export interface Mark {
   /** Stable while the content is. */
   key: string
-  /** What is drawn: the items that fit `chars`, or the attachment's name when it gives nothing. */
+  /** What is drawn, `lines` joined: the items that fit, or the attachment's name when it gives nothing. */
   text: string
+  /** The whole-word lines of `text`; one unless the mark was given room for two. */
+  lines: readonly string[]
   tone: MarkTone
   /** The attachments it stands for, in the order they tuck. */
   ids: readonly ObjectId[]
@@ -147,24 +174,8 @@ export interface Mark {
   cut: boolean
 }
 
-/** How many characters a mark may use before it leaves items out. */
-export interface MarkOptions {
-  chars?: number
-}
-
-/** The visible text of a list of items: as many as fit `chars` (the first always), with "…" when some are left out. */
-function fitText(items: readonly GiveItem[], chars: number): { text: string; cut: boolean } {
-  const all = items.map((item) => item.text).join(' ')
-  if (all.length <= chars || items.length < 2) return { text: all, cut: false }
-  // " …" takes two characters of what is written.
-  let text = items[0]?.text ?? ''
-  for (const item of items.slice(1)) {
-    const next = `${text} ${item.text}`
-    if (next.length + 2 > chars) break
-    text = next
-  }
-  return { text: `${text} …`, cut: true }
-}
+/** How wide a mark may be and how many lines it may take before it leaves items out (`layoutWords`). */
+export type MarkOptions = LayoutOptions
 
 /**
  * The marks of a host: one per attachment in the tuck order, "+2/+2", "Flying", "Pro red", "Umbra", "Can't attack"; an
@@ -180,12 +191,14 @@ export function marksOf(
 }
 
 /** The marks of attachments already read with `attachesOf`. */
-export function marksFrom(attaches: readonly Attach[], { chars = 99 }: MarkOptions = {}): Mark[] {
+export function marksFrom(attaches: readonly Attach[], options: MarkOptions = {}): Mark[] {
   const marks: Mark[] = []
   const seen = new Map<string, number>()
   for (const attach of attaches) {
-    const { text, cut } =
-      attach.items.length === 0 ? { text: attach.name, cut: false } : fitText(attach.items, chars)
+    const { lines, cut } = layoutWords(
+      attach.items.length === 0 ? [{ text: attach.name, brief: attach.name }] : attach.items,
+      options,
+    )
     const identity = `${attach.items.length === 0 ? `name:${attach.name}` : attach.items.map((i) => i.text).join(' ')}|${attach.foreign ?? ''}`
     const at = seen.get(identity)
     const earlier = at === undefined ? undefined : marks[at]
@@ -200,7 +213,8 @@ export function marksFrom(attaches: readonly Attach[], { chars = 99 }: MarkOptio
     seen.set(identity, marks.length)
     marks.push({
       key: identity,
-      text,
+      text: lines.join(' '),
+      lines,
       tone: attach.items.length === 0 ? 'plain' : toneOf(attach.items),
       ids: [attach.id],
       foreign: attach.foreign === undefined ? [] : [attach.foreign],
@@ -210,19 +224,81 @@ export function marksFrom(attaches: readonly Attach[], { chars = 99 }: MarkOptio
   return marks
 }
 
-/** The marks that fit `room` lines and how many attachments the last line, "+N", stands for. */
-export interface CappedMarks {
-  shown: Mark[]
-  /** The attachments left out of `shown`; 0 when everything fits. */
-  more: number
+/** What the attachments past the room give together: one mark with the sum. */
+export interface RestMark extends Mark {
+  /** The attachments it sums. */
+  count: number
+  /** What they give in words for a screen reader and a tooltip: "3 more attachments: +5/+3, haste and shroud". */
+  words: string
 }
 
-/** The marks that fit `room` lines: all of them when they fit, else the first `room - 1` and a "+N" line for the rest. */
-export function capMarks(marks: readonly Mark[], room: number): CappedMarks {
-  if (marks.length <= room) return { shown: [...marks], more: 0 }
-  const shown = marks.slice(0, Math.max(0, room - 1))
-  const left = marks.slice(shown.length)
-  return { shown, more: left.reduce((sum, mark) => sum + mark.ids.length, 0) }
+/** The marks that fit `room` lines, and the sum of the attachments that do not (null when everything fits). */
+export interface FoldedMarks {
+  shown: Mark[]
+  rest: RestMark | null
+}
+
+/** The sum of what attachments give: power and toughness added, the last set value, rules and keywords once each. */
+export function sumGives(all: ReadonlyArray<GivesView | undefined>): GivesView {
+  const given = all.filter((gives): gives is GivesView => gives !== undefined)
+  const power = given.reduce((sum, gives) => sum + (gives.power ?? 0), 0)
+  const toughness = given.reduce((sum, gives) => sum + (gives.toughness ?? 0), 0)
+  const set = given.reduce<GivesView['set']>((last, gives) => gives.set ?? last, undefined)
+  const rules = [...new Set(given.flatMap((gives) => gives.rules ?? []))]
+  const keywords = given
+    .flatMap((gives) => gives.keywords ?? [])
+    .filter(
+      (name, at, names) => names.findIndex((other) => other.toLowerCase() === name.toLowerCase()) === at,
+    )
+  return {
+    ...(power === 0 ? {} : { power }),
+    ...(toughness === 0 ? {} : { toughness }),
+    ...(set === undefined ? {} : { set }),
+    ...(rules.length === 0 ? {} : { rules }),
+    ...(keywords.length === 0 ? {} : { keywords }),
+  }
+}
+
+/** The one mark for attachments that do not get a line of their own: their summed gives, else just how many they are. */
+function restMark(attaches: readonly Attach[], options: MarkOptions): RestMark {
+  const items = itemsOf(sumGives(attaches.map((attach) => attach.gives)))
+  const count = attaches.length
+  const { lines, cut } =
+    items.length === 0 ? { lines: [`+${count}`], cut: false } : layoutWords(items, options)
+  return {
+    key: 'rest',
+    text: lines.join(' '),
+    lines,
+    tone: items.length === 0 ? 'plain' : toneOf(items),
+    ids: attaches.map((attach) => attach.id),
+    foreign: attaches.flatMap((attach) => (attach.foreign === undefined ? [] : [attach.foreign])),
+    cut,
+    count,
+    words: `${count} more attachments${items.length === 0 ? '' : `: ${listWords(items.map((item) => item.words))}`}`,
+  }
+}
+
+const linesOf = (marks: readonly Mark[]): number => marks.reduce((sum, mark) => sum + mark.lines.length, 0)
+
+/**
+ * The marks that fit `room` lines. All of them while they fit, each in up to two lines; else each in one line while
+ * those fit; else the first `room - 2` in one line each and the rest as one mark that sums what the other attachments
+ * give ("+5/+3 Haste Shroud"), in the two lines that are left. With a room of two or less that is every attachment in
+ * one sum, which tells their total.
+ */
+export function foldMarks(attaches: readonly Attach[], room: number, options: MarkOptions = {}): FoldedMarks {
+  const whole = marksFrom(attaches, options)
+  if (linesOf(whole) <= room) return { shown: whole, rest: null }
+  const lone = marksFrom(attaches, { ...options, maxLines: 1 })
+  if (lone.length <= room) return { shown: lone, rest: null }
+  const keep = Math.max(0, room - 2)
+  const shown = lone.slice(0, keep)
+  const left = new Set(lone.slice(keep).flatMap((mark) => mark.ids))
+  const rest = restMark(
+    attaches.filter((attach) => left.has(attach.id)),
+    { ...options, maxLines: Math.max(1, room - keep) },
+  )
+  return { shown, rest }
 }
 
 /** The icon a compact face shows with the count: a restriction wins, then a raise. */
