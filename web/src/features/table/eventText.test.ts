@@ -1,4 +1,4 @@
-// Goal: every kind of log event, public and hidden, reads as one plain sentence with the right names, and the quiet ones (priority, mana, untaps) are marked minor.
+// Goal: every kind of log event, public and hidden, reads as one plain sentence with the right names, and the quiet ones (priority, mana, untaps) are marked minor; an attach event names the host it comes from when the caller knows it.
 import { describe, expect, it } from 'vitest'
 import type {
   ContinuousEffect,
@@ -10,6 +10,7 @@ import type {
 } from '@/protocol/generated'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
+import type { HostRef } from './hosts'
 
 const SEATS = ['Ana', 'Bo', 'Cy']
 const CARDS: Record<number, string> = {
@@ -912,5 +913,33 @@ describe('the choice a permanent enters with', () => {
     ],
   ])('%j reads "%s"', (event, text) => {
     expect(say(event)).toBe(text)
+  })
+})
+
+describe('an attachment that moves', () => {
+  const attach = { Attached: { object: 3, to: 2 } } as const
+  const onPlayer = { AttachedToPlayer: { object: 3, player: 1 } } as const
+  const say = (event: Event, was?: HostRef | null): string =>
+    describeEvent({ Public: event }, names, was).text
+
+  it.each<[string, Event, HostRef | null | undefined, string]>([
+    ['from a creature to another', attach, { card: 1 }, 'Forest moves from Grizzly Bears to Hill Giant'],
+    ['from a player to a creature', attach, { player: 0 }, 'Forest moves from Ana to Hill Giant'],
+    ['from nothing to a creature', attach, null, 'Forest is attached to Hill Giant'],
+    ['with no word of where it hung', attach, undefined, 'Forest becomes attached to Hill Giant'],
+    ['to the same creature again', attach, { card: 2 }, 'Forest becomes attached to Hill Giant'],
+    ['from a creature to a player', onPlayer, { card: 1 }, 'Forest moves from Grizzly Bears to Bo'],
+    ['from a player to another', onPlayer, { player: 0 }, 'Forest moves from Ana to Bo'],
+    ['from nothing to a player', onPlayer, null, 'Forest enchants Bo'],
+    ['to the same player again', onPlayer, { player: 1 }, 'Forest enchants Bo'],
+    ['and loses its host', { Unattached: { object: 3 } }, { card: 1 }, 'Forest becomes unattached'],
+  ])('says an attachment that moves %s', (_name, event, was, text) => {
+    expect(say(event, was)).toBe(text)
+  })
+
+  it('leaves every other event as it was, whatever host is given', () => {
+    expect(say({ Entered: { object: 3, tapped: false, controller: 1 } }, { card: 1 })).toBe(
+      "Forest enters under Bo's control",
+    )
   })
 })

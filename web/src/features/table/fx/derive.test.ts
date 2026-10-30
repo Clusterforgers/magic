@@ -1,4 +1,4 @@
-// Goal: a batch becomes exactly the transient effects it deserves, whatever mix of attacks, blocks, damage, deaths, entries and life changes it holds: derived from the game before and after it plus its events (so a whole combat inside one batch still shows), with nothing for a batch that changed nothing worth showing, for damage that is merely cleared, or for permanents that left the game instead of dying, and without touching its inputs.
+// Goal: a batch becomes exactly the transient effects it deserves, whatever mix of attacks, blocks, damage, deaths, entries and life changes it holds: derived from the game before and after it plus its events (so a whole combat inside one batch still shows), with nothing for a batch that changed nothing worth showing, for damage that is merely cleared, or for permanents that left the game instead of dying, and without touching its inputs; and it finds the attachments that changed host between two moments (equipped, moved, unattached, put on a player) and none for one that stays, enters attached or whose host changes hands.
 import { describe, expect, it } from 'vitest'
 import { clone, deepFreeze, must } from '@/test-utils/batches'
 import {
@@ -22,7 +22,7 @@ import {
 } from '@/test-utils/miniTable'
 import type { Draft } from '@/test-utils/miniTable'
 import type { AttackerView, Event, EventView } from '@/protocol/generated'
-import { deriveEffects, MAX_GHOSTS } from './derive'
+import { deriveAttaches, deriveEffects, MAX_GHOSTS } from './derive'
 import type { Moment } from './derive'
 import type { Effect } from './model'
 
@@ -629,5 +629,108 @@ describe('purity', () => {
       ),
     )
     expect(deriveEffects(before, after, events).map((effect) => effect.kind)).toEqual(['damaged', 'died'])
+  })
+})
+
+// An artifact of the opponent stands for an Equipment; the viewer's creatures are its hosts.
+const EQUIP = FOE_IDOL
+const hangs =
+  (host: number | null, player: number | null = null) =>
+  (draft: Draft) => {
+    draft.edit(EQUIP, (object) => {
+      delete object.attached_to
+      delete object.attached_player
+      if (host !== null) object.attached_to = host
+      if (player !== null) object.attached_player = player
+    })
+  }
+const onBear = afterChange(base, hangs(MY_BEAR))
+
+describe('the attachments that changed host between two moments', () => {
+  const mine = (card: number) => ({ card, seat: ME })
+
+  it.each([
+    ['attached to a creature', base, afterChange(base, hangs(MY_BEAR)), null, mine(MY_BEAR)],
+    [
+      'moved to another creature',
+      onBear,
+      afterChange(onBear, hangs(MY_GIANT)),
+      mine(MY_BEAR),
+      mine(MY_GIANT),
+    ],
+    [
+      'moved to a creature of the other seat',
+      onBear,
+      afterChange(onBear, hangs(FOE_BEAR)),
+      mine(MY_BEAR),
+      { card: FOE_BEAR, seat: FOE },
+    ],
+    ['unattached', onBear, afterChange(onBear, hangs(null)), mine(MY_BEAR), null],
+    ['attached to a player', base, afterChange(base, hangs(null, FOE)), null, { player: FOE }],
+    [
+      'moved from a creature to a player',
+      onBear,
+      afterChange(onBear, hangs(null, ME)),
+      mine(MY_BEAR),
+      { player: ME },
+    ],
+    [
+      'moved from a player to a creature',
+      afterChange(base, hangs(null, FOE)),
+      afterChange(base, hangs(MY_BEAR)),
+      { player: FOE },
+      mine(MY_BEAR),
+    ],
+  ])('finds an equipment %s', (_name, before, after, from, to) => {
+    expect(deriveAttaches(before, after)).toEqual([{ object: EQUIP, seat: FOE, from, to }])
+  })
+
+  it.each([
+    ['the table did not change', base, base],
+    ['it stays on the same creature', onBear, afterChange(onBear, tap(MY_GIANT))],
+    [
+      'its host changes controller, taking it along',
+      onBear,
+      afterChange(onBear, (draft) =>
+        draft.edit(MY_BEAR, (object) => {
+          object.controller = FOE
+        }),
+      ),
+    ],
+    ['it dies', onBear, afterChange(onBear, (draft) => draft.die(EQUIP))],
+    [
+      'it enters already attached',
+      base,
+      afterChange(base, (draft) => {
+        draft.enter(FOE_SPELL)
+        draft.edit(FOE_SPELL, (object) => {
+          object.attached_to = MY_BEAR
+        })
+      }),
+    ],
+  ])('finds nothing when %s', (_name, before, after) => {
+    expect(deriveAttaches(before, after)).toEqual([])
+  })
+
+  it('finds each one by object id, with the controller of the attachment', () => {
+    const both = afterChange(base, (draft) => {
+      draft.edit(MY_WALL, (object) => {
+        object.attached_to = MY_BEAR
+      })
+      draft.edit(EQUIP, (object) => {
+        object.attached_to = MY_GIANT
+      })
+    })
+    expect(deriveAttaches(base, both)).toEqual([
+      { object: MY_WALL, seat: ME, from: null, to: { card: MY_BEAR, seat: ME } },
+      { object: EQUIP, seat: FOE, from: null, to: { card: MY_GIANT, seat: ME } },
+    ])
+  })
+
+  it('leaves its inputs untouched', () => {
+    const after = afterChange(onBear, hangs(MY_GIANT))
+    deepFreeze(onBear)
+    deepFreeze(after)
+    expect(() => deriveAttaches(onBear, after)).not.toThrow()
   })
 })

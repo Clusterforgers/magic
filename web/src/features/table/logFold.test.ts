@@ -1,4 +1,4 @@
-// Goal: the log draws a round of priority as one line: "All pass" with the seats' names when every seat in the game passed and a spell or ability was passed over to resolve, "Bo and Cy pass" when an action cut the round short, nothing at all for a seat receiving priority or for a step that went by with everybody passing, and every other line as it was, for 2 and 4 seats and for a game that has lost a seat.
+// Goal: the log draws a round of priority as one line: "All pass" with the seats' names when every seat in the game passed and a spell or ability was passed over to resolve, "Bo and Cy pass" when an action cut the round short, nothing at all for a seat receiving priority or for a step that went by with everybody passing, and every other line as it was, for 2 and 4 seats and for a game that has lost a seat; an attachment that moves says from which host, as far as the log has told.
 import { describe, expect, it } from 'vitest'
 import type { LogEntry } from '@/play/store'
 import type { EventView, PlayerId } from '@/protocol/generated'
@@ -146,5 +146,54 @@ describe('a long log', () => {
     expect(lines).toHaveLength(9)
     expect(lines.filter((line) => line.startsWith('All pass'))).toHaveLength(1)
     expect(lines.some((line) => line.includes('priority'))).toBe(false)
+  })
+})
+
+describe('an attachment in the log', () => {
+  const attached = (object: number, to: number): EventView => pub({ Attached: { object, to } })
+  const entered = (object: number): EventView => pub({ Entered: { object, tapped: false, controller: 0 } })
+  const away = (object: number): EventView => pub({ Unattached: { object } })
+  const lines = (events: readonly EventView[]): string[] => fold(events, seatsOf(2))
+
+  it('says where an attachment came from once the log has told where it was', () => {
+    expect(lines([entered(7), attached(7, 1), attached(7, 2), attached(7, 1)])).toEqual([
+      "Card 7 enters under Alice's control",
+      'Card 7 is attached to Card 1',
+      'Card 7 moves from Card 1 to Card 2',
+      'Card 7 moves from Card 2 to Card 1',
+    ])
+  })
+
+  it('says an attachment that lost its host was attached to nothing', () => {
+    expect(lines([attached(7, 1), away(7), attached(7, 2)])).toEqual([
+      'Card 7 becomes attached to Card 1',
+      'Card 7 becomes unattached',
+      'Card 7 is attached to Card 2',
+    ])
+  })
+
+  it('says a player it moves from, and the move to a player', () => {
+    const onPlayer = pub({ AttachedToPlayer: { object: 7, player: 1 } })
+    expect(lines([entered(7), onPlayer, attached(7, 1), onPlayer])).toEqual([
+      "Card 7 enters under Alice's control",
+      'Card 7 enchants Bo',
+      'Card 7 moves from Bo to Card 1',
+      'Card 7 moves from Card 1 to Bo',
+    ])
+  })
+
+  it('says nothing of a host it has not been told about: the first attach keeps its plain line', () => {
+    expect(lines([attached(7, 1)])).toEqual(['Card 7 becomes attached to Card 1'])
+  })
+
+  it('forgets the host of an attachment that left the battlefield', () => {
+    const left = pub({
+      ZoneChanged: { object: 7, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'StateBased' },
+    })
+    expect(lines([attached(7, 1), left, attached(7, 2)])).toEqual([
+      'Card 7 becomes attached to Card 1',
+      'Card 7 is put into the graveyard',
+      'Card 7 is attached to Card 2',
+    ])
   })
 })

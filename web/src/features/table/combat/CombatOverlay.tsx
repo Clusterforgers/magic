@@ -1,11 +1,13 @@
 import { useContext, useMemo, useRef } from 'react'
 import { cn } from '@/lib/utils'
+import { useAttachLines } from './attachLines'
 import { anchorKey, anchorsOf } from './plan'
 import type { LineSpec } from './plan'
 import { RectProviderContext, shapesOf, useAnchorRects } from './rects'
 import type { DrawnLine } from './rects'
 import { useCombatPlan } from './useCombatPlan'
 import './combat.css'
+import './attach.css'
 
 interface LayerProps {
   drawn: readonly DrawnLine[]
@@ -70,6 +72,8 @@ function Lines({ lines }: { lines: readonly LineSpec[] }) {
  * pointer, and mounted only while there is a line to draw. Its parent must be positioned (`relative`).
  */
 export function CombatOverlay() {
-  const lines = useCombatPlan()
+  const combat = useCombatPlan()
+  const moved = useAttachLines()
+  const lines = useMemo(() => (moved.length === 0 ? combat : [...combat, ...moved]), [combat, moved])
   return lines.length === 0 ? null : <Lines lines={lines} />
 }

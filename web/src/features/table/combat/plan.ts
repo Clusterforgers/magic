@@ -17,8 +17,11 @@ export type Anchor =
     }
   | { kind: 'seat'; seat: PlayerId }
 
-/** An attack goes from an attacker to what it attacks; a block from a blocker to the attacker it blocks. */
-export type LineKind = 'attack' | 'block'
+/**
+ * An attack goes from an attacker to what it attacks; a block from a blocker to the attacker it blocks; an attach from
+ * the old host of an attachment to its new one (`attachLines.ts`).
+ */
+export type LineKind = 'attack' | 'block' | 'attach'
 
 /** One line of the overlay. */
 export interface LineSpec {

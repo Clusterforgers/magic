@@ -124,7 +124,13 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
     const from = rects.get(anchorKey(line.from))
     const to = rects.get(anchorKey(line.to))
     if (from === undefined || to === undefined) continue
-    const shape = connect(from, to, line.kind === 'block' ? { bow: 0.1, head: 10 } : { bow: 0.12, head: 8 })
+    const curve =
+      line.kind === 'block'
+        ? { bow: 0.1, head: 10 }
+        : line.kind === 'attach'
+          ? { bow: 0.15, head: 10 }
+          : { bow: 0.12, head: 8 }
+    const shape = connect(from, to, curve)
     if (shape === null) continue
     const same = `${shape.d}|${line.kind}|${line.pending}|${line.outcome ?? ''}`
     if (seen.has(same)) continue

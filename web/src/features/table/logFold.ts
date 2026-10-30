@@ -1,10 +1,12 @@
 /** The game log as the panel draws it: a line for every event worth one, and each round of priority passes folded into one line. */
 import type { LogEntry } from '@/play/store'
-import type { Event, PlayerId, PlayerView } from '@/protocol/generated'
+import type { Event, ObjectId, PlayerId, PlayerView } from '@/protocol/generated'
 import { commanderDamageLine } from './commander'
 import { commanderHits } from './commanderLog'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
+import { hostChangeOf } from './hosts'
+import type { HostRef } from './hosts'
 import { byHandLine, manualRun, manualText } from './manual/manualLog'
 
 /** One line of the folded log. */
@@ -65,9 +67,14 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
     log.map((entry) => entry.event),
     options.players ?? [],
   )
+  // Where each attachment hung as the log has told it, so that a move says from which host it comes.
+  const hosts = new Map<ObjectId, HostRef | null>()
   // The events after a manual action that its sentence already tells.
   let told = 0
   log.forEach(({ seq, event }, index) => {
+    const moved = hostChangeOf(event)
+    const hostBefore = moved === null ? undefined : hosts.get(moved.object)
+    if (moved !== null) hosts.set(moved.object, moved.to)
     if (told > 0) {
       told -= 1
       return
@@ -100,7 +107,7 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
     const hit = hits.get(index)
     const line =
       hit === undefined
-        ? describeEvent(event, names)
+        ? describeEvent(event, names, hostBefore)
         : {
             text: commanderDamageLine(
               names.card(hit.source),

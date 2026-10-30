@@ -9,8 +9,10 @@
  * and damage marked have no event of their own.
  */
 import { sameJson } from '@/play/view'
-import type { CombatView, EventView, ObjectId, ObjectView, StateView } from '@/protocol/generated'
+import type { CombatView, EventView, ObjectId, ObjectView, PlayerId, StateView } from '@/protocol/generated'
 import { rowOf } from '../cardModel'
+import { hostOf, sameHost } from '../hosts'
+import type { HostRef } from '../hosts'
 import { splitBattlefield } from '../selectors'
 import type { DiedEffect, Effect } from './model'
 
@@ -156,4 +158,49 @@ export function deriveEffects(before: Moment, after: Moment, events: readonly Ev
     effects.push(died)
   }
   return effects
+}
+
+/** One end of an attachment's move: a permanent (with its controller, to stand in for it when it is not drawn) or a player. */
+export type HostEnd = { readonly card: ObjectId; readonly seat?: PlayerId } | { readonly player: PlayerId }
+
+/** A permanent that hung on one host before a batch and hangs on another, or on none, after it. */
+export interface AttachChange {
+  readonly object: ObjectId
+  /** Who controls the attachment, to stand in for it when it is not drawn. */
+  readonly seat: PlayerId
+  /** Its host before the batch; null when it had none. */
+  readonly from: HostEnd | null
+  /** Its host after the batch; null when it lost it. */
+  readonly to: HostEnd | null
+}
+
+const endOf = (host: HostRef | null, moment: Moment): HostEnd | null => {
+  if (host === null) return null
+  if ('player' in host) return host
+  const seat = moment.objectsById[host.card]?.controller
+  return seat === undefined ? { card: host.card } : { card: host.card, seat }
+}
+
+/**
+ * The attachments that changed host between two moments, by object id: an Equipment equipped, moved from one creature
+ * to another or unattached, an Aura that moved to a new host. Only permanents on the battlefield in both moments count:
+ * an Aura that enters attached is told by the log alone. A host that changes controller keeps its attachments and
+ * moves none.
+ */
+export function deriveAttaches(before: Moment, after: Moment): AttachChange[] {
+  const changes: AttachChange[] = []
+  for (const object of after.view.objects) {
+    const was = before.objectsById[object.id]
+    if (!onBattlefield(object) || !onBattlefield(was)) continue
+    const from = hostOf(was)
+    const to = hostOf(object)
+    if (sameHost(from, to)) continue
+    changes.push({
+      object: object.id,
+      seat: object.controller,
+      from: endOf(from, before),
+      to: endOf(to, after),
+    })
+  }
+  return changes.sort((a, b) => a.object - b.object)
 }

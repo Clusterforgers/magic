@@ -1,4 +1,4 @@
-// Goal: every dev move (attack, block, damage, death, life, enter, and the moments of play: cast, activate, resolve, counter, land, draw) builds a batch that follows on from the table, folds into a consistent table and derives the effects or moves its name promises at any table size, and can be played again and again, each time on other cards, without ever breaking the table or running out.
+// Goal: every dev move (attack, block, damage, death, life, enter, the moments of play: cast, activate, resolve, counter, land, draw, and equip) builds a batch that follows on from the table, folds into a consistent table and derives the effects or moves its name promises at any table size, and can be played again and again, each time on other cards, without ever breaking the table or running out.
 import { describe, expect, it } from 'vitest'
 import { createPlayStore } from '@/play/store'
 import type { PlayStore } from '@/play/store'
@@ -6,13 +6,14 @@ import type { StateView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { DEV_FX, DEV_PLAYS } from '../devSearch'
 import type { DevFx } from '../devSearch'
-import { deriveEffects } from '../fx/derive'
+import { deriveAttaches, deriveEffects } from '../fx/derive'
 import { batchBetween } from '../fx/batch'
 import type { Effect } from '../fx/model'
 import { anchorOf, deriveMoves } from '../fx/moves'
 import type { Moves } from '../fx/moves'
 import { applyBatchToStore } from './applyBatch'
 import { fixtureState } from './devGame'
+import { withEquip } from './equip'
 import { buildFixture } from './fixture'
 import { devBatch, playDevFx } from './fxScenarios'
 
@@ -40,6 +41,19 @@ function movesOf(store: PlayStore, kind: DevFx): Moves {
 
 /** Plays `kind` and returns a key for everything it shows: its effects, else its moves and marks. */
 function shownBy(store: PlayStore, kind: DevFx): string[] {
+  if (kind === 'equip') {
+    const before = store.getState()
+    expect(playDevFx(store, kind), `${kind} did nothing`).toBe(true)
+    const step = must(batchBetween(before, store.getState()), 'a batch the effects layer sees')
+    return [
+      ...deriveEffects(step.before, step.after, step.events).map((effect) =>
+        'object' in effect ? `${effect.kind} ${effect.object}` : effect.kind,
+      ),
+      ...deriveAttaches(step.before, step.after).map(
+        (change) => `attach ${change.object} > ${JSON.stringify(change.to)}`,
+      ),
+    ]
+  }
   if (!DEV_PLAYS.some((play) => play === kind))
     return effectsOf(store, kind).map((effect) => ('object' in effect ? `${effect.object}` : effect.kind))
   const { moves, marks } = movesOf(store, kind)
@@ -159,6 +173,45 @@ describe('what each move shows', () => {
   it('enter: a creature comes in for each side', () => {
     const effects = effectsOf(table(), 'enter')
     expect(kinds(effects)).toEqual(['entered', 'entered'])
+  })
+})
+
+describe('equip', () => {
+  const attaches = (store: PlayStore) => {
+    const before = store.getState()
+    expect(playDevFx(store, 'equip')).toBe(true)
+    const step = must(batchBetween(before, store.getState()))
+    return deriveAttaches(step.before, step.after)
+  }
+
+  it('brings an Equipment onto the first creature of a table that has none, then moves it host to host', () => {
+    const store = table()
+    expect(attaches(store)).toEqual([])
+    const view = must(store.getState().view)
+    const sword = must(view.objects.find((object) => object.subtypes.includes('Equipment')))
+    expect(sword.attached_to).toBeDefined()
+    const [first, second] = attaches(store)
+    expect(second).toBeUndefined()
+    expect(first).toMatchObject({ object: sword.id, from: { card: sword.attached_to }, seat: 0 })
+    expect(first?.to).not.toEqual(first?.from)
+  })
+
+  it('moves the Equipment of the attachments scene from its host to a creature of the viewer', () => {
+    const store = createPlayStore()
+    store.setState(fixtureState(withEquip(buildFixture({ seats: 2 }))))
+    const before = must(store.getState().view)
+    const gear = must(
+      before.objects.find((object) => object.name === 'Bonesplitter' && object.attached_to !== undefined),
+    )
+    const [change] = attaches(store)
+    expect(change).toMatchObject({ object: gear.id, from: { card: gear.attached_to } })
+    const after = must(store.getState().view)
+    const to = must(change?.to)
+    const host = 'card' in to ? to.card : -1
+    expect(after.objects.find((object) => object.id === gear.id)?.attached_to).toBe(host)
+    expect(after.objects.find((object) => object.id === host)?.attachments).toContain(gear.id)
+    const old = must(after.objects.find((object) => object.id === gear.attached_to))
+    expect(old.attachments ?? []).not.toContain(gear.id)
   })
 })
 
