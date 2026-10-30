@@ -1,0 +1,47 @@
+{
+  "oracle_id": "43b5dbe9-41f7-4082-944b-ea9d6292c6fd",
+  "name": "Danitha, Benalia's Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Danitha, Benalia's Hope",
+      "oracle_fingerprint": "ddff02b65201a7d65a736d7be162341e",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "BattlefieldAttached": { "to": "This" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
