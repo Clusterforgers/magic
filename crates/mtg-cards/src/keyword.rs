@@ -184,6 +184,8 @@ pub enum Keyword {
     Prowl(Cost),
     /// Mayhem with its cost: an alternative cost to cast the card from its owner's graveyard in the turn they discarded it, with the timing the card has (CR 702.190).
     Mayhem(Cost),
+    /// Disturb with its cost: an alternative cost to cast the back face of a transforming double-faced card from its owner's graveyard, which then lies on the stack and the battlefield as that face (CR 702.146).
+    Disturb(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
@@ -443,6 +445,7 @@ impl Keyword {
         "Blitz",
         "Prowl",
         "Mayhem",
+        "Disturb",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
@@ -649,6 +652,7 @@ impl Keyword {
             Keyword::Blitz(_) => "Blitz",
             Keyword::Prowl(_) => "Prowl",
             Keyword::Mayhem(_) => "Mayhem",
+            Keyword::Disturb(_) => "Disturb",
             Keyword::Afterlife(_) => "Afterlife",
             Keyword::Horsemanship => "Horsemanship",
             Keyword::Phasing => "Phasing",
@@ -787,6 +791,7 @@ mod tests {
             Keyword::Blitz(cost.clone()),
             Keyword::Prowl(cost.clone()),
             Keyword::Mayhem(cost.clone()),
+            Keyword::Disturb(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),

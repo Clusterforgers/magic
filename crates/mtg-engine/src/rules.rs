@@ -12,6 +12,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, GameRule};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
@@ -123,6 +124,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
         once: bool,
+        /// What the caster pays in addition to the other costs of a cast through it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
+        additional: Option<Box<Cost>>,
     },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
@@ -371,6 +376,8 @@ pub(crate) struct Cast {
     pub(crate) play: bool,
     /// Only once during each of the controller's turns, and only on their turns.
     pub(crate) once: bool,
+    /// What the caster pays in addition to the other costs of a cast through it.
+    pub(crate) additional: Option<Cost>,
 }
 
 impl Cast {
@@ -512,6 +519,7 @@ impl RulesInForce {
                 only,
                 play,
                 once,
+                additional,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
@@ -525,6 +533,7 @@ impl RulesInForce {
                         only: only.clone(),
                         play: *play,
                         once: *once,
+                        additional: additional.as_deref().cloned(),
                     });
                 }
             }
@@ -660,6 +669,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .transpose()?,
             play: permission.play,
             once: permission.once,
+            additional: permission.additional.clone().map(Box::new),
         },
         GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
@@ -1470,6 +1480,7 @@ mod tests {
             only,
             play,
             once: false,
+            additional: None,
         }
     }
 

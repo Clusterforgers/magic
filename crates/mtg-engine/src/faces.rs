@@ -16,6 +16,7 @@ use mtg_core::mana::ManaCost;
 use crate::ability_reader::definition_fuses;
 use crate::announce::Granted;
 use crate::events::Event;
+use crate::keywords::disturb;
 use crate::mana::{ManaOption, ManaPool};
 use crate::state::GameState;
 use crate::ways;
@@ -82,8 +83,10 @@ pub(crate) fn candidates(state: &GameState, id: ObjectId) -> Vec<Option<u8>> {
     };
     let whole = object.whole_card();
     match whole.layout {
-        // A transforming double-faced card is cast as its front face (CR 712.14); the back face is only turned up. A flip
-        // card is its top half in every zone but the battlefield (CR 710.2).
+        // A transforming double-faced card is cast as its front face (CR 712.14); the back face is only turned up, and cast
+        // from a graveyard with disturb (CR 702.146a).
+        Layout::Transform if disturb::offers_back_face(state, id) => vec![None, Some(1)],
+        // A flip card is its top half in every zone but the battlefield (CR 710.2).
         Layout::Normal | Layout::Transform | Layout::Flip | Layout::Prepare => vec![None],
         Layout::Split => {
             let halves = u8::try_from(whole.faces.len()).unwrap_or(u8::MAX);

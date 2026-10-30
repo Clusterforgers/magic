@@ -4,7 +4,7 @@
 //! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
-mod affinity;
+pub(crate) mod affinity;
 mod afflict;
 mod afterlife;
 pub(crate) mod aftermath;
@@ -41,6 +41,7 @@ mod dethrone;
 mod devoid;
 mod devour;
 mod disguise;
+pub(crate) mod disturb;
 mod doctors_companion;
 mod double_strike;
 mod dredge;
@@ -465,6 +466,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Escape(_) => &escape::Escape,
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
+        Keyword::Disturb(_) => &disturb::Disturb,
         Keyword::Bestow(_) => &bestow::Bestow,
         Keyword::Dash(_) | Keyword::Blitz(_) | Keyword::Prowl(_) | Keyword::Mayhem(_) => {
             cost_rules(keyword)
@@ -834,6 +836,7 @@ mod tests {
             Keyword::Blitz(cost()),
             Keyword::Prowl(cost()),
             Keyword::Mayhem(cost()),
+            Keyword::Disturb(cost()),
             Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
@@ -991,6 +994,7 @@ mod tests {
         "Keyword.Blitz",
         "Keyword.Prowl",
         "Keyword.Mayhem",
+        "Keyword.Disturb",
         "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
@@ -1182,6 +1186,7 @@ mod tests {
     #[case::blitz(Keyword::Blitz(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::prowl(Keyword::Prowl(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::mayhem(Keyword::Mayhem(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
+    #[case::disturb(Keyword::Disturb(Cost::mana("{2}{W}".parse().unwrap())), Hooks::none())]
     #[case::encore(Keyword::Encore(Cost::mana("{2}{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]

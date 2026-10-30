@@ -52,6 +52,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         only: Some(Ref::Bound(exiled.clone())),
         play: true,
         once: false,
+        additional: None,
     };
     if !targets.is_empty() || *permission != wanted {
         return;

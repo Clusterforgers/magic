@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d185c829-ef12-403a-a071-7520a0293d4a",
+  "name": "Demonic Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Embrace",
+      "oracle_fingerprint": "5fe77939466bfb3fc4483210f0a85578",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 1 } },
+              { "AddKeyword": "Flying" },
+              { "AddSubtype": "Demon" }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [{ "PayLife": 3 }, { "Discard": {} }]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

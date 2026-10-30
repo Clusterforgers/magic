@@ -12,6 +12,7 @@ use std::borrow::Cow;
 use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, CostChange};
+use mtg_cards::keyword::Keyword;
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::refs::{Pred, TargetSpec};
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -21,8 +22,10 @@ use super::{Ctx, What, targets};
 use crate::ability_reader::{abilities_of, definition_has_cost_modifier};
 use crate::characteristics::controller_of_object;
 use crate::choose::Choices;
+use crate::keywords::affinity;
 use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{CastTargets, Scope};
+use crate::spell_keywords::given_to_spell;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -112,7 +115,30 @@ fn gathered(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifie
             }
         }
     }
+    found.extend(given_affinity(state, spell, caster));
     found
+}
+
+/// The reductions of the affinity that static abilities give to `spell` ("Enchantment spells you cast have affinity for
+/// Auras"): a modifier of the spell itself, as the affinity it prints is.
+fn given_affinity(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifier> {
+    let Some(source) = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)
+    else {
+        return Vec::new();
+    };
+    given_to_spell(state, caster, spell)
+        .into_iter()
+        .filter_map(|keyword| match keyword {
+            Keyword::Affinity(kind) => Some(Modifier {
+                source,
+                controller: caster,
+                ability: Arc::new(affinity::reduction(&kind)),
+            }),
+            _ => None,
+        })
+        .collect()
 }
 
 /// `mana` with the cost modifiers of the game applied to `spell`, which `player` casts with `choices` announced: the

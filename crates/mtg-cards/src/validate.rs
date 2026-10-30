@@ -13,7 +13,7 @@ use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef, VoteFor};
 use crate::keyword::Keyword;
-use crate::modify::{Duration, GameRule, Modification};
+use crate::modify::{CastPermission, Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
@@ -971,6 +971,62 @@ impl<'a> Walker<'a> {
         self.parts_a_spell_cost_does_not_pay("Ability", "FreeCast.Cost", cost, false);
     }
 
+    /// A cost and the selector `field` names, the parts of a keyword that adds an ability.
+    fn cost_and(&mut self, field: &str, cost: &Cost, selector: &Selector) {
+        self.at("cost", |w| w.cost(cost));
+        self.at(field, |w| w.selector(selector));
+    }
+
+    /// A permission to cast: its players, cards, objects named, the zone and the costs it adds.
+    fn cast_permission(&mut self, permission: &CastPermission) {
+        self.at("who", |w| w.reference(&permission.who, Kind::Player));
+        self.at("what", |w| w.selector(&permission.what));
+        if let Some(only) = &permission.only {
+            self.at("only", |w| w.reference(only, Kind::Object));
+        }
+        if let Some(cost) = &permission.additional {
+            self.at("additional", |w| w.permission_cost(cost));
+        }
+        if matches!(
+            permission.from,
+            Some(ZoneKind::Battlefield | ZoneKind::Stack)
+        ) {
+            self.at("from", |w| {
+                w.problem(
+                    "a card is cast from a hand, a library, a graveyard, exile or the command zone",
+                );
+            });
+        }
+    }
+
+    /// What a cast permission adds to the cost of a cast through it: paid by the caster as the spell is announced, so it
+    /// names a part, holds no X and nothing the spell itself would pay.
+    fn permission_cost(&mut self, cost: &Cost) {
+        self.cost(cost);
+        if cost.0.is_empty() {
+            self.problem("an additional cost of a cast permission names what is paid");
+        }
+        if cost.has_x() {
+            self.problem("an additional cost of a cast permission has no X");
+        }
+        if cost.0.iter().any(|item| {
+            matches!(
+                item,
+                CostItem::Tap
+                    | CostItem::Untap
+                    | CostItem::SacrificeSelf
+                    | CostItem::ExileSelf
+                    | CostItem::DiscardSelf
+                    | CostItem::OneOf(_)
+            )
+        }) {
+            self.problem(
+                "an additional cost of a cast permission is paid by the caster with no choice and not by the spell itself",
+            );
+        }
+        self.parts_a_spell_cost_does_not_pay("MayCast", "Cost", cost, false);
+    }
+
     /// The parts of the cost of a keyword of a spell (kicker, buyback, entwine, flashback, evoke, madness) that the
     /// announcement of the spell does not pay: counters removed from the source, which a card in a hand or a graveyard
     /// has none of, and an amount that is the X announced, which the cost of a spell does not count. They are named
@@ -1133,6 +1189,7 @@ impl<'a> Walker<'a> {
             | Keyword::Blitz(cost)
             | Keyword::Prowl(cost)
             | Keyword::Mayhem(cost)
+            | Keyword::Disturb(cost)
             | Keyword::Emerge(cost)
             | Keyword::Harmonize(cost)
             | Keyword::Spectacle(cost) => {
@@ -1173,14 +1230,8 @@ impl<'a> Walker<'a> {
                 self.selector(quality);
             }
             // The cost is paid as the cost of the activated ability the keyword adds.
-            Keyword::Typecycling { find, cost } => {
-                self.at("cost", |w| w.cost(cost));
-                self.at("find", |w| w.selector(find));
-            }
-            Keyword::EquipTo { to, cost } => {
-                self.at("cost", |w| w.cost(cost));
-                self.at("to", |w| w.selector(to));
-            }
+            Keyword::Typecycling { find, cost } => self.cost_and("find", cost, find),
+            Keyword::EquipTo { to, cost } => self.cost_and("to", cost, to),
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::Casualty(0) => self.problem("casualty needs a power of at least 1"),
             Keyword::Hideaway(0) => self.problem("hideaway needs a number of at least 1"),
@@ -2689,12 +2740,16 @@ impl Walker<'_> {
         let helps = |m: &Modification| {
             matches!(
                 m,
-                Modification::AddKeyword(Keyword::Convoke | Keyword::Improvise | Keyword::Delve)
+                Modification::AddKeyword(
+                    Keyword::Convoke | Keyword::Improvise | Keyword::Delve | Keyword::Affinity(_)
+                )
             )
         };
         if !mods.iter().all(helps) {
             self.at("mods", |w| {
-                w.problem("a spell is given only convoke, improvise or delve by a static ability");
+                w.problem(
+                    "a spell is given only convoke, improvise, delve or affinity by a static ability",
+                );
             });
         }
     }
@@ -2922,7 +2977,9 @@ impl Walker<'_> {
                     w.problem("a limit on a declaration lets at least one creature in");
                 }
                 if !matches!(at, Ref::You | Ref::This) {
-                    w.at("at", |w| w.problem("a limit on the attacks protects you or this planeswalker"));
+                    w.at("at", |w| {
+                        w.problem("a limit on the attacks protects you or this planeswalker");
+                    });
                 }
             }),
             GameRule::BlockLimitEach { most, who } => self.at(tag, |w| {
@@ -2933,7 +2990,9 @@ impl Walker<'_> {
             }),
             GameRule::AttackLimit(most) | GameRule::BlockLimit(most) => {
                 if *most == 0 {
-                    self.at(tag, |w| w.problem("a limit on a declaration lets at least one creature in"));
+                    self.at(tag, |w| {
+                        w.problem("a limit on a declaration lets at least one creature in");
+                    });
                 }
             }
             GameRule::CantGainLife(who)
@@ -2948,21 +3007,7 @@ impl Walker<'_> {
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::MayCast(permission) => self.at(tag, |w| {
-                w.at("who", |w| w.reference(&permission.who, Kind::Player));
-                w.at("what", |w| w.selector(&permission.what));
-                if let Some(only) = &permission.only {
-                    w.at("only", |w| w.reference(only, Kind::Object));
-                }
-                if matches!(
-                    permission.from,
-                    Some(ZoneKind::Battlefield | ZoneKind::Stack)
-                ) {
-                    w.at("from", |w| {
-                        w.problem("a card is cast from a hand, a library, a graveyard, exile or the command zone");
-                    });
-                }
-            }),
+            GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::AdditionalLandPlays { who, count } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
@@ -3749,6 +3794,8 @@ mod tests {
     #[case::a_state_trigger_from_a_hand(r#"{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"op":"Eq","right":0}}}},"from":"Hand","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.From", "Effect.Draw", "Trigger.State"])]
     #[case::a_static_ability_from_the_graveyard(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Mountain"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}"#, &["Ability.Static", "Ability.From", "Keyword.Haste", "Mod.AddKeyword"])]
     #[case::trigger_from_the_graveyard(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"limit":"OncePerTurn","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.Limit", "Ability.From", "Effect.Draw", "Trigger.StepBegins"])]
+    #[case::a_cast_permission_with_added_costs(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard","additional":[{"PayLife":3},{"Discard":{}}]}},"from":"Graveyard"}}"#, &["Ability.From", "Ability.Rule", "Cost.Discard", "Cost.PayLife", "Rule.MayCast"])]
+    #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
@@ -4436,6 +4483,22 @@ mod tests {
     #[case::a_permission_for_a_player(
         r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","only":"You","play":true}},"duration":"UntilEndOfTurn"}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.only: expected an object but this is a player"
+    )]
+    #[case::a_spell_given_flying(
+        r#"{"Static":{"affected":{"Each":["Spell"]},"mods":[{"AddKeyword":"Flying"}]}}"#,
+        "faces[0].abilities[0].Static.mods: a spell is given only convoke, improvise, delve or affinity by a static ability"
+    )]
+    #[case::a_permission_cost_with_no_part(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","additional":[]}},"duration":"UntilEndOfTurn"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.additional: an additional cost of a cast permission names what is paid"
+    )]
+    #[case::a_permission_cost_that_taps_the_spell(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","additional":["Tap"]}},"duration":"UntilEndOfTurn"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.additional: an additional cost of a cast permission is paid by the caster with no choice and not by the spell itself"
+    )]
+    #[case::a_permission_cost_with_x(
+        r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","additional":[{"Mana":"{X}"}]}},"duration":"UntilEndOfTurn"}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Rule.rule.MayCast.additional: an additional cost of a cast permission has no X"
     )]
     #[case::a_chosen_opponent_is_a_player(
         r#"{"Spell":{"effects":[{"Choose":{"from":"Opponents","as":"foe"}},{"Destroy":{"what":{"Bound":"foe"}}}]}}"#,

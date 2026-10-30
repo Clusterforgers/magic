@@ -25,8 +25,17 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         only,
         play,
         once,
+        additional,
     } = permission;
-    if *who != Ref::You || from.is_some() || *free || !*flash || only.is_some() || *play || *once {
+    if *who != Ref::You
+        || from.is_some()
+        || *free
+        || !*flash
+        || only.is_some()
+        || *play
+        || *once
+        || additional.is_some()
+    {
         return;
     }
     let mut spells = vec![Pred::Spell];
