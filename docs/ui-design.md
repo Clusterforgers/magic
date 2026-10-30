@@ -249,6 +249,33 @@ An Aura, Equipment or Fortification is read at its host, as Arena and MTGO draw 
 - Phone (390 px): a tuck shows the attachment's colour edge only below 76 px cards; the marks are the count and an icon, and the long-press preview carries the list.
 - `gives` is the engine's account of each attachment's continuous effects on its host as the layers apply them now: `{ power, toughness, set, keywords, rules }` with `set` the power and toughness it sets ("is a 1/1") and `rules` the other changes it makes (`CantAttack`, `CantBlock`, `CantBeBlocked`, `DoesntUntap`, `LoseAbilities`, `SetController`, `UmbraArmor` and the rest of `GivenRule`); left out while the attachment gives nothing or is unattached. The view cannot work it out: `abilities` carries mana abilities only and a card's words do not say what a condition or a layer leaves of them.
 
+## Manual commands panel
+
+The seat does by hand what the engine does not run from one persistent panel at the right of the table, laid out as Table Commander lays out its tools: the seat's own numbers on top with quick amounts, then the library, then what it makes, then the card it picked. The card menu stays as the shortcut for one card.
+
+| Size | Where | Why |
+|---|---|---|
+| L, XL | the first tab of the side column, "Commands", before Log, Chat and Stack, and the tab on show when the table opens | the column keeps its 280 to 320 px, so the card sizes the layout gate protects do not change; the log keeps its unread count and the panel's own feedback says what an action did |
+| M | the first icon of the rail, opening over the table | the same 44 px rail |
+| S, XS | the first tab of the side sheet; the top bar's sheet button reads "Commands, log, chat and stack" | the hand and the board keep the window |
+
+| Group | Commands, in order | Action |
+|---|---|---|
+| You | Life; Poison; Other counters (energy, experience, a named kind) | `Life`, `PlayerCounters` |
+| Library | Draw; Look at the top (scry, surveil, reorder); Mill; Exile from the top; Put on the bottom; Shuffle; Reveal the top card | `Draw`, `MoveTop`; new: `LookTop`, `ArrangeTop`, `Shuffle`, `Reveal` |
+| Make | Tokens (the common list, a custom token); Mana | `CreateToken`, `AddMana` |
+| Card | the picked card's commands, as its card menu lists them: Move to, Counters, Tap, Attach, Deal damage, Pump, Reveal, Note | `Move`, `Counters`, `Tap`, `Untap`, `Attach`, `Unattach`, `Damage`, `Pump`; new: `Reveal`, `Note` |
+
+- A group is a heading and its rows; a row is a button with an icon, the command's name and one line of what it does ("Draw: put the top cards of your library into your hand"). A press opens the row in place (one open at a time): an amount with presets (life and counters −5 −1 +1 +5, cards 1 2 3 and a field), the preview line in the seat's words ("Ana: 40 → 35 life", "Draw 2: library 52 → 50, hand 4 → 6", "Mill 3: the top 3 cards go to your graveyard"), and one Apply button that names the change ("Lose 5 life"). Nothing is sent before Apply.
+- Life sits open at the top of You with the total in large figures, as a life counter does; the steppers move a pending amount that the preview shows, and Apply sends one `Life`.
+- Look at the top: Apply sends `LookTop`; the row then lists the cards looked at, top first, each with Top, Bottom and Graveyard and up and down moves, and "Done" sends one `ArrangeTop`. The cards are the seat's alone (`PlayerView.known_top`); the other seats read "Ana looks at the top 3 cards" and "Ana puts 1 on top and 2 on the bottom".
+- Card: "Pick a card" arms the next press on the table (Escape cancels); the focused card's `m` and the card menu's "In the panel" do the same. Without a pick the group says "Pick a card on the table to act on it".
+- After Apply the row shows the result from the next view ("Ana: 35 life") or the engine's refusal in the row's own feedback (`role="status"`, the reason in plain words); the table notice is not used. The log says it as for the card menu.
+- Manual actions are allowed at any time, whoever holds priority; the panel is inert with the reason once the seat has lost or the game is over. A spectator has no Commands tab.
+- Keyboard: the panel is a `region` named "Commands"; Tab walks the rows, Enter or Space opens one, the amount is a `spinbutton` (arrows ±1, Page Up and Page Down ±5), Enter applies, Escape closes the row and returns to it. The preview is `aria-live="polite"`. Targets are 44 px on a touch screen and 32 px with a mouse.
+- The card menu keeps the commands about its card; You, life, draws and tokens move to the panel, and the menu's last entry opens the panel on that card.
+- Dice and a coin are not in the panel: a roll needs the engine's random stream (an item of its own).
+
 ## Game browser and lobby
 
 `/` becomes Play: open games, Create game and Join with a code. Create moves to `/new`, an invite opens `/join/$code`, My games stays; a signed-in user also gets "Continue" for a running game. Visibility follows Steamworks lobbies (private, public, a joinable flag) [S23] and Unity's, which hide private lobbies from queries and join them by code [S29].

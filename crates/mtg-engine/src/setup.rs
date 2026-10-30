@@ -462,6 +462,7 @@ impl GameState {
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
             companions,
+            looked_by_hand: Vec::new(),
         };
         game.note_what_cards_can_do();
         // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.

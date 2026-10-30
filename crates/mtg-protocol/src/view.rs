@@ -343,6 +343,11 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub revealed_top: Option<ObjectId>,
+    /// The top cards of the library its owner looked at by hand and may still identify, top first; only in the
+    /// owner's own view, and left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectId>>", optional)]
+    pub known_top: Vec<ObjectId>,
     /// Graveyard (public).
     pub graveyard: ZoneView,
     /// Command zone (public).

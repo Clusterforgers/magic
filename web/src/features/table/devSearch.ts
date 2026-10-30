@@ -1,5 +1,7 @@
 import type { PlayerId, Step } from '@/protocol/generated'
 import { parseStopSpec } from './dev/stopSpec'
+import type { CommandId } from './manual/panel/commands'
+import { panelOf } from './manual/panel/devPanel'
 import type { TableMode } from './layout'
 import { STEP_LABEL } from './turnText'
 
@@ -76,6 +78,8 @@ export interface DevSearch {
   cards?: 'real'
   /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
   menu?: DevMenu
+  /** Opens a row of the Commands panel once the table has loaded: `1` the life row, or a command by its id (`draw`, `token`). */
+  panel?: CommandId
 }
 
 /** The cards `?menu=` opens the manual menu on. */
@@ -128,6 +132,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
         ? search.hand
         : undefined,
     menu: menuOf(search.menu),
+    panel: panelOf(search.panel),
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
     // The equip move needs the attachments scene, so it brings it.

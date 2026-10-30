@@ -146,9 +146,13 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Prepared { object } => set_prepared(state, *object, true),
         Event::Unprepared { object } => set_prepared(state, *object, false),
         Event::Crewed { .. } => tally_crewed(state, event),
-        // The change follows as events of its own; the action only restarts the round, so the other seats see it.
-        Event::ManualAction { .. } => {
+        // The change follows as events of its own; the action restarts the round, so the other seats see it, and a look
+        // by hand records what the seat learned.
+        Event::ManualAction { player, action } => {
             reset_passes(state);
+            if let crate::manual::ManualAction::LookTop { count } = **action {
+                sight::look_by_hand(state, *player, count);
+            }
             Ok(())
         }
         Event::Scried(scried) => {

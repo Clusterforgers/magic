@@ -21,6 +21,9 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   Damage: ['DamageDealt'],
   AddMana: ['ManaAdded'],
   Pump: ['EffectCreated'],
+  LookTop: ['LibraryLooked'],
+  ArrangeTop: ['Scried', 'Surveilled', 'ZoneChanged'],
+  Shuffle: ['LibraryShuffled'],
 }
 
 type ActionKind = ManualAction extends infer U ? (U extends unknown ? keyof U : never) : never

@@ -282,6 +282,16 @@ fn take(driver: &mut Driver, action: ManualAction) {
         assert_eq!(zone(d, i.top), Zone::Hand(pid(0)));
         assert_eq!(d.state().zone(Zone::Hand(pid(0))).len(), 5);
     })]
+#[case::looking_at_the_top_two(|_: &Ids| ManualAction::LookTop { count: 2 },
+    |d: &Driver, i: &Ids| {
+        assert!(d.state().is_shown_to(pid(0), i.top));
+        assert!(!d.state().is_shown_to(pid(1), i.top));
+        assert_eq!(mtg_engine::sight::known_top(d.state(), pid(0)).len(), 2);
+    })]
+#[case::looking_at_more_than_the_library_holds(|_: &Ids| ManualAction::LookTop { count: 10 },
+    |d: &Driver, _: &Ids| assert_eq!(mtg_engine::sight::known_top(d.state(), pid(0)).len(), 5))]
+#[case::shuffling(|_: &Ids| ManualAction::Shuffle {},
+    |d: &Driver, _: &Ids| assert_eq!(d.state().zone(Zone::Library(pid(0))).len(), 5))]
 #[case::discarding(|i: &Ids| ManualAction::Discard { object: i.hand_creature },
     |d: &Driver, i: &Ids| assert_eq!(zone(d, i.hand_creature), Zone::Graveyard(pid(0))))]
 #[case::attaching(|i: &Ids| ManualAction::Attach { object: i.blade, to: i.mine },
@@ -395,6 +405,16 @@ fn custom(name: &str, types: Vec<CardType>, stats: Option<(i32, i32)>) -> Manual
     |_: &Ids| ManualRefusal::NotEnough("cards in the library"))]
 #[case::no_cards(
     |_: &Ids| ManualAction::MoveTop { count: 0, to: ManualZone::Graveyard },
+    |_: &Ids| ManualRefusal::OutOfRange("the number of cards"))]
+#[case::looking_at_no_cards(|_: &Ids| ManualAction::LookTop { count: 0 },
+    |_: &Ids| ManualRefusal::OutOfRange("the number of cards"))]
+#[case::looking_at_eleven_cards(|_: &Ids| ManualAction::LookTop { count: 11 },
+    |_: &Ids| ManualRefusal::OutOfRange("the number of cards"))]
+#[case::arranging_cards_not_looked_at(
+    |i: &Ids| ManualAction::ArrangeTop { top: Vec::new(), bottom: vec![i.top], graveyard: Vec::new() },
+    |_: &Ids| ManualRefusal::NotLookedAt)]
+#[case::arranging_nothing(
+    |_: &Ids| ManualAction::ArrangeTop { top: Vec::new(), bottom: Vec::new(), graveyard: Vec::new() },
     |_: &Ids| ManualRefusal::OutOfRange("the number of cards"))]
 #[case::discarding_from_the_battlefield(|i: &Ids| ManualAction::Discard { object: i.mine },
     |i: &Ids| ManualRefusal::WrongZone { object: i.mine, zone: Zone::Battlefield })]

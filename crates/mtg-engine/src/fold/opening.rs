@@ -44,6 +44,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             state.zones.set(zone, order.clone());
             state.rng_index += 1;
+            // A shuffled library is known to nobody: the cards looked at by hand are not told apart any more.
+            state.looked_by_hand.retain(|(seat, _)| seat != player);
         }
         Event::LibraryRefilled { player, order } => {
             let graveyard = state.zones.get(Zone::Graveyard(*player)).to_vec();
