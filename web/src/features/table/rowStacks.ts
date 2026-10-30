@@ -44,7 +44,8 @@ type Objects = PlayState['objectsById']
 /** The order attachments tuck in: Auras, then Equipment, then Fortifications, then anything else attached. */
 const TUCK_ORDER = ['Aura', 'Equipment', 'Fortification']
 
-const tuckRank = (subtypes: readonly string[] | undefined): number => {
+/** Where a kind of attachment tucks in the order: Aura 0, Equipment 1, Fortification 2, anything else 3. */
+export const tuckRank = (subtypes: readonly string[] | undefined): number => {
   const rank = TUCK_ORDER.findIndex((kind) => subtypes?.includes(kind) === true)
   return rank === -1 ? TUCK_ORDER.length : rank
 }

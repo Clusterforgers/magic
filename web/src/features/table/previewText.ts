@@ -1,6 +1,23 @@
 /** The words under the big card in the preview: where it is, who controls it, what it is doing in combat. */
 import type { CombatView, ObjectId, ObjectView, Zone } from '@/protocol/generated'
+import { isUnattached } from '@/play/hosts'
+import { attachName, givesWords } from './attachMarks'
+import type { Attach } from './attachMarks'
 import type { SeatNamer } from './names'
+
+/** One attachment of a host in the preview: "Rancor: +2/+0, trample", "Bo's Pacifism: can't attack or block"; its name alone while it gives nothing. */
+export function attachLine(attach: Attach, seat: SeatNamer): string {
+  const name = attachName(attach, seat)
+  return attach.items.length === 0 ? name : `${name}: ${attach.items.map((item) => item.words).join(', ')}`
+}
+
+/** An attachment's own line in the preview: what it hangs on and what it gives it, or null for a permanent that hangs on nothing. */
+export function hostLine(object: ObjectView, host: string | undefined): string | null {
+  if (host === undefined) return isUnattached(object) ? 'Not attached to anything' : null
+  const words = givesWords(object.gives)
+  const on = object.attached_player === undefined ? `Attached to ${host}` : `Enchants ${host}`
+  return words === null ? on : `${on}, giving ${words}`
+}
 
 /** Where a card is, such as "On the battlefield" or "In Alice's graveyard". */
 export function zoneText(zone: Zone, name: SeatNamer): string {

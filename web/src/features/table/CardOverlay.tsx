@@ -11,6 +11,8 @@ import { counterChips, loyaltyOf, statusChips } from './cardModel'
 import type { ChipTone, CombatRole, CounterChip, Links } from './cardModel'
 import { CARD_CORNER } from '@/features/cards/CardImage'
 import { SIZE } from './cardSize'
+import { roomFor } from './attachMarks'
+import { GrantMarks } from './GrantMarks'
 import { isUnattached } from '@/play/hosts'
 import type { CardSize } from './cardSize'
 import { ByHandMark } from './manual/ByHand'
@@ -31,6 +33,8 @@ const CORNER = {
     head: 'right-[2.5%] bottom-[3%] max-w-[70%] flex-col-reverse items-end',
   },
 }
+// The share of a face's width that the foot stack may take (its `max-w-[62%]`).
+const FOOT_SHARE = 0.62
 // The power/toughness or loyalty box at the bottom right, which lies at the bottom left once turned.
 const STAT_BOX = { upright: 'right-[3%] bottom-[2.5%]', turned: 'bottom-[3%] left-[2.5%]' }
 
@@ -48,13 +52,6 @@ const COUNTER_TONE: Record<CounterChip['tone'], string> = {
   plain: 'bg-foreground text-background',
 }
 
-/** The words of an attachment mark: the host an attachment sits on, or the attachments a host carries. */
-function linkText(links: Links | undefined): string | null {
-  if (links?.host !== undefined) return links.host
-  const attached = links?.attached ?? []
-  return attached.length === 0 ? null : attached.join(', ')
-}
-
 /** What the overlay reads. */
 export interface OverlayProps {
   object: ObjectView
@@ -63,10 +60,12 @@ export interface OverlayProps {
   turned: boolean
   note?: CardNote | undefined
   links?: Links | undefined
+  /** The drawn width of the face in px: it decides how many marks the foot stack has room for. */
+  width: number
 }
 
 /** The marks over a picture, or over the back of a face-down card. */
-export function Overlay({ object, role, size, turned, note, links }: OverlayProps) {
+export function Overlay({ object, role, size, turned, note, links, width }: OverlayProps) {
   const text = SIZE[size].text
   const printed = usePrinted(object)
   const badge = statBadge(object, printed, loyaltyOf(object))
@@ -76,10 +75,15 @@ export function Overlay({ object, role, size, turned, note, links }: OverlayProp
   const sick = chips.some((chip) => chip.kind === 'sick')
   const head = chips.filter((chip) => chip.kind === 'role' || chip.kind === 'identity')
   const counters = counterChips(object)
-  const link = linkText(links)
+  const host = links?.host
+  const attaches = links?.attaches ?? []
   const corner = CORNER[turned ? 'turned' : 'upright']
   const unattached = isUnattached(object)
-  const hasFoot = damage !== undefined || counters.length > 0 || link !== null || unattached
+  const hasFoot =
+    damage !== undefined || counters.length > 0 || host !== undefined || attaches.length > 0 || unattached
+  // The marks of the attachments get the lines of the foot stack that the damage, counters and links leave.
+  const used = (damage === undefined ? 0 : 1) + counters.length + (host === undefined ? 0 : 1)
+  const room = roomFor(turned ? (width * 5) / 7 : (width * 7) / 5, used + (unattached ? 1 : 0))
   const hasHead = head.length > 0 || sick || manual.length > 0 || note?.label !== undefined
   return (
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">
@@ -116,15 +120,23 @@ export function Overlay({ object, role, size, turned, note, links }: OverlayProp
               </span>
             </span>
           ))}
-          {link === null ? null : (
+          {host === undefined ? null : (
             <span
-              data-slot={links?.host === undefined ? 'card-attachment' : 'card-attached-to'}
+              data-slot="card-attached-to"
               className={cn(MARK, 'border border-foreground bg-background text-foreground', text)}
             >
               <Link2 aria-hidden="true" className="size-3 shrink-0" />
-              {size === 'compact' ? null : <span className="truncate">{link}</span>}
+              {size === 'compact' ? null : <span className="truncate">{host}</span>}
             </span>
           )}
+          <GrantMarks
+            attaches={attaches}
+            compact={size === 'compact'}
+            room={room}
+            span={width * FOOT_SHARE}
+            up={!turned}
+            text={text}
+          />
           {unattached ? (
             <span
               data-slot="card-unattached"

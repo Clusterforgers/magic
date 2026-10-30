@@ -146,7 +146,9 @@ describe('what is attached', () => {
       card({ id: 5, name: 'Pacifism', attached_to: ID }),
       card({ id: 6, name: 'Boots', attached_to: ID }),
     ])
-    expect(container.querySelector('[data-slot="card-attachment"]')).toHaveTextContent('Pacifism, Boots')
+    // The foot stack grows upward: the first attachment, the deepest tucked, is the highest mark.
+    const marks = [...container.querySelectorAll('[data-slot="card-grant"]')]
+    expect(marks.map((mark) => mark.textContent)).toEqual(['Boots', 'Pacifism'])
   })
 
   it('names the player a Curse enchants', () => {
@@ -165,7 +167,7 @@ describe('what is attached', () => {
     const host = screen.getByRole('button')
     expect(host).toHaveAttribute('data-hosting', '2')
     expect(host).not.toHaveAttribute('data-attached')
-    expect(host).toHaveAccessibleName(/Pacifism and Boots attached/)
+    expect(host).toHaveAccessibleName(/Pacifism attached, Boots attached/)
   })
 })
 

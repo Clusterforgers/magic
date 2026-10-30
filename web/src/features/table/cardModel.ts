@@ -12,6 +12,7 @@ import type {
 } from '@/protocol/generated'
 import { isUnattached } from '@/play/hosts'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from './manaSymbols'
+import type { Attach } from './attachMarks'
 
 /** Where a permanent sits on its controller's battlefield. */
 export type RowKind = 'creatures' | 'other' | 'lands'
@@ -270,8 +271,12 @@ export function counterWords(object: ObjectView): string[] {
 export interface Links {
   /** What an Aura or Equipment is attached to: a permanent, or the player a Curse enchants. */
   host?: string | undefined
-  /** The permanents attached to it. */
+  /** The permanents attached to it, by name. */
   attached?: readonly string[] | undefined
+  /** What each of them gives it, in the order they tuck: the marks of its foot stack. */
+  attaches?: readonly Attach[] | undefined
+  /** The same in words for its spoken name: "Rancor attached giving +2/+0 and trample"; replaces the names. */
+  spoken?: readonly string[] | undefined
   /** The object it is a copy of, while the viewer can see that object. */
   copyOf?: string | undefined
   /** The front face of a card the permanent shows as another face. */
@@ -279,10 +284,11 @@ export interface Links {
 }
 
 /** "attached to Grizzly Bears" for an Aura or Equipment; "Pacifism and Bonesplitter attached" for its host. */
-export function linkWords({ host, attached = [] }: Links): string[] {
+export function linkWords({ host, attached = [], spoken = [] }: Links): string[] {
   const words: string[] = []
   if (host !== undefined) words.push(`attached to ${host}`)
-  if (attached.length > 0) words.push(`${attached.join(' and ')} attached`)
+  if (spoken.length > 0) words.push(...spoken)
+  else if (attached.length > 0) words.push(`${attached.join(' and ')} attached`)
   return words
 }
 

@@ -20,6 +20,7 @@ import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { isUnattached } from '@/play/hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
+import { GrantMarks } from './GrantMarks'
 import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { statBadge } from './overlay'
@@ -65,6 +66,18 @@ const TOKEN_BORDER: Record<Frame, string> = {
 
 // The edges stay inside the 6 px between boxes of a line and the 4 px between lines.
 const PILE = 'shadow-[2px_2px_0_0_var(--color-border-strong),4px_4px_0_0_var(--color-border)]'
+
+// What the art slot leaves of the face's width for a mark.
+const ART_SHARE = 0.88
+// The height the name, cost, type line and stat box take from a face, and a row of chips with the gap under it.
+const FACE_FRAME_PX = 70
+const ART_ROW_PX = 20
+
+/** The rows of the art slot of a face `height` px high that the marks of attachments may fill; the slot clips the rest. */
+function artRoom(height: number, chips: number, links: Links | undefined): number {
+  const rows = Math.floor((height - FACE_FRAME_PX) / ART_ROW_PX)
+  return rows - (chips > 0 ? 1 : 0) - (links?.host === undefined ? 0 : 1)
+}
 
 /**
  * A card of the table: its picture with the state over it (`ImageFace`), the neutral back for a card the viewer may
@@ -157,6 +170,7 @@ export function TextFace({
   card = false,
 }: TextFaceProps) {
   const classes = SIZE[size]
+  const width = useDrawnWidth(size, fit)
   const parts = PARTS[card ? 'card' : 'plain']
   const turned = object.permanent?.tapped === true && !upright
   const frame = frameOf(object)
@@ -244,19 +258,13 @@ export function TextFace({
             On {links.host}
           </span>
         )}
-        {(links?.attached ?? []).map((name, index) => (
-          <span
-            // eslint-disable-next-line react/no-array-index-key -- names repeat and the list never reorders
-            key={`attached-${index}`}
-            data-slot="card-attachment"
-            className={cn(
-              'h-fit max-w-full rounded-sm border border-dashed border-foreground bg-background px-1 leading-snug break-words text-foreground',
-              classes.text,
-            )}
-          >
-            + {name}
-          </span>
-        ))}
+        <GrantMarks
+          attaches={links?.attaches ?? []}
+          compact={size === 'compact'}
+          room={artRoom(turned ? (width * 5) / 7 : (width * 7) / 5, chips.length + counters.length, links)}
+          span={width * ART_SHARE}
+          text={classes.text}
+        />
         {isUnattached(object) ? (
           <span
             data-slot="card-unattached"

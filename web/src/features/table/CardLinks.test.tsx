@@ -81,10 +81,10 @@ describe('attachments', () => {
       card({ id: 901, name: 'Pacifism', types: ['Enchantment'] }),
       card({ id: 902, name: 'Bonesplitter', types: ['Artifact'] }),
     ])
-    const cues = [...container.querySelectorAll('[data-slot="card-attachment"]')].map((c) => c.textContent)
-    expect(cues).toEqual(['+ Pacifism', '+ Bonesplitter'])
+    const cues = [...container.querySelectorAll('[data-slot="card-grant"]')].map((c) => c.textContent)
+    expect(cues).toEqual(['Pacifism', 'Bonesplitter'])
     expect(screen.getByRole('button').getAttribute('aria-label')).toMatch(
-      /Pacifism and Bonesplitter attached/,
+      /Pacifism attached, Bonesplitter attached/,
     )
   })
 })

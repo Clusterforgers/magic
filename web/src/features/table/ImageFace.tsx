@@ -24,7 +24,7 @@ export function useDrawnWidth(size: CardSize, fit: boolean): number {
 // The edges stay inside the 6 px between boxes of a line and the 4 px between lines.
 const PILE = 'shadow-[2px_2px_0_0_var(--color-border-strong),4px_4px_0_0_var(--color-border)]'
 
-interface ImageFaceProps extends Omit<OverlayProps, 'turned'> {
+interface ImageFaceProps extends Omit<OverlayProps, 'turned' | 'width'> {
   source: ImageSource
   /** The face box classes (size variables) the text face would have. */
   box: string | null
@@ -37,6 +37,7 @@ interface ImageFaceProps extends Omit<OverlayProps, 'turned'> {
 
 /** A card drawn as its picture over its text face, with the state over both. */
 export function ImageFace({ source, box, turned, stacked, imageSize, children, ...overlay }: ImageFaceProps) {
+  const width = useDrawnWidth(overlay.size, box === null)
   const src = cardImageUrl(source, faceOf(overlay.object), imageSize)
   const fallback = cardImageFallbackUrl(source, faceOf(overlay.object), imageSize)
   const missKey = missKeyOf(source, faceOf(overlay.object), imageSize)
@@ -59,7 +60,7 @@ export function ImageFace({ source, box, turned, stacked, imageSize, children, .
         alt={overlay.object.name}
         turned={turned}
         className="size-full"
-        overlay={<Overlay {...overlay} turned={turned} />}
+        overlay={<Overlay {...overlay} turned={turned} width={width} />}
       >
         {children}
       </CardImage>
@@ -67,7 +68,7 @@ export function ImageFace({ source, box, turned, stacked, imageSize, children, .
   )
 }
 
-interface BackFaceProps extends Omit<OverlayProps, 'turned'> {
+interface BackFaceProps extends Omit<OverlayProps, 'turned' | 'width'> {
   box: string | null
   turned: boolean
   /** The spoken name of the back: "Face-down card" or "Hidden card". */
@@ -79,6 +80,7 @@ interface BackFaceProps extends Omit<OverlayProps, 'turned'> {
  * carries its public state (damage, counters, attachments, the 2/2 of a morph) in the same small marks as a picture.
  */
 export function BackFace({ box, turned, label, ...overlay }: BackFaceProps) {
+  const width = useDrawnWidth(overlay.size, box === null)
   return (
     <span
       data-slot="card-picture"
@@ -93,7 +95,7 @@ export function BackFace({ box, turned, label, ...overlay }: BackFaceProps) {
         label={label}
         className={turned ? 'h-(--card-w) w-[calc(var(--card-w)*5/7)] rotate-90' : 'size-full'}
       />
-      {overlay.object.face_down === true ? <Overlay {...overlay} turned={turned} /> : null}
+      {overlay.object.face_down === true ? <Overlay {...overlay} turned={turned} width={width} /> : null}
     </span>
   )
 }
