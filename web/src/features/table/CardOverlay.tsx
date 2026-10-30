@@ -35,6 +35,8 @@ const CORNER = {
 }
 // The share of a face's width that the foot stack may take (its `max-w-[62%]`).
 const FOOT_SHARE = 0.62
+// A damage, counter or link mark is a line of the page's 24 px and the 2 px gap under it high.
+const OTHER_MARK_PX = 26
 // The power/toughness or loyalty box at the bottom right, which lies at the bottom left once turned.
 const STAT_BOX = { upright: 'right-[3%] bottom-[2.5%]', turned: 'bottom-[3%] left-[2.5%]' }
 
@@ -82,8 +84,9 @@ export function Overlay({ object, role, size, turned, note, links, width }: Over
   const hasFoot =
     damage !== undefined || counters.length > 0 || host !== undefined || attaches.length > 0 || unattached
   // The marks of the attachments get the lines of the foot stack that the damage, counters and links leave.
-  const used = (damage === undefined ? 0 : 1) + counters.length + (host === undefined ? 0 : 1)
-  const room = roomFor(turned ? (width * 5) / 7 : (width * 7) / 5, used + (unattached ? 1 : 0))
+  const others =
+    (damage === undefined ? 0 : 1) + counters.length + (host === undefined ? 0 : 1) + (unattached ? 1 : 0)
+  const room = roomFor(turned ? (width * 5) / 7 : (width * 7) / 5, others * OTHER_MARK_PX)
   const hasHead = head.length > 0 || sick || manual.length > 0 || note?.label !== undefined
   return (
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">

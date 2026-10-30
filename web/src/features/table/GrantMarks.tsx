@@ -7,6 +7,9 @@ import type { Attach, MarkTone } from './attachMarks'
 const MARK =
   'flex h-fit max-w-full items-center gap-0.5 rounded-sm px-1 leading-4 font-semibold whitespace-nowrap shadow-sm'
 
+// A mark is 16 px high: the line height comes after the text size, which tailwind-merge would otherwise let drop it.
+const LINE = 'leading-4'
+
 // Tokens only: a raise on `success`, a lowering or a restriction on `destructive`, anything else on `surface`.
 const TONE: Record<MarkTone, string> = {
   raise: 'bg-success text-background',
@@ -53,7 +56,7 @@ export function GrantMarks({ attaches, compact, room, span, up = false, text }: 
     const tone = compactTone(marks)
     const Icon = ICON[tone]
     return (
-      <span data-slot="card-grants" data-tone={tone} className={cn(MARK, COUNT, text)}>
+      <span data-slot="card-grants" data-tone={tone} className={cn(MARK, COUNT, 'gap-px px-0.5', text, LINE)}>
         <Icon aria-hidden="true" className="size-3 shrink-0" />
         {attaches.length}
       </span>
@@ -66,7 +69,7 @@ export function GrantMarks({ attaches, compact, room, span, up = false, text }: 
       data-slot="card-grant"
       data-tone={mark.tone}
       data-foreign={mark.foreign.length > 0 || undefined}
-      className={cn(MARK, TONE[mark.tone], mark.foreign.length > 0 && FOREIGN, text)}
+      className={cn(MARK, TONE[mark.tone], mark.foreign.length > 0 && FOREIGN, text, LINE)}
     >
       <span className="truncate">{mark.text}</span>
       {mark.ids.length > 1 ? <span className="shrink-0">×{mark.ids.length}</span> : null}
@@ -74,7 +77,7 @@ export function GrantMarks({ attaches, compact, room, span, up = false, text }: 
   ))
   if (more > 0) {
     parts.push(
-      <span key="more" data-slot="card-grants-more" className={cn(MARK, COUNT, text)}>
+      <span key="more" data-slot="card-grants-more" className={cn(MARK, COUNT, text, LINE)}>
         +{more}
       </span>,
     )

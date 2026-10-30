@@ -251,12 +251,14 @@ describe('the compact count', () => {
 describe('roomFor', () => {
   it.each([
     [140, 0, 3],
-    [140, 1, 2],
+    [140, 26, 1],
+    [140, 52, 0],
     [210, 0, 4],
+    [224, 0, 5],
     [72, 0, 1],
-    [100, 3, -1],
-  ])('gives a face %i px high with %i other lines %i lines', (height, used, room) => {
-    expect(roomFor(height, used)).toBe(room)
+    [100, 78, -2],
+  ])('gives a face %i px high with %i px used by other marks %i lines', (height, usedPx, room) => {
+    expect(roomFor(height, usedPx)).toBe(room)
   })
 })
 

@@ -255,7 +255,7 @@ export function attachedWords(attaches: readonly Attach[], seat: (id: PlayerId) 
 const FOOT_SHARE = 0.4
 const LINE_PX = 18
 
-/** How many mark lines the foot stack of a face `height` px high has left once other marks use `used` lines. */
-export function roomFor(height: number, used: number): number {
-  return Math.floor((height * FOOT_SHARE + LINE_PX - 16) / LINE_PX) - used
+/** How many mark lines the foot stack of a face `height` px high has left once other marks take `usedPx` of it. */
+export function roomFor(height: number, usedPx: number): number {
+  return Math.floor((height * FOOT_SHARE - usedPx + LINE_PX - 16) / LINE_PX)
 }
