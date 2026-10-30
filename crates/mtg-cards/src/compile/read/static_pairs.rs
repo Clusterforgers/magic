@@ -17,6 +17,9 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
     if let Some(found) = r.attempt(super::c10_uc::c10_uc_enters_held) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(super::dk1a_attached::otherwise_read) {
+        return Some(found);
+    }
     let condition = leading_condition(r)?;
     r.source().then_some(())?;
     r.word("gets").then_some(())?;
@@ -38,6 +41,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     let held = super::c10_uc::c10_uc_enters_held_texts(first, second);
     if !held.is_empty() {
         return held;
+    }
+    let otherwise = super::dk1a_attached::otherwise_texts(first, second);
+    if !otherwise.is_empty() {
+        return otherwise;
     }
     let attacking = super::attack_pairs::texts(first, second);
     if !attacking.is_empty() {

@@ -397,6 +397,7 @@ Distorting Wake
 Divine Visitation
 Diviner Spirit
 Dockside Extortionist
+Dog Umbra
 Dokuchi Shadow-Walker
 Domesticated Hydra
 Dominate
@@ -1225,6 +1226,7 @@ Rugged Prairie
 Ruinous Path
 Rumbleweed
 Rummaging Goblin
+Rune of Sustenance
 Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
@@ -1290,6 +1292,7 @@ Shamanic Revelation
 Shambling Shell
 Shapesharer
 Sharding Sphinx
+Shardmage's Rescue
 Shark Typhoon
 Sharktocrab
 Sheer Drop

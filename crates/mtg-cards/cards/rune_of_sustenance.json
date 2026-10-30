@@ -1,0 +1,44 @@
+{
+  "oracle_id": "03ea5632-7d90-4390-8df7-686f63f6b1a3",
+  "name": "Rune of Sustenance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune of Sustenance",
+      "oracle_fingerprint": "7908dcf34f07cad43924e429ad42a64e",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Lifelink" }] }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Equipment" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

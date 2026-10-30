@@ -643,7 +643,16 @@ fn enchanted_other(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
 fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
     // The condition may come first: "As long as you have the city's blessing, Detectives you control can't be blocked."
     let leading = leading_condition(r);
-    let (affected, _) = subject(r, true)?;
+    // After a condition about the attached creature, "it" is that creature: "As long as another player controls
+    // enchanted creature, it can't attack or block."
+    let it = leading
+        .as_ref()
+        .and_then(as_long_as::subject_of)
+        .filter(|_| r.word("it"));
+    let (affected, _) = match it {
+        Some(it) => (it, false),
+        None => subject(r, true)?,
+    };
     r.need("can't")?;
     let mods = if r.words("attack or block") {
         vec![Modification::CantAttack, Modification::CantBlock]
@@ -897,11 +906,17 @@ pub(super) fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
 pub(super) fn quoted_ability(r: &mut Reader<'_>) -> Option<Ability> {
     r.quoted(abilities::activated)
         .or_else(|| r.quoted(abilities::triggered))
+        .or_else(|| r.quoted(super::dk1a_attached::granted_static))
 }
 
 /// What `gives` reads, written back.
 pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
     match mods {
+        [Modification::GrantAbility(ability)]
+            if super::dk1a_attached::granted_static_text(ability).is_some() =>
+        {
+            super::dk1a_attached::granted_static_text(ability)
+        }
         [Modification::GrantAbility(ability)]
             if matches!(
                 **ability,
@@ -1769,6 +1784,7 @@ fn static_texts(
                     ]
                     .iter()
                     .any(|start| held.starts_with(start))
+                        || super::dk1a_attached::ends_with_attached(held)
                 })
                 .map(|held| match predicate.strip_prefix("is ") {
                     Some(rest) => format!("as long as {held}, it's {rest}"),

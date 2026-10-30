@@ -71,6 +71,7 @@ mod create;
 mod damage;
 mod day_night;
 mod defining;
+mod dk1a_attached;
 mod draws;
 mod effects;
 mod evasion;
