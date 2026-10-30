@@ -59,7 +59,7 @@ test('a guest joins a public game from the open games list and lands in its lobb
     const guestReady = guestPage.getByRole('button', { name: 'Ready', exact: true })
     await expect(guestReady).toBeDisabled()
     await expect(guestPage.getByText('Ready needs a deck. Choose one under Your deck.')).toBeVisible()
-    await chooseDeck(guestPage, 'Mono Red Giants')
+    await chooseDeck(guestPage, { id: 'mono-red', name: 'Mono Red Giants' })
     await expect(deckLines(hostPage).nth(1)).toHaveText('Deck: Mono Red Giants, Normal, no manual steps')
     await expect(guestReady).toBeEnabled()
     await guestReady.click()

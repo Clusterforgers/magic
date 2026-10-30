@@ -19,6 +19,12 @@ const CASES: Case[] = [
   { width: 1024, height: 768, holds: [7], scrolls: [12] },
 ]
 
+/**
+ * The list of the hand itself. The dock also holds the commanders of the command zone, in a list of the same slot
+ * ("Ada's commanders in the command zone"), so the hand is picked by its list's name.
+ */
+const HAND = '[data-region="hand"] ul[aria-label$="\'s hand"]'
+
 /** What the page found: how many cards it looked at, and the name and cost lines that something lies over. */
 interface Found {
   cards: number
@@ -30,7 +36,7 @@ interface Found {
 /** Opens the development table with `count` cards in the hand, once the dock has laid them out. */
 async function open(page: Page, count: number): Promise<void> {
   await page.goto(`${DEV_WEB_URL}/dev/table?seats=4&turn=you&prompt=priority&hand=${count}`)
-  await expect(page.locator('[data-region="hand"] button[data-object-id]')).toHaveCount(count)
+  await expect(page.locator(`${HAND} button[data-object-id]`)).toHaveCount(count)
   await page.waitForFunction(
     () =>
       document.querySelector<HTMLElement>('[data-slot="hand-fan"]')?.style.getPropertyValue('--card-w') !==
@@ -40,13 +46,11 @@ async function open(page: Page, count: number): Promise<void> {
 
 /** Looks at the cards of the hand:for each, the name line and the cost row, which no other element may cover. */
 async function look(page: Page, only: 'all' | 'front-start'): Promise<Found> {
-  return page.evaluate((which) => {
-    const fan = document.querySelector<HTMLElement>('[data-region="hand"] [data-slot="hand-fan"]')
+  return page.evaluate(({ which, hand }) => {
+    const fan = document.querySelector<HTMLElement>(hand)
     const covered: string[] = []
     const cards = [
-      ...document.querySelectorAll<HTMLElement>(
-        '[data-region="hand"] [data-slot="hand-slot"] button[data-object-id]',
-      ),
+      ...document.querySelectorAll<HTMLElement>(`${hand} [data-slot="hand-slot"] button[data-object-id]`),
     ]
     const chosen =
       which === 'all'
@@ -84,7 +88,7 @@ async function look(page: Page, only: 'all' | 'front-start'): Promise<Found> {
       scrolls: fan !== null && fan.scrollWidth > fan.clientWidth + 1,
       covered,
     }
-  }, only)
+  }, { which: only, hand: HAND })
 }
 
 for (const { width, height, holds, scrolls } of CASES) {

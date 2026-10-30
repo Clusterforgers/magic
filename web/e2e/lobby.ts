@@ -79,12 +79,18 @@ export const seatRows = (page: Page) => page.getByRole('list', { name: 'Seats' }
 export const deckLines = (page: Page) => page.locator('[data-slot="seat-deck"]')
 
 /**
- * Chooses a built-in deck for this page's seat, by the name on its button, and waits for the server's answer. A seat
- * made with no deck (an open seat that was taken) cannot press Ready before this.
+ * Chooses a built-in deck for this page's seat as a player does: the Built-in tab, the deck's row (a click selects it
+ * for the preview beside the list), the preview's "Use this deck", then waits for the server's answer. A seat made
+ * with no deck (an open seat that was taken) cannot press Ready before this.
  */
-export async function chooseDeck(page: Page, deck: string): Promise<void> {
-  await page.getByRole('button', { name: deck }).click()
-  await expect(page.locator('[data-slot="deck-note"]')).toContainText(`Your deck is now ${deck}`)
+export async function chooseDeck(page: Page, deck: { id: string; name: string }): Promise<void> {
+  await page.getByRole('tab', { name: 'Built-in' }).click()
+  await page.locator(`[data-deck-option="${deck.id}"]`).click()
+  await expect(page.getByRole('heading', { level: 3, name: deck.name, exact: true })).toBeVisible()
+  const use = page.locator('[data-slot="use-deck"]')
+  await expect(use).toBeEnabled()
+  await use.click()
+  await expect(page.locator('[data-slot="deck-note"]')).toContainText(`Your deck is now ${deck.name}`)
 }
 
 /** Presses Ready on every page; the game starts when the last one has. */
