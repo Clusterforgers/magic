@@ -22,6 +22,8 @@ import type {
   ZoneCause,
 } from '@/protocol/generated'
 import { colorsInSet, manaLetter } from './cardModel'
+import type { EventContext } from './eventContext'
+import { distinctTargets } from './prompt/targetText'
 import { STEP_LABEL } from './turnText'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
@@ -223,8 +225,15 @@ function damageTarget(target: DamageTarget, n: EventNames): string {
   return 'Player' in target ? n.seat(target.Player) : n.card(target.Object)
 }
 
-function targetName(target: Target, n: EventNames): string {
+/** The name of a player or an object a spell, ability or effect names. */
+export function targetName(target: Target, n: EventNames): string {
   return 'Player' in target ? n.seat(target.Player) : n.card(target.Object.id)
+}
+
+/** " targeting A and B" for the targets of a spell or ability (each once), and nothing when it has none. */
+export function targetingWords(targets: readonly Target[] | undefined, n: EventNames): string {
+  const named = distinctTargets(targets ?? [])
+  return named.length === 0 ? '' : ` targeting ${joinWords(named.map((target) => targetName(target, n)))}`
 }
 
 /** "a +1/+1 counter", "3 poison counters". */
@@ -409,13 +418,37 @@ function isPipeline(event: Event): event is PipelineEvent {
   return typeof event !== 'string' && PIPELINE.some((name) => name in event)
 }
 
-function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
+/**
+ * A move that the resolving spell or ability made, named by it: "Hill Giant is exiled by Swords to Plowshares", "Unsummon
+ * returns Hill Giant to Bo's hand". Null for every other move, which keeps its plain line.
+ */
+function byResolving(
+  by: string,
+  name: string,
+  from: Zone,
+  to: Zone,
+  cause: ZoneCause,
+  n: EventNames,
+): string | null {
+  if (cause === 'Exiled' || cause === 'Destroyed') return `${name} ${BECAUSE[cause]} by ${by}`
+  if (cause === 'Buried') return `${name} is destroyed by ${by} and can't be regenerated`
+  const bounced = cause === 'Moved' && from === 'Battlefield' && typeof to !== 'string' && 'Hand' in to
+  return bounced ? `${by} returns ${name} to ${zoneWord(to, n)}` : null
+}
+
+function describePipeline(event: PipelineEvent, n: EventNames, context?: EventContext): LogLine {
   if ('AbilityPutOnStack' in event) {
-    return quiet(`An ability of ${n.card(event.AbilityPutOnStack.source.id)} goes on the stack`)
+    const { source, cause, choices } = event.AbilityPutOnStack
+    const targeting = cause === undefined ? '' : targetingWords(choices?.targets?.flat(), n)
+    const text = `An ability of ${n.card(source.id)} goes on the stack${targeting}`
+    // A triggered ability names its targets here; an activated one named them in its own line.
+    return targeting === '' ? quiet(text) : line(text)
   }
   if ('AbilityActivated' in event) {
     const { player, source } = event.AbilityActivated
-    return line(`${n.seat(player)} activates an ability of ${n.card(source.id)}`)
+    return line(
+      `${n.seat(player)} activates an ability of ${n.card(source.id)}${targetingWords(context?.targets, n)}`,
+    )
   }
   if ('AbilityTriggered' in event) {
     return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
@@ -439,12 +472,22 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
   if ('ResolutionEnded' in event) {
     const { object, outcome } = event.ResolutionEnded
     if (outcome === 'Fizzled') return line(`${n.card(object)} does nothing: its targets are gone`)
-    if (outcome === 'Countered') return line(`${n.card(object)} is countered`)
+    if (outcome === 'Countered') {
+      const by = context?.resolving
+      return line(
+        by === undefined ? `${n.card(object)} is countered` : `${n.card(by)} counters ${n.card(object)}`,
+      )
+    }
     if (outcome === 'Lapsed') return line(`${n.card(object)} does nothing: its condition is no longer true`)
     return quiet(`${n.card(object)} finishes resolving`)
   }
   if ('ZoneChanged' in event) {
-    const { object, to, cause } = event.ZoneChanged
+    const { object, from, to, cause } = event.ZoneChanged
+    const by = context?.resolving
+    if (by !== undefined && by !== object) {
+      const done = byResolving(n.card(by), n.card(object), from, to, cause, n)
+      if (done !== null) return line(done)
+    }
     if (typeof to !== 'string' && 'Command' in to) {
       // A commander that goes home: the answer to the return question, or a move the question replaced.
       const how =
@@ -499,8 +542,8 @@ function attackClauses(attackers: readonly [ObjectId, AttackTarget][], n: EventN
   return [...byTarget].map(([target, names]) => `${target} with ${joinWords(names)}`).join('; ')
 }
 
-function describePublic(event: Event, n: EventNames): LogLine {
-  if (isPipeline(event)) return describePipeline(event, n)
+function describePublic(event: Event, n: EventNames, context?: EventContext): LogLine {
+  if (isPipeline(event)) return describePipeline(event, n, context)
   if (typeof event === 'string') {
     switch (event) {
       case 'MulliganPhaseBegan':
@@ -670,8 +713,10 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('LandPlayed' in event) {
     return line(`${n.seat(event.LandPlayed.player)} plays ${n.card(event.LandPlayed.object)}`)
   }
-  if ('SpellCast' in event)
-    return line(`${n.seat(event.SpellCast.player)} casts ${n.card(event.SpellCast.object)}`)
+  if ('SpellCast' in event) {
+    const { player, object, choices } = event.SpellCast
+    return line(`${n.seat(player)} casts ${n.card(object)}${targetingWords(choices?.targets?.flat(), n)}`)
+  }
   if ('SpellResolved' in event) return line(`${n.card(event.SpellResolved.object)} resolves`)
   if ('PermanentTapped' in event) return quiet(`${n.card(event.PermanentTapped.object)} becomes tapped`)
   if ('PermanentUntapped' in event) return quiet(`${n.card(event.PermanentUntapped.object)} becomes untapped`)
@@ -820,6 +865,8 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
 }
 
 /** The log line for one event as this viewer saw it. */
-export function describeEvent(event: EventView, names: EventNames): LogLine {
-  return 'Public' in event ? describePublic(event.Public, names) : describeHidden(event.Hidden, names)
+export function describeEvent(event: EventView, names: EventNames, context?: EventContext): LogLine {
+  return 'Public' in event
+    ? describePublic(event.Public, names, context)
+    : describeHidden(event.Hidden, names)
 }

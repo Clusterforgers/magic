@@ -9,6 +9,7 @@ import type { PlayState } from '@/play/store'
 import type { Event, EventView, HiddenEvent, PlayerId, PlayerView, Step } from '@/protocol/generated'
 import { commanderDamageLine } from '../commander'
 import { commanderHits } from '../commanderLog'
+import { eventContexts } from '../eventContext'
 import { describeEvent } from '../eventText'
 import type { EventNames } from '../eventText'
 import { batchBetween } from '../fx/batch'
@@ -130,6 +131,7 @@ function newestLine(
   players: readonly PlayerView[],
 ): TickerLine | null {
   const hits = commanderHits(events, players)
+  const contexts = eventContexts(events)
   for (let index = events.length - 1; index >= 0; index -= 1) {
     const view = events[index]
     if (view === undefined) continue
@@ -144,7 +146,7 @@ function newestLine(
       )
       return { kind: 'event', text }
     }
-    const line = describeEvent(sameForEverySeat(view), names)
+    const line = describeEvent(sameForEverySeat(view), names, contexts[index])
     if (line.minor) continue
     return banner && startsTurn(view) ? null : { kind: 'event', text: line.text }
   }
