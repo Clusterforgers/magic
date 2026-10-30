@@ -11,7 +11,15 @@ import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
 import { dockOf, usePreviewStore, usePreviewTarget } from './preview'
 import type { Dock, PreviewTarget } from './preview'
-import { activatedLines, attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
+import {
+  activatedLines,
+  attachLine,
+  combatText,
+  controlText,
+  hostLine,
+  pairLine,
+  zoneText,
+} from './previewText'
 import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
@@ -84,6 +92,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const activated = activatedLines(object, note?.usable)
   const status = statusWords(object, role)
   const hosted = hostLine(object, links.host)
+  const paired = pairLine(links.partner)
   const attaches = links.attaches ?? []
   return (
     <div
@@ -145,6 +154,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         )}
         {status.length === 0 ? null : <p>Status: {status.join(', ')}</p>}
         {hosted === null ? null : <p data-slot="preview-host">{hosted}.</p>}
+        {paired === null ? null : <p data-slot="preview-paired">{paired}.</p>}
         {attaches.length === 0 ? null : (
           <ul aria-label="Attachments" data-slot="preview-attachments" className="grid gap-0.5">
             {attaches.map((attach) => (

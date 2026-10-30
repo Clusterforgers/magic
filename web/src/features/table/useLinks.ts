@@ -1,4 +1,4 @@
-/** What a card names besides itself, read from the store by name: its host, its attachments and what they give, its original and its front face. */
+/** What a card names besides itself, read from the store by name: its host, its attachments and what they give, its partner, its original and its front face. */
 import { useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
@@ -7,6 +7,11 @@ import { attachedWords, attachesOf } from './attachMarks'
 import type { Links } from './cardModel'
 import { useSeatNamer } from './names'
 import { useFrontFaceName } from './printed'
+
+/** The name of the creature a creature is paired with: hidden when the viewer may not look at it, or not in the store. */
+function partnerName(partner: ObjectView | undefined): string {
+  return partner === undefined || partner.name === '' ? 'a face-down creature' : partner.name
+}
 
 /** The links of a card; a new object only when a name changes, so a memoised card redraws for nothing else. */
 export function useLinks(object: ObjectView | undefined): Links {
@@ -36,8 +41,11 @@ export function useLinks(object: ObjectView | undefined): Links {
     object?.copy?.of === undefined ? undefined : state.objectsById[object.copy.of]?.name,
   )
   const frontFace = useFrontFaceName(object)
+  const partner = usePlay((state) =>
+    object?.paired_with === undefined ? undefined : partnerName(state.objectsById[object.paired_with]),
+  )
   return useMemo(
-    () => ({ host, attaches, spoken, copyOf, frontFace }),
-    [host, attaches, spoken, copyOf, frontFace],
+    () => ({ host, attaches, spoken, copyOf, frontFace, partner }),
+    [host, attaches, spoken, copyOf, frontFace, partner],
   )
 }

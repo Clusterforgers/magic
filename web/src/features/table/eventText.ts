@@ -754,6 +754,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Unattached' in event) {
     return line(`${n.card(event.Unattached.object)} becomes unattached`)
   }
+  if ('Paired' in event) {
+    return line(`${n.card(event.Paired.object)} is paired with ${n.card(event.Paired.with)}`)
+  }
+  if ('Unpaired' in event) {
+    return line(`${n.card(event.Unpaired.object)} is no longer paired with ${n.card(event.Unpaired.with)}`)
+  }
   if ('JoinedAttack' in event) {
     const { object, target } = event.JoinedAttack
     return line(`${n.card(object)} enters attacking ${attackTarget(target, n)}`)

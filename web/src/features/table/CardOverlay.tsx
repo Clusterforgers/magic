@@ -4,7 +4,7 @@
  * mana cost, which a permanent no longer needs), a sick permanent as a small icon and a slight dim, and the current
  * power and toughness or loyalty on the stat box. Nothing is drawn over the art or the rules text beyond a mark's size.
  */
-import { Hourglass, Link2, Unlink } from 'lucide-react'
+import { Hourglass, Link as LinkIcon, Link2, Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import { counterChips, loyaltyOf, statusChips } from './cardModel'
@@ -99,12 +99,14 @@ export function Overlay({
   const attaches = links?.attaches ?? []
   const corner = CORNER[turned ? 'turned' : 'upright']
   const unattached = isUnattached(object)
+  const paired = object.paired_with !== undefined
   const hasFoot =
     damage !== undefined ||
     counters.length > 0 ||
     host !== undefined ||
     attaches.length > 0 ||
     unattached ||
+    paired ||
     revealed ||
     handNote !== undefined
   // The marks of the attachments get the lines of the foot stack that the damage, counters and links leave.
@@ -113,6 +115,7 @@ export function Overlay({
     counters.length +
     (host === undefined ? 0 : 1) +
     (unattached ? 1 : 0) +
+    (paired ? 1 : 0) +
     (revealed ? 1 : 0) +
     (handNote === undefined ? 0 : 1)
   const footWidth = width * FOOT_SHARE
@@ -178,6 +181,15 @@ export function Overlay({
             up={!turned}
             text={text}
           />
+          {paired ? (
+            <span
+              data-slot="card-paired"
+              className={cn(MARK, 'border border-foreground bg-background text-foreground', text)}
+            >
+              <LinkIcon aria-hidden="true" className="size-3 shrink-0" />
+              <span className={cn('truncate', size === 'compact' && 'sr-only')}>Paired</span>
+            </span>
+          ) : null}
           {unattached ? (
             <span
               data-slot="card-unattached"

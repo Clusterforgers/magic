@@ -20,6 +20,11 @@ export function hostLine(object: ObjectView, host: string | undefined): string |
   return words === null ? on : `${on}, giving ${words}`
 }
 
+/** A creature's line in the preview when a soulbond pair holds it: "Paired with Grizzly Bears", or null while it is paired with no one. */
+export function pairLine(partner: string | undefined): string | null {
+  return partner === undefined ? null : `Paired with ${partner}`
+}
+
 /** Where a card is, such as "On the battlefield" or "In Alice's graveyard". */
 export function zoneText(zone: Zone, name: SeatNamer): string {
   if (typeof zone === 'string') {
