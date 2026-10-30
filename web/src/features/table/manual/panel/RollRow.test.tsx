@@ -48,7 +48,12 @@ describe('the Roll row', () => {
   it.each<[string, string, string, ManualAction]>([
     ['Coin', 'Flips a coin; everyone sees the result', 'Flip a coin', { Roll: { kind: { Coin: {} } } }],
     ['d6', 'Rolls a d6; everyone sees the result', 'Roll a d6', { Roll: { kind: { Die: { sides: 6 } } } }],
-    ['d20', 'Rolls a d20; everyone sees the result', 'Roll a d20', { Roll: { kind: { Die: { sides: 20 } } } }],
+    [
+      'd20',
+      'Rolls a d20; everyone sees the result',
+      'Roll a d20',
+      { Roll: { kind: { Die: { sides: 20 } } } },
+    ],
   ])('%s previews "%s" and sends only on "%s"', async (press, preview, apply, action) => {
     const { user, manual, panel, row } = panelTable()
     await user.click(row)

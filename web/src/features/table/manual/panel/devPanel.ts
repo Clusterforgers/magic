@@ -39,7 +39,12 @@ export function panelOf(value: unknown): DevPanel | undefined {
 export function openRow(command: CommandId, root: ParentNode = document): boolean {
   const row = root.querySelector<HTMLElement>(`[data-slot="commands-panel"] [data-command="${command}"]`)
   if (row === null) return false
-  if (row.dataset.open === undefined) row.querySelector<HTMLButtonElement>('button[aria-expanded]')?.click()
+  if (row.dataset.open === undefined) {
+    row.querySelector<HTMLButtonElement>('button[aria-expanded]')?.click()
+    return false
+  }
+  // A row below the fold of the panel (Make is last) is brought into view to look at it.
+  row.scrollIntoView?.({ block: 'end' })
   return true
 }
 

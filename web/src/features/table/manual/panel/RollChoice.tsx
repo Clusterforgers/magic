@@ -22,16 +22,14 @@ export function RollChoice({ pick, sides, onPick, onSides }: Props) {
             size="sm"
             aria-pressed={choice.pick === pick}
             data-roll={choice.pick}
-            className="min-w-10 px-2 tabular-nums"
+            className="min-w-10 px-2 tabular-nums pointer-coarse:h-11 pointer-coarse:min-w-11"
             onClick={() => onPick(choice.pick)}
           >
             {choice.label}
           </Button>
         ))}
       </div>
-      {pick === 'custom' ? (
-        <AmountField spec={SIDES} value={sides} onChange={onSides} label="Faces" />
-      ) : null}
+      {pick === 'custom' ? <AmountField spec={SIDES} value={sides} onChange={onSides} label="Faces" /> : null}
     </div>
   )
 }

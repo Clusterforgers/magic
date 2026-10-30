@@ -26,9 +26,7 @@ export function rollKind(pick: RollPick, sides: number): ManualRoll | null {
     case 'd20':
       return { Die: { sides: 20 } }
     case 'custom':
-      return Number.isInteger(sides) && sides >= SIDES.min && sides <= SIDES.max
-        ? { Die: { sides } }
-        : null
+      return Number.isInteger(sides) && sides >= SIDES.min && sides <= SIDES.max ? { Die: { sides } } : null
   }
 }
 

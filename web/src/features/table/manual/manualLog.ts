@@ -83,7 +83,8 @@ function shownIn(log: readonly LogEntry[], at: number, count: number): ObjectId[
 function rolledIn(log: readonly LogEntry[], at: number, count: number): number | undefined {
   for (const entry of log.slice(at + 1, at + 1 + count)) {
     const inner = 'Public' in entry.event ? entry.event.Public : null
-    if (inner !== null && typeof inner !== 'string' && 'ManualRolled' in inner) return inner.ManualRolled.result
+    if (inner !== null && typeof inner !== 'string' && 'ManualRolled' in inner)
+      return inner.ManualRolled.result
   }
   return undefined
 }
