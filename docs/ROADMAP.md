@@ -219,15 +219,15 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [ ] (ma7g) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
-- [ ] (ma7h) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
-- [ ] (ma7i) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
-- [ ] (ma7k) The table shows what Reveal and Note put in the view: a seat's `revealed_hand` and `revealed_top` cards face up beside its hand and library, and `ObjectView.note` as a mark on the card's face and in its preview
-- [ ] (ma7l) The look-at-the-top list and the new rows at the six sizes in both themes: screenshots looked at, `e2e/layout.spec.ts` and `e2e/fit.spec.ts` with `/dev/table?panel=top`
-- [ ] (ma7m) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
-- [ ] (ma7n) The card menu's forms that nothing opens since the panel took the entries (`Ask` gain and lose life, your counters, draw, mill, move top, mana, their `buildAction` cases, `ManualForm` parts and tests) are removed
-- [ ] (ma7o) The panel's Tokens row also makes a custom token (name, power, toughness, as the card menu's form does) so that the menu's "Create a token…" can go
-- [ ] (ma7p) `CommandsPanel` takes its amount field from `panel/AmountField.tsx`, which the Card group already uses
+- [~] (ma7g) (panel-validate) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
+- [~] (ma7h) (panel-validate) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
+- [~] (ma7i) (panel-roll) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
+- [~] (ma7k) (panel-cleanup) The table shows what Reveal and Note put in the view: a seat's `revealed_hand` and `revealed_top` cards face up beside its hand and library, and `ObjectView.note` as a mark on the card's face and in its preview
+- [~] (ma7l) (panel-validate) The look-at-the-top list and the new rows at the six sizes in both themes: screenshots looked at, `e2e/layout.spec.ts` and `e2e/fit.spec.ts` with `/dev/table?panel=top`
+- [~] (ma7m) (panel-roll) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
+- [~] (ma7n) (panel-cleanup) The card menu's forms that nothing opens since the panel took the entries (`Ask` gain and lose life, your counters, draw, mill, move top, mana, their `buildAction` cases, `ManualForm` parts and tests) are removed
+- [~] (ma7o) (panel-cleanup) The panel's Tokens row also makes a custom token (name, power, toughness, as the card menu's form does) so that the menu's "Create a token…" can go
+- [~] (ma7p) (panel-cleanup) `CommandsPanel` takes its amount field from `panel/AmountField.tsx`, which the Card group already uses
 
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs
