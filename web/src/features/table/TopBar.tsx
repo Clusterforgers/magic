@@ -54,7 +54,7 @@ interface TopBarProps {
 /**
  * The top bar of the table: home, the turn badge, the button of the side sheet on a narrow window, and the table menu
  * (layout, stops and Full Control where the dock has no room, theme, Concede). 44 px high, 32 px on a phone on its
- * side. The turn banner lies over its middle while a new turn is announced.
+ * side. The turn banner stands in the free room after the step ladder while a new turn is announced.
  */
 export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compact = false }: TopBarProps) {
   const [menu, setMenu] = useState(false)
@@ -71,7 +71,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
       <HomeLink />
       <TurnBadge />
       <StepLadder />
-      <span className="ml-auto" />
+      <TurnBanner />
       <TableRules />
       <SideSheetButton compact={compact} />
       <TableMenu
@@ -89,7 +89,6 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
         }}
       />
       {allowed ? <ConcedeDialog open={conceding} onOpenChange={setConceding} /> : null}
-      <TurnBanner />
     </header>
   )
 }

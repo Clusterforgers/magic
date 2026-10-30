@@ -6,6 +6,7 @@ import { GameTable } from '@/features/table/GameTable'
 import { setDetailFetcher } from '@/features/table/printed'
 import { TableOptionsContext } from '@/features/table/tableOptions'
 import { DevFxControls } from './DevFxControls'
+import { DevTurnChange } from './DevTurnChange'
 import { fixtureGame } from './devGame'
 import { FIXTURE_MARKER, buildFixture } from './fixture'
 import { FRONT_OF, SHOWCASE_NAMES, fetchRealIds } from './realCards'
@@ -46,7 +47,8 @@ function useRealIds(
  * face; answering it clears it. `turn=you` makes it the viewer's own turn and `step=main2` (any step's name) puts the
  * turn in that step, to look at the theme of its phase. `fx` plays one of the moves of `dev/fxScenarios.ts` once the
  * page has loaded (the Effects bar plays them again; it is folded behind one button, and `bar=1` opens it) and `slow`
- * stretches the table effects, so one can be looked at before it is gone. `preview` is how many milliseconds the table takes to
+ * stretches the table effects, so one can be looked at before it is gone; `newturn=1` passes the turn to the other side
+ * once, for the turn banner and badge. `preview` is how many milliseconds the table takes to
  * answer a preview of blocks or attacks (120 when missing), so "Checking outcome…" can be looked at. `stops` lights stops
  * (`own:main1,opp:end:keep`: side, step, and `keep` for a lasting one) and `fc=next|held` sets Full Control; the
  * ladder and the toggle then answer as a server would.
@@ -62,6 +64,7 @@ export function DevTableRoute() {
     step,
     hand,
     fx,
+    newturn,
     bar,
     slow,
     preview,
@@ -130,8 +133,13 @@ export function DevTableRoute() {
   useOpenDevPanel(panel === 'top' ? 'look' : panel, panelCards)
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
-    () => ({ mode, focus, effects: fx === undefined ? undefined : true, effectsSlow: slow }),
-    [mode, focus, fx, slow],
+    () => ({
+      mode,
+      focus,
+      effects: fx === undefined && newturn !== true ? undefined : true,
+      effectsSlow: slow,
+    }),
+    [mode, focus, fx, newturn, slow],
   )
   return (
     <GameContext value={game}>
@@ -141,6 +149,7 @@ export function DevTableRoute() {
         </p>
         <GameTable />
         <DevFxControls initial={fx} open={bar} />
+        <DevTurnChange on={newturn === true} />
       </TableOptionsContext>
     </GameContext>
   )

@@ -56,6 +56,8 @@ export interface DevSearch {
   bar?: true
   /** A move to play on the table once it has loaded, so its effect can be looked at; also on buttons in the page. */
   fx?: DevFx
+  /** `1` passes the turn to the other side once the table has loaded, so the turn banner and the badge can be looked at (`dev/turnScene.ts`); `slow` stretches the banner. */
+  newturn?: true
   /** Makes every table effect this many times slower (above 1, up to 20), to look at one before it is gone. */
   slow?: number
   /** Milliseconds the dev table takes to answer a preview of blocks or attacks (0 to 10 000), to look at "Checking outcome…". */
@@ -99,7 +101,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -119,6 +121,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     turn: search.turn === 'you' ? 'you' : undefined,
     fx: isDevFx(search.fx) ? search.fx : undefined,
     bar: search.bar === true || search.bar === 1 || search.bar === '1' ? true : undefined,
+    newturn: search.newturn === true || search.newturn === 1 || search.newturn === '1' ? true : undefined,
     slow,
     // The router validates an address again with what it made of it, so both keep the form the address has.
     stops:

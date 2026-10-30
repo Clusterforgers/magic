@@ -32,7 +32,7 @@ interface Scene {
   add(object: ObjectView): void
 }
 
-function tableOf(view: StateView): TableView {
+export function tableOf(view: StateView): TableView {
   return {
     viewer: view.viewer,
     format: view.format,

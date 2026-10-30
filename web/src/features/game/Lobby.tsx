@@ -157,6 +157,9 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
           )}
         </div>
 
+        {/* Above the seats so the host sees the link and the code without scrolling on a laptop. */}
+        {host ? <JoinInvite game={game} /> : null}
+
         <section
           aria-labelledby="seats-title"
           data-slot="lobby-status"
@@ -240,7 +243,6 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
           </p>
         </section>
 
-        {host ? <JoinInvite game={game} /> : null}
         <Invites game={game} mine={seat} />
       </div>
 
