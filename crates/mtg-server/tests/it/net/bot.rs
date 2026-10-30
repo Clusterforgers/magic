@@ -157,7 +157,7 @@ impl WsBot {
         let me = PlayerId::from_index(self.seat);
         match message {
             ServerMessage::Welcome { player, .. } => assert_eq!(player, me),
-            ServerMessage::Snapshot { seq, state } => {
+            ServerMessage::Snapshot { seq, state, .. } => {
                 assert_eq!(state.table.viewer, me, "a snapshot for another seat");
                 self.next_seq = seq;
                 self.snapshots += 1;

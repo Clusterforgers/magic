@@ -99,6 +99,78 @@ describe('the event log', () => {
   })
 })
 
+describe('the log a Snapshot brings', () => {
+  /** A page that joined a game at `seq` and was sent `count` events of history with it, or one whose log holds `held`. */
+  function joined(seq: number, count: number, held = 0) {
+    const h = startSession()
+    h.join()
+    h.deliver(snapshot)
+    if (held > 0) h.deliver(batch(snapshot.seq, held))
+    h.deliver({ type: 'Snapshot', seq, state: base, log: events(100, count) })
+    return h
+  }
+  const seqs = (h: ReturnType<typeof startSession>) => h.state().log.map((entry) => entry.seq)
+  const range = (from: number, to: number) => Array.from({ length: to - from }, (_, i) => from + i)
+
+  it.each([
+    ['a reload, with its history', 40, 5, 0, range(35, 40)],
+    ['a reload at the start of a game, without any', 7, 0, 0, []],
+    ['a reload, with more history than the game has events', 3, 5, 0, []],
+    [
+      'a page that holds the newest events only',
+      snapshot.seq + 10,
+      10,
+      3,
+      range(snapshot.seq, snapshot.seq + 10),
+    ],
+    ['a page that holds the history already', snapshot.seq + 4, 4, 4, range(snapshot.seq, snapshot.seq + 4)],
+    [
+      'a gap: the page keeps what it had before it',
+      snapshot.seq + 30,
+      5,
+      3,
+      [...range(snapshot.seq, snapshot.seq + 3), ...range(snapshot.seq + 25, snapshot.seq + 30)],
+    ],
+  ])('%s', (_name, seq, count, held, expected) => {
+    expect(seqs(joined(seq, count, held))).toEqual(expected)
+  })
+
+  it('reads the history at the positions the server counts, oldest first', () => {
+    const h = joined(40, 5)
+    expect(h.state().log.map((entry) => entry.event)).toEqual(events(100, 5))
+    expect(h.state().seq).toBe(40)
+  })
+
+  it('keeps the events a page holds as they are, since they know names the history cannot', () => {
+    const h = startSession()
+    h.join()
+    h.deliver(snapshot)
+    h.deliver(batch(snapshot.seq, 4))
+    const held = h.state().log
+    h.deliver({ type: 'Snapshot', seq: snapshot.seq + 4, state: base, log: events(0, 6) })
+    expect(h.state().log.slice(-4)).toEqual(held)
+    expect(
+      h
+        .state()
+        .log.slice(-4)
+        .every((entry, i) => entry === held[i]),
+    ).toBe(true)
+  })
+
+  it('keeps only the newest LOG_LIMIT events', () => {
+    const h = startSession()
+    h.join()
+    h.deliver({ type: 'Snapshot', seq: 2000, state: base, log: events(0, LOG_LIMIT + 100) })
+    expect(h.state().log).toHaveLength(LOG_LIMIT)
+    expect(h.state().log.at(-1)?.seq).toBe(1999)
+  })
+
+  it('counts the snapshots it applied', () => {
+    const h = joined(40, 5)
+    expect(h.state().snapshots).toBe(2)
+  })
+})
+
 describe('incoming chat', () => {
   it('keeps the lines in the order they came, with who said them', () => {
     const h = startSession()

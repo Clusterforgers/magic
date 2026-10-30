@@ -831,12 +831,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('AttackersDeclared' in event) {
     const { player, attackers } = event.AttackersDeclared
-    if (attackers.length === 0) return line(`${n.seat(player)} declares no attackers`)
+    if (attackers.length === 0) return quiet(`${n.seat(player)} declares no attackers`)
     return line(`${n.seat(player)} attacks ${attackClauses(attackers, n)}`)
   }
   if ('BlockersDeclared' in event) {
     const { player, blocks } = event.BlockersDeclared
-    if (blocks.length === 0) return line(`${n.seat(player)} declares no blockers`)
+    if (blocks.length === 0) return quiet(`${n.seat(player)} declares no blockers`)
     const pairs = blocks.map(([blocker, attacker]) => `${n.card(blocker)} blocks ${n.card(attacker)}`)
     return line(`${n.seat(player)} declares blockers: ${joinWords(pairs)}`)
   }

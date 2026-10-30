@@ -33,7 +33,7 @@ describe.each([2, 4])('the log of a %i seat game', (count) => {
 
   it('leaves out a step that went by with everybody passing, however many seats pass', () => {
     const events = [...stepRound('Upkeep', 0, count), ...stepRound('Draw', 0, count)]
-    expect(fold(events, seats)).toEqual(['Upkeep begins', 'Draw begins'])
+    expect(fold(events, seats)).toEqual([])
   })
 
   it('folds the passes of a spell everybody let resolve into one line of all the seats', () => {
@@ -71,12 +71,11 @@ describe.each([2, 4])('the log of a %i seat game', (count) => {
       begin('End'),
     ]
     expect(fold(events, seats)).toEqual([
-      'Declare attackers begins',
+      'Declare attackers',
       'Alice casts Card 7',
       `All pass [${seats.join(',')}]`,
       'Card 7 resolves',
       'Bo loses 3 life',
-      'End step begins',
     ])
   })
 
@@ -138,13 +137,13 @@ describe('a game that has lost a seat', () => {
 })
 
 describe('a long log', () => {
-  it('folds the eight lines a step takes with four seats to nothing, and keeps one line for each spell passed', () => {
+  it('folds the eight lines a step takes with four seats, and the step with them, to nothing, and keeps one line for each spell passed', () => {
     const steps = ['Upkeep', 'Draw', 'Main1', 'BeginCombat', 'DeclareAttackers', 'End'] as const
     const events = steps.flatMap((step) => stepRound(step, 0, 4))
     events.splice(9, 0, cast(0, 1), ...round(0, 4), resolved(1))
     const lines = fold(events, seatsOf(4))
     expect(events.length).toBeGreaterThan(50)
-    expect(lines).toHaveLength(9)
+    expect(lines).toEqual(['Upkeep', 'Alice casts Card 1', 'All pass [0,1,2,3]', 'Card 1 resolves'])
     expect(lines.filter((line) => line.startsWith('All pass'))).toHaveLength(1)
     expect(lines.some((line) => line.includes('priority'))).toBe(false)
   })

@@ -119,9 +119,37 @@ describe('log panel', () => {
     expect(priority.length).toBeGreaterThan(0)
     // Every grant and every pass leaves the log, and a round of them comes back as one line.
     const lines = within(log()).getAllByRole('listitem')
-    expect(lines.length).toBeGreaterThanOrEqual(events.length - priority.length)
+    const steps = events.filter(
+      ({ event }) => 'Public' in event && typeof event.Public !== 'string' && 'StepBegan' in event.Public,
+    )
+    expect(lines.length).toBeGreaterThanOrEqual(events.length - priority.length - steps.length)
     expect(lines.length).toBeLessThan(events.length)
     expect(log()).not.toHaveTextContent(/receives priority|passes priority/)
+  })
+
+  it('heads each turn and names a step only above lines of play, in the order they happened', () => {
+    renderTable({ seats: 4, ui: <LogPanel /> })
+    const items = within(log()).getAllByRole('listitem')
+    const kinds = items.map((item) => item.getAttribute('data-kind'))
+    expect(kinds.filter((kind) => kind === 'turn').length).toBeGreaterThan(0)
+    expect(kinds.every((kind) => kind === 'turn' || kind === 'step' || kind === 'play')).toBe(true)
+    items.forEach((item, index) => {
+      if (item.getAttribute('data-kind') !== 'step') return
+      // The next line that is no minor line of play comes before any other step or head.
+      const after = items
+        .slice(index + 1)
+        .find(
+          (next) =>
+            next.getAttribute('data-kind') !== 'play' || !next.classList.contains('text-muted-foreground'),
+        )
+      expect(after?.getAttribute('data-kind'), item.textContent ?? '').toBe('play')
+    })
+    // A step is a quiet label, a head is not.
+    for (const item of items) {
+      const kind = item.getAttribute('data-kind')
+      expect(item.classList.contains('text-muted-foreground') || kind !== 'step').toBe(true)
+      expect(item.classList.contains('font-semibold')).toBe(kind === 'turn')
+    }
   })
 
   it('writes the events as sentences with the seats named by the lookup', () => {

@@ -102,6 +102,36 @@ describe('CardImage', () => {
     expect(screen.queryByText('text face') !== null).toBe(textFace)
   })
 
+  it('swaps the picture in the moment it loads: it never fades, so a card is never half see-through', () => {
+    draw()
+    const img = screen.getByRole('img', { hidden: true })
+    expect(img.className).not.toMatch(/transition|duration|animate/)
+    act(() => fireEvent.load(img))
+    expect(img.className).not.toMatch(/opacity|transition|duration|animate/)
+  })
+
+  it.each<[string, boolean, number, string]>([
+    ['a picture the browser holds is drawn in the first frame', true, 488, 'loaded'],
+    ['a picture the browser is still fetching waits behind the text face', false, 0, 'loading'],
+    ['a picture that arrived broken keeps the text face', true, 0, 'loading'],
+  ])('%s', (_name, complete, naturalWidth, status) => {
+    const own = (property: string) => Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, property)
+    const originals = { complete: own('complete'), naturalWidth: own('naturalWidth') }
+    const define = (property: 'complete' | 'naturalWidth', value: boolean | number) =>
+      Object.defineProperty(HTMLImageElement.prototype, property, { configurable: true, get: () => value })
+    define('complete', complete)
+    define('naturalWidth', naturalWidth)
+    try {
+      const { container } = draw()
+      expect(container.querySelector('[data-slot="card-image"]')).toHaveAttribute('data-status', status)
+      expect(screen.queryByText('text face') === null).toBe(status === 'loaded')
+    } finally {
+      for (const [property, descriptor] of Object.entries(originals)) {
+        if (descriptor !== undefined) Object.defineProperty(HTMLImageElement.prototype, property, descriptor)
+      }
+    }
+  })
+
   it('draws a neutral back with a name when given one', () => {
     render(<CardBack label="Face-down card" />)
     expect(screen.getByRole('img', { name: 'Face-down card' })).toBeInTheDocument()

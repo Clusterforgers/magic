@@ -8,12 +8,16 @@ import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 
 const LogLine = memo(function LogLine({ line }: { line: FoldedLine }) {
-  const { text, minor, passed, spoken, manual } = line
+  const { text, minor, passed, spoken, manual, kind } = line
   return (
     <li
       data-manual={manual}
+      data-kind={kind}
       className={cn(
         'px-1 py-0.5',
+        kind === 'turn' &&
+          'mt-2 border-t border-border pt-2 font-semibold first:mt-0 first:border-t-0 first:pt-0.5',
+        kind === 'step' && 'pt-1.5 pb-0 text-xs font-medium tracking-wide uppercase',
         manual === true && 'border-l-2 border-primary/50',
         minor && 'text-muted-foreground',
         passed.length > 0 && 'flex items-center gap-1.5',

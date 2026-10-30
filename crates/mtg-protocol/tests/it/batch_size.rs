@@ -48,6 +48,7 @@ fn mid_game_batches_are_a_fraction_of_a_snapshot(
             let snapshot = ServerMessage::Snapshot {
                 seq: step.from_seq,
                 state: Box::new(StateView::for_player(step.after, *viewer)),
+                log: Vec::new(),
             };
             samples.push(Sample {
                 answers: step.answers,

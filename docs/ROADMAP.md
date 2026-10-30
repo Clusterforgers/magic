@@ -454,7 +454,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
-- [ ] (w2h) A seat that reloads or reconnects gets the game log back (`play/store.ts`): after a `Snapshot` the log reads "Nothing has happened yet."
+- [ ] (w2i) A rebuilt log names the cards that left the view since (a token that died, a card put away): the lines of a `Snapshot` log read "a card" for them and an attach line has no old host, so the snapshot could list the names of the cards its window mentions (`play/store.ts` `mergeHistory`)
 - [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
 - [ ] (f1d) The builder links its check bar to `/decks/$deckId/unvalidated` (`docs/web.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
@@ -462,8 +462,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [ ] (v89a) Every seat keeps or mulligans at once: the engine asks one seat at a time (`mulligan.rs`, first `Deciding` seat) with a 60 s clock each, so a four-seat opening waits up to four minutes and the "Waiting for" line names seats not yet asked
-- [ ] (v89e) The game log keeps step lines ("Upkeep begins", "Draw begins") out of the way of plays, as Arena does: a four-seat turn is mostly step lines (`play/log`)
-- [ ] (v89f) A reload draws the battlefield at rest: after a `Snapshot` the permanents replay their enter effect, fade and overlap for about a second
 - [ ] (v89l) The picture warm-up fetches the printing each deck line chose (a precon names them), not only the newest paper printing of each card, so the table's pictures of precon cards are cached when the first turn starts
 - [ ] (v89m) The doc of `CardHit` in `mtg-protocol` says "without manual steps" for the played-by-hand flag; it reads "played by hand" like the web and the bindings follow
 

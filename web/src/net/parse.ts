@@ -447,6 +447,11 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Snapshot':
       if (!isCount(v.seq)) return '"seq" must be a whole number'
       if (!isStateView(v.state)) return '"state" is not a state view'
+      // The history of the log is optional, and a server without it leaves the key out.
+      if (v.log !== undefined) {
+        if (!isListOf(v.log, isEventView)) return '"log" must be a list of Public or Hidden events'
+        return { type, seq: v.seq, state: v.state, log: v.log }
+      }
       return { type, seq: v.seq, state: v.state }
     case 'Chat':
       if (!isCount(v.from)) return '"from" must be a seat number'

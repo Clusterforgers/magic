@@ -73,6 +73,7 @@ mod rest_precons;
 mod saga_transform_view;
 mod seat_deck;
 mod shown_view;
+mod snapshot_log;
 mod soulbond_hidden;
 mod spectator_view;
 mod spell_copy_view;

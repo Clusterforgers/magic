@@ -284,6 +284,9 @@ describe('parseFrame checks the fields of each message', () => {
     ['Snapshot', 'state as a list', ['state'], []],
     ['Snapshot', 'state without players', ['state', 'players'], undefined],
     ['Snapshot', 'state objects as an object', ['state', 'objects'], {}],
+    ['Snapshot', 'log as text', ['log'], 'none'],
+    ['Snapshot', 'log as an object', ['log'], {}],
+    ['Snapshot', 'log as null', ['log'], null],
     ['Events', 'from_seq as a fraction', ['from_seq'], 1.5],
     ['Events', 'from_seq as negative', ['from_seq'], -1],
     ['Events', 'from_seq as text', ['from_seq'], '0'],
@@ -584,6 +587,12 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
   it('accepts the events of spells and abilities, public and hidden, in a batch', () => {
     const batch = put(samples.Events, ['events'], events)
     expect(parseFrame(wire(batch))).toEqual({ ok: true, message: batch })
+  })
+
+  it('accepts a snapshot with the log it spans, as the server writes it, and one without', () => {
+    const snapshot = put(samples.Snapshot, ['log'], events)
+    expect(parseFrame(wire(snapshot))).toEqual({ ok: true, message: snapshot })
+    expect(parseFrame(wire(samples.Snapshot))).toEqual({ ok: true, message: samples.Snapshot })
   })
 
   it('accepts an ability on the stack among the objects of a batch, with its source and targets', () => {

@@ -142,6 +142,7 @@ fn late_join(seed: u64) -> (Vec<ServerMessage>, StateView) {
         ServerMessage::Snapshot {
             seq: before.seq,
             state: Box::new(before.view.clone()),
+            log: Vec::new(),
         },
     ];
     if let Some((id, decision)) = before.pending.as_ref().filter(|(_, d)| d.player == SEAT) {
@@ -242,7 +243,7 @@ fn replay(messages: &[ServerMessage]) -> StateView {
     let mut next_seq = 0;
     for message in messages {
         match message {
-            ServerMessage::Snapshot { seq, state } => {
+            ServerMessage::Snapshot { seq, state, .. } => {
                 view = Some((**state).clone());
                 next_seq = *seq;
             }

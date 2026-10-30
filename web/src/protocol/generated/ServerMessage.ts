@@ -4,6 +4,7 @@ import type { Decision } from "./Decision";
 import type { DecisionId } from "./DecisionId";
 import type { ErrorCode } from "./ErrorCode";
 import type { EventBatch } from "./EventBatch";
+import type { EventView } from "./EventView";
 import type { FullControlMode } from "./FullControlMode";
 import type { GameResult } from "./GameResult";
 import type { LobbySeat } from "./LobbySeat";
@@ -91,7 +92,13 @@ seq: number,
 /**
  * The view.
  */
-state: StateView, } | { "type": "Chat", 
+state: StateView, 
+/**
+ * The latest events of the game as this client sees them, at most [`SNAPSHOT_LOG`](crate::SNAPSHOT_LOG): the
+ * event at index `i` has log position `seq - log.len() + i`. Left out while there are none (a game that has just
+ * started) or when the server leaves it out.
+ */
+log?: Array<EventView>, } | { "type": "Chat", 
 /**
  * The sender.
  */

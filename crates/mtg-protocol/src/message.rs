@@ -11,7 +11,7 @@ use mtg_engine::{Answer, Decision};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::events::EventBatch;
+use crate::events::{EventBatch, EventView};
 use crate::view::StateView;
 
 /// Version of this wire protocol; both sides state it in the handshake.
@@ -297,6 +297,12 @@ pub enum ServerMessage {
         seq: u64,
         /// The view.
         state: Box<StateView>,
+        /// The latest events of the game as this client sees them, at most [`SNAPSHOT_LOG`](crate::SNAPSHOT_LOG): the
+        /// event at index `i` has log position `seq - log.len() + i`. Left out while there are none (a game that has just
+        /// started) or when the server leaves it out.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[ts(as = "Option<Vec<EventView>>", optional)]
+        log: Vec<EventView>,
     },
     /// A chat line from a player.
     Chat {

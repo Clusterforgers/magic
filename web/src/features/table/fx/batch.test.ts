@@ -112,6 +112,26 @@ describe('what is not a batch', () => {
     expect(steps()).toHaveLength(1)
   })
 
+  it.each([1, 3, 6])(
+    'is a snapshot that brings the %i events it jumps over as its log, which are history and no batch',
+    (missed) => {
+      const { h, seen, send, steps } = watch()
+      const later = miniView()
+      must(later.players[FOE]).life = 3
+      h.deliver({
+        type: 'Snapshot',
+        seq: 4 + missed,
+        state: later,
+        log: Array.from({ length: missed + 4 }, () => PASS[0] as EventView),
+      })
+      expect(must(h.state().log.at(-1)).seq).toBe(3 + missed)
+      expect(seen.at(-1)).toBeNull()
+      expect(steps()).toEqual([])
+      send((draft) => draft.life(FOE, 1))
+      expect(steps()).toHaveLength(1)
+    },
+  )
+
   it('is a snapshot of the same moment, which a plain Resync brings', () => {
     const { h, seen, steps } = watch()
     h.deliver({ type: 'Snapshot', seq: 4, state: miniView() })

@@ -20,7 +20,7 @@ pub mod view;
 pub mod wording;
 
 pub use error::ProtocolError;
-pub use events::{EventBatch, EventView, HiddenEvent, project_events};
+pub use events::{EventBatch, EventView, HiddenEvent, SNAPSHOT_LOG, project_events, project_log};
 pub use message::{
     ClientMessage, DecisionId, ErrorCode, FullControlMode, LobbySeat, PROTOCOL_VERSION, SeatDeck,
     ServerMessage, Stop, StopSide, YieldUntil, manual_play,

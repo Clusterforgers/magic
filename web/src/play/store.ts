@@ -101,6 +101,8 @@ export interface PlayState {
   clock: DecisionClock | null
   /** The most recent events (at most `LOG_LIMIT`), oldest first. */
   log: readonly LogEntry[]
+  /** How many snapshots the session has applied: a state that jumped with one is no batch, whatever its log holds. */
+  snapshots: number
   /** The most recent chat lines (at most `CHAT_LIMIT`), oldest first. */
   chat: readonly ChatLine[]
   /** Lobby, playing or over. */
@@ -147,6 +149,7 @@ export function initialPlayState(): PlayState {
     clock: null,
     log: [],
     chat: [],
+    snapshots: 0,
     phase: 'lobby',
     lobby: null,
     result: null,
@@ -186,6 +189,26 @@ export function appendLog(
     }
   })
   return [...log, ...added].slice(-LOG_LIMIT)
+}
+
+/**
+ * `log` after a snapshot at `seq` that brought `history`, the latest events of the game as this seat saw them (the
+ * event at index `i` is at `seq - history.length + i`): what the page already holds stays, since it knows names and
+ * attachments the history cannot, and what it lacks (a reload, a gap) is filled in from the history.
+ */
+export function mergeHistory(
+  log: readonly LogEntry[],
+  seq: number,
+  history: readonly EventView[] = [],
+): readonly LogEntry[] {
+  const kept = dropLogFrom(log, seq)
+  const start = seq - history.length
+  if (history.length === 0 || start < 0) return kept
+  const held = new Map(kept.map((entry) => [entry.seq, entry]))
+  const rebuilt = history.map(
+    (event, index): LogEntry => held.get(start + index) ?? { seq: start + index, event },
+  )
+  return [...kept.filter((entry) => entry.seq < start), ...rebuilt].slice(-LOG_LIMIT)
 }
 
 /** `log` without the entries at or after `seq`, which a snapshot at `seq` makes untrue. */
