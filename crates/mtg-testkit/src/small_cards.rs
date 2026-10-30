@@ -61,6 +61,7 @@ pub fn frost(name: &str) -> Arc<CardDefinition> {
         vec![a_creature()],
         vec![Effect::Tap {
             what: Ref::Target(0),
+            bind: None,
         }],
     )
 }
@@ -89,6 +90,7 @@ pub fn blizzard(name: &str) -> Arc<CardDefinition> {
         Vec::new(),
         vec![Effect::Tap {
             what: creatures_of(Ref::Opponents),
+            bind: None,
         }],
     )
 }
@@ -176,6 +178,7 @@ pub fn mirror(name: &str) -> Arc<CardDefinition> {
             }],
             otherwise: vec![Effect::Tap {
                 what: creatures_of(Ref::Opponents),
+                bind: None,
             }],
         }],
     )

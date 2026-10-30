@@ -11,7 +11,7 @@ impl Writer<'_> {
     /// The tap and the rule that holds the same permanents down, and the number of effects it covers.
     pub(super) fn c10_uc_held(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         let [
-            tap @ Effect::Tap { what },
+            tap @ Effect::Tap { what, bind: None },
             Effect::Continuous {
                 affected,
                 mods,

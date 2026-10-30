@@ -1,0 +1,59 @@
+{
+  "oracle_id": "b592568b-11b0-4081-90a7-30cfb9c1ba80",
+  "name": "Suppression Ray // Orderly Plaza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suppression Ray",
+      "oracle_fingerprint": "3d0d94676ce9d4e8d863eee54f780a42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "tapped"
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": "X" }],
+                  "paid": [
+                    {
+                      "Choose": {
+                        "from": { "Bound": "tapped" },
+                        "count": { "min": 0, "max": "X" },
+                        "as": "stunned"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "stunned" },
+                        "counter": { "Other": "stun" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orderly Plaza",
+      "oracle_fingerprint": "558c182b4c836f402d4be79152b3e948",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

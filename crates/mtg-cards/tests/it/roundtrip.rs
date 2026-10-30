@@ -845,7 +845,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 factor
             }
         ),
-        reference().prop_map(|what| Effect::Tap { what }),
+        reference().prop_map(|what| Effect::Tap { what, bind: None }),
         reference().prop_map(|what| Effect::Untap { what }),
         reference().prop_map(|what| Effect::TapOrUntap { what }),
         (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),

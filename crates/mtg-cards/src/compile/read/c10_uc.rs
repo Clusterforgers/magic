@@ -35,7 +35,10 @@ pub(super) fn c10_uc_players_creatures() -> Ref {
 /// The tap and the rule that keeps the same permanents tapped for `duration`.
 fn c10_uc_pair(what: Ref, duration: Duration) -> Vec<Effect> {
     vec![
-        Effect::Tap { what: what.clone() },
+        Effect::Tap {
+            what: what.clone(),
+            bind: None,
+        },
         Effect::Continuous {
             affected: what,
             mods: vec![Modification::DoesntUntap],

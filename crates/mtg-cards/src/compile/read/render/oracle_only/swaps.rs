@@ -81,10 +81,15 @@ fn damaging_trigger(ability: &Ability) -> bool {
 }
 
 fn taps_itself(ability: &Ability) -> bool {
-    ability
-        .effects()
-        .iter()
-        .any(|effect| matches!(effect, Effect::Tap { what: Ref::This }))
+    ability.effects().iter().any(|effect| {
+        matches!(
+            effect,
+            Effect::Tap {
+                what: Ref::This,
+                ..
+            }
+        )
+    })
 }
 
 /// A spell with one creature target that a later step changes.

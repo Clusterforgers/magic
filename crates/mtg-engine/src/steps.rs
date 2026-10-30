@@ -80,7 +80,7 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                                 .and_then(GameObject::permanent)
                                 .is_some_and(PermanentState::tapped)
                     })
-                    .map(|id| Event::PermanentUntapped { object: *id }),
+                    .filter_map(|id| state.object(*id).map(crate::stun::untap_event)),
             );
             if let Some(active) = active {
                 events.extend(crate::c7_untap::c7_untap_spent(state, active));

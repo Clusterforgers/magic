@@ -192,7 +192,12 @@ fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
         Leaves::Stays => {}
     }
-    if price.counted() {
+    // Energy is the one part whose X is announced with a payment an effect asks for.
+    if price
+        .parts
+        .iter()
+        .any(|part| part.is_counted() && !part.is_counted_energy())
+    {
         return Err(ResolveError::Unsupported("Effect.Pay.X.Parts"));
     }
     if price.tap || (price.mana.is_none() && price.parts.is_empty()) {
@@ -800,10 +805,7 @@ mod tests {
         r#"[{"PayLife":"X"}]"#,
         ResolveError::Unsupported("Effect.Pay.X.Parts")
     )]
-    #[case::counted_mana_and_energy(
-        r#"[{"Mana":"{1}"},{"PayEnergy":"X"}]"#,
-        ResolveError::Unsupported("Effect.Pay.X.Parts")
-    )]
+    #[case::counted_mill(r#"[{"Mill":"X"}]"#, ResolveError::Unsupported("Effect.Pay.X.Parts"))]
     #[case::sacrifice(
         r#"["SacrificeSelf"]"#,
         ResolveError::Unsupported("Effect.Pay.SacrificeSelf")
@@ -907,6 +909,73 @@ mod tests {
         let game = game(&[3, 0]);
         let error = run_journal(&game, journal, &pay(r#""You""#, r#""{X}{G}""#)).unwrap_err();
         assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
+    }
+
+    /// Seat 0 controls the Source and holds `held` energy.
+    fn energy_game(held: u32) -> GameState {
+        let mut game = crate::fixtures::setup(
+            vec![Vec::new(); 2],
+            vec![vec![creature("Source", 1, 1)], Vec::new()],
+        );
+        game.players[0].counters =
+            vec![(mtg_cards::value::CounterKind::Other("energy".into()), held)];
+        GameState::from_setup(&game).unwrap()
+    }
+
+    const ENERGY_X: &str = r#"[{"PayEnergy":"X"}]"#;
+
+    #[rstest]
+    #[case::none_held(0, 0)]
+    #[case::one_held(1, 1)]
+    #[case::five_held(5, 5)]
+    fn pay_x_energy_asks_for_x_up_to_the_energy_held(#[case] held: u32, #[case] most: u32) {
+        let game = energy_game(held);
+        let pay = pay(r#""You""#, ENERGY_X);
+        assert_eq!(
+            said(run_with(&game, &[], &pay)),
+            Said::Asks(0, "Pay X {E}?".into())
+        );
+        assert_eq!(
+            w6c_number(run_with(&game, &[(0, true)], &pay)),
+            (0, Some(most))
+        );
+    }
+
+    #[rstest]
+    #[case::none(5, 0)]
+    #[case::some(5, 3)]
+    #[case::all(5, 5)]
+    #[case::all_of_one(1, 1)]
+    fn pay_x_energy_takes_the_amount_announced_and_binds_it(#[case] held: u32, #[case] x: u32) {
+        let game = energy_game(held);
+        let journal = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(x))];
+        let Run::Done {
+            events,
+            bound,
+            next,
+            ..
+        } = run_journal(&game, journal, &pay(r#""You""#, ENERGY_X)).unwrap()
+        else {
+            panic!("the payment was expected to be done");
+        };
+        assert_eq!(next, Next::Enter(0));
+        assert_eq!(bound, vec![(format!("~x:{x}"), Vec::new())]);
+        let paid: i32 = events
+            .iter()
+            .map(|event| match event {
+                Event::CountersChanged(changed) => changed.delta,
+                other => panic!("unexpected event {other:?}"),
+            })
+            .sum();
+        assert_eq!(paid, -i32::try_from(x).unwrap());
+    }
+
+    #[test]
+    fn pay_x_energy_beyond_the_energy_held_is_refused() {
+        let game = energy_game(2);
+        let journal = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(3))];
+        let run = run_journal(&game, journal, &pay(r#""You""#, ENERGY_X));
+        assert!(matches!(run, Err(ResolveError::Invalid(_))), "{run:?}");
     }
 
     #[test]

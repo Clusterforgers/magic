@@ -49,7 +49,10 @@ pub(super) fn c7_untap_held(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("don't untap during their controller's next untap step")?;
     }
     Some(vec![
-        Effect::Tap { what: what.clone() },
+        Effect::Tap {
+            what: what.clone(),
+            bind: None,
+        },
         Effect::Continuous {
             affected: what,
             mods: vec![Modification::DoesntUntap],
