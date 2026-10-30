@@ -238,7 +238,7 @@ An Aura, Equipment or Fortification is read at its host, as Arena and MTGO draw 
 
 - Many: five attachments on one host keep a name line each of 21 px at 150 px cards and 14 px at 100 px; the marks wrap into a second column of the foot stack, and the preview always lists them all.
 - Phone (390 px): a tuck shows the attachment's colour edge only below 76 px cards; the marks are the count and an icon, and the long-press preview carries the list.
-- `gives` is the engine's account of each attachment's continuous effects on its host as the layers apply them now: `{ power, toughness, keywords, rules }` with `rules` the restrictions it adds (`CantAttack`, `CantBlock`, `LoseAbilities`, `DoesntUntap`, `CantBeBlocked`, `SetController`, `SetPowerToughness`); left out while the attachment gives nothing. The view cannot work it out: `abilities` carries mana abilities only and a card's words do not say what a condition or a layer leaves of them.
+- `gives` is the engine's account of each attachment's continuous effects on its host as the layers apply them now: `{ power, toughness, set, keywords, rules }` with `set` the power and toughness it sets ("is a 1/1") and `rules` the other changes it makes (`CantAttack`, `CantBlock`, `CantBeBlocked`, `DoesntUntap`, `LoseAbilities`, `SetController`, `UmbraArmor` and the rest of `GivenRule`); left out while the attachment gives nothing or is unattached. The view cannot work it out: `abilities` carries mana abilities only and a card's words do not say what a condition or a layer leaves of them.
 
 ## Game browser and lobby
 

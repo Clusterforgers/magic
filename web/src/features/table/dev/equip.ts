@@ -3,7 +3,7 @@
  * among them), one Equipment on another, an Equipment on no host, an opponent's Aura on the viewer's creature, the
  * viewer's Aura on an opponent's creature and a Curse on an opponent.
  */
-import type { ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
+import type { GivesView, ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
 import { rowOf } from '../cardModel'
 import type { Fixture } from './fixture'
 
@@ -24,6 +24,7 @@ interface Piece {
   player?: PlayerId
   keywords?: string[]
   curse?: true
+  gives?: GivesView
 }
 
 const pieceView = (id: ObjectId, piece: Piece): ObjectView => ({
@@ -44,6 +45,7 @@ const pieceView = (id: ObjectId, piece: Piece): ObjectView => ({
   ...(piece.keywords === undefined ? {} : { keywords: piece.keywords }),
   ...(piece.host === undefined ? {} : { attached_to: piece.host }),
   ...(piece.player === undefined ? {} : { attached_player: piece.player }),
+  ...(piece.gives === undefined ? {} : { gives: piece.gives }),
 })
 
 const creaturesOf = (fixture: Fixture, seat: PlayerId): ObjectView[] =>
@@ -64,19 +66,62 @@ export function withEquip(fixture: Fixture): Fixture {
   const pieces: Piece[] = []
   if (main !== undefined) {
     pieces.push(
-      { name: 'Ethereal Armor', subtype: 'Aura', controller: viewer, host: main.id },
-      { name: 'Rancor', subtype: 'Aura', controller: viewer, host: main.id },
-      { name: 'Spider Umbra', subtype: 'Aura', controller: viewer, host: main.id, keywords: ['Umbra armor'] },
-      { name: 'Bonesplitter', subtype: 'Equipment', controller: viewer, host: main.id },
-      { name: 'Lightning Greaves', subtype: 'Equipment', controller: viewer, host: main.id },
+      {
+        name: 'Ethereal Armor',
+        subtype: 'Aura',
+        controller: viewer,
+        host: main.id,
+        gives: { power: 3, toughness: 3, keywords: ['First strike'] },
+      },
+      {
+        name: 'Rancor',
+        subtype: 'Aura',
+        controller: viewer,
+        host: main.id,
+        gives: { power: 2, keywords: ['Trample'] },
+      },
+      {
+        name: 'Spider Umbra',
+        subtype: 'Aura',
+        controller: viewer,
+        host: main.id,
+        keywords: ['Umbra armor'],
+        gives: { power: 1, toughness: 1, keywords: ['Reach'], rules: ['UmbraArmor'] },
+      },
+      { name: 'Bonesplitter', subtype: 'Equipment', controller: viewer, host: main.id, gives: { power: 2 } },
+      {
+        name: 'Lightning Greaves',
+        subtype: 'Equipment',
+        controller: viewer,
+        host: main.id,
+        gives: { keywords: ['Haste', 'Shroud'] },
+      },
     )
   }
   if (second !== undefined)
-    pieces.push({ name: 'Short Sword', subtype: 'Equipment', controller: viewer, host: second.id })
+    pieces.push({
+      name: 'Short Sword',
+      subtype: 'Equipment',
+      controller: viewer,
+      host: second.id,
+      gives: { power: 1, toughness: 1 },
+    })
   if (third !== undefined)
-    pieces.push({ name: 'Pacifism', subtype: 'Aura', controller: rival, host: third.id })
+    pieces.push({
+      name: 'Pacifism',
+      subtype: 'Aura',
+      controller: rival,
+      host: third.id,
+      gives: { rules: ['CantAttack', 'CantBlock'] },
+    })
   if (theirs !== undefined)
-    pieces.push({ name: 'Eel Umbra', subtype: 'Aura', controller: viewer, host: theirs.id })
+    pieces.push({
+      name: 'Eel Umbra',
+      subtype: 'Aura',
+      controller: viewer,
+      host: theirs.id,
+      gives: { power: 1, toughness: 1, rules: ['UmbraArmor'] },
+    })
   pieces.push(
     { name: 'Sword of Fire and Ice', subtype: 'Equipment', controller: viewer },
     { name: 'Curse of Opulence', subtype: 'Aura', controller: viewer, player: rival, curse: true },
