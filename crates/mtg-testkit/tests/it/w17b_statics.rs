@@ -21,8 +21,8 @@ use mtg_engine::setup::PresetPermanent;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{burn, creature, keyworded_creature, mountain, one_target};
-use mtg_testkit::corpus::card;
 use mtg_testkit::commander_cards::legend;
+use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, check_settled};
 use rstest::rstest;
 use std::sync::Arc;
@@ -224,8 +224,10 @@ fn herald_holds(seats: usize, poison: bool) -> Driver {
         driver.pass().unwrap();
         return driver;
     }
-    let mut house = HouseRules::default();
-    house.starting_life = Some(1000);
+    let house = HouseRules {
+        starting_life: Some(1000),
+        ..HouseRules::default()
+    };
     let scenario = Scenario::new(seats)
         .format(Arc::new(Commander))
         .house_rules(house)
