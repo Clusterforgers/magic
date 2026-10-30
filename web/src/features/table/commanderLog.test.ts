@@ -29,7 +29,7 @@ const PLAYERS: PlayerView[] = [
   player(0, { commanders: [{ object: ATRAXA, casts: 1, tax: 2 }] }),
   player(1, {
     commanders: [{ object: KRENKO, casts: 0, tax: 0 }],
-    commander_damage: [{ commander: ATRAXA, damage: 14 }],
+    commander_damage: [{ commander: ATRAXA, name: 'Atraxa, Praetors’ Voice', damage: 14 }],
     commander_lethal: 21,
   }),
 ]

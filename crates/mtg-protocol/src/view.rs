@@ -198,6 +198,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<Vec<Target>>>", optional)]
     pub targets: Vec<Vec<Target>>,
+    /// Whether each target is still legal, in the shape of `targets`: the check the spell or ability makes as it
+    /// resolves (CR 608.2b), so an item whose targets are all illegal will do nothing. Left out with `targets`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<Vec<bool>>>", optional)]
+    pub targets_legal: Vec<Vec<bool>>,
     /// The counters on a permanent, by kind and number in a fixed order; left out while there are none. A planeswalker's
     /// loyalty is its loyalty counters, public like the rest.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -220,8 +225,8 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
     pub attachments: Vec<ObjectId>,
-    /// What this attachment gives the permanent it is attached to as the layers apply it now; left out while it gives
-    /// nothing or is attached to no permanent.
+    /// What this attachment gives the permanent or player it is attached to as the layers apply it now; left out while it
+    /// gives nothing or is attached to neither.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub gives: Option<GivesView>,
@@ -286,6 +291,9 @@ pub struct CommanderView {
 pub struct CommanderDamageView {
     /// The commander that dealt it.
     pub commander: ObjectId,
+    /// The commander's name: commanders are public wherever they are, so every seat names it while it is in a hand or
+    /// a library.
+    pub name: String,
     /// The damage, summed over the game.
     pub damage: u32,
 }

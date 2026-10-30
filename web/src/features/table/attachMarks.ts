@@ -68,10 +68,10 @@ function briefKeyword(short: string): string {
 
 const signed = (n: number): string => (n < 0 ? `${n}` : `+${n}`)
 
-/** "Pro red" for "Protection from red"; every other keyword as the server names it. */
+/** "Pro red" for "Protection from red", "Pro red, blue" for "... red and from blue"; every other keyword as named. */
 export function shortKeyword(name: string): string {
   const protection = /^protection from (.+)$/i.exec(name)
-  return protection?.[1] === undefined ? name : `Pro ${protection[1]}`
+  return protection?.[1] === undefined ? name : `Pro ${protection[1].split(' and from ').join(', ')}`
 }
 
 const lowerFirst = (text: string): string => text.charAt(0).toLowerCase() + text.slice(1)

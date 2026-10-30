@@ -1,4 +1,4 @@
-// Goal: a player's chips list the Auras and Curses attached to that player and nothing else: one chip per name and controller in id order, a count when several share one, the controller named when it is not the player, and none for an Aura on a permanent, a Curse that left the battlefield or another player's.
+// Goal: a player's chips list the Auras and Curses attached to that player and nothing else: one chip per name and controller in id order, a count when several share one, the controller named when it is not the player, what the Aura gives the player in words and marks, and none for an Aura on a permanent, a Curse that left the battlefield or another player's.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
@@ -21,6 +21,7 @@ describe('the chips of an enchanted player', () => {
         count: 1,
         text: 'Curse of Opulence',
         words: "Curse of Opulence (Ana's) enchants Bo",
+        gives: [],
       },
     ])
   })
@@ -39,6 +40,7 @@ describe('the chips of an enchanted player', () => {
       count: 3,
       text: 'Curse of Opulence ×3',
       words: "3 × Curse of Opulence (Ana's) enchants Bo",
+      gives: [],
     })
   })
 
@@ -70,5 +72,25 @@ describe('the chips of an enchanted player', () => {
 
   it('gives nothing for a player nothing is attached to', () => {
     expect(chipsFor(0, curse(7))).toEqual([])
+  })
+
+  it.each([
+    [{ keywords: ['Hexproof'] }, ['Hexproof'], ': hexproof'],
+    [
+      { keywords: ['Shroud', 'Protection from creatures'] },
+      ['Shroud', 'Pro creatures'],
+      ': shroud, protection from creatures',
+    ],
+    [
+      { keywords: ['Protection from red and from blue'] },
+      ['Pro red, blue'],
+      ': protection from red and from blue',
+    ],
+    [{ rules: ['LoseKeyword' as const] }, ['Loses a keyword'], ': loses a keyword'],
+    [undefined, [], ''],
+  ])('says what the Aura gives the player: %j', (gives, marks, words) => {
+    const [chip] = chipsFor(1, curse(7, gives === undefined ? {} : { gives }))
+    expect(chip?.gives.map((item) => item.text)).toEqual(marks)
+    expect(chip?.words).toBe(`Curse of Opulence (Ana's) enchants Bo${words}`)
   })
 })

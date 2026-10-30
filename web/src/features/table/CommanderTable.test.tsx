@@ -9,6 +9,7 @@ import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 
 const FIXTURE = buildFixture({ seats: 4 })
+const ATRAXA = 'Atraxa, Praetors’ Voice'
 const pod = (seat: number): HTMLElement =>
   must(document.querySelector<HTMLElement>(`section[data-seat="${seat}"]`), `pod ${seat}`)
 const chips = (root: HTMLElement, slot: string): string[] =>
@@ -48,7 +49,7 @@ describe('the pods', () => {
     show((view) => {
       const seat = must(view.players[2])
       const atraxa = must(view.players[1]?.commanders?.[0]).object
-      seat.commander_damage = [{ commander: atraxa, damage }]
+      seat.commander_damage = [{ commander: atraxa, name: ATRAXA, damage }]
       seat.commander_lethal = lethal
     })
     const chip = must(pod(2).querySelector<HTMLElement>('[data-slot="commander-damage"]'))
@@ -59,19 +60,24 @@ describe('the pods', () => {
     )
   })
 
-  it('keeps the name of a commander that goes where the viewer cannot see it', () => {
+  it.each([
+    ['the server', ATRAXA, ATRAXA],
+    ['the object when the server sends no name', '', ATRAXA],
+  ])('names a commander the page cannot see (a hand or a library) by %s', (_, sent, shown) => {
     const table = show((view) => {
       const atraxa = must(view.players[1]?.commanders?.[0]).object
-      must(view.players[2]).commander_damage = [{ commander: atraxa, damage: 6 }]
+      must(view.players[2]).commander_damage = [{ commander: atraxa, name: sent, damage: 6 }]
     })
     const atraxa = must(table.store.getState().view?.players[1]?.commanders?.[0]).object
-    table.update((state) => {
-      const objectsById = { ...state.objectsById }
-      delete objectsById[atraxa]
-      return { objectsById }
-    })
+    if (sent !== '') {
+      table.update((state) => {
+        const objectsById = { ...state.objectsById }
+        delete objectsById[atraxa]
+        return { objectsById }
+      })
+    }
     expect(must(pod(2).querySelector('[data-slot="commander-damage"]'))).toHaveAccessibleName(
-      '6 of 21 commander damage from Atraxa, Praetors’ Voice',
+      `6 of 21 commander damage from ${shown}`,
     )
   })
 
