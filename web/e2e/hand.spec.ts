@@ -15,8 +15,8 @@ interface Case {
 const CASES: Case[] = [
   { width: 1920, height: 1080, holds: [7, 9, 14, 16], scrolls: [] },
   { width: 1600, height: 1000, holds: [7, 9, 14, 16], scrolls: [24] },
-  { width: 1400, height: 900, holds: [7, 8], scrolls: [14] },
-  { width: 1024, height: 768, holds: [7], scrolls: [12] },
+  { width: 1400, height: 900, holds: [7, 8, 14, 16], scrolls: [24] },
+  { width: 1024, height: 768, holds: [7, 12], scrolls: [24] },
 ]
 
 /**
