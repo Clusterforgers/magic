@@ -18,6 +18,7 @@ use std::collections::BTreeSet;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::characteristics::controller_of;
+use crate::dk1c5_rooms::dk1c5_fold_unlocked as unlock;
 use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
@@ -372,9 +373,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
-        Event::DoorUnlocked { object, door, .. } => {
-            crate::dk1c5_rooms::dk1c5_fold_unlocked(state, *object, *door)?;
-        }
+        Event::DoorUnlocked { object, door, .. } => unlock(state, *object, *door)?,
         Event::ManaAdded {
             player,
             mana,

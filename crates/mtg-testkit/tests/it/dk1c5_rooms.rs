@@ -127,7 +127,7 @@ fn a_room_is_cast_as_one_door_and_the_other_is_unlocked_for_its_cost(
         draws,
         "Eerie: fully unlocked and each enchantment that entered"
     );
-    assert!(unlockable(&driver).is_empty());
+    assert_eq!(unlockable(&driver), []);
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
@@ -140,7 +140,7 @@ fn a_room_not_cast_has_both_doors_locked_and_only_its_types() -> Result<(), Scri
     assert_eq!(driver.state().dk1c5_doors(id), Some([false, false]));
     let card = driver.state().object(id).unwrap().card();
     assert_eq!((card.name.as_str(), card.mana_value()), ("", 0));
-    assert!(card.rules.is_empty());
+    assert_eq!(card.rules.len(), 0);
     assert_eq!(
         unlockable(&driver),
         [
@@ -160,7 +160,7 @@ fn a_door_is_not_unlocked_while_a_spell_is_on_the_stack() -> Result<(), ScriptEr
     let id = room(&driver);
     driver.cast("Entity Tracker")?;
     if driver.decision()?.player == pid(0) && !driver.state().zone(Zone::Stack).is_empty() {
-        assert!(unlockable(&driver).is_empty());
+        assert_eq!(unlockable(&driver), []);
         assert!(
             driver
                 .answer(Answer::Priority(PriorityAction::UnlockDoor(id, 0)))

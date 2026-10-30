@@ -105,13 +105,9 @@ pub(super) fn move_object(
         state.combat.planeswalker_left(id);
     }
     if to == Zone::Battlefield {
-        let doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
-        object.permanent = Some(PermanentState::entering(
-            timestamp, paid, way, x, face, spent,
-        ));
-        if let Some(permanent) = object.permanent.as_mut() {
-            permanent.doors = doors;
-        }
+        let mut permanent = PermanentState::entering(timestamp, paid, way, x, face, spent);
+        permanent.doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
+        object.permanent = Some(permanent);
     } else if to != Zone::Stack {
         object.controller = object.owner;
     }
