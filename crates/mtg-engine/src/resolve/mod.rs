@@ -392,6 +392,11 @@ fn step_with(
             next,
         } => {
             let mut events = events;
+            // A step that moved its targets onto the battlefield binds them again as the permanents that arrived.
+            let legal: Vec<_> = legal
+                .into_iter()
+                .filter(|(name, _)| bound.iter().all(|(bound_name, _)| bound_name != name))
+                .collect();
             let mut bound = [bound, legal].concat();
             let position = tree::after(effects, chosen, &resolving.position, next);
             // CR 700.2d: a mode chosen again runs again; the names it binds are cleared for the new run.

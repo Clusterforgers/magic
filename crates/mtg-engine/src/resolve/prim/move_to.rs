@@ -137,6 +137,23 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 under: entering_under(cx, under.as_ref())?,
                 transformed: *transformed,
                 counters,
+                attached_to: None,
+            };
+            return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
+        }
+        Destination::BattlefieldAttached { to } => {
+            let host = cx
+                .scope
+                .live_objects(to)?
+                .into_iter()
+                .find(|object| object.zone() == Zone::Battlefield)
+                .map(GameObject::id);
+            let entry = Entry {
+                tapped: false,
+                under: None,
+                transformed: false,
+                counters: &[],
+                attached_to: Some(host),
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -159,6 +176,23 @@ struct Entry<'a> {
     transformed: bool,
     /// With these counters.
     counters: &'a [(CounterKind, u32)],
+    /// Attached to this permanent, which the move names: `Some(None)` when the permanent it names is gone.
+    attached_to: Option<Option<ObjectId>>,
+}
+
+/// What a card put onto the battlefield "attached to" a named permanent comes in as: an Aura only attached to a permanent
+/// it may enchant, none otherwise (CR 303.4g), so `None` leaves the card where it is; an Equipment or a Fortification
+/// attached when it may be and unattached when it may not (CR 301.5, 301.6); any other card unattached.
+fn attached_entry(
+    state: &GameState,
+    object: &GameObject,
+    controller: PlayerId,
+    named: Option<ObjectId>,
+) -> Option<Option<ObjectId>> {
+    match attach::hosts_when_entering(state, object, controller) {
+        Some(hosts) => named.filter(|host| hosts.contains(host)).map(Some),
+        None => Some(named.filter(|host| attach::legal_host_entering(state, object.id(), *host))),
+    }
 }
 
 /// The state with the card `id` as it will be once it is on the battlefield: the back face when it enters transformed.
@@ -188,6 +222,7 @@ fn onto_battlefield(
         under,
         transformed,
         counters,
+        attached_to,
     } = *entry;
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();
@@ -207,16 +242,23 @@ fn onto_battlefield(
             continue;
         }
         let controller = under.unwrap_or_else(|| object.owner());
-        let host = match attach::hosts_when_entering(state, object, controller) {
-            None => None,
-            Some(hosts) => match hosts.as_slice() {
-                [] => continue,
-                [only] => Some(*only),
-                _ => questions
-                    .cards(controller, hosts, (1, 1), wording::ENCHANT.into())?
-                    .first()
-                    .copied(),
-            },
+        let host = if let Some(named) = attached_to {
+            let Some(host) = attached_entry(state, object, controller, named) else {
+                continue;
+            };
+            host
+        } else {
+            match attach::hosts_when_entering(state, object, controller) {
+                None => None,
+                Some(hosts) => match hosts.as_slice() {
+                    [] => continue,
+                    [only] => Some(*only),
+                    _ => questions
+                        .cards(controller, hosts, (1, 1), wording::ENCHANT.into())?
+                        .first()
+                        .copied(),
+                },
+            }
         };
         let (event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
         events.push(event);
@@ -273,11 +315,25 @@ fn onto_battlefield(
 /// object (CR 400.7), and "that creature" in the steps after the move is the one that arrived. A name that is not the
 /// reference stays as it is, and so does whatever the name held that did not enter.
 fn arrived_as(cx: &Cx<'_>, what: &Ref, entered: &[ObjectId]) -> Vec<(String, Vec<Target>)> {
-    let Ref::Bound(name) = what else {
-        return Vec::new();
-    };
-    let Ok(named) = cx.scope.refs(what) else {
-        return Vec::new();
+    // A target named again by a later step ("attached to that creature") is the permanent that arrived: the targets of
+    // its specification, as they were legal when the resolution began, are bound again to the new objects.
+    let (name, named) = match what {
+        Ref::Bound(name) => match cx.scope.refs(what) {
+            Ok(named) => (name.clone(), named),
+            Err(_) => return Vec::new(),
+        },
+        Ref::Target(index) => {
+            let name = cx.scope.legal_name(usize::from(*index));
+            // The first step of a resolution has not kept them yet: the targets it names are the ones legal now.
+            match cx.scope.bindings.get(&name) {
+                Some(named) => (name, named.clone()),
+                None => match cx.scope.refs(what) {
+                    Ok(named) => (name, named),
+                    Err(_) => return Vec::new(),
+                },
+            }
+        }
+        _ => return Vec::new(),
     };
     let state = cx.state();
     let renewed: Vec<Target> = named
@@ -300,7 +356,7 @@ fn arrived_as(cx: &Cx<'_>, what: &Ref, entered: &[ObjectId]) -> Vec<(String, Vec
     if renewed == named {
         return Vec::new();
     }
-    vec![(name.clone(), renewed)]
+    vec![(name, renewed)]
 }
 
 /// The events that put each owner's cards into their library at `place`.

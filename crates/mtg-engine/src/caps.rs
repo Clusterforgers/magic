@@ -138,6 +138,7 @@ const RUNS: &[&str] = &[
     "Effect.Move",
     "Effect.Move.Battlefield",
     "Effect.Move.Transformed",
+    "Effect.Move.Attached",
     "Effect.ExileUntil",
     "Effect.RevealUntil",
     "Effect.ExileTop",
@@ -587,6 +588,7 @@ mod tests {
     #[case::moving("Effect.Move", true)]
     #[case::moving_to_the_battlefield("Effect.Move.Battlefield", true)]
     #[case::moving_to_the_battlefield_transformed("Effect.Move.Transformed", true)]
+    #[case::moving_to_the_battlefield_attached("Effect.Move.Attached", true)]
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]

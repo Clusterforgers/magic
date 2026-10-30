@@ -92,13 +92,24 @@ pub(crate) fn enchant_restriction(state: &GameState, id: ObjectId) -> Option<Sel
 /// is not a creature (CR 303.4d, 303.4e), an Equipment equips another creature and is no creature, unless it has reconfigure
 /// (CR 301.5c), a Fortification fortifies another land (CR 301.6). A permanent never attaches to itself.
 pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
+    judged_host(state, attachment, host, true)
+}
+
+/// Whether `attachment`, a card about to be put onto the battlefield, may be attached to `host` as it enters (CR 303.4g,
+/// 301.5): `legal_host` for a card that is not there yet.
+pub(crate) fn legal_host_entering(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
+    judged_host(state, attachment, host, false)
+}
+
+/// `legal_host`, for an attachment that must already be on the battlefield or not.
+fn judged_host(state: &GameState, attachment: ObjectId, host: ObjectId, in_play: bool) -> bool {
     if attachment == host {
         return false;
     }
     let (Some(object), Some(target)) = (state.object(attachment), state.object(host)) else {
         return false;
     };
-    if object.zone() != Zone::Battlefield
+    if (in_play && object.zone() != Zone::Battlefield)
         || target.zone() != Zone::Battlefield
         || target.kind() == ObjectKind::Ability
     {

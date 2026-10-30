@@ -104,6 +104,13 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         order: Option<Order>,
     },
+    /// The battlefield under its owner's control, attached to the permanent a reference names ("onto the battlefield
+    /// attached to that creature"): an Aura that may not enchant it stays where it was, an Equipment or Fortification
+    /// that may not be attached to it comes in unattached.
+    BattlefieldAttached {
+        /// The permanent it is attached to.
+        to: Ref,
+    },
 }
 
 /// Mana an effect adds.
