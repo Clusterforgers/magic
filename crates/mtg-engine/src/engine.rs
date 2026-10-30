@@ -62,7 +62,7 @@ fn applies(state: &GameState, events: &[Event]) -> bool {
 }
 
 /// A running game: state, the event log that produced it, and the decision it is waiting on.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Engine {
     setup: GameSetup,
     state: GameState,

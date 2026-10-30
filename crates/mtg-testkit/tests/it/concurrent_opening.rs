@@ -105,22 +105,20 @@ fn at_six_seats_any_mix_in_any_order_matches_answering_in_turn_order(
     let start = Engine::new(setup.clone())?;
     let order = asked(&start);
     for mix in 0..1u32 << 6 {
-        // The log and hash after each set of seats answered; the empty set is the start.
-        let mut reached: Vec<(Vec<Event>, u64)> =
-            vec![(start.events().to_vec(), start.state_hash())];
+        // The game after each set of seats answered; the empty set is the start.
+        let mut reached: Vec<Engine> = vec![start.clone()];
         for set in 1..1usize << 6 {
             let mut hashes = Vec::new();
             for (bit, seat) in order.iter().enumerate() {
                 if set >> bit & 1 == 0 {
                     continue;
                 }
-                let (before, _) = &reached[set & !(1 << bit)];
-                let mut last = Engine::resume(setup.clone(), before.clone())?;
+                let mut last = reached[set & !(1 << bit)].clone();
                 last.apply_for(*seat, choice(mix, *seat))?;
-                if hashes.is_empty() {
-                    reached.push((last.events().to_vec(), last.state_hash()));
-                }
                 hashes.push(last.state_hash());
+                if hashes.len() == 1 {
+                    reached.push(last);
+                }
             }
             assert!(
                 hashes.iter().all(|h| *h == hashes[0]),
