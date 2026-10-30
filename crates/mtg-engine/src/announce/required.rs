@@ -80,7 +80,7 @@ pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
 }
 
 /// A cost in words, lower case: its mana, then its parts.
-fn words_of(mana: &ManaCost, parts: &[Part]) -> String {
+pub(crate) fn words_of(mana: &ManaCost, parts: &[Part]) -> String {
     let mut words: Vec<String> = Vec::new();
     if mana.mana_value() > 0 {
         words.push(format!("pay {mana}"));

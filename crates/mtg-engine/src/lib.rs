@@ -39,6 +39,7 @@ mod mana_repeat_tests;
 mod mana_takes;
 mod mulligan;
 mod parts;
+mod permit_costs;
 mod prepared;
 mod preview;
 mod price;

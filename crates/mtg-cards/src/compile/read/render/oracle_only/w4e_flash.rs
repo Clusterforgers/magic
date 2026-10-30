@@ -25,6 +25,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         only: None,
         play: false,
         once: false,
+        additional: None,
     } = permission
     else {
         return Vec::new();

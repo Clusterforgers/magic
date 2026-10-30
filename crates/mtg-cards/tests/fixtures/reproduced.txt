@@ -376,6 +376,7 @@ Delver of Secrets // Insectile Aberration
 Demolition Field
 Demon Bolt
 Demon of Wailing Agonies
+Demonic Embrace
 Dense Canopy
 Deputized Protester
 Desert
@@ -1070,6 +1071,7 @@ Path to the Festival
 Patrolling Peacemaker
 Patron of the Vein
 Peacewalker Colossus
+Pearl-Ear, Imperial Advisor
 Peema Outrider
 Pentad Prism
 Perch Protection

@@ -65,7 +65,11 @@ play: boolean,
 /**
  * Only once during each of the rule controller's turns, and only on their turns.
  */
-once?: boolean, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
+once?: boolean, 
+/**
+ * What the caster pays in addition to the other costs of a cast through it.
+ */
+additional?: unknown, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

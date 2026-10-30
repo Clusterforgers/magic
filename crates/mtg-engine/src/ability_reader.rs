@@ -153,9 +153,16 @@ pub(crate) fn w17b_definition_keeps_counters(definition: &CardDefinition) -> boo
     })
 }
 
-/// Whether a card with this definition prints a cost modifier or a keyword that adds one (`GameState::possible`).
+/// Whether a card with this definition prints a cost modifier, a keyword that adds one or a static ability that gives
+/// spells an affinity (`GameState::possible`).
 pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
-    let modifier = |rules: &Ability| matches!(rules, Ability::CostModifier { .. });
+    let modifier = |rules: &Ability| match rules {
+        Ability::CostModifier { .. } => true,
+        Ability::Static { mods, .. } => mods
+            .iter()
+            .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_)))),
+        _ => false,
+    };
     definition.rules.iter().any(|rules| match &**rules {
         Ability::Keyword(keyword) => keywords::rules(keyword)
             .adds_abilities(keyword)

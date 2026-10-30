@@ -441,6 +441,7 @@ const RUNS: &[&str] = &[
     "Keyword.Blitz",
     "Keyword.Prowl",
     "Keyword.Mayhem",
+    "Keyword.Disturb",
     "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
@@ -930,6 +931,7 @@ mod tests {
     #[case::blitz("Keyword.Blitz", true)]
     #[case::prowl("Keyword.Prowl", true)]
     #[case::mayhem("Keyword.Mayhem", true)]
+    #[case::disturb("Keyword.Disturb", true)]
     #[case::a_conditional_free_cast("Ability.FreeCast", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]

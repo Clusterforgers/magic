@@ -38,6 +38,7 @@ impl Writer<'_> {
             only: Some(Ref::Bound(FOUND.to_owned())),
             play: false,
             once: false,
+            additional: None,
         };
         (bind == FOUND && exiled_as == EXILED && *permission == allowed).then_some(())?;
         (self.single(&Ref::Target(0))

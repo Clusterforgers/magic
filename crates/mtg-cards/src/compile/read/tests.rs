@@ -1092,3 +1092,6 @@ mod sentences {
 
 // dk1c
 mod dk1c_writers;
+
+// deck-casting
+mod dk1c2_affinity;
