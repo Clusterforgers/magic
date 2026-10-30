@@ -63,7 +63,30 @@ function pack(words: readonly string[], fits: (line: string) => boolean): string
   return lines
 }
 
-/** Whether the writings of every item, each in the form `pick` takes, are lines of at most `limit`. */
+const VOWELS = 'aeiouAEIOU'
+
+/**
+ * A word that is wider than its line, in a short form that fits: its longest start that ends in a consonant, and a
+ * period ("Deatht." for Deathtouch, "Intimid." for Intimidate). Null where no start fits, or for anything but a word of
+ * letters ("+3/+3", "{2}"), which has no short form.
+ */
+export function abbreviate(word: string, fits: (text: string) => boolean): string | null {
+  if (!/^[A-Za-z][A-Za-z'-]{3,}$/.test(word)) return null
+  for (let kept = word.length - 1; kept >= 3; kept -= 1) {
+    const last = word.charAt(kept - 1)
+    if (VOWELS.includes(last) || last === '-' || last === "'") continue
+    const short = `${word.slice(0, kept)}.`
+    if (fits(short)) return short
+  }
+  return null
+}
+
+/** Whether `lines` are at most `limit` and each as narrow as the span: no line is a word that the box would cut. */
+function holds(lines: readonly string[], limit: number, fits: (line: string) => boolean): boolean {
+  return lines.length <= limit && lines.every(fits)
+}
+
+/** Whether the writings of every item, each in the form `pick` takes, are lines of at most `limit`, none cut. */
 function tries(
   items: ReadonlyArray<{ text: string; brief: string }>,
   pick: 'text' | 'brief',
@@ -74,12 +97,26 @@ function tries(
     items.flatMap((item) => item[pick].split(' ')),
     fits,
   )
-  return lines.length <= limit ? lines : null
+  return holds(lines, limit, fits) ? lines : null
+}
+
+/** The short words in up to `limit` lines, a word that is wider than the span in its abbreviation (`abbreviate`). */
+function abbreviated(
+  items: ReadonlyArray<{ text: string; brief: string }>,
+  limit: number,
+  fits: (line: string) => boolean,
+): string[] | null {
+  const words = items
+    .flatMap((item) => item.brief.split(' '))
+    .map((word) => (fits(word) ? word : (abbreviate(word, fits) ?? word)))
+  const lines = pack(words, fits)
+  return holds(lines, limit, fits) ? lines : null
 }
 
 /**
  * The lines of a mark for `items`: the full words in one line, else the short words in one, else the full words in
- * up to `maxLines`, else the short ones. Lines break at spaces only, so no word is cut. When even that is too long the
+ * up to `maxLines`, else the short ones, else the short ones with a word that is wider than the mark in its
+ * abbreviation ("Deatht."). Lines break at spaces only, so no word is cut by the box. When even that is too long the
  * items that fit stay, the first always, and "…" says some are left out.
  */
 export function layoutWords(
@@ -98,6 +135,8 @@ export function layoutWords(
     const found = tries(items, pick, lines, fits)
     if (found !== null) return { lines: found, cut: false }
   }
+  const short = abbreviated(items, limit, fits)
+  if (short !== null) return { lines: short, cut: false }
   const brief = items.map((item) => item.brief.split(' '))
   const dotted = (words: readonly string[]): string[] | null => {
     const lines = pack([...words, '…'], fits)

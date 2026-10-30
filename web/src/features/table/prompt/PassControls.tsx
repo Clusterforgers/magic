@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useGame, usePlay } from '@/features/game/gameContext'
+import { cn } from '@/lib/utils'
 import type { YieldUntil } from '@/protocol/generated'
 import { InControlsDock } from '../ControlsDock'
-import { useCompactDock } from '../dockLayout'
+import { useDockForm } from '../dockLayout'
 import { usePrompt } from './PromptContext'
 import {
   enterYields,
@@ -23,8 +24,8 @@ import {
 } from './passWords'
 import { usePrimaryKey } from './usePrimaryKey'
 
-/** A key as a small cap on a button; hidden on a narrow screen, which has no keyboard, and from a screen reader. */
-const KEY_CAP = 'ml-1 hidden rounded border px-1 text-[0.6875rem] leading-4 font-normal sm:inline-block'
+/** A key as a small cap on a button, drawn where the dock has the room (`full`) and always hidden from a screen reader. */
+const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-[0.6875rem] leading-4 font-normal'
 
 /**
  * The ways to pass priority, for a Priority prompt: a primary button that says what passing does now ("Next: Combat",
@@ -33,7 +34,8 @@ const KEY_CAP = 'ml-1 hidden rounded border px-1 text-[0.6875rem] leading-4 font
  * seat and says so, and the prompt goes with its first pass. With nothing holding the keyboard Space passes once and
  * Enter ends the turn (the "End turn" button), or passes once where there is no such button: under Full Control, which
  * the server does not let a yield run beside, and in the last window of the turn, where the primary button ends it.
- * On the table the buttons are drawn in the controls dock at the bottom right (`InControlsDock`), not in the prompt.
+ * On the table the buttons are drawn in the controls dock at the bottom right (`InControlsDock`), not in the prompt;
+ * the dock's form (`useDockForm`) says whether they carry key hints and the spell's name or keep to short words.
  */
 export function PassControls({ canPass }: { canPass: boolean }) {
   const { session } = useGame()
@@ -54,18 +56,22 @@ export function PassControls({ canPass }: { canPass: boolean }) {
     if (session.yieldUntil(until)) setAsked(true)
   }
   const yieldKey = enterYields(situation, !canYield)
+  const form = useDockForm()
   // The dock of a phone has no room for "End turn" beside the primary button, so the menu holds it.
-  const compact = useCompactDock()
+  const compact = form === 'compact'
+  const full = form === 'full'
   usePrimaryKey({ space: pass, enter: yieldKey ? () => yieldTo('EndOfTurn') : pass }, free)
 
-  const label = primaryLabel(situation)
+  const label = primaryLabel(situation, form)
+  // Where the dock has no room for key hints the buttons are as wide as their words need: the keys are in the tooltips and the menu.
+  const padding = full ? 'px-4' : 'px-3'
   return (
     <InControlsDock>
       {yieldKey && !compact ? (
         <Button
           data-slot="secondary-action"
           variant="outline"
-          className="h-11 px-4"
+          className={cn('h-11', padding)}
           disabled={!free}
           title="Enter"
           aria-keyshortcuts="Enter"
@@ -73,9 +79,11 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           onClick={() => yieldTo('EndOfTurn')}
         >
           {YIELD_WORDS.EndOfTurn.action}
-          <kbd aria-hidden="true" className={`${KEY_CAP} border-foreground/30`}>
-            Enter
-          </kbd>
+          {full ? (
+            <kbd aria-hidden="true" data-slot="key-cap" className={`${KEY_CAP} border-foreground/30`}>
+              Enter
+            </kbd>
+          ) : null}
         </Button>
       ) : null}
       {canYield ? (
@@ -127,7 +135,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
       {/* Last, so the primary button is the one in the corner of the dock and the last stop of its row. */}
       <Button
         data-slot="primary-action"
-        className="h-11 min-w-0 px-4 max-sm:basis-full"
+        className={cn('h-11 min-w-0 max-sm:basis-full', padding)}
         disabled={!free}
         title={yieldKey ? 'Space' : 'Space or Enter'}
         aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
@@ -135,9 +143,11 @@ export function PassControls({ canPass }: { canPass: boolean }) {
         onClick={pass}
       >
         <span className="truncate">{label}</span>
-        <kbd aria-hidden="true" className={`${KEY_CAP} border-primary-foreground/40`}>
-          {yieldKey ? 'Space' : 'Space · Enter'}
-        </kbd>
+        {full ? (
+          <kbd aria-hidden="true" data-slot="key-cap" className={`${KEY_CAP} border-primary-foreground/40`}>
+            {yieldKey ? 'Space' : 'Space · Enter'}
+          </kbd>
+        ) : null}
       </Button>
     </InControlsDock>
   )

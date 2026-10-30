@@ -64,6 +64,19 @@ export function handDockNeed({ width, count, commanders, most }: DockNeedInput):
 /** The room between the commanders and the hand in the dock: the gap and the divider line. */
 export const COMMAND_GAP_PX = 10
 
+/** What the hand dock keeps free beside its cards in px, both sides: the padding of its section and of its line. */
+export const HAND_DOCK_SIDES_PX = 16
+
+/**
+ * The width the hand dock needs in px to hold `count` cards in one row of `HAND_FLOOR_PX` cards, with `commanders` and
+ * their divider at its head.
+ */
+export function handRowPx(count: number, commanders: number): number {
+  const cards = Math.max(1, count)
+  const head = commanders > 0 ? commanders * (HAND_FLOOR_PX + HAND_GAP_PX) + COMMAND_GAP_PX : 0
+  return head + cards * HAND_FLOOR_PX + (cards - 1) * HAND_GAP_PX + HAND_DOCK_SIDES_PX
+}
+
 /** What `handLayout` needs. */
 export interface HandInput {
   /** The room for the line in px, less the padding kept round it. */

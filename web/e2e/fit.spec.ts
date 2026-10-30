@@ -427,6 +427,153 @@ test.describe('the development table with 40 permanents a seat', () => {
     }
   })
 
+  // The viewer holds seven cards and a pair of partners in the command zone: nine cards of 68 px want 670 px of the hand dock.
+  test('keeps an opening hand and two commanders in one row at every size above a phone, the controls dock as wide as its words need', async ({
+    page,
+  }) => {
+    const read = () =>
+      page.evaluate(() => {
+        const slots = [...document.querySelectorAll('[data-region="hand"] [data-slot="hand-slot"]')]
+        const dock = document.querySelector('[data-region="controls"]')
+        return {
+          cards: slots.length,
+          rows: new Set(slots.map((slot) => Math.round(slot.getBoundingClientRect().top))).size,
+          dock: Math.round(dock?.getBoundingClientRect().width ?? 0),
+          hints: dock?.querySelectorAll('[data-slot="key-cap"]').length ?? 0,
+          primary: dock?.querySelector('[data-slot="primary-action"]')?.textContent ?? '',
+          scrolls: dock === null || dock === undefined ? false : dock.scrollWidth > dock.clientWidth + 1,
+        }
+      })
+    // A spell on the stack (the longest words of the full dock) and the longest step to name in the short one.
+    for (const query of ['prompt=priority&turn=you', 'prompt=priority-main&turn=you&step=begincombat']) {
+      await page.goto(`${DEV_WEB_URL}/dev/table?${query}`)
+      await page.locator(THINGS.primary).waitFor()
+      for (const size of SIZES.filter((size) => size.breakpoint !== 'xs')) {
+        await page.setViewportSize({ width: size.width, height: size.height })
+        const label = `${query} at ${size.width}x${size.height}`
+        await expect.poll(async () => (await read()).rows, { message: `${label}: the hand's rows` }).toBe(1)
+        const seen = await read()
+        expect(seen.cards, `${label}: the cards of the hand and the commanders`).toBe(9)
+        expect(seen.scrolls, `${label}: the dock scrolls sideways`).toBe(false)
+        // Key hints and the name of a spell only where the dock leaves the row its room (a main area of 1150 px).
+        const roomy = size.width >= 1470
+        expect(seen.hints > 0, `${label}: key hints`).toBe(roomy)
+        if (!roomy) expect(seen.dock, `${label}: the dock`).toBeLessThanOrEqual(300)
+        if (query.startsWith('prompt=priority&') && !roomy) expect(seen.primary).toBe('Resolve')
+      }
+    }
+  })
+
+  test('puts the commander tax in the row of the opponent’s zone chips, so its pod column does not scroll at 1440x900 and 1366x768', async ({
+    page,
+  }) => {
+    const read = () =>
+      page.evaluate(() => {
+        const column = document.querySelector('[data-slot="pod-column"]:has([data-seat="1"])')
+        return {
+          found: column !== null,
+          scrolls: column === null ? null : column.scrollHeight > column.clientHeight + 1,
+          chips: column?.querySelector('[data-slot="corner-chips"]') != null,
+          // The tax as a chip of the one row of chips, and none in a row of its own under it.
+          taxInRow: column?.querySelector('[data-slot="corner-chips"] [data-slot="commander-tax"]') != null,
+          taxRow: column?.querySelector('[data-slot="commander-chips"]') != null,
+        }
+      })
+    // The scene with a Curse (a chip row of the pod's top) and a commander that was cast twice.
+    await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&equip=1`)
+    await page.locator('[data-slot="card-grant"]').first().waitFor()
+    // A phone has no pod column: its pods are one line over the board.
+    for (const size of SIZES.filter((size) => size.breakpoint !== 'xs')) {
+      await page.setViewportSize({ width: size.width, height: size.height })
+      await expect
+        .poll(async () => (await read()).found, { message: `${size.width}x${size.height}: the pod column` })
+        .toBe(true)
+      await page.waitForTimeout(250)
+      const seen = await read()
+      const label = `${size.width}x${size.height}`
+      expect(seen.taxRow, `${label}: the tax has no row of its own`).toBe(false)
+      if (seen.chips) expect(seen.taxInRow, `${label}: the tax is a chip of the zone chips' row`).toBe(true)
+      // The column that holds the pod's blocks and one row of chips at the least height (150 px) and does not scroll.
+      if (size.width === 1440 || size.width === 1366) {
+        expect(seen.scrolls, `${label}: the opponent's pod column scrolls`).toBe(false)
+      }
+    }
+  })
+
+  test('writes a keyword wider than the foot stack of a picture in a short form its mark holds, at every size', async ({
+    page,
+  }) => {
+    // The card search names every card of the scene and each picture is a plain card back, so the faces are pictures with the marks over them.
+    await page.route(/\/api\/cards\?/, async (route) => {
+      const name = new URL(route.request().url()).searchParams.get('q') ?? ''
+      await route.fulfill({
+        json: {
+          cards: [
+            {
+              oracle_id: `dev-${name.toLowerCase().replace(/[^a-z]+/g, '-')}`,
+              name,
+              mana_cost: '',
+              mana_value: 0,
+              type_line: 'Creature',
+              support: 'verified',
+              colors: [],
+              color_identity: [],
+              images: {},
+            },
+          ],
+          total: 1,
+          page: 1,
+          per_page: 20,
+        },
+      })
+    })
+    await page.route(/\/api\/images\//, (route) =>
+      route.fulfill({
+        contentType: 'image/svg+xml',
+        body: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 7"><rect width="5" height="7" fill="#556"/></svg>',
+      }),
+    )
+    const read = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll('[data-slot="card-overlay"] [data-slot="card-grant"]')].map((mark) => ({
+          text: mark.textContent ?? '',
+          card: mark.closest('[data-object-id]')?.getBoundingClientRect().width ?? 0,
+          // A line that the box cuts has more text than room (`truncate`): its word ends in an ellipsis.
+          cut: [...mark.querySelectorAll('.truncate')].some(
+            (line) => line.scrollWidth > line.clientWidth + 0.5,
+          ),
+        })),
+      )
+    await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&equip=1&cards=real`)
+    await expect
+      .poll(async () => (await read()).length, { message: 'marks over pictures' })
+      .toBeGreaterThan(0)
+    let short = 0
+    let whole = 0
+    for (const size of SIZES) {
+      await page.setViewportSize({ width: size.width, height: size.height })
+      await page.waitForTimeout(400)
+      const label = `${size.width}x${size.height}`
+      const marks = await read()
+      expect(
+        marks.filter((mark) => mark.cut).map((mark) => mark.text),
+        `${label}: marks cut`,
+      ).toEqual([])
+      // "Deathtouch" is 73 px with its padding: whole in a foot stack (62 % of the card) of 74 px, else shortened.
+      for (const mark of marks.filter((mark) => mark.text.startsWith('Death'))) {
+        const fits = mark.card * 0.62 >= 74.2
+        expect(mark.text, `${label}: Deathtouch on a card of ${Math.round(mark.card)} px`).toBe(
+          fits ? 'Deathtouch' : 'Deatht.',
+        )
+        if (fits) whole += 1
+        else short += 1
+      }
+    }
+    // The scene shows the keyword in both forms, so the check is not about nothing.
+    expect(short, 'Deathtouch in its short form').toBeGreaterThan(0)
+    expect(whole, 'Deathtouch whole').toBeGreaterThan(0)
+  })
+
   test('fits with a table of twelve seats in focus mode', async ({ page }) => {
     await page.goto(`${DEV_WEB_URL}/dev/table?seats=12&prompt=priority&turn=you`)
     await page.locator(THINGS.primary).waitFor()

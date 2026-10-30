@@ -66,7 +66,7 @@ const Table = memo(function Table() {
       <PreviewContext value={previews}>
         <MarksContext value={marks}>
           <ManualMenuProvider>
-            <ControlsSlotProvider compact={regions.phone}>
+            <ControlsSlotProvider form={table.dock}>
               <section
                 aria-label="Game table"
                 data-mode={plan.mode}

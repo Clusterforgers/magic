@@ -1,5 +1,6 @@
 // Goal: anchors are found in the page by the data attributes cards and seats carry (a card by its face, a seat by its panel, else its tile, a card that is not drawn by its controller's), measured relative to the overlay, hidden ones skipped; lines get a curve only when both ends are on screen with room between them and identical drawings are made once; and the scheduler runs its work once per frame however often it is asked.
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { must } from '@/test-utils/batches'
 import { fakeFrames } from '@/test-utils/frames'
 import type { Rect } from './geometry'
 import { anchorKey } from './plan'
@@ -270,6 +271,38 @@ describe('shapesOf', () => {
   ])('draws nothing when %s', (_name, rects) => {
     expect(shapesOf([spec(card(1), seat(0))], rects)).toEqual([])
   })
+
+  it.each<[string, Rect, Rect]>([
+    [
+      'from the upper left to the lower right',
+      { x: 100, y: 0, width: 96, height: 134 },
+      { x: 400, y: 500, width: 96, height: 134 },
+    ],
+    [
+      'from the upper right to the lower left',
+      { x: 400, y: 0, width: 96, height: 134 },
+      { x: 100, y: 500, width: 96, height: 134 },
+    ],
+  ])(
+    'bows an attack and a block line between the same two boxes to the same side of the board, %s',
+    (_name, upper, lower) => {
+      // An attack runs from the attacker up to its defender, a block from the attacker down to its blocker: the two
+      // curves are mirror images, so the lines of a fight bow the same way on the screen, away from the pod column.
+      const rects = boxes([
+        [card(1), upper],
+        [card(2), lower],
+      ])
+      const side = (drawn: ReturnType<typeof shapesOf>[number] | undefined): number => {
+        const { start, end, mid } = must(drawn).shape
+        return Math.sign((end.x - start.x) * (mid.y - start.y) - (end.y - start.y) * (mid.x - start.x))
+      }
+      const attack = shapesOf([spec(card(2), card(1), 'attack')], rects)[0]
+      const block = shapesOf([spec(card(1), card(2), 'block')], rects)[0]
+      expect(side(attack)).not.toBe(0)
+      // Opposite directions along the same chord: the same screen side is the opposite side of the direction.
+      expect(side(block)).toBe(-side(attack))
+    },
+  )
 
   it('keeps the order of the lines and skips only the ones it cannot draw', () => {
     const lines = [spec(card(1), seat(0)), spec(card(2), seat(0)), spec(card(3), seat(0))]

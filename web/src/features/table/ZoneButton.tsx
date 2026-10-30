@@ -66,6 +66,8 @@ interface ZoneButtonProps {
   ids: readonly ObjectId[]
   /** The panel's chip, or the smaller one of a one-line pod. */
   density?: Exclude<ChipDensity, 'tile'>
+  /** More classes for the button, to size it in its row. */
+  className?: string
 }
 
 const NONE: readonly ObjectId[] = []
@@ -75,7 +77,7 @@ const NONE: readonly ObjectId[] = []
  * exile with a card the viewer can play or use now (flashback, an ability) wears the ring of a legal card and a play
  * mark, and says how many in its name; the command zone does not, its commanders are cast from the hand dock.
  */
-export function ZoneButton({ zone, owner, ids, density = 'panel' }: ZoneButtonProps) {
+export function ZoneButton({ zone, owner, ids, density = 'panel', className }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const Icon = ZONE_ICON[zone]
   const legal = useLegalCount(zone === 'command' ? NONE : ids)
@@ -96,6 +98,7 @@ export function ZoneButton({ zone, owner, ids, density = 'panel' }: ZoneButtonPr
           'min-w-0 text-xs',
           line ? 'gap-0.5 px-0.5' : 'gap-1 px-1.5',
           legal > 0 && cn('relative', LEGAL_RING),
+          className,
         )}
       >
         <Icon aria-hidden="true" className={line ? 'size-3.5' : 'size-4'} />

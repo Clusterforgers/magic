@@ -87,7 +87,7 @@ function CommanderSlot({ owner, ids, width, height, tax }: CommanderSlotProps) {
 /**
  * The corner of a seat's pod: its commanders, graveyard and exile as pictures in a grid sized by `planCorner`, each with
  * its count, the commanders with their tax. Where the pod column leaves no room for the least picture it keeps the
- * zone chips alone, in one row, and the tax chips under them.
+ * zone chips alone, in one row, and the tax chips in it (the figure alone, "+4"), so no row of its own is needed.
  */
 export function SeatCorner({
   owner,
@@ -110,24 +110,27 @@ export function SeatCorner({
   const group = `${owner}'s zones`
   if (plan === null) {
     // No room for the least picture is none for a small card either (it is as high), so the chips come whole.
+    // The tax chip takes its place in the one row (the zone chips then are the small ones, which leave it the room)
+    // instead of a row of its own, which a pod column at the least height has no room for.
+    const taxed = tax.length > 0
+    const sized = taxed ? ({ density: 'line', className: 'min-w-7 flex-1' } as const) : {}
     return (
-      <>
-        <div
-          role="group"
-          aria-label={group}
-          data-slot="corner-chips"
-          className={cn('grid min-w-0 gap-1', commanders.length > 0 ? 'grid-cols-3' : 'grid-cols-2')}
-        >
-          <ZoneButton zone="graveyard" owner={owner} ids={graveyard} />
-          <ZoneButton zone="exile" owner={owner} ids={exile} />
-          {commanders.length > 0 ? <ZoneButton zone="command" owner={owner} ids={commanders} /> : null}
-        </div>
-        {tax.length === 0 ? null : (
-          <div data-slot="commander-chips" className="flex flex-wrap gap-1">
-            <TaxChips chips={tax} density="panel" className="max-w-full" />
-          </div>
+      <div
+        role="group"
+        aria-label={group}
+        data-slot="corner-chips"
+        className={cn(
+          'min-w-0 gap-1',
+          taxed ? 'flex flex-wrap' : cn('grid', commanders.length > 0 ? 'grid-cols-3' : 'grid-cols-2'),
         )}
-      </>
+      >
+        <ZoneButton zone="graveyard" owner={owner} ids={graveyard} {...sized} />
+        <ZoneButton zone="exile" owner={owner} ids={exile} {...sized} />
+        {commanders.length > 0 ? (
+          <ZoneButton zone="command" owner={owner} ids={commanders} {...sized} />
+        ) : null}
+        <TaxChips chips={tax} density="line" compact className="shrink-0" />
+      </div>
     )
   }
   const style = {

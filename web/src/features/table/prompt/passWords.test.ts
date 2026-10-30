@@ -69,6 +69,43 @@ describe('the primary button', () => {
     expect(primaryLabel(situation('Main2', true, name))).toBe(`Resolve ${name}`)
   })
 
+  it('writes the short form a dock without room for whole words has, the width of the button the same whatever is on the stack', () => {
+    expect(primaryLabel(situation('Main1', true, 'Lightning Bolt'), 'short')).toBe('Resolve')
+    expect(primaryLabel(situation('Main1', true, 'Sword of Fire and Ice'), 'short')).toBe('Resolve')
+    expect(primaryLabel(situation('Main1', false, 'Lightning Bolt'), 'compact')).toBe('Resolve')
+    expect(primaryLabel(situation('Main1', false, 'Lightning Bolt'), 'full')).toBe('Resolve Lightning Bolt')
+  })
+
+  it.each(STEPS)(
+    'in %s the short form names what comes next in a word or two, and none is longer than the whole one',
+    (step) => {
+      const whole = primaryLabel(situation(step, true), 'full')
+      for (const form of ['short', 'compact'] as const) {
+        const short = primaryLabel(situation(step, true), form)
+        expect(short.length).toBeLessThanOrEqual(whole.length)
+        // The widest label of the short dock: "Next: End combat" and "Next: Attackers" set the width the hand dock is held to.
+        expect(short.length).toBeLessThanOrEqual('Next: End combat'.length)
+        expect(short.startsWith('Next: ') || short === 'End turn').toBe(true)
+      }
+    },
+  )
+
+  it('keeps every other label the same in every form', () => {
+    for (const form of ['full', 'short', 'compact'] as const) {
+      expect(primaryLabel(situation('Upkeep', false), form)).toBe('Continue')
+      expect(primaryLabel(situation('End', true), form)).toBe('End turn')
+      expect(primaryLabel(situation('Main1', true), form)).toBe('Next: Combat')
+      expect(primaryLabel(situation('Draw', true), form)).toBe(
+        form === 'full' ? 'Next: Precombat main' : 'Next: Main 1',
+      )
+    }
+  })
+
+  it('does not change what ends the turn: the end step of your own turn, in every form', () => {
+    expect(primaryEndsTurn(situation('End', true))).toBe(true)
+    expect(primaryLabel(situation('End', true), 'short')).toBe('End turn')
+  })
+
   it.each(STEPS.flatMap((step) => [true, false].map((yourTurn): [Step, boolean] => [step, yourTurn])))(
     'in %s (your turn: %s) never says "pass priority", with or without a spell',
     (step, yourTurn) => {
