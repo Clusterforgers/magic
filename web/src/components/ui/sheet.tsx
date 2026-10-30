@@ -3,34 +3,27 @@ import { XIcon } from "lucide-react"
 import { cn } from "cn"
 import { Button } from "@/components/ui/button"
 
+/** A non-modal dialog: the page around it stays pressable, and only Escape or Close shuts it. */
 function Sheet(props: SheetPrimitive.Root.Props) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />
+  return <SheetPrimitive.Root data-slot="sheet" modal={false} disablePointerDismissal {...props} />
 }
 
 /**
- * A panel that hangs from the top bar of the page: it covers the page below the bar, the full width on a phone and
- * 24rem of it on a tablet. `top` is the height of the bar, a class such as `top-11`.
+ * A panel drawn into `container`, an overlay that is positioned and sized by the page: it fills the overlay's height
+ * and the full width of it on a phone, 24rem from the right edge from `sm`. The overlay decides what the sheet leaves free.
  */
 function SheetContent({
   className,
-  top = "top-11",
+  container,
   children,
   ...props
-}: SheetPrimitive.Popup.Props & { top?: string }) {
+}: SheetPrimitive.Popup.Props & { container: HTMLElement }) {
   return (
-    <SheetPrimitive.Portal>
-      <SheetPrimitive.Backdrop
-        data-slot="sheet-overlay"
-        className={cn(
-          "fixed inset-x-0 bottom-0 z-50 bg-scrim transition-opacity duration-fast ease-out data-ending-style:opacity-0 data-starting-style:opacity-0",
-          top
-        )}
-      />
+    <SheetPrimitive.Portal container={container}>
       <SheetPrimitive.Popup
         data-slot="sheet-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 flex flex-col border-t bg-popover text-popover-foreground shadow-e3 outline-none popup-motion sm:inset-x-auto sm:right-0 sm:w-96 sm:border-l",
-          top,
+          "pointer-events-auto absolute inset-y-0 right-0 z-50 flex w-full flex-col border-y bg-popover text-popover-foreground shadow-e3 outline-none popup-motion sm:w-96 sm:border-y-0 sm:border-l",
           className
         )}
         {...props}

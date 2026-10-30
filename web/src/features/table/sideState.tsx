@@ -27,6 +27,7 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
   const seated = usePlay((state) => state.seat !== null)
   const tab: SideTab = chosen ?? (seated ? 'commands' : 'log')
   const [panel, setPanel] = useState(false)
+  const [mount, setMount] = useState<HTMLElement | null>(null)
   const [seen, setSeen] = useState<Seen>(() => {
     const { log, chat } = session.store.getState()
     return { log: log.at(-1)?.seq ?? 0, chat: chat.at(-1) ?? null }
@@ -91,8 +92,10 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
       attention: counts.log + counts.chat + counts.stack,
       activate,
       setOpen: setPanel,
+      mount,
+      setMount,
     }),
-    [kind, tab, open, counts, activate],
+    [kind, tab, open, counts, activate, mount],
   )
   return <SideContext value={value}>{children}</SideContext>
 }

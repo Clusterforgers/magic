@@ -14,7 +14,7 @@ import { FxTravel } from './fx/FxTravel'
 import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { HandDock } from './HandDock'
 import { ManualMenuProvider } from './manual/ManualMenu'
-import { handGrowMost, planTable, POD_COLUMN_PX, ZONE_GAP_PX } from './layout'
+import { handGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
 import type { TableMode } from './layout'
 import { createMarksStore, MarksContext } from './prompt/marks'
 import { createPreviewStore, PreviewContext } from './preview'
@@ -22,7 +22,7 @@ import { Opponents, SeatArea } from './Seats'
 import { defaultFocusOf, seatCountOf } from './selectors'
 import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
-import { SideSheet, SideTabs } from './SideTabs'
+import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
 import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
 import { sheetReserve } from './boardSplit'
@@ -105,10 +105,11 @@ const Table = memo(function Table() {
                       hand={<HandDock seat={plan.viewer} growMost={handGrowMost(regions)} />}
                       controls={<ControlsDock stopsRow={table.stopsRow} />}
                       side={<SideTabs />}
+                      sidePanel={<SidePanelMount rows={sidePanelRows(regions)} />}
                       // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
                       overlay={<CombatOverlay />}
                     />
-                    <SideSheet top={regions.landscape ? 'top-8' : 'top-11'} />
+                    <SideSheet />
                   </SideProvider>
                 )}
                 <FxTravel />

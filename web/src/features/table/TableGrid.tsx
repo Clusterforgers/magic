@@ -25,6 +25,8 @@ interface TableGridProps {
   controls: ReactNode
   /** The side column or rail; nothing where the side area is a sheet. */
   side: ReactNode
+  /** The overlay of the main area that an open rail panel or sheet is drawn into (`SidePanelMount`). */
+  sidePanel?: ReactNode
   /** Drawn over the regions inside the grid's stacking context, such as the combat lines. */
   overlay?: ReactNode
 }
@@ -59,6 +61,7 @@ export function TableGrid({
   hand,
   controls,
   side,
+  sidePanel,
   overlay,
 }: TableGridProps) {
   // Read here, so a change of phase redraws the frame alone: the regions are elements made by the table and stay as they were.
@@ -101,6 +104,7 @@ export function TableGrid({
         <Area area="controls" className="relative z-30">
           {controls}
         </Area>
+        {sidePanel}
       </div>
       {side}
       {overlay}

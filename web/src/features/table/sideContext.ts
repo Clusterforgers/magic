@@ -17,6 +17,10 @@ export interface SideState {
   activate(tab: SideTab): void
   /** Opens or closes the panel of a rail or a sheet. */
   setOpen(open: boolean): void
+  /** The overlay of the table's main area that an open rail panel or sheet is drawn into; null until it is in the page. */
+  mount: HTMLElement | null
+  /** Hands over the overlay (a ref callback). */
+  setMount(element: HTMLElement | null): void
 }
 
 /** Provided by `SideProvider`. */

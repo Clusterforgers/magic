@@ -34,6 +34,15 @@ export function panelOf(value: unknown): DevPanel | undefined {
   return COMMANDS.find((id) => id === value)
 }
 
+/** Opens the side area onto the panel when it is shut, from the rail's first icon or the top bar's sheet button; true once the panel is drawn. */
+export function showPanel(root: ParentNode = document): boolean {
+  if (root.querySelector('[data-slot="commands-panel"]') !== null) return true
+  root
+    .querySelector<HTMLElement>('aside[data-side="rail"] [role="tab"], button[aria-label^="Commands, log, chat"]')
+    ?.click()
+  return false
+}
+
 /** Presses the row of `command` in the panel when it is drawn and closed; true once it is open. */
 export function openRow(command: CommandId, root: ParentNode = document): boolean {
   const row = root.querySelector<HTMLElement>(`[data-slot="commands-panel"] [data-command="${command}"]`)
@@ -48,7 +57,10 @@ export function openRow(command: CommandId, root: ParentNode = document): boolea
  */
 export function openCard(ids: readonly ObjectId[], root: ParentNode = document): boolean {
   const group = root.querySelector<HTMLElement>('[data-slot="commands-panel"] [data-group="card"]')
-  if (group === null) return false
+  if (group === null) {
+    showPanel(root)
+    return false
+  }
   if (group.querySelector('[data-slot="card-picked"]') !== null) {
     const row = group.querySelector<HTMLElement>('[data-command="card:counters"]')
     if (row === null) return false
@@ -71,7 +83,8 @@ export function useOpenDevPanel(command: DevPanel | undefined, cards: readonly O
     let left = TRIES
     // A timer and not a frame: a page that is not shown draws no frames.
     const tick = (): void => {
-      const done = command === 'card' ? openCard(cards) : openRow(command === 'top' ? 'look' : command)
+      const done =
+        command === 'card' ? openCard(cards) : showPanel() && openRow(command === 'top' ? 'look' : command)
       if (done || (left -= 1) <= 0) return
       timer = window.setTimeout(tick, 100)
     }
