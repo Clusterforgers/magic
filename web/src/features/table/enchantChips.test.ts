@@ -76,9 +76,17 @@ describe('the chips of an enchanted player', () => {
 
   it.each([
     [{ keywords: ['Hexproof'] }, ['Hexproof'], ': hexproof'],
-    [{ keywords: ['Shroud', 'Protection from creatures'] }, ['Shroud', 'Pro creatures'], ': shroud, protection from creatures'],
-    [{ keywords: ['Protection from red and from blue'] }, ['Pro red, blue'], ': protection from red and from blue'],
-    [{ rules: ['LoseKeyword' as const] }, ["Loses a keyword"], ': loses a keyword'],
+    [
+      { keywords: ['Shroud', 'Protection from creatures'] },
+      ['Shroud', 'Pro creatures'],
+      ': shroud, protection from creatures',
+    ],
+    [
+      { keywords: ['Protection from red and from blue'] },
+      ['Pro red, blue'],
+      ': protection from red and from blue',
+    ],
+    [{ rules: ['LoseKeyword' as const] }, ['Loses a keyword'], ': loses a keyword'],
     [undefined, [], ''],
   ])('says what the Aura gives the player: %j', (gives, marks, words) => {
     const [chip] = chipsFor(1, curse(7, gives === undefined ? {} : { gives }))

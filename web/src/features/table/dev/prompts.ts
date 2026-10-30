@@ -62,7 +62,9 @@ const commanderReturnTable: DevTable = (fixture) => {
       return {
         ...player,
         lost: 'CommanderDamage' as const,
-        commander_damage: [{ commander: attacker, name: view.objects.find((o) => o.id === attacker)?.name ?? '', damage: 21 }],
+        commander_damage: [
+          { commander: attacker, name: view.objects.find((o) => o.id === attacker)?.name ?? '', damage: 21 },
+        ],
       }
     }
     return player
