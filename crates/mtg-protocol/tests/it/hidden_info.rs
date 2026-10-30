@@ -40,6 +40,7 @@ const SCALAR_KEYS: &[&str] = &[
     "damage",
     "power",
     "toughness",
+    "set",
     "amount",
     "left",
     "Option",
