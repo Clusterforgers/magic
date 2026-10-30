@@ -1,4 +1,4 @@
-// Goal: the prompt of a decision on a clock shows the seconds left as text that counts down with the session's clock, a bar that drains over the time left (not drawn, with only the number, under a preference for less motion), says its sentence once to a screen reader, turns urgent in the last seconds and goes with the prompt at zero; a decision without a clock, or another decision's clock, shows nothing.
+// Goal: the prompt of a decision on a clock shows the seconds left as text that counts down with the session's clock, a bar that drains over the time left (not drawn, with only the number, under a preference for less motion), says its sentence once to a screen reader, turns urgent in the last seconds and goes with the prompt at zero; a decision without a clock, or another decision's clock, shows nothing; the Commands panel shows the same countdown (with no spoken start of its own) while the seat has a clock.
 import { act, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DecisionKind, ServerMessage } from '@/protocol/generated'
@@ -27,8 +27,10 @@ function mount() {
   const table = renderLiveTable(h.session, fixtureLookup(fixture))
   const send = (message: ServerMessage): void => act(() => h.deliver(message))
   const wait = (ms: number): void => act(() => h.timers.advance(ms))
-  const clock = (): HTMLElement | null => table.container.querySelector('[data-slot="response-clock"]')
-  const bar = (): HTMLElement | null => table.container.querySelector('[data-slot="response-clock-bar"]')
+  const clock = (): HTMLElement | null =>
+    table.container.querySelector('[data-slot="decision-line"] [data-slot="response-clock"]')
+  const bar = (): HTMLElement | null =>
+    table.container.querySelector('[data-slot="decision-line"] [data-slot="response-clock-bar"]')
   const words = (): string => must(clock()).querySelector('[role="timer"]')?.textContent ?? ''
   return { h, ...table, send, wait, clock, bar, words }
 }
@@ -140,6 +142,56 @@ describe('what a screen reader hears', () => {
     expect(must(clock()).querySelector('[role="status"]')).toHaveTextContent(
       'You have 45 seconds to answer; after that the game declares no blocks for you.',
     )
+  })
+})
+
+describe('in the Commands panel', () => {
+  const inPanel = (container: HTMLElement): HTMLElement | null =>
+    container.querySelector('[data-slot="commands-panel"] [data-slot="commands-clock"]')
+
+  it('shows the same countdown to a seat working there, counting down with the prompt', () => {
+    const { send, wait, words, container } = mount()
+    expect(inPanel(container)).toBeNull()
+    send(decision(5, KINDS.Priority, 10_000))
+    const panelWords = (): string => inPanel(container)?.querySelector('[role="timer"]')?.textContent ?? ''
+    expect(panelWords()).toBe('Passing for you in 10 s')
+    wait(7_000)
+    expect(panelWords()).toBe('Passing for you in 3 s')
+    expect(panelWords()).toBe(words())
+    expect(inPanel(container)?.querySelector('[data-slot="response-clock"]')).toHaveAttribute(
+      'data-urgent',
+      'true',
+    )
+  })
+
+  it('says nothing aloud of its own and has no controls: the prompt announces the clock', () => {
+    const { send, container } = mount()
+    send(decision(5, KINDS.Priority, 10_000))
+    expect(inPanel(container)?.querySelector('[role="status"]')).toBeNull()
+    expect(within(must(inPanel(container))).queryAllByRole('button')).toEqual([])
+    expect(
+      container.querySelectorAll('[data-slot="decision-line"] [data-slot="response-clock"] [role="status"]'),
+    ).toHaveLength(1)
+  })
+
+  it.each([
+    [
+      'a decision without a clock',
+      (send: (message: ServerMessage) => void) => send(decision(5, KINDS.Priority)),
+    ],
+    ['no decision', () => undefined],
+  ])('draws no clock for %s', (_what, ask) => {
+    const { send, container } = mount()
+    ask(send)
+    expect(inPanel(container)).toBeNull()
+  })
+
+  it('goes with the prompt when the time is up', () => {
+    const { send, wait, container } = mount()
+    send(decision(5, KINDS.Priority, 10_000))
+    expect(inPanel(container)?.querySelector('[role="timer"]')).not.toBeNull()
+    wait(10_000)
+    expect(inPanel(container)).toBeNull()
   })
 })
 

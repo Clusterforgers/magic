@@ -1,5 +1,14 @@
 /** Pure words and figures of Commander at the table: the tax chip, commander damage and its thresholds, the return question. */
-import type { CommanderView, ManaCost, PlayerView, Zone } from '@/protocol/generated'
+import type {
+  Color,
+  CommanderView,
+  ManaCost,
+  ManaSymbol,
+  ObjectId,
+  ObjectView,
+  PlayerView,
+  Zone,
+} from '@/protocol/generated'
 import { costText } from './cardModel'
 
 /** "Atraxa" for "Atraxa, Praetors' Voice": the part of a name before its comma, which a pod has room for. */
@@ -114,4 +123,38 @@ export function returnNoLabel(destination: CommanderDestination | null): string 
 /** Whether `id` is one of the commanders any seat owns. */
 export function isCommander(players: readonly PlayerView[], id: number): boolean {
   return players.some((player) => player.commanders?.some((commander) => commander.object === id) === true)
+}
+
+const WUBRG: readonly Color[] = ['White', 'Blue', 'Black', 'Red', 'Green']
+
+/** The colours a mana symbol of a cost shows; generic and colourless symbols show none. */
+function symbolColors(symbol: ManaSymbol): readonly Color[] {
+  if (typeof symbol === 'string') return []
+  if ('Colored' in symbol) return [symbol.Colored]
+  if ('MonoHybrid' in symbol) return [symbol.MonoHybrid]
+  if ('Phyrexian' in symbol) return [symbol.Phyrexian]
+  if ('ColorlessHybrid' in symbol) return [symbol.ColorlessHybrid]
+  if ('Hybrid' in symbol) return symbol.Hybrid
+  if ('HybridPhyrexian' in symbol) return symbol.HybridPhyrexian
+  return []
+}
+
+/**
+ * The colours of a seat's commanders as the view shows them (each card's colours and the colour symbols of its cost,
+ * hybrid and Phyrexian symbols included), in WUBRG order; empty for a colourless identity and null while none of its
+ * commanders is in the view (no Commander game).
+ */
+export function identityOf(
+  player: Pick<PlayerView, 'commanders'>,
+  objects: Readonly<Record<ObjectId, ObjectView | undefined>>,
+): Color[] | null {
+  const cards = (player.commanders ?? []).flatMap((commander) => {
+    const card = objects[commander.object]
+    return card === undefined ? [] : [card]
+  })
+  if (cards.length === 0) return null
+  const seen = new Set<Color>(
+    cards.flatMap((card) => [...card.colors, ...(card.mana_cost ?? []).flatMap(symbolColors)]),
+  )
+  return WUBRG.filter((color) => seen.has(color))
 }

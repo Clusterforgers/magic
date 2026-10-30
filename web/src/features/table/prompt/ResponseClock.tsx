@@ -12,10 +12,12 @@ interface ClockFaceProps {
   kind: ClockKind
   /** The words sit in the prompt's row and the bar is a 2 px line on the bottom edge of the decision line, which is positioned. */
   compact: boolean
+  /** Leave out the spoken start of the clock, for a second face of a clock the prompt already announces. */
+  quiet: boolean
 }
 
 /** The face of a running clock; it is mounted once per decision, so what it starts from is what the prompt began with. */
-function ClockFace({ clock, kind, compact }: ClockFaceProps) {
+function ClockFace({ clock, kind, compact, quiet }: ClockFaceProps) {
   const reduced = useReducedMotion()
   // The bar runs on its own from where it starts; changing its duration every second would make it jump.
   const [start] = useState(() => ({
@@ -53,9 +55,11 @@ function ClockFace({ clock, kind, compact }: ClockFaceProps) {
           />
         </div>
       )}
-      <p className="sr-only" role="status">
-        {heard}
-      </p>
+      {quiet ? null : (
+        <p className="sr-only" role="status">
+          {heard}
+        </p>
+      )}
     </div>
   )
 }
@@ -66,6 +70,8 @@ interface ResponseClockProps {
   kind: ClockKind
   /** One thin line: the seconds beside the prompt's controls and the bar on the edge (the combat prompts). */
   compact?: boolean
+  /** The clock is a second face of the one the prompt shows (the Commands panel): it says nothing aloud. */
+  quiet?: boolean
 }
 
 /**
@@ -74,8 +80,8 @@ interface ResponseClockProps {
  * It reads the session's clock, which counts from the moment the decision arrived and ends the prompt at zero, so
  * it draws nothing for a decision without one.
  */
-export function ResponseClock({ id, kind, compact = false }: ResponseClockProps) {
+export function ResponseClock({ id, kind, compact = false, quiet = false }: ResponseClockProps) {
   const clock = usePlay((state) => state.clock)
   if (clock === null || clock.id !== id) return null
-  return <ClockFace key={id} clock={clock} kind={kind} compact={compact} />
+  return <ClockFace key={id} clock={clock} kind={kind} compact={compact} quiet={quiet} />
 }
