@@ -207,7 +207,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
 - [ ] (dk1d3) Suppression Ray // Orderly Plaza: pay any amount of `{E}` (`PayEnergy` with a chosen amount), then choose up to that many of the creatures tapped this way and put a stun counter on each
 - [ ] (dk1d6) Path of Ancestry: its card once the mana rider of t15e exists (the model's rules put the scry trigger outside the mana ability)
-- [ ] (dk1e) A testkit game with the deck plays under every invariant, the four-seat Playwright game can use it, and the builder shows no card of it as unsupported (after dk1a to dk1d)
+- [~] (dk1e) (deck-game) A testkit game with the deck plays under every invariant, the four-seat Playwright game can use it, and the builder shows no card of it as unsupported (after dk1a to dk1d)
 - [ ] (lb1a) The precon list item carries the commanders' cards (picture, colour identity), so a precon row in the lobby chooser shows its commanders and the chooser filters precons by colour identity
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
 - [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12
