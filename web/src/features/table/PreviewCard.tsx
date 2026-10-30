@@ -3,13 +3,20 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CardImage } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
-import { cardImageFallbackUrl, cardImageUrl, faceOf, imageSourceOf } from '@/features/cards/images'
+import {
+  cardImageFallbackUrl,
+  cardImageUrl,
+  faceOf,
+  imageSizeFor,
+  imageSourceOf,
+} from '@/features/cards/images'
 import { useCardDetail } from '@/features/builder/useCardDetail'
 import { cn } from '@/lib/utils'
 import { cardsApi } from '@/net/cards'
 import type { CardsApi } from '@/net/cards'
 import type { CardFaceView, ObjectView } from '@/protocol/generated'
 import { CardFace } from './CardFace'
+import { SIZE_PX } from './ImageFace'
 import type { CombatRole } from './cardModel'
 import { SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
@@ -31,8 +38,11 @@ function usePrintedFaces(object: ObjectView, api: CardsApi): readonly CardFaceVi
 }
 
 /**
- * The preview's card: the `large` picture of the face in use with the object's state over it, a control that turns
- * a card of several faces over, and the oracle text of the face shown as plain, selectable text.
+ * The preview's card: the picture of the face in use with the object's state over it, a control that turns a card of
+ * several faces over, and the oracle text of the face shown as plain, selectable text. The picture is the size the table
+ * draws the card at (`normal` at 160 and 240 px, sharp at twice the density): the server's warm-up and the table
+ * already hold it, whereas a `large` one is fetched from the CDN behind every other picture of a filling table and
+ * leaves the text face, an empty frame, up until it comes.
  */
 export function PreviewCard({ object, role, size, revealed = false, api = cardsApi }: PreviewCardProps) {
   const choice = useImageChoice()
@@ -40,6 +50,7 @@ export function PreviewCard({ object, role, size, revealed = false, api = cardsA
   const own = faceOf(object)
   const [shown, setShown] = useState(own)
   const source = imageSourceOf(object)
+  const picture = imageSizeFor(SIZE_PX[size])
   const flips = faces.length > 1 && source !== null && choice === 'on'
   const face = faces[shown] ?? faces[0]
   const other = shown === own ? (own === 0 ? 1 : 0) : own
@@ -47,8 +58,8 @@ export function PreviewCard({ object, role, size, revealed = false, api = cardsA
     <div className="grid gap-2">
       {flips && shown !== own ? (
         <CardImage
-          src={cardImageUrl(source, shown, 'large')}
-          fallback={cardImageFallbackUrl(source, shown, 'large')}
+          src={cardImageUrl(source, shown, picture)}
+          fallback={cardImageFallbackUrl(source, shown, picture)}
           alt={faces[shown]?.name ?? object.name}
           eager
           className={cn('block aspect-[5/7] w-(--card-w)', SIZE[size].vars)}
@@ -61,7 +72,7 @@ export function PreviewCard({ object, role, size, revealed = false, api = cardsA
           role={role}
           size={size}
           upright
-          imageSize="large"
+          imageSize={picture}
           revealed={revealed}
           handNote={object.note}
         />

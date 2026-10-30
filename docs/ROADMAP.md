@@ -470,7 +470,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v89e) The game log keeps step lines ("Upkeep begins", "Draw begins") out of the way of plays, as Arena does: a four-seat turn is mostly step lines (`play/log`)
 - [ ] (v89f) A reload draws the battlefield at rest: after a `Snapshot` the permanents replay their enter effect, fade and overlap for about a second
 - [ ] (v89g) Seat zone labels (Graveyard, Exile) and counter chips on the table read at 12 px or more; they are 11 px at every size
-- [~] (v89k) (ux-small) The card preview shows the picture of every card of an imported deck: Ethereal Armor of the owner's Arena list previews an empty frame in the game while precon cards load
+- [ ] (v89l) The picture warm-up fetches the printing each deck line chose (a precon names them), not only the newest paper printing of each card, so the table's pictures of precon cards are cached when the first turn starts
+- [ ] (v89m) The doc of `CardHit` in `mtg-protocol` says "without manual steps" for the played-by-hand flag; it reads "played by hand" like the web and the bindings follow
 
 ## M8 Polish and deploy
 
