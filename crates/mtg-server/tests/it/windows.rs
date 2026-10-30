@@ -1082,7 +1082,7 @@ async fn bots_play_the_reference_game(players: usize, seed: u64, auto_pass: bool
     let reports = play_bots(&handle, bots).await;
 
     let straight = reference_windows(setup, seed, auto_pass, chosen);
-    assert_eq!(store.load(game_id(1)).await.unwrap(), straight.events);
+    common::assert_same_game(&store.load(game_id(1)).await.unwrap(), &straight.events);
     assert_eq!(
         handle.status().await.unwrap().state_hash,
         Some(straight.final_hash)

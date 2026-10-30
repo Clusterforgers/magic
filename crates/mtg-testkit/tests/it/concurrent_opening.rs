@@ -19,9 +19,8 @@ enum Table {
 fn setup(table: Table, seats: usize, seed: u64) -> Result<GameSetup, ScriptError> {
     Ok(match table {
         Table::Plain => fuzz_setup(seats, seed),
-        Table::Commander => {
-            commander_fuzz_setup(seats, seed).map_err(|e| ScriptError::Expectation(e.to_string()))?
-        }
+        Table::Commander => commander_fuzz_setup(seats, seed)
+            .map_err(|e| ScriptError::Expectation(e.to_string()))?,
     })
 }
 
@@ -59,7 +58,12 @@ fn asked(engine: &Engine) -> Vec<PlayerId> {
 /// The hand of every seat, in seat order.
 fn hands(engine: &Engine) -> Vec<Vec<ObjectId>> {
     (0..engine.state().players().len())
-        .map(|seat| engine.state().zone(Zone::Hand(PlayerId::from_index(seat))).to_vec())
+        .map(|seat| {
+            engine
+                .state()
+                .zone(Zone::Hand(PlayerId::from_index(seat)))
+                .to_vec()
+        })
         .collect()
 }
 
@@ -72,13 +76,57 @@ fn every_seat_is_asked_at_once_and_the_first_is_the_engines_decision(
     let decisions = engine.decisions();
     let first = engine.state().first_player();
     let order: Vec<PlayerId> = engine.state().turn_order_from(first);
-    assert_eq!(decisions.iter().map(|d| d.player).collect::<Vec<_>>(), order);
+    assert_eq!(
+        decisions.iter().map(|d| d.player).collect::<Vec<_>>(),
+        order
+    );
     assert_eq!(engine.decision(), decisions.first());
     for Decision { player, kind } in &decisions {
         let DecisionKind::Mulligan(options) = kind else {
             panic!("{player:?} is asked {}", kind.name());
         };
-        assert_eq!(options.hand, engine.state().zone(Zone::Hand(*player)), "only its own hand");
+        assert_eq!(
+            options.hand,
+            engine.state().zone(Zone::Hand(*player)),
+            "only its own hand"
+        );
+    }
+    Ok(())
+}
+
+/// At six seats every order is checked through the sets of seats that answered: if the state after a set is the same
+/// whichever of its seats answered last, then by induction every order of arrival reaches the same state, and so the
+/// 720 orders cost 192 answers per mix.
+#[rstest]
+fn at_six_seats_any_mix_in_any_order_matches_answering_in_turn_order(
+    #[values(Table::Plain, Table::Commander)] table: Table,
+) -> Result<(), ScriptError> {
+    let setup = setup(table, 6, 11)?;
+    let start = Engine::new(setup.clone())?;
+    let order = asked(&start);
+    for mix in 0..1u32 << 6 {
+        // The log and hash after each set of seats answered; the empty set is the start.
+        let mut reached: Vec<(Vec<Event>, u64)> =
+            vec![(start.events().to_vec(), start.state_hash())];
+        for set in 1..1usize << 6 {
+            let mut hashes = Vec::new();
+            for (bit, seat) in order.iter().enumerate() {
+                if set >> bit & 1 == 0 {
+                    continue;
+                }
+                let (before, _) = &reached[set & !(1 << bit)];
+                let mut last = Engine::resume(setup.clone(), before.clone())?;
+                last.apply_for(*seat, choice(mix, *seat))?;
+                if hashes.is_empty() {
+                    reached.push((last.events().to_vec(), last.state_hash()));
+                }
+                hashes.push(last.state_hash());
+            }
+            assert!(
+                hashes.iter().all(|h| *h == hashes[0]),
+                "mix {mix:b}, set {set:b}: {hashes:?}"
+            );
+        }
     }
     Ok(())
 }
@@ -86,7 +134,7 @@ fn every_seat_is_asked_at_once_and_the_first_is_the_engines_decision(
 #[rstest]
 fn any_mix_in_any_order_matches_answering_in_turn_order(
     #[values(Table::Plain, Table::Commander)] table: Table,
-    #[values(2, 3, 4, 6)] seats: usize,
+    #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let setup = setup(table, seats, 11)?;
     let mut engine = Engine::new(setup.clone())?;
@@ -109,7 +157,11 @@ fn any_mix_in_any_order_matches_answering_in_turn_order(
                 assert_eq!(waiting, left, "every seat not yet answered is asked");
                 engine.apply_for(*seat, choice(mix, *seat))?;
             }
-            assert_eq!(engine.state_hash(), expected, "mix {mix:b}, arrival {arrival:?}");
+            assert_eq!(
+                engine.state_hash(),
+                expected,
+                "mix {mix:b}, arrival {arrival:?}"
+            );
             assert_eq!(hands(&engine), expected_hands);
             let answers: Vec<PlayerId> = engine
                 .events()
@@ -121,7 +173,10 @@ fn any_mix_in_any_order_matches_answering_in_turn_order(
                     _ => None,
                 })
                 .collect();
-            assert_eq!(&answers, arrival, "the log keeps the order the answers came in");
+            assert_eq!(
+                &answers, arrival,
+                "the log keeps the order the answers came in"
+            );
         }
     }
     let replayed = replay(&setup, engine.events())?;
@@ -215,7 +270,9 @@ fn finish_opening(engine: &mut Engine, picks: &[usize]) -> Result<(), EngineErro
         }
         let decisions = engine.decisions();
         let pick = picks.get(at).copied().unwrap_or(0) % decisions.len().max(1);
-        let Some(decision) = decisions.get(pick) else { break };
+        let Some(decision) = decisions.get(pick) else {
+            break;
+        };
         engine.apply_for(decision.player, answer_of(&keep, decision))?;
     }
     Ok(())

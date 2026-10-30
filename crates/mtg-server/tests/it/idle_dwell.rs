@@ -673,9 +673,9 @@ async fn bot_games_with_a_dwell_write_the_log_of_the_game_without_one(
     let reports = play_bots(&handle, bots).await;
 
     let straight = reference_windows(setup, seed, true, false);
-    assert_eq!(
-        store.inner().load(game_id(1)).await.unwrap(),
-        straight.events
+    common::assert_same_game(
+        &store.inner().load(game_id(1)).await.unwrap(),
+        &straight.events,
     );
     assert_eq!(
         handle.status().await.unwrap().state_hash,

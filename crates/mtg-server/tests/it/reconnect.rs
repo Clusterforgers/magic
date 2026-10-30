@@ -66,10 +66,11 @@ async fn a_client_that_drops_mid_game_resyncs_and_the_game_ends_exactly_as_if_no
 
     // Back again: the new queue starts with a welcome, a snapshot and, for the holder, its decision.
     bots[victim].rejoin(&handle).await;
-    if victim != waiting {
-        // The seat the game waits for lost nothing, but its bot is holding an answer; a resync hands it the decision again.
+    // The other seats lost nothing, but a bot asked something (the waiting seat, or every seat in the opening) holds an
+    // answer; a resync hands it the decision again.
+    for other in (0..players).filter(|other| *other != victim) {
         handle
-            .send(seat(waiting), ClientMessage::Resync)
+            .send(seat(other), ClientMessage::Resync)
             .await
             .unwrap();
     }
@@ -79,7 +80,7 @@ async fn a_client_that_drops_mid_game_resyncs_and_the_game_ends_exactly_as_if_no
     let straight = reference(players, seed);
     assert_eq!(result, Some(straight.result));
     let logged = store.load(game_id(1)).await.unwrap();
-    assert_eq!(logged, straight.events);
+    common::assert_same_game(&logged, &straight.events);
     let status = handle.status().await.unwrap();
     assert_eq!(status.state_hash, Some(straight.final_hash));
     assert_eq!(
@@ -176,12 +177,14 @@ async fn a_joining_seat_gets_welcome_then_snapshot_then_its_pending_decision() {
 async fn resync_repeats_the_snapshot_and_the_pending_decision() {
     let store = MemoryStore::new();
     let handle = spawn_game_with(game_id(1), table_setup(3, 3), store, roomy()).unwrap();
-    let (mut clients, holder) = start_table(&handle, 3).await;
-    let (id, decision) = clients[holder].decision().await;
-    let status = handle.status().await.unwrap();
+    let (mut clients, _) = start_table(&handle, 3).await;
+    // The opening asks every seat at once.
+    let mut asked = Vec::new();
     for client in &mut clients {
+        asked.push(client.decision().await);
         client.drain();
     }
+    let status = handle.status().await.unwrap();
 
     for n in 0..3 {
         handle.send(seat(n), ClientMessage::Resync).await.unwrap();
@@ -194,20 +197,17 @@ async fn resync_repeats_the_snapshot_and_the_pending_decision() {
         };
         assert_eq!(*seq, status.events);
         assert_eq!(state.table.viewer, seat(n));
-        if n == holder {
-            assert_eq!(
-                messages[1..],
-                [ServerMessage::Decision {
-                    id,
-                    decision: decision.clone(),
-                    deadline_ms: None,
-                    show_after_ms: None,
-                }],
-                "the pending decision keeps its id"
-            );
-        } else {
-            assert_eq!(messages.len(), 1, "only the holder gets the decision");
-        }
+        let (id, decision) = &asked[n];
+        assert_eq!(
+            messages[1..],
+            [ServerMessage::Decision {
+                id: *id,
+                decision: decision.clone(),
+                deadline_ms: None,
+                show_after_ms: None,
+            }],
+            "each seat's pending decision keeps its id"
+        );
     }
     assert_eq!(handle.status().await.unwrap(), status);
 }

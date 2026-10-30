@@ -30,7 +30,10 @@ type Prompt = (DecisionId, Decision, Option<u64>);
 
 async fn start(seats: usize) -> (GameHandle, FlakyStore, Vec<Client>) {
     let store = FlakyStore::new();
-    let config = GameConfig { pace: PACE, ..roomy() };
+    let config = GameConfig {
+        pace: PACE,
+        ..roomy()
+    };
     let handle = spawn_game_with(game_id(1), table_setup(seats, 3), store.clone(), config).unwrap();
     let mut clients = Vec::new();
     for n in 0..seats {
@@ -70,7 +73,13 @@ fn hand(prompt: &Prompt) -> Vec<mtg_core::ids::ObjectId> {
 async fn answer(handle: &GameHandle, client: &Client, id: DecisionId, choice: MulliganChoice) {
     let answer = Answer::Mulligan(choice);
     client
-        .say(handle, ClientMessage::Answer { decision: id, answer })
+        .say(
+            handle,
+            ClientMessage::Answer {
+                decision: id,
+                answer,
+            },
+        )
         .await;
     handle.status().await.unwrap();
 }
@@ -87,12 +96,19 @@ fn answered(log: &[Event]) -> Vec<(PlayerId, bool)> {
 
 #[rstest]
 #[tokio::test(start_paused = true)]
-async fn every_seat_gets_its_own_prompt_at_once_on_its_own_clock(#[values(2, 3, 4, 6)] seats: usize) {
+async fn every_seat_gets_its_own_prompt_at_once_on_its_own_clock(
+    #[values(2, 3, 4, 6)] seats: usize,
+) {
     let (_handle, _, mut clients) = start(seats).await;
     let mut hands = Vec::new();
     for client in &mut clients {
         let mine = prompts(client);
-        assert_eq!(mine.len(), 1, "seat {:?} is asked once, at once", client.seat);
+        assert_eq!(
+            mine.len(),
+            1,
+            "seat {:?} is asked once, at once",
+            client.seat
+        );
         assert_eq!(mine[0].1.player, client.seat);
         assert_eq!(mine[0].2, Some(60_000), "each seat has the think clock");
         hands.push(hand(&mine[0]));
@@ -100,7 +116,10 @@ async fn every_seat_gets_its_own_prompt_at_once_on_its_own_clock(#[values(2, 3, 
     for (at, mine) in hands.iter().enumerate() {
         for (other, theirs) in hands.iter().enumerate() {
             if at != other {
-                assert!(mine.iter().all(|card| !theirs.contains(card)), "no prompt holds another seat's card");
+                assert!(
+                    mine.iter().all(|card| !theirs.contains(card)),
+                    "no prompt holds another seat's card"
+                );
             }
         }
     }
@@ -113,7 +132,10 @@ async fn answers_in_any_order_leave_the_other_prompts_as_they_are() {
     // The last seat in seat order answers first, then the others backwards.
     answer(&handle, &clients[3], asked[3].0, MulliganChoice::Mulligan).await;
     for seat in 0..3 {
-        assert!(prompts(&mut clients[seat]).is_empty(), "seat {seat} keeps its prompt and id");
+        assert!(
+            prompts(&mut clients[seat]).is_empty(),
+            "seat {seat} keeps its prompt and id"
+        );
     }
     for seat in (0..3).rev() {
         answer(&handle, &clients[seat], asked[seat].0, MulliganChoice::Keep).await;
@@ -122,11 +144,20 @@ async fn answers_in_any_order_leave_the_other_prompts_as_they_are() {
     let order: Vec<(PlayerId, bool)> = answered(&log);
     assert_eq!(
         order,
-        vec![(PlayerId(3), false), (PlayerId(2), true), (PlayerId(1), true), (PlayerId(0), true)],
+        vec![
+            (PlayerId(3), false),
+            (PlayerId(2), true),
+            (PlayerId(1), true),
+            (PlayerId(0), true)
+        ],
         "the log keeps the order the answers came in"
     );
     let again = prompts(&mut clients[3]);
-    assert_eq!(again.len(), 1, "the seat that took a mulligan is asked about its new hand");
+    assert_eq!(
+        again.len(),
+        1,
+        "the seat that took a mulligan is asked about its new hand"
+    );
     assert!(again[0].0 > asked[3].0);
 }
 
@@ -146,7 +177,16 @@ async fn a_seat_whose_clock_runs_out_keeps_its_hand() {
         .filter_map(|(seat, kept)| kept.then_some(seat))
         .collect();
     kept.sort_unstable();
-    assert_eq!(kept, vec![PlayerId(0), PlayerId(2), PlayerId(3)], "the seats that did not answer keep");
+    assert_eq!(
+        kept,
+        vec![PlayerId(0), PlayerId(2), PlayerId(3)],
+        "the seats that did not answer keep"
+    );
     let again = prompts(&mut clients[1]);
-    assert!(again.iter().any(|p| matches!(p.1.kind, DecisionKind::Mulligan(_))), "the mulligan seat is asked again");
+    assert!(
+        again
+            .iter()
+            .any(|p| matches!(p.1.kind, DecisionKind::Mulligan(_))),
+        "the mulligan seat is asked again"
+    );
 }

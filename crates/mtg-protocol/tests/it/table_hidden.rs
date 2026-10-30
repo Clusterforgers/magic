@@ -384,6 +384,43 @@ fn the_card_a_seat_scries_after_a_mulligan_is_shown_to_that_seat_alone(
     }
 }
 
+#[rstest]
+fn seats_that_scry_at_once_each_see_their_own_card_alone(#[values(2, 3, 4)] players: usize) {
+    let house = rules(|r| r.mulligan_style = Some(MulliganStyle::Vancouver));
+    let (_, driver) = begin(players, 7, house);
+    let mut engine = Engine::resume(
+        driver.engine().setup().clone(),
+        driver.engine().events().to_vec(),
+    )
+    .unwrap();
+    // Every seat takes one mulligan, then keeps: all of them scry together.
+    for choice in [MulliganChoice::Mulligan, MulliganChoice::Keep] {
+        for decision in engine.decisions().into_iter().rev() {
+            engine
+                .apply_for(decision.player, Answer::Mulligan(choice))
+                .unwrap();
+        }
+    }
+    let asked = engine.decisions();
+    assert_eq!(asked.len(), players, "every seat scries at once");
+    for decision in &asked {
+        let DecisionKind::ChooseCards(options) = &decision.kind else {
+            panic!("{:?} is asked {}", decision.player, decision.kind.name());
+        };
+        let top = options.from[0];
+        for viewer in viewers(players) {
+            let view = StateView::for_player(engine.state(), viewer);
+            let known = view.objects.iter().any(|object| object.id == top);
+            assert_eq!(
+                known,
+                viewer == decision.player,
+                "{viewer:?} and the card of {:?}",
+                decision.player
+            );
+        }
+    }
+}
+
 // Opening-hand smoothing
 
 /// The two hands a seat could be dealt: the top seven of its library as the first shuffle left it, and the seven

@@ -351,6 +351,30 @@ impl Table {
             .await;
     }
 
+    /// The opening asks every seat at once: the other seats give their routine answers until only `seat` is asked.
+    async fn settle_others(&mut self, case: &Case, seat: usize) {
+        loop {
+            self.handle.status().await.unwrap();
+            let mut answered = false;
+            for other in (0..case.seats).filter(|other| *other != seat) {
+                let messages = self.clients[other].drain();
+                self.seen[other].extend(messages.iter().cloned());
+                let last = messages.into_iter().rev().find_map(|m| match m {
+                    ServerMessage::Decision { id, decision, .. } => Some((id, decision)),
+                    _ => None,
+                });
+                if let Some((id, decision)) = last {
+                    let answer = routine(case, other, &decision);
+                    self.reply(other, id, answer).await;
+                    answered = true;
+                }
+            }
+            if !answered {
+                return;
+            }
+        }
+    }
+
     /// Plays the routine answers until `case`'s question is put to its seat.
     async fn reach(&mut self, case: &Case) -> Asked {
         for _ in 0..60 {
@@ -364,6 +388,12 @@ impl Table {
                 .index();
             let (id, decision, left) = self.decision(seat).await;
             if decision.kind.name() == case.name && case.asked.is_none_or(|asked| asked == seat) {
+                if matches!(
+                    decision.kind,
+                    DecisionKind::Mulligan(_) | DecisionKind::BottomCards(_)
+                ) {
+                    self.settle_others(case, seat).await;
+                }
                 return Asked {
                     id,
                     seat,

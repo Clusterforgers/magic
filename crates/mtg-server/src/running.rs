@@ -216,7 +216,9 @@ impl Running {
     /// table answers for the seat.
     pub(crate) fn extend(&mut self) -> Option<Extended> {
         let length = self.pace.extension?;
-        let (seat, due, hidden) = self.expiring().map(|p| (p.decision.player, p.due, p.hidden))?;
+        let (seat, due, hidden) = self
+            .expiring()
+            .map(|p| (p.decision.player, p.due, p.hidden))?;
         let due = due?;
         if hidden || !self.banks.spend(seat) {
             return None;
@@ -438,8 +440,7 @@ impl Running {
 
     /// Whether the decision `id` is the pending one and is `seat`'s.
     fn is_pending_for(&self, seat: PlayerId, id: DecisionId) -> bool {
-        self.all()
-            .any(|p| p.id == id && p.decision.player == seat)
+        self.all().any(|p| p.id == id && p.decision.player == seat)
     }
 
     /// [`answer`](Running::answer) for the pending decision whether or not a client was sent it.
@@ -712,7 +713,7 @@ mod tests {
 
     fn held_back(dwell: Dwell) -> Running {
         let mut running = idle_with_a_spell(dwell);
-        assert!(running.settle(false, Halt::Dwell).is_none());
+        assert!(running.settle(false, Halt::Dwell).is_empty());
         running
     }
 
@@ -824,12 +825,12 @@ mod tests {
         let setup = Scenario::new(2).setup().unwrap();
         let mut running = Running::new(Engine::new(setup).unwrap(), pace);
         // Seat 0 is the active player, so it has no clock; the table's pass for it is the seat's own move.
-        let first = running.settle(false, Halt::Ask).unwrap();
+        let first = running.settle(false, Halt::Ask).remove(0);
         assert_eq!(first.deadline_ms, None);
         let step = running.fall_back().unwrap();
         assert!(step.passed);
         // Seat 1 is not, so a window it is sent has the response clock, and the pass at its end is the same step.
-        let afterwards = running.settle(false, Halt::Ask).unwrap();
+        let afterwards = running.settle(false, Halt::Ask).remove(0);
         assert_eq!(afterwards.decision.player, SEATS[1]);
         assert_eq!(afterwards.deadline_ms, Some(10_000));
         let step = running.fall_back().unwrap();
@@ -841,7 +842,7 @@ mod tests {
         let mut running = held_back(Dwell::DEFAULT);
         let (id, due) = (running.pending.as_ref().unwrap().id, running.due());
         tokio::time::advance(Duration::from_millis(100)).await;
-        assert!(running.settle(true, Halt::Dwell).is_none());
+        assert!(running.settle(true, Halt::Dwell).is_empty());
         assert_eq!(running.pending.as_ref().unwrap().id, id);
         assert_eq!(
             running.due(),
@@ -849,7 +850,7 @@ mod tests {
             "a concession elsewhere does not move it"
         );
 
-        assert!(running.settle(false, Halt::Dwell).is_none());
+        assert!(running.settle(false, Halt::Dwell).is_empty());
         assert_ne!(running.pending.as_ref().unwrap().id, id);
         let wait = running.due().unwrap() - Instant::now();
         let (shortest, longest) = Dwell::DEFAULT.range();
@@ -860,7 +861,7 @@ mod tests {
     async fn when_the_rules_ask_a_held_back_seat_its_decision_is_issued_with_a_new_id() {
         let mut running = held_back(Dwell::fixed(500));
         let held = running.pending.as_ref().unwrap().id;
-        let issued = running.settle(true, Halt::Ask).unwrap();
+        let issued = running.settle(true, Halt::Ask).remove(0);
         assert_ne!(issued.id, held);
         assert_eq!(issued.decision.player, SEATS[0]);
         let messages = running.sync_messages(SEATS[0]);
