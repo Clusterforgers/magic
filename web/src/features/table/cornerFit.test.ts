@@ -100,6 +100,17 @@ describe('planning the corner', () => {
     expect(plan(input)).toEqual(expected)
   })
 
+  // The switch to chips is as sharp as the least picture is high: a room of 61 px draws no picture and no card of 62 px.
+  it.each<[string, number, number, number | null]>([
+    ['a room of 61 px keeps the chips', 61, 0, null],
+    ['a room of 62 px draws the least picture', 62, 0, 44],
+    ['a room of 77 px with a partner pair keeps the chips', 77, PARTNER_HEAD_PX, null],
+    ['a room of 78 px with a partner pair draws the least picture', 78, PARTNER_HEAD_PX, 44],
+    ['a room of 0 px keeps the chips', 0, 0, null],
+  ])('%s', (_name, height, extra, picture) => {
+    expect(plan({ slots: 3, width: 152, height, card: 120, extra })?.width ?? null).toBe(picture)
+  })
+
   it('prefers fewer rows when two shapes give the same width', () => {
     // At 44 px every shape from one to three columns fits a card of 60 px; one row of three is the fewest rows.
     expect(plan({ slots: 3, width: 152, height: 400, card: 60 })?.columns).toBe(3)
