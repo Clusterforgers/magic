@@ -222,8 +222,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ma7c) The panel's Look at the top: `LookTop`, the known cards with Top, Bottom and Graveyard and their order, one `ArrangeTop`; Shuffle; the log lines of the three (`describeManual`) and their hidden forms
 - [ ] (ma7d) Reveal and a note as manual actions: `ManualAction::Reveal` (a hand card or the top card, to every seat) and `Note` with `ObjectView.note`, in the panel, the card menu and the log
-- [ ] (ma7e) The panel's Card group: "Pick a card" and the card menu's "In the panel" fill it with the card's commands (`manualMenu`); the card menu drops the You entries
-- [ ] (ma7f) A refused manual action shows in the panel row's or the menu's own feedback instead of the table notice, and a `BadMessage` refusal of a manual action is not taken for a pending combat preview's refusal
+- [~] (ma7e) (panel-card) The panel's Card group: "Pick a card" and the card menu's "In the panel" fill it with the card's commands (`manualMenu`); the card menu drops the You entries
+- [~] (ma7f) (panel-card) A refused manual action shows in the panel row's or the menu's own feedback instead of the table notice, and a `BadMessage` refusal of a manual action is not taken for a pending combat preview's refusal
 - [ ] (ma7g) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
 - [ ] (ma7h) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
 - [ ] (ma7i) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
