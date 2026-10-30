@@ -89,6 +89,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantBlock: "can't block",
       DoesntUntap: `${group ? "don't" : "doesn't"} untap during their controller's untap step`,
       CantBeBlocked: "can't be blocked",
+      CantBeTurnedFaceUp: "can't be turned face up",
       AddAllCreatureTypes: `${becomes} every creature type`,
     }[modification]
   }
@@ -585,7 +586,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
         ? ''
         : 'Chapter' in chosen
           ? `, reading ahead to chapter ${chosen.Chapter}`
-          : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : 'Player' in chosen ? n.seat(chosen.Player) : chosen.CreatureType}`
+          : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : 'Player' in chosen ? n.seat(chosen.Player) : 'LandType' in chosen ? chosen.LandType : chosen.CreatureType}`
     return quiet(
       `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
     )

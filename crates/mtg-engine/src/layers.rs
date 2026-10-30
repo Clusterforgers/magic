@@ -277,6 +277,7 @@ impl Held {
             | Modification::CantAttackYou { .. }
             | Modification::CantBlock
             | Modification::DoesntUntap
+            | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
             | Modification::CanBlockOnly { .. }
@@ -520,6 +521,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
         | Wanted::DoesntUntap
+        | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)
@@ -1307,6 +1309,8 @@ mod chosen;
 mod counters;
 #[cfg(test)]
 mod crowd;
+#[cfg(test)]
+mod deck_auras;
 #[cfg(test)]
 mod defining;
 #[cfg(test)]

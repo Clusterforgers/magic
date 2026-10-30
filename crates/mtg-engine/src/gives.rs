@@ -36,6 +36,8 @@ pub enum GivenRule {
     BlocksAdditional,
     /// The host doesn't untap in its controller's untap step.
     DoesntUntap,
+    /// The host can't be turned face up.
+    CantBeTurnedFaceUp,
     /// The host loses all abilities.
     LoseAbilities,
     /// The host loses a keyword.
@@ -104,6 +106,7 @@ impl Gives {
             Modification::MinBlockers(_) | Modification::MaxBlockers(_) => GivenRule::BlockerLimit,
             Modification::BlocksAdditional(_) => GivenRule::BlocksAdditional,
             Modification::DoesntUntap => GivenRule::DoesntUntap,
+            Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
             Modification::RemoveKeyword(_) => GivenRule::LoseKeyword,
             Modification::GrantAbility(_) => GivenRule::GainAbility,

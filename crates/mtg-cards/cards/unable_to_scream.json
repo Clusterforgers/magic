@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3d240726-5214-4493-8537-29bf65db1e4b",
+  "name": "Unable to Scream",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unable to Scream",
+      "oracle_fingerprint": "76d3ebff56de4f1abae94fed9e67fbd2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              "LoseAbilities",
+              { "AddType": "Artifact" },
+              { "AddType": "Creature" },
+              { "AddSubtype": "Toy" },
+              { "SetPT": { "power": 0, "toughness": 2 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["CantBeTurnedFaceUp"],
+            "condition": { "Matches": { "subject": "Attached", "selector": ["FaceDown"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

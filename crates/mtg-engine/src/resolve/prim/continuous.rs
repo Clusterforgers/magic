@@ -94,13 +94,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(events))
 }
 
-/// The keyword with the colour or creature type the source chose as it entered written into a protection quality: the
-/// holder of a granted protection (an Aura's host, a creature of a lord) made no choice, so "the chosen color" is
-/// fixed by the source that grants it.
+/// The keyword with the colour, creature type or land type the source chose as it entered written into a protection
+/// quality or a landwalk: the holder of a granted keyword (an Aura's host, a creature of a lord) made no choice, so "the
+/// chosen color" is fixed by the source that grants it.
 fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
-    let Keyword::Protection(quality) = keyword else {
-        return keyword.clone();
-    };
     let Some(chosen) = scope.entered_choice() else {
         return keyword.clone();
     };
@@ -109,7 +106,22 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
         (Pred::ChosenSubtype, Chosen::CreatureType(subtype)) => Pred::Subtype(subtype.clone()),
         _ => pred.clone(),
     };
-    Keyword::Protection(PickSelector(quality.0.iter().map(fixed).collect()))
+    match (keyword, chosen) {
+        (Keyword::Protection(quality), _) => {
+            Keyword::Protection(PickSelector(quality.0.iter().map(fixed).collect()))
+        }
+        // The land type is the one the landwalk names.
+        (Keyword::Landwalk(land), Chosen::LandType(subtype)) => Keyword::Landwalk(PickSelector(
+            land.0
+                .iter()
+                .map(|pred| match pred {
+                    Pred::ChosenSubtype => Pred::Subtype(subtype.clone()),
+                    other => other.clone(),
+                })
+                .collect(),
+        )),
+        _ => keyword.clone(),
+    }
 }
 
 /// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
@@ -165,6 +177,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         },
         Wanted::CantBlock => Modification::CantBlock,
         Wanted::DoesntUntap => Modification::DoesntUntap,
+        Wanted::CantBeTurnedFaceUp => Modification::CantBeTurnedFaceUp,
         Wanted::CantBeBlocked => Modification::CantBeBlocked,
         Wanted::Goaded => Modification::Goaded {
             by: scope.controller,

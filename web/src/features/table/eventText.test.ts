@@ -709,6 +709,10 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), 'CantBeBlocked', 'UntilEndOfTurn'), "Hill Giant can't be blocked until end of turn"],
     [
+      effect(objects(2), 'CantBeTurnedFaceUp', 'UntilEndOfTurn'),
+      "Hill Giant can't be turned face up until end of turn",
+    ],
+    [
       effect(objects(2), 'AddAllCreatureTypes', 'UntilEndOfTurn'),
       'Hill Giant becomes every creature type until end of turn',
     ],
@@ -911,6 +915,10 @@ describe('the choice a permanent enters with', () => {
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Chapter: 2 } } },
       "Forest enters under Ana's control, reading ahead to chapter 2",
+    ],
+    [
+      { Entered: { object: 3, tapped: false, controller: 0, chosen: { LandType: 'Swamp' } } },
+      "Forest enters under Ana's control, choosing Swamp",
     ],
   ])('%j reads "%s"', (event, text) => {
     expect(say(event)).toBe(text)

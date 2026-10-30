@@ -8,6 +8,7 @@
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 
+use super::aura_additive;
 use super::becomes::{colors, colors_text};
 use super::selectors::{granted_keywords, granted_text};
 use super::tokens::Reader;
@@ -34,6 +35,17 @@ pub(super) fn form(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     let power = i32::try_from(r.number()?).ok()?;
     r.punct('/').then_some(())?;
     let toughness = i32::try_from(r.number()?).ok()?;
+    if r.words(aura_additive::IN_ADDITION) {
+        paint.is_none().then_some(())?;
+        let form = aura_additive::Form {
+            lose: lose_first,
+            kinds: &kinds,
+            artifact,
+            creature,
+            size: (power, toughness),
+        };
+        return aura_additive::mods(&form);
+    }
     let mut mods = Vec::new();
     mods.extend(paint.map(Modification::SetColors));
     if creature {
@@ -106,6 +118,10 @@ fn keyword_list(r: &mut Reader<'_>) -> Option<Vec<crate::keyword::Keyword>> {
 
 /// Every wording of the changes `form` reads; empty for any other list.
 pub(super) fn texts(mods: &[Modification]) -> Vec<String> {
+    let additive = aura_additive::texts(mods);
+    if !additive.is_empty() {
+        return additive;
+    }
     let mut rest = mods;
     let mut paint: Option<&[Color]> = None;
     if let Some((Modification::SetColors(colors), after)) = rest.split_first() {

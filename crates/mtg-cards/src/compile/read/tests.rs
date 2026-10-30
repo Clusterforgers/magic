@@ -1095,3 +1095,5 @@ mod dk1c_writers;
 
 // deck-casting
 mod dk1c2_affinity;
+// deck-auras
+mod deck_auras;

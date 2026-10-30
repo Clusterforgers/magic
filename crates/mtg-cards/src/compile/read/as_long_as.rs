@@ -102,12 +102,16 @@ fn state(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
         r.need("is")?;
         subject
     };
-    let word = r.take_word()?;
-    let pred = STATES
-        .iter()
-        .find(|(name, _)| *name == word)
-        .map(|(_, pred)| pred.clone())
-        .or_else(|| color(word).map(Pred::Color))?;
+    let pred = if r.words("face down") {
+        Pred::FaceDown
+    } else {
+        let word = r.take_word()?;
+        STATES
+            .iter()
+            .find(|(name, _)| *name == word)
+            .map(|(_, pred)| pred.clone())
+            .or_else(|| color(word).map(Pred::Color))?
+    };
     Some(Condition::Matches {
         subject,
         selector: Selector(vec![pred]),
@@ -318,6 +322,7 @@ fn state_texts(condition: &Condition) -> Vec<String> {
     };
     let name = match pred {
         Pred::Color(shade) => color_name(*shade).to_owned(),
+        Pred::FaceDown => "face down".to_owned(),
         other => match STATES.iter().find(|(_, state)| state == other) {
             Some((name, _)) => (*name).to_owned(),
             None => return Vec::new(),

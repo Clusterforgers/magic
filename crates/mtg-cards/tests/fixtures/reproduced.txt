@@ -1562,6 +1562,7 @@ Trace of Abundance
 Trailtracker Scout
 Trash for Treasure
 Traumatic Visions
+Traveler's Cloak
 Traverse the Outlands
 Traxos, Scourge of Kroog
 Treasure Cruise
@@ -1592,6 +1593,7 @@ Ultramarines Honour Guard
 Ultron, Unlimited
 Umaro, Raging Yeti
 Umbral Collar Zealot
+Unable to Scream
 Unbreakable Bond
 Unclaimed Territory
 Underworld Dreams

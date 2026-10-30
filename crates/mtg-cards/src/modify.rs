@@ -75,6 +75,8 @@ pub enum Modification {
     CantBlock,
     /// The object does not untap during its controller's untap step (a restriction, no layer).
     DoesntUntap,
+    /// The object can't be turned face up (a restriction, no layer).
+    CantBeTurnedFaceUp,
     /// The object can't be blocked (a restriction, no layer).
     CantBeBlocked,
     /// The object can't be blocked by creatures the selector matches (a restriction, no layer).
@@ -129,6 +131,7 @@ impl Modification {
             | Modification::CantAttackYou(_)
             | Modification::CantBlock
             | Modification::DoesntUntap
+            | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy(_)
             | Modification::CanBlockOnly(_)
@@ -404,6 +407,7 @@ mod tests {
     #[case(Modification::CantAttack, None)]
     #[case(Modification::CantAttackYou(Attacked::Both), None)]
     #[case(Modification::CantBlock, None)]
+    #[case(Modification::CantBeTurnedFaceUp, None)]
     #[case(Modification::CantBeBlocked, None)]
     #[case(Modification::Goaded, None)]
     #[case(Modification::MinBlockers(2), None)]

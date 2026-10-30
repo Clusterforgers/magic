@@ -218,7 +218,7 @@ pub enum Pred {
     Named(String),
     /// Is the colour the controller of the source chose as the source entered the battlefield.
     ChosenColor,
-    /// Has the creature type the controller of the source chose as the source entered the battlefield.
+    /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
     /// Its power, toughness, mana value or loyalty compares to the amount.
     Compare {

@@ -311,6 +311,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
             None,
         ));
     }
+    if r.words("choose a land type") {
+        return Some(replacement(ReplaceBy::Choose(EntersChoice::LandType), None));
+    }
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
@@ -800,6 +803,9 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
     };
     if !plural && r.words("isn't a creature") {
         return Some(vec![Modification::RemoveType(CardType::Creature)]);
+    }
+    if !plural && r.words("can't be turned face up") {
+        return Some(vec![Modification::CantBeTurnedFaceUp]);
     }
     if r.words(&format!("{lose} all creature types")) {
         return Some(vec![Modification::SetCreatureTypes(Vec::new())]);
@@ -1357,6 +1363,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         }
         (ReplaceBy::Choose(EntersChoice::CreatureType), None) => {
             vec!["As ~ enters, choose a creature type".to_owned()]
+        }
+        (ReplaceBy::Choose(EntersChoice::LandType), None) => {
+            vec!["As ~ enters, choose a land type".to_owned()]
         }
         (ReplaceBy::Choose(EntersChoice::Player), None) => {
             vec!["As ~ enters, choose a player".to_owned()]
@@ -1925,6 +1934,9 @@ pub(super) fn predicate(
             return w6a_attacks_you::w6a_text(restriction).map(str::to_owned);
         }
         [Modification::CantBlock] => return Some("can't block".to_owned()),
+        [Modification::CantBeTurnedFaceUp] if !plural => {
+            return Some("can't be turned face up".to_owned());
+        }
         [Modification::CantBeBlocked] => {
             return Some("can't be blocked".to_owned());
         }

@@ -14,7 +14,8 @@ use super::*;
 use crate::abilities::{AbilityRef, AbilitySource};
 use crate::ability_reader::{abilities_of, ability};
 use crate::characteristics::{
-    cant_attack, cant_be_blocked_by, cant_block, characteristics, controller_of,
+    cant_attack, cant_be_blocked_by, cant_be_turned_face_up, cant_block, characteristics,
+    controller_of,
 };
 use crate::effects::{ContinuousEffect, Duration, Selector};
 use crate::events::{Event, ZoneCause};
@@ -91,6 +92,7 @@ struct View {
     abilities: Vec<Ability>,
     cant_attack: bool,
     cant_block: bool,
+    cant_turn_up: bool,
     /// The permanents that can't block it.
     kept_out: Vec<String>,
 }
@@ -107,6 +109,7 @@ fn view(game: &GameState, name: &str) -> View {
             .collect(),
         cant_attack: cant_attack(game, id),
         cant_block: cant_block(game, id),
+        cant_turn_up: cant_be_turned_face_up(game, id),
         // The Totems that hold the static abilities are not part of the comparison.
         kept_out: game
             .zone(Zone::Battlefield)
@@ -160,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 24] = [
+const MODIFICATIONS: [&str; 25] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -179,6 +182,7 @@ const MODIFICATIONS: [&str; 24] = [
     r#""CantAttack""#,
     r#""CantBlock""#,
     r#""DoesntUntap""#,
+    r#""CantBeTurnedFaceUp""#,
     r#""CantBeBlocked""#,
     r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
     r#"{"CanBlockOnly":[{"HasKeyword":"Flying"}]}"#,
@@ -227,6 +231,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::CantAttackYou(_)
             | mtg_cards::modify::Modification::CantBlock
             | mtg_cards::modify::Modification::DoesntUntap
+            | mtg_cards::modify::Modification::CantBeTurnedFaceUp
             | mtg_cards::modify::Modification::CantBeBlocked
             | mtg_cards::modify::Modification::CantBeBlockedBy(_)
             | mtg_cards::modify::Modification::CanBlockOnly(_)
@@ -240,7 +245,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
 
 #[rstest]
 fn every_modification_gives_the_same_view_as_a_static_ability_and_as_an_effect(
-    #[values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)] which: usize,
+    #[values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18)] which: usize,
 ) {
     let modification = MODIFICATIONS[which];
     let mut by_effect = game_with(idle_totem());

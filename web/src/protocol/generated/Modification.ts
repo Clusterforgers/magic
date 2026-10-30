@@ -25,7 +25,7 @@ power: number,
 /**
  * Toughness delta.
  */
-toughness: number, } } | "SwitchPowerToughness" | "CantAttack" | "CantBlock" | "DoesntUntap" | "CantBeBlocked" | { "CantBeBlockedBy": { 
+toughness: number, } } | "SwitchPowerToughness" | "CantAttack" | "CantBlock" | "DoesntUntap" | "CantBeTurnedFaceUp" | "CantBeBlocked" | { "CantBeBlockedBy": { 
 /**
  * The blockers it keeps out.
  */

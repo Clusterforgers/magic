@@ -320,6 +320,9 @@ mod while_control;
 mod without_counter;
 mod you_create;
 
+// deck-auras
+mod deck_auras;
+
 use crate::ability::Ability;
 
 /// Adds to `texts` the oracle wordings of the ability that the renderers do not write.
@@ -413,6 +416,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_t17b(ability, texts);
     // dk1b
     dk1b_attached::add(ability, texts);
+    // deck-auras
+    deck_auras::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of

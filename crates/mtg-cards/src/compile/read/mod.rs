@@ -25,6 +25,7 @@ mod as_long_as;
 mod attack_pairs;
 mod attack_tax;
 mod attackers;
+mod aura_additive;
 mod aura_forms;
 mod batches;
 mod becomes;

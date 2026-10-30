@@ -15,6 +15,7 @@ use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
 use crate::ability_reader::printed_rules;
+use crate::characteristics::cant_be_turned_face_up;
 use crate::object::FaceDown;
 use crate::price::Price;
 use crate::state::GameState;
@@ -86,11 +87,14 @@ impl FaceDown {
 /// What turning the face-down permanent `id` face up takes: its morph, megamorph or disguise cost, paid with mana alone,
 /// and whether it is a megamorph, whose permanent gets a +1/+1 counter (CR 702.37b). A manifested or cloaked creature card
 /// can also be turned face up for its mana cost, an {X} in it counting as 0 (CR 701.40a); a card with both is turned up
-/// for the cheaper. `None` for a permanent that is not face down or has no such cost.
+/// for the cheaper. `None` for a permanent that is not face down, has no such cost or is held down by an effect ("can't be turned face up").
 pub(crate) fn turn_up_cost(state: &GameState, id: ObjectId) -> Option<(ManaCost, bool)> {
     let object = state.object(id)?;
     let how = object.face_down()?;
-    if object.zone() != Zone::Battlefield || !how.shows_characteristics() {
+    if object.zone() != Zone::Battlefield
+        || !how.shows_characteristics()
+        || cant_be_turned_face_up(state, id)
+    {
         return None;
     }
     let card = object.whole_card();
@@ -287,6 +291,34 @@ mod tests {
         let expected: Option<(ManaCost, bool)> =
             expected.map(|(cost, megamorph)| (ManaCost::parse(cost).unwrap(), megamorph));
         assert_eq!(turn_up_cost(&game, id), expected);
+    }
+
+    #[rstest]
+    #[case::a_morph(FaceDown::Morph, Keyword::Morph(mana("{2}{R}")))]
+    #[case::a_disguise(FaceDown::Disguise, Keyword::Disguise(mana("{R}")))]
+    #[case::a_manifested_creature_card(FaceDown::Manifest, Keyword::Flying)]
+    #[case::a_cloaked_creature_card(FaceDown::Cloak, Keyword::Flying)]
+    fn an_effect_that_says_it_can_t_be_turned_face_up_leaves_no_way_to_turn_it_up_until_it_ends(
+        #[case] kind: FaceDown,
+        #[case] keyword: Keyword,
+    ) {
+        use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
+        let (mut game, id) = lies(kind, keyword);
+        assert!(turn_up_cost(&game, id).is_some());
+        let on = Selector::Objects(vec![game.object(id).unwrap().reference()]);
+        let held = ContinuousEffect::new(
+            mtg_core::ids::EffectId(0),
+            on,
+            Modification::CantBeTurnedFaceUp,
+            Duration::Forever,
+            9,
+        );
+        game.effects.push(held);
+        game.layers.reset();
+        assert_eq!(turn_up_cost(&game, id), None);
+        game.effects.clear();
+        game.layers.reset();
+        assert!(turn_up_cost(&game, id).is_some(), "the effect ended");
     }
 
     #[rstest]
