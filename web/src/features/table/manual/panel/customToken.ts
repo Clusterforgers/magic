@@ -63,7 +63,7 @@ function customOf(draft: TokenDraft): { token: ManualToken; label: string } | { 
 export function tokenPreview(draft: TokenDraft, amount: number): Preview {
   if (draft.token !== CUSTOM) {
     return {
-      preview: `${plural(amount, `${draft.token} token`)} enter under your control`,
+      preview: `${plural(amount, `${draft.token} token`)} ${amount === 1 ? 'enters' : 'enter'} under your control`,
       apply: `Create ${plural(amount, draft.token)}`,
       action: { CreateToken: { token: { Common: draft.token }, count: amount } },
     }
@@ -71,7 +71,7 @@ export function tokenPreview(draft: TokenDraft, amount: number): Preview {
   const custom = customOf(draft)
   if ('problem' in custom) return custom
   return {
-    preview: `${plural(amount, `${custom.label} creature token`)} enter under your control`,
+    preview: `${plural(amount, `${custom.label} creature token`)} ${amount === 1 ? 'enters' : 'enter'} under your control`,
     apply: `Create ${plural(amount, `${custom.label} token`)}`,
     action: { CreateToken: { token: custom.token, count: amount } },
   }

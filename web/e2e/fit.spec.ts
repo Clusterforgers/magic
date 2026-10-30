@@ -364,6 +364,15 @@ test.describe('the development table with 40 permanents a seat', () => {
     })
   }
 
+  // The Commands panel with its tallest row open, the look-at-the-top list; a picked card opens the rail or sheet over the table (ui3b).
+  for (const panel of ['top'] as const) {
+    test(`fits at every size with the Commands panel's ${panel} scene`, async ({ page }) => {
+      await page.goto(`${DEV_WEB_URL}/dev/table?panel=${panel}`)
+      await page.locator(THINGS.primary).waitFor()
+      await atEverySize(page, ['hand', 'life', 'primary'], onTable(`the Commands panel's ${panel} scene`))
+    })
+  }
+
   test('writes the grant marks in whole words and the opponent’s corner as whole pictures or whole chips, at every size', async ({
     page,
   }) => {

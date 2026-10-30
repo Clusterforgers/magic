@@ -219,10 +219,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [~] (ma7g) (panel-validate) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
-- [~] (ma7h) (panel-validate) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
+- [ ] (ui3a) Each panel row shows its icon and an open or closed chevron, so a first-time player sees the row is a button (`panel/CommandsPanel.tsx`, `panel/CardGroup.tsx`)
+- [ ] (ui3b) At M and on a phone the open rail panel or sheet leaves the pass button, hand and life in reach, and `/dev/table?panel=card` joins `e2e/layout.spec.ts` and `e2e/fit.spec.ts` (`SideTabs.tsx` `rail-panel`, `SideSheet`)
+- [ ] (ui3c) Life sits open at the top of You beside the large total, as a life counter does, instead of a closed row (`panel/CommandsPanel.tsx`)
+- [ ] (ui3d) On a phone the side sheet opened during the first turn shuts or redraws under the first press of a panel row; the phone case of `e2e/manual-panel.spec.ts` (`test.fixme`) passes (`SideTabs.tsx` `SideSheet`, `components/ui/sheet.tsx`)
 - [~] (ma7i) (panel-roll) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
-- [~] (ma7l) (panel-validate) The look-at-the-top list and the new rows at the six sizes in both themes: screenshots looked at, `e2e/layout.spec.ts` and `e2e/fit.spec.ts` with `/dev/table?panel=top`
 - [~] (ma7m) (panel-roll) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries
 - [ ] (ma7r) `e2e/fit.spec.ts` "attachments scene on four seats" fails at 1366x768 ("the combat line block:71 runs over your life")

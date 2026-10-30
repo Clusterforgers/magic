@@ -199,6 +199,7 @@ const STOPS: readonly Stop[] = [
   ),
   tableStop('The table (dev), 6 seats, paying a cost', 'seats=6&prompt=pay', null),
   tableStop('The table (dev), 12 seats, in focus mode', 'seats=12&prompt=priority&turn=you', 'pass'),
+  tableStop('The table (dev), the Commands panel after a look at the top', 'panel=top', 'pass'),
   {
     name: 'A lobby (dev) of six seats',
     fitsFrom: Infinity,
