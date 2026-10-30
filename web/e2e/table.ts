@@ -1,9 +1,15 @@
-// Goal: the shared setup of the specs that play real precon decks: accounts, the create form, the lobby's chooser and the milestone screenshots.
-import { mkdirSync, writeFileSync } from 'node:fs'
+// Goal: the shared setup of the specs that play real decks: accounts, saved and precon decks, the create form, the lobby's chooser and the milestone screenshots.
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { expect } from '@playwright/test'
 import type { Browser, TestInfo } from '@playwright/test'
-import type { PreconList, PreconListItem, PreconView } from '../src/protocol/generated'
+import type {
+  DeckView,
+  ImportResult,
+  PreconList,
+  PreconListItem,
+  PreconView,
+} from '../src/protocol/generated'
 import type { Run } from './driver'
 import type { Player } from './lobby'
 import { ACCOUNTS_WEB_URL } from './ports'
@@ -105,15 +111,100 @@ export async function chooseTablePrecon(player: Player, deck: PreconListItem): P
   await expect(page.locator('[data-slot="deck-note"]')).toContainText('Your deck is now')
 }
 
+/** A deck saved in an account, which the lobby's chooser lists under "Your decks". */
+export interface SavedDeck {
+  id: string
+  name: string
+  /** The names of its commanders, for `Style.recall`. */
+  commanders: string[]
+}
+
+/** What a seat plays: a precon of the server's list or a deck saved in its account. */
+export type TableDeck = PreconListItem | SavedDeck
+
+/** Whether `E2E_DECK=owner` asks for the owner's Commander deck in every seat instead of precons. */
+export const OWNER_DECK = process.env['E2E_DECK'] === 'owner'
+
+/** The owner's deck as an Arena list, the real deck whose friends' journey the owner variant holds (docs/web.md). */
+const ownerList = (): string =>
+  readFileSync(
+    new URL('../../crates/mtg-testkit/tests/fixtures/decks/owner.arena.txt', import.meta.url),
+    'utf8',
+  )
+
+/**
+ * Saves the owner's deck in `account` the way the Decks page does: the importer reads the Arena list, then what it
+ * resolved is stored. Every card must resolve and the list must read without a problem.
+ */
+export async function saveOwnerDeck(browser: Browser, account: Account): Promise<SavedDeck> {
+  const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL, storageState: account.storage })
+  const asAccount = { headers: { origin: ACCOUNTS_WEB_URL } }
+  try {
+    const read = await context.request.post('/api/decks/import', {
+      ...asAccount,
+      data: { text: ownerList(), format: 'commander' },
+    })
+    expect(read.ok(), `import: ${await read.text()}`).toBe(true)
+    const { cards, unresolved, problems } = (await read.json()) as ImportResult
+    expect(unresolved, 'every card of the owner deck is in the database').toEqual([])
+    expect(problems, 'the owner deck reads without a problem').toEqual([])
+    const name = `Owner deck of ${account.name}`
+    const saved = await context.request.post('/api/decks', {
+      ...asAccount,
+      data: {
+        name,
+        format: 'commander',
+        notes: '',
+        cards: cards.map((line) => ({
+          zone: line.zone,
+          oracle_id: line.card.oracle_id,
+          printing_id: line.printing_id,
+          count: line.count,
+        })),
+      },
+    })
+    expect(saved.ok(), `save: ${await saved.text()}`).toBe(true)
+    const deck = (await saved.json()) as DeckView
+    const commanders = deck.cards.filter((line) => line.zone === 'commander').map((line) => line.card.name)
+    expect(commanders, 'the owner deck has its commander').not.toEqual([])
+    return { id: deck.id, name, commanders }
+  } finally {
+    await context.close()
+  }
+}
+
+/**
+ * Chooses a saved deck in the lobby's chooser as `player` does: the "Your decks" tab, the deck's row (which waits for
+ * the table's verdict and must not be blocked), the row's click and the preview's "Use this deck", then waits for the
+ * server's answer.
+ */
+export async function chooseSavedDeck(player: Player, deck: SavedDeck): Promise<void> {
+  const { page } = player
+  await page.getByRole('tab', { name: 'Your decks' }).click()
+  const row = page.locator(`[data-deck-option="${deck.id}"]`)
+  await expect(row).toBeVisible()
+  await expect(row).not.toContainText('Checking at this table')
+  await expect(row).not.toContainText('Cannot be taken')
+  await row.click()
+  await expect(page.getByRole('heading', { level: 3, name: deck.name, exact: true })).toBeVisible()
+  const use = page.locator('[data-slot="use-deck"]')
+  await expect(use).toBeEnabled()
+  await use.click()
+  await expect(page.locator('[data-slot="deck-note"]')).toContainText(`Your deck is now ${deck.name}`)
+}
+
+const chooseDeck = (player: Player, deck: TableDeck): Promise<void> =>
+  'code' in deck ? chooseTablePrecon(player, deck) : chooseSavedDeck(player, deck)
+
 /**
  * Makes a Commander game as the first account on the create form (Commander is its default; invite only, with the house rules filled in), has every
  * other account open the invite page with the code the host's lobby shows and join, and has every seat choose its
- * precon in the lobby's deck chooser. Returns the players in seat order, all in the lobby.
+ * deck (a precon or a saved deck) in the lobby's deck chooser. Returns the players in seat order, all in the lobby.
  */
 export async function startTable(
   browser: Browser,
   accounts: readonly Account[],
-  decks: readonly PreconListItem[],
+  decks: readonly TableDeck[],
   /** House rules to fill in on the create form, by the label of the rule (`{ 'Starting life': '6' }`). */
   houseRules: Readonly<Record<string, string>> = {},
 ): Promise<Player[]> {
@@ -135,7 +226,7 @@ export async function startTable(
   await expect(host.page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
   const code = (await host.page.locator('[data-slot="invite-code"]').textContent())?.trim() ?? ''
   expect(code).not.toBe('')
-  await chooseTablePrecon(host, firstDeck)
+  await chooseDeck(host, firstDeck)
 
   const players = [host]
   for (const [index, account] of others.entries()) {
@@ -147,7 +238,7 @@ export async function startTable(
     await expect(player.page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
     const deck = decks[index + 1]
     if (deck === undefined) throw new Error(`no precon for seat ${index + 2}`)
-    await chooseTablePrecon(player, deck)
+    await chooseDeck(player, deck)
     players.push(player)
   }
   return players
