@@ -458,7 +458,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [~] (v89l) (small-fixes) The picture warm-up fetches the printing each deck line chose (a precon names them), not only the newest paper printing of each card, so the table's pictures of precon cards are cached when the first turn starts
-- [~] (v89m) (small-fixes) The doc of `CardHit` in `mtg-protocol` says "without manual steps" for the played-by-hand flag; it reads "played by hand" like the web and the bindings follow
 
 ## M8 Polish and deploy
 

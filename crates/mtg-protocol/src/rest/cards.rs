@@ -73,7 +73,7 @@ pub struct CardHit {
     pub color_identity: Vec<CardColor>,
     /// Pictures of the card's default printing.
     pub images: CardImages,
-    /// Whether the game plays the card without manual steps (`docs/deck-check.md`).
+    /// How far the game plays the card itself and how far it is played by hand (`docs/deck-check.md`).
     pub support: Support,
 }
 

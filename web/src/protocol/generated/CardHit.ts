@@ -40,6 +40,6 @@ color_identity: Array<CardColor>,
  */
 images: CardImages, 
 /**
- * Whether the game plays the card without manual steps (`docs/deck-check.md`).
+ * How far the game plays the card itself and how far it is played by hand (`docs/deck-check.md`).
  */
 support: Support, };

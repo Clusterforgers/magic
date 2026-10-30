@@ -55,7 +55,7 @@ const WEB = join(import.meta.dirname, '..', '..')
 function filesIn(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name)
-    if (statSync(path).isDirectory()) return name === 'generated' ? [] : filesIn(path)
+    if (statSync(path).isDirectory()) return filesIn(path)
     return /\.tsx?$/.test(name) ? [path] : []
   })
 }
@@ -85,6 +85,7 @@ describe('the spelling', () => {
   it('finds the sources to look through', () => {
     expect(ALL.some((path) => path.endsWith(join('features', 'game', 'deckWords.ts')))).toBe(true)
     expect(ALL.some((path) => path.endsWith(join('e2e', 'lobby.ts')))).toBe(true)
+    expect(ALL.some((path) => path.endsWith(join('generated', 'CardHit.ts')))).toBe(true)
   })
 
   it.each(OLD_SPELLINGS)('has no "%s" in the sources or the end-to-end specs', (_name, pattern) => {
