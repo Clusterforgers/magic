@@ -7,6 +7,7 @@
 //! (`docs/engine.md`, Casting).
 
 mod alternative;
+mod anchor;
 mod c9_emerge_reduce;
 pub(crate) mod companion;
 mod division;
@@ -26,7 +27,6 @@ pub(crate) mod turn_up;
 mod w2f_counter_kinds;
 mod x;
 
-use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
@@ -41,13 +41,13 @@ use crate::decision::{Decision, DecisionKind};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
-use crate::object::{GameObject, ObjectRef};
 use crate::parts::Part;
 use crate::price::Price;
 use crate::resolve::spell_ability;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
 use crate::ways::Way;
+use anchor::Anchor;
 
 pub(crate) use modifiers::{c11a_reduced, cheapest};
 pub(crate) use optional::{Optional, kicked_with, payments};
@@ -272,9 +272,11 @@ pub(crate) struct Pending {
     /// Set when the card is the subject of a special action that pays a cost and does not use the stack.
     pub(crate) special: Option<Special>,
     needs: Option<Needs>,
-    /// The card or permanent announced and the objects picked to pay for it as the questions first found them: a zone
-    /// change after that ends the announcement (`moved_away`).
-    seen: BTreeMap<ObjectId, ObjectRef>,
+    /// The objects it is about when it began, which a manual action may take away (`anchor.rs`).
+    anchor: Option<Anchor>,
+    /// A manual action came while it was under way: what it would put on the stack is checked against the state before it
+    /// is (`Engine::advance`).
+    pub(crate) touched: bool,
 }
 
 impl Pending {
@@ -286,8 +288,9 @@ impl Pending {
             done: Done::default(),
             granted: None,
             needs: None,
+            anchor: None,
+            touched: false,
             special: None,
-            seen: BTreeMap::new(),
         }
     }
 
@@ -532,27 +535,6 @@ fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
     }
 }
 
-/// Whether a manual action moved the card being cast, the source of the ability or an object picked to pay for it since
-/// the questions first saw it: it is a new object then (CR 400.7) and the announcement cannot go on.
-fn moved_away(state: &GameState, pending: &mut Pending) -> bool {
-    let subject = match &pending.what {
-        What::Spell(object) | What::Ability(AbilityRef { object, .. }) => Some(*object),
-        What::Trigger(_) | What::Attack(..) => None,
-    };
-    let picked = pending.choices.cost_picks().iter().flatten().copied();
-    for id in subject.into_iter().chain(picked) {
-        let now = state.object(id).map(GameObject::reference);
-        match (pending.seen.get(&id), now) {
-            (Some(first), now) if now != Some(*first) => return true,
-            (None, Some(now)) => {
-                pending.seen.insert(id, now);
-            }
-            _ => {}
-        }
-    }
-    false
-}
-
 /// The next decision of a pending cast or activation, or the events that complete it.
 ///
 /// The steps of [`Phase::ORDER`] run in turn, each passing over what it has no question for. A step that cannot be
@@ -560,9 +542,6 @@ fn moved_away(state: &GameState, pending: &mut Pending) -> bool {
 /// a cast or activation is dropped with no event, and a triggered ability that cannot be given what it needs is
 /// removed (CR 603.3d).
 pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
-    if moved_away(state, pending) {
-        return Next::Drop;
-    }
     let Pending {
         player,
         what,
@@ -571,8 +550,14 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         granted,
         special,
         needs,
-        seen: _,
+        anchor,
+        touched: _,
     } = pending;
+    // What a manual action took out from under the announcement cannot be put on the stack.
+    let now = Anchor::of(state, what);
+    if anchor.get_or_insert_with(|| now.clone()) != &now {
+        return Next::Drop;
+    }
     if let What::Attack(attackers, _) = what {
         return crate::attack_tax::next(state, *player, attackers);
     }

@@ -104,6 +104,8 @@ export interface TileFacts {
   commander?: readonly string[]
   /** The Auras and Curses attached to the player, in words; none by default. */
   enchanted?: readonly string[]
+  /** What the seat shows to every seat, in words ("revealed 2 cards"); left out while it shows nothing. */
+  revealed?: string | undefined
 }
 
 /** The accessible name of a tile: "Show Bo's board. Life 38, 6 cards in hand, ..., active turn". */
@@ -116,6 +118,7 @@ export function tileName(facts: TileFacts): string {
     `${counts.graveyard} in graveyard`,
     `${counts.exile} in exile`,
     counts.command > 0 ? `${counts.command} in the command zone` : null,
+    facts.revealed ?? null,
     ...(facts.commander ?? []),
     ...(facts.enchanted ?? []),
     facts.active ? 'active turn' : null,

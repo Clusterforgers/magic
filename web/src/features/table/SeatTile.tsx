@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react'
+import { Fragment, memo, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -11,6 +11,8 @@ import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
 import { ACTIVE_EDGE, ACTIVE_TINT, CountChip, PriorityDot, SeatDot } from './PodParts'
 import { chipZones, podCounts, podState, priorityName, showsPriorityDot, tileName } from './podFigures'
+import { RevealedFigure } from './RevealedChip'
+import { revealedLabel, revealedOf } from './revealed'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
 import { useKeepInView } from './useKeepInView'
 
@@ -45,6 +47,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const counts = podCounts(player, exile)
+  const shown = revealedOf(player).all
   return (
     <button
       ref={button}
@@ -63,6 +66,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         focused,
         commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
         enchanted: enchants.map((chip) => chip.words),
+        revealed: shown.length === 0 ? undefined : revealedLabel(shown.length).toLowerCase(),
       })}
       onClick={() => onFocusSeat(seat)}
       className={cn(
@@ -94,7 +98,10 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       <span className="flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground">
         <DamageChips chips={chips.damage} density="tile" />
         {chipZones(counts).map((zone) => (
-          <CountChip key={zone} zone={zone} count={counts[zone]} density="tile" />
+          <Fragment key={zone}>
+            <CountChip zone={zone} count={counts[zone]} density="tile" />
+            {zone === 'library' ? <RevealedFigure player={player} /> : null}
+          </Fragment>
         ))}
         <TaxChips chips={chips.tax} density="tile" />
         <EnchantChips chips={enchants} density="tile" />

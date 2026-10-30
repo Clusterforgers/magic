@@ -8,7 +8,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::value::Amount;
 use mtg_engine::choose::CardsChoice;
-use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::manual::{ManualAction, ManualZone};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
@@ -155,8 +155,14 @@ fn a_cast_whose_discard_a_manual_action_took_away_is_dropped_before_the_payment(
             to,
         },
     )?;
+    // The payment of a touched announcement is checked: the cost that no longer applies ends it without a trace.
+    driver.answer(Answer::PayMana(PayChoice::Auto))?;
     assert!(!driver.engine().announcing());
     assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
     assert_eq!(driver.state().stack(), []);
+    assert_eq!(
+        driver.state().object(discard).unwrap().zone(),
+        to.zone(pid(0))
+    );
     Ok(())
 }

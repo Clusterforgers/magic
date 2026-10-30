@@ -25,6 +25,7 @@ import type { AmountSpec } from './commands'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
 import { PICK_FOR, pickedCard, usePick, usePickStore } from './pick'
+import { useRevealOnOpen } from './reveal'
 
 const COUNTER_SPEC: AmountSpec = {
   signed: true,
@@ -158,12 +159,15 @@ interface RowProps {
 function CardRow({ command, input, open, onToggle, onClose }: RowProps) {
   const form = useId()
   const toggle = useRef<HTMLButtonElement>(null)
+  const self = useRef<HTMLDivElement>(null)
+  useRevealOnOpen(self, open)
   const close = (): void => {
     onClose()
     toggle.current?.focus({ preventScroll: true })
   }
   return (
     <div
+      ref={self}
       data-command={`card:${command.id}`}
       data-open={open || undefined}
       data-card-command=""

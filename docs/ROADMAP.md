@@ -87,7 +87,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Turn structure: extra turns, added phases, phase conditions, skipped extra turns and time travel.
 - Model-assisted reading: `mtg-cli check-rules`, `propose` (Anthropic or a local OpenAI-style server), `promote`, `dsl-reference` and `dsl-schema` (schema-constrained output of a local server), `export-pairs` (Verified cards as training pairs with a held-out split) and `propose --solved-examples K` (the nearest solved cards as examples), the census of stored proposals, writers for every accepted sample wording and the shapes of the local-model proposals, the repair of the mechanical slips of a proposal before it is judged (ids, faces, unusable `Manual` spans, token sizes, shifted target indexes), and rewordings that join, order and shorten sentences as printed.
 - Reference engines: Forge, XMage and Magarena surveyed, and `mtg-cli forge-check` maps Forge's scripts to DSL verbs (`docs/reference-engines.md`).
-- Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser; the library actions by hand (look at the top, put back, shuffle) and the Commands panel, the first tab of a seat's side area.
+- Manual cards: the `manual_play` flag of a table, stored with the game and listed by the game browser; the library actions by hand (look at the top, put back, shuffle) and the Commands panel, the first tab of a seat's side area, which also makes tokens (custom creatures too); the table shows revealed hand cards, top cards and notes, and the card menu keeps the commands about its card.
 - Tooling: `scripts/check.sh` with the `affected` mode and passed-tree stamps, `scripts/agent-status.sh`, fixture checks against the cached Oracle Cards and web clock budgets stretched by the load.
 - Replacements that name their event: `Instead` steps read the replaced player, amount and source of damage, and "tap or untap" is a choice of the controller.
 - Preventions that name their damage (counters for it, all but 1) and their shields, and token replacements for one kind of token.
@@ -221,16 +221,14 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [~] (ma7g) (panel-validate) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
-- [~] (ma7h) (panel-validate) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
+- [ ] (ui3a) Each panel row shows its icon and an open or closed chevron, so a first-time player sees the row is a button (`panel/CommandsPanel.tsx`, `panel/CardGroup.tsx`)
+- [ ] (ui3b) At M and on a phone the open rail panel or sheet leaves the pass button, hand and life in reach, and `/dev/table?panel=card` joins `e2e/layout.spec.ts` and `e2e/fit.spec.ts` (`SideTabs.tsx` `rail-panel`, `SideSheet`)
+- [ ] (ui3c) Life sits open at the top of You beside the large total, as a life counter does, instead of a closed row (`panel/CommandsPanel.tsx`)
+- [ ] (ui3d) On a phone the side sheet opened during the first turn shuts or redraws under the first press of a panel row; the phone case of `e2e/manual-panel.spec.ts` (`test.fixme`) passes (`SideTabs.tsx` `SideSheet`, `components/ui/sheet.tsx`)
 - [~] (ma7i) (panel-roll) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
-- [~] (ma7k) (panel-cleanup) The table shows what Reveal and Note put in the view: a seat's `revealed_hand` and `revealed_top` cards face up beside its hand and library, and `ObjectView.note` as a mark on the card's face and in its preview
-- [~] (ma7l) (panel-validate) The look-at-the-top list and the new rows at the six sizes in both themes: screenshots looked at, `e2e/layout.spec.ts` and `e2e/fit.spec.ts` with `/dev/table?panel=top`
 - [~] (ma7m) (panel-roll) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
-- [ ] (ma7j) `ManualScript` also takes `LookTop`, `ArrangeTop` and `Shuffle`; with them seed 6 of `manual_anytime` (two seats) shows a bot cast of a card that an out-of-band `Move` had put onto the battlefield being accepted (`event does not apply`)
-- [~] (ma7n) (panel-cleanup) The card menu's forms that nothing opens since the panel took the entries (`Ask` gain and lose life, your counters, draw, mill, move top, mana, their `buildAction` cases, `ManualForm` parts and tests) are removed
-- [~] (ma7o) (panel-cleanup) The panel's Tokens row also makes a custom token (name, power, toughness, as the card menu's form does) so that the menu's "Create a token…" can go
-- [~] (ma7p) (panel-cleanup) `CommandsPanel` takes its amount field from `panel/AmountField.tsx`, which the Card group already uses
+- [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries
+- [ ] (ma7r) `e2e/fit.spec.ts` "attachments scene on four seats" fails at 1366x768 ("the combat line block:71 runs over your life")
 
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs

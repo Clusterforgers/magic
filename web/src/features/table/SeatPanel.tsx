@@ -23,6 +23,7 @@ import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } fr
 import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
 import { SeatCorner } from './SeatCorner'
+import { RevealedChip } from './RevealedChip'
 import { ZoneButton } from './ZoneButton'
 
 interface SeatPanelProps {
@@ -183,6 +184,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           <div role="group" aria-label={`${owner}'s zones`} className="flex shrink-0 items-center gap-1">
             <CountChip zone="hand" count={counts.hand} density="line" />
             <CountChip zone="library" count={counts.library} density="line" />
+            <RevealedChip owner={owner} player={player} density="line" />
             <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" />
             <ZoneButton zone="exile" owner={owner} ids={exile} density="line" />
             {counts.command > 0 ? (
@@ -237,6 +239,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <div data-slot="pod-counts" className="flex flex-wrap gap-1">
           <CountChip zone="hand" count={counts.hand} density="line" />
           <CountChip zone="library" count={counts.library} density="line" />
+          <RevealedChip owner={owner} player={player} density="line" />
           {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
           <DamageChips
             chips={chips.damage}

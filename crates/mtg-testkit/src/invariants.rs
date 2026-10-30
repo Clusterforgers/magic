@@ -641,7 +641,7 @@ pub struct InvariantChecker {
     since_full: usize,
     /// The engine is asking about events it has not applied: what state-based actions would do is still to come.
     replacing: bool,
-    /// An announcement is under way: no seat has priority, so state-based actions wait for its end even after a manual action.
+    /// A cast, activation or attack is being announced, so state-based actions wait for its end.
     announcing: bool,
 }
 

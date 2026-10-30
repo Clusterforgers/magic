@@ -81,7 +81,7 @@ describe('regions and the rest of the page', () => {
     ]) {
       expect(screen.getByRole('region', { name }), name).toBeInTheDocument()
     }
-    expect(screen.getByRole('complementary', { name: 'Game log and chat' })).toBeInTheDocument()
+    expect(screen.getByRole('complementary', { name: 'Commands, log, chat and stack' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Table menu' })).toBeInTheDocument()
     for (const control of screen.getAllByRole('button')) expect(control).toHaveAccessibleName()
     for (const list of screen.getAllByRole('list')) {
