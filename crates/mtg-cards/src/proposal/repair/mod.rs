@@ -10,6 +10,7 @@ mod declare;
 mod effectless;
 mod faces;
 mod groups;
+mod implied;
 mod manual;
 mod targets;
 #[cfg(test)]
@@ -59,6 +60,8 @@ pub enum RepairClass {
     ControllerGroup,
     /// A bare target as the subject of a static ability where the line starts with a group.
     StaticSubject,
+    /// A mana ability the basic land types of the face give.
+    ImpliedMana,
 }
 
 impl RepairClass {
@@ -79,6 +82,7 @@ impl RepairClass {
             RepairClass::TriggeringDeclared => "Triggering for a declared target",
             RepairClass::ControllerGroup => "group for the controller of a player",
             RepairClass::StaticSubject => "group for a static ability's bare target",
+            RepairClass::ImpliedMana => "mana the land types give",
         }
     }
 }
@@ -133,6 +137,9 @@ pub(super) fn repair(value: &mut Value, printed: &PrintedCard) -> Vec<Repair> {
         let text = shown.map_or("", |shown| shown.oracle_text.as_str());
         let at = format!("faces[{index}]");
         effectless::repair(abilities, &at, &mut repairs);
+        if let Some(face) = shown {
+            implied::repair(abilities, face, &at, &mut repairs);
+        }
         manual::repair(abilities, text, &at, &mut repairs);
         let kinds: Vec<String> = abilities
             .iter_mut()

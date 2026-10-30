@@ -283,9 +283,9 @@ fn shift_targets(value: &mut serde_json::Value, by: u8) {
     }
 }
 
-/// The mana a plain `{T}: Add {X}` adds: no targets, no limit, usable at instant speed from the
-/// battlefield, cost exactly `{T}`, and one fixed mana added once to the controller's pool.
-pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
+/// What a bare `{T}: Add ...` adds: no targets, no limit, usable at instant speed from the battlefield, cost exactly
+/// `{T}`, and mana added once to the controller's pool that is restricted in no way.
+pub(crate) fn bare_tap_mana(ability: &Ability) -> Option<&Produce> {
     let Ability::Activated {
         cost,
         timing: Timing::Instant,
@@ -304,7 +304,7 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
     let [
         Effect::AddMana {
             who: Ref::You,
-            mana: Produce::Fixed(mana),
+            mana,
             times,
             only,
             lasts,
@@ -313,10 +313,18 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
     else {
         return None;
     };
+    (targets.is_empty() && times.is_one() && only.is_empty() && lasts.is_step()).then_some(mana)
+}
+
+/// The mana a plain `{T}: Add {X}` adds: a bare tap ability (`bare_tap_mana`) of one fixed mana.
+pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
+    let Produce::Fixed(mana) = bare_tap_mana(ability)? else {
+        return None;
+    };
     let [one] = mana.as_slice() else {
         return None;
     };
-    (targets.is_empty() && times.is_one() && only.is_empty() && lasts.is_step()).then_some(*one)
+    Some(*one)
 }
 
 /// What a mana ability the engine runs without the stack adds each time.
@@ -742,6 +750,15 @@ fn intrinsic_abilities(definition: &CardDefinition) -> Vec<AbilityDef> {
         .iter()
         .filter(|(name, _)| definition.subtypes.iter().any(|subtype| subtype.0 == *name))
         .map(|&(_, produces)| AbilityDef::Mana(ManaAbility { produces }))
+        .collect()
+}
+
+/// The mana types the basic land types on the type line of a printed face give (CR 305.6), in the order of the rules;
+/// none for a face that is no land or has no basic land type.
+pub(crate) fn intrinsic_mana(face: &PrintedFace) -> Vec<ManaType> {
+    intrinsic_abilities(&printed_side(face))
+        .into_iter()
+        .map(|AbilityDef::Mana(mana)| mana.produces)
         .collect()
 }
 
