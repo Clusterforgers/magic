@@ -2,7 +2,7 @@
  * The decks the chooser lists as one kind of row, whatever they come from (stored deck, precon, built-in deck), and
  * the search and filters over them. Pure, so the rows' words and the filters are tested without a page.
  */
-import { byHand } from '@/features/decks/preview/model'
+import { BY_HAND, byHandCopies } from '@/lib/byHand'
 import { cardsText } from '@/features/decks/format'
 import type { DeckInfo } from '@/net/api'
 import type { Counts, DeckListItem, DeckState, PreconListItem } from '@/protocol/generated'
@@ -133,9 +133,9 @@ export function entryFacts(entry: DeckEntry): string {
 export function entrySupport(entry: DeckEntry): { state: DeckState; label: string } {
   if (entry.state === 'blocked') return { state: 'blocked', label: 'Cannot be taken' }
   if (entry.state === 'unchecked') return { state: 'unchecked', label: 'Not checked yet' }
-  const hand = entry.counts === null ? 0 : byHand(entry.counts)
+  const hand = entry.counts === null ? 0 : byHandCopies(entry.counts)
   if (entry.state === 'verified' && hand === 0) return { state: 'verified', label: 'Whole deck runs' }
-  return { state: 'manual_play', label: `${hand} played by hand` }
+  return { state: 'manual_play', label: `${hand} ${BY_HAND}` }
 }
 
 const words = (text: string): string[] =>
@@ -157,7 +157,7 @@ export function filterEntries(entries: readonly DeckEntry[], filter: DeckFilter)
       if (identity === null || !filter.colours.every((letter) => identity.includes(letter))) return false
     }
     if (filter.support === 'all') return true
-    const hand = entry.counts === null ? 0 : byHand(entry.counts)
+    const hand = entry.counts === null ? 0 : byHandCopies(entry.counts)
     if (filter.support === 'verified') return entry.state === 'verified' && hand === 0
     return hand > 0
   })

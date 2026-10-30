@@ -10,6 +10,7 @@ import type {
   ObjectId,
   ObjectView,
 } from '@/protocol/generated'
+import { BY_HAND } from '@/lib/byHand'
 import { isUnattached } from '@/play/hosts'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from './manaSymbols'
 import type { Attach } from './attachMarks'
@@ -410,8 +411,8 @@ export function cardLabel(
   if ((object.manual ?? []).length > 0) {
     parts.push(
       listKey === undefined
-        ? 'some rules are played by hand'
-        : `some rules are played by hand, press ${listKey} to read them`,
+        ? `some rules are ${BY_HAND}`
+        : `some rules are ${BY_HAND}, press ${listKey} to read them`,
     )
   }
   return parts.join(', ')

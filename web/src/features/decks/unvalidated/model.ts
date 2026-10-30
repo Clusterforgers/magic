@@ -3,6 +3,7 @@
  * clauses quoted from the oracle text, and the text that lists them. Pure, so tables test it.
  */
 import { reasonLines } from '@/features/builder/report'
+import { BY_HAND, PARTLY_BY_HAND } from '@/lib/byHand'
 import type { Reason, ReportCard, Support } from '@/protocol/generated'
 import { SUPPORT_LABEL } from '../format'
 
@@ -43,9 +44,9 @@ export interface DeckGroup {
 /** What a card says when it has no clause of its own: the card is still played by hand. */
 export const NO_CLAUSE: Readonly<Record<Support, string>> = {
   verified: '',
-  partial: 'partly played by hand',
-  manual: 'played by hand',
-  stale: 'its text changed since the rules were written, so it is played by hand',
+  partial: PARTLY_BY_HAND,
+  manual: BY_HAND,
+  stale: `its text changed since the rules were written, so it is ${BY_HAND}`,
   unplayable: 'the game cannot play it',
 }
 

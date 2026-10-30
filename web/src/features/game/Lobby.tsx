@@ -50,7 +50,7 @@ export interface LobbyProps {
 
 /**
  * Who is at the table before the game starts: every seat with its name, its deck (name, format and how many cards
- * need manual steps), whether it is here and whether it is ready, a line that sums it up, who may find the game, this
+ * are played by hand), whether it is here and whether it is ready, a line that sums it up, who may find the game, this
  * seat's deck chooser until it is ready, and this seat's Ready, which needs a deck and can be taken back until the game
  * starts. The host also gets the invite link and the code, a toggle for who may find the game, a Remove button on
  * every player who joined and Close game; everyone else gets Leave game. Each of those that cannot be undone asks

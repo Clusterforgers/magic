@@ -196,16 +196,13 @@ describe('/dev/builder in development', () => {
     await visit('/dev/builder?deck=manual')
     const deck = await screen.findByRole('region', { name: 'Deck' })
     const counts = () => deck.querySelector('[data-slot="check-counts"]')
-    expect(counts()).toHaveTextContent(/^98 of 103 verified, 2 manual, 2 partial, 1 stale$/)
+    expect(counts()).toHaveTextContent(/^98 of 103 verified, 5 played by hand$/)
     expect(within(deck).queryByRole('region', { name: /^Not legal/ })).toBeNull()
     await userEvent.setup().click(within(deck).getByRole('button', { name: 'Add one Chaos Orb' }))
     expect(counts()).toHaveTextContent(/ · as saved$/)
-    await waitFor(
-      () => expect(counts()).toHaveTextContent(/^98 of 104 verified, 3 manual, 2 partial, 1 stale$/),
-      {
-        timeout: scaled(5000),
-      },
-    )
+    await waitFor(() => expect(counts()).toHaveTextContent(/^98 of 104 verified, 6 played by hand$/), {
+      timeout: scaled(5000),
+    })
     expect(within(deck).getByRole('region', { name: /^Not legal in Commander/ })).toHaveTextContent(
       '2 issues',
     )

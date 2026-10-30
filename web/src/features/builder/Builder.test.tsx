@@ -43,7 +43,7 @@ describe('loading the deck', () => {
     expect(decks.calls[0]?.init?.credentials).toBe('include')
     expect(pane().getByRole('textbox', { name: 'Deck name' })).toHaveValue('Burn')
     expect(pane().getByRole('combobox', { name: 'Format' })).toHaveValue('modern')
-    expect(pane().getByText('Manual play')).toBeInTheDocument()
+    expect(pane().getByText('Played by hand', { selector: '[data-deck-state]' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 1, name: 'Edit Burn' })).toBeInTheDocument()
     await waitFor(() => expect(document.title).toBe('Edit Burn · Magic'))
   })
@@ -147,7 +147,7 @@ describe('Save', () => {
 
   it.each([
     ['blocked', 'Blocked'],
-    ['manual_play', 'Manual play'],
+    ['manual_play', 'Played by hand'],
     ['unchecked', 'Unchecked'],
   ] as const)('shows %s as the state a save came out with', async (state, word) => {
     const { user } = await renderBuilder({
@@ -156,7 +156,7 @@ describe('Save', () => {
     })
     await user.click(screen.getByRole('button', { name: 'Add one Lightning Bolt' }))
     await user.click(pane().getByRole('button', { name: 'Save' }))
-    expect(await pane().findByText(word)).toBeInTheDocument()
+    expect(await pane().findByText(word, { selector: '[data-deck-state]' })).toBeInTheDocument()
     expect(screen.getByText(`Saved “Burn”: ${word}.`)).toBeInTheDocument()
   })
 

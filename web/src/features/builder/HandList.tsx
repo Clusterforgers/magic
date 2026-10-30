@@ -2,6 +2,7 @@ import { ShieldCheckIcon } from 'lucide-react'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
+import { BY_HAND, BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { CardHit } from '@/protocol/generated'
@@ -53,7 +54,7 @@ function Entry({
         {reasons.length === 0 ? (
           <p className="text-xs text-muted-foreground">The reasons appear once the deck is checked.</p>
         ) : (
-          <ul aria-label={`Why ${card.name} is played by hand`} className="grid gap-1 text-xs">
+          <ul aria-label={`Why ${card.name} is ${BY_HAND}`} className="grid gap-1 text-xs">
             {[...new Set(reasons)].map((reason) => (
               <li key={reason} className="text-muted-foreground [overflow-wrap:anywhere]">
                 {reason}
@@ -68,7 +69,7 @@ function Entry({
 
 /**
  * The cards the game leaves to the table: each with its picture, state, the clauses and reasons the check gives and the
- * flag that marks it important to fix, so the player sees what will need manual handling and can build the deck around
+ * flag that marks it important to fix, so the player sees what is played by hand and can build the deck around
  * it. A card the game cannot play at all is listed apart, since the deck cannot be taken with it.
  */
 export function HandList({ cards, onPreview, fixMarks }: HandListProps) {
@@ -76,16 +77,16 @@ export function HandList({ cards, onPreview, fixMarks }: HandListProps) {
   const blocked = cards.filter((entry) => entry.support === 'unplayable')
   const copies = (list: readonly HandCard[]): number => list.reduce((sum, entry) => sum + entry.count, 0)
   return (
-    <section aria-label="Played by hand" data-slot="hand-list" className="grid gap-2">
+    <section aria-label={BY_HAND_TITLE} data-slot="hand-list" className="grid gap-2">
       {cards.length === 0 ? (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <ShieldCheckIcon aria-hidden="true" className="size-4 text-support-verified" />
-          Every card plays without manual steps.
+          Every card runs whole.
         </p>
       ) : (
         <>
           {hand.length === 0 ? null : (
-            <ul aria-label="Cards played by hand" className="grid gap-2">
+            <ul aria-label={`Cards ${BY_HAND}`} className="grid gap-2">
               {hand.map((entry) => (
                 <Entry key={entry.card.oracle_id} entry={entry} onPreview={onPreview} fixMarks={fixMarks} />
               ))}

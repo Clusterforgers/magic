@@ -32,7 +32,7 @@ interface CheckBarProps {
 }
 
 /**
- * The deck check under the name: how many cards the game plays by itself ("96 of 100 verified, 3 manual, 1 partial"),
+ * The deck check under the name: how many cards the game plays by itself ("96 of 100 verified, 4 played by hand"),
  * what is happening to those counts while the draft is checked, the Issues only switch and the sort that puts the cards
  * with issues first. The status line is always in the page, so a screen reader hears "Checking…" and then the new counts.
  */

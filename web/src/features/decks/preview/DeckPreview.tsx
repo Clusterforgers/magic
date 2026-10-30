@@ -5,8 +5,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { IdentityPips } from '@/features/builder/IdentityPips'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { cardsText, formatLabel } from '@/features/decks/format'
+import { BY_HAND, byHandCopies } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
-import { byHand, copiesOf, groupByKind, identityOfDeck, manaCurve, supportCounts, typeCounts } from './model'
+import { copiesOf, groupByKind, identityOfDeck, manaCurve, supportCounts, typeCounts } from './model'
 import type { DeckPreviewData } from './model'
 import { CardGroups } from './PreviewCards'
 import { ManaCurve, SupportBar, TypeBars } from './PreviewStats'
@@ -92,7 +93,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
   }, [commanders, cards, sideboard])
   const identity = identityOfDeck(deck)
   const total = stats.support.total
-  const hand = byHand(stats.support)
+  const hand = byHandCopies(stats.support)
   return (
     <article
       aria-labelledby={titleId}
@@ -154,7 +155,7 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
                 ? 'No cards to count.'
                 : hand === 0
                   ? 'The whole deck runs.'
-                  : `${hand} of ${total} cards are played by hand.`}
+                  : `${hand} of ${total} cards are ${BY_HAND}.`}
             </p>
             <SupportBar counts={stats.support} />
             {notValidated === undefined || hand === 0 ? null : <div className="text-sm">{notValidated}</div>}

@@ -71,7 +71,7 @@ export function readJoined(body: unknown): Joined | null {
   return { game: body.game, seat: body.seat, token }
 }
 
-/** True for the deck a seat shows the table: its name and format and how many cards need manual steps. */
+/** True for the deck a seat shows the table: its name and format and how many cards are played by hand. */
 export const isSeatDeck = (value: unknown): value is SeatDeck =>
   isRecord(value) && isText(value.name) && isText(value.format) && isCount(value.manual_cards)
 

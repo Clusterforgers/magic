@@ -109,7 +109,7 @@ describe('the cards played by hand', () => {
       view: checked([{ card: MOUNTAIN, count: 24, support: 'verified' }]),
     })
     await user.click(pane().getByRole('button', { name: /^Played by hand/ }))
-    expect(pane().getByText('Every card plays without manual steps.')).toBeInTheDocument()
+    expect(pane().getByText('Every card runs whole.')).toBeInTheDocument()
   })
 
   it('say that the reasons come with the check for a card the check has not seen', async () => {

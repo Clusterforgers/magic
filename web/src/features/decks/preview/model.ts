@@ -148,9 +148,6 @@ export function supportCounts(cards: readonly PreviewCard[]): Counts {
   return counts
 }
 
-/** Copies the game does not run whole (everything but Verified). */
-export const byHand = (counts: Counts): number => counts.partial + counts.manual + counts.stale
-
 /** The colour identity of the cards together in WUBRG order; empty when every card is colourless. */
 export function identityOfCards(cards: readonly Pick<PreviewCard, 'identity'>[]): string[] {
   const all = new Set<string>(cards.flatMap((card) => card.identity))

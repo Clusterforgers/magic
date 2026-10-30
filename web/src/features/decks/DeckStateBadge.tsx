@@ -21,7 +21,7 @@ interface DeckStateBadgeProps extends Omit<ComponentProps<typeof Pill>, 'tone' |
   label?: string
 }
 
-/** The check state of a deck as a pill: an icon and a word (Verified, Manual play, Blocked, Unchecked), never colour alone. */
+/** The check state of a deck as a pill: an icon and a word (Verified, Played by hand, Blocked, Unchecked), never colour alone. */
 export function DeckStateBadge({ state, label, className, ...props }: DeckStateBadgeProps) {
   const { Icon, tone, className: tint } = LOOK[state]
   return (

@@ -14,6 +14,7 @@ import { clauseLines } from '@/features/decks/unvalidated/model'
 import type { FaceTexts } from '@/features/decks/unvalidated/model'
 import { useCardTexts } from '@/features/decks/unvalidated/useCardTexts'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
+import { BY_HAND, BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
 import type { PreconBoard, PreconListItem, PreconView } from '@/protocol/generated'
@@ -138,7 +139,7 @@ function Board({
               </div>
               {flagged === null ? null : (
                 <div className="grid gap-1">
-                  {card.reasons.length > 0 ? <p className="text-sm font-medium">Played by hand:</p> : null}
+                  {card.reasons.length > 0 ? <p className="text-sm font-medium">{BY_HAND_TITLE}:</p> : null}
                   <ClauseList
                     lines={clauseLines(flagged, faces.get(flagged.oracleId))}
                     support={card.support}
@@ -174,7 +175,7 @@ function Cards({ view, cards }: { view: PreconView; cards: Pick<CardsApi, 'get'>
             onCheckedChange={setOnlyHand}
           />
           <Label id="precon-only-hand-label" htmlFor="precon-only-hand">
-            Only cards played by hand
+            Only cards {BY_HAND}
           </Label>
         </div>
         {hand === 0 ? null : pending ? (
@@ -182,7 +183,7 @@ function Cards({ view, cards }: { view: PreconView; cards: Pick<CardsApi, 'get'>
             Reading card text…
           </Button>
         ) : (
-          <CopyButton text={copyList(view, faces)} label="Copy list of the cards played by hand">
+          <CopyButton text={copyList(view, faces)} label={`Copy list of the cards ${BY_HAND}`}>
             Copy list
           </CopyButton>
         )}

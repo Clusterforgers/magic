@@ -75,7 +75,7 @@ export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]
 /** The rows of the lobby's seat list, in seat order. */
 export const seatRows = (page: Page) => page.getByRole('list', { name: 'Seats' }).getByRole('listitem')
 
-/** What each named seat shows the table of its deck, in seat order: "Deck: Burn, Modern, 3 cards need manual steps". */
+/** What each named seat shows the table of its deck, in seat order: "Deck: Burn, Modern, 3 cards played by hand". */
 export const deckLines = (page: Page) => page.locator('[data-slot="seat-deck"]')
 
 /**

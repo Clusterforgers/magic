@@ -151,7 +151,7 @@ describe('the list', () => {
 describe('the check state of a deck', () => {
   const WORDS: ReadonlyArray<readonly [DeckState, string]> = [
     ['verified', 'Verified'],
-    ['manual_play', 'Manual play'],
+    ['manual_play', 'Played by hand'],
     ['blocked', 'Blocked'],
     ['unchecked', 'Unchecked'],
   ]
@@ -194,7 +194,7 @@ describe('the check state of a deck', () => {
       deckIn('manual_play', {
         summary: summary({ state: 'manual_play', counts: counts({ verified: 96, manual: 3, partial: 1 }) }),
       }),
-      '96 of 100 verified, 3 manual, 1 partial',
+      '96 of 100 verified, 4 played by hand',
     ],
     [
       'a blocked deck says what blocks it',

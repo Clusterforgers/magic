@@ -247,14 +247,14 @@ describe('a choice that goes through', () => {
       'Mono Red Giants',
       'mono-red',
       false,
-      'Your deck is now Mono Red Giants, Normal, no manual steps.',
+      'Your deck is now Mono Red Giants, Normal, no cards played by hand.',
     ],
     [
       'a stored deck with manual cards',
       /Burn.*3 played by hand/,
       'burn',
       true,
-      'Your deck is now Burn, Modern, 3 cards need manual steps.',
+      'Your deck is now Burn, Modern, 3 cards played by hand.',
     ],
   ])('sends %s with the seat token and says the result', async (_what, name, id, signedIn, words) => {
     const answer = id === 'burn' ? { name: 'Burn', format: 'modern', manual_cards: 3 } : undefined
@@ -292,7 +292,7 @@ describe('a choice that goes through', () => {
     expect(note()).toHaveTextContent('Choosing Mono Red Giants…')
     expect(ready()).toBeDisabled()
     // The old deck is still the seat's until the answer: the roster says so.
-    expect(current()).toBe('Mono Green Stompers, Normal, no manual steps')
+    expect(current()).toBe('Mono Green Stompers, Normal, no cards played by hand')
     gate.release(jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 }))
     await h.settle()
     expect(within(pressed).queryByLabelText('Choosing this deck')).toBeNull()
@@ -356,7 +356,9 @@ describe('a choice that fails', () => {
     await screen.findByRole('listbox', { name: 'Built-in decks' })
     await pick(h, 'Mono Red Giants')
     await h.settle()
-    expect(problem()).toHaveTextContent('Your deck is still Mono Green Stompers, Normal, no manual steps.')
+    expect(problem()).toHaveTextContent(
+      'Your deck is still Mono Green Stompers, Normal, no cards played by hand.',
+    )
     expect(problem()).toHaveTextContent(words)
     expect(problem()).toHaveAttribute('role', 'alert')
     expect(tile('Mono Red Giants')).not.toHaveAttribute('data-chosen')
@@ -454,7 +456,7 @@ describe('Ready needs a deck', () => {
     expect(ready()).toHaveAccessibleName('Not ready')
     expect(screen.getByText(/Your deck is locked while you are ready/)).toBeInTheDocument()
     expect(screen.queryByRole('listbox', { name: 'Built-in decks' })).toBeNull()
-    expect(current()).toBe('Mono Green Stompers, Normal, no manual steps')
+    expect(current()).toBe('Mono Green Stompers, Normal, no cards played by hand')
   })
 
   it('does not block a seat the page knows nothing about yet: before any roster the button is the server’s to judge', async () => {

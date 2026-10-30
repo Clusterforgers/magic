@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { SupportMark } from '@/features/decks/SupportMark'
+import { BY_HAND, cardsByHand } from '@/lib/byHand'
 import { copiesOf } from './model'
 import type { DeckPreviewData, PreviewCard } from './model'
 
@@ -29,10 +30,10 @@ export function NotValidatedDialog({ deck }: { deck: DeckPreviewData }) {
         <DialogContent data-slot="not-validated">
           <DialogTitle>Not validated cards of {deck.name}</DialogTitle>
           <DialogDescription>
-            {copiesOf(cards)} {copiesOf(cards) === 1 ? 'card is' : 'cards are'} played by hand: the game does
-            not run {copiesOf(cards) === 1 ? 'it' : 'them'} whole.
+            {cardsByHand(copiesOf(cards))}: the game does not run {copiesOf(cards) === 1 ? 'it' : 'them'}{' '}
+            whole.
           </DialogDescription>
-          <ul aria-label="Cards played by hand" className="grid gap-3">
+          <ul aria-label={`Cards ${BY_HAND}`} className="grid gap-3">
             {cards.map((card) => (
               <li key={card.oracleId} className="grid gap-1 border-b pb-2 last:border-b-0">
                 <span className="flex flex-wrap items-center gap-2 text-sm font-medium">
