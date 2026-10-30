@@ -333,6 +333,9 @@ mod t20b;
 mod t20a_either;
 mod t20a_fold;
 mod t20a_greatest;
+// t20c
+mod t20c_pay;
+mod t20c_rule;
 
 use crate::ability::Ability;
 
@@ -437,6 +440,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     t20a_either::add(ability, texts);
     t20a_fold::add(ability, texts);
     t20a_greatest::add(ability, texts);
+    // t20c
+    t20c_pay::add(ability, texts);
+    t20c_rule::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of

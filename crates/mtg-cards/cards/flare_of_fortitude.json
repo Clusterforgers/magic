@@ -1,0 +1,38 @@
+{
+  "oracle_id": "4ff07b7c-e97a-4b57-bcf1-2f22c37a8bd6",
+  "name": "Flare of Fortitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flare of Fortitude",
+      "oracle_fingerprint": "d5f8d5f6404af98311282c98eb272e3e",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "Not": "Token" }, { "Color": "White" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Rule": { "rule": { "LifeTotalCantChange": "You" }, "duration": "UntilEndOfTurn" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

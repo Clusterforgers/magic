@@ -1105,3 +1105,5 @@ mod t19c_writers;
 mod t20b_writers;
 // t20a
 mod t20a_writers;
+// t20c
+mod t20c_writers;
