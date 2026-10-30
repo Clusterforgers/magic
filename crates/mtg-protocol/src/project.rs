@@ -494,10 +494,7 @@ impl PlayerView {
                     let damage = state.commander_damage(id, seat);
                     (damage > 0).then_some(CommanderDamageView {
                         commander: id,
-                        name: state
-                            .object(id)
-                            .map(|card| card.whole_card().name.clone())
-                            .unwrap_or_default(),
+                        name: state.commander_name(id).unwrap_or_default().to_owned(),
                         damage,
                     })
                 })
