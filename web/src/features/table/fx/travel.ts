@@ -9,8 +9,11 @@ import type { StoreApi } from 'zustand/vanilla'
 import type { ObjectId, PlayerId } from '@/protocol/generated'
 import { MAX_MOVES, MOVE_MS } from './moves'
 import type { Move } from './moves'
-import { measurePlace } from './places'
+import type { MarkFx } from './model'
+import { measureHandCard, measurePlace, measureStrip } from './places'
 import type { Spot } from './places'
+import { planSpotlight } from './spotlight'
+import type { Spotlight } from './spotlight'
 import type { FxMode } from './store'
 
 /** A picture's size in px. */
@@ -41,15 +44,18 @@ export interface Flight {
   readonly faceDown: boolean
   /** It turns face up on its way in (a card cast from another seat's hand). */
   readonly reveal: boolean
+  /** The badge it carries in flight: a spell that resolves, is countered or fizzles says so on its way out. */
+  readonly mark: MarkFx | null
   /** Milliseconds after the batch's first leg, stretched by the slow-down. */
   readonly delay: number
   /** Milliseconds, stretched by the slow-down. */
   readonly duration: number
 }
 
-/** What is flying now. Replaced, never changed. */
+/** What is flying now, and the spell that stands large over the strip. Replaced, never changed. */
 export interface TravelState {
   readonly flights: readonly Flight[]
+  readonly spotlight: Spotlight | null
 }
 
 /** Whether a move carries an ability's chip rather than a card's picture. */
@@ -83,7 +89,7 @@ export interface PlanInput {
 /**
  * The flights of a batch. At most `MAX_MOVES`, in order, `MOVE_MS.stagger` apart; a move whose source or destination is
  * not on screen is left out. A card that flies twice (cast and resolved in one batch) starts its second leg when the
- * first has landed.
+ * first has landed, and when it stood in the spotlight between them, when that has gone.
  */
 export function planFlights({ moves, viewer, starts, ends, batch, slow = 1 }: PlanInput): Flight[] {
   const landed = new Map<ObjectId, number>()
@@ -96,7 +102,8 @@ export function planFlights({ moves, viewer, starts, ends, batch, slow = 1 }: Pl
       move.order * MOVE_MS.stagger,
       move.object === null ? 0 : (landed.get(move.object) ?? 0),
     )
-    if (move.object !== null) landed.set(move.object, delay + MOVE_MS.travel)
+    const gap = move.kind === 'cast' && move.spotlight ? MOVE_MS.spotlight : 0
+    if (move.object !== null) landed.set(move.object, delay + MOVE_MS.travel + gap)
     const faceDown = move.look === null || fromUnseen(move, viewer)
     flights.push({
       key: `${batch}:${move.order}`,
@@ -106,6 +113,8 @@ export function planFlights({ moves, viewer, starts, ends, batch, slow = 1 }: Pl
       size: isChip(move) ? null : sizeOf(from, to),
       faceDown,
       reveal: faceDown && move.look !== null,
+      mark:
+        move.kind === 'resolved' || move.kind === 'countered' || move.kind === 'fizzled' ? move.kind : null,
       delay: delay * slow,
       duration: MOVE_MS.travel * slow,
     })
@@ -226,37 +235,54 @@ export interface Travel {
 export function createTravel(options: TravelOptions): Travel {
   const frame = options.frame ?? browserFrame
   const slow = options.slow ?? 1
-  const store = createStore<TravelState>(() => ({ flights: [] }))
+  const store = createStore<TravelState>(() => ({ flights: [], spotlight: null }))
   let cancelFrame: (() => void) | null = null
   let batches = 0
 
   function clear(): void {
     cancelFrame?.()
     cancelFrame = null
-    if (store.getState().flights.length > 0) store.setState({ flights: [] })
+    const { flights, spotlight } = store.getState()
+    if (flights.length > 0 || spotlight !== null) store.setState({ flights: [], spotlight: null })
   }
 
   function launch(moves: readonly Move[], viewer: PlayerId): void {
-    if (moves.length === 0 || options.mode() !== 'full') return
+    const mode = options.mode()
+    if (moves.length === 0 || mode === 'off') return
     clear()
     const root = options.root ?? document
     const picked = moves.slice(0, MAX_MOVES)
-    const starts = picked.map((move) => measurePlace(root, move.from))
-    if (starts.every((start) => start === null)) return
     batches += 1
     const batch = batches
+    // Under reduced motion nothing flies, but the spell still stands for as long as a still card would.
+    const spotlight = planSpotlight({
+      moves: picked,
+      strip: measureStrip(root),
+      hand: measureHandCard(root, viewer),
+      window: { width: window.innerWidth, height: window.innerHeight },
+      batch,
+      still: mode !== 'full',
+      slow,
+    })
+    if (mode !== 'full') {
+      if (spotlight !== null) store.setState({ flights: [], spotlight })
+      return
+    }
+    const starts = picked.map((move) => measurePlace(root, move.from))
+    if (spotlight === null && starts.every((start) => start === null)) return
     cancelFrame = frame(() => {
       cancelFrame = null
       const ends = picked.map((move) => measurePlace(root, move.to))
       const flights = planFlights({ moves: picked, viewer, starts, ends, batch, slow })
-      if (flights.length > 0) store.setState({ flights })
+      if (flights.length > 0 || spotlight !== null) store.setState({ flights, spotlight })
     })
   }
 
   function done(key: string): void {
-    const { flights } = store.getState()
+    const { flights, spotlight } = store.getState()
     const kept = flights.filter((flight) => flight.key !== key)
     if (kept.length !== flights.length) store.setState({ flights: kept })
+    else if (spotlight?.key === key) store.setState({ spotlight: null })
   }
 
   return { store, launch, done, clear }

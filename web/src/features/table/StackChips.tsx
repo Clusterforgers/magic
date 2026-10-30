@@ -5,6 +5,9 @@ import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { cardLabel, costPips } from './cardModel'
 import { SIZE } from './cardSize'
+import { FxMark } from './fx/FxMark'
+import { useCardFx } from './fx/hooks'
+import { isMarkFx } from './fx/model'
 import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
@@ -30,6 +33,7 @@ interface ChipProps {
 const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipProps) {
   const object = usePlay((state) => state.objectsById[id])
   const name = useSeatNamer()
+  const fx = useCardFx(id)
   const handlers = usePreviewHandlers(id)
   if (object === undefined) return null
   return (
@@ -43,7 +47,7 @@ const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipPr
         tabIndex={tabbable ? 0 : -1}
         {...handlers}
         className={cn(
-          'flex h-8 items-center gap-1.5 rounded-lg border bg-background px-2 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
+          'relative flex h-8 items-center gap-1.5 rounded-lg border bg-background px-2 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
           top ? 'max-w-72 border-primary' : 'max-w-48',
           empty && 'border-dashed',
         )}
@@ -52,6 +56,9 @@ const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipPr
         <span className="truncate">{object.name}</span>
         {object.mana_cost === null ? null : (
           <ManaPips pips={costPips(object.mana_cost)} sizeClass={SIZE.compact.pip} label="Mana cost" />
+        )}
+        {fx.map((entry) =>
+          isMarkFx(entry.kind) ? <FxMark key={entry.token} kind={entry.kind} inline /> : null,
         )}
         {top && aims !== '' ? (
           <span

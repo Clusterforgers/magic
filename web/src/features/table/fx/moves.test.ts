@@ -5,6 +5,7 @@ import {
   afterChange,
   FOE,
   FOE_BEAR,
+  FOE_IDOL,
   FOE_SPELL,
   ME,
   miniView,
@@ -195,6 +196,22 @@ const MOMENTS: [string, (draft: Draft) => void, EventView[], string[], string[]]
     ),
     ['moved 1:battlefield > 1:exile', 'moved 0:battlefield > 0:hand'],
     [`exiled ${FOE_BEAR} by ${FOE_SPELL}`, `bounced ${MY_BEAR} by ${FOE_SPELL}`],
+  ],
+  [
+    'a resolving spell kills a creature and destroys a permanent that is no creature',
+    all(moveTo(FOE_BEAR, { Graveyard: FOE }), moveTo(FOE_IDOL, { Graveyard: FOE })),
+    pub(
+      began(FOE_SPELL),
+      { CreatureDied: { object: FOE_BEAR, cause: 'LethalDamage' } },
+      { ZoneChanged: { object: FOE_BEAR, from: 'Battlefield', to: { Graveyard: FOE }, cause: 'Moved' } },
+      { ZoneChanged: { object: FOE_IDOL, from: 'Battlefield', to: { Graveyard: FOE }, cause: 'Moved' } },
+    ),
+    ['moved 1:battlefield > 1:graveyard', 'moved 1:battlefield > 1:graveyard'],
+    [
+      `died ${FOE_BEAR} by ${FOE_SPELL}`,
+      `died ${FOE_BEAR} by ${FOE_SPELL}`,
+      `died ${FOE_IDOL} by ${FOE_SPELL}`,
+    ],
   ],
   [
     'a move onto or off the stack is the resolution’s, not a move of its own',

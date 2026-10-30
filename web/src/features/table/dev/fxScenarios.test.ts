@@ -220,8 +220,9 @@ describe('equip', () => {
 describe('what each moment of play shows', () => {
   it.each<[DevFx, string[], string[]]>([
     ['cast', ['cast 0:hand > stack'], ['targeted']],
+    ['rival', ['cast 1:hand > stack *'], ['targeted']],
     ['activate', ['activated 0:battlefield > stack'], ['activated', 'targeted']],
-    ['resolve', ['resolved stack > 0:graveyard'], ['resolved']],
+    ['resolve', ['resolved stack > 0:graveyard'], ['died', 'resolved']],
     [
       'counter',
       ['cast 0:hand > stack *', 'countered stack > 0:graveyard', 'resolved stack > 0:graveyard'],

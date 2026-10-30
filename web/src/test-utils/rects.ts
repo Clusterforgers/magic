@@ -13,6 +13,7 @@ import type { FakeFrames } from './frames'
  */
 export function boxOf(anchor: Anchor): Rect {
   if (anchor.kind === 'seat') return { x: 0, y: 10_000 + 300 * anchor.seat, width: 1000, height: 200 }
+  if (anchor.kind === 'spot') return anchor.box
   return { x: 20 + (anchor.id % 20) * 60, y: 100 + Math.floor(anchor.id / 20) * 150, width: 50, height: 70 }
 }
 

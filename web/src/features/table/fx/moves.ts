@@ -61,6 +61,7 @@ export type MarkKind =
   | 'exiled'
   | 'bounced'
   | 'drawn'
+  | 'died'
 
 /** A still mark on a card; `by` is the spell or ability that caused it, for its short arrow. */
 export interface MoveMark {
@@ -236,6 +237,8 @@ export function deriveMoves(before: Moment, after: Moment, events: readonly Even
       })
       if (player === viewer) marks.push({ kind: 'drawn', object })
       zones.set(object, { Hand: player })
+    } else if ('CreatureDied' in event) {
+      marks.push({ kind: 'died', object: event.CreatureDied.object, ...by() })
     } else if ('ZoneChanged' in event) {
       const { object, from, to } = event.ZoneChanged
       // The stack's own moves are those of the resolution above.
@@ -245,6 +248,7 @@ export function deriveMoves(before: Moment, after: Moment, events: readonly Even
       if (from === 'Battlefield') {
         if (to === 'Exile') marks.push({ kind: 'exiled', object, ...by() })
         else if (typeof to !== 'string' && 'Hand' in to) marks.push({ kind: 'bounced', object, ...by() })
+        else if (typeof to !== 'string' && 'Graveyard' in to) marks.push({ kind: 'died', object, ...by() })
       }
       moves.push({
         kind: 'moved',

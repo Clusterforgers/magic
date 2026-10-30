@@ -15,6 +15,7 @@ export const DEV_FX = [
   'life',
   'enter',
   'cast',
+  'rival',
   'activate',
   'resolve',
   'counter',
@@ -24,7 +25,7 @@ export const DEV_FX = [
 ] as const
 
 /** The moves of `DEV_FX` that are moments of play (a cast and what follows), drawn by the travel layer. */
-export const DEV_PLAYS = ['cast', 'activate', 'resolve', 'counter', 'land', 'draw'] as const
+export const DEV_PLAYS = ['cast', 'rival', 'activate', 'resolve', 'counter', 'land', 'draw'] as const
 
 /** One of `DEV_FX`. */
 export type DevFx = (typeof DEV_FX)[number]

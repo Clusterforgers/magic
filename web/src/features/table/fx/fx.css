@@ -47,6 +47,96 @@
   height: var(--fx-chip-h);
 }
 
+/* The spell that stands large over the shared strip: the card, and under it who casts what at what. */
+.fx-spotlight {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+
+.fx-spotlight-caption {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--card);
+  color: var(--card-foreground);
+  text-align: center;
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    0 4px 12px color-mix(in oklch, var(--foreground) 25%, transparent);
+}
+
+/*
+ * A mark: what a spell, ability or move did to a card, a stack chip or a flying card, as a badge with an icon and a
+ * short word. The colour of the kind is on its edge and its icon; the words stay `--foreground` on `--card`. It stands
+ * for `--fx-mark-ms` (the store removes it); where motion is welcome it also fades in and out.
+ */
+.fx-mark {
+  --mark: var(--primary);
+  position: absolute;
+  inset-inline: 0;
+  top: 0.25rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: fit-content;
+  max-width: calc(100% - 0.25rem);
+  margin-inline: auto;
+  padding: 0 0.375rem;
+  border: 2px solid var(--mark);
+  border-radius: 9999px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 1px 4px color-mix(in oklch, var(--foreground) 30%, transparent);
+}
+
+.fx-mark > svg {
+  color: var(--mark);
+}
+
+/* In a line of its own (a stack chip) it is a part of the line. */
+.fx-mark[data-inline] {
+  position: static;
+  flex-shrink: 0;
+  margin-inline: 0;
+}
+
+.fx-mark[data-fx-mark='activated'],
+.fx-mark[data-fx-mark='bounced'] {
+  --mark: var(--primary);
+}
+
+.fx-mark[data-fx-mark='triggered'] {
+  --mark: var(--warning);
+}
+
+.fx-mark[data-fx-mark='resolved'],
+.fx-mark[data-fx-mark='drawn'] {
+  --mark: var(--success);
+}
+
+.fx-mark[data-fx-mark='countered'] {
+  --mark: var(--destructive);
+}
+
+.fx-mark[data-fx-mark='fizzled'] {
+  --mark: var(--border-strong);
+}
+
+.fx-mark[data-fx-mark='exiled'] {
+  --mark: var(--turn-them);
+}
+
 /* The number that floats up from a card or a life total. */
 .fx-float {
   position: absolute;
@@ -240,6 +330,32 @@
     to {
       stroke-dashoffset: 0;
     }
+  }
+
+  @keyframes fx-mark {
+    0% {
+      opacity: 0;
+      scale: 0.85;
+    }
+    15% {
+      opacity: 1;
+      scale: 1;
+    }
+    75% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .fx-mark {
+    animation: fx-mark calc(var(--fx-mark-ms) * var(--fx-slow, 1)) ease-out both;
+  }
+
+  /* On a flying card the flight sets the time, not the mount. */
+  .fx-flier .fx-mark {
+    animation-name: none;
   }
 
   /* Attacking and blocking: lean toward the other side and glow along the card's own edge. */

@@ -1,6 +1,7 @@
 import { useContext, useMemo, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { useAttachLines } from './attachLines'
+import { useEffectLines } from './effectLines'
 import { anchorKey, anchorsOf } from './plan'
 import type { LineSpec } from './plan'
 import { RectProviderContext, shapesOf, useAnchorRects } from './rects'
@@ -46,14 +47,17 @@ function Layer({ drawn, layer, className }: LayerProps) {
   )
 }
 
+/** The lines that run above the strip: they start at a chip in it. */
+const above = (kind: LineSpec['kind']): boolean => kind === 'target' || kind === 'effect'
+
 function Lines({ lines }: { lines: readonly LineSpec[] }) {
   const origin = useRef<HTMLDivElement>(null)
   const provider = useContext(RectProviderContext)
   const anchors = useMemo(() => anchorsOf(lines), [lines])
   const rects = useAnchorRects(origin, anchors, provider)
   const drawn = useMemo(() => shapesOf(lines, rects), [lines, rects])
-  const combat = useMemo(() => drawn.filter(({ line }) => line.kind !== 'target'), [drawn])
-  const targets = useMemo(() => drawn.filter(({ line }) => line.kind === 'target'), [drawn])
+  const combat = useMemo(() => drawn.filter(({ line }) => !above(line.kind)), [drawn])
+  const targets = useMemo(() => drawn.filter(({ line }) => above(line.kind)), [drawn])
   return (
     <div
       ref={origin}
@@ -82,9 +86,13 @@ export function CombatOverlay() {
   const combat = useCombatPlan()
   const stack = useStackArrows()
   const moved = useAttachLines()
+  const effects = useEffectLines()
   const lines = useMemo(
-    () => (stack.length === 0 && moved.length === 0 ? combat : [...combat, ...stack, ...moved]),
-    [combat, stack, moved],
+    () =>
+      stack.length === 0 && moved.length === 0 && effects.length === 0
+        ? combat
+        : [...combat, ...stack, ...moved, ...effects],
+    [combat, stack, moved, effects],
   )
   return lines.length === 0 ? null : <Lines lines={lines} />
 }

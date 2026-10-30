@@ -24,6 +24,7 @@ export interface RectProvider {
 export function selectorsOf(anchor: Anchor): string[] {
   const seat = (n: number): string[] => [`[data-seat="${n}"]`, `[data-tile-seat="${n}"]`]
   if (anchor.kind === 'seat') return seat(anchor.seat)
+  if (anchor.kind === 'spot') return []
   if (anchor.kind === 'stack') return [`[data-stack-chip="${anchor.id}"]`]
   const card = `button[data-object-id="${anchor.id}"]`
   return anchor.seat === undefined ? [card] : [card, ...seat(anchor.seat)]
@@ -69,6 +70,11 @@ export const domRects: RectProvider = {
     const base = origin.getBoundingClientRect()
     const found = new Map<string, Rect>()
     for (const anchor of anchors) {
+      if (anchor.kind === 'spot') {
+        const { x, y, width, height } = anchor.box
+        found.set(anchorKey(anchor), { x: x - base.left, y: y - base.top, width, height })
+        continue
+      }
       for (const selector of selectorsOf(anchor)) {
         const element = scope.querySelector(selector)
         if (element === null) continue

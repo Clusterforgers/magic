@@ -95,6 +95,19 @@
   stroke-width: 3;
 }
 
+/* The short arrow from a resolving object to what it counters, exiles, bounces or destroys: strong, in the destructive colour. */
+.combat-group[data-kind='effect'] {
+  --line: var(--destructive);
+}
+
+.combat-group[data-kind='effect'] .combat-halo {
+  stroke-width: 6.5;
+}
+
+.combat-group[data-kind='effect'] .combat-line {
+  stroke-width: 3;
+}
+
 /* A choice not yet sent is an accent arrow, thicker than the muted line of a declared attack. */
 .combat-group[data-pending] {
   --line: var(--primary);

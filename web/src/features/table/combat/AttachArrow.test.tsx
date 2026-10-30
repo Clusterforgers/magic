@@ -143,7 +143,7 @@ describe('the arrow of an attachment that moved', () => {
     const next = (anchor: Anchor) =>
       anchor.kind === 'seat'
         ? { x: 0, y: 5000, width: 1000, height: 200 }
-        : { x: anchor.id * 105, y: 100, width: 100, height: 140 }
+        : { x: Number(anchor.id) * 105, y: 100, width: 100, height: 140 }
     const { send, container } = mount({}, next)
     send(hang(MY_GIANT), attached(MY_GIANT))
     const path = container.querySelector('[data-layer="lines"] g[data-kind="attach"] .combat-line')

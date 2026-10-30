@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { blockAfter, rulesIn } from '@/test-utils/cssBlocks'
-import { FX_MS } from './model'
+import { FX_MS, MARK_FX } from './model'
 import type { FxKind } from './model'
 import { MOVE_MS } from './moves'
 import { EASE_OUT } from './travel'
@@ -17,7 +17,9 @@ const REDUCE = '@media (prefers-reduced-motion: reduce)'
 const motion = blockAfter(css, NO_PREFERENCE)
 const reduced = blockAfter(css, REDUCE)
 const outside = css.replace(motion, '').replace(reduced, '')
-const KINDS = Object.keys(FX_MS) as FxKind[]
+const KINDS = (Object.keys(FX_MS) as FxKind[]).filter(
+  (kind) => !(MARK_FX as readonly string[]).includes(kind),
+)
 
 describe('motion', () => {
   it('lives only inside the no-preference block', () => {
@@ -71,6 +73,10 @@ describe('durations', () => {
 })
 
 describe('moves', () => {
+  it.each(MARK_FX)('holds a mark of %s for MOVE_MS.mark', (kind) => {
+    expect(FX_MS[kind]).toBe(MOVE_MS.mark)
+  })
+
   it.each(Object.entries(MOVE_MS))('mirrors MOVE_MS for %s', (name, ms) => {
     const value = new RegExp(`--fx-${name}-ms:\\s*(\\d+)ms`).exec(css)?.[1]
     expect(Number(value)).toBe(ms)
