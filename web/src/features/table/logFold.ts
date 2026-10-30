@@ -82,6 +82,8 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
     }
     const view = 'Public' in event ? event.Public : null
     if (view !== null && typeof view !== 'string' && 'PriorityGranted' in view) return
+    // A step of a resolution is bookkeeping: the lines of what the step did tell it.
+    if (view !== null && typeof view !== 'string' && 'StepDone' in view) return
     if (view !== null && typeof view !== 'string' && 'PriorityPassed' in view) {
       if (passed.length === 0) first = seq
       if (!passed.includes(view.PriorityPassed.player)) passed.push(view.PriorityPassed.player)

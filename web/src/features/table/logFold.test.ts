@@ -1,4 +1,4 @@
-// Goal: the log draws a round of priority as one line: "All pass" with the seats' names when every seat in the game passed and a spell or ability was passed over to resolve, "Bo and Cy pass" when an action cut the round short, nothing at all for a seat receiving priority or for a step that went by with everybody passing, and every other line as it was, for 2 and 4 seats and for a game that has lost a seat; an attachment that moves says from which host, as far as the log has told.
+// Goal: the log draws a round of priority as one line: "All pass" with the seats' names when every seat in the game passed and a spell or ability was passed over to resolve, "Bo and Cy pass" when an action cut the round short, nothing at all for a seat receiving priority, for a step that went by with everybody passing or for the bookkeeping of a resolution step, and every other line as it was, for 2 and 4 seats and for a game that has lost a seat; an attachment that moves says from which host, as far as the log has told.
 import { describe, expect, it } from 'vitest'
 import type { HostRef } from '@/play/hosts'
 import type { LogEntry } from '@/play/store'
@@ -48,6 +48,16 @@ describe.each([2, 4])('the log of a %i seat game', (count) => {
     expect(folded?.spoken).toBe(
       `${NAMES.slice(0, count).slice(0, -1).join(', ')} and ${NAMES[count - 1]} pass`,
     )
+  })
+
+  it('leaves out the bookkeeping of a resolution step between the lines of what it did', () => {
+    const events = [
+      resolving(7),
+      life(1, 2),
+      pub({ StepDone: { position: [1], bound: [], snapshots: [] } }),
+      life(1, 1),
+    ]
+    expect(fold(events, seats)).toEqual(['Card 7 begins to resolve', 'Bo loses 2 life', 'Bo loses 1 life'])
   })
 
   it('counts a round the same with or without the grants, and a seat that passes twice once', () => {

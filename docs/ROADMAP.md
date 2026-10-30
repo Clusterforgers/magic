@@ -468,7 +468,19 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v91g) One spelling of colour identity across the builder filters ("Colour identity") and the server's deck issues ("color identity") (`mtg-server` deck check)
 - [ ] (v91h) The Mana row of the Commands panel starts on a colour of the seat's commander identity, not Green for an Esper deck (`manual/panel/commands.ts`)
 - [ ] (v91i) A seat working in the Commands panel sees its response clock there, so the active player's clock (`MTG_ACTIVE_SECS`) does not pass the main phase unseen mid-command (`CommandsPanel.tsx`)
-- [~] (v91j) (ux-validator3) Validator walk, part two: cast a Manual card in a 3-seat game and apply each clause with the Commands panel; a duel to a winner with a counterspell, a trick, a sacrifice, a mulligan, a concession, a leave and a reconnect; the bank seen by others; a keyboard-only turn with focus order and mark contrast (needs the e2e driver: simple bots play no lands)
+- [ ] (v92a) A seat that loses its connection shows as away to the other seats, with the time before the game answers for it; today they read only "Waiting for <name>" (`PlayerView` presence, seat pod)
+- [ ] (v92b) A seat whose by-hand card just resolved keeps a priority window in its own turn to apply the clauses; auto-pass now ends the turn at once when nothing else is playable (server pass rules)
+- [ ] (v92c) The log names a triggered ability that resolves ("An ability of Parasitic Impetus resolves") instead of "a card begins to resolve" and "a card finishes resolving" (`eventText.ts`, `LogPanel` names)
+- [ ] (v92d) The by-hand log line of a triggered or static clause says when to apply it ("whenever …"), not "when it resolves" (`byHandLine`)
+- [ ] (v92e) The Mana row of the Commands panel keeps the colour last added instead of returning to Green after each Add (`manual/panel/commands.ts`)
+- [ ] (v92f) A draw by hand names the cards drawn in the drawer's own log, as an ordinary draw does (`manualLog.ts`)
+- [ ] (v92g) The opening hand is readable while the Mulligan prompt waits: its cards are about 70 px wide at 1440x900 (`HandDock`)
+- [ ] (v92h) The mulligan status says "kept" for a seat that kept, not "keeping" (`OpeningStatus.tsx`)
+- [ ] (v92i) The game-over screen opens the final board and the log for a look back (`GameOver`)
+- [ ] (v92j) The card picked in the Commands panel carries a mark on the table while its commands show (`CardGroup.tsx`)
+- [ ] (v92k) No text under 12 px at the table: the mana letters of a card's pips (6 px) and the Log tab's unread count (11 px)
+- [ ] (v92l) Keyboard-only walk of a whole turn: focus order, the focus return after H and Escape across a resize, contrast of the by-hand and unplayable marks in both themes
+- [ ] (v92m) Duel walk by hand of a counterspell, a combat trick and a sacrifice, and of the timer bank as the other seat sees it (needs a seat that has earned an extension)
 
 ## M8 Polish and deploy
 
