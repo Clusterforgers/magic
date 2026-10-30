@@ -688,7 +688,13 @@ mod tests {
             controller: ME,
             turn: 1,
         };
-        apply_event(game, &Event::RuleCreated { effect }).unwrap();
+        apply_event(
+            game,
+            &Event::RuleCreated {
+                effect: effect.into(),
+            },
+        )
+        .unwrap();
     }
 
     fn attacks(game: &GameState, names: &[&str]) -> Vec<(ObjectId, AttackTarget)> {
@@ -767,7 +773,13 @@ mod tests {
             controller: ME,
             turn: 1,
         };
-        apply_event(game, &Event::RuleCreated { effect }).unwrap();
+        apply_event(
+            game,
+            &Event::RuleCreated {
+                effect: effect.into(),
+            },
+        )
+        .unwrap();
     }
 
     fn defenders_of(options: &AttackOptions, game: &GameState, name: &str) -> Vec<AttackTarget> {

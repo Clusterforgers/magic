@@ -506,7 +506,7 @@ fn duration() -> impl Strategy<Value = Duration> {
         Just(CounterKind::PlusOnePlusOne),
         Just(CounterKind::Other("vow".to_owned())),
     ]
-    .prop_map(Duration::WhileHasCounter);
+    .prop_map(|kind| Duration::WhileHasCounter(Box::new(kind)));
     prop_oneof![
         select(vec![
             Duration::UntilEndOfTurn,

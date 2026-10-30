@@ -119,15 +119,17 @@ impl Pass<'_> {
         let follow = if haste {
             let (id, timestamp) = self.fresh_effect();
             Event::EffectCreated {
-                effect: ContinuousEffect::new(
-                    id,
-                    Affected::Objects(vec![permanent]),
-                    Change::AddKeyword(mtg_cards::keyword::Keyword::Haste),
-                    Duration::WhileSourceOnBattlefield,
-                    timestamp,
-                )
-                .from_source(permanent)
-                .begun(controller, self.state.turn().number()),
+                effect: Box::new(
+                    ContinuousEffect::new(
+                        id,
+                        Affected::Objects(vec![permanent]),
+                        Change::AddKeyword(mtg_cards::keyword::Keyword::Haste),
+                        Duration::WhileSourceOnBattlefield,
+                        timestamp,
+                    )
+                    .from_source(permanent)
+                    .begun(controller, self.state.turn().number()),
+                ),
             }
         } else {
             Event::CountersChanged(CountersChanged {

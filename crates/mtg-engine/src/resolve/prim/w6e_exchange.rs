@@ -43,15 +43,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .zip(0u64..)
         .map(|((object, player), made)| Event::EffectCreated {
-            effect: ContinuousEffect::new(
-                EffectId(state.next_effect + made),
-                Selector::Objects(vec![object.reference()]),
-                Modification::SetController(player),
-                duration.clone(),
-                state.next_timestamp + made,
-            )
-            .from_source(cx.scope.source)
-            .begun(cx.controller(), state.turn().number()),
+            effect: Box::new(
+                ContinuousEffect::new(
+                    EffectId(state.next_effect + made),
+                    Selector::Objects(vec![object.reference()]),
+                    Modification::SetController(player),
+                    duration.clone(),
+                    state.next_timestamp + made,
+                )
+                .from_source(cx.scope.source)
+                .begun(cx.controller(), state.turn().number()),
+            ),
         })
         .collect();
     Ok(Run::events(events))

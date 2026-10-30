@@ -25,14 +25,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|object| object.zone() == Zone::Battlefield)
         .zip(state.next_effect..)
         .map(|(object, id)| Event::RuleCreated {
-            effect: RuleEffect {
+            effect: Box::new(RuleEffect {
                 id: EffectId(id),
                 rule: Rule::Regenerate(object.reference()),
                 duration: Duration::UntilEndOfTurn,
                 source: Some(cx.scope.source),
                 controller: cx.controller(),
                 turn: state.turn().number(),
-            },
+            }),
         })
         .collect();
     Ok(Run::events(events))

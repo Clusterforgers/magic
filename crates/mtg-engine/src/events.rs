@@ -385,7 +385,7 @@ pub enum Event {
     /// A continuous effect was registered.
     EffectCreated {
         /// The effect.
-        effect: ContinuousEffect,
+        effect: Box<ContinuousEffect>,
     },
     /// A continuous effect ended and was removed.
     EffectExpired {
@@ -395,7 +395,7 @@ pub enum Event {
     /// A change to a rule of the game was registered.
     RuleCreated {
         /// The change.
-        effect: RuleEffect,
+        effect: Box<RuleEffect>,
     },
     /// A change to a rule of the game ended and was removed.
     RuleExpired {

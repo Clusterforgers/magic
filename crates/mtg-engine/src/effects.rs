@@ -722,7 +722,7 @@ mod tests {
         let mut game = game();
         let effect = effect(
             &game,
-            Duration::WhileHasCounter(CounterKind::Other("vow".into())),
+            Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
             ME,
         );
         for (on, counter, delta) in changes {
@@ -736,7 +736,7 @@ mod tests {
     fn an_effect_that_follows_a_counter_ends_with_the_object_and_for_good() {
         let vow = CounterKind::Other("vow".into());
         let mut game = game();
-        let effect = effect(&game, Duration::WhileHasCounter(vow.clone()), ME);
+        let effect = effect(&game, Duration::WhileHasCounter(Box::new(vow.clone())), ME);
         counters(&mut game, "Wolf", "vow", 1);
         assert!(effect.is_active(&game));
         let wolf = named(&game, "Wolf");
@@ -763,7 +763,7 @@ mod tests {
         let vow = CounterKind::Other("vow".into());
         let mut game = game();
         counters(&mut game, "Wolf", "vow", 1);
-        let mut effect = effect(&game, Duration::WhileHasCounter(vow), ME);
+        let mut effect = effect(&game, Duration::WhileHasCounter(Box::new(vow)), ME);
         effect.selector = selector;
         assert!(!effect.is_active(&game));
     }
@@ -823,10 +823,22 @@ mod tests {
         let mut later = effect(&game, Duration::UntilEndOfTurn, ME);
         later.id = EffectId(6);
         later.timestamp = 20;
-        apply_event(&mut game, &Event::EffectCreated { effect: later }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::EffectCreated {
+                effect: later.into(),
+            },
+        )
+        .unwrap();
         assert_eq!((game.next_effect, game.next_timestamp), (7, 21));
         let earlier = effect(&game, Duration::UntilEndOfTurn, ME);
-        apply_event(&mut game, &Event::EffectCreated { effect: earlier }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::EffectCreated {
+                effect: earlier.into(),
+            },
+        )
+        .unwrap();
         assert_eq!(
             (game.next_effect, game.next_timestamp),
             (7, 21),
@@ -845,7 +857,7 @@ mod tests {
         apply_event(
             &mut game,
             &Event::EffectCreated {
-                effect: made.clone(),
+                effect: made.clone().into(),
             },
         )
         .unwrap();
@@ -859,7 +871,15 @@ mod tests {
         no_source.id = EffectId(2);
         no_source.source = None;
         for refused in [wrong_layer, same_id, no_source] {
-            assert!(apply_event(&mut game, &Event::EffectCreated { effect: refused }).is_err());
+            assert!(
+                apply_event(
+                    &mut game,
+                    &Event::EffectCreated {
+                        effect: refused.into()
+                    }
+                )
+                .is_err()
+            );
         }
         assert_eq!(game.state_hash(), hash, "a refused event changes nothing");
     }

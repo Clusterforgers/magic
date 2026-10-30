@@ -80,14 +80,14 @@ fn begin(cx: &Cx<'_>, rule: Rule, duration: Duration) -> Run {
     }
     let state = cx.state();
     Run::events(vec![Event::RuleCreated {
-        effect: RuleEffect {
+        effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),
             rule,
             duration,
             source: Some(cx.scope.source),
             controller: cx.controller(),
             turn: state.turn().number(),
-        },
+        }),
     }])
 }
 

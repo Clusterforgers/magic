@@ -652,7 +652,13 @@ mod tests {
                 Duration::UntilEndOfTurn,
                 n,
             );
-            apply_event(game, &Event::EffectCreated { effect }).unwrap();
+            apply_event(
+                game,
+                &Event::EffectCreated {
+                    effect: effect.into(),
+                },
+            )
+            .unwrap();
         }
 
         /// Sacrifices the creature, so the card in the graveyard is a new object.

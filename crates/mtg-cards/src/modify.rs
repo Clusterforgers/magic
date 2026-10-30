@@ -176,7 +176,7 @@ pub enum Duration {
     /// creatures can't attack you for as long as it has a vow counter on it'): it ends when one of them loses its last counter
     /// of the kind or leaves, and a counter put on another permanent later changes nothing. Only a continuous effect that
     /// names its objects (a reference, not a group) lasts this way.
-    WhileHasCounter(CounterKind),
+    WhileHasCounter(Box<CounterKind>),
     /// Without end (until the object or the game is gone).
     Forever,
 }
@@ -558,11 +558,11 @@ mod tests {
     #[case(Duration::UntilEndOfTurn, r#""UntilEndOfTurn""#)]
     #[case(Duration::WhileYouControlSource, r#""WhileYouControlSource""#)]
     #[case(
-        Duration::WhileHasCounter(CounterKind::Other("vow".into())),
+        Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
         r#"{"WhileHasCounter":{"Other":"vow"}}"#
     )]
     #[case(
-        Duration::WhileHasCounter(CounterKind::PlusOnePlusOne),
+        Duration::WhileHasCounter(Box::new(CounterKind::PlusOnePlusOne)),
         r#"{"WhileHasCounter":"+1/+1"}"#
     )]
     fn a_duration_is_a_word_or_follows_a_counter_kind(

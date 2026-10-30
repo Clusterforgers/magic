@@ -76,7 +76,7 @@ fn effects_created(events: &[Event]) -> Vec<&mtg_engine::effects::ContinuousEffe
     events
         .iter()
         .filter_map(|event| match event {
-            Event::EffectCreated { effect } => Some(effect),
+            Event::EffectCreated { effect } => Some(&**effect),
             _ => None,
         })
         .collect()

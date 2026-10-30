@@ -875,7 +875,12 @@ fn granting(game: &mut GameState, json: &str) {
         Duration::Forever,
         5,
     );
-    fold(game, &[Event::EffectCreated { effect: created }]);
+    fold(
+        game,
+        &[Event::EffectCreated {
+            effect: created.into(),
+        }],
+    );
 }
 
 #[rstest]

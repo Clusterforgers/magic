@@ -20,13 +20,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(Vec::new()));
     }
     Ok(Run::events(vec![Event::RuleCreated {
-        effect: RuleEffect {
+        effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),
             rule,
             duration: duration.clone(),
             source: Some(cx.scope.source),
             controller: cx.controller(),
             turn: state.turn().number(),
-        },
+        }),
     }]))
 }
