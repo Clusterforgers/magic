@@ -163,10 +163,14 @@ describe.each([
     const { user } = renderTable({ seats: 2, options: { viewport } })
     await user.click(button())
     await user.click(screen.getByRole('button', { name: 'Close' }))
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Commands, log, chat and stack' })).toBeNull())
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog', { name: 'Commands, log, chat and stack' })).toBeNull(),
+    )
     await user.click(button())
     await user.keyboard('{Escape}')
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Commands, log, chat and stack' })).toBeNull())
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog', { name: 'Commands, log, chat and stack' })).toBeNull(),
+    )
   })
 
   it('says on the button how much wants a look: new lines, chat of others and the spells on the stack', () => {
