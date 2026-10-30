@@ -140,16 +140,25 @@ impl Engine {
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
+        let given = answer.clone();
         let outcome = handle(
             &self.state,
-            self.pending.as_ref(),
+            // A question of the replacement step (a manual action mid-announcement moved a permanent in) is not one of
+            // the announcement, even of a player who is announcing.
+            self.pending.as_ref().filter(|_| self.held.is_none()),
             self.held.is_some(),
             decision,
             answer,
         )?;
+        let announced = self.held.is_none() && Answered::of_kind(&outcome);
         let player = decision.player;
         let checkpoint = self.checkpoint();
-        let result = self.run(outcome, player).and_then(|()| self.advance());
+        let result = self.run(outcome, player).and_then(|()| {
+            if announced && let Some(pending) = self.pending.as_mut() {
+                pending.note(given);
+            }
+            self.advance()
+        });
         self.finish(checkpoint, result)
     }
 
@@ -223,10 +232,9 @@ impl Engine {
         let made = events(&self.state, player, action).map_err(refused)?;
         let checkpoint = self.checkpoint();
         // A triggered ability goes on the stack whatever else changes (CR 603.3); a spell or activation is checked.
-        if let Some(pending) = self.pending.as_mut()
-            && !matches!(pending.what, What::Trigger(_))
-        {
-            pending.touched = true;
+        if let Some(pending) = self.pending.as_mut() {
+            pending.touched |= !matches!(pending.what, What::Trigger(_));
+            pending.unsettle();
         }
         let result = self.commit(made).and_then(|()| self.advance());
         self.finish(checkpoint, result)
@@ -550,6 +558,7 @@ impl Engine {
                 return Ok(());
             }
             if let Some(pending) = self.pending.as_mut() {
+                pending.settle(&self.state);
                 let touched = pending.touched;
                 match announce(&self.state, pending) {
                     Next::Ask(decision) => {
@@ -579,6 +588,8 @@ impl Engine {
                 }
                 Progress::Put(pending) => self.pending = Some(*pending),
                 Progress::Events(events) => self.commit(events)?,
+                // The answers a step took before a manual action may no longer fit: the step is asked again.
+                Progress::Fail(_) if self.manual_in_step() => self.ask_step_again()?,
                 Progress::Fail(error) => return Err(error),
             }
         }
@@ -600,6 +611,45 @@ impl Engine {
             }])?;
         }
         Ok(())
+    }
+
+    /// Whether the resolution step under way has taken answers and a manual action came since it began: read from the
+    /// log, so an engine resumed from it decides the same.
+    fn manual_in_step(&self) -> bool {
+        self.state
+            .resolving()
+            .is_some_and(|resolving| !resolving.journal().is_empty())
+            && self
+                .events
+                .iter()
+                .rev()
+                .take_while(|event| {
+                    !matches!(
+                        event,
+                        Event::StepDone { .. } | Event::ResolutionBegan { .. }
+                    )
+                })
+                .any(|event| {
+                    matches!(
+                        event,
+                        Event::ManualAction { .. } | Event::ManualRolled { .. }
+                    )
+                })
+    }
+
+    /// Clears the answers of the resolution step under way, which stays where it is, so its questions are asked again
+    /// with the candidates of the state now.
+    fn ask_step_again(&mut self) -> Result<(), EngineError> {
+        let position = self
+            .state
+            .resolving()
+            .map(|resolving| resolving.position().to_vec())
+            .unwrap_or_default();
+        self.commit(vec![Event::StepDone {
+            position,
+            bound: Vec::new(),
+            snapshots: Vec::new(),
+        }])
     }
 
     /// The events since `checkpoint` on success; on failure the step is undone so it never half-applies.

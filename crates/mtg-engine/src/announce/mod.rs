@@ -6,6 +6,7 @@
 //! passes or rewinds the whole announcement, and the ones that wait for a later task are stubs that pass
 //! (`docs/engine.md`, Casting).
 
+mod again;
 mod alternative;
 mod anchor;
 mod c9_emerge_reduce;
@@ -277,6 +278,10 @@ pub(crate) struct Pending {
     /// A manual action came while it was under way: what it would put on the stack is checked against the state before it
     /// is (`Engine::advance`).
     pub(crate) touched: bool,
+    /// The answers it took, in order, to give again once a manual action unsettles it (`again.rs`).
+    answers: Vec<crate::decision::Answer>,
+    /// A manual action came since its last question: it is asked again before its next one (`again.rs`).
+    stale: bool,
 }
 
 impl Pending {
@@ -290,6 +295,8 @@ impl Pending {
             needs: None,
             anchor: None,
             touched: false,
+            answers: Vec::new(),
+            stale: false,
             special: None,
         }
     }
@@ -552,6 +559,8 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         needs,
         anchor,
         touched: _,
+        answers: _,
+        stale: _,
     } = pending;
     // What a manual action took out from under the announcement cannot be put on the stack.
     let now = Anchor::of(state, what);

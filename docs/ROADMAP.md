@@ -207,8 +207,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (dk1d3) Suppression Ray // Orderly Plaza: pay any amount of `{E}` (`PayEnergy` with a chosen amount), then choose up to that many of the creatures tapped this way and put a stun counter on each
 - [ ] (dk1d6) Path of Ancestry: its card once the mana rider of t15e exists (the model's rules put the scry trigger outside the mana ability)
 - [ ] (dk1g) The four-seat Playwright game (`commander-four.spec.ts`) can take the owner's deck as a seat (`E2E_DECK=owner`): each account saves `crates/mtg-testkit/tests/fixtures/decks/owner.arena.txt` through `/api/decks/import` and `/api/decks`, and the lobby chooser takes the saved deck instead of a precon
-- [~] (dk1h) (announce-robust) A manual `Tap` of a permanent that an announcement picked to pay a cost part leaves the payment failing with "already in that tapped state": the announcement ends (or asks again) when a pick is no longer a candidate (`announce/mod.rs` `moved_away`; seed 278 of `MTG_FUZZ_GAMES=300 cargo test -p mtg-testkit --test it dk1e_deck::the_owners_deck_plays_under`)
-- [~] (dk1i) (announce-robust) An out-of-band manual action between two seats' answers of one resolution step leaves the next seat's choice of cards refused as "no answer to the choice of cards" (seeds 195 and 238 of the same campaign): the step asks again with the candidates of the new state
 - [ ] (lb1a) The precon list item carries the commanders' cards (picture, colour identity), so a precon row in the lobby chooser shows its commanders and the chooser filters precons by colour identity
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
 - [ ] (pn1b) `fit.spec.ts` and `/dev/table` screenshots at 16, 24 and 40 seats in both themes, and the e2e create flow typing a count above 12
@@ -222,7 +220,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries
 - [ ] (ma7r) `e2e/fit.spec.ts` "attachments scene on four seats" fails at 1366x768 ("the combat line block:71 runs over your life")
-- [~] (ma7s) (announce-robust) `dk1e_deck` with manual actions (`MTG_FUZZ_GAMES=200`, 4 seats, seed 182, the script of `panel-roll`) stops with "an answer for a step the announcement did not ask" after a Life and a Damage by hand of a seat that is paying a cost
 
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs
