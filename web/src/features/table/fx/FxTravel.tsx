@@ -1,42 +1,20 @@
 import { Zap } from 'lucide-react'
 import { useLayoutEffect, useRef } from 'react'
-import type { CSSProperties, Ref } from 'react'
-import { CardBack } from '@/features/cards/CardImage'
-import { CardFace } from '../CardFace'
-import { CardWidthContext } from '../ImageFace'
+import type { Ref } from 'react'
+import { CardPicture } from './CardPicture'
+import { FxMark } from './FxMark'
 import { useFx } from './hooks'
+import { Spotlight } from './Spotlight'
 import { EASE_OUT, keyframesOf, REVEAL_KEYFRAMES } from './travel'
 import type { Flight, Size, Travel } from './travel'
-import { useFlights } from './useFlights'
-
-/** A face this wide or wider draws the type line and the rest, not only the name and cost. */
-const NORMAL_FACE_PX = 76
-
-const pictureStyle = ({ width, height }: Size): CSSProperties =>
-  ({ '--card-w': `${width}px`, '--card-h': `${height}px` }) as CSSProperties
+import { useFlights, useSpotlight } from './useFlights'
 
 /** The picture a card flies as: the back, the face, or the back that turns to the face as it lands. */
 function Picture({ flight, size, face }: { flight: Flight; size: Size; face: Ref<HTMLSpanElement> }) {
-  const { look } = flight.move
-  const layer =
-    'relative col-start-1 row-start-1 grid h-(--card-h) w-(--card-w) place-items-center rounded-md'
   return (
-    <span className="grid shadow-lg" style={pictureStyle(size)}>
-      {flight.faceDown ? <CardBack className={layer} /> : null}
-      {look !== null && (!flight.faceDown || flight.reveal) ? (
-        <span ref={face} className={`${layer} bg-background`}>
-          <CardWidthContext.Provider value={size.width}>
-            <CardFace
-              object={look}
-              role={null}
-              size={size.width < NORMAL_FACE_PX ? 'compact' : 'normal'}
-              fit
-              upright
-            />
-          </CardWidthContext.Provider>
-        </span>
-      ) : null}
-    </span>
+    <CardPicture look={flight.move.look} size={size} back={flight.faceDown} face={face}>
+      {flight.mark === null ? null : <FxMark kind={flight.mark} />}
+    </CardPicture>
   )
 }
 
@@ -94,18 +72,20 @@ function Flier({ flight, travel }: { flight: Flight; travel: Travel }) {
 /**
  * The cards that fly while a batch's moves play: a picture of each card (a card back for one the viewer may not
  * identify, turning face up as it reaches the stack) or a chip for an ability, flying from where it was to where it
- * goes. The layer lies over the table, is `aria-hidden` and takes no pointer, and sits outside the layout: nothing
+ * goes, and the spell of a cast by another seat stands large over the shared strip between its legs (`Spotlight`). The layer lies over the table, is `aria-hidden` and takes no pointer, and sits outside the layout: nothing
  * moves because of it. A newer batch ends these flights at once; the table underneath already shows the result.
  */
 export function FxTravel() {
   const travel = useFx().travel
   const flights = useFlights()
-  if (flights.length === 0) return null
+  const spotlight = useSpotlight()
+  if (flights.length === 0 && spotlight === null) return null
   return (
     <div aria-hidden="true" data-slot="fx-travel" className="fx-travel">
       {flights.map((flight) => (
         <Flier key={flight.key} flight={flight} travel={travel} />
       ))}
+      {spotlight === null ? null : <Spotlight key={spotlight.key} spotlight={spotlight} travel={travel} />}
     </div>
   )
 }

@@ -18,13 +18,16 @@ export type Anchor =
   | { kind: 'seat'; seat: PlayerId }
   /** The chip of an item on the stack. */
   | { kind: 'stack'; id: ObjectId }
+  /** A box measured earlier, in viewport coordinates, for an end that may be gone from the table by now. */
+  | { kind: 'spot'; id: string; box: { x: number; y: number; width: number; height: number } }
 
 /**
  * An attack goes from an attacker to what it attacks; a block from a blocker to the attacker it blocks; a target
  * from the chip of a stack item to what it aims at (`stackArrows.ts`); an attach from the old host of an attachment
- * to its new one (`attachLines.ts`).
+ * to its new one (`attachLines.ts`); an effect from a resolving object to what it counters, exiles, bounces or
+ * destroys (`effectLines.ts`).
  */
-export type LineKind = 'attack' | 'block' | 'target' | 'attach'
+export type LineKind = 'attack' | 'block' | 'target' | 'attach' | 'effect'
 
 /** One line of the overlay. */
 export interface LineSpec {

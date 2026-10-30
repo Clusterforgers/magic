@@ -3,6 +3,7 @@ import type { PlayState, PlayStore } from '@/play/store'
 import type { EventView } from '@/protocol/generated'
 import { deriveAttaches, deriveEffects } from './derive'
 import type { Moment } from './derive'
+import { markArrows, markEffects } from './marks'
 import { deriveMoves } from './moves'
 import type { Fx } from './store'
 
@@ -41,8 +42,11 @@ export function watchBatches(store: PlayStore, fx: Fx): () => void {
   return store.subscribe((next, prev) => {
     const step = batchBetween(prev, next)
     if (step === null) return
-    fx.travel.launch(deriveMoves(step.before, step.after, step.events).moves, step.after.view.viewer)
-    fx.play(deriveEffects(step.before, step.after, step.events))
+    const { moves, marks } = deriveMoves(step.before, step.after, step.events)
+    fx.travel.launch(moves, step.after.view.viewer)
+    // Measured now: the resolving object and what it affects may be gone from the table once React draws the batch.
+    fx.effectArrows.play(markArrows(marks))
+    fx.play([...deriveEffects(step.before, step.after, step.events), ...markEffects(marks)])
     fx.arrows.play(deriveAttaches(step.before, step.after))
   })
 }

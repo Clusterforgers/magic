@@ -11,8 +11,9 @@ import { useCreatureOutlook } from './combat/drawn'
 import { outlookWords } from './combat/forecastText'
 import { ForecastMarks } from './combat/ForecastMarks'
 import { FxFloat } from './fx/FxFloat'
+import { FxMark } from './fx/FxMark'
 import { useCardFx } from './fx/hooks'
-import { fxAttr, fxSide } from './fx/model'
+import { fxAttr, fxSide, isMarkFx } from './fx/model'
 import { ManaStrip } from './ManaStrip'
 import { BY_HAND_KEY, clausesOf } from './manual/clauses'
 import { useManualMenu } from './manual/useManualMenu'
@@ -127,6 +128,7 @@ export const Card = memo(function Card({
       {fx.map((entry) =>
         entry.kind === 'damaged' ? <FxFloat key={entry.token} kind="damaged" amount={entry.amount} /> : null,
       )}
+      {fx.map((entry) => (isMarkFx(entry.kind) ? <FxMark key={entry.token} kind={entry.kind} /> : null))}
       <ManaStrip id={id} />
       {note?.hint === undefined ? null : (
         <span

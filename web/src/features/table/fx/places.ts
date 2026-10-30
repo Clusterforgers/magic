@@ -4,7 +4,7 @@
  * chip (`data-zone`) of the seat's pod (`data-seat`) or tile (`data-tile-seat`). Boxes are in viewport coordinates, the
  * layer the fliers live on.
  */
-import type { PlayerId } from '@/protocol/generated'
+import type { ObjectId, PlayerId } from '@/protocol/generated'
 import type { FxPlace } from './moves'
 
 /** A box on screen, in px. */
@@ -56,6 +56,23 @@ export function zoneSelectors(seat: PlayerId, zone: string): string[] {
   const chips = seatAt(seat).map((root) => `${root} [data-zone="${zone}"]`)
   const area = zone === 'battlefield' ? [`[data-seat-area="${seat}"]`] : []
   return [`[data-fx-anchor="${seat}:${zone}"]`, ...chips, ...area, ...seatAt(seat)]
+}
+
+/** The shared strip's stack (the area the prompt and the chips stand in) if some of it is on screen. */
+export function measureStrip(root: ParentNode): Box | null {
+  return firstBox(root, [`[data-fx-anchor="${STACK_ANCHOR}"]`])
+}
+
+/** The size of a card in `seat`'s hand if one is on screen. */
+export function measureHandCard(root: ParentNode, seat: PlayerId): { width: number; height: number } | null {
+  const box = firstBox(root, [`[data-fx-anchor="${seat}:hand"] [data-object-id]`])
+  return box === null ? null : { width: box.width, height: box.height }
+}
+
+/** Where an object is on screen, as a card or a stack chip (both carry `data-object-id`), or null when it is not. */
+export function measureObject(root: ParentNode, object: ObjectId): Spot | null {
+  const box = firstBox(root, [`[data-object-id="${object}"]`])
+  return box === null ? null : { box, card: true }
 }
 
 /**

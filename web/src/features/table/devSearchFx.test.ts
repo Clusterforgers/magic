@@ -20,6 +20,7 @@ describe('?fx=', () => {
       'life',
       'enter',
       'cast',
+      'rival',
       'activate',
       'resolve',
       'counter',

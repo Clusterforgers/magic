@@ -37,6 +37,14 @@ const EACH: Record<FxKind, Effect> = {
   damaged: hurt(4),
   healed: life(0, 'healed'),
   died: dies(5),
+  activated: { kind: 'activated', object: 6 },
+  triggered: { kind: 'triggered', object: 7 },
+  resolved: { kind: 'resolved', object: 8 },
+  countered: { kind: 'countered', object: 9 },
+  fizzled: { kind: 'fizzled', object: 10 },
+  exiled: { kind: 'exiled', object: 11 },
+  bounced: { kind: 'bounced', object: 12 },
+  drawn: { kind: 'drawn', object: 13 },
 }
 
 function setup(mode: FxMode | (() => FxMode) = 'full', slow?: number) {

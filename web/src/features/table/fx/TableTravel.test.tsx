@@ -117,7 +117,8 @@ describe('a cast on the table', () => {
     )
     const [flier] = fliers(container)
     expect(flier?.querySelector('[data-slot="card-back"]')).not.toBeNull()
-    expect(animate.started).toHaveLength(2)
+    // The flight, the face turning up over the back, and the spell standing large over the strip.
+    expect(animate.started).toHaveLength(3)
     // It starts small, in the chip of the pod\x27s hand: its corner is where the chip\x27s middle is, less half the picture.
     expect(animate.started[0]?.keyframes[0]?.transform).toMatch(/^translate\(/)
   })

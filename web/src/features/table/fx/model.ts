@@ -5,8 +5,17 @@
 import type { ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
 import type { RowKind } from '../cardModel'
 
+/** The marks a card or a stack chip shows for a moment (docs/ui-design.md, Playing is legible), each with an icon and a word. */
+export const MARK_FX = ['activated', 'triggered', 'resolved', 'countered', 'fizzled', 'exiled', 'bounced', 'drawn'] as const
+
+/** One of the marks. */
+export type MarkFx = (typeof MARK_FX)[number]
+
+/** How long a mark stays, in milliseconds (`MOVE_MS.mark`, `--fx-mark-ms`). */
+export const MARK_MS = 600
+
 /** What happened, as a decoration tells it. */
-export type FxKind = 'attacked' | 'blocked' | 'damaged' | 'healed' | 'died' | 'entered'
+export type FxKind = 'attacked' | 'blocked' | 'damaged' | 'healed' | 'died' | 'entered' | MarkFx
 
 /**
  * How long each decoration stays on, in milliseconds (times the dev slow-down). The CSS keeps the same numbers as
@@ -19,6 +28,14 @@ export const FX_MS: Readonly<Record<FxKind, number>> = {
   damaged: 550,
   healed: 550,
   died: 500,
+  activated: MARK_MS,
+  triggered: MARK_MS,
+  resolved: MARK_MS,
+  countered: MARK_MS,
+  fizzled: MARK_MS,
+  exiled: MARK_MS,
+  bounced: MARK_MS,
+  drawn: MARK_MS,
 }
 
 /** A creature joined an attack or a block and leans toward the other side; `own` is true for the viewer's creature. */
@@ -31,6 +48,12 @@ export interface LeanEffect {
 /** A permanent came onto the battlefield. */
 export interface EnterEffect {
   kind: 'entered'
+  object: ObjectId
+}
+
+/** A mark on a card or a stack chip: what a spell, ability or move did to it. */
+export interface MarkEffect {
+  kind: MarkFx
   object: ObjectId
 }
 
@@ -64,7 +87,7 @@ export interface DiedEffect {
 }
 
 /** One transient visual effect that a batch of events caused. */
-export type Effect = LeanEffect | EnterEffect | HurtEffect | LifeEffect | DiedEffect
+export type Effect = LeanEffect | EnterEffect | HurtEffect | LifeEffect | DiedEffect | MarkEffect
 
 /** An effect on a seat's life total. */
 export function isLifeEffect(effect: Effect): effect is LifeEffect {
@@ -94,6 +117,9 @@ export const NO_ENTRIES: readonly FxEntry[] = []
 
 /** No ghosts. */
 export const NO_GHOSTS: readonly Ghost[] = []
+
+/** Whether a decoration is one of the marks. */
+export const isMarkFx = (kind: FxKind): kind is MarkFx => (MARK_FX as readonly string[]).includes(kind)
 
 /** The `data-fx` value of a card or life total: the kinds playing now, space separated, or undefined for none. */
 export function fxAttr(entries: readonly FxEntry[]): string | undefined {

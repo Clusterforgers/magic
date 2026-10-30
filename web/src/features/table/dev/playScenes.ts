@@ -165,6 +165,13 @@ export const PLAY_MOVES = {
     return [{ SpellCast: { player: scene.viewer, object: card.id, choices: { targets } } }]
   },
 
+  // An opponent casts a spell from their hand at a creature of the viewer's, and it stays on the stack.
+  rival(scene: PlayScene): Event[] {
+    const targets = aimAt(creatureOf(scene.next, scene.viewer))
+    const card = castSpell(scene, scene.foe, targets)
+    return [{ SpellCast: { player: scene.foe, object: card.id, choices: { targets } } }]
+  },
+
   // A creature of the viewer activates an ability aimed at an opponent's creature.
   activate(scene: PlayScene): Event[] {
     const { next, viewer, foe } = scene
