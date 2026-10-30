@@ -515,3 +515,6 @@ mod x_places;
 mod zone_abilities;
 mod zone_moves;
 mod zones_fuzz;
+
+// dk1b
+mod dk1b_attach;

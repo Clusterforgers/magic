@@ -2267,6 +2267,11 @@ impl Writer<'_> {
             _ => return None,
         };
         match under {
+            // The card of a creature that died returns to its owner: "return it to the battlefield tapped under its
+            // owner's control".
+            None if entering.is_empty() && *what == other_dead_card() => Some(format!(
+                "return it to the battlefield{tapped} under its owner's control"
+            )),
             None if self.in_your_graveyard(what) => Some(format!(
                 "return {} to the battlefield{tapped}{entering}",
                 self.object(what)?
