@@ -110,8 +110,8 @@ impl Delayed {
     }
 
     /// How long it lasts: until it triggers (`Forever`, for one that triggers once) or the end of the turn.
-    pub const fn duration(&self) -> Duration {
-        self.duration
+    pub const fn duration(&self) -> &Duration {
+        &self.duration
     }
 
     /// Whether its duration has run out in `state`, so it no longer waits for anything.
@@ -122,7 +122,7 @@ impl Delayed {
             return true;
         }
         let turn = state.turn();
-        match self.duration {
+        match &self.duration {
             Duration::Forever => false,
             Duration::UntilEndOfTurn => turn.number() != self.turn,
             Duration::UntilEndOfCombat => {
@@ -140,6 +140,7 @@ impl Delayed {
             // does.
             Duration::UntilOpponentBecomesMonarch
             | Duration::WhileYouControlSource
+            | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep => true,
         }
     }

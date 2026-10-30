@@ -271,7 +271,7 @@ impl RuleEffect {
     pub fn is_active(&self, state: &GameState) -> bool {
         lasts(
             state,
-            self.duration,
+            &self.duration,
             self.turn,
             self.controller,
             self.source,

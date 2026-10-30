@@ -33,6 +33,10 @@ pub struct Problem {
 /// How deep the abilities of a token may make tokens whose abilities are counted.
 const MOST_NESTED: u32 = 4;
 
+/// Only a continuous effect follows a counter on the objects it names.
+const COUNTER_DURATION_ONLY: &str =
+    "only a continuous effect lasts for as long as the permanents it names have a counter";
+
 /// An exchange of control names its two permanents with one reference or two.
 const W6E_EXCHANGE_PAIR: &str =
     "an exchange of control names its two permanents with one reference or two";
@@ -773,6 +777,10 @@ impl<'a> Walker<'a> {
             Condition::Level { of, .. } => {
                 self.uses("Condition", "Level");
                 self.at("Level", |w| w.reference(of, Kind::Object));
+            }
+            Condition::Searched { who, .. } => {
+                self.uses("Condition", "Searched");
+                self.at("Searched", |w| w.reference(who, Kind::Player));
             }
         }
     }
@@ -2091,8 +2099,8 @@ impl Walker<'_> {
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 // The engine phases them in when the source leaves the battlefield, and knows no other duration.
-                if let Some(duration) = duration.filter(|d| *d != Duration::WhileSourceOnBattlefield) {
-                    w.uses("PhaseOut", &format!("Duration.{}", tag_of(&duration)));
+                if let Some(duration) = duration.as_ref().filter(|d| **d != Duration::WhileSourceOnBattlefield) {
+                    w.uses("PhaseOut", &format!("Duration.{}", tag_of(duration)));
                 }
             }
             Effect::Exile {
@@ -2112,8 +2120,8 @@ impl Walker<'_> {
                         Duration::WhileSourceOnBattlefield | Duration::UntilOpponentBecomesMonarch
                     )
                 };
-                if let Some(duration) = duration.filter(|d| !known(d)) {
-                    w.uses("Exile", &format!("Duration.{}", tag_of(&duration)));
+                if let Some(duration) = duration.as_ref().filter(|d| !known(d)) {
+                    w.uses("Exile", &format!("Duration.{}", tag_of(duration)));
                 }
             }
             Effect::Reveal { what }
@@ -2154,11 +2162,21 @@ impl Walker<'_> {
             | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
             Effect::Search {
                 who,
+                zone,
+                also,
                 filter,
                 count,
                 bind,
                 ..
             } => {
+                if !also.is_empty() {
+                    w.uses("Search", "Zones");
+                    let zones: Vec<_> = std::iter::once(zone).chain(also).collect();
+                    let searchable = |z: &&ZoneKind| matches!(z, ZoneKind::Library | ZoneKind::Hand | ZoneKind::Graveyard | ZoneKind::Exile);
+                    if !zones.iter().all(searchable) || zones.iter().enumerate().any(|(at, z)| zones[..at].contains(z)) {
+                        w.problem("a search of several zones names a library, hand, graveyard or exile, each once");
+                    }
+                }
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.bounds(count));
@@ -2428,11 +2446,17 @@ impl Walker<'_> {
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Duration", "WhileYouControlSource");
                 }
+                if matches!(duration, Duration::WhileHasCounter(_)) {
+                    w.uses("Duration", "WhileHasCounter");
+                }
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
                     w.problem(C7_UNTAP_ONLY);
                 }
             }
             Effect::ExchangeControl { what, duration } => {
+                if matches!(duration, Duration::WhileHasCounter(_)) {
+                    w.problem(COUNTER_DURATION_ONLY);
+                }
                 w.at("what", |w| {
                     for (at, one) in what.iter().enumerate() {
                         w.at(at.to_string(), |w| w.reference(one, Kind::Object));
@@ -2449,6 +2473,9 @@ impl Walker<'_> {
                 }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
+                if matches!(duration, Duration::WhileHasCounter(_)) {
+                    w.problem(COUNTER_DURATION_ONLY);
+                }
                 w.rule(rule);
                 // Only the layers end an effect when the source changes controller.
                 if *duration == Duration::WhileYouControlSource {
@@ -2479,6 +2506,9 @@ impl Walker<'_> {
                 by,
                 duration,
             } => {
+                if matches!(duration, Duration::WhileHasCounter(_)) {
+                    w.problem(COUNTER_DURATION_ONLY);
+                }
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Shield", "Duration.WhileYouControlSource");
                 }

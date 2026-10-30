@@ -2150,7 +2150,7 @@ impl Writer<'_> {
                 affected,
                 mods,
                 duration: duration @ (Duration::UntilEndOfTurn | Duration::UntilYourNextTurn),
-            } => self.pump(affected, mods, *duration)?,
+            } => self.pump(affected, mods, duration.clone())?,
             Effect::May {
                 who: Ref::You,
                 effects,
@@ -2404,7 +2404,7 @@ impl Writer<'_> {
                 what,
                 duration,
                 tapped,
-            } => self.w7e_phase_out_text(what, *duration, *tapped)?,
+            } => self.w7e_phase_out_text(what, duration.clone(), *tapped)?,
             Effect::Attach {
                 what: Ref::This,
                 to: to @ Ref::Target(0),
@@ -2903,10 +2903,10 @@ impl Writer<'_> {
         mods: &[Modification],
         duration: Duration,
     ) -> Option<String> {
-        if let Some(sentence) = self.switched(affected, mods, duration) {
+        if let Some(sentence) = self.switched(affected, mods, duration.clone()) {
             return Some(sentence);
         }
-        if let Some(sentence) = self.control(affected, mods, duration) {
+        if let Some(sentence) = self.control(affected, mods, duration.clone()) {
             return Some(sentence);
         }
         if duration == Duration::UntilEndOfTurn
@@ -2983,7 +2983,7 @@ impl Writer<'_> {
             return Some(sentence);
         }
         if let Ref::Each(group) = affected
-            && let Some(sentence) = group_becomes::text(&subject, group, mods, duration)
+            && let Some(sentence) = group_becomes::text(&subject, group, mods, duration.clone())
         {
             return Some(sentence);
         }

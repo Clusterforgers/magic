@@ -63,7 +63,7 @@ impl Writer<'_> {
         else {
             return None;
         };
-        self.control(affected, mods, *duration)
+        self.control(affected, mods, duration.clone())
     }
 
     /// "untap all creatures and gain control of them until end of turn. They gain haste until end of turn": the untap

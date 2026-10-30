@@ -336,5 +336,6 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
+        Condition::Searched { who, .. } => reads_of_ref(who),
     }
 }

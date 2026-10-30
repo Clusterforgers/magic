@@ -126,7 +126,7 @@ fn animate(driver: &mut Driver, name: &str, duration: Duration) -> Result<(), Sc
             power: 5,
             toughness: 5,
         },
-        duration,
+        duration.clone(),
     )?;
     driver.add_effect(
         driver.on(id),

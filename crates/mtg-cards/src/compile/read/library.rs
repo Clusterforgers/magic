@@ -738,6 +738,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         Effect::Search {
             who: searcher,
             zone: ZoneKind::Library,
+            also,
             filter,
             count,
             reveal,
@@ -751,6 +752,9 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     // The name a single search binds is bookkeeping: a proposal may call the card by its type. A pair needs the
     // conventional name, from which the second is derived.
     let pair = matches!(rest, [Effect::Search { .. }, ..]);
+    if !also.is_empty() {
+        return None;
+    }
     if (pair && *bind != bound_as(who, filter)) || searcher != who {
         return None;
     }
@@ -760,13 +764,14 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
             Effect::Search {
                 who: second,
                 zone: ZoneKind::Library,
+                also: other_also,
                 filter: other,
                 count: other_count,
                 reveal: other_reveal,
                 bind: other_bind,
             },
             ..,
-        ] if second == who && other_reveal == reveal => (
+        ] if second == who && other_reveal == reveal && other_also.is_empty() => (
             pairs::text((filter, count, bind), (other, other_count, other_bind))?,
             2,
         ),

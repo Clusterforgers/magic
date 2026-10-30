@@ -163,7 +163,7 @@ pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
     else {
         return None;
     };
-    if effects.get(..2)? != impulse(count.clone(), *duration) {
+    if effects.get(..2)? != impulse(count.clone(), duration.clone()) {
         return None;
     }
     let cards = if count.is_one() {

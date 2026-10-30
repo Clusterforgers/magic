@@ -826,7 +826,12 @@ pub(crate) fn return_to_hand(filter: &Selector, count: usize) -> String {
 /// What a search asks of the player who chooses, as a card says it: "Search your library for a basic land card.",
 /// "Search your library for up to 2 basic land cards." `most` is `usize::MAX` for any number.
 pub(crate) fn search(zone: ZoneKind, filter: &Selector, min: usize, most: usize) -> String {
-    let place = match zone {
+    search_zones(&[zone], filter, min, most)
+}
+
+/// The name of a zone a search looks in, with "your" for the zones of the searcher.
+fn search_place(zone: ZoneKind) -> &'static str {
+    match zone {
         ZoneKind::Library => "your library",
         ZoneKind::Hand => "your hand",
         ZoneKind::Graveyard => "your graveyard",
@@ -834,7 +839,42 @@ pub(crate) fn search(zone: ZoneKind, filter: &Selector, min: usize, most: usize)
         ZoneKind::Battlefield => "the battlefield",
         ZoneKind::Stack => "the stack",
         ZoneKind::Command => "your command zone",
-    };
+    }
+}
+
+/// The zones of a search as a card lists them: "your library, hand, and/or graveyard".
+pub(crate) fn search_places(zones: &[ZoneKind]) -> String {
+    match zones {
+        [] => String::new(),
+        [only] => search_place(*only).to_owned(),
+        [first, rest @ ..] => {
+            let names: Vec<&str> = rest
+                .iter()
+                .map(|zone| search_place(*zone).trim_start_matches("your "))
+                .collect();
+            match names.as_slice() {
+                [] => search_place(*first).to_owned(),
+                [only] => format!("{} and/or {only}", search_place(*first)),
+                [init @ .., last] => {
+                    format!(
+                        "{}, {}, and/or {last}",
+                        search_place(*first),
+                        init.join(", ")
+                    )
+                }
+            }
+        }
+    }
+}
+
+/// [`search`] of several zones: "Search your library, hand, and/or graveyard for a Rune card."
+pub(crate) fn search_zones(
+    zones: &[ZoneKind],
+    filter: &Selector,
+    min: usize,
+    most: usize,
+) -> String {
+    let place = search_places(zones);
     let described = Selector(
         filter
             .0

@@ -23,7 +23,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         effect: RuleEffect {
             id: EffectId(state.next_effect),
             rule,
-            duration: *duration,
+            duration: duration.clone(),
             source: Some(cx.scope.source),
             controller: cx.controller(),
             turn: state.turn().number(),

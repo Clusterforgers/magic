@@ -12,7 +12,7 @@ use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
-use crate::value::Amount;
+use crate::value::{Amount, CounterKind};
 
 /// A change to an object. Static abilities apply them continuously; `Effect::Continuous` applies
 /// them for a duration. The layer (CR 613) follows from the kind.
@@ -152,7 +152,8 @@ impl Modification {
 }
 
 /// How long a continuous effect, rule or delayed trigger lasts.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Duration {
     /// Until the cleanup step of this turn.
     UntilEndOfTurn,
@@ -171,6 +172,11 @@ pub enum Duration {
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
     /// controller's next untap step", CR 502.3): only the rule that a permanent doesn't untap lasts this long.
     NextUntapStep,
+    /// For as long as every object the effect names is still on the battlefield with a counter of the kind ('Each of those
+    /// creatures can't attack you for as long as it has a vow counter on it'): it ends when one of them loses its last counter
+    /// of the kind or leaves, and a counter put on another permanent later changes nothing. Only a continuous effect that
+    /// names its objects (a reference, not a group) lasts this way.
+    WhileHasCounter(CounterKind),
     /// Without end (until the object or the game is gone).
     Forever,
 }

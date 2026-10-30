@@ -41,6 +41,7 @@ impl KeywordRules for PartnerWith {
                         Effect::Search {
                             who: player(),
                             zone: ZoneKind::Library,
+                            also: Vec::new(),
                             filter: Selector(vec![Pred::Named(name.clone())]),
                             count: Bounds::default(),
                             reveal: false,

@@ -326,14 +326,14 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
         state
             .effects()
             .iter()
-            .filter(|e| ends_with_turn(state, e.duration, e.turn, e.controller))
+            .filter(|e| ends_with_turn(state, &e.duration, e.turn, e.controller))
             .map(|e| Event::EffectExpired { id: e.id }),
     );
     events.extend(
         state
             .rule_effects()
             .iter()
-            .filter(|e| ends_with_turn(state, e.duration, e.turn, e.controller))
+            .filter(|e| ends_with_turn(state, &e.duration, e.turn, e.controller))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
     // "Until end of turn" copy effects end with the other effects of the turn (CR 514.2).

@@ -86,6 +86,7 @@ mod rule;
 mod sacrifice;
 mod scry;
 mod search;
+mod search_zones;
 mod shield;
 mod shuffle;
 mod surveil;

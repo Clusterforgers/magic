@@ -719,19 +719,23 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         (
             who(),
             zone(),
+            proptest::collection::vec(zone(), 0..3),
             selector(),
             bounds(),
             any::<bool>(),
             bound_name()
         )
-            .prop_map(|(who, zone, filter, count, reveal, bind)| Effect::Search {
-                who,
-                zone,
-                filter,
-                count,
-                reveal,
-                bind
-            }),
+            .prop_map(
+                |(who, zone, also, filter, count, reveal, bind)| Effect::Search {
+                    who,
+                    zone,
+                    also,
+                    filter,
+                    count,
+                    reveal,
+                    bind
+                }
+            ),
         (
             who(),
             reference(),

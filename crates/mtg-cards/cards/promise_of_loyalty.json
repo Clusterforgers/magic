@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e1d294e8-67b1-4a4a-86b8-f98f28a327d9",
+  "name": "Promise of Loyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Promise of Loyalty",
+      "oracle_fingerprint": "4b006b9bf55903ed98b3959d850f426b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "kept" }, "counter": { "Other": "vow" } } },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Is": { "Bound": "rest" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "rest" } }] }
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "kept" },
+                        "mods": [{ "CantAttackYou": "Both" }],
+                        "duration": { "WhileHasCounter": { "Other": "vow" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

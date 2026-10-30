@@ -191,7 +191,12 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 fn show_learned(state: &mut GameState, event: &Event) {
     match event {
         Event::LibraryLooked(looked) => sight::show(state, Some(looked.player), &looked.cards),
-        Event::CardsFound(found) => sight::show(state, Some(found.player), &found.cards),
+        Event::CardsFound(found) => {
+            sight::show(state, Some(found.player), &found.cards);
+            if let Some(resolving) = state.resolving.as_mut() {
+                resolving.searched.push((found.player, found.zone));
+            }
+        }
         Event::Revealed(revealed) => sight::show(state, None, &revealed.cards),
         _ => {}
     }

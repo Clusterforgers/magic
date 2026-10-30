@@ -1,0 +1,52 @@
+{
+  "oracle_id": "b8739fc4-6308-4e49-be2e-d9d92d890ee1",
+  "name": "Runed Crown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runed Crown",
+      "oracle_fingerprint": "6a9251ea914756eaff907c172fe3a1a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Hand", "Graveyard"],
+                        "filter": [{ "Subtype": "Rune" }],
+                        "as": "rune"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rune" },
+                        "to": { "BattlefieldAttached": { "to": "This" } }
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

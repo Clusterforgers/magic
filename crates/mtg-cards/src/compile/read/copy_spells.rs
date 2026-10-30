@@ -455,7 +455,7 @@ pub(super) fn becomes_text(effect: &Effect, target: &str) -> Option<String> {
     else {
         return None;
     };
-    let until = c10_xp_copy_duration_text(*duration)?;
+    let until = c10_xp_copy_duration_text(duration.clone())?;
     let except = if except.is_empty() {
         String::new()
     } else {

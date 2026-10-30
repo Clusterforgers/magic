@@ -14,7 +14,7 @@ use crate::wording;
 use crate::zones::Zone;
 
 /// The zone of `kind` that `player` searches: their own library, hand or graveyard, or exile, which is shared.
-fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveError> {
+pub(super) fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveError> {
     match kind {
         ZoneKind::Library => Ok(Zone::Library(player)),
         ZoneKind::Hand => Ok(Zone::Hand(player)),
@@ -38,6 +38,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
         zone,
+        also,
         filter,
         count,
         reveal,
@@ -46,6 +47,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("Search"));
     };
+    if !also.is_empty() {
+        return super::search_zones::run(cx, effect);
+    }
     let state = cx.state();
     let most = match &count.max {
         None => usize::MAX,

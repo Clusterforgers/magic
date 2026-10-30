@@ -47,7 +47,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 EffectId(state.next_effect + made),
                 Selector::Objects(vec![object.reference()]),
                 Modification::SetController(player),
-                *duration,
+                duration.clone(),
                 state.next_timestamp + made,
             )
             .from_source(cx.scope.source)
