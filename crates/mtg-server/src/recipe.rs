@@ -113,6 +113,15 @@ impl DeckRef {
     }
 }
 
+/// A card whose picture the table shows: the card and the printing a deck line chose for it, if any.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct CardArt {
+    /// The card's oracle id.
+    pub oracle_id: String,
+    /// The printing the line chose; none shows the card's newest paper printing.
+    pub printing: Option<String>,
+}
+
 impl fmt::Display for DeckRef {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -339,6 +348,34 @@ impl GameRecipe {
             .filter(|id| seen.insert(id.as_str()))
             .cloned()
             .collect()
+    }
+
+    /// The cards whose pictures the table shows, once per card and chosen printing, in the order they first appear;
+    /// a line that names no printing is the card alone. Empty when no seat plays a deck of oracle ids.
+    pub fn card_art(&self) -> Vec<CardArt> {
+        let mut seen = BTreeSet::new();
+        let mut art = Vec::new();
+        for deck in &self.decks {
+            let DeckRef::Oracle {
+                cards,
+                commanders,
+                companion,
+                printings,
+            } = deck
+            else {
+                continue;
+            };
+            for (at, oracle_id) in cards.iter().chain(commanders).chain(companion).enumerate() {
+                let printing = printings.get(at).cloned().flatten();
+                if seen.insert((oracle_id.as_str(), printing.clone())) {
+                    art.push(CardArt {
+                        oracle_id: oracle_id.clone(),
+                        printing,
+                    });
+                }
+            }
+        }
+        art
     }
 
     /// Whether the recipe carries fingerprints, so that [`GameRecipe::build`] checks its decks.
@@ -1104,6 +1141,87 @@ mod tests {
         assert_eq!(ids.first().map(String::as_str), Some("forest"));
         assert_eq!(&ids[ids.len() - 2..], ["chief", "other"]);
         assert_eq!(ids.len(), 1 + 39 + 2, "forest, 39 bears, two commanders");
+    }
+
+    fn strings(ids: &[&str]) -> Vec<String> {
+        ids.iter().map(|id| (*id).to_owned()).collect()
+    }
+
+    fn art(cards: &[(&str, Option<&str>)]) -> Vec<CardArt> {
+        cards
+            .iter()
+            .map(|(oracle_id, printing)| CardArt {
+                oracle_id: (*oracle_id).to_owned(),
+                printing: printing.map(str::to_owned),
+            })
+            .collect()
+    }
+
+    #[rstest]
+    #[case::copies_of_one_printing_count_once(
+        &["a", "a", "b"], &[], None, &[Some("p"), Some("p"), None],
+        &[("a", Some("p")), ("b", None)],
+    )]
+    #[case::printings_of_one_card_count_apart(
+        &["a", "a"], &[], None, &[Some("p"), Some("q")],
+        &[("a", Some("p")), ("a", Some("q"))],
+    )]
+    #[case::a_line_without_a_printing_is_the_card_alone(
+        &["a", "a"], &[], None, &[Some("p"), None],
+        &[("a", Some("p")), ("a", None)],
+    )]
+    #[case::a_short_list_leaves_the_rest_bare(
+        &["a", "b", "c"], &[], None, &[Some("p")],
+        &[("a", Some("p")), ("b", None), ("c", None)],
+    )]
+    #[case::no_list_is_all_bare(
+        &["a", "b", "a"], &[], None, &[],
+        &[("a", None), ("b", None)],
+    )]
+    #[case::commanders_and_the_companion_follow_the_cards(
+        &["a"], &["k", "l"], Some("z"), &[Some("p"), Some("q"), None, Some("r")],
+        &[("a", Some("p")), ("k", Some("q")), ("l", None), ("z", Some("r"))],
+    )]
+    fn the_card_art_of_a_deck_names_each_card_and_chosen_printing_once(
+        #[case] cards: &[&str],
+        #[case] commanders: &[&str],
+        #[case] companion: Option<&str>,
+        #[case] printings: &[Option<&str>],
+        #[case] expected: &[(&str, Option<&str>)],
+    ) {
+        let deck = DeckRef::Oracle {
+            cards: strings(cards),
+            commanders: strings(commanders),
+            companion: companion.map(str::to_owned),
+            printings: printings.iter().map(|id| id.map(str::to_owned)).collect(),
+        };
+        let recipe = GameRecipe::normal(1, [deck.clone(), deck]);
+        assert_eq!(recipe.card_art(), art(expected));
+    }
+
+    #[test]
+    fn the_card_art_of_a_table_joins_the_seats_and_leaves_demo_decks_out() {
+        let printed = |cards: &[&str], printings: &[Option<&str>]| DeckRef::Oracle {
+            cards: strings(cards),
+            commanders: Vec::new(),
+            companion: None,
+            printings: printings.iter().map(|id| id.map(str::to_owned)).collect(),
+        };
+        let recipe = GameRecipe::normal(
+            1,
+            [
+                printed(&["b", "a"], &[Some("p")]),
+                DeckRef::Demo {
+                    id: "mono-red".into(),
+                },
+                printed(&["a", "c"], &[Some("q"), None]),
+            ],
+        );
+        assert_eq!(
+            recipe.card_art(),
+            art(&[("b", Some("p")), ("a", None), ("a", Some("q")), ("c", None)])
+        );
+        assert_eq!(fingerprinted(1, &["mono-green"]).card_art(), art(&[]));
     }
 
     #[test]

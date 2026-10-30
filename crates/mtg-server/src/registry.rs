@@ -656,7 +656,7 @@ impl Registry {
             .collect();
         records.insert(id, recipe, meta, &rows).await?;
         let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()], false)
-            .with_warmer(self.warmer(), recipe.oracle_ids());
+            .with_warmer(self.warmer(), recipe.card_art());
         let spawned = spawn_named(
             id,
             setup,
