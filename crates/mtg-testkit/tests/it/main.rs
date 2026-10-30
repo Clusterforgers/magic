@@ -537,3 +537,6 @@ mod dk1d_disturb;
 mod dk1d_permit_costs;
 // deck-auras
 mod deck_auras;
+
+// t20c
+mod t20c_pay_cards;

@@ -1100,3 +1100,6 @@ mod deck_auras;
 
 // t19c
 mod t19c_writers;
+
+// t20c
+mod t20c_writers;

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "37c06f89-db36-4937-9404-2b07cd22e1a6",
+  "name": "Dawn's Truce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawn's Truce",
+      "oracle_fingerprint": "4e640b53184e3134dce5455391c0b36e",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "PlayersHave": { "who": "You", "keyword": "Hexproof" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

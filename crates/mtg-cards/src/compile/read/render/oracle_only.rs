@@ -327,6 +327,10 @@ mod deck_auras;
 mod t19c_either;
 mod t19c_put_many;
 
+// t20c
+mod t20c_pay;
+mod t20c_rule;
+
 use crate::ability::Ability;
 
 /// Adds to `texts` the oracle wordings of the ability that the renderers do not write.
@@ -425,6 +429,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     // t19c
     t19c_put_many::add(ability, texts);
     t19c_either::add(ability, texts);
+    // t20c
+    t20c_pay::add(ability, texts);
+    t20c_rule::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
