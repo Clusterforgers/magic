@@ -62,7 +62,8 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
 
   const activate = useCallback(
     (next: SideTab): void => {
-      if (kind !== 'column' && next === tab && panel) {
+      // The rail's icon that opened the panel shuts it; the tabs of a sheet are inside it, so a press there only chooses.
+      if (kind === 'rail' && next === tab && panel) {
         setPanel(false)
         return
       }
