@@ -314,6 +314,7 @@ fn preset_state(
         phased: crate::object::PhasedState::default(),
         exerted: crate::w11a_exert::W11aExerted::default(),
         paired: crate::soulbond::Pairing::default(),
+        doors: crate::dk1c5_rooms::Doors::entering(&preset.card, None),
     }
 }
 

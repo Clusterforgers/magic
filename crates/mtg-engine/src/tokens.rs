@@ -118,6 +118,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         phased: crate::object::PhasedState::default(),
         exerted: crate::w11a_exert::W11aExerted::default(),
         paired: crate::soulbond::Pairing::default(),
+        doors: crate::dk1c5_rooms::Doors::entering(&event.definition, None),
     });
     state.next_timestamp += 1;
     // A token can bring what no card of the game had: a triggered ability, a static ability, a legend.

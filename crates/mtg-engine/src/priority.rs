@@ -384,6 +384,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_turn_up(state, player, *id, &pool, &all_mana, life))
         .collect();
+    let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, &pool, &all_mana, life);
     let abilities = if silenced {
         Vec::new()
     } else {
@@ -425,6 +426,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             ]
             .concat(),
         ) || !faces.is_empty()
+            || !unlockable.is_empty()
             || companion,
         playable_lands,
         castable,
@@ -433,6 +435,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         suspendable,
         foretellable,
         turnable,
+        unlockable,
         companion,
         faces,
         unplayable,
@@ -509,6 +512,16 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("turn face up").into());
             }
             Ok(Outcome::BeginTurnUp(object))
+        }
+        PriorityAction::UnlockDoor(object, door) => {
+            if !options
+                .unlockable
+                .iter()
+                .any(|option| option.card == object && option.face == door)
+            {
+                return Err(IllegalAnswer::NotOffered("unlock").into());
+            }
+            Ok(Outcome::BeginUnlock(object, door))
         }
         PriorityAction::CastPrepared(object) => {
             let offered = options.faces.iter().any(|option| {

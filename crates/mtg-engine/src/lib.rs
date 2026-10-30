@@ -116,6 +116,7 @@ pub mod state;
 pub mod tokens;
 pub mod triggers;
 pub mod turn;
+pub mod dk1c5_rooms;
 pub mod w11d_dungeon;
 pub mod w15a_initiative;
 pub mod w17b_statics;

@@ -372,6 +372,9 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
+        Event::DoorUnlocked { object, door, .. } => {
+            crate::dk1c5_rooms::dk1c5_fold_unlocked(state, *object, *door)?;
+        }
         Event::ManaAdded {
             player,
             mana,

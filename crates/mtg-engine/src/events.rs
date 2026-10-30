@@ -810,6 +810,16 @@ pub enum Event {
         /// Its controller, who turned it.
         player: PlayerId,
     },
+    /// A door of a Room was unlocked (CR 709.5e): by the special action of its controller or by an effect. The
+    /// permanent has that door's characteristics from now on.
+    DoorUnlocked {
+        /// The Room.
+        object: ObjectId,
+        /// The door, as an index into the card's faces.
+        door: u8,
+        /// Who unlocked it.
+        player: PlayerId,
+    },
     /// A mutating creature spell merged with a creature (CR 702.140b, 729.2): the spell left the stack and its card is
     /// part of the permanent, which keeps its id, counters, attachments and status.
     Mutated {
@@ -1145,6 +1155,7 @@ impl Event {
             | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }
+            | Event::DoorUnlocked { object, .. }
             | Event::Adapted { object, .. }
             | Event::Bolstered { object, .. }
             | Event::Cycled { object, .. }

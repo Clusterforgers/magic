@@ -100,6 +100,7 @@ mod untap;
 #[cfg(test)]
 mod untap_stun_tests;
 mod vote;
+mod dk1c5_unlock;
 mod w11d_venture;
 mod w15a_take_initiative;
 mod w2f_any_counters;
@@ -179,6 +180,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Amass { .. } => amass::run(cx, effect),
         Effect::Incubate { .. } => w7c_incubate::run(cx, effect),
         Effect::Venture { .. } => w11d_venture::run(cx, effect),
+        Effect::UnlockDoor { .. } => dk1c5_unlock::run(cx, effect),
         Effect::TakeInitiative { .. } => w15a_take_initiative::run(cx, effect),
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
         Effect::Renown { .. } => c6_kw_renown::run(cx, effect),

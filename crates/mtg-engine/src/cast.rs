@@ -451,6 +451,11 @@ fn announcement(
         }) => companion::events(state, player).ok_or_else(unexpected),
         Some(Pending {
             what: What::Spell(card),
+            special: Some(Special::Unlock(door)),
+            ..
+        }) => crate::dk1c5_rooms::dk1c5_events(state, player, *card, *door).ok_or_else(unexpected),
+        Some(Pending {
+            what: What::Spell(card),
             special: Some(Special::TurnFaceUp),
             ..
         }) => turn_up::events(state, *card).ok_or_else(unexpected),

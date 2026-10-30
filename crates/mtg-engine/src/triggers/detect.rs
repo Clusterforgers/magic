@@ -167,6 +167,13 @@ enum Happened {
     },
     /// A player completed a dungeon.
     CompletedDungeon { player: PlayerId },
+    /// A player unlocked `door` of the Room `object`; `fully` when it was the last locked door.
+    DoorUnlocked {
+        player: PlayerId,
+        object: ObjectId,
+        door: u8,
+        fully: bool,
+    },
     /// The game became day or night, which it was `from` (neither at the first change).
     DayNightChanged {
         from: Option<DayNight>,
@@ -298,6 +305,55 @@ impl Happened {
 /// `pre` is the state before the batch and `post` the state after. A permanent spell that resolves enters the
 /// battlefield and any other spell goes to a graveyard; a spell that does not resolve goes to its owner's graveyard
 /// (an ability just ceases to exist).
+/// A door of a Room unlocked (CR 709.5e): by `DoorUnlocked`, or as a Room cast as that door enters (CR 709.5d). It is
+/// the last locked door when the other one was unlocked before the batch or earlier in it.
+fn dk1c5_happened(
+    pre: &GameState,
+    post: &GameState,
+    earlier: &[Event],
+    event: &Event,
+) -> Option<Happened> {
+    match event {
+        Event::DoorUnlocked {
+            object,
+            door,
+            player,
+        } => {
+            let other = 1 - (*door).min(1);
+            let was_open = pre
+                .dk1c5_doors(*object)
+                .is_some_and(|doors| doors[usize::from(other)])
+                || earlier.iter().any(|before| {
+                    matches!(before, Event::DoorUnlocked { object: same, door: opened, .. }
+                        if same == object && *opened == other)
+                });
+            Some(Happened::DoorUnlocked {
+                player: *player,
+                object: *object,
+                door: *door,
+                fully: was_open,
+            })
+        }
+        Event::ZoneChanged {
+            object,
+            from: Zone::Stack,
+            to: Zone::Battlefield,
+            ..
+        } => {
+            let doors = post.dk1c5_doors(*object)?;
+            let door = u8::from(doors[1]);
+            (doors[0] != doors[1]).then_some(())?;
+            Some(Happened::DoorUnlocked {
+                player: controller_of(post, *object)?,
+                object: *object,
+                door,
+                fully: false,
+            })
+        }
+        _ => None,
+    }
+}
+
 fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
     let owner = |object: &ObjectId| pre.object(*object).map(GameObject::owner);
     let (object, from, to, cause) = match event {
@@ -392,6 +448,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         if let Some(moved) = moved(pre, event, post) {
             found.push(moved);
         }
+        found.extend(dk1c5_happened(pre, post, look.earlier, event));
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
@@ -1246,6 +1303,18 @@ fn matching_player_action(
         ) => (by(who, player)
             && room.is_none_or(|room| room == *entered && scope.source.id == *object))
         .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        (
+            TriggerPattern::DoorUnlocked { who, door, fully },
+            Happened::DoorUnlocked {
+                player,
+                object,
+                door: unlocked,
+                fully: last,
+            },
+        ) => (by(who, player)
+            && door.is_none_or(|door| door == *unlocked && scope.source.id == *object)
+            && (!*fully || *last))
+            .then(|| counted(state, vec![Target::Player(*player)], 0)),
         (
             TriggerPattern::DiceRolled { who, highest },
             Happened::DiceRolled {

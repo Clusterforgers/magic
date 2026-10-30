@@ -449,6 +449,15 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             (format!("{name} venture{s} into the dungeon"), false)
         }
         TriggerPattern::Ventured { room: Some(_), .. } => ("you enter this room".to_owned(), false),
+        TriggerPattern::DoorUnlocked {
+            door: Some(_),
+            fully: false,
+            ..
+        } => ("you unlock this door".to_owned(), true),
+        TriggerPattern::DoorUnlocked { who: by, .. } => {
+            let (name, s) = who(by);
+            (format!("{name} fully unlock{s} a Room"), false)
+        }
         TriggerPattern::CompletedDungeon { who: by } => {
             let (name, s) = who(by);
             (format!("{name} complete{s} a dungeon"), false)

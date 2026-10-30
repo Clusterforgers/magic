@@ -11,6 +11,7 @@ mod alternative;
 mod anchor;
 mod c9_emerge_reduce;
 pub(crate) mod companion;
+mod dk1c5_unlock;
 mod division;
 mod face;
 pub(crate) mod foretell;
@@ -272,6 +273,8 @@ pub(crate) enum Special {
     TurnFaceUp,
     /// Putting a companion from outside the game into the hand (CR 702.139): the card is the id it will have there.
     Companion,
+    /// Unlocking this door of a Room (CR 709.5e).
+    Unlock(u8),
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -593,6 +596,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             Special::Foretell => foretell::next(state, *player, *card),
             Special::TurnFaceUp => turn_up::next(state, *player, *card),
             Special::Companion => companion::next(state, *player, *card),
+            Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
         };
     }
     let what: &What = what;
