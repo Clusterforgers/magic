@@ -313,6 +313,8 @@ Every prompt but Mulligan, AssignDamage, OrderTriggers, YesNo, ChooseOption, Cho
 - `Card` sets `data-fx` and `data-fx-side` (`own` or `other`), `LifeFx` wraps the life figure, and `CardRow` puts each `GhostCard` back before the card it stood before, as an `aria-hidden` `li` with no `data-object-id` and nothing focusable.
 - Durations are the custom properties `--fx-<kind>-ms` in `fx/fx.css`, which `fxCss.test.ts` holds equal to `FX_MS`; `--fx-slow` stretches them.
 - Moves from a zone to the stack and on, the spotlight, target arrows and the hand's reasons: [ui-design.md](ui-design.md), Playing is legible.
+- Stack targets: `stackTargets.ts` (pure) lists each stack item's targets once with `gone` read from the player's `lost`, the view and the log since the cast (`movedSince`), `stackText.ts` words them (chip line, label), `combat/stackArrows.ts` plans the arrows as `LineSpec`s of kind `target` from a `stack` anchor (`data-stack-chip` on the chip) that `CombatOverlay` draws in its `stack` layer; the item on show is `usePreviewTarget` when it is on the stack, else the top.
+- Log wording that needs the events around a line (`eventContext.ts`): the resolving spell ("X counters Y", "Y is exiled by X") and the targets of an activation, passed to `describeEvent` by `foldLog` and the turn ticker.
 
 ## Turn cues
 
