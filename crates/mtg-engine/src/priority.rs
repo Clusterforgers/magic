@@ -31,6 +31,7 @@ use crate::price::{Leaves, Price};
 use crate::resolve::{Scope, zone_kind};
 use crate::spend::Spend;
 use crate::state::GameState;
+use crate::unplayable;
 use crate::ways;
 use crate::zones::Zone;
 
@@ -362,17 +363,10 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     // Split second: no spell is cast and no ability that is not a mana ability is activated (CR 702.61a). Special
     // actions and mana abilities stay.
     let silenced = keywords::split_second_on_stack(state);
-    let w17b_forbidden = crate::w17b_statics::w17b_cant_cast(state, player);
-    let castable: Vec<ObjectId> = hand
-        .iter()
-        .copied()
-        .chain(ways::elsewhere(state, player))
-        .filter(|id| {
-            !silenced
-                && !w17b_forbidden
-                && ways::castable_now(state, player, *id, &pool, &all_mana, life)
-        })
-        .collect();
+    let restricted = silenced || crate::w17b_statics::w17b_cant_cast(state, player);
+    let judged = unplayable::judge(state, player, &pool, &all_mana, life, restricted);
+    let castable =
+        unplayable::castable(state, player, &judged, restricted, &pool, &all_mana, life);
     // A special action: no stack, so no target or modes are needed (CR 116.2f).
     let suspendable: Vec<ObjectId> = hand
         .iter()
@@ -413,6 +407,13 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .into_iter()
         .filter(|option| !option.is_costly() && option.takes.is_empty())
         .collect();
+    let offered = unplayable::Offered {
+        lands: &playable_lands,
+        castable: &castable,
+        faces: &faces,
+        special: [&suspendable, &foretellable],
+    };
+    let unplayable = unplayable::unplayable(state, player, &judged, &offered);
     PriorityOptions {
         can_act: can_act(
             &playable_lands,
@@ -435,6 +436,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         turnable,
         companion,
         faces,
+        unplayable,
         can_pass: true,
     }
 }

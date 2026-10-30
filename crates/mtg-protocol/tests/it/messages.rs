@@ -240,6 +240,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             companion: false,
             turnable: Vec::new(),
             faces: Vec::new(),
+            unplayable: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -335,6 +336,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             companion: false,
             turnable: Vec::new(),
             faces: Vec::new(),
+            unplayable: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -1664,6 +1666,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         companion: false,
         turnable: Vec::new(),
         faces: Vec::new(),
+        unplayable: Vec::new(),
         can_act: true,
         can_pass: true,
     };

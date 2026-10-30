@@ -19,6 +19,7 @@ use crate::ability_reader;
 use crate::announce::{self, Granted};
 use crate::attach;
 use crate::characteristics::controller_of;
+use crate::decision::Unplayable;
 use crate::choose::announceable;
 use crate::face_down;
 use crate::faces;
@@ -838,6 +839,30 @@ pub(crate) fn castable_now(
     castable_as_is(state, player, id, pool, sources, life)
 }
 
+/// Why `player` cannot cast `id` now, or `None` when [`castable_now`] holds: a card with several faces gives the reason of
+/// the face that comes closest.
+pub(crate) fn hindrance_now(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> Option<Unplayable> {
+    if !faces::is_multi_face(state, id) {
+        return hindrance_as_is(state, player, id, pool, sources, life);
+    }
+    let mut nearest = None;
+    for face in faces::candidates(state, id) {
+        let view = state.with_face(id, face);
+        match hindrance_as_is(&view, player, id, pool, sources, life) {
+            None => return None,
+            reason => nearest = nearest.max(reason),
+        }
+    }
+    Some(nearest.unwrap_or(Unplayable::Cost))
+}
+
 /// [`castable_now`] for the card as it stands: a card with several faces is judged as the face it is in use as.
 pub(crate) fn castable_as_is(
     state: &GameState,
@@ -847,36 +872,64 @@ pub(crate) fn castable_as_is(
     sources: &[ManaOption],
     life: i32,
 ) -> bool {
+    hindrance_as_is(state, player, id, pool, sources, life).is_none()
+}
+
+/// Why `player` cannot cast `id` as it stands now, or `None` when one of its ways can be used: the reason of the way
+/// that comes closest (`Unplayable` order), and `Restricted` when a way could be used but a "Cast this spell only ..."
+/// does not hold. A card with no way at all has no cost to be cast by (`Cost`).
+pub(crate) fn hindrance_as_is(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> Option<Unplayable> {
     let Some(card) = state.object(id) else {
-        return false;
+        return Some(Unplayable::Cost);
     };
-    if !w17c_cast_only_holds(state, player, card) {
-        return false;
-    }
     let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
     let sources = &for_card(state, sources, id);
     let base = help::offered(state, player, id, &[]);
-    of(state, player, id).iter().any(|way| {
+    let timing = sorcery_timing(state, player);
+    // The checks of one way, cheapest first within the order of `Unplayable`.
+    let hindrance = |way: &Way| {
+        if !(way.instant || timing) {
+            return Some(Unplayable::Timing);
+        }
         let help = help_in(state, player, id, &base, &way.parts);
         // A bestowed spell is an Aura spell and a face-down one a plain creature spell, whose mana restrictions read it so.
         let spend = printed_spend.clone().cast_as(way.alternative);
-        (way.instant || sorcery_timing(state, player))
-            && announceable_in(state, player, id, way.alternative)
-            && parts_payable(state, player, id, &way.parts)
-            && way
-                .cost(card.card().mana_cost.as_ref())
-                .map(|cost| crate::c9_emerge_ways::c9_emerge_offered(state, player, id, way, cost))
-                .is_some_and(|cost| {
-                    announce::payable(
-                        state,
-                        player,
-                        id,
-                        way.alternative.is_some_and(CastWay::replaces_cost),
-                        &cost,
-                        |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
-                    )
-                })
-    })
+        let cost = way
+            .cost(card.card().mana_cost.as_ref())
+            .map(|cost| crate::c9_emerge_ways::c9_emerge_offered(state, player, id, way, cost));
+        let paid = |cost: &ManaCost| {
+            announce::payable(
+                state,
+                player,
+                id,
+                way.alternative.is_some_and(CastWay::replaces_cost),
+                cost,
+                |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
+            )
+        };
+        if cost.as_ref().is_some_and(|cost| !paid(cost)) {
+            return Some(Unplayable::Mana);
+        }
+        if !announceable_in(state, player, id, way.alternative) {
+            return Some(Unplayable::Targets);
+        }
+        (cost.is_none() || !parts_payable(state, player, id, &way.parts)).then_some(Unplayable::Cost)
+    };
+    let mut nearest = None;
+    for way in &of(state, player, id) {
+        match hindrance(way) {
+            None => return (!w17c_cast_only_holds(state, player, card)).then_some(Unplayable::Restricted),
+            reason => nearest = nearest.max(reason),
+        }
+    }
+    Some(nearest.unwrap_or(Unplayable::Cost))
 }
 
 /// The cards `player` may be able to cast, in the zones other than the hand: a graveyard, exile, the top of the library.

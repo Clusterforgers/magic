@@ -54,6 +54,7 @@ mod w11a_exert;
 mod w14c_block_capacity;
 mod w7b_rad;
 mod w8a_declaration_limits;
+mod unplayable;
 mod ways;
 mod wording;
 #[cfg(test)]
