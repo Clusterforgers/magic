@@ -175,7 +175,7 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
         let alone = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
         assert_eq!(result, Some(alone.result), "{players} players");
         let logged = PgEventStore::new(pool.clone()).load(game).await.unwrap();
-        assert_eq!(logged, alone.events);
+        common::assert_same_game(&logged, &alone.events);
         let replayed = replay(&setup, &logged).unwrap();
         assert_eq!(replayed.state_hash(), alone.final_hash);
         assert_eq!(replayed.house_rules(), &some_rules());

@@ -109,7 +109,7 @@ async fn a_game_with_auto_pass_and_clocks_resumes_and_ends_like_an_uninterrupted
             .load(created.id)
             .await
             .unwrap();
-        assert_eq!(logged, alone.events);
+        common::assert_same_game(&logged, &alone.events);
         let setup = recipe(players, seed).build().unwrap();
         assert_eq!(
             replay(&setup, &logged).unwrap().state_hash(),

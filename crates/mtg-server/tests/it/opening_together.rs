@@ -131,9 +131,9 @@ async fn answers_in_any_order_leave_the_other_prompts_as_they_are() {
     let asked: Vec<Prompt> = clients.iter_mut().map(|c| prompts(c).remove(0)).collect();
     // The last seat in seat order answers first, then the others backwards.
     answer(&handle, &clients[3], asked[3].0, MulliganChoice::Mulligan).await;
-    for seat in 0..3 {
+    for (seat, client) in clients.iter_mut().enumerate().take(3) {
         assert!(
-            prompts(&mut clients[seat]).is_empty(),
+            prompts(client).is_empty(),
             "seat {seat} keeps its prompt and id"
         );
     }

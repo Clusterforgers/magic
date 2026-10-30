@@ -141,7 +141,7 @@ async fn a_game_picks_up_after_a_restart_and_ends_as_if_nothing_had_happened(poo
         let alone = straight(players, seed);
         assert_eq!(result, Some(alone.result), "{players} players");
         let logged = PgEventStore::new(pool.clone()).load(game).await.unwrap();
-        assert_eq!(logged, alone.events);
+        common::assert_same_game(&logged, &alone.events);
         let setup = recipe(players, seed).build().unwrap();
         assert_eq!(
             replay(&setup, &logged).unwrap().state_hash(),

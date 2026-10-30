@@ -42,7 +42,7 @@ fn permutations(items: &[PlayerId]) -> Vec<Vec<PlayerId>> {
         }
         for i in 0..k {
             heap(k - 1, items, out);
-            let j = if k % 2 == 0 { i } else { 0 };
+            let j = if k.is_multiple_of(2) { i } else { 0 };
             items.swap(j, k - 1);
         }
     }
