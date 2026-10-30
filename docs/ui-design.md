@@ -205,13 +205,13 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 | `Restricted` | Not allowed | An effect forbids it now |
 | (unknown) | Not now | Not playable now |
 
-- Until the server says why, the web reads `Timing` and `LandPlayed` off public state (types, `Flash`, step, stack, `lands_played`) and `Mana` when the mana value exceeds the untapped permanents with mana abilities plus the pool; anything else is "Not now". The server's reason replaces the guess.
+- The reason is the server's (`PriorityOptions.unplayable`). For a card it does not name, the web reads `Timing` and `LandPlayed` off public state (types, `Flash`, step, stack, `lands_played`) and `Mana` when the mana value exceeds the untapped permanents with mana abilities plus the pool; anything else is "Not now".
 - A battlefield, graveyard or command card with an ability in `PriorityOptions.abilities` is legal as a hand card is.
 
 ### What the protocol carries
 
 - Carried: every moment above, from `SpellCast`, `AbilityActivated`, `AbilityPutOnStack` (with the source's `snapshot`), `AbilityTriggered`, `ResolutionBegan`, `ResolutionEnded`, `Entered`, `ZoneChanged`, `CreatureDied`, `CardDrawn`, `LandPlayed`, the hidden forms of the moves, `ObjectView.targets` and `source`, and the two moments of the batch. A cast object keeps its id from hand to stack to battlefield, so source and destination are its zones before and after.
-- New: `PriorityOptions.unplayable?: Array<UnplayableCard>`, `UnplayableCard = { card: ObjectId, reason: Unplayable }`, `Unplayable = "Timing" | "LandPlayed" | "Mana" | "Targets" | "Cost" | "Restricted"`: one entry for each card of the holder's hand and command zone that is not offered, with the first reason found in that order. Only the holder sees options, so nothing leaks.
+- Also carried: `PriorityOptions.unplayable?: Array<UnplayableCard>`, `UnplayableCard = { card: ObjectId, reason: Unplayable }`, `Unplayable = "Timing" | "LandPlayed" | "Mana" | "Targets" | "Cost" | "Restricted"`: one entry for each card of the holder's hand and command zone that is not offered, with the first reason found in that order. Only the holder sees options, so nothing leaks.
 
 ### Code
 

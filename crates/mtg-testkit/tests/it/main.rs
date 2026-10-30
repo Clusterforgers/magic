@@ -455,6 +455,7 @@ mod umbra_armor;
 mod umbra_fuzz;
 mod undaunted;
 mod unearth;
+mod unplayable;
 mod untap_rules;
 mod upkeep_keywords;
 mod upkeep_keywords_fuzz;

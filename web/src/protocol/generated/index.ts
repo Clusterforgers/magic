@@ -240,6 +240,8 @@ export type { Triggered } from "./Triggered";
 export type { TriggersChoice } from "./TriggersChoice";
 export type { TriggersOptions } from "./TriggersOptions";
 export type { TurnView } from "./TurnView";
+export type { Unplayable } from "./Unplayable";
+export type { UnplayableCard } from "./UnplayableCard";
 export type { UnresolvedLine } from "./UnresolvedLine";
 export type { UnresolvedReason } from "./UnresolvedReason";
 export type { UserView } from "./UserView";

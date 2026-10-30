@@ -555,6 +555,7 @@ mod tests {
             companion: false,
             turnable: Vec::new(),
             faces: Vec::new(),
+            unplayable: Vec::new(),
             can_act,
             can_pass: true,
         }))
