@@ -129,7 +129,7 @@ fn manual_clauses(
     }
     if !attach {
         let reason = named().next().map_or_else(
-            || "the engine runs none of this card's rules".to_owned(),
+            || "you play this card's text by hand".to_owned(),
             |clause| clause.reason.clone(),
         );
         return crate::support::has_rules_text(text)
@@ -1883,7 +1883,7 @@ mod tests {
     #[case::the_whole_text_of_a_card_with_no_rules(
         ImplStatus::Manual,
         "{T}: Add {G}. Draw a card.",
-        "the engine runs none of this card's rules"
+        "you play this card's text by hand"
     )]
     fn the_clauses_the_engine_does_not_run_stay_on_the_definition_as_the_card_prints_them(
         #[case] status: ImplStatus,

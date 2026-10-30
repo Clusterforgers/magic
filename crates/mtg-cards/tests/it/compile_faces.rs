@@ -6,10 +6,11 @@ use mtg_cards::card::ImplStatus;
 use mtg_cards::compile::compile;
 use rstest::rstest;
 
-const FIRE: &str = r#"{"Manual":{"reason":"a spell effect the compiler does not read yet","span":{"start":0,"end":67}}}"#;
+const FIRE: &str =
+    r#"{"Manual":{"reason":"you resolve this spell effect by hand","span":{"start":0,"end":67}}}"#;
 const ICE: &str = r#"{"Spell":{"targets":[{"what":{"Object":[]}}],"effects":[{"Tap":{"what":{"Target":0}}},{"Draw":{}}]}}"#;
 const STOMP: &str = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"Rule":{"rule":{"DamageCantBePrevented":{}},"duration":"UntilEndOfTurn"}},{"DealDamage":{"to":{"Target":0},"amount":2}}]}}"#;
-const GIANT: &str = r#"{"Manual":{"reason":"a triggered ability the compiler does not read yet","span":{"start":0,"end":110}}}"#;
+const GIANT: &str = r#"{"Manual":{"reason":"you apply this triggered ability by hand","span":{"start":0,"end":110}}}"#;
 const WHITE: &str =
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White"]}}}]}}"#;
 const BLUE: &str =
@@ -45,7 +46,7 @@ fn compiled(name: &str) -> (ImplStatus, Vec<Vec<String>>) {
 #[case::adventure("Bonecrusher Giant // Stomp", ImplStatus::Partial, vec![vec![GIANT], vec![STOMP]])]
 #[case::modal_with_lands("Hengegate Pathway // Mistgate Pathway", ImplStatus::Full, vec![vec![WHITE], vec![BLUE]])]
 #[case::split_with_fuse("Wear // Tear", ImplStatus::Full, vec![vec![DESTROY_ARTIFACT, r#"{"Keyword":"Fuse"}"#], vec![DESTROY_ENCHANTMENT, r#"{"Keyword":"Fuse"}"#]])]
-#[case::modal_one_face_read("Selfless Glyphweaver // Deadly Vanity", ImplStatus::Partial, vec![vec![r#"{"Activated":{"cost":["ExileSelf"],"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}}]}}"#], vec![r#"{"Manual":{"reason":"a spell effect the compiler does not read yet","span":{"start":0,"end":86}}}"#]])]
+#[case::modal_one_face_read("Selfless Glyphweaver // Deadly Vanity", ImplStatus::Partial, vec![vec![r#"{"Activated":{"cost":["ExileSelf"],"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}}]}}"#], vec![r#"{"Manual":{"reason":"you resolve this spell effect by hand","span":{"start":0,"end":86}}}"#]])]
 #[case::transform_keywords("Tavern Ruffian // Tavern Smasher", ImplStatus::Full, vec![vec![r#"{"Keyword":"Daybound"}"#], vec![r#"{"Keyword":"Nightbound"}"#]])]
 #[case::transform_keyword_pairs(
     "Bird Admirer // Wing Shredder",

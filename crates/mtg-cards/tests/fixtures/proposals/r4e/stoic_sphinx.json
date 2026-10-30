@@ -11,7 +11,7 @@
         { "Keyword": "Flying" },
         {
           "Manual": {
-            "reason": "the proposed rules do not cover this clause",
+            "reason": "you apply this clause by hand",
             "span": { "start": 13, "end": 86 }
           }
         }

@@ -831,7 +831,7 @@ mod tests {
         let Ability::Manual { reason, span } = &abilities[1] else {
             panic!("{:?}", abilities[1]);
         };
-        assert_eq!(reason, "a triggered ability the compiler does not read yet");
+        assert_eq!(reason, "you apply this triggered ability by hand");
         assert_eq!(
             span.slice(text),
             Some("Whenever ~ attacks, wish for a card.")
@@ -839,7 +839,7 @@ mod tests {
         assert_eq!(
             abilities[2],
             Ability::Manual {
-                reason: "an activated ability the compiler does not read yet".into(),
+                reason: "you apply this activated ability by hand".into(),
                 span: Span { start: 44, end: 65 }
             }
         );

@@ -1,19 +1,19 @@
-//! Stage 5: a clause the compiler does not read becomes a `Manual` ability with a reason in plain words.
+//! Stage 5: a clause the compiler does not read becomes a `Manual` ability whose reason tells the player what to do.
 
 use super::ClauseKind;
 use crate::ability::Ability;
 use crate::card::Span;
 
-/// Why a clause of this kind is left to the table.
+/// What the player does with a clause of this kind, as the deck preview and the by-hand list read it.
 pub const fn reason(kind: ClauseKind) -> &'static str {
     match kind {
-        ClauseKind::Keyword => "a keyword line the compiler does not read yet",
-        ClauseKind::Spell => "a spell effect the compiler does not read yet",
-        ClauseKind::Triggered => "a triggered ability the compiler does not read yet",
-        ClauseKind::Activated => "an activated ability the compiler does not read yet",
-        ClauseKind::Loyalty => "a loyalty ability the compiler does not read yet",
-        ClauseKind::Modal => "a modal spell the compiler does not read yet",
-        ClauseKind::Static => "a static ability the compiler does not read yet",
+        ClauseKind::Keyword => "you apply this keyword by hand",
+        ClauseKind::Spell => "you resolve this spell effect by hand",
+        ClauseKind::Triggered => "you apply this triggered ability by hand",
+        ClauseKind::Activated => "you apply this activated ability by hand",
+        ClauseKind::Loyalty => "you apply this loyalty ability by hand",
+        ClauseKind::Modal => "you resolve this modal spell by hand",
+        ClauseKind::Static => "you apply this static ability by hand",
     }
 }
 
@@ -27,7 +27,7 @@ pub fn manual(kind: ClauseKind, span: Span) -> Ability {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: every kind of clause is left to the table with a reason in plain words that names the kind.
+    //! Goal: every kind of clause is left to the table with a reason that names the kind and tells the player to play it by hand.
     use super::*;
     use rstest::rstest;
 
@@ -42,7 +42,10 @@ mod tests {
     fn the_reason_names_the_kind(#[case] kind: ClauseKind, #[case] word: &str) {
         let reason = reason(kind);
         assert!(reason.contains(word), "{reason}");
-        assert!(reason.ends_with("does not read yet"));
+        assert!(
+            reason.starts_with("you ") && reason.ends_with("by hand"),
+            "{reason}"
+        );
         let span = Span { start: 3, end: 9 };
         assert_eq!(
             manual(kind, span),
