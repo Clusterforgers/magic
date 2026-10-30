@@ -33,7 +33,7 @@ const HEADER: &str = "kind\treason\tblocked\tfreed\tweight\texamples\n";
 const NO_SUCH_TARGET: &str = "target N does not exist: this ability has N target specification(s)";
 
 /// A database with the card fixtures and a cache whose Oracle Cards file ranks Sol Ring 1, Aether Vial 3, Lightning Bolt 6,
-/// Shock 10 and Island 50, and Mountain not at all.
+/// Shock 10 and Arcane Signet 50, and Atraxa, Praetors' Voice not at all.
 async fn ranked(pool: PgPool, dir: &Path) -> (Database, Cache) {
     let cache = fixture_cache(dir);
     put_ranks(
@@ -43,7 +43,7 @@ async fn ranked(pool: PgPool, dir: &Path) -> (Database, Cache) {
             ("Æther Vial", Some(3)),
             ("Lightning Bolt", Some(6)),
             ("Shock", Some(10)),
-            ("Island", Some(50)),
+            ("Arcane Signet", Some(50)),
         ],
     );
     let db = Database::from_pool(pool);
@@ -90,8 +90,8 @@ fn bundles(dir: &Path) -> (PathBuf, PathBuf) {
             ("Lightning Bolt", BOLT),
             ("Shock", SHOCK_CONNIVES),
             ("Sol Ring", NO_TARGET_ONE),
-            ("Island", NO_TARGET),
-            ("Mountain", NO_TARGET),
+            ("Arcane Signet", NO_TARGET),
+            ("Atraxa, Praetors' Voice", NO_TARGET),
             ("Æther Vial", VIAL_CONNIVES),
         ],
     );
@@ -132,11 +132,11 @@ async fn ledger_of_the_bundles(pool: PgPool, swapped: bool) {
     let ranks = Popularity::from_cache(&cache).unwrap();
     let text = write_ledger(&checked, &ranks, None, &gaps).await.unwrap();
 
-    // Sol Ring (1), Island (50) and the unranked Mountain share one invalid row; Shock (10) alone has a missing writer; the
+    // Sol Ring (1), Arcane Signet (50) and the unranked Atraxa, Praetors' Voice share one invalid row; Shock (10) alone has a missing writer; the
     // two clauses of Aether Vial are two rows that free nothing, since each card has two blockers; Lightning Bolt is
     // verified by its better proposal, so its mismatch is not a gap.
     let expected = format!(
-        "{HEADER}invalid\t{NO_SUCH_TARGET}\t3\t3\t0.016568\tSol Ring; Island; Mountain\n\
+        "{HEADER}invalid\t{NO_SUCH_TARGET}\t3\t3\t0.016568\tSol Ring; Arcane Signet; Atraxa, Praetors' Voice\n\
          missing-writer\tSpell: effect Connive\t1\t1\t0.009091\tShock\n{}",
         vial_rows()
     );
@@ -152,7 +152,10 @@ async fn ledger_of_the_bundles(pool: PgPool, swapped: bool) {
         first.contains("invalid") && first.contains(" 0.01657  "),
         "{first}"
     );
-    assert!(first.ends_with("(Sol Ring; Island; Mountain)"), "{first}");
+    assert!(
+        first.ends_with("(Sol Ring; Arcane Signet; Atraxa, Praetors' Voice)"),
+        "{first}"
+    );
     assert!(
         text.ends_with(&format!("gaps written to {}", gaps.display())),
         "{text}"
@@ -185,10 +188,10 @@ async fn the_marks_of_players_rank_the_gaps_first_and_add_a_column(pool: PgPool)
     let (db, cache) = ranked(pool, dir.path()).await;
     let (main, extra) = bundles(dir.path());
     let gaps = dir.path().join("gaps.tsv");
-    // Shock (3 marks) is less played than Sol Ring, yet its gap comes first; Mountain's single mark lifts the
+    // Shock (3 marks) is less played than Sol Ring, yet its gap comes first; Atraxa, Praetors' Voice's single mark lifts the
     // invalid row over the two rows that free nothing.
     mark(&db, "Shock", 3).await;
-    mark(&db, "Mountain", 1).await;
+    mark(&db, "Atraxa, Praetors' Voice", 1).await;
     mark(&db, "Æther Vial", 5).await;
     let marks: Marks = db
         .fix_marks()
@@ -211,7 +214,7 @@ async fn the_marks_of_players_rank_the_gaps_first_and_add_a_column(pool: PgPool)
     let expected = format!(
         "kind\treason\tblocked\tfreed\tmarks\tweight\texamples\n\
          missing-writer\tSpell: effect Connive\t1\t1\t3\t0.009091\tShock\n\
-         invalid\t{NO_SUCH_TARGET}\t3\t3\t1\t0.016568\tSol Ring; Island; Mountain\n{}",
+         invalid\t{NO_SUCH_TARGET}\t3\t3\t1\t0.016568\tSol Ring; Arcane Signet; Atraxa, Praetors' Voice\n{}",
         vial_rows().replace("\t1\t0\t0.000000\t", "\t1\t0\t0\t0.000000\t")
     );
     assert_eq!(std::fs::read_to_string(&gaps).unwrap(), expected);
@@ -276,6 +279,33 @@ async fn a_card_with_a_verified_proposal_leaves_the_ledger_empty(pool: PgPool) {
 
     assert_eq!(std::fs::read_to_string(&gaps).unwrap(), HEADER);
     assert!(text.contains("0 cards held back by 0 gaps"), "{text}");
+}
+
+const TRAMPLE: &str = r#"{"faces":[{"abilities":[{"Keyword":"Trample"}]}]}"#;
+
+// t19b
+#[sqlx::test]
+async fn a_card_of_reminder_text_only_is_in_no_gap_whatever_its_proposal_says(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let (db, cache) = ranked(pool, dir.path()).await;
+    let file = bundle(
+        dir.path(),
+        "lands.json",
+        &[("Island", TRAMPLE), ("Mountain", NO_TARGET)],
+    );
+    let gaps = dir.path().join("gaps.tsv");
+
+    let checked = check_rules(&db, &args(&[&file], Some(&gaps)))
+        .await
+        .unwrap();
+    let ranks = Popularity::from_cache(&cache).unwrap();
+    let text = write_ledger(&checked, &ranks, None, &gaps).await.unwrap();
+
+    assert_eq!(std::fs::read_to_string(&gaps).unwrap(), HEADER);
+    assert!(
+        text.starts_with("2 cards: 1 INVALID, 1 MISMATCH\n0 cards held back by 0 gaps"),
+        "{text}"
+    );
 }
 
 #[sqlx::test]
