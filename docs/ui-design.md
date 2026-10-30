@@ -150,7 +150,7 @@ A move is a picture of the card (a card back for a card the viewer may not ident
 | Moment | Comes from | Moves | Marks | Log line |
 |---|---|---|---|---|
 | Cast | `SpellCast`; the zone before the batch, else the caster's hand | source to stack | spotlight, then target arrows | "Ana casts Lightning Bolt targeting Hill Giant" |
-| Activate | `AbilityActivated`, `AbilityPutOnStack` (`source`, `snapshot`) | an ability chip from the source to the stack | `activated` on the source | "Ana activates Gravedigger targeting Grizzly Bears" |
+| Activate | `AbilityActivated`, `AbilityPutOnStack` (`source`, `snapshot`) | an ability chip from the source to the stack | `activated` on the source | "Ana activates an ability of Gravedigger targeting Grizzly Bears" |
 | Trigger | `AbilityTriggered`, `AbilityPutOnStack` with `cause` | an ability chip from the source to the stack | `triggered` on the source | "Soul Warden triggers" |
 | Target | `ObjectView.targets`, else `choices.targets` of the event | none | `targeted` on each target while the item is on the stack; arrows | in the cast or activate line |
 | Resolve | `ResolutionEnded` `Resolved`; the zone after | stack to the battlefield (a permanent) or the owner's graveyard | `resolved` on what it touched | "Lightning Bolt resolves" |
@@ -184,10 +184,11 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 
 ### The stack
 
-- The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo") and a dot in its controller's colour.
-- Arrows run from the top chip to each target (a card, or a player's life figure) while it is on the stack; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer, in `--primary` for the viewer's items and `--destructive` for another seat's.
+- The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo", at most 3 names, then "+N more") and a dot in its controller's colour. Every chip's label for a screen reader ends with ", targeting Hill Giant and Bo".
+- Arrows run from the top chip to each target (a card, a player's pod, or the chip of another stack item) while it is on the stack, at most 6; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer (its own layer above the strip), in `--primary` for the viewer's items and `--destructive` for another seat's, and appear without drawing in under reduced motion.
+- A target that is gone (its player lost, or it left where it was since the item went on the stack) gets no arrow and drops out of the line; an item with none left says "no legal target" on a dashed chip.
 - The spotlight is a picture at 1.6 times the hand card's height, centred over the shared strip. It never stays, so the layout gate measures the table without it.
-- The Stack tab shows the top item as a large picture with its text and targets, the rest as rows.
+- The Stack tab shows the top item as a large picture with its text and one row per target (a gone one struck out), the rest as rows with their target line.
 
 ### The hand
 

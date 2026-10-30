@@ -24,6 +24,7 @@ export interface RectProvider {
 export function selectorsOf(anchor: Anchor): string[] {
   const seat = (n: number): string[] => [`[data-seat="${n}"]`, `[data-tile-seat="${n}"]`]
   if (anchor.kind === 'seat') return seat(anchor.seat)
+  if (anchor.kind === 'stack') return [`[data-stack-chip="${anchor.id}"]`]
   const card = `button[data-object-id="${anchor.id}"]`
   return anchor.seat === undefined ? [card] : [card, ...seat(anchor.seat)]
 }
@@ -124,7 +125,7 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
     const from = rects.get(anchorKey(line.from))
     const to = rects.get(anchorKey(line.to))
     if (from === undefined || to === undefined) continue
-    const shape = connect(from, to, line.kind === 'block' ? { bow: 0.1, head: 10 } : { bow: 0.12, head: 8 })
+    const shape = connect(from, to, line.kind === 'attack' ? { bow: 0.12, head: 8 } : { bow: 0.1, head: 10 })
     if (shape === null) continue
     const same = `${shape.d}|${line.kind}|${line.pending}|${line.outcome ?? ''}`
     if (seen.has(same)) continue
