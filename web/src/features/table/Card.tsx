@@ -18,6 +18,7 @@ import { ManaStrip } from './ManaStrip'
 import { BY_HAND_KEY, clausesOf } from './manual/clauses'
 import { useManualMenu } from './manual/useManualMenu'
 import { useCardMark, useMarksStore } from './prompt/marks'
+import type { CardSelect } from './prompt/marks'
 import { combatRoleIn } from './selectors'
 import { useLinks } from './useLinks'
 import { usePreviewHandlers } from './usePreviewHandlers'
@@ -36,7 +37,7 @@ export interface CardProps {
   /** Overrides the mark the active prompt gives this card (see `prompt/marks.ts`): legal, dimmed or chosen. */
   highlight?: Highlight
   /** Overrides what the active prompt does on a click: called with the id on a click or an activation by keyboard. */
-  onSelect?: (id: ObjectId) => void
+  onSelect?: CardSelect
   /** Words added to the spoken name, such as where the card waits and what casting it costs. */
   words?: string
 }
@@ -76,7 +77,7 @@ export const Card = memo(function Card({
   const pressable = given !== undefined || toggles
   const promptSelects = given === undefined && (marked === 'legal' || marked === 'selected')
   const onSelect = givenSelect ?? (promptSelects ? marks.select : undefined)
-  const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : () => onSelect(id))
+  const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : (from) => onSelect(id, from))
   const manual = useManualMenu(id)
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true

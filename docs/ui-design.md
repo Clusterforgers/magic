@@ -195,7 +195,7 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 ### The hand
 
 - While the viewer holds priority, a playable card (`castable`, `playable_lands`, `faces`, `suspendable`, `foretellable`) is legal: ring and lifted 4 px. Every other hand card is dimmed and carries a reason. Without priority the hand is unmarked.
-- The reason is a short label on the card's foot on hover and focus, the spoken name ("not available, sorcery speed") and a line in the preview ("Not now: only in your main phase with an empty stack"), which touch reaches.
+- The reason is a short label on the card's foot on hover and focus, the spoken name ("not available, sorcery speed") and the line under the name in the preview ("Only in your main phase with an empty stack."), which a tap on the card pins, so touch reaches it.
 
 | Reason | Label | Line |
 |---|---|---|
@@ -208,7 +208,8 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 | (unknown) | Not now | Not playable now |
 
 - The reason is the server's (`PriorityOptions.unplayable`). For a card it does not name, the web reads `Timing` and `LandPlayed` off public state (types, `Flash`, step, stack, `lands_played`) and `Mana` when the mana value exceeds the untapped permanents with mana abilities plus the pool; anything else is "Not now".
-- A battlefield, graveyard or command card with an ability in `PriorityOptions.abilities` is legal as a hand card is.
+- A permanent the viewer controls, or a card of its graveyard, exile or command zone, with an ability in `PriorityOptions.abilities` is legal as a hand card is, and its spoken name says "Activate {T}: Scry 1" (or "Activate one of 2 abilities") in the card's words (`ObjectView.activated`). A click activates it; a card with another play (a commander that can be cast, a permanent that taps for mana) or several abilities asks which in a small chooser at the card: one line per play, the keyword or the cost and effect as the card words them, in the look of the manual menu (a sheet at the foot of a phone). Arrows, Home and End move along the lines, Escape, Tab and a press outside close it, and a second click on the card closes it.
+- A mana ability is never listed there and never a play; an opponent's card is never marked, a spectator has no marks, and the abilities of a hand card (cycling) are not offered from the table.
 
 ### What the protocol carries
 
@@ -220,7 +221,8 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 - `fx/moves.ts` (pure): `deriveMoves(before, after, events)` gives `Move[]` (`kind`, `object`, `look`, `from`, `to`, `order`, `targets`) and the marks; `MOVE_MS` holds the tokens, which `fx.css` repeats.
 - The travel layer (`fx/travel.ts`, `fx/places.ts`, `fx/FxTravel.tsx`) measures a move's source in the store subscriber of `watchBatches`, which runs before React draws the batch, so a card that left the hand is measured where it stood; it measures the destination on the next frame, a place it does not find falls back to its zone, and a move with no place on screen is left out.
 - `fx/spotlight.ts` (pure) plans the spotlight and its boxes, `fx/Spotlight.tsx` draws it; `fx/marks.ts` (pure) picks the marks and arrows of a batch, `fx/FxMark.tsx` draws a badge, `fx/effectArrows.ts` holds the arrows and `combat/effectLines.ts` gives them to the combat overlay.
-- `handReason.ts` (pure): `unplayableReason(object, view, options)` gives the reason of a dimmed hand card; `REASON_WORDS` its label and line.
+- `handReason.ts` (pure): `unplayableReason(object, view, options)` gives the reason of a dimmed hand card; `REASON_WORDS` its label and line, which `CardNote.line` carries to `CardPreview`.
+- `prompt/activations.ts` (pure): `abilityPlays(options, objectsById, seat)` gives the cards with an ability to activate and their `Play`s, `playsOf` the plays of one card (spell, abilities, mana); `prompt/AbilityChooser.tsx` draws the chooser.
 - `/dev/table?fx=` `cast`, `rival` (another seat casts), `activate`, `resolve`, `counter`, `land` and `draw` play these moments on the fixture table, beside `attack`, `block`, `damage`, `death` (the die moment), `life` and `enter`.
 
 ## Attachments

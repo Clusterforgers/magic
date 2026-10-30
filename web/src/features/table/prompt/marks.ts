@@ -6,6 +6,9 @@ import { createContext, useCallback, useContext, useLayoutEffect, useRef, useSyn
 import type { ObjectId } from '@/protocol/generated'
 import type { Highlight } from '../cardModel'
 
+/** What a click on a marked card does: it gets the card's id and the element clicked, which a popup anchors at. */
+export type CardSelect = (id: ObjectId, from?: HTMLElement) => void
+
 /** The mark of every card a prompt cares about; a card that is not in the map is not marked. */
 export type CardMarks = ReadonlyMap<ObjectId, Highlight>
 
@@ -15,11 +18,13 @@ export const NO_MARKS: CardMarks = new Map()
 /**
  * What a prompt says on a card: `words` for a screen reader, a short `label` drawn on the face only where the state has
  * no arrow or ring of its own (an attacker that still needs blockers), `hint` drawn on the card's foot only while it is
- * hovered or focused (why a hand card cannot be played), and `cue` for the card a click flow waits on.
+ * hovered or focused (why a hand card cannot be played), `line` for the preview of the card (the reason in a sentence,
+ * which a touch screen reaches) and `cue` for the card a click flow waits on.
  */
 export interface CardNote {
   label?: string
   hint?: string
+  line?: string
   words: string
   cue?: 'active'
 }
@@ -31,7 +36,7 @@ export type CardNotes = ReadonlyMap<ObjectId, CardNote>
 export const NO_NOTES: CardNotes = new Map()
 
 const sameNote = (a: CardNote, b: CardNote): boolean =>
-  a.label === b.label && a.hint === b.hint && a.words === b.words && a.cue === b.cue
+  a.label === b.label && a.hint === b.hint && a.line === b.line && a.words === b.words && a.cue === b.cue
 
 /** Every card of `own` dimmed, then the `legal` ones legal and the `selected` ones selected (they may lie outside `own`). */
 export function markCards(
@@ -55,7 +60,7 @@ export interface MarksStore {
   /** Calls `listener` when the mark of `id` changes, or when `toggles` does. */
   subscribe(id: ObjectId, listener: () => void): () => void
   /** Replaces every mark and the click handler; only cards whose mark changed are notified. */
-  publish(marks: CardMarks, onSelect: ((id: ObjectId) => void) | undefined, toggles: boolean): void
+  publish(marks: CardMarks, onSelect: CardSelect | undefined, toggles: boolean): void
   /** Removes every mark. */
   clear(): void
   /** The note written on one card, or undefined. */
@@ -64,14 +69,14 @@ export interface MarksStore {
   publishNotes(notes: CardNotes): void
   /** Removes every note. */
   clearNotes(): void
-  /** A click or key press on a marked card; goes to the published handler. */
-  select(id: ObjectId): void
+  /** A click or key press on a marked card, with the element it was on; goes to the published handler. */
+  select(id: ObjectId, from?: HTMLElement): void
 }
 
 /** A store with no marks. */
 export function createMarksStore(): MarksStore {
   let marks: CardMarks = NO_MARKS
-  let handler: ((id: ObjectId) => void) | undefined
+  let handler: CardSelect | undefined
   let toggling = false
   let notes: CardNotes = NO_NOTES
   const listeners = new Map<ObjectId, Set<() => void>>()
@@ -133,7 +138,7 @@ export function createMarksStore(): MarksStore {
       handler = undefined
       replace(NO_MARKS, false)
     },
-    select: (id) => handler?.(id),
+    select: (id, from) => handler?.(id, from),
     noteOf: (id) => notes.get(id),
     publishNotes: replaceNotes,
     clearNotes: () => replaceNotes(NO_NOTES),
@@ -175,7 +180,7 @@ export interface CardMarksOptions {
  */
 export function useCardMarks(
   marks: CardMarks,
-  onSelect?: (id: ObjectId) => void,
+  onSelect?: CardSelect,
   { toggles = false }: CardMarksOptions = {},
 ): void {
   const store = useMarksStore()
@@ -184,7 +189,7 @@ export function useCardMarks(
   useLayoutEffect(() => {
     latest.current = onSelect
   })
-  const forward = useCallback((id: ObjectId) => latest.current?.(id), [])
+  const forward = useCallback<CardSelect>((id, from) => latest.current?.(id, from), [])
   useLayoutEffect(() => {
     store.publish(marks, forward, toggles)
   }, [store, marks, forward, toggles])
