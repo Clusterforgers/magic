@@ -109,7 +109,8 @@ fn records() -> Result<&'static Records, CorpusError> {
 
 fn read_records() -> Result<Records, CorpusError> {
     let path = deck_dir().join("cards.json");
-    let bytes = std::fs::read(&path).map_err(|error| data(format!("{}: {error}", path.display())))?;
+    let bytes =
+        std::fs::read(&path).map_err(|error| data(format!("{}: {error}", path.display())))?;
     let list = cards(bytes.as_slice())
         .collect::<Result<Vec<_>, _>>()
         .map_err(data)?;
@@ -155,7 +156,9 @@ fn read_records() -> Result<Records, CorpusError> {
 fn names_of(printed: &[PrintedCard]) -> BTreeSet<String> {
     printed
         .iter()
-        .flat_map(|card| std::iter::once(&card.name).chain(card.faces.iter().map(|face| &face.name)))
+        .flat_map(|card| {
+            std::iter::once(&card.name).chain(card.faces.iter().map(|face| &face.name))
+        })
         .map(|name| name.to_lowercase())
         .collect()
 }
@@ -163,8 +166,8 @@ fn names_of(printed: &[PrintedCard]) -> BTreeSet<String> {
 /// The deck of the list `<name>.arena.txt`: every line resolved to a record and assembled for this engine.
 pub fn fixture_deck(name: &str) -> Result<FixtureDeck, CorpusError> {
     let path = deck_dir().join(format!("{name}.arena.txt"));
-    let text =
-        std::fs::read_to_string(&path).map_err(|error| data(format!("{}: {error}", path.display())))?;
+    let text = std::fs::read_to_string(&path)
+        .map_err(|error| data(format!("{}: {error}", path.display())))?;
     let records = records()?;
     let parsed = decklist::parse(&text);
     if let Some(error) = parsed.errors.first() {
@@ -172,7 +175,10 @@ pub fn fixture_deck(name: &str) -> Result<FixtureDeck, CorpusError> {
     }
     let resolution = resolve_deck(&records.index, &parsed);
     if let Some(entry) = resolution.unresolved.first() {
-        return Err(data(format!("{name}: {} is not resolved", entry.entry.name)));
+        return Err(data(format!(
+            "{name}: {} is not resolved",
+            entry.entry.name
+        )));
     }
     let caps = mtg_engine::caps();
     let mut deck = FixtureDeck {
@@ -264,7 +270,11 @@ mod tests {
         assert_eq!(deck.commanders.len(), 1);
         assert_eq!(deck.commanders[0].name, "Y'shtola, Night's Blessed");
         assert_eq!(deck.cards.len(), 99);
-        let islands = deck.cards.iter().filter(|card| card.name == "Island").count();
+        let islands = deck
+            .cards
+            .iter()
+            .filter(|card| card.name == "Island")
+            .count();
         assert_eq!(islands, 4);
     }
 }

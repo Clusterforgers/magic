@@ -9,7 +9,7 @@ use mtg_engine::events::Event;
 use mtg_engine::zones::Zone;
 use mtg_engine::{GameSetup, GameState, apply_event};
 use mtg_testkit::fixture_decks::{FixtureDeck, commander_game, fixture_deck};
-use mtg_testkit::play_game;
+use mtg_testkit::{PlayOptions, play_game_with};
 use rstest::rstest;
 
 use crate::common::seeds::{for_each_seed, fuzz_games};
@@ -117,16 +117,27 @@ impl Seen {
 }
 
 /// Plays the owner's deck in the seat `seed % seats` against `others(seed, seat)` for every other seat.
-fn play_campaign(seats: usize, others: impl Fn(u64, usize) -> &'static FixtureDeck + Sync) {
+fn play_campaign(
+    seats: usize,
+    options: PlayOptions,
+    others: impl Fn(u64, usize) -> &'static FixtureDeck + Sync,
+) {
     let owner = decks().0;
     let seen = Mutex::new(Seen::default());
     for_each_seed(0..games(), |seed| {
         let at = usize::try_from(seed).unwrap() % seats;
         let table: Vec<&FixtureDeck> = (0..seats)
-            .map(|seat| if seat == at { owner } else { others(seed, seat) })
+            .map(|seat| {
+                if seat == at {
+                    owner
+                } else {
+                    others(seed, seat)
+                }
+            })
             .collect();
         let setup = commander_game(&table, seed);
-        let outcome = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
+        let outcome = play_game_with(setup.clone(), seed, options)
+            .unwrap_or_else(|failure| panic!("{failure}"));
         seen.lock().unwrap().add(&setup, &outcome.events, owner);
     });
     let seen = seen.into_inner().unwrap();
@@ -142,12 +153,14 @@ fn play_campaign(seats: usize, others: impl Fn(u64, usize) -> &'static FixtureDe
 
 /// The owner's deck and the precon decks, read once.
 fn decks() -> (&'static FixtureDeck, &'static [FixtureDeck]) {
-    static DECKS: std::sync::OnceLock<(FixtureDeck, Vec<FixtureDeck>)> =
-        std::sync::OnceLock::new();
+    static DECKS: std::sync::OnceLock<(FixtureDeck, Vec<FixtureDeck>)> = std::sync::OnceLock::new();
     let (owner, precons) = DECKS.get_or_init(|| {
         (
             fixture_deck("owner").unwrap(),
-            PRECONS.iter().map(|name| fixture_deck(name).unwrap()).collect(),
+            PRECONS
+                .iter()
+                .map(|name| fixture_deck(name).unwrap())
+                .collect(),
         )
     });
     (owner, precons)
@@ -158,7 +171,7 @@ fn decks() -> (&'static FixtureDeck, &'static [FixtureDeck]) {
 #[case(3)]
 #[case(4)]
 fn the_owners_deck_plays_against_precon_decks_under_every_invariant(#[case] seats: usize) {
-    play_campaign(seats, |seed, seat| {
+    play_campaign(seats, PlayOptions::default(), |seed, seat| {
         let precons = decks().1;
         &precons[(usize::try_from(seed).unwrap() + seat) % precons.len()]
     });
@@ -169,5 +182,27 @@ fn the_owners_deck_plays_against_precon_decks_under_every_invariant(#[case] seat
 #[case(3)]
 #[case(4)]
 fn the_owners_deck_plays_against_itself_under_every_invariant(#[case] seats: usize) {
-    play_campaign(seats, |_, _| decks().0);
+    play_campaign(seats, PlayOptions::default(), |_, _| decks().0);
+}
+
+#[rstest]
+#[case(2)]
+#[case(3)]
+#[case(4)]
+fn the_owners_deck_plays_under_the_servers_windows_with_payments_and_manual_actions(
+    #[case] seats: usize,
+) {
+    // The cards the engine plays by hand are played with manual actions, by the seats and out of turn.
+    let options = PlayOptions {
+        auto_pass: true,
+        partial_payments: true,
+        symbol_choices: true,
+        manual_every: 10,
+        manual_anytime_every: 25,
+        ..PlayOptions::default()
+    };
+    play_campaign(seats, options, |seed, seat| {
+        let precons = decks().1;
+        &precons[(usize::try_from(seed).unwrap() + seat) % precons.len()]
+    });
 }
