@@ -40,6 +40,8 @@ pub struct PresetPermanent {
     pub attached_to: Option<(usize, usize)>,
     /// The seat of the player it starts attached to (an Aura that enchants a player).
     pub attached_player: Option<usize>,
+    /// The creature it starts paired with (soulbond), as (seat, place in that seat's `battlefield`); that creature names it back.
+    pub paired_with: Option<(usize, usize)>,
 }
 
 impl PresetPermanent {
@@ -53,6 +55,7 @@ impl PresetPermanent {
             counters: Vec::new(),
             attached_to: None,
             attached_player: None,
+            paired_with: None,
         }
     }
 }
@@ -233,6 +236,16 @@ impl GameSetup {
                 {
                     return Err(SetupError::BadAttachment { seat, index });
                 }
+                if let Some(partner) = preset.paired_with {
+                    let named_back = self
+                        .players
+                        .get(partner.0)
+                        .and_then(|p| p.battlefield.get(partner.1))
+                        .is_some_and(|other| other.paired_with == Some((seat, index)));
+                    if partner == (seat, index) || !named_back {
+                        return Err(SetupError::BadPairing { seat, index });
+                    }
+                }
             }
         }
         if let Start::At { turn, active, step } = self.start {
@@ -396,6 +409,15 @@ impl GameState {
                 let owner = object.owner();
                 let enchanted = preset.attached_player.map(PlayerId::from_index);
                 object.permanent = Some(preset_state(&preset, host.copied(), enchanted, owner));
+                if let (Some(permanent), Some(partner)) = (
+                    object.permanent.as_mut(),
+                    preset.paired_with.and_then(|place| placed.get(&place)),
+                ) {
+                    permanent.paired = crate::soulbond::Pairing(Some(ObjectRef {
+                        id: *partner,
+                        counter: 0,
+                    }));
+                }
             }
         }
         let (stage, turn, first_player) = match setup.start {
@@ -532,6 +554,12 @@ impl GameState {
                     .is_some_and(|permanent| permanent.attached_to().is_some())
         });
         self.possible.attachments = attachments;
+        let pairs = self.objects().any(|object| {
+            object
+                .permanent()
+                .is_some_and(|p| p.paired_with().is_some())
+        });
+        self.possible.pairs = pairs;
         let legends = self.objects().any(|object| {
             object
                 .def

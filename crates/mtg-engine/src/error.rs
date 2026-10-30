@@ -102,6 +102,16 @@ pub enum SetupError {
         /// Its place there.
         index: usize,
     },
+    /// A starting permanent is paired with itself, with a place that holds no starting permanent, or with one that does not name it back.
+    #[error(
+        "the permanent at place {index} of seat {seat} is paired with nothing it can be paired with"
+    )]
+    BadPairing {
+        /// The seat whose battlefield lists it.
+        seat: usize,
+        /// Its place there.
+        index: usize,
+    },
 }
 
 /// Why a mana payment was rejected.

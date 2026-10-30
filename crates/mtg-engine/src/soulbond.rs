@@ -150,7 +150,7 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a pairing is state of both creatures that `Paired` makes and `Unpaired` ends; `partner_of` reads it only while both are the very objects paired, a creature is in one pair at most, the state-based pass ends a pair when a partner leaves, stops being a creature or changes controller, and a game that was paired and is not any more hashes as one never paired.
+    //! Goal: a pairing is state of both creatures that `Paired` makes and `Unpaired` ends; `partner_of` reads it only while both are the very objects paired, a creature is in one pair at most, the state-based pass ends a pair when a partner leaves, stops being a creature or changes controller, a game that was paired and is not any more hashes as one never paired, and a setup can start a pair that both creatures name.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -159,9 +159,11 @@ mod tests {
     use rstest::rstest;
 
     use super::*;
+    use crate::error::SetupError;
     use crate::events::ZoneCause;
-    use crate::fixtures::{creature, state};
+    use crate::fixtures::{creature, setup, state};
     use crate::fold::apply_event;
+    use crate::setup::PresetPermanent;
 
     fn rock() -> Arc<CardDefinition> {
         Arc::new(CardDefinition::new("Rock").with_type(CardType::Artifact))
@@ -296,5 +298,40 @@ mod tests {
         assert_ne!(game.state_hash(), before);
         apply_event(&mut game, &unpair).unwrap();
         assert_eq!(game.state_hash(), before);
+    }
+
+    fn naming(partner: Option<(usize, usize)>) -> PresetPermanent {
+        PresetPermanent {
+            paired_with: partner,
+            ..PresetPermanent::new(creature("Twin", 1, 1))
+        }
+    }
+
+    #[test]
+    fn a_setup_starts_a_pair_across_seats_that_both_name() {
+        let mut start = setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        start.players[0].battlefield = vec![naming(Some((1, 0))), naming(None)];
+        start.players[1].battlefield = vec![naming(Some((0, 0)))];
+        let game = GameState::from_setup(&start).unwrap();
+        let ids = game.zone(Zone::Battlefield).to_vec();
+        assert_eq!(game.partner_of(ids[0]), Some(ids[2]));
+        assert_eq!(game.partner_of(ids[2]), Some(ids[0]));
+        assert_eq!(game.partner_of(ids[1]), None);
+        // The pair is across controllers, so the first pass of the state-based actions ends it.
+        assert_eq!(state_based(&game, &[]).len(), 1);
+    }
+
+    #[rstest]
+    #[case::to_itself((0, 0))]
+    #[case::to_a_seat_that_is_not_there((7, 0))]
+    #[case::to_a_place_that_is_not_there((0, 5))]
+    #[case::to_a_creature_that_names_no_one((0, 1))]
+    fn a_pairing_nobody_names_back_is_refused_by_name(#[case] partner: (usize, usize)) {
+        let mut start = setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        start.players[0].battlefield = vec![naming(Some(partner)), naming(None)];
+        assert_eq!(
+            GameState::from_setup(&start).unwrap_err(),
+            SetupError::BadPairing { seat: 0, index: 0 }
+        );
     }
 }

@@ -204,6 +204,7 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
     }
     check_counters_settled(state)?;
     check_attachments_settled(state)?;
+    check_pairs_settled(state)?;
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
             continue;
@@ -220,6 +221,34 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
             return Err(Violation::Bookkeeping(format!(
                 "{id:?} should have died: toughness {toughness}, damage {damage}, deathtouch mark {marked}"
             )));
+        }
+    }
+    Ok(())
+}
+
+/// At a decision point every pair holds: a permanent that remembers a partner is paired with it (the partner remembers it
+/// too), both are creatures on the battlefield under one controller, and nothing is paired with two creatures (CR 702.95e).
+fn check_pairs_settled(state: &GameState) -> Result<(), Violation> {
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(held) = state
+            .object(id)
+            .and_then(GameObject::permanent)
+            .and_then(PermanentState::paired_with)
+        else {
+            continue;
+        };
+        let bad = |why: &str| {
+            Violation::Bookkeeping(format!("{id:?} is paired with {:?} but {why}", held.id))
+        };
+        if state.partner_of(id) != Some(held.id) {
+            return Err(bad("the partner is no longer paired with it"));
+        }
+        let creature = |id| characteristics(state, id).is_some_and(|chars| chars.is_creature());
+        if !creature(id) || !creature(held.id) {
+            return Err(bad("one of them is no creature"));
+        }
+        if controller_of(state, id) != controller_of(state, held.id) {
+            return Err(bad("they have different controllers"));
         }
     }
     Ok(())

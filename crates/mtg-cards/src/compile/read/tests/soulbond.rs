@@ -37,7 +37,8 @@ fn the_pair_under_the_paired_condition_reads_and_writes_back(
 fn near_misses_do_not_read_as_the_pair(#[case] text: &str) {
     let read = clause(text, ClauseKind::Static, false);
     assert!(
-        read.as_ref().is_none_or(|ability| !format!("{ability:?}").contains("PairedWith")),
+        read.as_ref()
+            .is_none_or(|ability| !format!("{ability:?}").contains("PairedWith")),
         "{text}: {read:?}"
     );
 }

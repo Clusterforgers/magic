@@ -435,7 +435,7 @@ impl ObjectView {
             attached_to: None,
             attached_player: None,
             // Who is paired with whom is told by the public `Paired` event, so a face-down permanent shows it too.
-            paired_with: state.partner_of(id),
+            paired_with: state.partner_of(object.id()),
             attachments: Vec::new(),
             gives: None,
             face_down: true,
