@@ -1,4 +1,4 @@
-// Goal: the preview of a card lists its activated abilities in the card's words, without its mana abilities, and tags the ones the Priority prompt offers as available now; it lists them for an opponent's card too, but marks none there, and says "No abilities." only for a card with nothing to list.
+// Goal: the preview of a card lists its activated abilities in the card's words, without its mana abilities, and tags the ones the Priority prompt offers as available now; it lists them for an opponent's card too, but marks none there, and says "No abilities." only for a card with nothing to list, and lists the rules played by hand of a card that has them.
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { indexById } from '@/play/view'
@@ -58,8 +58,11 @@ function renderPreview(words: [ObjectView, ...ActivatedView[]][], offered: Abili
     fixture,
     state: (state: PlayState) => {
       const view = clone(must(state.view))
-      for (const [object, ...activated] of words)
-        must(view.objects.find((o) => o.id === object.id)).activated = activated
+      for (const [object, ...activated] of words) {
+        const shown = must(view.objects.find((o) => o.id === object.id))
+        shown.activated = activated
+        if (object.manual !== undefined) shown.manual = object.manual
+      }
       return {
         ...state,
         view,
@@ -136,6 +139,19 @@ describe('the activated abilities in the preview', () => {
     await bare.user.hover(bare.card(mine.id))
     expect(bare.preview()).toHaveTextContent('No abilities.')
     expect(bare.list()).toBeNull()
+  })
+
+  it('lists the rules played by hand in place of "No abilities." for a card whose abilities the table applies', async () => {
+    const clause = {
+      text: 'Whenever an enchantment you control enters, draw a card.',
+      reason: 'a triggered ability',
+    }
+    const { card, user, preview } = renderPreview([[{ ...mine, manual: [clause] }]], [])
+    await user.hover(card(mine.id))
+    expect(preview()).not.toHaveTextContent('No abilities.')
+    expect(preview().querySelector('[data-slot="preview-by-hand"]')).toHaveTextContent(
+      `Played by hand:${clause.text}`,
+    )
   })
 
   it('is read as one sentence by a screen reader: the words, then that it can be activated now', async () => {

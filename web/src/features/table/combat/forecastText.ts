@@ -12,7 +12,8 @@ export interface ForecastNames {
   target(target: AttackTarget): string
 }
 
-const capital = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
+// Only the viewer's own words take a capital: a player's name keeps its spelling ("cy_42's Elf", not "Cy_42's Elf").
+const capital = (text: string): string => (/^your?\b/.test(text) ? `Y${text.slice(1)}` : text)
 
 /** "a", "a and b", "a, b and c". */
 export function listOf(items: readonly string[]): string {
