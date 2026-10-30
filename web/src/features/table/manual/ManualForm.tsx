@@ -43,6 +43,7 @@ const FORMS: Record<Ask, FormWords> = {
   damage: { title: (name) => `Deal damage with ${name}`, submit: 'Deal', count: 'Damage' },
   mana: { title: () => 'Add mana to your pool', submit: 'Add', count: 'How much' },
   pump: { title: (name) => `Pump ${name} until end of turn`, submit: 'Pump', count: '' },
+  note: { title: (name) => `Note on ${name}`, submit: 'Save note', count: '' },
 }
 
 const TOP_DESTINATIONS: readonly [ManualZone, string][] = [
@@ -237,7 +238,17 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
           </NativeSelect>
         </Field>
       ) : null}
-      {ask === 'pump' ? (
+      {ask === 'note' ? (
+        <Field label="Note">
+          <Input
+            value={draft.text}
+            maxLength={LIMITS.note}
+            data-autofocus
+            onChange={(event) => set({ text: event.currentTarget.value })}
+          />
+        </Field>
+      ) : null}
+      {ask === 'note' ? null : ask === 'pump' ? (
         <div className="grid grid-cols-2 gap-2">
           <NumberField
             label="Power change"

@@ -6,7 +6,7 @@ import { commanderHits } from './commanderLog'
 import { eventContexts } from './eventContext'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
-import { byHandLine, manualRun, manualText } from './manual/manualLog'
+import { byHandLine, manualRun, manualText, remember } from './manual/manualLog'
 
 /** One line of the folded log. */
 export interface FoldedLine {
@@ -87,7 +87,7 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
       told = manual.consumed
       lines.push({
         seq,
-        text: manualText(event, manual.from, names),
+        text: manualText(event, manual.from, remember(names, manual.names), manual.shown),
         minor: false,
         passed: [],
         spoken: '',

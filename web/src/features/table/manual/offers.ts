@@ -46,6 +46,7 @@ export const LIMITS = {
   damage: 99,
   mana: 20,
   pump: 99,
+  note: 80,
 } as const
 
 /** The forms that ask for what an action still needs. */
@@ -64,6 +65,7 @@ export type Ask =
   | 'damage'
   | 'mana'
   | 'pump'
+  | 'note'
 
 /** One entry of the menu: an action sent as it is (`action`) or the form that completes it (`ask`). */
 export interface ManualItem {
@@ -78,7 +80,7 @@ export interface ManualItem {
 }
 
 /** The groups of the menu, in order. */
-export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'token' | 'other'
+export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'token' | 'other'
 
 /** A titled run of entries, or a note that says why it has none. */
 export interface ManualGroup {
@@ -324,6 +326,34 @@ function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | n
   return items.length === 0 ? null : { id: 'effect', label: 'Effects', items }
 }
 
+/** What the seat shows or says about a card: a hand card to every seat, a note on a card every seat sees. */
+function showGroup(input: MenuInput, off: string | undefined): ManualGroup | null {
+  const { object, seat } = input
+  const mine = object.owner === seat || object.controller === seat
+  const items: ManualItem[] = []
+  if (mine && zoneKind(object.zone) === 'hand' && object.owner === seat) {
+    items.push({
+      key: 'reveal',
+      label: 'Reveal to the table',
+      hint: 'every seat reads it',
+      action: { Reveal: { what: { Hand: { object: object.id } } } },
+      unavailable: off,
+    })
+  }
+  const seen = ['battlefield', 'graveyard', 'exile', 'command', 'stack'].includes(zoneKind(object.zone))
+  if (mine && seen) {
+    const has = object.note !== undefined
+    items.push({
+      key: 'note',
+      label: has ? 'Change the note…' : 'Add a note…',
+      ...(has ? { hint: object.note } : {}),
+      ask: 'note',
+      unavailable: off,
+    })
+  }
+  return items.length === 0 ? null : { id: 'show', label: 'Show', items }
+}
+
 /**
  * The menu of one card, as the protocol allows it (`ManualAction`) at any time: moves, discards and attachments of
  * what the seat owns or controls, damage and mana from its cards, counters, tapping and pumps of any permanent, and
@@ -337,6 +367,7 @@ export function manualMenu(input: MenuInput): ManualMenu {
     tapGroup(input, off),
     attachGroup(input, off),
     effectGroup(input, off),
+    showGroup(input, off),
     {
       id: 'token' as const,
       label: 'Token',
@@ -437,6 +468,8 @@ export interface Draft {
   /** What damage is dealt to. */
   hit: DamageTarget | null
   mana: ManaType
+  /** The text of a note. */
+  text: string
 }
 
 /** The start of every form. */
@@ -452,6 +485,7 @@ export const EMPTY_DRAFT: Draft = {
   toughness: 1,
   hit: null,
   mana: 'Colorless',
+  text: '',
 }
 
 /** The kind a draft names, or null while it names none the protocol takes. */
@@ -469,6 +503,7 @@ export function startDraft(ask: Ask, input: Omit<BuildInput, 'draft'>): Draft {
       : ask === 'removePlayerCounters'
         ? input.counters
         : undefined
+  if (ask === 'note') return { ...EMPTY_DRAFT, text: input.object.note ?? '' }
   const first = held?.at(0)
   return first === undefined ? EMPTY_DRAFT : { ...EMPTY_DRAFT, kind: counterName(first[0]) }
 }
@@ -565,6 +600,14 @@ export function buildAction(ask: Ask, input: BuildInput): Built {
       }
       if (power === 0 && toughness === 0) return problem('Change power or toughness.')
       return { action: { Pump: { object: object.id, power, toughness } } }
+    }
+    case 'note': {
+      const text = draft.text.trim()
+      if (text.length > LIMITS.note) return problem(`Write at most ${LIMITS.note} characters.`)
+      if (/\p{Cc}/u.test(text)) return problem('Write the note on one line.')
+      if (text === (object.note ?? ''))
+        return problem(text === '' ? 'Write a note.' : 'The note is the same.')
+      return { action: { Note: { object: object.id, text } } }
     }
   }
 }

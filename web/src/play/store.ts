@@ -17,6 +17,7 @@ import type {
   YieldUntil,
 } from '@/protocol/generated'
 import { hostsBefore } from './hosts'
+import { namesToRemember } from './rememberNames'
 import type { HostRef } from './hosts'
 import type { PreviewState } from './preview'
 
@@ -66,6 +67,8 @@ export interface LogEntry {
   event: EventView
   /** For an attach event: where the attachment hung before it (null: on nothing), from the view before its batch. */
   hostBefore?: HostRef | null
+  /** The names of the cards the entry tells that the view no longer holds once they moved (a look, a put-back, a reveal). */
+  names?: Readonly<Record<ObjectId, string>>
 }
 
 /** One line of table chat. */
@@ -168,14 +171,19 @@ export function appendLog(
   fromSeq: number,
   events: readonly EventView[],
   before?: Readonly<Record<ObjectId, ObjectView>>,
+  after?: Readonly<Record<ObjectId, ObjectView>>,
 ): readonly LogEntry[] {
   if (events.length === 0) return log
   const hosts = before === undefined ? [] : hostsBefore(events, before)
   const added = events.map((event, index): LogEntry => {
     const hostBefore = hosts[index]
-    return hostBefore === undefined
-      ? { seq: fromSeq + index, event }
-      : { seq: fromSeq + index, event, hostBefore }
+    const names = namesToRemember(event, before, after)
+    return {
+      seq: fromSeq + index,
+      event,
+      ...(hostBefore === undefined ? {} : { hostBefore }),
+      ...(names === undefined ? {} : { names }),
+    }
   })
   return [...log, ...added].slice(-LOG_LIMIT)
 }

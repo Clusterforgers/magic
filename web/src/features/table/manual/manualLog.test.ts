@@ -7,7 +7,15 @@ import { describeEvent } from '../eventText'
 import { foldLog } from '../logFold'
 
 const NAMES = ['Ana', 'Bo']
-const CARDS: Record<number, string> = { 1: 'Sol Ring', 2: 'Grizzly Bears', 3: 'Sword', 4: 'Forest' }
+const CARDS: Record<number, string> = {
+  1: 'Sol Ring',
+  2: 'Grizzly Bears',
+  3: 'Sword',
+  4: 'Forest',
+  5: 'Llanowar Elves',
+  6: 'Island',
+  7: 'Mountain',
+}
 const names = {
   seat: (seat: PlayerId) => NAMES[seat] ?? `Seat ${seat}`,
   card: (id: number) => CARDS[id] ?? 'a card',
@@ -129,14 +137,30 @@ describe('the sentence of each manual action', () => {
     [
       'the top put back',
       { ArrangeTop: { top: [5], bottom: [6, 7], graveyard: [] } },
-      'Bo puts back the top 3 cards of their library: 1 on top, 2 on the bottom (by hand)',
+      'Bo puts back the top 3 cards of their library: Llanowar Elves on top, Island and Mountain on the bottom (by hand)',
     ],
     [
       'the top milled and kept',
       { ArrangeTop: { top: [5], bottom: [], graveyard: [6] } },
-      'Bo puts back the top 2 cards of their library: 1 on top, 1 into their graveyard (by hand)',
+      'Bo puts back the top 2 cards of their library: Llanowar Elves on top, Island into their graveyard (by hand)',
     ],
     ['a shuffle', { Shuffle: {} }, 'Bo shuffles their library (by hand)'],
+    [
+      'a hand card revealed',
+      { Reveal: { what: { Hand: { object: 4 } } } },
+      'Bo reveals Forest from their hand (by hand)',
+    ],
+    [
+      'the top card revealed',
+      { Reveal: { what: { Top: {} } } },
+      'Bo reveals the top card of their library (by hand)',
+    ],
+    [
+      'a note',
+      { Note: { object: 2, text: '  has haste ' } },
+      'Bo puts a note on Grizzly Bears: “has haste” (by hand)',
+    ],
+    ['a note cleared', { Note: { object: 2, text: ' ' } }, 'Bo clears the note on Grizzly Bears (by hand)'],
   ]
   it.each(sentences)('%s', (_name, what, text) => {
     const line = describeEvent(action(what), names)
@@ -158,6 +182,53 @@ describe('the sentence of each manual action', () => {
     expect(line.text).toBe(
       'Bo puts back the top 3 cards of their library: 2 on top, 1 into their graveyard (by hand)',
     )
+  })
+})
+
+describe('a look at the top, a put-back and a reveal name the cards to the seat that knows them', () => {
+  const looked = pub({ LibraryLooked: { player: 1, cards: [5, 6, 7] } })
+  const seenByOthers = hid({ LibraryLooked: { player: 1, count: 3 } })
+
+  it('names the cards of a look for the seat that looked, and counts them for the others', () => {
+    const own = [action({ LookTop: { count: 3 } }), looked]
+    expect(fold(own)).toEqual([
+      'Bo looks at the top 3 cards of their library: Llanowar Elves, Island and Mountain (by hand)',
+    ])
+    const others = [action({ LookTop: { count: 3 } }), seenByOthers]
+    expect(fold(others)).toEqual(['Bo looks at the top 3 cards of their library (by hand)'])
+  })
+
+  it('names the top card of a reveal from the event that follows it', () => {
+    const shown = pub({ Revealed: { player: 1, cards: [5] } })
+    expect(fold([action({ Reveal: { what: { Top: {} } } }), shown])).toEqual([
+      'Bo reveals the top card of their library: Llanowar Elves (by hand)',
+    ])
+  })
+
+  it('keeps the names of the cards a look told after the view has forgotten them', () => {
+    const entries: LogEntry[] = [
+      { seq: 0, event: action({ LookTop: { count: 2 } }) },
+      {
+        seq: 1,
+        event: pub({ LibraryLooked: { player: 1, cards: [5, 6] } }),
+        names: { 5: 'Llanowar Elves', 6: 'Island' },
+      },
+    ]
+    const forgot = { seat: names.seat, card: () => 'a card' }
+    const told = (log: LogEntry[]): string[] =>
+      foldLog(log, forgot, { seats: [0, 1] }).map((line) => line.text)
+    expect(told(entries)).toEqual([
+      'Bo looks at the top 2 cards of their library: Llanowar Elves and Island (by hand)',
+    ])
+    expect(told(entries.map(({ names: _kept, ...entry }) => entry))).toEqual([
+      'Bo looks at the top 2 cards of their library: a card and a card (by hand)',
+    ])
+  })
+
+  it('tells a shuffle, a put-back and a reveal in the log of the other seats without the cards', () => {
+    expect(fold([action({ Shuffle: {} }), hid({ LibraryShuffled: { player: 1 } })])).toEqual([
+      'Bo shuffles their library (by hand)',
+    ])
   })
 })
 

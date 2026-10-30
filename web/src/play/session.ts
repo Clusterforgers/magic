@@ -277,11 +277,12 @@ export function createSession(deps: SessionDeps): Session {
     // The game has moved on past the decision this seat yielded in, so the server has passed for it.
     const passed = yieldedFor !== null && state.pending?.id === yieldedFor
     yieldedFor = null
+    const objectsById = view.objects === state.view?.objects ? state.objectsById : indexById(view.objects)
     setState({
       view,
-      objectsById: view.objects === state.view?.objects ? state.objectsById : indexById(view.objects),
+      objectsById,
       seq: batch.from_seq + batch.events.length,
-      log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById),
+      log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById),
       phase: state.result === null ? 'playing' : 'over',
       lobby: null,
       ...(passed ? { pending: null, preview: null } : {}),

@@ -11,6 +11,7 @@ const INPUT: PanelInput = {
   library: 52,
   hand: 4,
   counters: [[{ Other: 'energy' }, 2]],
+  looked: [],
 }
 
 function command(id: CommandId, input: PanelInput = INPUT): Command {
@@ -32,7 +33,7 @@ describe('panelGroups', () => {
   it('lists You, Library and Make in order with their commands', () => {
     expect(panelGroups(INPUT).map((group) => [group.label, group.commands.map((c) => c.id)])).toEqual([
       ['You', ['life', 'poison', 'energy', 'experience']],
-      ['Library', ['draw', 'mill', 'exileTop', 'bottomTop', 'shuffle']],
+      ['Library', ['draw', 'look', 'mill', 'exileTop', 'bottomTop', 'shuffle', 'revealTop']],
       ['Make', ['token', 'mana']],
     ])
   })

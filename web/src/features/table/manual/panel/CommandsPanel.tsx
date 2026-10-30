@@ -6,17 +6,30 @@ import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { CommonToken, CounterKind, ManaType } from '@/protocol/generated'
+import type { CommonToken, CounterKind, ManaType, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { playerOf } from '../../selectors'
 import { COMMON_TOKENS, GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
+import { lookIsPending } from './arrange'
 import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
+import { LookTopBody } from './LookTopBody'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
+const NO_CARDS: readonly ObjectId[] = []
 
 /** The step of Page Up and Page Down in an amount field. */
 const PAGE_STEP = 5
+
+/** The top cards the seat looked at and has not put back: its known top cards while its last look is still open. */
+function lookedOf(
+  known: readonly ObjectId[] | undefined,
+  log: Parameters<typeof lookIsPending>[0],
+  seat: number,
+): readonly ObjectId[] {
+  if (known === undefined || known.length === 0) return NO_CARDS
+  return lookIsPending(log, seat) ? known : NO_CARDS
+}
 
 /** What the seat's commands are made from, or null for a viewer that is no seat of the game. */
 function usePanelInput(): PanelInput | null {
@@ -31,6 +44,7 @@ function usePanelInput(): PanelInput | null {
         library: player.library.count,
         hand: player.hand.count,
         counters: player.counters ?? NO_COUNTERS,
+        looked: lookedOf(player.known_top, state.log, state.seat),
         off: state.result !== null ? GAME_OVER : player.lost !== null ? OUT_OF_GAME : undefined,
       }
     }),
@@ -140,7 +154,19 @@ function Row({ command, input, open, onToggle, onClose }: RowProps) {
         <span className="text-sm font-medium">{command.label}</span>
         <span className="text-xs text-muted-foreground">{command.unavailable ?? command.effect}</span>
       </button>
-      {open ? <CommandForm id={form} command={command} input={input} onClose={close} /> : null}
+      {open ? (
+        command.id === 'look' ? (
+          <LookTopBody
+            id={form}
+            command={command}
+            input={input}
+            onClose={close}
+            plain={<CommandForm id={form} command={command} input={input} onClose={close} />}
+          />
+        ) : (
+          <CommandForm id={form} command={command} input={input} onClose={close} />
+        )
+      ) : null}
     </div>
   )
 }
