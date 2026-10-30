@@ -58,7 +58,7 @@ function Legality({ legality }: { legality: PreviewLegality }) {
           aria-label={`Why the deck is not legal in ${format}`}
           className="list-disc pl-6 text-xs text-destructive"
         >
-          {reasons.map((reason) => (
+          {[...new Set(reasons)].map((reason) => (
             <li key={reason} className="[overflow-wrap:anywhere]">
               {reason}
             </li>

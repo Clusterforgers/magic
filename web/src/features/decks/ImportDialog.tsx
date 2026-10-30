@@ -12,7 +12,7 @@ import { FormatField, NameField } from './DeckFields'
 import { describeDeckError } from './errors'
 import { DEFAULT_FORMAT, formatLabel, importSummary } from './format'
 import { ImportNotes } from './ImportNotes'
-import { fileProblem, listProblem, nameFromFile, nameProblem } from './rules'
+import { fileProblem, listProblem, nameFromCommanders, nameFromFile, nameProblem } from './rules'
 
 // Whole class names, so Tailwind can see them. The same edge, fill and focus as `Input`, for a block of lines.
 const TEXTAREA =
@@ -86,7 +86,8 @@ export function ImportDialog({ api, onSaved, onClosed }: ImportDialogProps) {
     setPending(true)
     try {
       const result = await api.importList({ text, source: null, format })
-      setName((current) => (current === '' ? suggested : current))
+      // A file name comes first; a pasted list has none, so its commanders name it.
+      setName((current) => (current !== '' ? current : suggested || nameFromCommanders(result.cards)))
       setStep({ kind: 'review', result })
     } catch (error) {
       setFormError(describeDeckError(error))

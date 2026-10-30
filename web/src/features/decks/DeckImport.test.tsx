@@ -267,6 +267,9 @@ describe('saving', () => {
       }),
     })
     const form = await review(app)
+    // A pasted list has no file name, so its commander names it until the player types another.
+    expect(nameField()).toHaveValue('Tormod, the Desecrator')
+    await app.user.clear(nameField())
     await app.user.type(nameField(), '  Imported Burn  ')
     await app.user.click(within(form).getByRole('button', { name: 'Save deck' }))
     await waitFor(() => expect(dialog()).toBeNull())

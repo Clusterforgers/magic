@@ -39,7 +39,7 @@ export function NotValidatedDialog({ deck }: { deck: DeckPreviewData }) {
                   {card.name}
                   <SupportMark support={card.support} />
                 </span>
-                {card.reasons.map((reason) => (
+                {[...new Set(card.reasons)].map((reason) => (
                   <span key={reason} className="text-xs text-muted-foreground [overflow-wrap:anywhere]">
                     {reason}
                   </span>
