@@ -1,6 +1,6 @@
 import type { PlayerId, Step } from '@/protocol/generated'
 import { parseStopSpec } from './dev/stopSpec'
-import type { CommandId } from './manual/panel/commands'
+import type { DevPanel } from './manual/panel/devPanel'
 import { panelOf } from './manual/panel/devPanel'
 import type { TableMode } from './layout'
 import { STEP_LABEL } from './turnText'
@@ -78,8 +78,8 @@ export interface DevSearch {
   cards?: 'real'
   /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
   menu?: DevMenu
-  /** Opens a row of the Commands panel once the table has loaded: `1` the life row, or a command by its id (`draw`, `token`). */
-  panel?: CommandId
+  /** Opens a row of the Commands panel once the table has loaded: `1` the life row, a command by its id (`draw`, `token`), or `top` for the arrange list after a look at the top 3. */
+  panel?: DevPanel
 }
 
 /** The cards `?menu=` opens the manual menu on. */

@@ -24,6 +24,7 @@ import { ANNOUNCE_PROMPTS } from './announcePrompts'
 import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
+import { lookTopMoment } from './lookTopScene'
 import { paySources, paySourcesTable } from './paySources'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -492,6 +493,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'commander-return': commanderReturnTable,
   ...EFFECT_MOMENTS,
   ...LOOKED_MOMENTS,
+  'look-top': lookTopMoment,
 }
 
 /**

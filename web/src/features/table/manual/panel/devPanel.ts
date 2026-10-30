@@ -5,22 +5,28 @@ import type { CommandId } from './commands'
 /** How many times, 100 ms apart, the table gets to draw the panel before the request gives up. */
 const TRIES = 100
 
+/** What `?panel=` names: a row of the panel, or `top` for the look-at-the-top row with three cards looked at. */
+export type DevPanel = CommandId | 'top'
+
 const COMMANDS: readonly CommandId[] = [
   'life',
   'poison',
   'energy',
   'experience',
   'draw',
+  'look',
   'mill',
   'exileTop',
   'bottomTop',
   'shuffle',
+  'revealTop',
   'token',
   'mana',
 ]
 
 /** The row `?panel=` opens: `1` the life row, or a command by its id; `undefined` for anything else. */
-export function panelOf(value: unknown): CommandId | undefined {
+export function panelOf(value: unknown): DevPanel | undefined {
+  if (value === 'top') return 'top'
   if (value === 1 || value === true || value === '1') return 'life'
   return COMMANDS.find((id) => id === value)
 }

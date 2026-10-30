@@ -253,7 +253,6 @@ function CardLine({ card, name, object, place, at, total, onSend, onMove }: Line
   const label = DESTINATIONS.find((option) => option.id === place)?.label ?? ''
   return (
     <li
-      role="group"
       aria-label={`${name}, ${label.toLowerCase()}, ${at + 1} of ${total}`}
       data-card={card}
       className="grid gap-1 rounded-md border border-border p-1"
