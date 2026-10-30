@@ -10,7 +10,8 @@ use mtg_core::mana::ManaType;
 use mtg_engine::GameState;
 use mtg_engine::combat::DamageTarget;
 use mtg_engine::manual::{
-    CommonToken, CustomToken, ManualAction, ManualToken, ManualZone, check as legal,
+    CommonToken, CustomToken, ManualAction, ManualReveal, ManualRoll, ManualToken, ManualZone,
+    check as legal,
 };
 use mtg_engine::rng::GameRng;
 use mtg_engine::zones::Zone;
@@ -27,6 +28,19 @@ const ZONES: [ManualZone; 7] = [
     ManualZone::LibraryBottom,
     ManualZone::Command,
 ];
+
+/// The texts a note takes: none (clears), a few short ones that come again, one with padding and one too long.
+const NOTES: [&str; 6] = [
+    "",
+    "marked",
+    "attacks next turn",
+    "  marked  ",
+    "x2",
+    "a note much too long to be kept on a card by hand, which stops at eighty characters, and this goes on",
+];
+
+/// The faces of the dice a script rolls: the limits, the common dice and sizes the engine refuses.
+const SIDES: [u32; 7] = [2, 6, 20, 100, 0, 1, 101];
 
 /// Draws the moments of a game at which a seat takes a manual action, and the action.
 #[derive(Debug, Clone)]
@@ -119,7 +133,8 @@ impl ManualScript {
 
     fn candidate(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
         let nothing = ManualAction::Draw { count: 1 };
-        match self.rng.below(20) {
+        match self.rng.below(23) {
+            20..=22 => self.shown(state, player),
             0..=2 => {
                 let mine = Self::objects(state, player, Scope::Mine);
                 let to = self.zone();
@@ -241,6 +256,38 @@ impl ManualScript {
             bottom,
             graveyard,
         })
+    }
+
+    /// A candidate that shows or says something: a card revealed from the hand or the top of the library, a note on a
+    /// card (an empty text, a short one drawn from a few so the same text comes again, one too long), or a coin or a
+    /// die (sizes outside 2 to 100 included).
+    fn shown(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
+        let nothing = ManualAction::Shuffle {};
+        match self.rng.below(3) {
+            0 => {
+                let hand = Self::objects(state, player, Scope::Hand);
+                let what = match self.pick(&hand) {
+                    Some(object) if self.rng.below(2) == 0 => ManualReveal::Hand { object },
+                    _ => ManualReveal::Top {},
+                };
+                ManualAction::Reveal { what }
+            }
+            1 => {
+                let seen = Self::objects(state, player, Scope::Mine);
+                let text = NOTES[self.rng.index(NOTES.len())].to_owned();
+                self.pick(&seen)
+                    .map_or(nothing, |object| ManualAction::Note { object, text })
+            }
+            _ => ManualAction::Roll {
+                kind: if self.rng.below(4) == 0 {
+                    ManualRoll::Coin {}
+                } else {
+                    ManualRoll::Die {
+                        sides: SIDES[self.rng.index(SIDES.len())],
+                    }
+                },
+            },
+        }
     }
 
     /// Damage from a card of the seat to a random player or permanent.

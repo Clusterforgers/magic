@@ -7,7 +7,9 @@ use mtg_core::mana::ManaType;
 use mtg_engine::combat::DamageTarget;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::error::IllegalAnswer;
-use mtg_engine::manual::{CommonToken, ManualAction, ManualRefusal, ManualToken, ManualZone};
+use mtg_engine::manual::{
+    CommonToken, ManualAction, ManualRefusal, ManualRoll, ManualToken, ManualZone,
+};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, EngineError, Event, characteristics};
@@ -103,6 +105,7 @@ fn at(moment: Moment) -> (Driver, PlayerId) {
 
 /// One action of each kind for `actor`, named for the table.
 fn actions(driver: &Driver, actor: PlayerId) -> Vec<(&'static str, ManualAction)> {
+    let mut all = rolls();
     let (own_card, own_creature) = if actor == pid(0) {
         ("Spare", "Mine")
     } else {
@@ -112,7 +115,7 @@ fn actions(driver: &Driver, actor: PlayerId) -> Vec<(&'static str, ManualAction)
     let creature = find(driver, Zone::Battlefield, own_creature);
     let theirs = find(driver, Zone::Battlefield, "Theirs");
     let other = PlayerId(1 - actor.0);
-    vec![
+    all.extend([
         ("draw", ManualAction::Draw { count: 1 }),
         (
             "mill",
@@ -198,6 +201,16 @@ fn actions(driver: &Driver, actor: PlayerId) -> Vec<(&'static str, ManualAction)
                 toughness: 1,
             },
         ),
+    ]);
+    all
+}
+
+/// A coin and a die, which any seat takes at any moment.
+fn rolls() -> Vec<(&'static str, ManualAction)> {
+    let roll = |kind| ManualAction::Roll { kind };
+    vec![
+        ("flip a coin", roll(ManualRoll::Coin {})),
+        ("roll a die", roll(ManualRoll::Die { sides: 20 })),
     ]
 }
 

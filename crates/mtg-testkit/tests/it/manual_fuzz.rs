@@ -48,6 +48,7 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::Shuffle {} => "shuffle",
         ManualAction::Reveal { .. } => "reveal",
         ManualAction::Note { .. } => "note",
+        ManualAction::Roll { .. } => "roll",
     }
 }
 
@@ -75,7 +76,8 @@ fn seeded_games_with_manual_cards_and_manual_actions_finish_and_keep_every_invar
     }
     assert!(taken > 0, "no manual action in {} games", games());
     for wanted in [
-        "move", "counters", "life", "token", "tap", "untap", "draw", "discard",
+        "move", "counters", "life", "token", "tap", "untap", "draw", "discard", "reveal", "note",
+        "shuffle", "roll",
     ] {
         assert!(
             kinds.contains(wanted),

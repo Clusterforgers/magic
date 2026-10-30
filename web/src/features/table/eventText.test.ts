@@ -85,6 +85,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [{ CoinFlipped: { player: 1, won: true } }, 'Bo wins a coin flip'],
+  ManualRolled: [
+    { ManualRolled: { player: 1, kind: { Die: { sides: 20 } }, result: 14 } },
+    'Bo rolls a d20: 14',
+  ],
   Clashed: [{ Clashed: { player: 1, opponent: 2, won: false } }, 'Bo loses a clash with Cy'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
   Ventured: [

@@ -4,6 +4,7 @@ import {
   ArrowRightLeftIcon,
   BanIcon,
   ChevronsUpIcon,
+  DicesIcon,
   DropletsIcon,
   EyeIcon,
   HandIcon,
@@ -40,6 +41,7 @@ export const COMMAND_ICONS: Record<CommandId, LucideIcon> = {
   revealTop: ScanEyeIcon,
   token: SparklesIcon,
   mana: DropletsIcon,
+  roll: DicesIcon,
 }
 
 /** The icon of each command of the picked card. */

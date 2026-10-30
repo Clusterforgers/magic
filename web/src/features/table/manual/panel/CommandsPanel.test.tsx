@@ -155,6 +155,7 @@ describe('a row', () => {
     'revealTop',
     'token',
     'mana',
+    'roll',
   ]
 
   it('shows its own icon and a chevron, so it reads as a button that opens', () => {

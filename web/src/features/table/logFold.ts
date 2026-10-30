@@ -87,7 +87,7 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
       told = manual.consumed
       lines.push({
         seq,
-        text: manualText(event, manual.from, remember(names, manual.names), manual.shown),
+        text: manualText(event, manual.from, remember(names, manual.names), manual.shown, manual.rolled),
         minor: false,
         passed: [],
         spoken: '',

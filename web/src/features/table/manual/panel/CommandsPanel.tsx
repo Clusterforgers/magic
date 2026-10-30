@@ -18,6 +18,7 @@ import { panelGroups, previewOf, startDraft } from './commands'
 import { COMMAND_ICONS } from './icons'
 import { LifeCounter } from './LifeCounter'
 import { LookTopBody } from './LookTopBody'
+import { RollChoice } from './RollChoice'
 import { RowButton } from './RowButton'
 import { TokenChoice } from './TokenChoice'
 import { useRevealOnOpen } from './reveal'
@@ -214,7 +215,16 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       onKeyDown={onKeyDown}
       className="grid gap-2 px-2 pt-1 pb-2"
     >
-      {command.choice === undefined ? null : <Choice kind={command.choice} draft={draft} set={set} />}
+      {command.choice === 'roll' ? (
+        <RollChoice
+          pick={draft.roll}
+          sides={draft.sides}
+          onPick={(roll) => set({ roll })}
+          onSides={(sides) => set({ sides })}
+        />
+      ) : command.choice === undefined ? null : (
+        <Choice kind={command.choice} draft={draft} set={set} />
+      )}
       {command.amount === undefined ? null : (
         <AmountField
           spec={command.amount}

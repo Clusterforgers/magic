@@ -24,6 +24,7 @@ const COMMANDS: readonly CommandId[] = [
   'revealTop',
   'token',
   'mana',
+  'roll',
 ]
 
 /** The row `?panel=` opens: `1` the "More life options" row, a command by its id, `top` or `card`; `undefined` for anything else. */

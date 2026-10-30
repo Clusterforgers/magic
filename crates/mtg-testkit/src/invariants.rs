@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use crate::shown_by_hand::ShownByHand;
 use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::spend::ManaLasts;
@@ -634,6 +635,8 @@ pub struct InvariantChecker {
     expected_attached: BTreeMap<ObjectId, ObjectRef>,
     /// The player each Aura that enchants one is attached to, as the events say.
     expected_enchanted: BTreeMap<ObjectId, PlayerId>,
+    /// What the table was shown or told by hand, checked against the state.
+    shown: ShownByHand,
     loyalty_turns: BTreeMap<ObjectRef, u32>,
     zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
@@ -700,6 +703,7 @@ impl InvariantChecker {
             expected_player_counters,
             loyalty_turns: BTreeMap::new(),
             zones_seen: BTreeMap::new(),
+            shown: ShownByHand::default(),
             shadow,
             events_seen: 0,
             full_every: 1,
@@ -730,6 +734,7 @@ impl InvariantChecker {
     /// Consumes every event of `log` not yet seen, then (on schedule) runs the whole-state checks against `live`.
     pub fn observe(&mut self, live: &GameState, log: &[Event]) -> Result<(), Violation> {
         for event in log.get(self.events_seen..).unwrap_or_default() {
+            self.shown.before(&self.shadow, event);
             self.observe_event(event)?;
             self.events_seen += 1;
         }
@@ -744,6 +749,7 @@ impl InvariantChecker {
     pub fn full_check(&mut self, live: &GameState) -> Result<(), Violation> {
         self.since_full = 0;
         check_state(live)?;
+        self.shown.check(live)?;
         if !self.replacing && !self.announcing {
             check_settled(live)?;
         }

@@ -27,6 +27,7 @@ import { distinctTargets } from './prompt/targetText'
 import { sameHost } from '@/play/hosts'
 import type { HostRef } from '@/play/hosts'
 import { STEP_LABEL } from './turnText'
+import { rollSentence } from './manual/panel/roll'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
 export interface EventNames {
@@ -320,6 +321,7 @@ export function describeManual(
   n: EventNames,
   from?: Zone,
   shown?: readonly ObjectId[],
+  rolled?: number,
 ): string {
   const who = n.seat(player)
   if ('Move' in action) {
@@ -375,6 +377,7 @@ export function describeManual(
     const { top, bottom, graveyard } = action.ArrangeTop
     return describeArrange(player, top.length, bottom.length, graveyard.length, n, action.ArrangeTop)
   }
+  if ('Roll' in action) return rollSentence(who, action.Roll.kind, rolled)
   if ('Shuffle' in action) return `${who} shuffles their library (by hand)`
   if ('Reveal' in action) {
     const { what } = action.Reveal
@@ -866,6 +869,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('ManualAction' in event) {
     return line(describeManual(event.ManualAction.player, event.ManualAction.action, n))
+  }
+  if ('ManualRolled' in event) {
+    const { player, kind, result } = event.ManualRolled
+    return line(rollSentence(n.seat(player), kind, result))
   }
   const unhandled: never = event
   return line(String(unhandled))

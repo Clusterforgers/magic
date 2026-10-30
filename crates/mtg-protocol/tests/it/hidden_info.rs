@@ -48,6 +48,9 @@ const SCALAR_KEYS: &[&str] = &[
     "toughness",
     "set",
     "amount",
+    // The faces of a die rolled by hand and the number that came up.
+    "sides",
+    "result",
     "left",
     "Option",
     "Replacement",

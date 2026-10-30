@@ -28,6 +28,8 @@ const draft = (amount: number, more: Partial<PanelDraft> = {}): PanelDraft => ({
   amount,
   token: 'Treasure',
   mana: 'Green',
+  roll: 'd20',
+  sides: 10,
   ...more,
 })
 
@@ -36,7 +38,7 @@ describe('panelGroups', () => {
     expect(panelGroups(INPUT).map((group) => [group.label, group.commands.map((c) => c.id)])).toEqual([
       ['You', ['life', 'poison', 'energy', 'experience']],
       ['Library', ['draw', 'look', 'mill', 'exileTop', 'bottomTop', 'shuffle', 'revealTop']],
-      ['Make', ['token', 'mana']],
+      ['Make', ['token', 'mana', 'roll']],
     ])
   })
 

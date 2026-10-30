@@ -3,6 +3,8 @@ import type { CounterKind, ManaType, ManualAction, ObjectId, PlayerId } from '@/
 import { counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
 import { START_TOKEN, tokenPreview } from './customToken'
 import type { TokenDraft } from './customToken'
+import { rollPreview, SIDES } from './roll'
+import type { RollPick } from './roll'
 
 /** The groups of the panel, in order. */
 export type PanelGroupId = 'you' | 'library' | 'make'
@@ -22,6 +24,7 @@ export type CommandId =
   | 'revealTop'
   | 'token'
   | 'mana'
+  | 'roll'
 
 /** How a command takes its amount: a signed change of a number the seat has, or a count of 1 or more. */
 export interface AmountSpec {
@@ -43,8 +46,8 @@ export interface Command {
   effect: string
   /** Left out for a command that takes no amount. */
   amount?: AmountSpec
-  /** The choice it also takes: a token (or a custom creature) or a kind of mana. */
-  choice?: 'token' | 'mana'
+  /** The choice it also takes: a token (or a custom creature), a kind of mana, or what to roll. */
+  choice?: 'token' | 'mana' | 'roll'
   /** Why it cannot be used now; the row is listed, inert. */
   unavailable?: string
 }
@@ -75,6 +78,9 @@ export interface PanelInput {
 export interface PanelDraft extends TokenDraft {
   amount: number
   mana: ManaType
+  /** What the Roll row rolls and, for a die of any size, its faces. */
+  roll: RollPick
+  sides: number
 }
 
 /** What a row shows before Apply: the preview line and the words of the button, or why it cannot be applied. */
@@ -190,6 +196,7 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
       choice: 'mana',
       unavailable: off,
     },
+    rollCommand(off),
   ]
   return [
     { id: 'you', label: 'You', commands: you },
@@ -225,9 +232,27 @@ function revealTopCommand(unavailable: string | undefined): Command {
   }
 }
 
+/** Roll a die or flip a coin: the engine draws the result from the game's random stream and every seat reads it. */
+function rollCommand(unavailable: string | undefined): Command {
+  return {
+    id: 'roll',
+    group: 'make',
+    label: 'Roll a die / Flip a coin',
+    effect: 'A coin, a d6, a d20 or a die of any size; everyone sees the result.',
+    choice: 'roll',
+    unavailable,
+  }
+}
+
 /** The draft a row of `command` opens with. */
 export function startDraft(command: Command): PanelDraft {
-  return { ...START_TOKEN, amount: command.amount?.start ?? 0, mana: 'Green' }
+  return {
+    ...START_TOKEN,
+    amount: command.amount?.start ?? 0,
+    mana: 'Green',
+    roll: 'd20',
+    sides: SIDES.start,
+  }
 }
 
 /** The amount after a press of a preset: a signed command adds it to the pending change, a count takes it. */
@@ -289,6 +314,8 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
       }
     case 'token':
       return tokenPreview(draft, amount)
+    case 'roll':
+      return rollPreview(draft.roll, draft.sides)
     case 'mana': {
       const symbols = `{${symbolOf(draft.mana)}}`.repeat(amount)
       return {

@@ -13,7 +13,7 @@ use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::effects::ContinuousEffect;
 use crate::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
-use crate::manual::ManualAction;
+use crate::manual::{ManualAction, ManualRoll};
 use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
 use crate::rules::RuleEffect;
@@ -865,6 +865,16 @@ pub enum Event {
         /// What they did.
         action: Box<ManualAction>,
     },
+    /// A coin was flipped or a die rolled by hand (`ManualAction::Roll`): the result came from the game's random stream,
+    /// which the roll moved on by one. Every seat sees it, and no trigger watches it.
+    ManualRolled {
+        /// Who rolled.
+        player: PlayerId,
+        /// A coin or a die.
+        kind: ManualRoll,
+        /// The result: 1 for heads and 2 for tails, or the face of the die from 1 to its sides.
+        result: u32,
+    },
     /// The owner of a commander in a graveyard or exile chose to leave it there (CR 903.9a); they are asked again if
     /// it moves and lies in a graveyard or exile once more.
     CommanderStayed {
@@ -1042,6 +1052,7 @@ impl Event {
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }
+            | Event::ManualRolled { .. }
             | Event::CommanderStayed { .. }
             | Event::CompanionRevealed { .. }
             | Event::LibraryLooked(_)

@@ -221,10 +221,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [~] (ma7i) (panel-roll) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
-- [~] (ma7m) (panel-roll) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries
 - [ ] (ma7r) `e2e/fit.spec.ts` "attachments scene on four seats" fails at 1366x768 ("the combat line block:71 runs over your life")
+- [ ] (ma7s) `dk1e_deck` with manual actions (`MTG_FUZZ_GAMES=200`, 4 seats, seed 182, the script of `panel-roll`) stops with "an answer for a step the announcement did not ask" after a Life and a Damage by hand of a seat that is paying a cost
 
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs
