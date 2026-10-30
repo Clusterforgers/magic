@@ -7,6 +7,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as Wanted;
 use mtg_cards::refs::{Pred, Selector as PickSelector};
 use mtg_cards::value::Amount;
+use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::EffectId;
 
@@ -25,6 +26,19 @@ const COLORS: [Color; 5] = [
     Color::Black,
     Color::Red,
     Color::Green,
+];
+
+/// The card types a player may choose for "protection from the card type of your choice".
+const CARD_TYPES: [CardType; 9] = [
+    CardType::Artifact,
+    CardType::Battle,
+    CardType::Creature,
+    CardType::Enchantment,
+    CardType::Instant,
+    CardType::Kindred,
+    CardType::Land,
+    CardType::Planeswalker,
+    CardType::Sorcery,
 ];
 
 /// Each modification becomes one effect that applies to the permanents the reference names now and to no other object,
@@ -54,11 +68,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     // The colour of "protection from the color of your choice" is chosen as the effect begins, once for each.
     let choosers: Vec<OptionChooser> = mods
         .iter()
-        .filter(|wanted| matches!(wanted, Wanted::AddProtectionFromChosenColor))
-        .map(|_| OptionChooser {
-            player: cx.controller(),
-            options: COLORS.iter().copied().map(ChoiceOption::Color).collect(),
-            text: "Choose a color.".into(),
+        .filter_map(|wanted| match wanted {
+            Wanted::AddProtectionFromChosenColor => Some(OptionChooser {
+                player: cx.controller(),
+                options: COLORS.iter().copied().map(ChoiceOption::Color).collect(),
+                text: "Choose a color.".into(),
+            }),
+            Wanted::AddProtectionFromChosenCardType => Some(OptionChooser {
+                player: cx.controller(),
+                options: CARD_TYPES
+                    .iter()
+                    .map(|card_type| ChoiceOption::Label(format!("{card_type:?}")))
+                    .collect(),
+                text: "Choose a card type.".into(),
+            }),
+            _ => None,
         })
         .collect();
     let mut chosen = match pick_options(cx, &choosers)? {
@@ -75,6 +99,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     .ok_or_else(|| ResolveError::Invalid("no color was chosen".into()))?;
                 Modification::AddKeyword(Keyword::Protection(PickSelector(vec![Pred::Color(
                     color,
+                )])))
+            }
+            Wanted::AddProtectionFromChosenCardType => {
+                let card_type = chosen
+                    .next()
+                    .and_then(|(_, index)| CARD_TYPES.get(index).copied())
+                    .ok_or_else(|| ResolveError::Invalid("no card type was chosen".into()))?;
+                Modification::AddKeyword(Keyword::Protection(PickSelector(vec![Pred::Type(
+                    card_type,
                 )])))
             }
             other => lower(&cx.scope, other)?,
@@ -168,6 +201,11 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::AddProtectionFromChosenColor => {
             return Err(ResolveError::Unsupported(
                 "Mod.AddProtectionFromChosenColor outside an effect",
+            ));
+        }
+        Wanted::AddProtectionFromChosenCardType => {
+            return Err(ResolveError::Unsupported(
+                "Mod.AddProtectionFromChosenCardType outside an effect",
             ));
         }
         Wanted::CantAttack => Modification::CantAttack,

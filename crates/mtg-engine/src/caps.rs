@@ -273,6 +273,7 @@ const RUNS: &[&str] = &[
     "Mod.ModifyPT",
     "Mod.AddKeyword",
     "Mod.AddProtectionFromChosenColor",
+    "Mod.AddProtectionFromChosenCardType",
     "Mod.SetPT",
     "Mod.SwitchPT",
     "Mod.AddType",
@@ -673,6 +674,7 @@ mod tests {
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]
     #[case::protection_from_a_chosen_colour("Mod.AddProtectionFromChosenColor", true)]
+    #[case::protection_from_a_chosen_card_type("Mod.AddProtectionFromChosenCardType", true)]
     #[case::shroud("Keyword.Shroud", true)]
     #[case::protection("Keyword.Protection", true)]
     #[case::setting_power_and_toughness("Mod.SetPT", true)]

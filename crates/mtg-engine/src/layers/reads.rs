@@ -84,9 +84,10 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
             Traits::SUBTYPES
         }
         Wanted::SetColors(_) => Traits::COLORS,
-        Wanted::AddKeyword(_) | Wanted::AddProtectionFromChosenColor | Wanted::RemoveKeyword(_) => {
-            Traits::KEYWORDS
-        }
+        Wanted::AddKeyword(_)
+        | Wanted::AddProtectionFromChosenColor
+        | Wanted::AddProtectionFromChosenCardType
+        | Wanted::RemoveKeyword(_) => Traits::KEYWORDS,
         Wanted::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. } | Wanted::ModifyPT { .. } | Wanted::SwitchPT => {
@@ -130,6 +131,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetColors(_)
         | Wanted::AddKeyword(_)
         | Wanted::AddProtectionFromChosenColor
+        | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities

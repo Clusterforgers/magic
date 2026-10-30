@@ -552,3 +552,4 @@ mod t20c_pay_cards;
 
 // dk1f
 mod dk1f_cards;
+mod dk1f_pippin;

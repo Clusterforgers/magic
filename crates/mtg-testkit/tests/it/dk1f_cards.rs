@@ -17,7 +17,7 @@ use rstest::rstest;
 
 /// The log replays to the live state, and an engine rebuilt from it stands at the same decision.
 #[allow(clippy::unnecessary_wraps)] // the tests end with it, as they end with their last script step
-fn assert_replays(driver: &Driver, setup: &GameSetup) -> Result<(), ScriptError> {
+pub(crate) fn assert_replays(driver: &Driver, setup: &GameSetup) -> Result<(), ScriptError> {
     let log = driver.engine().events().to_vec();
     let replayed = replay(setup, &log).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
@@ -28,7 +28,7 @@ fn assert_replays(driver: &Driver, setup: &GameSetup) -> Result<(), ScriptError>
 }
 
 /// Passes priority while something waits on the stack and only priority is asked.
-fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
+pub(crate) fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     while !driver.state().stack().is_empty()
         && matches!(driver.decision()?.kind, DecisionKind::Priority(_))
     {
@@ -38,7 +38,7 @@ fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
 }
 
 /// Passes priority until the table asks for targets.
-fn until_targets(driver: &mut Driver) -> Result<(), ScriptError> {
+pub(crate) fn until_targets(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..8 {
         if matches!(driver.decision()?.kind, DecisionKind::ChooseTargets(_)) {
             return Ok(());
@@ -48,18 +48,18 @@ fn until_targets(driver: &mut Driver) -> Result<(), ScriptError> {
     Ok(())
 }
 
-fn has(driver: &Driver, name: &str, keyword: &Keyword) -> bool {
+pub(crate) fn has(driver: &Driver, name: &str, keyword: &Keyword) -> bool {
     has_keyword(driver.state(), driver.id_of(name).unwrap(), keyword)
 }
 
 /// `plains` ready Plains and the corpus cards called `names`, all ready.
-fn with_lands<const N: usize>(plain: usize, names: [&str; N]) -> Vec<PresetPermanent> {
+pub(crate) fn with_lands<const N: usize>(plain: usize, names: [&str; N]) -> Vec<PresetPermanent> {
     let mut permanents = vec![ready(plains()); plain];
     permanents.extend(names.map(|name| ready(card(name).unwrap())));
     permanents
 }
 
-fn first_main(seats: usize) -> Scenario {
+pub(crate) fn first_main(seats: usize) -> Scenario {
     Scenario::new(seats).at(1, 0, Step::Main1)
 }
 
