@@ -1,0 +1,39 @@
+{
+  "oracle_id": "72deedab-7c17-4505-aeca-4bc8596d80a5",
+  "name": "Tribute to the World Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribute to the World Tree",
+      "oracle_fingerprint": "95ef1841f2546f18dac8e968d2e0e0bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }]
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [
+                    { "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

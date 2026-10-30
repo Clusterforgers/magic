@@ -541,3 +541,5 @@ mod deck_auras;
 
 // t20b
 mod t20b_replacement;
+// t20a
+mod t20a_tribute;
