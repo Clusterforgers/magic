@@ -19,8 +19,8 @@ use crate::ability_reader;
 use crate::announce::{self, Granted};
 use crate::attach;
 use crate::characteristics::controller_of;
-use crate::decision::Unplayable;
 use crate::choose::announceable;
+use crate::decision::Unplayable;
 use crate::face_down;
 use crate::faces;
 use crate::help;
@@ -920,12 +920,16 @@ pub(crate) fn hindrance_as_is(
         if !announceable_in(state, player, id, way.alternative) {
             return Some(Unplayable::Targets);
         }
-        (cost.is_none() || !parts_payable(state, player, id, &way.parts)).then_some(Unplayable::Cost)
+        (cost.is_none() || !parts_payable(state, player, id, &way.parts))
+            .then_some(Unplayable::Cost)
     };
     let mut nearest = None;
     for way in &of(state, player, id) {
         match hindrance(way) {
-            None => return (!w17c_cast_only_holds(state, player, card)).then_some(Unplayable::Restricted),
+            None => {
+                return (!w17c_cast_only_holds(state, player, card))
+                    .then_some(Unplayable::Restricted);
+            }
             reason => nearest = nearest.max(reason),
         }
     }

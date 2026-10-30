@@ -365,8 +365,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     let silenced = keywords::split_second_on_stack(state);
     let restricted = silenced || crate::w17b_statics::w17b_cant_cast(state, player);
     let judged = unplayable::judge(state, player, &pool, &all_mana, life, restricted);
-    let castable =
-        unplayable::castable(state, player, &judged, restricted, &pool, &all_mana, life);
+    let castable = unplayable::castable(state, player, &judged, restricted, &pool, &all_mana, life);
     // A special action: no stack, so no target or modes are needed (CR 116.2f).
     let suspendable: Vec<ObjectId> = hand
         .iter()

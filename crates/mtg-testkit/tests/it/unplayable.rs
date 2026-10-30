@@ -81,7 +81,12 @@ fn options(driver: &Driver) -> PriorityOptions {
 
 /// The reason the offer gives for `name`, or `None` when it offers the card.
 fn reason_of(driver: &Driver, name: &str) -> Option<Unplayable> {
-    let id = driver.id_of(name).unwrap();
+    let state = driver.state();
+    let id = *state
+        .zone(Zone::Hand(PlayerId(0)))
+        .iter()
+        .find(|id| state.object(**id).unwrap().card().name == name)
+        .unwrap();
     let options = options(driver);
     let reason = options
         .unplayable
@@ -145,7 +150,12 @@ fn the_offer_says_why_a_card_cannot_be_played(
 #[case::an_extra_land_play(true, None)]
 fn a_second_land_waits_for_a_land_play(#[case] extra: bool, #[case] expected: Option<Unplayable>) {
     let permanents = if extra { vec![explorer()] } else { Vec::new() };
-    let mut driver = table(Step::Main1, vec![forest(), island()], permanents, Vec::new());
+    let mut driver = table(
+        Step::Main1,
+        vec![forest(), island()],
+        permanents,
+        Vec::new(),
+    );
     driver.play_land("Forest").unwrap();
     assert_eq!(reason_of(&driver, "Island"), expected);
 }
@@ -164,7 +174,10 @@ fn a_rule_that_forbids_casting_comes_last() {
         turn: None,
     };
     driver.add_rule(forbid, Duration::UntilEndOfTurn).unwrap();
-    assert_eq!(reason_of(&driver, "Grizzly Bears"), Some(Unplayable::Restricted));
+    assert_eq!(
+        reason_of(&driver, "Grizzly Bears"),
+        Some(Unplayable::Restricted)
+    );
     assert_eq!(reason_of(&driver, "Opt"), Some(Unplayable::Mana));
 }
 
