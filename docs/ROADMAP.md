@@ -195,7 +195,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (ui1g2) The preview of a dimmed hand card shows the line of its reason (`REASON_WORDS`), which touch reaches (`CardPreview.tsx`, `CardNote`)
 - [ ] (ui1h) The Priority prompt marks a battlefield, graveyard or command card with an ability in `PriorityOptions.abilities` legal, and a click activates it, asking which when it has several (`prompt/kinds/Priority.tsx`)
 - [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack
-- [ ] (eq1f) `/dev/table?equip=1` joins `layout.spec.ts` and `fit.spec.ts`, and screenshots at the six sizes in both themes settle the tuck and the marks of five attachments at 150, 120 and 100 px cards and on a 390 px phone
 - [ ] (ui1j) `ObjectView.targets` says whether each target is still legal (the zone-change counter check of the engine), so a chip marks an item that will fizzle without reading the log since the cast (`mtg-engine` view, `mtg-protocol`, `stackTargets.ts`)
 - [ ] (ui1c2) A Chromium spec holds that the spotlight of `/dev/table?fx=rival` lies over no prompt button and no control of the dock and takes no click (`web/e2e/`, `fx/Spotlight.tsx`)
 - [ ] (ui1e2) An ability's end (`resolved`, `countered`, `fizzled`) shows on its stack chip before it leaves, and the arrow of a counter cast in the same batch starts at its spotlight (`fx/marks.ts`, `fx/effectArrows.ts`, `StackChips.tsx`)
