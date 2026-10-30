@@ -101,7 +101,7 @@ fn a_proposal_without_the_mana_is_unchanged() {
     let proposed = json!([{ "Keyword": "Flash" }]);
     let (abilities, classes) = run(&printed, &proposed);
     assert_eq!(abilities, proposed);
-    assert!(classes.is_empty());
+    assert_eq!(classes.len(), 0);
 }
 
 #[test]

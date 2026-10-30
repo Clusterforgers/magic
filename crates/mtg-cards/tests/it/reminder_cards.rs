@@ -67,7 +67,7 @@ fn a_card_of_reminder_text_only_is_verified_with_no_rules_and_taps_for_its_types
     assert_eq!(support(None, &printed, &caps).support, Support::Verified);
     let assembled = assemble(&printed, None, &caps);
     assert_eq!(assembled.support.support, Support::Verified);
-    assert!(assembled.definition.manual.is_empty());
+    assert_eq!(assembled.definition.manual.len(), 0);
     let given: Vec<ManaType> = assembled
         .definition
         .abilities
@@ -150,7 +150,7 @@ fn a_proposal_that_adds_nothing_the_types_do_not_give_is_accepted(
         report.support.as_ref().map(|s| s.support),
         Some(Support::Verified)
     );
-    assert!(report.rules.as_ref().unwrap().faces[0].abilities.is_empty());
+    assert_eq!(report.rules.as_ref().unwrap().faces[0].abilities.len(), 0);
     assert_eq!(
         report
             .repairs
@@ -172,5 +172,5 @@ fn a_proposal_that_adds_something_is_still_a_mismatch(#[case] rules: String) {
         "{}",
         report.render(true)
     );
-    assert!(!report.strays.is_empty());
+    assert_eq!(report.strays.len(), 1);
 }
