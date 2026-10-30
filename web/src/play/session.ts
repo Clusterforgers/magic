@@ -15,6 +15,8 @@ import type {
   StopSide,
   YieldUntil,
 } from '@/protocol/generated'
+import { createManualLedger, isManualOf } from './manualLedger'
+import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
@@ -48,10 +50,12 @@ export interface Session {
    */
   preview(decision: DecisionId, answer: Answer): boolean
   /**
-   * Takes a manual action at any time, apart from any decision (`ClientMessage::Manual`); a refusal comes back as an
-   * `Error` and lands in the notice. False when the socket is not open.
+   * Takes a manual action at any time, apart from any decision (`ClientMessage::Manual`). `reply` hears once what became
+   * of it: taken (the batch that starts with it came back) or refused with the server's reason, which then does not
+   * land in the notice; without a `reply` a refusal lands in the notice. It also hears of an action the connection
+   * lost. False when the socket is not open.
    */
-  manual(action: ManualAction): boolean
+  manual(action: ManualAction, reply?: ManualReply): boolean
   /** Gives up the game. */
   concede(): boolean
   /**
@@ -91,6 +95,7 @@ const NOTICES = {
   illegal: (detail: string) => `That answer is not allowed: ${detail}`,
   refused: (detail: string) => `The server did not accept that: ${detail}`,
   tooLong: `Chat lines are at most ${MAX_CHAT_CHARS} characters.`,
+  lost: 'the connection was interrupted before the server answered; the log shows whether it counted.',
 }
 
 /** Creates a session; it does nothing until `connect()`. */
@@ -104,7 +109,12 @@ export function createSession(deps: SessionDeps): Session {
   // when the yield lasts past the step; the game moving on while it waits is the other sign, since nothing happens then.
   let yieldedFor: DecisionId | null = null
   // The previews asked for and not yet answered, oldest first: the server answers each one, in order.
-  let asked: { decision: DecisionId; key: string }[] = []
+  let asked: { decision: DecisionId; key: string; order: number }[] = []
+  // Everything sent that a reply can belong to is numbered, so a refusal goes to the oldest question it can answer.
+  let sentCount = 0
+  const manuals = createManualLedger()
+  // The newest Answer sent and not yet followed by news from the server.
+  let answeredAt: number | null = null
   // False once an older server has refused a Preview as a message it does not know.
   let previewsKnown = true
   const socket = new GameSocket({ ...deps, onEvent })
@@ -163,6 +173,8 @@ export function createSession(deps: SessionDeps): Session {
       lastAnswered = null
       yieldedFor = null
       asked = []
+      answeredAt = null
+      manuals.settleAll({ ok: false, reason: NOTICES.lost, lost: true })
     }
     setState((state) => ({
       status: event.status,
@@ -244,7 +256,10 @@ export function createSession(deps: SessionDeps): Session {
   function onSnapshot(message: Of<'Snapshot'>): void {
     awaitingSnapshot = false
     lastAnswered = null
+    answeredAt = null
     yieldedFor = null
+    // The snapshot follows every refusal of what was sent before the resync it answers, so no action is still in doubt.
+    manuals.settleAll({ ok: true })
     setState((state) => {
       const view = fromSnapshot(state.view, message.state)
       return {
@@ -278,6 +293,11 @@ export function createSession(deps: SessionDeps): Session {
     const passed = yieldedFor !== null && state.pending?.id === yieldedFor
     yieldedFor = null
     const objectsById = view.objects === state.view?.objects ? state.objectsById : indexById(view.objects)
+    answeredAt = null
+    // The batch that starts with a seat's own manual action is the server's yes to the oldest one it asked for.
+    if (state.seat !== null) {
+      for (const event of batch.events) if (isManualOf(event, state.seat)) manuals.settle({ ok: true })
+    }
     setState({
       view,
       objectsById,
@@ -292,6 +312,7 @@ export function createSession(deps: SessionDeps): Session {
   function onDecision(message: Of<'Decision'>): void {
     // After a gap the server repeats the pending decision behind the snapshot it sends; before that the ids may be unknown.
     if (awaitingSnapshot || message.id === lastAnswered) return
+    answeredAt = null
     setState({
       pending: {
         id: message.id,
@@ -315,6 +336,8 @@ export function createSession(deps: SessionDeps): Session {
 
   function onForecast(message: Of<'Forecast'>): void {
     const request = asked.shift()
+    // The server answered this preview after any manual action sent before it, and a refusal comes before an answer.
+    if (request !== undefined) manuals.settleBefore(request.order)
     // The server answers every preview, in order. Only the answer to the newest one says anything about the choice
     // on screen, and only while its decision is the pending one.
     if (request === undefined || asked.length > 0) return
@@ -330,11 +353,20 @@ export function createSession(deps: SessionDeps): Session {
         resyncUnlessWaiting()
         return
       case 'IllegalAnswer':
+        // A refused manual action changes nothing, so it needs no resync; its sender says why in its own words.
+        if (manualRefused(message.message, answeredAt) === 'told') return
         setState({ notice: NOTICES.illegal(message.message) })
         resyncUnlessWaiting()
         return
-      case 'BadMessage':
+      case 'BadMessage': {
         yieldedFor = null
+        // The oldest question in flight owns the refusal: a manual action sent before the previews is not a preview.
+        const owner = manualRefused(message.message, asked[0]?.order)
+        if (owner === 'told') return
+        if (owner === 'silent') {
+          setState({ notice: NOTICES.refused(message.message) })
+          return
+        }
         // A server that predates previews refuses each Preview as a message it does not know. That is no news for
         // the player: stop asking and let the prompts say the outcome shows after confirming.
         if (asked.shift() !== undefined) {
@@ -343,6 +375,7 @@ export function createSession(deps: SessionDeps): Session {
         }
         setState({ notice: NOTICES.refused(message.message) })
         return
+      }
       case 'Internal':
         setState({ notice: NOTICES.internal })
         return
@@ -350,6 +383,16 @@ export function createSession(deps: SessionDeps): Session {
       case 'UnsupportedVersion':
         return // the socket stops itself and reports why through its status
     }
+  }
+
+  /**
+   * Gives a refusal to the oldest manual action in flight unless `rival`, the send order of an older question, owns it
+   * instead. `told`: its sender heard the reason; `silent`: it owns the refusal but nobody listens, so the notice shows it.
+   */
+  function manualRefused(reason: string, rival: number | null | undefined): 'told' | 'silent' | null {
+    const first = manuals.oldest()
+    if (first === null || (rival !== null && rival !== undefined && rival < first)) return null
+    return manuals.settle({ ok: false, reason }) ? 'told' : 'silent'
   }
 
   function resyncUnlessWaiting(): void {
@@ -366,6 +409,8 @@ export function createSession(deps: SessionDeps): Session {
       const { pending } = getState()
       if (pending === null || !socket.send({ type: 'Answer', decision: pending.id, answer })) return false
       lastAnswered = pending.id
+      sentCount += 1
+      answeredAt = sentCount
       setState({ pending: null, preview: null })
       return true
     },
@@ -373,10 +418,16 @@ export function createSession(deps: SessionDeps): Session {
       const { pending } = getState()
       if (!previewsKnown || pending === null || pending.id !== decision) return false
       if (!socket.send({ type: 'Preview', decision, answer })) return false
-      asked.push({ decision, key: previewKey(answer) })
+      sentCount += 1
+      asked.push({ decision, key: previewKey(answer), order: sentCount })
       return true
     },
-    manual: (action) => socket.send({ type: 'Manual', action }),
+    manual(action, reply) {
+      if (!socket.send({ type: 'Manual', action })) return false
+      sentCount += 1
+      manuals.add(sentCount, reply)
+      return true
+    },
     concede: () => socket.send({ type: 'Concede' }),
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),

@@ -11,21 +11,37 @@ import { renderTable } from '@/test-utils/tableHarness'
 import { Card } from '../Card'
 import { buildFixture } from '../dev/fixture'
 import { ManualMenuProvider } from './ManualMenu'
+import type { ManualResult } from '@/play/manualLedger'
+import { usePick } from './panel/pick'
 import { LONG_PRESS_MS } from './useManualMenu'
+
+/** Says where the table's pick is, for a test to read. */
+function PickProbe() {
+  const pick = usePick()
+  return <span data-testid="pick">{pick.phase === 'picked' ? `picked ${pick.card}` : pick.phase}</span>
+}
 
 const ID = 900
 
 interface Shown {
   object?: ObjectView
-  /** What the session's manual sender answers. */
+  /** What the session's manual sender answers; true is taken as a yes from the server. */
   manual?: (action: ManualAction) => boolean
+  /** What the server says to a sent action: yes, a refusal with its reason, or nothing yet. */
+  answer?: ManualResult | 'silence'
   /** Changes the play state before the first render. */
   state?: (state: PlayState) => PlayState
   spectator?: boolean
 }
 
 /** One card (object 900) among the few permanents of a small fixture, inside the manual menu's provider. */
-function renderMenu({ object = card(), manual = () => true, state, spectator }: Shown = {}) {
+function renderMenu({
+  object = card(),
+  manual = () => true,
+  answer = { ok: true },
+  state,
+  spectator,
+}: Shown = {}) {
   const sent: ManualAction[] = []
   const answered: Answer[] = []
   const table = renderTable({
@@ -33,12 +49,15 @@ function renderMenu({ object = card(), manual = () => true, state, spectator }: 
     ui: (
       <ManualMenuProvider>
         <Card id={ID} />
+        <PickProbe />
       </ManualMenuProvider>
     ),
     session: {
-      manual: (action) => {
+      manual: (action, reply) => {
         sent.push(action)
-        return manual(action)
+        const taken = manual(action)
+        if (taken && answer !== 'silence') reply?.(answer)
+        return taken
       },
       answer: (given) => !!answered.push(given),
     },
@@ -74,7 +93,7 @@ describe('opening the menu', () => {
     const groups = within(menu())
       .getAllByRole('group')
       .map((group) => group.getAttribute('data-group'))
-    expect(groups).toEqual(['move', 'counters', 'tap', 'effect', 'show', 'token', 'other'])
+    expect(groups).toEqual(['move', 'counters', 'tap', 'effect', 'show', 'token', 'panel'])
     expect(within(menu()).getByRole('group', { name: 'Move to' })).toBeInTheDocument()
     expect(within(menu()).getByRole('group', { name: 'Counters' })).toBeInTheDocument()
   })
@@ -242,7 +261,7 @@ describe('what a choice sends', () => {
     cardButton().focus()
     await user.keyboard('m')
     await user.click(entry('Tap'))
-    expect(screen.getByRole('alert')).toHaveTextContent(/could not be sent/)
+    expect(screen.getByRole('alert')).toHaveTextContent(/connection is not open/)
     expect(menu()).toBeInTheDocument()
   })
 
@@ -308,30 +327,6 @@ describe('the forms', () => {
     await user.type(field('How many'), '2')
     await user.click(within(dialog()).getByRole('button', { name: 'Remove' }))
     expect(sent).toEqual([{ Counters: { object: ID, counter: '+1/+1', delta: -2 } }])
-  })
-
-  it.each([
-    ['Gain life…', '5', 'Gain', { Life: { player: 0, delta: 5 } }],
-    ['Lose life…', '3', 'Lose', { Life: { player: 0, delta: -3 } }],
-    ['Draw cards…', '2', 'Draw', { Draw: { count: 2 } }],
-    ['Mill cards…', '4', 'Mill', { MoveTop: { count: 4, to: 'Graveyard' } }],
-  ] as const)('%s sends the amount asked for', async (item, amount, submit, action) => {
-    const { user, sent } = await open()
-    await user.click(entry(item))
-    const input = within(dialog()).getByRole('spinbutton')
-    expect(input).toHaveFocus()
-    await user.clear(input)
-    await user.type(input, amount)
-    await user.click(within(dialog()).getByRole('button', { name: submit }))
-    expect(sent).toEqual([action])
-  })
-
-  it('moves the top cards of the library to the place chosen', async () => {
-    const { user, sent } = await open()
-    await user.click(entry('Move top cards of library…'))
-    await user.selectOptions(field('Move them to'), 'LibraryBottom')
-    await user.click(within(dialog()).getByRole('button', { name: 'Move' }))
-    expect(sent).toEqual([{ MoveTop: { count: 1, to: 'LibraryBottom' } }])
   })
 
   it('creates the tokens chosen', async () => {
@@ -404,16 +399,6 @@ describe('the forms', () => {
     expect(sent).toEqual([{ Damage: { source: ID, target: { Player: 1 }, amount: 3 } }])
   })
 
-  it('adds the mana asked for to the pool', async () => {
-    const { user, sent } = await open()
-    await user.click(entry('Add mana…'))
-    await user.selectOptions(field('Kind of mana'), 'Green')
-    await user.clear(field('How much'))
-    await user.type(field('How much'), '2')
-    await user.click(within(dialog()).getByRole('button', { name: 'Add' }))
-    expect(sent).toEqual([{ AddMana: { mana: 'Green', count: 2 } }])
-  })
-
   it('pumps a creature, also one of an opponent, and refuses a change of nothing', async () => {
     const { user, sent } = await open({ object: card({ owner: 1, controller: 1 }) })
     await user.click(entry(/^Pump…/))
@@ -440,10 +425,10 @@ describe('the forms', () => {
 
   it('goes back to the list with Escape or Back, and Escape in the list closes', async () => {
     const { user } = await open()
-    await user.click(entry('Draw cards…'))
+    await user.click(entry('Add counters…'))
     await user.keyboard('{Escape}')
     expect(menu()).toBeInTheDocument()
-    await user.click(entry('Draw cards…'))
+    await user.click(entry('Add counters…'))
     await user.click(within(dialog()).getByRole('button', { name: 'Back' }))
     expect(menu()).toBeInTheDocument()
     await user.keyboard('{Escape}')
@@ -521,13 +506,13 @@ describe('rules left to the table', () => {
 })
 
 describe('what is on offer for other cards', () => {
-  it('shows only the notes and the seat entries for a card of an opponent', async () => {
+  it('shows only the notes, tapping and the way into the panel for a card of an opponent', async () => {
     const { user } = renderMenu({ object: card({ owner: 1, controller: 1 }) })
     cardButton().focus()
     await user.keyboard('m')
     expect(within(menu()).getByText(/Only .* moves this card/)).toBeInTheDocument()
     expect(entry('Tap')).not.toHaveAttribute('aria-disabled')
-    expect(entry('Gain life…')).not.toHaveAttribute('aria-disabled')
+    expect(entry(/^In the panel/)).not.toHaveAttribute('aria-disabled')
   })
 
   it('gives a card in the hand the moves and no tap', async () => {
@@ -544,5 +529,73 @@ describe('what is on offer for other cards', () => {
     await user.keyboard('m')
     expect(entry('Hand')).toBeInTheDocument()
     expect(within(menu()).queryByRole('menuitem', { name: 'Discard' })).toBeNull()
+  })
+})
+
+describe('the way into the panel', () => {
+  it('is the last entry, picks this card for the Commands panel and closes the menu', async () => {
+    const { user } = renderMenu()
+    cardButton().focus()
+    await user.keyboard('m')
+    const items = within(menu()).getAllByRole('menuitem')
+    expect(items.at(-1)).toHaveAccessibleName(/In the panel/)
+    await user.click(entry(/^In the panel/))
+    expect(screen.getByTestId('pick')).toHaveTextContent(`picked ${ID}`)
+    expect(screen.queryByRole('menu')).toBeNull()
+    expect(cardButton()).toHaveFocus()
+  })
+
+  it.each([
+    'Draw cards…',
+    'Mill cards…',
+    'Move top cards of library…',
+    'Gain life…',
+    'Lose life…',
+    'Add mana…',
+  ])('no longer lists %s, which the panel has', async (name) => {
+    const { user } = renderMenu()
+    cardButton().focus()
+    await user.keyboard('m')
+    expect(within(menu()).queryByRole('menuitem', { name })).toBeNull()
+  })
+})
+
+describe('the server answers an action of the menu', () => {
+  const tap = async (over: Shown) => {
+    const harness = renderMenu(over)
+    cardButton().focus()
+    await harness.user.keyboard('m')
+    await harness.user.click(entry('Tap'))
+    return harness
+  }
+
+  it('closes the menu when the server took it', async () => {
+    const { sent } = await tap({})
+    expect(sent).toEqual([{ Tap: { object: ID } }])
+    expect(screen.queryByRole('menu')).toBeNull()
+  })
+
+  it('keeps the menu up with "Sending" until the server answers', async () => {
+    await tap({ answer: 'silence' })
+    expect(menu()).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent(/^Sending: /)
+  })
+
+  it('shows a refusal in the menu with its reason, keeps the menu and leaves the table notice alone', async () => {
+    const { store } = await tap({ answer: { ok: false, reason: 'Grizzly Bears is already tapped' } })
+    expect(screen.getByRole('alert')).toHaveTextContent('Refused: Grizzly Bears is already tapped.')
+    expect(menu()).toBeInTheDocument()
+    expect(store.getState().notice).toBeNull()
+  })
+
+  it('clears the refusal when another entry is used', async () => {
+    const { user } = await tap({ answer: { ok: false, reason: 'no' } })
+    await user.click(entry('Add counters…'))
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+
+  it('says a connection that went was not confirmed', async () => {
+    await tap({ answer: { ok: false, reason: 'the connection was interrupted.', lost: true } })
+    expect(screen.getByRole('alert')).toHaveTextContent('Not confirmed: the connection was interrupted.')
   })
 })

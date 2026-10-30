@@ -39,7 +39,7 @@ const groupIds = (menu: ReturnType<typeof manualMenu>): GroupId[] => menu.groups
 const item = (menu: ReturnType<typeof manualMenu>, group: GroupId, key: string) =>
   menu.groups.find((entry) => entry.id === group)?.items.find((entry) => entry.key === key)
 
-const OTHER = ['draw', 'mill', 'move-top', 'gain-life', 'lose-life', 'add-player', 'remove-player']
+const PANEL = ['in-panel']
 const MOVES = ['Hand', 'Graveyard', 'Exile', 'LibraryTop', 'LibraryBottom', 'Command'].map(
   (to) => `move-${to}`,
 )
@@ -55,16 +55,16 @@ describe('which groups and entries a card offers', () => {
         move: MOVES,
         counters: ['add-+1/+1', 'add-counters', 'remove-counters'],
         tap: ['tap'],
-        effect: ['damage', 'mana', 'pump'],
+        effect: ['damage', 'pump'],
         token: ['token'],
-        other: OTHER,
+        panel: PANEL,
       },
     ],
     [
       'a creature of an opponent',
       card({ owner: 1, controller: 1 }),
       {},
-      { tap: ['tap'], effect: ['pump'], token: ['token'], other: OTHER },
+      { tap: ['tap'], effect: ['pump'], token: ['token'], panel: PANEL },
     ],
     [
       'a creature with two kinds of counter',
@@ -89,7 +89,7 @@ describe('which groups and entries a card offers', () => {
       'a land of the seat',
       card({ types: ['Land'], subtypes: [] }),
       {},
-      { counters: ['add-counters', 'remove-counters'], tap: ['tap'], effect: ['damage', 'mana'] },
+      { counters: ['add-counters', 'remove-counters'], tap: ['tap'], effect: ['damage'] },
     ],
     [
       'a card in the seat hand',
@@ -105,9 +105,8 @@ describe('which groups and entries a card offers', () => {
           'move-LibraryBottom',
           'move-Command',
         ],
-        effect: ['mana'],
         token: ['token'],
-        other: OTHER,
+        panel: PANEL,
       },
     ],
     [
@@ -179,14 +178,14 @@ describe('which groups and entries a card offers', () => {
     if (expected.attach?.length === 0) expect(groupIds(menu)).not.toContain('attach')
   })
 
-  it('lists the groups in the order move, counters, tap, attach, effects, token, you', () => {
+  it('lists the groups in the order move, counters, tap, attach, effects, token, panel', () => {
     const menu = manualMenu(input({ ...card(), subtypes: ['Aura'] }))
-    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'show', 'token', 'other'])
+    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'show', 'token', 'panel'])
   })
 
   it('leaves out counters, tapping and attaching for a card that is not a permanent', () => {
     const menu = manualMenu(input(card({ zone: { Hand: SEAT }, permanent: null, subtypes: ['Aura'] })))
-    expect(groupIds(menu)).toEqual(['move', 'effect', 'show', 'token', 'other'])
+    expect(groupIds(menu)).toEqual(['move', 'show', 'token', 'panel'])
   })
 })
 
@@ -228,7 +227,7 @@ describe('what stops an entry', () => {
     const menu = manualMenu(input(card({ owner: 1, controller: 1 })))
     expect(keys(menu, 'tap')).toEqual(['tap'])
     expect(keys(menu, 'counters')).toContain('add-counters')
-    expect(keys(menu, 'other')).toEqual(OTHER)
+    expect(keys(menu, 'panel')).toEqual(PANEL)
   })
 
   it.each([OUT_OF_GAME, GAME_OVER])('once %s every entry is listed and none can be used', (reason) => {
@@ -243,19 +242,7 @@ describe('what stops an entry', () => {
     const menu = manualMenu(input(card()))
     expect(menu.notice).toBeUndefined()
     const blocked = menu.groups.flatMap((entry) => entry.items).filter((entry) => entry.unavailable)
-    expect(blocked.map((entry) => entry.key).sort()).toEqual(['remove-counters', 'remove-player'])
-  })
-
-  it('an empty library blocks milling and moving its top', () => {
-    const menu = manualMenu(input(card(), { library: 0 }))
-    expect(item(menu, 'other', 'mill')?.unavailable).toMatch(/empty/)
-    expect(item(menu, 'other', 'move-top')?.unavailable).toMatch(/empty/)
-    expect(item(menu, 'other', 'draw')?.unavailable).toBeUndefined()
-  })
-
-  it('removing the seat counters waits for one', () => {
-    const menu = manualMenu(input(card(), { counters: [['poison', 2]] }))
-    expect(item(menu, 'other', 'remove-player')?.unavailable).toBeUndefined()
+    expect(blocked.map((entry) => entry.key).sort()).toEqual(['remove-counters'])
   })
 })
 

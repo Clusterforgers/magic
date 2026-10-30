@@ -78,7 +78,7 @@ export interface DevSearch {
   cards?: 'real'
   /** Opens the manual menu of a card once the table has loaded: `1` a permanent of the viewer, `hand` a card in the viewer's hand, `opp` a permanent of an opponent. */
   menu?: DevMenu
-  /** Opens a row of the Commands panel once the table has loaded: `1` the life row, a command by its id (`draw`, `token`), or `top` for the arrange list after a look at the top 3. */
+  /** Opens a row of the Commands panel once the table has loaded: `1` the life row, a command by its id (`draw`, `token`), `top` for the arrange list after a look at the top 3, or `card`: the first creature of the seat in the Card group, as "In the panel" picks it. */
   panel?: DevPanel
 }
 

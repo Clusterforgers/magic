@@ -4,13 +4,16 @@ import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
-import { useGame, usePlay } from '@/features/game/gameContext'
+import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { CommonToken, CounterKind, ManaType, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { playerOf } from '../../selectors'
 import { COMMON_TOKENS, GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
 import { lookIsPending } from './arrange'
+import { CardGroup } from './CardGroup'
+import { FeedbackLine } from './FeedbackLine'
+import { useManualSender } from './feedback'
 import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
 import { LookTopBody } from './LookTopBody'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
@@ -59,7 +62,8 @@ function usePanelInput(): PanelInput | null {
  */
 export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId | null }) {
   const input = usePanelInput()
-  const [open, setOpen] = useState<CommandId | null>(initialOpen)
+  // One row is open at a time, whichever group it is in; a command of the picked card is `card:` and its id.
+  const [open, setOpen] = useState<string | null>(initialOpen)
   if (input === null) return null
   const groups = panelGroups(input)
   return (
@@ -77,6 +81,7 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
       {groups.map((group) => (
         <Group key={group.id} group={group} input={input} open={open} setOpen={setOpen} />
       ))}
+      <CardGroup open={open} setOpen={setOpen} />
     </section>
   )
 }
@@ -96,8 +101,8 @@ function LifeLine({ input }: { input: PanelInput }) {
 interface GroupProps {
   group: PanelGroup
   input: PanelInput
-  open: CommandId | null
-  setOpen: (id: CommandId | null) => void
+  open: string | null
+  setOpen: (id: string | null) => void
 }
 
 function Group({ group, input, open, setOpen }: GroupProps) {
@@ -180,23 +185,18 @@ interface FormProps {
 
 /** The amount, the choice, the preview of the change and Apply; Enter applies and Escape closes. */
 function CommandForm({ id, command, input, onClose }: FormProps) {
-  const { session } = useGame()
+  const { feedback, send, clear } = useManualSender()
   const [draft, setDraft] = useState<PanelDraft>(() => startDraft(command))
-  const [feedback, setFeedback] = useState<string | null>(null)
   const preview = previewOf(command, draft, input)
   const ready = 'action' in preview
   const set = (next: Partial<PanelDraft>): void => {
-    setFeedback(null)
+    clear()
     setDraft((was) => ({ ...was, ...next }))
   }
   const apply = (): void => {
-    if (!('action' in preview)) return
-    if (session.manual(preview.action)) {
-      setFeedback(`Sent: ${preview.apply}.`)
-      setDraft(startDraft(command))
-    } else {
-      setFeedback('The command could not be sent; the connection is not open.')
-    }
+    if (!('action' in preview) || feedback?.state === 'sending') return
+    // The row starts over once the server took the action; a refusal keeps the choices to change them.
+    send(preview.action, preview.apply, () => setDraft(startDraft(command)))
   }
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
     event.stopPropagation()
@@ -233,11 +233,7 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       >
         {ready ? preview.apply : 'Apply'}
       </Button>
-      {feedback === null ? null : (
-        <p role="status" data-slot="command-feedback" className="text-xs text-muted-foreground">
-          {feedback}
-        </p>
-      )}
+      <FeedbackLine feedback={feedback} />
     </div>
   )
 }

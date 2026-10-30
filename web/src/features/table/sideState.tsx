@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ChatLine } from '@/play/store'
 import type { SideKind } from './layout'
+import { usePickStore } from './manual/panel/pick'
 import { SideContext } from './sideContext'
 import type { SideState } from './sideContext'
 import { unreadChat, unreadLog } from './sideCounts'
@@ -31,6 +32,18 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
     return { log: log.at(-1)?.seq ?? 0, chat: chat.at(-1) ?? null }
   })
   const open = kind === 'column' || panel
+  // A card is waited for: a panel that covers the table steps aside, and returns with the card chosen or the wait over.
+  const picks = usePickStore()
+  useEffect(
+    () =>
+      picks?.watch((up) => {
+        if (up) {
+          setTab('commands')
+          setPanel(true)
+        } else if (kind !== 'column') setPanel(false)
+      }),
+    [picks, kind],
+  )
   const log = usePlay((state) => unreadLog(state.log, seen.log))
   const chat = usePlay((state) => unreadChat(state.chat, seen.chat, state.seat))
   const stack = usePlay((state) => state.view?.stack.count ?? 0)

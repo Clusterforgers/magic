@@ -121,7 +121,7 @@ describe('the look-at-the-top row with cards looked at', () => {
     await user.click(row)
     await user.click(within(panel).getByRole('button', { name: 'Look at more' }))
     await user.click(within(panel).getByRole('button', { name: 'Look at the top 1 card' }))
-    expect(manual).toHaveBeenCalledWith({ LookTop: { count: 1 } })
+    expect(manual).toHaveBeenCalledWith({ LookTop: { count: 1 } }, expect.any(Function))
   })
 })
 
@@ -136,7 +136,7 @@ describe('the look-at-the-top row with no look pending', () => {
       'you see the top 3 cards; the other seats are told how many',
     )
     await user.click(within(form).getByRole('button', { name: 'Look at the top 3 cards' }))
-    expect(manual).toHaveBeenCalledWith({ LookTop: { count: 3 } })
+    expect(manual).toHaveBeenCalledWith({ LookTop: { count: 3 } }, expect.any(Function))
   })
 })
 
@@ -151,6 +151,6 @@ describe('Reveal the top card', () => {
     const form = within(panel).getByRole('group', { name: 'Reveal the top card' })
     expect(form.querySelector('[data-slot="command-preview"]')).toHaveTextContent('shown to every seat')
     await user.click(within(form).getByRole('button', { name: 'Reveal the top card' }))
-    expect(manual).toHaveBeenCalledWith({ Reveal: { what: { Top: {} } } })
+    expect(manual).toHaveBeenCalledWith({ Reveal: { what: { Top: {} } } }, expect.any(Function))
   })
 })
