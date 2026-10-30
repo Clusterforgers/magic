@@ -545,8 +545,11 @@ fn picking_the_creature_the_mana_needs_rewinds_the_announcement() -> Result<(), 
     let (events, hash) = (driver.engine().events().len(), driver.engine().state_hash());
     driver.begin_activation("Levy")?;
     choose(&mut driver, Zone::Battlefield, &["Elf"])?;
-    assert_eq!(driver.engine().events().len(), events, "nothing was logged");
-    assert_eq!(driver.engine().state_hash(), hash);
+    crate::common::casting::assert_rewound(
+        &driver,
+        (events, hash),
+        mtg_engine::decision::Unplayable::Mana,
+    );
     assert_eq!(offered(&driver), ["Levy"]);
     Ok(())
 }

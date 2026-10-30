@@ -14,6 +14,22 @@ pub fn lands(count: usize, land: fn() -> Arc<CardDefinition>) -> Vec<PresetPerma
     (0..count).map(|_| ready(land())).collect()
 }
 
+/// Asserts that the announcement begun after `before` (the log length and state hash then) was taken back: the log
+/// gained only its `AnnouncementRewound` for `reason` and the state is as it was.
+pub fn assert_rewound(
+    driver: &Driver,
+    before: (usize, u64),
+    reason: mtg_engine::decision::Unplayable,
+) {
+    let (mark, hash) = before;
+    let logged = &driver.engine().events()[mark..];
+    assert!(
+        matches!(logged, [Event::AnnouncementRewound { reason: why, .. }] if *why == reason),
+        "only the rewind is logged: {logged:?}"
+    );
+    assert_eq!(driver.engine().state_hash(), hash, "nothing was paid");
+}
+
 /// Both players pass: the top of the stack resolves.
 pub fn resolve(driver: &mut Driver) -> Result<(), ScriptError> {
     driver.pass()?;
