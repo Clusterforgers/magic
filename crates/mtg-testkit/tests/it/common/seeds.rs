@@ -32,10 +32,15 @@ fn workers() -> usize {
         .max(1)
 }
 
-/// Runs `body` once for every seed in `seeds` on `workers()` threads. Games do not depend on each other, so campaign
-/// totals gathered behind a `Mutex` do not depend on the order. A seed that panics stops the campaign, and the panic of
-/// the lowest failing seed is raised again with its own message.
+/// Runs `body` once for every seed in `seeds`, shifted by `MTG_FUZZ_FROM` when set, on `workers()` threads. Games do
+/// not depend on each other, so campaign totals gathered behind a `Mutex` do not depend on the order. A seed that
+/// panics stops the campaign, and the panic of the lowest failing seed is raised again with its own message.
 pub fn for_each_seed(seeds: Range<u64>, body: impl Fn(u64) + Sync) {
+    let from = std::env::var("MTG_FUZZ_FROM")
+        .ok()
+        .and_then(|from| from.parse::<u64>().ok())
+        .unwrap_or(0);
+    let seeds = seeds.start + from..seeds.end + from;
     let next = AtomicU64::new(seeds.start);
     let failures: Mutex<Vec<(u64, Box<dyn Any + Send>)>> = Mutex::new(Vec::new());
     let workers =

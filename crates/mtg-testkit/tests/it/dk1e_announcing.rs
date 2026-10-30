@@ -1,4 +1,4 @@
-//! Goal: a manual action taken out of band while a cast or an activation is being announced leaves what state-based actions would do until the announcement ends (CR 704.3), so the invariants hold at the question under way and the creature it left at zero toughness dies as soon as the cast is backed out of; one that moves the card or permanent being announced to any zone ends the announcement with no event and priority returns, instead of the spell failing to go on the stack later; at two, three and four seats.
+//! Goal: a manual action taken out of band while a cast or an activation is being announced leaves what state-based actions would do until the announcement ends (CR 704.3), so the invariants hold at the question under way and the creature it left at zero toughness dies as soon as the cast is backed out of; one that moves the card or permanent being announced to any zone ends the announcement with no event and priority returns, instead of the spell failing to go on the stack later, and one that takes away a card picked to pay a cost has the cost chosen again; at two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -118,7 +118,7 @@ fn a_cast_or_activation_whose_card_a_manual_action_moved_is_dropped_and_priority
 }
 
 #[rstest]
-fn a_cast_whose_discard_a_manual_action_took_away_is_dropped_before_the_payment(
+fn a_cast_whose_discard_a_manual_action_took_away_asks_for_the_discard_again(
     #[values(2, 3, 4)] seats: usize,
     #[values(ManualZone::Graveyard, ManualZone::Exile, ManualZone::LibraryTop)] to: ManualZone,
 ) -> Result<(), ScriptError> {
@@ -155,11 +155,20 @@ fn a_cast_whose_discard_a_manual_action_took_away_is_dropped_before_the_payment(
             to,
         },
     )?;
-    // The payment of a touched announcement is checked: the cost that no longer applies ends it without a trace.
+    // The discard no longer fits: it is chosen again among the cards left (the one forest, taken without a question),
+    // and the steps after it are asked again with it.
+    assert!(matches!(
+        driver.decision()?.kind,
+        DecisionKind::ChooseTargets(_)
+    ));
+    driver.choose_targets(&[driver.target_player(1)])?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     assert!(!driver.engine().announcing());
-    assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
-    assert_eq!(driver.state().stack(), []);
+    assert_eq!(driver.state().stack().len(), 1);
+    assert_eq!(
+        driver.state().object(forests[1]).unwrap().zone(),
+        Zone::Graveyard(pid(0))
+    );
     assert_eq!(
         driver.state().object(discard).unwrap().zone(),
         to.zone(pid(0))
