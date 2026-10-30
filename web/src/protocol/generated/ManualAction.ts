@@ -2,6 +2,7 @@
 import type { CounterKind } from "./CounterKind";
 import type { DamageTarget } from "./DamageTarget";
 import type { ManaType } from "./ManaType";
+import type { ManualReveal } from "./ManualReveal";
 import type { ManualToken } from "./ManualToken";
 import type { ManualZone } from "./ManualZone";
 import type { ObjectId } from "./ObjectId";
@@ -144,4 +145,16 @@ bottom: Array<ObjectId>,
 /**
  * The cards put into the graveyard.
  */
-graveyard: Array<ObjectId>, } } | { "Shuffle": Record<symbol, never> };
+graveyard: Array<ObjectId>, } } | { "Shuffle": Record<symbol, never> } | { "Reveal": { 
+/**
+ * The card.
+ */
+what: ManualReveal, } } | { "Note": { 
+/**
+ * The card, which the seat owns or controls.
+ */
+object: ObjectId, 
+/**
+ * The text, up to 80 characters on one line.
+ */
+text: string, } };

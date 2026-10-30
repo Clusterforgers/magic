@@ -44,6 +44,7 @@ mod mana_cost_hidden;
 mod mana_lasts_view;
 mod manifest_view;
 mod manual_library_view;
+mod manual_show_view;
 mod manual_view;
 mod messages;
 mod miracle_hidden;
