@@ -199,6 +199,7 @@ mod c5_mr_writers;
 mod c5_sz_writers;
 mod c6_af_writers;
 mod c6_au_dead;
+// dk1b
 mod c6_blk_aura;
 mod c6_blk_draws;
 mod c6_eg_writers;
@@ -246,6 +247,7 @@ mod damage_wordings;
 mod day_night;
 mod defining;
 mod died_under;
+mod dk1b_attached_writers;
 mod draws;
 mod each_pump;
 mod effect_writers;
