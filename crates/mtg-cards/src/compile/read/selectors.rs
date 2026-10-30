@@ -550,23 +550,8 @@ fn its_controller(r: &mut Reader<'_>) -> Option<Pred> {
     Some(Pred::ControlledBy(Ref::ControllerOf(Box::new(it))))
 }
 
-/// What may follow the noun: who controls it, a keyword or a number it has.
-pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
-    if let Some(pred) = r.attempt(|r| super::t17b_attached::suffix(r, form)) {
-        return Some(pred);
-    }
-    if r.words("you control") {
-        return Some(Pred::ControlledBy(Ref::You));
-    }
-    if r.words("you don't control") {
-        return Some(not(Pred::ControlledBy(Ref::You)));
-    }
-    if r.words(form.opponents()) {
-        return Some(Pred::ControlledBy(Ref::Opponents));
-    }
-    if r.words("defending player controls") {
-        return Some(Pred::ControlledBy(Ref::Defending));
-    }
+/// What happened this turn or what the source did: "that entered the battlefield this turn", "that crewed it this turn".
+fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     // What came onto the battlefield this turn: "creature token that entered the battlefield this turn".
     if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
         return Some(Pred::EnteredThisTurn);
@@ -585,14 +570,33 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         return Some(Pred::Saddled(Ref::This));
     }
     // What the source hurt: "creature dealt damage by this creature this turn".
-    if r.attempt(|r| {
+    r.attempt(|r| {
         r.need("dealt damage by")?;
         r.source().then_some(())?;
         r.need("this turn")
     })
-    .is_some()
-    {
-        return Some(Pred::DamagedBy(Ref::This));
+    .map(|()| Pred::DamagedBy(Ref::This))
+}
+
+/// What may follow the noun: who controls it, a keyword or a number it has.
+pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    if let Some(pred) = r.attempt(|r| super::t17b_attached::suffix(r, form)) {
+        return Some(pred);
+    }
+    if r.words("you control") {
+        return Some(Pred::ControlledBy(Ref::You));
+    }
+    if r.words("you don't control") {
+        return Some(not(Pred::ControlledBy(Ref::You)));
+    }
+    if r.words(form.opponents()) {
+        return Some(Pred::ControlledBy(Ref::Opponents));
+    }
+    if r.words("defending player controls") {
+        return Some(Pred::ControlledBy(Ref::Defending));
+    }
+    if let Some(pred) = this_turn_suffix(r) {
+        return Some(pred);
     }
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
