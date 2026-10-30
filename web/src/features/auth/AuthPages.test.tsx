@@ -374,8 +374,30 @@ describe('registering', () => {
     expect(username()).toHaveAccessibleDescription(/already taken.*upper and lower case/i)
     expect(username()).toHaveFocus()
     expect(screen.queryByRole('alert')).toBeNull()
-    expect(password()).toHaveValue('')
+    expect(password()).toHaveValue(NEW.password)
     expect(app.store.getState().status).toBe('signed-out')
+  })
+
+  it('registers with the same password once only the taken username is changed', async () => {
+    const app = await open('/register')
+    await type(app, 'ada_l', NEW.password)
+    await app.user.click(submitButton('Create account'))
+    await waitFor(() => expect(username()).toHaveAttribute('aria-invalid', 'true'))
+    await app.user.clear(username())
+    await app.user.type(username(), NEW.username)
+    await app.user.click(submitButton('Create account'))
+    await waitFor(() => expect(app.store.getState().status).toBe('signed-in'))
+    expect(app.accounts.credentials.at(-1)).toEqual(NEW)
+  })
+
+  it.each([
+    ['a closed server', { closed: true }],
+    ['a refused password', { override: { register: () => authError(400, 'invalid_password') } }],
+  ])('empties the password after %s', async (_name, options) => {
+    const app = await open('/register', options)
+    await type(app, NEW.username, NEW.password)
+    await app.user.click(submitButton('Create account'))
+    await waitFor(() => expect(password()).toHaveValue(''))
   })
 
   it('clears the taken message once the username is edited', async () => {

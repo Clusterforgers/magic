@@ -5,6 +5,7 @@ import type { FormEvent } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { AccountError } from '@/net/accounts'
 import { useAuthStore } from './context'
 import { describeAccountError } from './errors'
 import type { AuthMode } from './errors'
@@ -48,7 +49,7 @@ interface AuthFormProps {
 
 /**
  * The sign-in and register form, in a card. The fields are uncontrolled, so the password lives only in the input while
- * it is typed: it is read once at submit, sent, and the field is emptied as soon as the answer is in. State holds only
+ * it is typed: it is read once at submit, sent, and the field is emptied as soon as the answer is in (except for a taken username on the register form). State holds only
  * the words of the problems. Focus goes to the first field that is wrong, else to the alert about the whole form.
  */
 export function AuthForm({ mode, next }: AuthFormProps) {
@@ -89,7 +90,13 @@ export function AuthForm({ mode, next }: AuthFormProps) {
     setProblems(NO_PROBLEMS)
     const { login, register } = store.getState()
     const result = await (mode === 'login' ? login : register)({ username, password })
-    if (passwordRef.current !== null) passwordRef.current.value = ''
+    // A taken username is the one answer that says nothing wrong about the password, so the player changes the name only.
+    const nameTaken =
+      !result.ok &&
+      mode === 'register' &&
+      result.error instanceof AccountError &&
+      result.error.code === 'username_taken'
+    if (passwordRef.current !== null && !nameTaken) passwordRef.current.value = ''
     setPending(false)
     if (result.ok) return // the page moves on by itself once the store says signed in
     const shown = describeAccountError(result.error, mode)
