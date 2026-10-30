@@ -327,10 +327,14 @@ mod deck_auras;
 mod t19c_either;
 mod t19c_put_many;
 
+// t20b
+mod t20b;
+
 use crate::ability::Ability;
 
 /// Adds to `texts` the oracle wordings of the ability that the renderers do not write.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
+    t20b::add(ability, texts);
     and_draw::add(ability, texts);
     and_or::add(texts);
     any_token_maker::add(ability, texts);

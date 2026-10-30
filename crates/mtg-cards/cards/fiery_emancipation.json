@@ -1,0 +1,19 @@
+{
+  "oracle_id": "52159875-354c-47f9-bb1c-cd65395fcc68",
+  "name": "Fiery Emancipation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Emancipation",
+      "oracle_fingerprint": "2e6b7525e3110ca712d152617432a9fd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "ControlledBy": "You" }] } },
+            "by": { "Multiply": 3 }
+          }
+        }
+      ]
+    }
+  ]
+}
