@@ -110,7 +110,11 @@ fn a_room_is_cast_as_one_door_and_the_other_is_unlocked_for_its_cost(
     doors[usize::from(door)] = true;
     assert_eq!(driver.state().dk1c5_doors(id), Some(doors));
     assert_eq!(name_of(driver.state(), id), cast, "only the door cast");
-    assert_eq!(glimmers(&driver), usize::from(door == 0), "the door's unlock trigger");
+    assert_eq!(
+        glimmers(&driver),
+        usize::from(door == 0),
+        "the door's unlock trigger"
+    );
     assert_eq!(unlockable(&driver), [(other.to_owned(), cost.to_owned())]);
     let before = hand(&driver);
     unlock(&mut driver, id, 1 - door)?;
@@ -118,7 +122,11 @@ fn a_room_is_cast_as_one_door_and_the_other_is_unlocked_for_its_cost(
     assert_eq!(name_of(driver.state(), id), ROOM, "both doors");
     assert_eq!(driver.state().object(id).unwrap().card().mana_value(), 5);
     assert_eq!(glimmers(&driver), 1, "Grand Entryway unlocked once");
-    assert_eq!(hand(&driver) - before, draws, "Eerie: fully unlocked and each enchantment that entered");
+    assert_eq!(
+        hand(&driver) - before,
+        draws,
+        "Eerie: fully unlocked and each enchantment that entered"
+    );
     assert!(unlockable(&driver).is_empty());
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());

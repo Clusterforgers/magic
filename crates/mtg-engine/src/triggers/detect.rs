@@ -335,7 +335,7 @@ fn dk1c5_happened(
             })
         }
         Event::SpellResolved { object }
-        |         Event::ZoneChanged {
+        | Event::ZoneChanged {
             object,
             from: Zone::Stack,
             to: Zone::Battlefield,

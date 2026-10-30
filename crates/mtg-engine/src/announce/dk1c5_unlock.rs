@@ -10,7 +10,8 @@ use crate::state::GameState;
 
 /// The payment decision of unlocking `door` of `card`, or nothing when `player` cannot unlock it now.
 pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId, door: u8) -> Next {
-    let Some(cost) = dk1c5_door(state, card, door).map(|face| face.mana_cost.clone().unwrap_or_default())
+    let Some(cost) =
+        dk1c5_door(state, card, door).map(|face| face.mana_cost.clone().unwrap_or_default())
     else {
         return Next::Drop;
     };

@@ -28,7 +28,10 @@ pub fn dk1c5_doors(whole: &mut CardDefinition) {
         let door = u8::try_from(index).unwrap_or(u8::MAX);
         for rule in &mut face.rules {
             if let Ability::Triggered {
-                when: TriggerPattern::DoorUnlocked { door: Some(own), .. },
+                when:
+                    TriggerPattern::DoorUnlocked {
+                        door: Some(own), ..
+                    },
                 ..
             } = &**rule
                 && *own != door
@@ -53,7 +56,11 @@ pub fn dk1c5_doors(whole: &mut CardDefinition) {
             }
         }
     }
-    whole.rules = whole.faces.iter().flat_map(|face| face.rules.clone()).collect();
+    whole.rules = whole
+        .faces
+        .iter()
+        .flat_map(|face| face.rules.clone())
+        .collect();
     whole.abilities = whole
         .faces
         .iter()

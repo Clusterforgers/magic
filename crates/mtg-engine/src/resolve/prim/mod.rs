@@ -66,6 +66,7 @@ mod monstrosity;
 mod move_counters;
 mod pair;
 // dk1b
+mod dk1c5_unlock;
 #[cfg(test)]
 mod move_attached;
 mod move_to;
@@ -100,7 +101,6 @@ mod untap;
 #[cfg(test)]
 mod untap_stun_tests;
 mod vote;
-mod dk1c5_unlock;
 mod w11d_venture;
 mod w15a_take_initiative;
 mod w2f_any_counters;

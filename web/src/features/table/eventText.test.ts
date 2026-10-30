@@ -121,6 +121,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Forest is crewed by Grizzly Bears and Hill Giant',
   ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
+  DoorUnlocked: [{ DoorUnlocked: { object: 3, door: 1, player: 1 } }, 'Bo unlocks a door of Forest'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   CardParted: [
     { CardParted: { permanent: 3, card: 1, to: { Command: 1 } } },

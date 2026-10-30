@@ -186,13 +186,11 @@ pub(crate) fn dk1c5_events(
     id: ObjectId,
     door: u8,
 ) -> Option<Vec<Event>> {
-    dk1c5_locked(state, player)
-        .contains(&(id, door))
-        .then(|| {
-            vec![Event::DoorUnlocked {
-                object: id,
-                door,
-                player,
-            }]
-        })
+    dk1c5_locked(state, player).contains(&(id, door)).then(|| {
+        vec![Event::DoorUnlocked {
+            object: id,
+            door,
+            player,
+        }]
+    })
 }
