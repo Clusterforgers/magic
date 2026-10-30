@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { CommonToken, CounterKind, ManaType, ObjectId } from '@/protocol/generated'
+import type { CounterKind, ManaType, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { playerOf } from '../../selectors'
-import { COMMON_TOKENS, GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
+import { GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
 import { AmountField } from './AmountField'
 import { lookIsPending } from './arrange'
 import { CardGroup } from './CardGroup'
@@ -16,6 +16,7 @@ import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
 import { panelGroups, previewOf, startDraft } from './commands'
 import { LookTopBody } from './LookTopBody'
+import { TokenChoice } from './TokenChoice'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
@@ -250,21 +251,7 @@ interface PartProps {
 
 /** The token or the kind of mana a command makes. */
 function Choice({ kind, draft, set }: PartProps & { kind: 'token' | 'mana' }) {
-  if (kind === 'token') {
-    return (
-      <NativeSelect
-        aria-label="Token"
-        value={draft.token}
-        onChange={(event) => set({ token: event.currentTarget.value as CommonToken })}
-      >
-        {COMMON_TOKENS.map((token) => (
-          <NativeSelectOption key={token} value={token}>
-            {token}
-          </NativeSelectOption>
-        ))}
-      </NativeSelect>
-    )
-  }
+  if (kind === 'token') return <TokenChoice draft={draft} set={set} />
   return (
     <NativeSelect
       aria-label="Mana"

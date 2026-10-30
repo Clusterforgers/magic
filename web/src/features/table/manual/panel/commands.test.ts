@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ManualAction } from '@/protocol/generated'
 import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
+import { START_TOKEN } from './customToken'
 import type { Command, CommandId, PanelDraft, PanelInput } from './commands'
 
 const INPUT: PanelInput = {
@@ -23,6 +24,7 @@ function command(id: CommandId, input: PanelInput = INPUT): Command {
 }
 
 const draft = (amount: number, more: Partial<PanelDraft> = {}): PanelDraft => ({
+  ...START_TOKEN,
   amount,
   token: 'Treasure',
   mana: 'Green',
