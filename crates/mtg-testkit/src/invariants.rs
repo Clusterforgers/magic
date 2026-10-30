@@ -24,7 +24,7 @@ use mtg_engine::player::Player;
 use mtg_engine::resolve::Scope;
 use mtg_engine::spend::{Restricted, Spend};
 use mtg_engine::state::Stage;
-use mtg_engine::w17b_statics::w17b_cant_lose;
+use mtg_engine::w17b_statics::{w17b_cant_lose, w17b_keeps_counters};
 use mtg_engine::zones::{Zone, Zones};
 use mtg_engine::{Characteristics, characteristics};
 use mtg_engine::{
@@ -1070,11 +1070,14 @@ impl InvariantChecker {
             }
             | Event::CreatureDied { object, .. } => {
                 self.expected_damage.remove(object);
-                // Counters stay with the object that held them, so a permanent that comes back holds none (CR 400.7);
-                // nor does it come back attached to anything.
-                self.expected_object_counters.remove(object);
+                // Nor does it come back attached to anything.
                 self.expected_attached.remove(object);
                 self.expected_enchanted.remove(object);
+                self.move_counters_along(*object);
+                Ok(())
+            }
+            Event::ZoneChanged { object, .. } => {
+                self.move_counters_along(*object);
                 Ok(())
             }
             Event::CountersChanged(changed) => self.adjust_counters(changed),
@@ -1108,6 +1111,18 @@ impl InvariantChecker {
             _ => {}
         }
         Ok(())
+    }
+
+    /// Counters stay with the object that held them, so one that changed zones holds none (CR 400.7), unless its card
+    /// prints that they remain as it moves to the zone it is now in (CR 122.2, the engine's own predicate).
+    fn move_counters_along(&mut self, object: ObjectId) {
+        let kept = self
+            .shadow
+            .object(object)
+            .is_some_and(|moved| w17b_keeps_counters(moved, moved.zone()));
+        if !kept {
+            self.expected_object_counters.remove(&object);
+        }
     }
 
     /// Damage to a player is life lost, or with infect poison counters instead; toxic gives poison counters on top.

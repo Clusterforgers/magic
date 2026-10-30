@@ -160,7 +160,7 @@ pub(crate) fn w17b_restore_counters(object: &mut GameObject, kept: BTreeMap<Coun
 
 /// Whether counters remain on the card as it moves to `to` (CR 122.2): its definition prints the rule and `to` is
 /// neither a hand nor a library.
-pub(crate) fn w17b_keeps_counters(object: &GameObject, to: Zone) -> bool {
+pub fn w17b_keeps_counters(object: &GameObject, to: Zone) -> bool {
     !matches!(to, Zone::Hand(_) | Zone::Library(_))
         && crate::ability_reader::w17b_definition_keeps_counters(object.card())
 }

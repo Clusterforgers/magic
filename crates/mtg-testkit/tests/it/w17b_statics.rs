@@ -2,7 +2,8 @@
 //! toughness play through the engine at two to four seats: a player at 0 life keeps playing while they can't lose and
 //! loses once the rule is gone, opponents can't cast spells during the controller's turn but can on their own, cards in
 //! graveyards are no legal targets, counters remain on a card that dies (a new object, CR 400.7) and not on one without
-//! the rule, and a creature assigns combat damage by its toughness with trample and first strike, and a player the
+//! the rule, and come back with it to the battlefield unless a hand came between, which the invariants count as put
+//! on, and a creature assigns combat damage by its toughness with trample and first strike, and a player the
 //! Herald keeps in with ten poison counters or 21 commander damage leaves the invariants kept; each log replays.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -153,6 +154,55 @@ fn w17b_counters_remain_on_a_card_that_dies(#[case] name: &str, #[case] kept: u3
     assert_ne!(dead.counter(), before, "a new object (CR 400.7)");
     assert_eq!(dead.card_counters_of(&CounterKind::PlusOnePlusOne), kept);
     replays(&scenario, &driver);
+}
+
+/// The kept counters follow the card through its moves: on the battlefield again it holds them unless a hand or a
+/// library came between, and the invariant checker, which counts every counter put on, agrees with the engine.
+#[rstest]
+#[case::dies_and_returns("Skullbriar, the Walking Grave", &[], 2)]
+#[case::exiled_and_returns("Skullbriar, the Walking Grave", &[Zone::Exile], 2)]
+#[case::through_a_hand("Skullbriar, the Walking Grave", &[Zone::Hand(pid(0))], 0)]
+#[case::without_the_rule("Grizzly", &[], 0)]
+fn w17b_kept_counters_come_back_with_the_card_and_the_invariants_kept(
+    #[case] name: &str,
+    #[case] via: &[Zone],
+    #[case] kept: u32,
+) {
+    use mtg_engine::events::{DeathCause, Event, ZoneCause};
+    use mtg_testkit::InvariantChecker;
+    let card = if name == "Grizzly" {
+        creature("Grizzly", 1, &[], 1, 1)
+    } else {
+        card(name).unwrap()
+    };
+    let mut permanent = PresetPermanent::new(card);
+    permanent.counters = vec![(CounterKind::PlusOnePlusOne, 2)];
+    let setup = Scenario::new(2)
+        .at(3, 1, Step::Main1)
+        .battlefield(0, [permanent])
+        .setup()
+        .unwrap();
+    let start = replay(&setup, &[]).unwrap();
+    let id = start.zone(Zone::Battlefield)[0];
+    let mut log = vec![Event::CreatureDied {
+        object: id,
+        cause: DeathCause::ZeroToughness,
+    }];
+    let mut at = Zone::Graveyard(pid(0));
+    for &to in via.iter().chain(&[Zone::Battlefield]) {
+        log.push(Event::ZoneChanged {
+            object: id,
+            from: at,
+            to,
+            cause: ZoneCause::Moved,
+        });
+        at = to;
+    }
+    let live = replay(&setup, &log).unwrap();
+    let back = live.object(id).unwrap().permanent().unwrap();
+    assert_eq!(back.counters_of(&CounterKind::PlusOnePlusOne), kept);
+    let mut checker = InvariantChecker::new(&setup).unwrap();
+    assert_eq!(checker.observe(&live, &log), Ok(()));
 }
 
 #[rstest]
