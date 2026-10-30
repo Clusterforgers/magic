@@ -26,8 +26,6 @@ function input(object: ObjectView, over: Partial<MenuInput> = {}): MenuInput {
     object,
     players: [0, 1],
     hasCommandZone: true,
-    library: 40,
-    counters: [],
     ownerName: 'Bo',
     ...over,
   }
@@ -56,7 +54,6 @@ describe('which groups and entries a card offers', () => {
         counters: ['add-+1/+1', 'add-counters', 'remove-counters'],
         tap: ['tap'],
         effect: ['damage', 'pump'],
-        token: ['token'],
         panel: PANEL,
       },
     ],
@@ -64,7 +61,7 @@ describe('which groups and entries a card offers', () => {
       'a creature of an opponent',
       card({ owner: 1, controller: 1 }),
       {},
-      { tap: ['tap'], effect: ['pump'], token: ['token'], panel: PANEL },
+      { tap: ['tap'], effect: ['pump'], panel: PANEL },
     ],
     [
       'a creature with two kinds of counter',
@@ -105,7 +102,6 @@ describe('which groups and entries a card offers', () => {
           'move-LibraryBottom',
           'move-Command',
         ],
-        token: ['token'],
         panel: PANEL,
       },
     ],
@@ -178,14 +174,21 @@ describe('which groups and entries a card offers', () => {
     if (expected.attach?.length === 0) expect(groupIds(menu)).not.toContain('attach')
   })
 
-  it('lists the groups in the order move, counters, tap, attach, effects, token, panel', () => {
+  it('lists the groups in the order move, counters, tap, attach, effects, show, panel', () => {
     const menu = manualMenu(input({ ...card(), subtypes: ['Aura'] }))
-    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'show', 'token', 'panel'])
+    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'show', 'panel'])
+  })
+
+  it('has no entry for the seat’s life, counters, library or mana, nor for a token: the panel has them', () => {
+    const menu = manualMenu(input(card()))
+    const labels = menu.groups.flatMap((group) => group.items.map((entry) => entry.label.toLowerCase()))
+    expect(labels.filter((label) => /life|draw|mill|token|mana|library top/.test(label))).toEqual([])
+    expect(menu.groups.flatMap((group) => group.items.map((entry) => entry.ask))).not.toContain('token')
   })
 
   it('leaves out counters, tapping and attaching for a card that is not a permanent', () => {
     const menu = manualMenu(input(card({ zone: { Hand: SEAT }, permanent: null, subtypes: ['Aura'] })))
-    expect(groupIds(menu)).toEqual(['move', 'show', 'token', 'panel'])
+    expect(groupIds(menu)).toEqual(['move', 'show', 'panel'])
   })
 })
 
@@ -346,74 +349,7 @@ describe('the forms', () => {
       {},
       { Counters: { object: 3, counter: { Other: 'oil' }, delta: -2 } },
     ],
-    [
-      'counters of the seat added',
-      'addPlayerCounters',
-      { kind: 'poison', count: 2 },
-      {},
-      { PlayerCounters: { player: 0, counter: 'poison', delta: 2 } },
-    ],
-    [
-      'counters of the seat removed',
-      'removePlayerCounters',
-      { kind: 'poison', count: 1 },
-      { counters: [['poison', 3]] },
-      { PlayerCounters: { player: 0, counter: 'poison', delta: -1 } },
-    ],
-    ['life gained', 'gainLife', { count: 5 }, {}, { Life: { player: 0, delta: 5 } }],
-    ['life lost', 'loseLife', { count: 1000 }, {}, { Life: { player: 0, delta: -1000 } }],
-    ['a draw', 'draw', { count: 2 }, {}, { Draw: { count: 2 } }],
-    ['a mill', 'mill', { count: 3 }, {}, { MoveTop: { count: 3, to: 'Graveyard' } }],
-    [
-      'the top of the library to the bottom',
-      'moveTop',
-      { count: 1, to: 'LibraryBottom' },
-      {},
-      { MoveTop: { count: 1, to: 'LibraryBottom' } },
-    ],
     ['an attachment', 'attach', { target: 12 }, {}, { Attach: { object: 3, to: 12 } }],
-    [
-      'a common token',
-      'token',
-      { token: 'Treasure', count: 2 },
-      {},
-      { CreateToken: { token: { Common: 'Treasure' }, count: 2 } },
-    ],
-    [
-      'a custom creature token',
-      'token',
-      { token: 'custom', name: ' Knight ', power: 2, toughness: 3, count: 1 },
-      {},
-      {
-        CreateToken: {
-          token: {
-            Custom: {
-              name: 'Knight',
-              colors: [],
-              types: ['Creature'],
-              subtypes: ['Knight'],
-              power: 2,
-              toughness: 3,
-            },
-          },
-          count: 1,
-        },
-      },
-    ],
-    [
-      'a custom token whose name is no subtype',
-      'token',
-      { token: 'custom', name: 'Elf 2', power: 1, toughness: 1 },
-      {},
-      {
-        CreateToken: {
-          token: {
-            Custom: { name: 'Elf 2', colors: [], types: ['Creature'], subtypes: [], power: 1, toughness: 1 },
-          },
-          count: 1,
-        },
-      },
-    ],
     [
       'damage to a player',
       'damage',
@@ -428,7 +364,6 @@ describe('the forms', () => {
       {},
       { Damage: { source: 3, target: { Object: 12 }, amount: 99 } },
     ],
-    ['mana', 'mana', { mana: 'Blue', count: 20 }, {}, { AddMana: { mana: 'Blue', count: 20 } }],
     ['a pump', 'pump', { power: 3, toughness: 0 }, {}, { Pump: { object: 3, power: 3, toughness: 0 } }],
     [
       'a shrink',
@@ -452,20 +387,10 @@ describe('the forms', () => {
     ['a counter name of 25 characters', 'addCounters', { kind: 'other', other: 'x'.repeat(25) }, {}],
     ['more counters than there are', 'removeCounters', { kind: 'oil', count: 3 }, {}],
     ['a kind that is not there', 'removeCounters', { kind: 'charge' }, {}],
-    ['a seat counter it does not have', 'removePlayerCounters', { kind: 'poison' }, {}],
-    ['1001 life', 'gainLife', { count: 1001 }, {}],
-    ['11 cards drawn', 'draw', { count: 11 }, {}],
-    ['more cards milled than the library has', 'mill', { count: 5 }, { library: 4 }],
     ['no target', 'attach', {}, {}],
-    ['11 tokens', 'token', { count: 11 }, {}],
-    ['a custom token without a name', 'token', { token: 'custom', name: ' ' }, {}],
-    ['a custom token with a power of 100', 'token', { token: 'custom', name: 'X', power: 100 }, {}],
-    ['a token that is not on the list', 'token', { token: 'Dinosaur' }, {}],
     ['damage to nothing', 'damage', { count: 2 }, {}],
     ['zero damage', 'damage', { hit: { Player: 1 }, count: 0 }, {}],
     ['100 damage', 'damage', { hit: { Player: 1 }, count: 100 }, {}],
-    ['21 mana', 'mana', { count: 21 }, {}],
-    ['zero mana', 'mana', { count: 0 }, {}],
     ['a pump of nothing', 'pump', { power: 0, toughness: 0 }, {}],
     ['a pump of 100', 'pump', { power: 100, toughness: 1 }, {}],
     ['a shrink of 100', 'pump', { power: 1, toughness: -100 }, {}],
@@ -477,10 +402,11 @@ describe('the forms', () => {
   })
 
   it('starts removal on a kind that is held', () => {
-    const start = (ask: Ask, extra: Partial<MenuInput> = {}) => startDraft(ask, input(object, extra)).kind
+    const start = (ask: Ask, over: Partial<ObjectView> = {}) =>
+      startDraft(ask, input({ ...object, ...over })).kind
     expect(start('removeCounters')).toBe('+1/+1')
-    expect(start('removePlayerCounters', { counters: [[{ Other: 'energy' }, 1]] })).toBe('energy')
-    expect(start('addCounters')).toBe('+1/+1')
+    expect(start('removeCounters', { counters: [[{ Other: 'energy' }, 1]] })).toBe('energy')
+    expect(start('addCounters', { counters: [[{ Other: 'energy' }, 1]] })).toBe('+1/+1')
   })
 })
 

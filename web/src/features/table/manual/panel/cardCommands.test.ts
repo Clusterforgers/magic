@@ -17,8 +17,6 @@ function input(object: ObjectView, over: Partial<MenuInput> = {}): MenuInput {
     object,
     players: [0, 1],
     hasCommandZone: true,
-    library: 40,
-    counters: [],
     ownerName: 'Bo',
     ...over,
   }
@@ -274,16 +272,7 @@ describe('no manual action is lost to the shorter menu', () => {
     addCounters: 'Counters',
     removeCounters: 'Counters',
     attach: 'Attach',
-    token: 'CreateToken',
-    gainLife: 'Life',
-    loseLife: 'Life',
-    addPlayerCounters: 'PlayerCounters',
-    removePlayerCounters: 'PlayerCounters',
-    draw: 'Draw',
-    mill: 'MoveTop',
-    moveTop: 'MoveTop',
     damage: 'Damage',
-    mana: 'AddMana',
     pump: 'Pump',
   }
   /** Every kind of action the menu offered before the panel's Card, You, Library and Make groups, bar the library actions of the other item. */

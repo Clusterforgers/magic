@@ -18,6 +18,8 @@ interface PreviewCardProps {
   object: ObjectView
   role: CombatRole | null
   size: CardSize
+  /** The card is face up to every seat: its face carries the "Revealed" mark. */
+  revealed?: boolean
   /** The cards API that gives the oracle text; the server's by default. */
   api?: CardsApi
 }
@@ -32,7 +34,7 @@ function usePrintedFaces(object: ObjectView, api: CardsApi): readonly CardFaceVi
  * The preview's card: the `large` picture of the face in use with the object's state over it, a control that turns
  * a card of several faces over, and the oracle text of the face shown as plain, selectable text.
  */
-export function PreviewCard({ object, role, size, api = cardsApi }: PreviewCardProps) {
+export function PreviewCard({ object, role, size, revealed = false, api = cardsApi }: PreviewCardProps) {
   const choice = useImageChoice()
   const faces = usePrintedFaces(object, api)
   const own = faceOf(object)
@@ -54,7 +56,15 @@ export function PreviewCard({ object, role, size, api = cardsApi }: PreviewCardP
           <CardFace object={object} role={role} size={size} upright />
         </CardImage>
       ) : (
-        <CardFace object={object} role={role} size={size} upright imageSize="large" />
+        <CardFace
+          object={object}
+          role={role}
+          size={size}
+          upright
+          imageSize="large"
+          revealed={revealed}
+          handNote={object.note}
+        />
       )}
       {flips ? (
         <Button variant="outline" size="sm" className="w-fit" onClick={() => setShown(other)}>

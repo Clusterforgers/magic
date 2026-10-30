@@ -15,6 +15,7 @@ import { roomFor } from './attachMarks'
 import { GrantMarks } from './GrantMarks'
 import { isUnattached } from '@/play/hosts'
 import type { CardSize } from './cardSize'
+import { HandMarks } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
@@ -65,12 +66,26 @@ export interface OverlayProps {
   turned: boolean
   note?: CardNote | undefined
   links?: Links | undefined
+  /** The card is face up to every seat (`revealedPlace`): a "Revealed" mark at the foot. */
+  revealed?: boolean
+  /** The note a seat put on the card (`ObjectView.note`): its first words at the foot. */
+  handNote?: string | undefined
   /** The drawn width of the face in px: it decides how many marks the foot stack has room for. */
   width: number
 }
 
 /** The marks over a picture, or over the back of a face-down card. */
-export function Overlay({ object, role, size, turned, note, links, width }: OverlayProps) {
+export function Overlay({
+  object,
+  role,
+  size,
+  turned,
+  note,
+  links,
+  revealed = false,
+  handNote,
+  width,
+}: OverlayProps) {
   const text = SIZE[size].text
   const printed = usePrinted(object)
   const badge = statBadge(object, printed, loyaltyOf(object))
@@ -85,10 +100,22 @@ export function Overlay({ object, role, size, turned, note, links, width }: Over
   const corner = CORNER[turned ? 'turned' : 'upright']
   const unattached = isUnattached(object)
   const hasFoot =
-    damage !== undefined || counters.length > 0 || host !== undefined || attaches.length > 0 || unattached
+    damage !== undefined ||
+    counters.length > 0 ||
+    host !== undefined ||
+    attaches.length > 0 ||
+    unattached ||
+    revealed ||
+    handNote !== undefined
   // The marks of the attachments get the lines of the foot stack that the damage, counters and links leave.
   const others =
-    (damage === undefined ? 0 : 1) + counters.length + (host === undefined ? 0 : 1) + (unattached ? 1 : 0)
+    (damage === undefined ? 0 : 1) +
+    counters.length +
+    (host === undefined ? 0 : 1) +
+    (unattached ? 1 : 0) +
+    (revealed ? 1 : 0) +
+    (handNote === undefined ? 0 : 1)
+  const footWidth = width * FOOT_SHARE
   const room = roomFor(turned ? (width * 5) / 7 : (width * 7) / 5, others * OTHER_MARK_PX)
   const hasHead = head.length > 0 || sick || manual.length > 0 || note?.label !== undefined
   return (
@@ -105,6 +132,14 @@ export function Overlay({ object, role, size, turned, note, links, width }: Over
           data-slot="card-marks-foot"
           className={cn('absolute flex max-h-[40%] gap-0.5 overflow-hidden', corner.foot)}
         >
+          {/* What the table put on the card comes first, so it is the line that stays at the foot. */}
+          <HandMarks
+            revealed={revealed}
+            note={handNote}
+            small={size === 'compact'}
+            footWidth={footWidth}
+            text={text}
+          />
           {damage === undefined ? null : (
             <span
               data-slot="card-status"

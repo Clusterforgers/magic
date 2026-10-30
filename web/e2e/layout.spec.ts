@@ -179,6 +179,16 @@ const STOPS: readonly Stop[] = [
     'board=duel&equip=1&prompt=priority&turn=you',
     'pass',
   ),
+  tableStop(
+    'The table (dev), the duel board, revealed cards and notes',
+    'board=duel&reveal=1&prompt=priority&turn=you',
+    'pass',
+  ),
+  tableStop(
+    'The table (dev), 4 seats, revealed cards and notes',
+    'seats=4&reveal=1&prompt=priority&turn=you',
+    'pass',
+  ),
   tableStop('The table (dev), the heavy board, declaring blockers', 'board=heavy&prompt=block', 'prompt'),
   tableStop('The table (dev), 4 seats, declaring attackers', 'seats=4&prompt=attack&turn=you', 'prompt'),
   tableStop('The table (dev), 4 seats, declaring blockers', 'seats=4&prompt=block', 'prompt'),

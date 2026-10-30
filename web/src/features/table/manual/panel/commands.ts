@@ -1,13 +1,8 @@
 /** Pure: the commands of the Commands panel, what each one says it does, the preview of its change and the action it sends. */
-import type {
-  CommonToken,
-  CounterKind,
-  ManaType,
-  ManualAction,
-  ObjectId,
-  PlayerId,
-} from '@/protocol/generated'
-import { COMMON_TOKENS, counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
+import type { CounterKind, ManaType, ManualAction, ObjectId, PlayerId } from '@/protocol/generated'
+import { counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
+import { START_TOKEN, tokenPreview } from './customToken'
+import type { TokenDraft } from './customToken'
 
 /** The groups of the panel, in order. */
 export type PanelGroupId = 'you' | 'library' | 'make'
@@ -48,7 +43,7 @@ export interface Command {
   effect: string
   /** Left out for a command that takes no amount. */
   amount?: AmountSpec
-  /** The choice it also takes: a token or a kind of mana. */
+  /** The choice it also takes: a token (or a custom creature) or a kind of mana. */
   choice?: 'token' | 'mana'
   /** Why it cannot be used now; the row is listed, inert. */
   unavailable?: string
@@ -77,9 +72,8 @@ export interface PanelInput {
 }
 
 /** What a row has chosen so far. */
-export interface PanelDraft {
+export interface PanelDraft extends TokenDraft {
   amount: number
-  token: CommonToken
   mana: ManaType
 }
 
@@ -233,7 +227,7 @@ function revealTopCommand(unavailable: string | undefined): Command {
 
 /** The draft a row of `command` opens with. */
 export function startDraft(command: Command): PanelDraft {
-  return { amount: command.amount?.start ?? 0, token: COMMON_TOKENS[0] ?? 'Treasure', mana: 'Green' }
+  return { ...START_TOKEN, amount: command.amount?.start ?? 0, mana: 'Green' }
 }
 
 /** The amount after a press of a preset: a signed command adds it to the pending change, a count takes it. */
@@ -294,11 +288,7 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
         action: { Reveal: { what: { Top: {} } } },
       }
     case 'token':
-      return {
-        preview: `${plural(amount, `${draft.token} token`)} enter under your control`,
-        apply: `Create ${plural(amount, draft.token)}`,
-        action: { CreateToken: { token: { Common: draft.token }, count: amount } },
-      }
+      return tokenPreview(draft, amount)
     case 'mana': {
       const symbols = `{${symbolOf(draft.mana)}}`.repeat(amount)
       return {

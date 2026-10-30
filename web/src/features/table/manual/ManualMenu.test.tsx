@@ -93,7 +93,7 @@ describe('opening the menu', () => {
     const groups = within(menu())
       .getAllByRole('group')
       .map((group) => group.getAttribute('data-group'))
-    expect(groups).toEqual(['move', 'counters', 'tap', 'effect', 'show', 'token', 'panel'])
+    expect(groups).toEqual(['move', 'counters', 'tap', 'effect', 'show', 'panel'])
     expect(within(menu()).getByRole('group', { name: 'Move to' })).toBeInTheDocument()
     expect(within(menu()).getByRole('group', { name: 'Counters' })).toBeInTheDocument()
   })
@@ -329,45 +329,6 @@ describe('the forms', () => {
     expect(sent).toEqual([{ Counters: { object: ID, counter: '+1/+1', delta: -2 } }])
   })
 
-  it('creates the tokens chosen', async () => {
-    const { user, sent } = await open()
-    await user.click(entry('Create a token…'))
-    await user.selectOptions(field('Token'), 'Soldier')
-    await user.clear(field('How many'))
-    await user.type(field('How many'), '2')
-    await user.click(within(dialog()).getByRole('button', { name: 'Create' }))
-    expect(sent).toEqual([{ CreateToken: { token: { Common: 'Soldier' }, count: 2 } }])
-  })
-
-  it('describes a custom creature token', async () => {
-    const { user, sent } = await open()
-    await user.click(entry('Create a token…'))
-    await user.selectOptions(field('Token'), 'custom')
-    await user.type(field('Name of the token'), 'Knight')
-    await user.clear(field('Power'))
-    await user.type(field('Power'), '3')
-    await user.clear(field('Toughness'))
-    await user.type(field('Toughness'), '2')
-    await user.click(within(dialog()).getByRole('button', { name: 'Create' }))
-    expect(sent).toEqual([
-      {
-        CreateToken: {
-          token: {
-            Custom: {
-              name: 'Knight',
-              colors: [],
-              types: ['Creature'],
-              subtypes: ['Knight'],
-              power: 3,
-              toughness: 2,
-            },
-          },
-          count: 1,
-        },
-      },
-    ])
-  })
-
   it('lists the permanents an attachment can go to and sends the one chosen', async () => {
     const equipment = permanent({}, { name: 'Sword of Tests', types: ['Artifact'], subtypes: ['Equipment'] })
     const { user, sent, fixture } = await open({ object: equipment })
@@ -552,6 +513,8 @@ describe('the way into the panel', () => {
     'Gain life…',
     'Lose life…',
     'Add mana…',
+    'Create a token…',
+    'Add counters to you…',
   ])('no longer lists %s, which the panel has', async (name) => {
     const { user } = renderMenu()
     cardButton().focus()

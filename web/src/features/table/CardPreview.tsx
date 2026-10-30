@@ -13,6 +13,7 @@ import { dockOf, usePreviewStore, usePreviewTarget } from './preview'
 import type { Dock, PreviewTarget } from './preview'
 import { attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
 import { useCardMark } from './prompt/marks'
+import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
 import { useLinks } from './useLinks'
 
@@ -40,6 +41,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const { id } = target
   const object = usePlay((state) => state.objectsById[id])
   const role = usePlay((state) => combatRoleIn(state, id))
+  const place = usePlay((state) => (state.view === null ? undefined : revealedPlace(state.view.players, id)))
   const outlook = useCreatureOutlook(id)
   const fight = usePlay((state) =>
     state.view === null
@@ -82,7 +84,13 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       )}
     >
       <div className="shrink-0">
-        <PreviewCard key={id} object={object} role={role} size={wide ? 'large' : 'medium'} />
+        <PreviewCard
+          key={id}
+          object={object}
+          role={role}
+          size={wide ? 'large' : 'medium'}
+          revealed={place !== undefined}
+        />
       </div>
       <div className={cn('grid content-start gap-1 text-sm', wide ? 'mt-3' : 'min-w-0 flex-1')}>
         <p className="font-semibold">{object.name}</p>
@@ -119,6 +127,10 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
             ))}
           </ul>
         )}
+        {place === undefined ? null : (
+          <p data-slot="preview-revealed">{revealedLine(place, name(object.owner))}</p>
+        )}
+        {object.note === undefined ? null : <p data-slot="preview-note">{noteName(object.note)}</p>}
         {fight === null ? null : <p>{fight}</p>}
         {outlook === null ? null : (
           <p data-slot="preview-forecast">Combat forecast: {outlookText(outlook)}.</p>
