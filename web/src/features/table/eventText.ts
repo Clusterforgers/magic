@@ -647,6 +647,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const { object, target } = event.JoinedAttack
     return line(`${n.card(object)} enters attacking ${attackTarget(target, n)}`)
   }
+  if ('RemovedFromCombat' in event) {
+    return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
+  }
   if ('TurnBegan' in event) {
     const { number, active, extra } = event.TurnBegan
     return line(`Turn ${number} begins: ${n.seat(active)}'s ${extra ? 'extra turn' : 'turn'}`)

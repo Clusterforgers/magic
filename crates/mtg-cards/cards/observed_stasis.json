@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0c729806-3a23-491e-847f-23a394d27291",
+  "name": "Observed Stasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Observed Stasis",
+      "oracle_fingerprint": "9b744a4c04b5276342690ee4ebc3bda7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "RemoveFromCombat": { "what": "Attached" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      "Tapped",
+                      { "ControlledBy": { "ControllerOf": "Attached" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": { "affected": "Attached", "mods": ["LoseAbilities", "CantAttack", "CantBlock"] }
+        }
+      ]
+    }
+  ]
+}

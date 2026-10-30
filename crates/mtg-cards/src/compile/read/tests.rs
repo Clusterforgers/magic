@@ -274,6 +274,7 @@ mod if_sentence;
 mod impulse;
 mod instead_pairs;
 mod lands;
+mod leave_combat;
 mod levels;
 mod library;
 mod life;
