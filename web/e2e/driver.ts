@@ -107,10 +107,15 @@ export function attackersOffered(own: readonly string[]): string[] {
 
 /**
  * A priority window with nothing to play: no card of the hand, no commander in the command zone and no ability on the
- * battlefield is legal, so it can be passed and nothing else. The server asks only a seat with a stop or Full Control.
+ * battlefield is legal, so it can be passed and nothing else. An untapped land is marked legal for its mana ability,
+ * which is never a play (`can_act`, [arena-flow.md](../../docs/arena-flow.md)), so a land alone leaves the window idle;
+ * any other legal permanent is read as an ability to use. The server asks only a seat with a stop or Full Control.
  */
 export const isIdle = (seen: Seen): boolean =>
-  seen.kind === 'Priority' && seen.hand.length === 0 && seen.command.length === 0 && seen.board.length === 0
+  seen.kind === 'Priority' &&
+  seen.hand.length === 0 &&
+  seen.command.length === 0 &&
+  seen.board.every((permanent) => permanent.land)
 
 /** The state shared by both seats' loops: the step budget, the stall clock and the trail kept for a failure. */
 export class Run {

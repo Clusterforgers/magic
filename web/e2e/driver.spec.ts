@@ -4,6 +4,7 @@ import { aimAt, attackersOffered, isIdle, look, turnOf } from './driver'
 import type { Card, Seen } from './driver'
 
 const card = (id: string): Card => ({ id, label: `Card ${id}`, land: false })
+const land = (id: string): Card => ({ id, label: `Forest ${id}, Basic Land`, land: true })
 
 const priority = (legal: Partial<Pick<Seen, 'hand' | 'command' | 'board'>>): Seen => ({
   over: false,
@@ -32,6 +33,21 @@ test.describe('driver helpers', () => {
     {
       name: 'only an ability on the battlefield is legal',
       seen: priority({ board: [card('3')] }),
+      idle: false,
+    },
+    {
+      name: 'only untapped lands are legal, for their mana abilities',
+      seen: priority({ board: [land('4'), land('5')] }),
+      idle: true,
+    },
+    {
+      name: 'an untapped land and an ability on the battlefield are legal',
+      seen: priority({ board: [land('4'), card('3')] }),
+      idle: false,
+    },
+    {
+      name: 'a land is legal in the hand',
+      seen: priority({ hand: [land('1')], board: [land('4')] }),
       idle: false,
     },
     {
