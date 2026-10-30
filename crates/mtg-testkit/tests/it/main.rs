@@ -516,3 +516,5 @@ mod x_places;
 mod zone_abilities;
 mod zone_moves;
 mod zones_fuzz;
+// dk1a
+mod dk1a_dog_umbra;

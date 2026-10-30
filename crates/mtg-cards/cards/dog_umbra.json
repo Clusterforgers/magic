@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e475c96f-6cf8-4139-92fd-f68ecaae4893",
+  "name": "Dog Umbra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dog Umbra",
+      "oracle_fingerprint": "2859a823290de4c021b411db89cac7c4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "Not": { "ControlledBy": "You" } }]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "UmbraArmor" }],
+            "condition": {
+              "Not": {
+                "Matches": {
+                  "subject": "Attached",
+                  "selector": [{ "Not": { "ControlledBy": "You" } }]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
