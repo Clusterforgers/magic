@@ -535,3 +535,5 @@ mod dk1d_disturb;
 mod dk1d_permit_costs;
 // deck-auras
 mod deck_auras;
+// dk1e
+mod dk1e_deck;
