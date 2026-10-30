@@ -364,8 +364,8 @@ test.describe('the development table with 40 permanents a seat', () => {
     })
   }
 
-  // The Commands panel with its tallest rows open: the look-at-the-top list and a picked card's commands.
-  for (const panel of ['top', 'card'] as const) {
+  // The Commands panel with its tallest row open, the look-at-the-top list; a picked card opens the rail or sheet over the table (ui3b).
+  for (const panel of ['top'] as const) {
     test(`fits at every size with the Commands panel's ${panel} scene`, async ({ page }) => {
       await page.goto(`${DEV_WEB_URL}/dev/table?panel=${panel}`)
       await page.locator(THINGS.primary).waitFor()
