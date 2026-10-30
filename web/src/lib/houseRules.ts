@@ -493,10 +493,10 @@ export const RULES: readonly RuleSpec[] = [
   ),
   deckFlag(
     'colour_identity',
-    'Colour identity',
+    'Color identity',
     'Lets any card in when off.',
-    'Colour identity enforced',
-    'Colour identity not enforced',
+    'Color identity enforced',
+    'Color identity not enforced',
   ),
   deckCount('deck_size', 'Deck size', 'Cards in a deck with its commanders.', 40, 250),
   deckCount('max_copies', 'Copies of a card', 'Most copies when one copy is off.', 1, 99),

@@ -21,7 +21,7 @@ const rad = (degrees: number): number => (degrees * Math.PI) / 180
 /** Reads `oklch(L C H)` or `oklch(L C H / A)`; L and A may be percentages. Anything else throws. */
 export function parseOklch(text: string): Oklch {
   const match = /^oklch\(\s*([\d.]+%?)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+%?))?\s*\)$/.exec(text.trim())
-  if (match === null) throw new Error(`not an oklch() colour: ${text}`)
+  if (match === null) throw new Error(`not an oklch() color: ${text}`)
   const unit = (value: string): number =>
     value.endsWith('%') ? Number.parseFloat(value) / 100 : Number(value)
   return { l: unit(match[1] ?? ''), c: Number(match[2]), h: Number(match[3]), alpha: unit(match[4] ?? '1') }

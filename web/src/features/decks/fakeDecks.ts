@@ -204,6 +204,8 @@ export interface DecksScript {
   unavailable?: boolean
   /** What `POST /api/decks/import` reads the pasted list as. */
   importResult?: ImportResult
+  /** What `POST /api/decks/check` answers; the report of the imported cards by default. */
+  report?: DeckReport
   /** The decks `GET` and `PUT /api/decks/{id}` know, as the server shows them. */
   views?: DeckView[]
   /** The cards a `PUT` can resolve besides those already in the stored deck. */
@@ -211,7 +213,7 @@ export interface DecksScript {
   /** The state a `PUT` answers; verified by default. */
   saveState?: DeckState
   /** Replaces the answer of one endpoint. */
-  override?: Partial<Record<'list' | 'create' | 'import' | 'remove' | 'get' | 'update', Answer>>
+  override?: Partial<Record<'list' | 'create' | 'import' | 'check' | 'remove' | 'get' | 'update', Answer>>
 }
 
 /** A deck server in memory, with a record of what it was asked. */
@@ -281,6 +283,15 @@ export function startDecks(script: DecksScript = {}): DecksServer {
     if (path === '/api/decks/import' && method === 'POST') {
       imports.push(bodyOf<ImportRequest>(call))
       return script.override?.import?.(call) ?? jsonResponse(200, script.importResult ?? importResult())
+    }
+    if (path === '/api/decks/check' && method === 'POST') {
+      const custom = script.override?.check?.(call)
+      if (custom !== undefined) return custom
+      const read = script.importResult ?? importResult()
+      const cards = read.cards.map((line) =>
+        reportCard(line.card.name, { zone: line.zone, count: line.count, support: line.card.support }),
+      )
+      return jsonResponse(200, script.report ?? reportOf(cards))
     }
     if (path.startsWith('/api/decks/') && method === 'GET') {
       const custom = script.override?.get?.(call)

@@ -36,12 +36,12 @@ function CommanderIdentitySwitch({
       variant="outline"
       size="sm"
       aria-pressed={on}
-      aria-label={`Within the commander’s colours: ${identityWords(identity)}`}
+      aria-label={`Within the commander’s colors: ${identityWords(identity)}`}
       data-slot="commander-identity"
       className={cn('ml-auto', on && 'ring-2 ring-ring ring-offset-2 ring-offset-surface')}
       onClick={() => onChange({ ...filters, identity: on ? [] : letters })}
     >
-      Commander’s colours
+      Commander’s colors
       <IdentityPips identity={identity} />
     </Button>
   )
@@ -56,9 +56,9 @@ export function FilterBar({ filters, onChange, commanderIdentity = null }: Filte
   const problem = manaValueProblem(filters.manaValue)
   return (
     <div className="grid gap-2">
-      <div role="group" aria-label="Colour identity" className="flex flex-wrap items-center gap-1">
+      <div role="group" aria-label="Color identity" className="flex flex-wrap items-center gap-1">
         <span aria-hidden="true" className="mr-1 text-xs text-muted-foreground">
-          Colour identity
+          Color identity
         </span>
         {IDENTITY_LETTERS.map((letter) => {
           const on = filters.identity.includes(letter)

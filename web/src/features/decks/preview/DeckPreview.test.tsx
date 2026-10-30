@@ -45,7 +45,7 @@ describe('the deck preview', () => {
     render(<DeckPreview deck={DECK} />)
     expect(screen.getByRole('heading', { name: 'Dragons' })).toBeInTheDocument()
     expect(screen.getByText('Precon C18, Commander Deck, Commander')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /Colour identity: .*White.*Green/ })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /Color identity: .*White.*Green/ })).toBeInTheDocument()
     expect(screen.getByText('47 cards')).toBeInTheDocument()
     expect(within(screen.getByRole('list', { name: 'Commanders' })).getAllByRole('listitem')).toHaveLength(1)
   })

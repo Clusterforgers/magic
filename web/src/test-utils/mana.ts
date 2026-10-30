@@ -26,7 +26,7 @@ const LETTER_OF: Record<Color, string> = { White: 'W', Blue: 'U', Black: 'B', Re
 const COLORS: readonly Color[] = ['White', 'Blue', 'Black', 'Red', 'Green']
 const colorOf = (letter: string | undefined): Color => {
   const color = letter === undefined ? undefined : COLOR[letter]
-  if (color === undefined) throw new Error(`no colour is written ${String(letter)}`)
+  if (color === undefined) throw new Error(`no color is written ${String(letter)}`)
   return color
 }
 

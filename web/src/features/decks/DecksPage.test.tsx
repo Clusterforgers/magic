@@ -201,7 +201,7 @@ describe('the check state of a deck', () => {
       deckIn('blocked', {
         summary: summary({ state: 'blocked', issues: 2, counts: counts({ unplayable: 1 }) }),
       }),
-      '2 legality issues, 1 unplayable card',
+      '2 legality issues, 1 unplayable card. Cannot be taken to a game until its issues are fixed.',
     ],
     [
       'a changed deck says it changed',

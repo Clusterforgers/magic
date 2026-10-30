@@ -126,12 +126,12 @@ describe('choosing a commander', () => {
   })
 })
 
-describe('the colour identity', () => {
-  it('limits the search to the commanders colours with a switch, and takes the limit off again', async () => {
+describe('the color identity', () => {
+  it('limits the search to the commanders colors with a switch, and takes the limit off again', async () => {
     const app = await commanderDeck([TYMNA, THRASIOS])
     await app.user.type(searchBox(), 'a')
-    const on = await screen.findByRole('button', { name: /^Within the commander’s colours/ })
-    expect(on).toHaveAccessibleName('Within the commander’s colours: White, Blue, Black and Green')
+    const on = await screen.findByRole('button', { name: /^Within the commander’s colors/ })
+    expect(on).toHaveAccessibleName('Within the commander’s colors: White, Blue, Black and Green')
     await app.user.click(on)
     await waitFor(() => expect(asked(app.cards.searches).at(-1)).toMatchObject({ identity: 'WUBG' }))
     expect(on).toHaveAttribute('aria-pressed', 'true')
@@ -141,7 +141,7 @@ describe('the colour identity', () => {
 
   it('has no switch while the deck has no commander', async () => {
     await commanderDeck()
-    expect(screen.queryByRole('button', { name: /^Within the commander’s colours/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /^Within the commander’s colors/ })).toBeNull()
   })
 
   it('says under a result that lies outside the identity which colours are missing', async () => {

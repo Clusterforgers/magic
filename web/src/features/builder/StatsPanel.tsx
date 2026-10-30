@@ -52,7 +52,7 @@ export function StatsPanel({ deck, counts, asSaved }: StatsPanelProps) {
       </div>
       <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
         <div className="grid gap-1">
-          <p className="text-xs font-medium">Colour identity</p>
+          <p className="text-xs font-medium">Color identity</p>
           <IdentityPips identity={identityOfDeck(deck)} />
         </div>
         {stats.colours.length === 0 ? null : <ColourCounts colours={stats.colours} />}

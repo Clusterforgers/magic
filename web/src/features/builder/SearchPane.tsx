@@ -133,7 +133,7 @@ export function SearchPane({
   if (state.status === 'idle') {
     body = (
       <EmptyState icon={SearchIcon} as="h3" title="Find cards to add">
-        Type a name or some rules text, or narrow by colour identity, type, mana value or format. Enter adds
+        Type a name or some rules text, or narrow by color identity, type, mana value or format. Enter adds
         the first card to the main deck.
       </EmptyState>
     )

@@ -40,28 +40,36 @@ describe('the rows', () => {
   })
 
   it.each([
-    ['a manual card', { manual: 2, verified: 98 }],
-    ['a partial card', { partial: 1, verified: 99 }],
-    ['a stale card', { stale: 1, verified: 99 }],
-    ['an unplayable card', { unplayable: 1, verified: 99 }],
-  ])('link a deck with %s to the list of its cards that are not validated', async (_, held) => {
-    const flagged = deckIn('manual_play', {
-      id: 'deck-9',
-      name: 'Chaos',
-      summary: summary({ counts: counts(held) }),
-    })
-    const { user, router } = await renderDecks({
-      decks: [flagged, deckItem({ id: 'deck-1', name: 'Whole' })],
-    })
-    await screen.findByRole('list', { name: 'Your decks' })
-    expect(screen.getByRole('link', { name: 'Not validated cards of Chaos' })).toHaveAttribute(
-      'href',
-      '/decks/deck-9/unvalidated',
-    )
-    expect(screen.queryByRole('link', { name: 'Not validated cards of Whole' })).toBeNull()
-    await user.click(screen.getByRole('link', { name: 'Not validated cards of Chaos' }))
-    await waitFor(() => expect(router.state.location.pathname).toBe('/decks/deck-9/unvalidated'))
-  })
+    ['a manual card', { manual: 2, verified: 98 }, 'Show the 2 cards played by hand'],
+    ['a partial card', { partial: 1, verified: 99 }, 'Show the 1 card played by hand'],
+    ['a stale card', { stale: 1, verified: 99 }, 'Show the 1 card played by hand'],
+    ['an unplayable card', { unplayable: 1, verified: 99 }, 'Show the 1 unplayable card'],
+    [
+      'both',
+      { manual: 7, unplayable: 1, verified: 92 },
+      'Show the 7 cards played by hand and 1 unplayable card',
+    ],
+  ])(
+    'link a deck with %s to the list of its cards that are not validated, in the words of the count',
+    async (_, held, words) => {
+      const flagged = deckIn('manual_play', {
+        id: 'deck-9',
+        name: 'Chaos',
+        summary: summary({ counts: counts(held) }),
+      })
+      const { user, router } = await renderDecks({
+        decks: [flagged, deckItem({ id: 'deck-1', name: 'Whole' })],
+      })
+      await screen.findByRole('list', { name: 'Your decks' })
+      expect(screen.getByRole('link', { name: `${words} in Chaos` })).toHaveAttribute(
+        'href',
+        '/decks/deck-9/unvalidated',
+      )
+      expect(screen.queryByRole('link', { name: /^Show the .* in Whole$/ })).toBeNull()
+      await user.click(screen.getByRole('link', { name: `${words} in Chaos` }))
+      await waitFor(() => expect(router.state.location.pathname).toBe('/decks/deck-9/unvalidated'))
+    },
+  )
 
   it('link the page header to the list of every deck', async () => {
     const { user, router } = await renderDecks({ decks: DECKS })

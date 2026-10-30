@@ -4,14 +4,14 @@ import { identityWords } from './identity'
 
 /**
  * A colour identity as small discs with the letter in each, so colour is never the only sign; the group is named in
- * words ("Colour identity: White and Blue", or "Colorless" for none).
+ * words ("Color identity: White and Blue", or "Colorless" for none).
  */
 export function IdentityPips({ identity, className }: { identity: readonly string[]; className?: string }) {
   const letters = identity.length === 0 ? ['C'] : identity
   return (
     <span
       role="img"
-      aria-label={`Colour identity: ${identityWords(identity)}`}
+      aria-label={`Color identity: ${identityWords(identity)}`}
       data-slot="identity"
       className={cn('inline-flex items-center gap-1', className)}
     >
