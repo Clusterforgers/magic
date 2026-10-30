@@ -12,7 +12,10 @@ export function NothingToDoBanner() {
   return (
     <div aria-live="polite" data-slot="nothing-to-do-region" className="basis-full empty:hidden">
       {rewound === null ? null : (
-        <p data-slot="rewound" className="w-fit rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground">
+        <p
+          data-slot="rewound"
+          className="w-fit rounded-md bg-accent px-2 py-1 text-sm text-accent-foreground"
+        >
           {rewound.text}
         </p>
       )}

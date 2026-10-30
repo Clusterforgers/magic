@@ -23,7 +23,10 @@ export function latestRewound(state: PlayState): RewoundNote | null {
     if ('AnnouncementRewound' in event && event.AnnouncementRewound.player === state.seat) {
       const { object, reason } = event.AnnouncementRewound
       const name = state.objectsById[object]?.name || 'That card'
-      return { seq: entry.seq, text: `${name} could not be played: ${REASON_WORDS[reason].line.toLowerCase()}` }
+      return {
+        seq: entry.seq,
+        text: `${name} could not be played: ${REASON_WORDS[reason].line.toLowerCase()}`,
+      }
     }
   }
   return null

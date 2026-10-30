@@ -28,9 +28,21 @@ describe('latestRewound', () => {
 
   it.each([
     ['an empty log', [], null],
-    ['a rewind for mana', [rewound(0, 7, 'Mana')], 'Imprisoned in the Moon could not be played: not enough mana'],
-    ['a rewind for targets', [passed, rewound(0, 7, 'Targets')], 'Imprisoned in the Moon could not be played: nothing it can target'],
-    ['a card the viewer cannot see', [rewound(0, 8, 'Cost')], 'That card could not be played: a cost cannot be paid'],
+    [
+      'a rewind for mana',
+      [rewound(0, 7, 'Mana')],
+      'Imprisoned in the Moon could not be played: not enough mana',
+    ],
+    [
+      'a rewind for targets',
+      [passed, rewound(0, 7, 'Targets')],
+      'Imprisoned in the Moon could not be played: nothing it can target',
+    ],
+    [
+      'a card the viewer cannot see',
+      [rewound(0, 8, 'Cost')],
+      'That card could not be played: a cost cannot be paid',
+    ],
     ['a rewind of another seat', [rewound(1, 7, 'Mana')], null],
     ['the hidden form another seat gets', [hiddenRewind], null],
     ['a rewind before a cast', [rewound(0, 7, 'Mana'), cast], null],
