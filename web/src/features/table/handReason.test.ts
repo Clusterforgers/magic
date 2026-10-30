@@ -1,10 +1,10 @@
-// Goal: a hand card the priority offer leaves out gets a note with the reason the table can tell from public state (sorcery speed outside the viewer's main phase or with a spell on the stack, a land after the land of the turn, a spell that costs more than every source and the pool could make) and "not now" otherwise, an offered card gets none, and every reason has a label and a line.
+// Goal: a hand card the priority offer leaves out gets a note with the server's reason when the offer names one, else the reason the table can tell from public state (sorcery speed outside the viewer's main phase or with a spell on the stack, a land after the land of the turn, a spell that costs more than every source and the pool could make) and "not now" otherwise, an offered card gets none, and every reason has a label and a line.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { ME, miniView, momentOf, MY_FOREST, MY_HAND_CARD } from '@/test-utils/miniTable'
 import type { ManaCost, ObjectView, PriorityOptions, StateView } from '@/protocol/generated'
 import { handNotes, manaAtHand, REASON_WORDS, unplayableReason } from './handReason'
-import type { HandReason } from './handReason'
+import type { HandReason, Unplayable } from './handReason'
 
 const NONE: PriorityOptions = {
   playable_lands: [],
@@ -106,6 +106,35 @@ describe('unplayableReason', () => {
   ])('%s', (_name, table, types, over, options, reason) => {
     const view = viewOf(table)
     expect(unplayableReason(cardOf(view, types, over), view, options)).toBe(reason)
+  })
+})
+
+describe('unplayableReason with the server reason', () => {
+  const told = (reason: Unplayable): PriorityOptions => ({
+    ...sources(5),
+    unplayable: [{ card: MY_HAND_CARD, reason }],
+  })
+  it.each<Unplayable>(['Timing', 'LandPlayed', 'Mana', 'Targets', 'Cost', 'Restricted'])(
+    '%s replaces the guess',
+    (reason) => {
+      // A sorcery in the viewer's main phase with mana to spare: the guess would say "Not now".
+      const view = viewOf(MAIN)
+      expect(unplayableReason(cardOf(view, ['Sorcery']), view, told(reason))).toBe(reason)
+    },
+  )
+
+  it('names the reason in the note and its spoken words', () => {
+    const view = viewOf(MAIN)
+    const { objectsById } = momentOf(view)
+    expect([...handNotes(view, objectsById, told('Targets'))]).toEqual([
+      [MY_HAND_CARD, { hint: 'No targets', words: 'no targets' }],
+    ])
+  })
+
+  it('guesses for a card the server does not name', () => {
+    const view = viewOf({ ...MAIN, own: false })
+    const options = { ...NONE, unplayable: [{ card: 999, reason: 'Cost' as const }] }
+    expect(unplayableReason(cardOf(view, ['Creature']), view, options)).toBe('Timing')
   })
 })
 

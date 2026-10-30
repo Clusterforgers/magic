@@ -6,6 +6,7 @@ import type { CardType } from "./CardType";
 import type { Color } from "./Color";
 import type { CopyView } from "./CopyView";
 import type { CounterKind } from "./CounterKind";
+import type { GivesView } from "./GivesView";
 import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
 import type { ManaCost } from "./ManaCost";
 import type { ManualClause } from "./ManualClause";
@@ -118,6 +119,11 @@ attached_player?: PlayerId,
  * The permanents attached to this one, in id order; left out while there are none.
  */
 attachments?: Array<ObjectId>, 
+/**
+ * What this attachment gives the permanent it is attached to as the layers apply it now; left out while it gives
+ * nothing or is attached to no permanent.
+ */
+gives?: GivesView, 
 /**
  * Whether the object lies face down (a foretold card in exile). The seat that may look at it sees its characteristics
  * besides; every other seat sees an object with no name, types, colours, abilities or counters.

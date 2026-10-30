@@ -25,6 +25,7 @@ describe('?fx=', () => {
       'counter',
       'land',
       'draw',
+      'equip',
     ])
   })
 })

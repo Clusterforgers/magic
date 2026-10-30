@@ -59,6 +59,7 @@ export function SharedStrip({
       <div
         ref={sheet}
         data-slot="shared-sheet"
+        data-fx-anchor="stack"
         data-your-turn={yourTurn || undefined}
         // The sheet starts beside the pod column, which keeps the life of the seat above it in view.
         style={inset === 0 ? undefined : { left: inset }}

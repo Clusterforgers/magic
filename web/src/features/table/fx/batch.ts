@@ -1,8 +1,9 @@
 /** Finds the batches in the play store's changes and feeds what they cause to the decoration layer. */
 import type { PlayState, PlayStore } from '@/play/store'
 import type { EventView } from '@/protocol/generated'
-import { deriveEffects } from './derive'
+import { deriveAttaches, deriveEffects } from './derive'
 import type { Moment } from './derive'
+import { deriveMoves } from './moves'
 import type { Fx } from './store'
 
 /** One applied batch: the game before it and after it, and its events. */
@@ -32,10 +33,16 @@ export function batchBetween(prev: PlayState, next: PlayState): BatchStep | null
   }
 }
 
-/** Plays the effects of every batch the store applies from now on; returns the function that stops watching. */
+/**
+ * Plays the effects and starts the moves of every batch the store applies from now on; returns the function that stops
+ * watching. This runs before React draws the batch, so a move's source is measured where the table still shows it.
+ */
 export function watchBatches(store: PlayStore, fx: Fx): () => void {
   return store.subscribe((next, prev) => {
     const step = batchBetween(prev, next)
-    if (step !== null) fx.play(deriveEffects(step.before, step.after, step.events))
+    if (step === null) return
+    fx.travel.launch(deriveMoves(step.before, step.after, step.events).moves, step.after.view.viewer)
+    fx.play(deriveEffects(step.before, step.after, step.events))
+    fx.arrows.play(deriveAttaches(step.before, step.after))
   })
 }

@@ -5,10 +5,13 @@
  * batch, which the server makes the same for every seat (`docs/arena-flow.md`, Information leaks), and the only reason
  * it gives is for the viewer's own main phase.
  */
+import { hostsBefore } from '@/play/hosts'
+import type { HostRef } from '@/play/hosts'
 import type { PlayState } from '@/play/store'
 import type { Event, EventView, HiddenEvent, PlayerId, PlayerView, Step } from '@/protocol/generated'
 import { commanderDamageLine } from '../commander'
 import { commanderHits } from '../commanderLog'
+import { eventContexts } from '../eventContext'
 import { describeEvent } from '../eventText'
 import type { EventNames } from '../eventText'
 import { batchBetween } from '../fx/batch'
@@ -128,8 +131,10 @@ function newestLine(
   names: EventNames,
   banner: boolean,
   players: readonly PlayerView[],
+  hosts: readonly (HostRef | null | undefined)[],
 ): TickerLine | null {
   const hits = commanderHits(events, players)
+  const contexts = eventContexts(events)
   for (let index = events.length - 1; index >= 0; index -= 1) {
     const view = events[index]
     if (view === undefined) continue
@@ -144,7 +149,7 @@ function newestLine(
       )
       return { kind: 'event', text }
     }
-    const line = describeEvent(sameForEverySeat(view), names)
+    const line = describeEvent(sameForEverySeat(view), names, contexts[index], hosts[index])
     if (line.minor) continue
     return banner && startsTurn(view) ? null : { kind: 'event', text: line.text }
   }
@@ -187,7 +192,8 @@ export function deriveFeed(
     seat: names,
     card: (id) => after.objectsById[id]?.name ?? before.objectsById[id]?.name ?? 'a card',
   }
-  const newest = newestLine(events, eventNames, banner !== null, after.view.players)
+  const hosts = hostsBefore(events, before.objectsById)
+  const newest = newestLine(events, eventNames, banner !== null, after.view.players, hosts)
   const lines = [
     ...(note === null ? [] : [{ kind: 'skipped', text: note } satisfies TickerLine]),
     ...(explained ? [{ kind: 'reason', text: OWN_REASON } satisfies TickerLine] : []),

@@ -178,11 +178,44 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<FaceOption>>", optional))]
     pub faces: Vec<FaceOption>,
+    /// The cards of the holder's hand and command zone that none of the lists above offers, each with why, in zone order.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<UnplayableCard>>", optional))]
+    pub unplayable: Vec<UnplayableCard>,
     /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
     /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
     pub can_act: bool,
     /// Passing is always legal.
     pub can_pass: bool,
+}
+
+/// A card of the holder's hand or command zone that cannot be played now, and why.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct UnplayableCard {
+    /// The card.
+    pub card: ObjectId,
+    /// The first reason found, in the order of [`Unplayable`].
+    pub reason: Unplayable,
+}
+
+/// Why a card cannot be played now. The variants are looked for in this order; a later one means the card came closer
+/// to being playable.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Unplayable {
+    /// Not at this time: a card without flash outside its caster's main phase with an empty stack.
+    Timing,
+    /// A land, and no land play is left this turn.
+    LandPlayed,
+    /// The mana it costs now, after increases and reductions, cannot be paid.
+    Mana,
+    /// It needs a target and has no legal one.
+    Targets,
+    /// A cost besides mana cannot be paid: a sacrifice, a discard, or the card has no cost to cast it by.
+    Cost,
+    /// An effect or rule forbids it now: "can't cast spells", "cast only during ...", split second.
+    Restricted,
 }
 
 /// A face of a card with several faces that a player can cast or play now.

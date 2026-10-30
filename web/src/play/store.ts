@@ -16,6 +16,8 @@ import type {
   Stop,
   YieldUntil,
 } from '@/protocol/generated'
+import { hostsBefore } from './hosts'
+import type { HostRef } from './hosts'
 import type { PreviewState } from './preview'
 
 /** How many of the most recent events `log` keeps. */
@@ -62,6 +64,8 @@ export interface LobbyRoster {
 export interface LogEntry {
   seq: number
   event: EventView
+  /** For an attach event: where the attachment hung before it (null: on nothing), from the view before its batch. */
+  hostBefore?: HostRef | null
 }
 
 /** One line of table chat. */
@@ -155,14 +159,24 @@ export function createPlayStore(): PlayStore {
   return createStore<PlayState>(() => initialPlayState())
 }
 
-/** `log` with a batch's events added at the end, keeping only the newest `LOG_LIMIT`. */
+/**
+ * `log` with a batch's events added at the end, keeping only the newest `LOG_LIMIT`. With `before`, the objects as they
+ * stood before the batch, an attach event also records where its attachment hung.
+ */
 export function appendLog(
   log: readonly LogEntry[],
   fromSeq: number,
   events: readonly EventView[],
+  before?: Readonly<Record<ObjectId, ObjectView>>,
 ): readonly LogEntry[] {
   if (events.length === 0) return log
-  const added = events.map((event, index): LogEntry => ({ seq: fromSeq + index, event }))
+  const hosts = before === undefined ? [] : hostsBefore(events, before)
+  const added = events.map((event, index): LogEntry => {
+    const hostBefore = hosts[index]
+    return hostBefore === undefined
+      ? { seq: fromSeq + index, event }
+      : { seq: fromSeq + index, event, hostBefore }
+  })
   return [...log, ...added].slice(-LOG_LIMIT)
 }
 

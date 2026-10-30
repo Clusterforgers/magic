@@ -2,12 +2,15 @@
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
+use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{Pred, Selector};
 use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
 use mtg_engine::combat::Attacker;
 use mtg_engine::companions::CompanionStage;
 use mtg_engine::forecast::pending_combat_forecast;
+use mtg_engine::gives::gives;
 use mtg_engine::keywords::{keywords_of, summoning_sick};
 use mtg_engine::loyalty::loyalty_abilities;
 use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
@@ -18,8 +21,8 @@ use mtg_engine::zones::Zone;
 
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
-    LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView, PriorityView,
-    StateView, TableView, TurnView, ZoneView,
+    GivesView, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
+    PriorityView, StateView, TableView, TurnView, ZoneView,
 };
 use crate::wording::activated_views;
 
@@ -153,6 +156,31 @@ fn keyword_names(state: &GameState, id: ObjectId) -> Vec<String> {
         }
     }
     names
+}
+
+/// What the attachment `id` gives its host now, the keywords by name; none while it gives nothing.
+fn gives_view(state: &GameState, id: ObjectId) -> Option<GivesView> {
+    let gives = gives(state, id)?;
+    Some(GivesView {
+        power: gives.power,
+        toughness: gives.toughness,
+        set: gives.set,
+        keywords: gives.keywords.iter().map(given_keyword_name).collect(),
+        rules: gives.rules,
+    })
+}
+
+/// A granted keyword's name, with its colour for protection from one colour ("Protection from red").
+fn given_keyword_name(keyword: &Keyword) -> String {
+    match keyword {
+        Keyword::Protection(Selector(preds)) => match preds.as_slice() {
+            [Pred::Color(color)] => {
+                format!("Protection from {}", format!("{color:?}").to_lowercase())
+            }
+            _ => keyword.name().to_owned(),
+        },
+        _ => keyword.name().to_owned(),
+    }
 }
 
 /// The names of the keywords a card prints, each once: what the controller of a face-down permanent reads on its card.
@@ -349,6 +377,7 @@ impl ObjectView {
             } else {
                 Vec::new()
             },
+            gives: gives_view(state, id),
             face_down: object.face_down().is_some(),
             face: object.face().filter(|_| printed),
             copy: copy_view(state, sight, object),
@@ -390,6 +419,7 @@ impl ObjectView {
             attached_to: None,
             attached_player: None,
             attachments: Vec::new(),
+            gives: None,
             face_down: true,
             face: None,
             copy: None,

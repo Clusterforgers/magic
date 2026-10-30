@@ -3,9 +3,10 @@
  * among them), one Equipment on another, an Equipment on no host, an opponent's Aura on the viewer's creature, the
  * viewer's Aura on an opponent's creature and a Curse on an opponent.
  */
-import type { ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
+import type { Event, GivesView, ObjectId, ObjectView, PlayerId, StateView } from '@/protocol/generated'
 import { rowOf } from '../cardModel'
 import type { Fixture } from './fixture'
+import type { PlayScene } from './playScenes'
 
 /** The attachments of the scene's main host, deepest first as the table tucks them. */
 export const EQUIP_STACK = [
@@ -24,6 +25,7 @@ interface Piece {
   player?: PlayerId
   keywords?: string[]
   curse?: true
+  gives?: GivesView
 }
 
 const pieceView = (id: ObjectId, piece: Piece): ObjectView => ({
@@ -44,6 +46,7 @@ const pieceView = (id: ObjectId, piece: Piece): ObjectView => ({
   ...(piece.keywords === undefined ? {} : { keywords: piece.keywords }),
   ...(piece.host === undefined ? {} : { attached_to: piece.host }),
   ...(piece.player === undefined ? {} : { attached_player: piece.player }),
+  ...(piece.gives === undefined ? {} : { gives: piece.gives }),
 })
 
 const creaturesOf = (fixture: Fixture, seat: PlayerId): ObjectView[] =>
@@ -64,19 +67,62 @@ export function withEquip(fixture: Fixture): Fixture {
   const pieces: Piece[] = []
   if (main !== undefined) {
     pieces.push(
-      { name: 'Ethereal Armor', subtype: 'Aura', controller: viewer, host: main.id },
-      { name: 'Rancor', subtype: 'Aura', controller: viewer, host: main.id },
-      { name: 'Spider Umbra', subtype: 'Aura', controller: viewer, host: main.id, keywords: ['Umbra armor'] },
-      { name: 'Bonesplitter', subtype: 'Equipment', controller: viewer, host: main.id },
-      { name: 'Lightning Greaves', subtype: 'Equipment', controller: viewer, host: main.id },
+      {
+        name: 'Ethereal Armor',
+        subtype: 'Aura',
+        controller: viewer,
+        host: main.id,
+        gives: { power: 3, toughness: 3, keywords: ['First strike'] },
+      },
+      {
+        name: 'Rancor',
+        subtype: 'Aura',
+        controller: viewer,
+        host: main.id,
+        gives: { power: 2, keywords: ['Trample'] },
+      },
+      {
+        name: 'Spider Umbra',
+        subtype: 'Aura',
+        controller: viewer,
+        host: main.id,
+        keywords: ['Umbra armor'],
+        gives: { power: 1, toughness: 1, keywords: ['Reach'], rules: ['UmbraArmor'] },
+      },
+      { name: 'Bonesplitter', subtype: 'Equipment', controller: viewer, host: main.id, gives: { power: 2 } },
+      {
+        name: 'Lightning Greaves',
+        subtype: 'Equipment',
+        controller: viewer,
+        host: main.id,
+        gives: { keywords: ['Haste', 'Shroud'] },
+      },
     )
   }
   if (second !== undefined)
-    pieces.push({ name: 'Short Sword', subtype: 'Equipment', controller: viewer, host: second.id })
+    pieces.push({
+      name: 'Short Sword',
+      subtype: 'Equipment',
+      controller: viewer,
+      host: second.id,
+      gives: { power: 1, toughness: 1 },
+    })
   if (third !== undefined)
-    pieces.push({ name: 'Pacifism', subtype: 'Aura', controller: rival, host: third.id })
+    pieces.push({
+      name: 'Pacifism',
+      subtype: 'Aura',
+      controller: rival,
+      host: third.id,
+      gives: { rules: ['CantAttack', 'CantBlock'] },
+    })
   if (theirs !== undefined)
-    pieces.push({ name: 'Eel Umbra', subtype: 'Aura', controller: viewer, host: theirs.id })
+    pieces.push({
+      name: 'Eel Umbra',
+      subtype: 'Aura',
+      controller: viewer,
+      host: theirs.id,
+      gives: { power: 1, toughness: 1, rules: ['UmbraArmor'] },
+    })
   pieces.push(
     { name: 'Sword of Fire and Ice', subtype: 'Equipment', controller: viewer },
     { name: 'Curse of Opulence', subtype: 'Aura', controller: viewer, player: rival, curse: true },
@@ -103,4 +149,61 @@ export function withEquip(fixture: Fixture): Fixture {
       battlefield: { count: battlefield.length, cards: battlefield },
     },
   }
+}
+
+/** The viewer's creatures on the battlefield, in battlefield order. */
+const creaturesAt = (view: StateView, seat: PlayerId): ObjectView[] => {
+  const byId = new Map(view.objects.map((object) => [object.id, object]))
+  return (view.battlefield.cards ?? []).flatMap((id) => {
+    const object = byId.get(id)
+    return object !== undefined && object.controller === seat && object.types.includes('Creature')
+      ? [object]
+      : []
+  })
+}
+
+/** `list` without `id`, or with it in id order. */
+const listed = (list: readonly ObjectId[] | undefined, id: ObjectId, present: boolean): ObjectId[] =>
+  [...(list ?? []).filter((other) => other !== id), ...(present ? [id] : [])].sort((a, b) => a - b)
+
+/**
+ * The move of `?fx=equip`: the viewer's Equipment that hangs on a creature goes to the next creature of the viewer, so
+ * the arrow runs from the old host to the new one, and pressing again carries it on around. Without an Equipment on a
+ * creature it takes an unattached one, or brings a new one, onto the first creature.
+ */
+export function equipMove(scene: PlayScene): Event[] {
+  const { next, viewer } = scene
+  const hosts = creaturesAt(next, viewer)
+  const gear = (object: ObjectView): boolean =>
+    object.zone === 'Battlefield' && object.controller === viewer && object.subtypes.includes('Equipment')
+  let sword = next.objects.find((object) => gear(object) && object.attached_to !== undefined)
+  sword ??= next.objects.find(gear)
+  if (sword === undefined) {
+    const top = Math.max(0, ...next.objects.map((object) => object.id))
+    sword = pieceView(top + 1, { name: 'Bonesplitter', subtype: 'Equipment', controller: viewer })
+    scene.add(sword)
+    next.battlefield = {
+      count: next.battlefield.count + 1,
+      cards: [...(next.battlefield.cards ?? []), sword.id],
+    }
+  }
+  const was = sword.attached_to
+  const at = hosts.findIndex((host) => host.id === was)
+  const host = hosts[(at + 1) % hosts.length]
+  if (host === undefined || host.id === was) return []
+  const id = sword.id
+  scene.edit(id, (object) => {
+    object.attached_to = host.id
+  })
+  if (was !== undefined) {
+    scene.edit(was, (object) => {
+      const rest = listed(object.attachments, id, false)
+      if (rest.length > 0) object.attachments = rest
+      else delete object.attachments
+    })
+  }
+  scene.edit(host.id, (object) => {
+    object.attachments = listed(object.attachments, id, true)
+  })
+  return [{ Attached: { object: id, to: host.id } }]
 }

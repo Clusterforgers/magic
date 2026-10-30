@@ -3,6 +3,7 @@ import type { LogEntry } from '@/play/store'
 import type { Event, PlayerId, PlayerView } from '@/protocol/generated'
 import { commanderDamageLine } from './commander'
 import { commanderHits } from './commanderLog'
+import { eventContexts } from './eventContext'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 import { byHandLine, manualRun, manualText } from './manual/manualLog'
@@ -65,9 +66,10 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
     log.map((entry) => entry.event),
     options.players ?? [],
   )
+  const contexts = eventContexts(log.map((entry) => entry.event))
   // The events after a manual action that its sentence already tells.
   let told = 0
-  log.forEach(({ seq, event }, index) => {
+  log.forEach(({ seq, event, hostBefore }, index) => {
     if (told > 0) {
       told -= 1
       return
@@ -100,7 +102,7 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
     const hit = hits.get(index)
     const line =
       hit === undefined
-        ? describeEvent(event, names)
+        ? describeEvent(event, names, contexts[index], hostBefore)
         : {
             text: commanderDamageLine(
               names.card(hit.source),

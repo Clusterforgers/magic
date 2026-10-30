@@ -3,6 +3,7 @@ import type { AbilityRef } from "./AbilityRef";
 import type { FaceOption } from "./FaceOption";
 import type { ManaOption } from "./ManaOption";
 import type { ObjectId } from "./ObjectId";
+import type { UnplayableCard } from "./UnplayableCard";
 
 /**
  * Everything a player can do while holding priority.
@@ -48,6 +49,10 @@ companion?: boolean,
  * (`PriorityAction::CastPrepared`).
  */
 faces?: Array<FaceOption>, 
+/**
+ * The cards of the holder's hand and command zone that none of the lists above offers, each with why, in zone order.
+ */
+unplayable?: Array<UnplayableCard>, 
 /**
  * Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
  * mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.

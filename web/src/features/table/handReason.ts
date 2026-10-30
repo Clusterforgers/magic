@@ -1,14 +1,14 @@
 /**
  * Why a card of the viewer's hand cannot be played now (docs/ui-design.md, Playing is legible). Pure: it reads the
- * card, the table and the priority offer. The server's reason (`PriorityOptions.unplayable`, ui1a) replaces this
- * guess once it is sent; until then the timing, the land played and too little mana are read off public state.
+ * card, the table and the priority offer. The server's reason (`PriorityOptions.unplayable`) wins; for a card it does not
+ * name, the timing, the land played and too little mana are read off public state.
  */
-import type { ManaCost, ObjectView, PriorityOptions, StateView } from '@/protocol/generated'
+import type { ManaCost, ObjectView, PriorityOptions, StateView, Unplayable } from '@/protocol/generated'
 import type { CardNote, CardNotes } from './prompt/marks'
 import { manaValue } from './prompt/payment'
 
 /** A reason the server can give. */
-export type Unplayable = 'Timing' | 'LandPlayed' | 'Mana' | 'Targets' | 'Cost' | 'Restricted'
+export type { Unplayable }
 
 /** A reason the hand shows: one the server or the guess gives, or `Unknown` when neither knows. */
 export type HandReason = Unplayable | 'Unknown'
@@ -75,7 +75,8 @@ export function handNotes(
 const costOf = (cost: ManaCost | null): number => (cost === null ? 0 : manaValue(cost))
 
 /**
- * Why `object`, a card in the viewer's hand, cannot be played now; null when the offer lets it be played. A land
+ * Why `object`, a card in the viewer's hand, cannot be played now; null when the offer lets it be played. The server's
+ * reason comes first; without one, a land
  * waits for the viewer's main phase and their one land; a spell without Flash waits for the main phase, and one that
  * costs more than all the mana at hand needs mana. Anything else is `Unknown`.
  */
@@ -85,6 +86,8 @@ export function unplayableReason(
   options: PriorityOptions,
 ): HandReason | null {
   if (offered(options).has(object.id)) return null
+  const told = options.unplayable?.find((entry) => entry.card === object.id)
+  if (told !== undefined) return told.reason
   const sorcery = sorceryWindow(view)
   if (object.types.includes('Land')) {
     if (!sorcery) return 'Timing'

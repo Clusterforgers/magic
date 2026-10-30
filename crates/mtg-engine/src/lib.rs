@@ -49,6 +49,7 @@ mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;
 mod steps;
+mod unplayable;
 mod w10a_attack_limits_at;
 mod w11a_exert;
 mod w14c_block_capacity;
@@ -79,6 +80,7 @@ pub mod events;
 pub mod fold;
 pub mod forecast;
 pub mod format;
+pub mod gives;
 pub mod hash;
 pub mod help;
 pub mod keywords;
