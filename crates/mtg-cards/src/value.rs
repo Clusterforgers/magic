@@ -93,6 +93,8 @@ pub enum CastWay {
     Spectacle,
     /// Mayhem (CR 702.190): a spell cast from a graveyard for its mayhem cost, which its abilities read as "if its mayhem cost was paid".
     Mayhem,
+    /// Disturb (CR 702.146): the back face of a transforming double-faced card cast from a graveyard for its disturb cost, which its abilities read as "if its disturb cost was paid"; exiled when it leaves the stack.
+    Disturb,
     /// Awaken (CR 702.113): a spell cast from a hand for its awaken cost, which also puts counters on a land and animates it.
     Awaken,
     /// Jump-start (CR 702.133): from a graveyard for its mana cost and the discard of a card; exiled when it leaves the stack.
@@ -117,11 +119,11 @@ impl CastWay {
         !matches!(self, CastWay::JumpStart | CastWay::Retrace)
     }
 
-    /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start, harmonize).
+    /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start, harmonize, disturb).
     pub const fn exiles_the_spell(self) -> bool {
         matches!(
             self,
-            CastWay::Flashback | CastWay::JumpStart | CastWay::Harmonize
+            CastWay::Flashback | CastWay::JumpStart | CastWay::Harmonize | CastWay::Disturb
         )
     }
 }
@@ -815,6 +817,7 @@ mod tests {
     #[case::prowl(CastWay::Prowl, true)]
     #[case::spectacle(CastWay::Spectacle, true)]
     #[case::mayhem(CastWay::Mayhem, true)]
+    #[case::disturb(CastWay::Disturb, true)]
     #[case::emerge(CastWay::Emerge, true)]
     #[case::harmonize(CastWay::Harmonize, true)]
     #[case::mutate(CastWay::Mutate, true)]

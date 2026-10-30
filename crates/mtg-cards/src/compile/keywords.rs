@@ -403,6 +403,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "blitz" => spell_cost(rest).map(Keyword::Blitz),
         "prowl" => spell_cost(rest).map(Keyword::Prowl),
         "mayhem" => spell_cost(rest).map(Keyword::Mayhem),
+        "disturb" => spell_cost(rest).map(Keyword::Disturb),
         "emerge" => spell_cost(rest).map(Keyword::Emerge),
         "harmonize" => spell_cost(rest).map(Keyword::Harmonize),
         "spectacle" => spell_cost(rest).map(Keyword::Spectacle),
@@ -1216,6 +1217,7 @@ mod tests {
     #[case::prowl("Prowl {1}{B}", Keyword::Prowl(mana("{1}{B}")))]
     #[case::mayhem("Mayhem {1}{B}", Keyword::Mayhem(mana("{1}{B}")))]
     #[case::mayhem_hybrid("Mayhem {B/R}", Keyword::Mayhem(mana("{B/R}")))]
+    #[case::disturb("Disturb {2}{W}", Keyword::Disturb(mana("{2}{W}")))]
     #[case::emerge("Emerge {5}{U}{U}", Keyword::Emerge(mana("{5}{U}{U}")))]
     #[case::harmonize("Harmonize {4}{R}", Keyword::Harmonize(mana("{4}{R}")))]
     #[case::harmonize_with_x(
@@ -1635,6 +1637,7 @@ mod tests {
             "Blitz {1}",
             "Prowl {1}",
             "Mayhem {1}",
+            "Disturb {1}",
             "Emerge {1}",
             "Harmonize {1}",
             "Afterlife 2",

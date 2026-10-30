@@ -270,6 +270,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Blitz),
         cost().prop_map(Keyword::Prowl),
         cost().prop_map(Keyword::Mayhem),
+        cost().prop_map(Keyword::Disturb),
         cost().prop_map(Keyword::Scavenge),
         cost().prop_map(Keyword::Transmute),
         (1u32..10, cost()).prop_map(|(count, cost)| Keyword::Awaken { count, cost }),
@@ -547,6 +548,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     only,
                     play,
                     once: false,
+                    additional: None,
                 })
             }),
         trigger_pattern().prop_map(|cause| GameRule::TriggerAgain { cause }),

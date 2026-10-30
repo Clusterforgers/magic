@@ -30,10 +30,11 @@ use crate::mana_takes::for_card;
 use crate::merged;
 use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
+use crate::permit_costs::{self, Added};
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
 use crate::resolve::{Scope, spell_ability, zone_kind};
-use crate::rules::cast_permissions;
+use crate::rules::{Cast, cast_permissions};
 use crate::spend::Spend;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -238,25 +239,42 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         || permissions.iter().any(|permission| permission.flash);
     let mut ways = Vec::new();
     let printed = card.card().mana_cost.as_ref();
-    // Cast for its mana cost from a hand, or from the zone a permission names.
-    let by_permission = permissions
+    // Cast for its mana cost from a hand, or from the zone a permission names, which may add costs.
+    let own = in_hand || from_command || on_adventure || by_aftermath || by_prepared;
+    let by_permission: Vec<&Cast> = permissions
         .iter()
-        .any(|permission| !permission.free && permission.from == Some(zone_kind(zone)));
-    if (in_hand || from_command || by_permission || on_adventure || by_aftermath || by_prepared)
-        && let Some(cost) = printed
+        .copied()
+        .filter(|permission| !permission.free && permission.from == Some(zone_kind(zone)))
+        .collect();
+    let added = if own {
+        Some(Added::default())
+    } else {
+        permit_costs::added(by_permission)
+    };
+    if let Some(cost) = printed
+        && let Some(added) = added
     {
-        ways.push(Way {
-            alternative: None,
-            label: format!("Cast for {cost}"),
-            mana: None,
-            instant,
-            variant: 0,
-            parts: Vec::new(),
-        });
+        ways.push(added.onto(
+            Way {
+                alternative: None,
+                label: format!("Cast for {cost}"),
+                mana: None,
+                instant,
+                variant: 0,
+                parts: Vec::new(),
+            },
+            printed,
+        ));
     }
-    let permitted = permissions.iter().any(|permission| permission.free);
-    if permitted {
-        ways.push(free_way(instant));
+    let free_permissions = permissions
+        .iter()
+        .copied()
+        .filter(|permission| permission.free);
+    if free_permissions.clone().next().is_some() {
+        ways.extend(
+            permit_costs::added(free_permissions)
+                .map(|added| added.onto(free_way(instant), printed)),
+        );
     } else if !ways.is_empty()
         && let Some(way) = w14c_printed_alternative(state, player, card, instant)
     {
@@ -272,6 +290,8 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             ways.push(way);
         }
     }
+    // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
+    ways.extend(keywords::disturb::way(state, id, instant));
     ways
 }
 

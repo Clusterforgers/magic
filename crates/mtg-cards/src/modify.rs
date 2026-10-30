@@ -7,6 +7,7 @@ use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
+use crate::cost::Cost;
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, Selector, ZoneKind};
@@ -195,6 +196,10 @@ pub struct CastPermission {
     /// turn ("Once during each of your turns, you may cast a creature spell from your graveyard").
     #[serde(default, skip_serializing_if = "crate::effect::is_false")]
     pub once: bool,
+    /// What the caster pays in addition to the other costs of a cast through it (CR 601.2b): "by paying 3 life and
+    /// discarding a card in addition to paying its other costs".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub additional: Option<Cost>,
 }
 
 /// Whether an attack tax names no mana.

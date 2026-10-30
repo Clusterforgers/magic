@@ -43,6 +43,7 @@ fn c11b_permission(what: Selector) -> CastPermission {
         only: None,
         play: false,
         once: true,
+        additional: None,
     }
 }
 

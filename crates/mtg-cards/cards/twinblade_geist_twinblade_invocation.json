@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4db96d32-b4c2-44e9-a73f-aca7dad279b6",
+  "name": "Twinblade Geist // Twinblade Invocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinblade Geist",
+      "oracle_fingerprint": "684ae2f605547adcd01ea2db0dd0b118",
+      "abilities": [{ "Keyword": "DoubleStrike" }, { "Keyword": { "Disturb": "{2}{W}" } }]
+    },
+    {
+      "name": "Twinblade Invocation",
+      "oracle_fingerprint": "fb601c0312219aef8120585d9f2a8b5c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "DoubleStrike" }] } },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

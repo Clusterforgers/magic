@@ -526,3 +526,8 @@ mod dk1b_attach;
 mod dk1a_dog_umbra;
 mod dk1a_rune_of_sustenance;
 mod dk1a_shardmages_rescue;
+
+// deck-casting
+mod dk1d_demonic_embrace;
+mod dk1d_disturb;
+mod dk1d_permit_costs;

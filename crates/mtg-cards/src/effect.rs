@@ -1302,6 +1302,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 only: Some(Ref::Bound(IMPULSE.to_owned())),
                 play: true,
                 once: false,
+                additional: None,
             }),
             duration,
         },
