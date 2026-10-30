@@ -54,8 +54,8 @@ describe('the Commands tab', () => {
 
 describe('a command', () => {
   it.each<[string, string[], string, string, ManualAction]>([
-    ['Life', ['Take 5'], ' life', 'Lose 5 life', { Life: { player: 0, delta: -5 } }],
-    ['Life', ['Add 1', 'Add 5'], ' life', 'Gain 6 life', { Life: { player: 0, delta: 6 } }],
+    ['More life', ['Take 5'], ' life', 'Lose 5 life', { Life: { player: 0, delta: -5 } }],
+    ['More life', ['Add 1', 'Add 5'], ' life', 'Gain 6 life', { Life: { player: 0, delta: 6 } }],
     ['Draw', ['2'], 'hand', 'Draw 2 cards', { Draw: { count: 2 } }],
     ['Mill', ['3'], 'go to your graveyard', 'Mill 3 cards', { MoveTop: { count: 3, to: 'Graveyard' } }],
     ['Shuffle', [], 'in a new random order', 'Shuffle your library', { Shuffle: {} }],
@@ -63,7 +63,7 @@ describe('a command', () => {
     const { user, manual, panel, row } = panelTable()
     await user.click(row(name))
     expect(row(name)).toHaveAttribute('aria-expanded', 'true')
-    const form = within(panel).getByRole('group', { name })
+    const form = within(panel).getByRole('group', { name: name === 'More life' ? 'Life' : name })
     for (const press of presses) await user.click(within(form).getByRole('button', { name: press }))
     expect(manual).not.toHaveBeenCalled()
     expect(form.querySelector('[data-slot="command-preview"]')).toHaveTextContent(preview)
@@ -86,7 +86,7 @@ describe('a command', () => {
 
   it('steps a change by five with Page Up and Page Down', async () => {
     const { user, row } = panelTable()
-    await user.click(row('Life'))
+    await user.click(row('More life'))
     const field = screen.getByRole('spinbutton', { name: 'Change' })
     field.focus()
     await user.keyboard('{PageDown}{PageDown}{PageUp}')
@@ -95,7 +95,7 @@ describe('a command', () => {
 
   it('keeps Apply inert until there is a change, and sends nothing', async () => {
     const { user, manual, row } = panelTable()
-    await user.click(row('Life'))
+    await user.click(row('More life'))
     const apply = screen.getByRole('button', { name: 'Apply' })
     expect(apply).toHaveAttribute('aria-disabled', 'true')
     await user.click(apply)
@@ -133,10 +133,78 @@ describe('a command', () => {
 
   it('opens one row at a time', async () => {
     const { user, row } = panelTable()
-    await user.click(row('Life'))
+    await user.click(row('More life'))
     await user.click(row('Draw'))
-    expect(row('Life')).toHaveAttribute('aria-expanded', 'false')
+    expect(row('More life')).toHaveAttribute('aria-expanded', 'false')
     expect(row('Draw')).toHaveAttribute('aria-expanded', 'true')
+  })
+})
+
+describe('a row', () => {
+  const ROWS = [
+    'life',
+    'poison',
+    'energy',
+    'experience',
+    'draw',
+    'look',
+    'mill',
+    'exileTop',
+    'bottomTop',
+    'shuffle',
+    'revealTop',
+    'token',
+    'mana',
+  ]
+
+  it('shows its own icon and a chevron, so it reads as a button that opens', () => {
+    const { panel } = panelTable()
+    const rows = [
+      ...panel.querySelectorAll<HTMLElement>('[data-command]:not([data-command^="card:"])'),
+    ].filter((row) => row.dataset.command !== 'pick')
+    expect(rows.map((row) => row.dataset.command)).toEqual(ROWS)
+    const icons = rows.map((row) => row.querySelector('[data-slot="row-icon"]')?.getAttribute('class') ?? '')
+    expect(icons.every((icon) => /lucide-/.test(icon))).toBe(true)
+    // Within the panel's own groups no two rows share a picture.
+    expect(new Set(icons.map((icon) => /lucide-[\w-]+/.exec(icon)?.[0])).size).toBe(ROWS.length)
+    for (const row of rows) {
+      const chevron = row.querySelector('[data-slot="row-chevron"]')
+      expect(chevron).toHaveAttribute('aria-hidden', 'true')
+      expect(chevron).toHaveClass('motion-reduce:transition-none')
+    }
+  })
+
+  it.each(ROWS)('%s turns its chevron down while it is open and back when it closes', async (id) => {
+    const { user, panel } = panelTable()
+    const row = panel.querySelector<HTMLElement>(`[data-command="${id}"]`)
+    const toggle = row?.querySelector<HTMLElement>('button[aria-expanded]')
+    const chevron = row?.querySelector('[data-slot="row-chevron"]')
+    expect(chevron).not.toHaveClass('rotate-90')
+    await user.click(toggle as HTMLElement)
+    expect(chevron).toHaveClass('rotate-90')
+    await user.click(toggle as HTMLElement)
+    expect(chevron).not.toHaveClass('rotate-90')
+  })
+})
+
+describe('the Life row', () => {
+  it('opens under the counter as "More life options", with any amount and its preview', async () => {
+    const { user, panel, row } = panelTable()
+    const more = row('More life options')
+    expect(more).toHaveTextContent('Any amount, with a preview of the change.')
+    await user.click(more)
+    expect(within(panel).getByRole('group', { name: 'Life' })).toBeInTheDocument()
+    expect(within(panel).getByRole('spinbutton', { name: 'Change' })).toBeInTheDocument()
+  })
+
+  it('is listed with the reason when the seat cannot act by hand', () => {
+    renderTable({
+      seats: 2,
+      options: { viewport: WIDE },
+      ui: <CommandsPanel />,
+      state: (state) => ({ ...state, result: 'Draw' }),
+    })
+    expect(screen.getByRole('button', { name: /^More life options/ })).toHaveTextContent('The game is over.')
   })
 })
 
@@ -146,7 +214,7 @@ describe('a command no other command takes back', () => {
     ['Exile from the top', true],
     ['Top to the bottom', true],
     ['Shuffle', true],
-    ['Life', false],
+    ['More life', false],
     ['Draw', false],
   ])('%s says it cannot be undone: %s', async (name, lasting) => {
     const { user, panel, row } = panelTable()

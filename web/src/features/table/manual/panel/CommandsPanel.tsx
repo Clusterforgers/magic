@@ -15,7 +15,10 @@ import { CardGroup } from './CardGroup'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
 import { panelGroups, previewOf, startDraft } from './commands'
+import { COMMAND_ICONS } from './icons'
+import { LifeCounter } from './LifeCounter'
 import { LookTopBody } from './LookTopBody'
+import { RowButton } from './RowButton'
 import { TokenChoice } from './TokenChoice'
 import { useRevealOnOpen } from './reveal'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
@@ -26,6 +29,9 @@ const NO_CARDS: readonly ObjectId[] = []
 /** The commands no other command takes back (the library's order is lost), and what their row says about it. */
 const LASTING: ReadonlySet<CommandId> = new Set<CommandId>(['mill', 'exileTop', 'bottomTop', 'shuffle'])
 const LASTING_WORDS = 'This cannot be undone: the library’s order is lost.'
+
+/** The Life row sits under the open life counter and adds what the counter's buttons lack: any amount, with a preview. */
+const MORE_LIFE = { label: 'More life options', effect: 'Any amount, with a preview of the change.' }
 
 /** The top cards the seat looked at and has not put back: its known top cards while its last look is still open. */
 function lookedOf(
@@ -75,7 +81,6 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
       data-slot="commands-panel"
       className="grid h-full min-h-0 content-start gap-1 overflow-y-auto overscroll-contain pr-1"
     >
-      <LifeLine input={input} />
       {input.off === undefined ? null : (
         <p data-slot="commands-off" className="px-2 text-xs text-muted-foreground">
           {input.off}
@@ -86,18 +91,6 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
       ))}
       <CardGroup open={open} setOpen={setOpen} />
     </section>
-  )
-}
-
-/** The seat's life in large figures, as a life counter shows it. */
-function LifeLine({ input }: { input: PanelInput }) {
-  return (
-    <p data-slot="commands-life" className="flex items-baseline justify-between px-2 pt-1">
-      <span className="truncate text-sm font-medium">{input.name}</span>
-      <span className="text-2xl font-semibold tabular-nums">
-        {input.life} <span className="text-xs font-normal text-muted-foreground">life</span>
-      </span>
-    </p>
   )
 }
 
@@ -115,6 +108,7 @@ function Group({ group, input, open, setOpen }: GroupProps) {
       <h3 id={heading} className="px-2 pt-1 text-xs font-medium text-muted-foreground">
         {group.label}
       </h3>
+      {group.id === 'you' ? <LifeCounter input={input} /> : null}
       {group.commands.map((command) => (
         <Row
           key={command.id}
@@ -154,17 +148,15 @@ function Row({ command, input, open, onToggle, onClose }: RowProps) {
       data-open={open || undefined}
       className={cn('rounded-md', open && 'bg-muted')}
     >
-      <button
+      <RowButton
         ref={toggle}
-        type="button"
-        aria-expanded={open}
-        aria-controls={open ? form : undefined}
-        onClick={onToggle}
-        className="flex min-h-8 w-full min-w-0 flex-col rounded-md px-2 py-1.5 text-left outline-none select-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:min-h-11"
-      >
-        <span className="text-sm font-medium">{command.label}</span>
-        <span className="text-xs text-muted-foreground">{command.unavailable ?? command.effect}</span>
-      </button>
+        icon={COMMAND_ICONS[command.id]}
+        label={command.id === 'life' ? MORE_LIFE.label : command.label}
+        effect={command.unavailable ?? (command.id === 'life' ? MORE_LIFE.effect : command.effect)}
+        open={open}
+        controls={form}
+        onToggle={onToggle}
+      />
       {open ? (
         command.id === 'look' ? (
           <LookTopBody

@@ -54,6 +54,8 @@ async function logOf(page: Page, lines: readonly RegExp[]): Promise<string> {
 
 const BOTH = [
   /Ada loses 5 life \(by hand\)/,
+  /Ada gains 1 life \(by hand\)/,
+  /Ada loses 1 life \(by hand\)/,
   /Ada draws 2 cards \(by hand\)/,
   /Ada moves the top 2 cards of their library to the graveyard \(by hand\)/,
   /Ada creates 1 Treasure token \(by hand\)/,
@@ -87,10 +89,18 @@ for (const size of SIZES) {
       await openSide(page, 'Commands')
       await expect(page.getByRole('region', { name: 'Commands' })).toBeVisible()
 
-      let row = await openRow(page, 'Life')
+      let row = await openRow(page, 'More life options')
       await row.getByRole('button', { name: 'Take 5' }).click()
       await expect(row.locator('[data-slot="command-preview"]')).toContainText('→')
       await apply(row, 'Lose 5 life')
+
+      // The open counter sends a press as one action after the quiet; Undo takes it back with the opposite one.
+      const counter = page.locator('[data-slot="life-counter"]')
+      const line = counter.locator('[data-slot="command-feedback"]')
+      await counter.getByRole('button', { name: 'Gain 1 life' }).click()
+      await expect(line).toHaveText('Done: Gain 1 life.')
+      await counter.getByRole('button', { name: 'Undo +1' }).click()
+      await expect(line).toHaveText('Done: Lose 1 life.')
 
       row = await openRow(page, 'Draw')
       await row.getByRole('button', { name: '2', exact: true }).click()

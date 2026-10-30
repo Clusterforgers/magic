@@ -7,7 +7,7 @@ import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
-import type { FullControlMode, HouseRules, Step, Stop } from '@/protocol/generated'
+import type { FullControlMode, HouseRules, PlayerId, StateView, Step, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { withRealCards } from './realCards'
@@ -50,6 +50,14 @@ export function fixtureState(fixture: Fixture, pending?: PendingDecision | null)
   }
 }
 
+/** The view with the life of `player` moved by `delta`, as the next state shows it after a `Life` action. */
+function withLife(view: StateView, player: PlayerId, delta: number): StateView {
+  return {
+    ...view,
+    players: view.players.map((one) => (one.seat === player ? { ...one, life: one.life + delta } : one)),
+  }
+}
+
 /** What REST would say about the fixture's game: every seat named and connected. */
 export function fixtureLookup(fixture: Fixture): GameLookup {
   const seats = fixture.names.map((name, seat) => ({ seat, name }))
@@ -89,11 +97,15 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState({ pending: null, preview: null, clock: null })
       return true
     },
-    // A manual action changes nothing here but the log, and whatever decision waits stays, as the server has it.
+    // A manual action changes nothing here but the log (and life, which the counter shows), and whatever decision waits stays, as the server has it.
     manual(action, reply) {
-      const { log, seat } = store.getState()
+      const { log, seat, view } = store.getState()
       const event = { Public: { ManualAction: { player: seat ?? 0, action } } } as const
-      store.setState({ log: [...log, { seq: (log.at(-1)?.seq ?? -1) + 1, event }] })
+      const moved =
+        view !== null && 'Life' in action
+          ? { view: withLife(view, action.Life.player, action.Life.delta) }
+          : {}
+      store.setState({ log: [...log, { seq: (log.at(-1)?.seq ?? -1) + 1, event }], ...moved })
       reply?.({ ok: true })
       return true
     },

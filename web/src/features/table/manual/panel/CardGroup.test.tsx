@@ -190,6 +190,22 @@ describe('the commands of the card picked', () => {
     expect(commandRow(/^Tap/)).toHaveTextContent('Turn the permanent sideways.')
   })
 
+  it('gives each command row its icon and a chevron that turns down while it is open', async () => {
+    const { user } = await pick()
+    const rows = [...group().querySelectorAll<HTMLElement>('[data-card-command]')]
+    expect(rows).toHaveLength(5)
+    for (const row of rows) {
+      expect(row.querySelector('[data-slot="row-icon"]')).not.toBeNull()
+      expect(row.querySelector('[data-slot="row-chevron"]')).not.toHaveClass('rotate-90')
+    }
+    await user.click(commandRow(/^Tap/))
+    const open = group().querySelector('[data-command="card:tap"] [data-slot="row-chevron"]')
+    expect(open).toHaveClass('rotate-90')
+    expect(group().querySelector('[data-command="card:move"] [data-slot="row-chevron"]')).not.toHaveClass(
+      'rotate-90',
+    )
+  })
+
   it("explains an opponent's card: the move row is inert with the reason", async () => {
     await pick(THEIRS)
     expect(commandRow(/^Move to/)).toHaveTextContent(/Only .* who owns or controls it/)
@@ -248,7 +264,7 @@ describe('the commands of the card picked', () => {
   it('opens one row at a time across the panel, closes on Escape with the focus on its row', async () => {
     const { user } = await pick()
     await user.click(commandRow(/^Tap/))
-    await user.click(screen.getByRole('button', { name: /^Life/ }))
+    await user.click(screen.getByRole('button', { name: /^More life/ }))
     expect(commandRow(/^Tap/)).toHaveAttribute('aria-expanded', 'false')
     await user.click(commandRow(/^Tap/))
     within(group()).getByRole('button', { name: 'Tap Grizzly Bears' }).focus()
