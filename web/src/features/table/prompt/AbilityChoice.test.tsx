@@ -1,4 +1,4 @@
-// Goal: a permanent or a card of the viewer's graveyard or command zone with an activatable ability is marked legal like a hand card and named "Activate <ability>", a click activates it or, when the card has several plays, opens a chooser at the card that picks one by mouse or keyboard and closes on Escape, Tab, a press outside or a second click on the card; a mana ability is no play, an opponent's card is never marked.
+// Goal: a permanent or a card of the viewer's hand, graveyard or command zone with an activatable ability is marked legal like a hand card and named "Activate <ability>", a click activates it or, when the card has several plays, opens a chooser at the card that picks one by mouse or keyboard and closes on Escape, Tab, a press outside or a second click on the card; a mana ability is no play, an opponent's card is never marked.
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { indexById } from '@/play/view'
@@ -372,9 +372,61 @@ describe('a commander in the command zone', () => {
   })
 })
 
-describe('a card in the hand', () => {
-  it('is not offered its ability, so it keeps its own mark', () => {
-    const table = renderAbilities(options([ref(spell.id)]), [[spell, scry(ref(spell.id))]])
-    expect(table.highlight(spell.id)).toBe('dimmed')
+describe('a card in the hand with an ability (cycling, channel)', () => {
+  const cycling = (of: AbilityRef): ActivatedView => ({
+    ability: of,
+    cost: '',
+    effect: 'Cycling {2}',
+    keyword: 'Cycling {2}',
+    unworded: true,
+  })
+  const ability = ref(spell.id)
+
+  it('is legal and named by its ability though it cannot be cast, and activates on a click', async () => {
+    const table = renderAbilities(options([ability]), [[spell, cycling(ability)]])
+    expect(table.highlight(spell.id)).toBe('legal')
+    expect(table.card(spell.id).getAttribute('aria-label')).toContain('Activate Cycling 2, not castable')
+    await table.user.click(table.card(spell.id))
+    expect(table.answer.mock.calls).toEqual([[{ Priority: { Activate: ability } }]])
+  })
+
+  it('asks which when it can also be cast: the cast first, the ability under it', async () => {
+    const table = renderAbilities(options([ability], { castable: [spell.id] }), [[spell, cycling(ability)]])
+    expect(table.card(spell.id).getAttribute('aria-label')).not.toContain('not castable')
+    await table.user.click(table.card(spell.id))
+    expect(table.items(spell.name)).toEqual([`Cast ${spell.name}`, 'Activate Cycling 2'])
+    await table.user.click(screen.getByRole('menuitem', { name: 'Activate Cycling 2' }))
+    expect(table.answer.mock.calls).toEqual([[{ Priority: { Activate: ability } }]])
+  })
+
+  it('casts from the chooser', async () => {
+    const table = renderAbilities(options([ability], { castable: [spell.id] }), [[spell, cycling(ability)]])
+    await table.user.click(table.card(spell.id))
+    await table.user.click(screen.getByRole('menuitem', { name: `Cast ${spell.name}` }))
+    expect(table.answer.mock.calls).toEqual([[{ Priority: { CastSpell: spell.id } }]])
+  })
+
+  it('carries the reason it cannot be cast to its preview, with no hint on its foot', async () => {
+    const table = renderAbilities(options([ability], { unplayable: [{ card: spell.id, reason: 'Mana' }] }), [
+      [spell, cycling(ability)],
+    ])
+    await table.user.hover(table.card(spell.id))
+    const preview = screen.getByTestId('card-preview')
+    expect(preview.querySelector('[data-slot="preview-reason"]')?.textContent).toBe(
+      'Not castable: not enough mana.',
+    )
+    expect(table.card(spell.id).querySelector('[data-slot="card-hint"]')).toBeNull()
+  })
+
+  it('is not offered for a card of an opponent’s hand', () => {
+    const table = renderAbilities(options([ability]), [[spell, cycling(ability)]], (view) => {
+      const card = must(view.objects.find((object) => object.id === spell.id))
+      card.zone = { Hand: 1 }
+      card.owner = 1
+      card.controller = 1
+    })
+    expect(
+      table.container.querySelector(`button[data-object-id="${spell.id}"][data-highlight="legal"]`),
+    ).toBeNull()
   })
 })

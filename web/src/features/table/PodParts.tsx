@@ -1,4 +1,4 @@
-import { Ban, Crown, Hand, Library, Skull } from 'lucide-react'
+import { Ban, Crown, Hand, Library, Play, Skull } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
@@ -29,6 +29,28 @@ export function SeatDot({ seat, className }: { seat: PlayerId; className?: strin
     />
   )
 }
+
+/**
+ * The mark of a zone with a card in it that can be played or used now: a small disc with a play arrow on the corner of
+ * the chip or picture, beside the ring of a legal card. Decoration: the chip's name says it in words.
+ */
+export function LegalBadge({ className }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      data-slot="legal-badge"
+      className={cn(
+        'pointer-events-none absolute -top-1 -right-1 z-10 grid size-3.5 place-items-center rounded-full bg-primary text-primary-foreground',
+        className,
+      )}
+    >
+      <Play className="size-2 fill-current" />
+    </span>
+  )
+}
+
+/** The ring a chip or picture with a card to play or use in it wears, as a legal card does (`HIGHLIGHT.legal`). */
+export const LEGAL_RING = 'ring-2 ring-primary'
 
 /** The 3 px edge of an opponent's pod or tile on its turn: the opponent's blue, inside the box so a column that clips its overflow keeps it. */
 export const ACTIVE_EDGE = 'inset-ring-3 inset-ring-turn-them'

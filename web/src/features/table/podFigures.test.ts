@@ -12,7 +12,10 @@ import {
   seatHue,
   showsPriorityDot,
   tileName,
+  legalWords,
   zoneLabel,
+  zoneOpenLabel,
+  zoneTitle,
   ZONE_NAME,
 } from './podFigures'
 import type { PodCounts, ZoneKey } from './podFigures'
@@ -46,6 +49,33 @@ describe('cardCount and zoneLabel', () => {
   ])('names the %s chip with %i cards "%s"', (zone, count, name) => {
     expect(zoneLabel(zone, count)).toBe(name)
     expect(ZONE_NAME[zone]).toBe(name.split(/ \d/)[0])
+  })
+})
+
+describe('what a chip says of the cards in it that can be played or used', () => {
+  it.each([
+    [0, ''],
+    [1, '1 can be played or used'],
+    [3, '3 can be played or used'],
+  ])('says %i as "%s"', (legal, words) => {
+    expect(legalWords(legal)).toBe(words)
+  })
+
+  it.each<[ZoneKey, number, number, string]>([
+    ['graveyard', 5, 0, 'Graveyard 5 cards, opens the list'],
+    ['graveyard', 5, 1, 'Graveyard 5 cards, 1 can be played or used, opens the list'],
+    ['exile', 2, 2, 'Exile 2 cards, 2 can be played or used, opens the list'],
+  ])('names the %s chip of %i cards with %i legal "%s"', (zone, count, legal, name) => {
+    expect(zoneOpenLabel(zone, count, legal)).toBe(name)
+  })
+
+  it.each<[number, string | undefined, string]>([
+    [0, undefined, 'Graveyard 5 cards'],
+    [2, undefined, 'Graveyard 5 cards. 2 can be played or used'],
+    [0, 'Opt', 'Graveyard 5 cards. Top card: Opt'],
+    [1, 'Opt', 'Graveyard 5 cards. 1 can be played or used. Top card: Opt'],
+  ])('titles a graveyard of 5 with %i legal and top card %s as "%s"', (legal, top, title) => {
+    expect(zoneTitle('graveyard', 5, legal, top)).toBe(title)
   })
 })
 

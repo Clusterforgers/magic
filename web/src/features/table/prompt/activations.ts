@@ -1,6 +1,6 @@
 /**
- * The abilities a Priority prompt lets the viewer activate from the table: which permanents and cards of the graveyard,
- * the exile and the command zone carry one, what each is called, and the plays a card with several offers in a chooser.
+ * The abilities a Priority prompt lets the viewer activate from the table: which permanents and cards of the hand, the
+ * graveyard, the exile and the command zone carry one, what each is called, and the plays a card with several offers in a chooser.
  * Mana abilities are never listed here: they stay the business of `PriorityOptions.mana_abilities` and are no play
  * (docs/arena-flow.md).
  */
@@ -61,6 +61,10 @@ export function spoken(text: string): string {
   )
 }
 
+/** Tells the abilities of one card apart: their place on the card and where they come from. */
+export const abilityKey = (ref: AbilityRef): string =>
+  `ability-${ref.ability}-${JSON.stringify(ref.source ?? null)}`
+
 const sameAbility = (a: AbilityRef, b: AbilityRef): boolean =>
   a.object === b.object &&
   a.ability === b.ability &&
@@ -68,13 +72,14 @@ const sameAbility = (a: AbilityRef, b: AbilityRef): boolean =>
 
 /**
  * Whether `seat` may activate abilities of `object` from where it lies: a permanent it controls, or a card of its own
- * graveyard, exile or command zone. A hand card's abilities (cycling) are not offered from the table.
+ * hand (cycling, channel), graveyard, exile or command zone.
  */
 function usable(object: ObjectView, seat: PlayerId): boolean {
   const { zone } = object
   if (zone === 'Battlefield') return object.controller === seat
   if (zone === 'Exile') return object.owner === seat
   if (typeof zone === 'object') {
+    if ('Hand' in zone) return zone.Hand === seat
     if ('Graveyard' in zone) return zone.Graveyard === seat
     if ('Command' in zone) return zone.Command === seat
   }
@@ -110,7 +115,7 @@ export function abilityPlays(
     if (worded?.mana === true) continue
     const { label, detail } = wording(ref, worded)
     const play: Play = {
-      key: `ability-${ref.ability}-${JSON.stringify(ref.source ?? null)}`,
+      key: abilityKey(ref),
       label,
       words: `Activate ${spoken(label)}`,
       action: { Activate: ref },
@@ -129,11 +134,42 @@ export function activateWords(plays: readonly Play[]): string {
   return plays.length === 1 && only !== undefined ? only.words : `Activate one of ${plays.length} abilities`
 }
 
-/** The note of every card with an ability to activate: the words a screen reader adds to its name. */
+/**
+ * The note of every card with an ability to activate: the words a screen reader adds to its name, and the abilities
+ * (`abilityKey`) the preview of the card marks as available now.
+ */
 export function activationNotes(activations: Activations): CardNotes {
   const notes = new Map<ObjectId, CardNote>()
-  for (const [id, plays] of activations) notes.set(id, { words: activateWords(plays) })
+  for (const [id, plays] of activations) {
+    notes.set(id, { words: activateWords(plays), usable: plays.map((play) => play.key) })
+  }
   return notes
+}
+
+const lowerFirst = (text: string): string => text.charAt(0).toLowerCase() + text.slice(1)
+
+/**
+ * The hand's notes (why a card cannot be played) with the activation notes laid over them. A hand card that cannot be
+ * cast but has an ability to activate (cycling) is legal, so it keeps no hint on its foot; its preview and its spoken
+ * name say what it can do and why it cannot be cast.
+ */
+export function mergeNotes(hand: CardNotes, activation: CardNotes): CardNotes {
+  if (activation.size === 0) return hand
+  const merged = new Map(hand)
+  for (const [id, note] of activation) {
+    const why = hand.get(id)
+    merged.set(
+      id,
+      why === undefined
+        ? note
+        : {
+            ...note,
+            words: `${note.words}, not castable: ${why.words}`,
+            ...(why.line === undefined ? {} : { line: `Not castable: ${lowerFirst(why.line)}` }),
+          },
+    )
+  }
+  return merged
 }
 
 /** The line of one mana ability in a chooser: the mana it adds, told apart by place on the card when two add the same. */

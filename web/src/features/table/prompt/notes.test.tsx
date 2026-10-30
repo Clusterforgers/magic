@@ -56,6 +56,17 @@ describe('the notes of a marks store', () => {
     expect(store.noteOf(1)).toBe(first)
   })
 
+  it('replaces a note whose usable abilities changed, and keeps one whose abilities read the same', () => {
+    const store = createMarksStore()
+    store.publishNotes(notes([1, { words: 'Activate', usable: ['a', 'b'] }]))
+    const first = store.noteOf(1)
+    store.publishNotes(notes([1, { words: 'Activate', usable: ['a', 'b'] }]))
+    expect(store.noteOf(1)).toBe(first)
+    store.publishNotes(notes([1, { words: 'Activate', usable: ['a'] }]))
+    expect(store.noteOf(1)).not.toBe(first)
+    expect(store.noteOf(1)?.usable).toEqual(['a'])
+  })
+
   it('removes every note with clearNotes, and leaves marks alone', () => {
     const store = createMarksStore()
     store.publish(new Map([[1, 'legal']]), undefined, false)
