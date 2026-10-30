@@ -7,6 +7,7 @@ import type { PreconList, PreconListItem, PreconView } from '../src/protocol/gen
 import type { Run } from './driver'
 import type { Player } from './lobby'
 import { ACCOUNTS_WEB_URL } from './ports'
+import { ACCOUNTS_SEED } from './seeds'
 
 export const PASSWORD = 'correct horse battery'
 /** Where the milestone screenshots go; none are taken while it is unset (the repo keeps no images). */
@@ -175,6 +176,8 @@ export class Shots {
 
 export async function attachFailure(testInfo: TestInfo, run: Run, players: readonly Player[]): Promise<void> {
   await testInfo.attach('trail.txt', { body: run.trail.join('\n') || '(no decision was answered)' })
+  // The server's seed makes the game replayable: `E2E_SEED=<it>` runs the same shuffles again.
+  await testInfo.attach('seed.txt', { body: `MTG_SEED=${ACCOUNTS_SEED || 'random'}` })
   for (const { name, page } of players) {
     const png = await page.screenshot()
     await testInfo.attach(`${name}.png`, { body: png, contentType: 'image/png' })

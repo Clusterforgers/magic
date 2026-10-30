@@ -78,6 +78,9 @@ pub enum ConfigError {
     /// `MTG_IMAGE_CACHE_MIB` is not a whole number of mebibytes from 1 to 1048576.
     #[error("MTG_IMAGE_CACHE_MIB must be a whole number from 1 to 1048576, got {0:?}")]
     BadImageCacheMib(String),
+    /// `MTG_SEED` is not a whole number from 0 to 18446744073709551615.
+    #[error("MTG_SEED must be a whole number from 0 to 18446744073709551615, got {0:?}")]
+    BadSeed(String),
 }
 
 /// Most reverse proxies `MTG_TRUSTED_PROXIES` may name.
@@ -242,7 +245,7 @@ pub struct ServerConfig {
     pub allowed_origins: Vec<String>,
     /// Most games alive at once (`MTG_MAX_GAMES`).
     pub max_games: usize,
-    /// Seed every game uses instead of a random one. For tests only: never read from the environment.
+    /// Seed every game uses instead of a random one (`MTG_SEED`); for replaying a game, not for production.
     pub fixed_seed: Option<u64>,
     /// Tunables handed to each game actor.
     pub game: GameConfig,
@@ -278,9 +281,8 @@ impl Default for ServerConfig {
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
-    /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_IMAGE_CACHE` and
-    /// `MTG_IMAGE_CACHE_MIB` from the process
-    /// environment.
+    /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
+    /// `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -364,6 +366,13 @@ impl ServerConfig {
                 Ok(n) if n <= MAX_TRUSTED_PROXIES => n,
                 _ => return Err(ConfigError::BadTrustedProxies(text)),
             };
+        }
+        if let Some(text) = get("MTG_SEED") {
+            config.fixed_seed = Some(
+                text.trim()
+                    .parse::<u64>()
+                    .map_err(|_| ConfigError::BadSeed(text))?,
+            );
         }
         config.images = ImageConfig::from_lookup(&get)?;
         Ok(config)
@@ -625,6 +634,27 @@ mod tests {
         assert_eq!(
             load(&[("MTG_TRUSTED_PROXIES", text)]),
             Err(ConfigError::BadTrustedProxies(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case("0", Some(0))]
+    #[case(" 42 ", Some(42))]
+    #[case("18446744073709551615", Some(u64::MAX))]
+    #[case("", None)]
+    fn seeds(#[case] text: &str, #[case] expected: Option<u64>) {
+        assert_eq!(load(&[("MTG_SEED", text)]).unwrap().fixed_seed, expected);
+    }
+
+    #[rstest]
+    #[case("-1")]
+    #[case("seven")]
+    #[case("1.5")]
+    #[case("18446744073709551616")]
+    fn bad_seeds(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_SEED", text)]),
+            Err(ConfigError::BadSeed(text.to_owned()))
         );
     }
 

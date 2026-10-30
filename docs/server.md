@@ -374,12 +374,13 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 | `MTG_REGISTRATION` | `open` | `closed` refuses new accounts; existing ones keep working. |
 | `MTG_COOKIE_SECURE` | 0 | `1` marks the session cookie `Secure`; set it behind TLS. |
 | `MTG_TRUSTED_PROXIES` | 0 | Reverse proxies in front of the server, 0 to 16. |
+| `MTG_SEED` | random | A whole number (`u64`) every game shuffles with instead of a random seed, so a game replays exactly; each game logs its seed (`game created`). For tests and replays, not production. |
 | `DATABASE_URL` | unset | Postgres URL, never logged. Set, the binary connects (10 connections), migrates and calls `Server::open`; unset or blank, it warns and keeps games in memory without accounts. `.cargo/config.toml` defaults it to the local database (`docker compose up -d db`). |
 | `MTG_IMAGE_CACHE` | `$XDG_CACHE_HOME/mtg-server/images`, else `~/.cache/mtg-server/images` | Directory of the picture cache ([Pictures](#pictures)). |
 | `MTG_IMAGE_CACHE_MIB` | 2048 | Size limit of the picture cache in MiB, 1 to 1048576. |
 | `RUST_LOG` | `info` | Log filter. |
 
-`ServerConfig` holds more values (queues, socket limits, retention, hash cost) that only tests set; `fixed_seed` is never read from the environment.
+`ServerConfig` holds more values (queues, socket limits, retention, hash cost) that only tests set.
 
 ## Testing
 
