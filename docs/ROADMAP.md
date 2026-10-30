@@ -456,7 +456,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
-- [ ] (w2h) A seat that reloads or reconnects gets the game log back (`play/store.ts`): after a `Snapshot` the log reads "Nothing has happened yet."
+- [~] (w2h) (ux-reload) A seat that reloads or reconnects gets the game log back (`play/store.ts`): after a `Snapshot` the log reads "Nothing has happened yet."
 - [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
 - [ ] (f1d) The builder links its check bar to `/decks/$deckId/unvalidated` (`docs/web.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
@@ -467,8 +467,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v89b) The host sees the invite link and code without scrolling at 1366x768 and 1440x900: "Invite players" sits under the seats, below the fold (lobby page, `features/game`)
 - [ ] (v89c) The hand dock fits ten or more cards beside the action panel at 1440x900: the last card slides under the panel and its "Drawn" and "Needs mana" tags are cut to "Dra…" and "Needs m…" (`features/table` hand dock)
 - [ ] (v89d) The "Your turn" pill does not cover the step ladder of the top bar (1024 to 1440) or the banner on a phone while it shows
-- [ ] (v89e) The game log keeps step lines ("Upkeep begins", "Draw begins") out of the way of plays, as Arena does: a four-seat turn is mostly step lines (`play/log`)
-- [ ] (v89f) A reload draws the battlefield at rest: after a `Snapshot` the permanents replay their enter effect, fade and overlap for about a second
+- [~] (v89e) (ux-reload) The game log keeps step lines ("Upkeep begins", "Draw begins") out of the way of plays, as Arena does: a four-seat turn is mostly step lines (`play/log`)
+- [~] (v89f) (ux-reload) A reload draws the battlefield at rest: after a `Snapshot` the permanents replay their enter effect, fade and overlap for about a second
 - [ ] (v89g) Seat zone labels (Graveyard, Exile) and counter chips on the table read at 12 px or more; they are 11 px at every size
 - [ ] (v89h) Registering with a taken username keeps the typed password, so the player changes the name only (`features/auth/AuthForm.tsx` clears it after every server answer)
 - [ ] (v89i) One term for cards the engine plays only in part: the lobby seat says "need manual steps", the chooser and builder "played by hand", the builder also "Manual play" and "manual, partial"
