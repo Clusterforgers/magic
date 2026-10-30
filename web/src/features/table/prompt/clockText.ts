@@ -20,6 +20,21 @@ export function clockKind(kind: DecisionKind): ClockKind {
 
 /** What the server answers for a seat whose clock ran out, by kind: as the countdown puts it and as it is announced. */
 const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string }>> = {
+  Mulligan: { countdown: 'Keeping this hand for you', announced: 'keeps your hand for you' },
+  BottomCards: {
+    countdown: 'Putting the first cards on the bottom for you',
+    announced: 'puts the first cards of your hand on the bottom for you',
+  },
+  Discard: {
+    countdown: 'Discarding the first cards for you',
+    announced: 'discards the first cards of your hand for you',
+  },
+  DeclareAttackers: { countdown: 'Declaring no attacks', announced: 'declares no attackers for you' },
+  ChooseReplacement: {
+    countdown: 'Choosing the first effect for you',
+    announced: 'chooses the first effect for you',
+  },
+  DivideAmount: { countdown: 'Dividing it evenly for you', announced: 'divides it evenly for you' },
   Priority: { countdown: 'Passing for you', announced: 'passes for you' },
   DeclareBlockers: { countdown: 'Declaring no blocks', announced: 'declares no blocks for you' },
   ChooseTargets: { countdown: 'Choosing no targets', announced: 'chooses no targets for you' },
@@ -52,7 +67,7 @@ export function clockText(kind: ClockKind, seconds: number): string {
 /** What a screen reader hears once when the clock starts: "You have 10 seconds; after that the game passes for you." */
 export function clockAnnouncement(kind: ClockKind, seconds: number): string {
   const unit = seconds === 1 ? 'second' : 'seconds'
-  return `You have ${seconds} ${unit} to answer; after that the game ${AT_ZERO[kind]?.announced ?? 'passes for you'}.`
+  return `You have ${seconds} ${unit} to answer; after that the game ${AT_ZERO[kind]?.announced ?? 'goes on without you'}.`
 }
 
 /** Whole seconds shown for `leftMs`: the number counts down to 1 while any time is left. */

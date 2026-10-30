@@ -207,15 +207,22 @@ describe('the clauses the game cannot resolve', () => {
     expect(within(preview).queryByRole('list')).toBeNull()
   })
 
-  it('does not claim a flagged card is fully supported when the check names no clause', async () => {
-    const { user } = await renderBuilder({
-      cards: { details: [boltDetail({ card: { ...BOLT, support: 'stale' } })] },
-    })
-    await user.click(nameButton(deckLine('Lightning Bolt'), 'Lightning Bolt'))
-    const preview = await dialog('Lightning Bolt')
-    expect(await within(preview).findByText(/does not say which words/)).toBeInTheDocument()
-    expect(within(preview).queryByText(/Fully supported/)).toBeNull()
-  })
+  it.each([
+    ['stale', /does not say which words/],
+    ['partial', /does not say which words/],
+    ['manual', /apply its text yourself, with the Commands panel/],
+  ] as const)(
+    'does not claim a %s card with no clause named is fully supported, and says %s',
+    async (support, words) => {
+      const { user } = await renderBuilder({
+        cards: { details: [boltDetail({ card: { ...BOLT, support } })] },
+      })
+      await user.click(nameButton(deckLine('Lightning Bolt'), 'Lightning Bolt'))
+      const preview = await dialog('Lightning Bolt')
+      expect(await within(preview).findByText(words)).toBeInTheDocument()
+      expect(within(preview).queryByText(/Fully supported/)).toBeNull()
+    },
+  )
 })
 
 describe('closing the preview', () => {

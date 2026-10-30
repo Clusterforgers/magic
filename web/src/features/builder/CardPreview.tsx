@@ -165,6 +165,10 @@ function FaceBlock({
   )
 }
 
+/** What a card the game runs none of means in a game, for a card the check names no clause of. */
+const MANUAL_NOTE =
+  "The game does not run this card's text. In a game you play the card and apply its text yourself, with the Commands panel or the card's menu."
+
 /** What the game leaves to the table, one numbered line per clause, or that the card is fully supported. */
 function Clauses({ support, reasons }: { support: Support; reasons: readonly Reason[] }) {
   const id = useId()
@@ -191,7 +195,7 @@ function Clauses({ support, reasons }: { support: Support; reasons: readonly Rea
   if (isIssue(support)) {
     return (
       <p data-slot="clauses" className="border-t pt-3 text-sm text-muted-foreground">
-        The check does not say which words the game cannot resolve.
+        {support === 'manual' ? MANUAL_NOTE : 'The check does not say which words the game cannot resolve.'}
       </p>
     )
   }
