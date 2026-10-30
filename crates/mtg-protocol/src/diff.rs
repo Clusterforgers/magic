@@ -79,6 +79,7 @@ mod tests {
             kind: ObjectKind::Card,
             source: None,
             targets: Vec::new(),
+            targets_legal: Vec::new(),
             counters: Vec::new(),
             loyalty_abilities: Vec::new(),
             attached_to: None,

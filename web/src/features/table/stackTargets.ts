@@ -16,7 +16,7 @@ export const MAX_ARROWS = 6
 export interface StackTarget {
   key: string
   target: Target
-  /** No longer a legal target: the player lost, the object left the game or moved since the item was put on the stack. */
+  /** No longer a legal target: the server says so (`targets_legal`), or else the player lost or the object moved since. */
   gone: boolean
   /** An object that is itself on the stack (a Counterspell's target). */
   onStack: boolean
@@ -76,6 +76,23 @@ export interface StackSource {
   log: readonly LogEntry[]
 }
 
+/**
+ * Whether each target of `object` is legal by the server's word (`targets_legal`), by target key: one legal
+ * occurrence is enough. Null when the view does not say, so the log stands in.
+ */
+export function legalByKey(object: ObjectView): ReadonlyMap<string, boolean> | null {
+  const legal = object.targets_legal
+  if (legal === undefined) return null
+  const byKey = new Map<string, boolean>()
+  ;(object.targets ?? []).forEach((set, spec) =>
+    set.forEach((target, index) => {
+      const key = targetKey(target)
+      byKey.set(key, (byKey.get(key) ?? false) || legal[spec]?.[index] === true)
+    }),
+  )
+  return byKey
+}
+
 /** The targets of each stack item, top first: every target once, a gone one marked. */
 export function stackEntries({ ids, objectsById, players, log }: StackSource): StackEntry[] {
   const entries: StackEntry[] = []
@@ -83,8 +100,21 @@ export function stackEntries({ ids, objectsById, players, log }: StackSource): S
     const object = objectsById[id]
     if (object === undefined) continue
     const named = distinctTargets((object.targets ?? []).flat())
-    const moved = named.some((target) => 'Object' in target) ? movedSince(log, id) : new Set<ObjectId>()
+    const told = legalByKey(object)
+    const moved =
+      told === null && named.some((target) => 'Object' in target) ? movedSince(log, id) : new Set<ObjectId>()
     const targets = named.map((target): StackTarget => {
+      const legal = told?.get(targetKey(target))
+      if (legal !== undefined) {
+        const aimed = 'Object' in target ? objectsById[target.Object.id] : undefined
+        return {
+          key: targetKey(target),
+          target,
+          gone: !legal,
+          onStack: aimed?.zone === 'Stack',
+          ...(aimed === undefined ? {} : { seat: aimed.controller }),
+        }
+      }
       if ('Player' in target) {
         const lost = players.find((player) => player.seat === target.Player)?.lost
         return { key: targetKey(target), target, gone: lost !== undefined && lost !== null, onStack: false }
