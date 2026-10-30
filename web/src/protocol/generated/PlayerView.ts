@@ -65,6 +65,11 @@ library: ZoneView,
  */
 revealed_top?: ObjectId, 
 /**
+ * The top cards of the library its owner looked at by hand and may still identify, top first; only in the
+ * owner's own view, and left out while there are none.
+ */
+known_top?: Array<ObjectId>, 
+/**
  * Graveyard (public).
  */
 graveyard: ZoneView, 

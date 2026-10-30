@@ -13,6 +13,7 @@ import type { RealIds } from './realCards'
 import { printedDetail, STATES_BASE_PERMANENTS, withStates } from './states'
 import { parseStopSpec } from './stopSpec'
 import { menuCandidates, useOpenDevMenu } from '../manual/devMenu'
+import { useOpenDevPanel } from '../manual/panel/devPanel'
 
 /** The oracle ids of the fixture's cards from the server (`?cards=real`), read once; none until they arrive. */
 function useRealIds(
@@ -71,6 +72,7 @@ export function DevTableRoute() {
     states,
     equip,
     menu,
+    panel,
   } = useSearch({
     from: '/dev/table',
   })
@@ -84,7 +86,7 @@ export function DevTableRoute() {
       seats,
       board,
       prompt,
-      holding: menu === undefined ? undefined : true,
+      holding: menu === undefined && panel === undefined ? undefined : true,
       turn,
       step,
       hand,
@@ -94,13 +96,31 @@ export function DevTableRoute() {
       fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
       real,
     })
-  }, [seats, board, prompt, menu, turn, step, hand, rules, states, equip, cards, preview, stops, fc, real])
+  }, [
+    seats,
+    board,
+    prompt,
+    menu,
+    panel,
+    turn,
+    step,
+    hand,
+    rules,
+    states,
+    equip,
+    cards,
+    preview,
+    stops,
+    fc,
+    real,
+  ])
   const view = game.session.store.getState().view
   const candidates = useMemo(
     () => (menu === undefined || view === null ? undefined : menuCandidates(view, view.viewer, menu)),
     [menu, view],
   )
   useOpenDevMenu(candidates)
+  useOpenDevPanel(panel)
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
     () => ({ mode, focus, effects: fx === undefined ? undefined : true, effectsSlow: slow }),

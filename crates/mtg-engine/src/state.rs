@@ -257,6 +257,9 @@ pub struct GameState {
     pub(crate) commanders: crate::commanders::Commanders,
     /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
     pub(crate) companions: crate::companions::Companions,
+    /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
+    /// still the object it looked at and the library has not been shuffled.
+    pub(crate) looked_by_hand: Vec<(PlayerId, crate::object::ObjectRef)>,
 }
 
 impl GameState {
@@ -692,6 +695,10 @@ impl Hash for GameState {
         }
         if !self.modes_ever.is_empty() {
             self.modes_ever.hash(state);
+        }
+        // Likewise a game in which no seat looked at its library by hand.
+        if !self.looked_by_hand.is_empty() {
+            self.looked_by_hand.hash(state);
         }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {

@@ -128,4 +128,20 @@ power: number,
 /**
  * Toughness change, from -99 to 99.
  */
-toughness: number, } };
+toughness: number, } } | { "LookTop": { 
+/**
+ * How many, 1 to 10.
+ */
+count: number, } } | { "ArrangeTop": { 
+/**
+ * The cards that stay on top, the next card drawn first.
+ */
+top: Array<ObjectId>, 
+/**
+ * The cards put on the bottom, the last of them the bottom card.
+ */
+bottom: Array<ObjectId>, 
+/**
+ * The cards put into the graveyard.
+ */
+graveyard: Array<ObjectId>, } } | { "Shuffle": Record<symbol, never> };

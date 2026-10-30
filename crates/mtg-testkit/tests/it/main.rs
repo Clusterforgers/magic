@@ -299,6 +299,7 @@ mod manual_actions;
 mod manual_anytime;
 mod manual_cards;
 mod manual_fuzz;
+mod manual_library;
 mod manual_triggers;
 mod many_seats;
 mod mayhem;

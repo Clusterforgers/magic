@@ -153,4 +153,20 @@ player: PlayerId,
 /**
  * Where they put it.
  */
-to: ManualZone, } };
+to: ManualZone, } } | { "ManualArrange": { 
+/**
+ * Who put them back.
+ */
+player: PlayerId, 
+/**
+ * Cards that stay on top.
+ */
+top: number, 
+/**
+ * Cards put on the bottom.
+ */
+bottom: number, 
+/**
+ * Cards put into the graveyard.
+ */
+graveyard: number, } };
