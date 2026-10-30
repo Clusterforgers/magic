@@ -998,3 +998,132 @@ fn a_clone_gathers_its_own_effects_and_an_event_drops_them() {
         "the copy was made before the Totem left"
     );
 }
+
+fn aura(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Enchantment)
+            .with_subtype("Aura"),
+    )
+}
+
+fn attachment(name: &str, kind: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_subtype(kind),
+    )
+}
+
+/// Seat 0's board: a card with the static ability, a second creature and the attachments; `hosts` says which creature
+/// (0 the card, 1 the other, none for unattached) each attachment is on.
+fn attached_board(
+    card: Arc<CardDefinition>,
+    attachments: &[(Arc<CardDefinition>, Option<usize>)],
+) -> GameState {
+    let mut board = vec![card, creature("Other", 2, 2)];
+    board.extend(attachments.iter().map(|(attached, _)| Arc::clone(attached)));
+    let mut setup = crate::fixtures::setup(vec![vec![], vec![]], vec![board, vec![]]);
+    for (at, (_, host)) in attachments.iter().enumerate() {
+        setup.players[0].battlefield[2 + at].attached_to = host.map(|host| (0, host));
+    }
+    GameState::from_setup(&setup).unwrap()
+}
+
+const FOR_EACH_AURA: &str = r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":{"Times":{"by":2,"of":{"Count":[{"Subtype":"Aura"},{"AttachedTo":"This"}]}}},"toughness":{"Times":{"by":2,"of":{"Count":[{"Subtype":"Aura"},{"AttachedTo":"This"}]}}}}}]}}"#;
+
+fn dancer(rule: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Dancer")
+            .with_type(CardType::Creature)
+            .with_power_toughness(2, 2)
+            .with_rules(rules(rule)),
+    )
+}
+
+#[rstest]
+#[case::no_aura(&[], (2, 2))]
+#[case::one_on_the_card(&[Some(0)], (4, 4))]
+#[case::two_on_the_card(&[Some(0), Some(0)], (6, 6))]
+#[case::one_on_another_creature_does_not_count(&[Some(1), Some(0)], (4, 4))]
+#[case::an_unattached_one_does_not_count(&[None], (2, 2))]
+fn a_count_of_auras_attached_to_the_card_follows_the_board(
+    #[case] hosts: &[Option<usize>],
+    #[case] expected: (i32, i32),
+) {
+    let attachments: Vec<_> = hosts
+        .iter()
+        .enumerate()
+        .map(|(at, host)| (aura(&format!("Aura {at}")), *host))
+        .collect();
+    let game = attached_board(dancer(FOR_EACH_AURA), &attachments);
+    assert_eq!(pump(&game, "Dancer"), Some(expected));
+}
+
+const ENCHANTED_GROUP: &str = r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"HasAttached":[{"Subtype":"Aura"}]},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":2,"toughness":2}}]}}"#;
+
+#[rstest]
+#[case::the_card_is_enchanted(&[("Aura", Some(0))], (4, 4), (2, 2))]
+#[case::the_other_is_enchanted(&[("Aura", Some(1))], (2, 2), (4, 4))]
+#[case::both_are_enchanted(&[("Aura", Some(0)), ("Aura", Some(1))], (4, 4), (4, 4))]
+#[case::two_auras_pump_once(&[("Aura", Some(1)), ("Aura", Some(1))], (2, 2), (4, 4))]
+#[case::an_equipment_is_not_an_aura(&[("Equipment", Some(1))], (2, 2), (2, 2))]
+#[case::an_unattached_aura_enchants_nothing(&[("Aura", None)], (2, 2), (2, 2))]
+fn a_group_named_by_its_attachment_is_the_creatures_that_hold_one(
+    #[case] attached: &[(&str, Option<usize>)],
+    #[case] card: (i32, i32),
+    #[case] other: (i32, i32),
+) {
+    let attachments: Vec<_> = attached
+        .iter()
+        .enumerate()
+        .map(|(at, (kind, host))| {
+            let permanent = if *kind == "Aura" {
+                aura(&format!("Attachment {at}"))
+            } else {
+                attachment(&format!("Attachment {at}"), kind)
+            };
+            (permanent, *host)
+        })
+        .collect();
+    let game = attached_board(dancer(ENCHANTED_GROUP), &attachments);
+    assert_eq!(pump(&game, "Dancer"), Some(card));
+    assert_eq!(pump(&game, "Other"), Some(other));
+}
+
+/// "Enchanted creature loses all abilities and can't attack or block." as the static ability of the Totem that holds the
+/// Bear, and an effect of another timestamp that gives the Bear something.
+#[rstest]
+#[case::an_older_keyword_is_lost(Modification::AddKeyword(Keyword::Haste), 0, &[], 0)]
+#[case::a_newer_keyword_is_kept(Modification::AddKeyword(Keyword::Haste), 500, &[Keyword::Haste], 0)]
+#[case::an_older_second_keyword_is_lost(Modification::AddKeyword(Keyword::Vigilance), 0, &[], 0)]
+#[case::a_newer_ability_is_kept(Modification::GrantAbility(Arc::new(rules(ACTIVATED))), 500, &[], 1)]
+#[case::an_older_ability_is_lost(Modification::GrantAbility(Arc::new(rules(ACTIVATED))), 0, &[], 0)]
+#[case::a_newer_loss_of_a_keyword_changes_nothing(Modification::RemoveKeyword(Keyword::Flying), 500, &[], 0)]
+fn the_loss_of_abilities_of_an_aura_keeps_what_is_given_after_it_and_the_restrictions_stay(
+    #[case] given: Modification,
+    #[case] timestamp: u64,
+    #[case] keywords: &[Keyword],
+    #[case] granted: usize,
+) {
+    let aura = on_the_bear(r#""LoseAbilities","CantAttack","CantBlock""#);
+    let mut game = state(
+        vec![vec![], vec![]],
+        vec![vec![bear(), totem(&aura)], vec![]],
+    );
+    effect(&mut game, "Bear", given, timestamp);
+    let bear = named(&game, "Bear").id;
+    assert_eq!(
+        keywords_of(&game, bear),
+        keywords.iter().collect::<Vec<_>>(),
+        "keywords"
+    );
+    assert_eq!(abilities_of(&game, bear).len(), granted, "abilities");
+    assert!(
+        characteristics(&game, bear).unwrap().abilities.is_empty(),
+        "the mana ability is lost whenever the effect was made"
+    );
+    // The restrictions are the Aura's own effect, not abilities of the creature: nothing given later lifts them.
+    assert!(crate::characteristics::cant_attack(&game, bear));
+    assert!(crate::characteristics::cant_block(&game, bear));
+}

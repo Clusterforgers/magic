@@ -93,6 +93,19 @@ export function look(arg: { me: string; answered: string | null }): Observed | n
 }
 
 /**
+ * Runs in the page while a blocker is chosen. Gives the cards marked legal that are not among the blockers `own`: the
+ * attackers the chosen blocker may block, in the order the table draws them.
+ */
+export function attackersOffered(own: readonly string[]): string[] {
+  const ids = Array.from(
+    document.querySelectorAll<HTMLElement>('button[data-object-id][data-highlight="legal"]'),
+  )
+  return ids
+    .map((element) => element.dataset['objectId'] ?? '')
+    .filter((id) => id !== '' && !own.includes(id))
+}
+
+/**
  * A priority window with nothing to play: no card of the hand, no commander in the command zone and no ability on the
  * battlefield is legal, so it can be passed and nothing else. The server asks only a seat with a stop or Full Control.
  */
@@ -396,16 +409,24 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       return 'does not block'
     }
     // Every blocker goes on the first attacker; two or more on one attacker make its controller split the damage.
+    const { page } = player
+    const own = seen.board.map((blocker) => blocker.id)
+    // "Attacker X blocks": the list drawn while a blocker waits for the attacker it blocks.
+    const asking = page.getByRole('combobox', { name: /^Attacker .* blocks$/ })
+    let target: string | undefined
     for (const blocker of seen.board) {
-      await card(player.page, blocker.id).click()
-      // With several attackers the picker lists one button per attacker this creature may block, then Cancel; with
-      // one the click blocks it at once and there is no picker.
-      const picker = player.page.locator('[data-slot="attacker-picker"]')
-      const asked = await picker.waitFor({ state: 'visible', timeout: 1_000 }).then(
-        () => true,
-        () => false,
-      )
-      if (asked) await picker.getByRole('button').first().click()
+      await card(page, blocker.id).click()
+      // The card is marked selected once the click took. A creature that can block one attacker blocks it at once;
+      // any other is chosen and waits for a click on the attacker it blocks.
+      await page.locator(`button[data-object-id="${blocker.id}"][data-highlight="selected"]`).waitFor()
+      if ((await asking.count()) === 0) continue
+      const choices = await page.evaluate(attackersOffered, own)
+      const attacker = target !== undefined && choices.includes(target) ? target : choices[0]
+      if (attacker === undefined)
+        throw new Error(`${named(blocker)} waits for an attacker that no card offers`)
+      target ??= attacker
+      await card(page, attacker).click()
+      await asking.waitFor({ state: 'detached' })
     }
     await button(player.page, 'Confirm blocks').click()
     return `blocks with ${seen.board.map(named).join(', ')}`

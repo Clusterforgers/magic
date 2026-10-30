@@ -272,6 +272,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
         "legendary" => Pred::Supertype(Supertype::Legendary),
         "basic" => Pred::Supertype(Supertype::Basic),
         "other" => Pred::Other,
+        "enchanted" | "equipped" => return super::t17b_attached::adjective(word, form),
         _ => return super::w21a_atoms::w21a_adjective(word),
     })
 }
@@ -320,6 +321,7 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
             Pred::Commander => "noncommander".to_owned(),
             _ => return None,
         },
+        Pred::HasAttached(_) => return super::t17b_attached::adjective_text(pred, form),
         _ => return super::w21a_atoms::w21a_adjective_text(pred),
     })
 }
@@ -540,20 +542,16 @@ pub(super) fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
     }
 }
 
-/// What may follow the noun: who controls it, a keyword or a number it has.
-pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
-    if r.words("you control") {
-        return Some(Pred::ControlledBy(Ref::You));
-    }
-    if r.words("you don't control") {
-        return Some(not(Pred::ControlledBy(Ref::You)));
-    }
-    if r.words(form.opponents()) {
-        return Some(Pred::ControlledBy(Ref::Opponents));
-    }
-    if r.words("defending player controls") {
-        return Some(Pred::ControlledBy(Ref::Defending));
-    }
+/// "its controller controls" for the creature the sentence before acted on: "tapped creature its controller controls".
+fn its_controller(r: &mut Reader<'_>) -> Option<Pred> {
+    let it = r.it.clone()?;
+    matches!(it, Ref::Attached | Ref::Target(_)).then_some(())?;
+    r.words("its controller controls").then_some(())?;
+    Some(Pred::ControlledBy(Ref::ControllerOf(Box::new(it))))
+}
+
+/// What happened this turn or what the source did: "that entered the battlefield this turn", "that crewed it this turn".
+fn this_turn_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     // What came onto the battlefield this turn: "creature token that entered the battlefield this turn".
     if r.words("that entered the battlefield this turn") || r.words("that entered this turn") {
         return Some(Pred::EnteredThisTurn);
@@ -572,17 +570,39 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         return Some(Pred::Saddled(Ref::This));
     }
     // What the source hurt: "creature dealt damage by this creature this turn".
-    if r.attempt(|r| {
+    r.attempt(|r| {
         r.need("dealt damage by")?;
         r.source().then_some(())?;
         r.need("this turn")
     })
-    .is_some()
-    {
-        return Some(Pred::DamagedBy(Ref::This));
+    .map(|()| Pred::DamagedBy(Ref::This))
+}
+
+/// What may follow the noun: who controls it, a keyword or a number it has.
+pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    if let Some(pred) = r.attempt(|r| super::t17b_attached::suffix(r, form)) {
+        return Some(pred);
+    }
+    if r.words("you control") {
+        return Some(Pred::ControlledBy(Ref::You));
+    }
+    if r.words("you don't control") {
+        return Some(not(Pred::ControlledBy(Ref::You)));
+    }
+    if r.words(form.opponents()) {
+        return Some(Pred::ControlledBy(Ref::Opponents));
+    }
+    if r.words("defending player controls") {
+        return Some(Pred::ControlledBy(Ref::Defending));
+    }
+    if let Some(pred) = this_turn_suffix(r) {
+        return Some(pred);
     }
     if r.words("enchanted player controls") {
         return Some(Pred::ControlledBy(Ref::AttachedPlayer));
+    }
+    if let Some(pred) = its_controller(r) {
+        return Some(pred);
     }
     if r.words("the monarch controls") || (r.at_monarch && r.words("that player controls")) {
         return Some(Pred::ControlledBy(Ref::Monarch));
@@ -676,6 +696,9 @@ fn like_this(r: &mut Reader<'_>) -> Option<Pred> {
 }
 
 pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
+    if let Some(text) = super::t17b_attached::suffix_text(pred, form) {
+        return Some(text);
+    }
     Some(match pred {
         Pred::Compare {
             stat,
@@ -700,6 +723,11 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::DamagedBy(Ref::This) => "dealt damage by ~ this turn".to_owned(),
         Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
+        Pred::ControlledBy(Ref::ControllerOf(host))
+            if matches!(**host, Ref::Attached | Ref::Target(_)) =>
+        {
+            "its controller controls".to_owned()
+        }
         Pred::ControlledBy(Ref::Defending) => "defending player controls".to_owned(),
         Pred::ControlledBy(Ref::Monarch) => "the monarch controls".to_owned(),
         Pred::ControlledBy(Ref::Target(0)) => "target player controls".to_owned(),
@@ -1280,6 +1308,12 @@ fn noun_word(which: [bool; 5], plural: bool) -> Option<String> {
     })
 }
 
+/// The subtypes a predicate names as the noun, not the list of types a creature group says after it ("that's a Goblin or a
+/// Warrior").
+fn noun_subtypes<'a>(pred: &'a Pred, all: &[Pred], form: Form) -> Option<Vec<&'a str>> {
+    subtype_list(pred).filter(|_| !super::t17b_attached::is_kinds(pred, all, form))
+}
+
 /// The subtype names of a subtype or of an `AnyOf` of several.
 fn subtype_list(pred: &Pred) -> Option<Vec<&str>> {
     let list = match pred {
@@ -1387,7 +1421,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
             } else {
                 zone = Some(place);
             }
-        } else if let Some(listed) = subtype_list(pred) {
+        } else if let Some(listed) = noun_subtypes(pred, preds, form) {
             if !subtypes.is_empty() {
                 return None;
             }
@@ -1604,7 +1638,7 @@ fn another(mut selector: Selector) -> Selector {
     selector
 }
 
-fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
+pub(super) fn spec(r: &mut Reader<'_>) -> Option<TargetSpec> {
     if r.words("any target") {
         return Some(plain(Targetable::AnyTarget));
     }

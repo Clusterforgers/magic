@@ -170,6 +170,13 @@ impl CombatState {
         })
     }
 
+    /// Whether `id` is an attacker or one of the creatures blocking an attacker.
+    pub(crate) fn contains(&self, id: ObjectId) -> bool {
+        self.attackers
+            .iter()
+            .any(|a| a.object == id || a.blockers.contains(&id))
+    }
+
     /// Removes a creature that left the battlefield from combat (CR 506.4).
     pub(crate) fn remove_object(&mut self, id: ObjectId) {
         if let Some(attacker) = self.attackers.iter().find(|a| a.object == id) {

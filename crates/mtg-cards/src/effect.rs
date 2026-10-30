@@ -385,6 +385,12 @@ pub enum Effect {
         /// The permanents given a regeneration shield.
         what: Ref,
     },
+    /// Removes creatures from combat (CR 506.4): an attacker stops attacking, a blocker stops blocking; nothing else
+    /// about them changes.
+    RemoveFromCombat {
+        /// The creatures that leave combat.
+        what: Ref,
+    },
     /// Exiles objects.
     Exile {
         /// What is exiled.

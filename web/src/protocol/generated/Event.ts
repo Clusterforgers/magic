@@ -348,7 +348,11 @@ form?: DamageForm,
 /**
  * The poison counters the player dealt this combat damage also gets, from the toxic of the source (CR 702.164).
  */
-toxic?: number, } } | "CombatEnded" | "DamageCleared" | { "Regenerated": { 
+toxic?: number, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromCombat": { 
+/**
+ * The creature.
+ */
+object: ObjectId, } } | { "Regenerated": { 
 /**
  * The permanent.
  */

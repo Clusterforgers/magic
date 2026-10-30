@@ -423,6 +423,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
     texts.extend(more);
+    let more = super::leave_combat::wordings(&texts);
+    texts.extend(more);
     let mut counted = where_x::wordings(ability);
     counted.extend(super::c10_pa_pay_x::c10_pa_wordings(ability));
     counted.extend(super::c10_pa_monstrous::c10_pa_wordings(ability));
@@ -1304,6 +1306,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Untap { .. }
                 | Effect::TapOrUntap { .. }
                 | Effect::Goad { .. }
+                | Effect::RemoveFromCombat { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
                 | Effect::Move { .. }
@@ -2208,10 +2211,19 @@ impl Writer<'_> {
     }
 
     /// The effects with a wording of their own: a card returned to the battlefield, the casting and the keyword actions.
+    /// "remove enchanted creature from combat".
+    fn left_combat(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::RemoveFromCombat { what } = effect else {
+            return None;
+        };
+        Some(format!("remove {} from combat", self.object(what)?))
+    }
+
     fn other_effect(&mut self, effect: &Effect) -> Option<String> {
         self.graveyard_exile(effect)
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
+            .or_else(|| self.left_combat(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
             .or_else(|| all_graveyards::text(effect))

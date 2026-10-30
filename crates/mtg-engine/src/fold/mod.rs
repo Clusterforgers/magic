@@ -70,6 +70,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     folded
 }
 
+#[allow(clippy::too_many_lines)]
 fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::FirstPlayerChosen { .. }
@@ -103,6 +104,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::DamageDealt { .. }
         | Event::CombatEnded
         | Event::JoinedAttack { .. }
+        | Event::RemovedFromCombat { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
         | Event::DamageCleared => combat::apply(state, event),
