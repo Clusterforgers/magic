@@ -13,6 +13,7 @@ import {
   WEB_PORT,
   WEB_URL,
 } from './e2e/ports'
+import { ACCOUNTS_SEED, GAME_SEED } from './e2e/seeds'
 
 // Both servers are started here and are new for every run (in-memory store, built-in demo decks). Set E2E_REUSE=1 to
 // keep servers that are already listening on the two ports, which saves the build while a spec is being written.
@@ -37,6 +38,7 @@ const accountServers: Extract<PlaywrightTestConfig['webServer'], unknown[]> =
             RUST_LOG: 'warn',
             DATABASE_URL: ACCOUNTS_DATABASE_URL,
             MTG_DWELL_MS: NO_DWELL,
+            MTG_SEED: ACCOUNTS_SEED,
           },
           url: `${ACCOUNTS_SERVER_URL}/healthz`,
           reuseExistingServer,
@@ -74,6 +76,7 @@ export default defineConfig({
         RUST_LOG: 'warn',
         DATABASE_URL: '',
         MTG_DWELL_MS: NO_DWELL,
+        MTG_SEED: GAME_SEED,
       },
       url: `${SERVER_URL}/healthz`,
       reuseExistingServer,

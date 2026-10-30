@@ -16,6 +16,9 @@ test.skip(
   'set E2E_DATABASE_URL to a database with cards and precons to run this',
 )
 
+// The server's engine seed is pinned (`seeds.ts`), so the deal and the draws are the same each run; a failure replays
+// with the seed that `attachFailure` attaches.
+
 /** Decisions all seats may answer before the run is called stuck. */
 const MAX_DECISIONS = 1_500
 /** Time with no decision answered by any seat before the run is called stuck. */
