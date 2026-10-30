@@ -13,10 +13,19 @@ interface Props {
   onChange: (value: number) => void
   /** The field's name, for a screen reader. */
   label: string
+  /** Names a signed quick amount by its change alone ("Add 5"), for a form whose one field the group already names; else it starts with the field's name ("Change: add 5"). */
+  plainPresets?: boolean
+}
+
+/** What a signed quick amount is called. */
+function presetName(preset: number, label: string, plain: boolean): string {
+  const change = `${Math.abs(preset)}`
+  if (plain) return `${preset > 0 ? 'Add' : 'Take'} ${change}`
+  return `${label}: ${preset > 0 ? 'add' : 'take'} ${change}`
 }
 
 /** The quick amounts and the field of one number; a signed spec's buttons add to the pending change, a count's set it. */
-export function AmountField({ spec, value, onChange, label }: Props) {
+export function AmountField({ spec, value, onChange, label, plainPresets = false }: Props) {
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
     const step = event.key === 'PageUp' ? PAGE_STEP : event.key === 'PageDown' ? -PAGE_STEP : 0
     if (step === 0) return
@@ -31,9 +40,7 @@ export function AmountField({ spec, value, onChange, label }: Props) {
           variant="outline"
           size="sm"
           className="min-w-10 px-2 tabular-nums"
-          aria-label={
-            spec.signed ? `${label}: ${preset > 0 ? 'add' : 'take'} ${Math.abs(preset)}` : `${preset}`
-          }
+          aria-label={spec.signed ? presetName(preset, label, plainPresets) : `${preset}`}
           onClick={() => onChange(pressPreset(spec, value, preset))}
         >
           {spec.signed && preset > 0 ? `+${preset}` : preset}

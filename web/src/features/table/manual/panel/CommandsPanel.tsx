@@ -2,7 +2,6 @@ import { useId, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -10,19 +9,17 @@ import type { CommonToken, CounterKind, ManaType, ObjectId } from '@/protocol/ge
 import { useSeatNamer } from '../../names'
 import { playerOf } from '../../selectors'
 import { COMMON_TOKENS, GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
+import { AmountField } from './AmountField'
 import { lookIsPending } from './arrange'
 import { CardGroup } from './CardGroup'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
-import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
+import { panelGroups, previewOf, startDraft } from './commands'
 import { LookTopBody } from './LookTopBody'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
 const NO_CARDS: readonly ObjectId[] = []
-
-/** The step of Page Up and Page Down in an amount field. */
-const PAGE_STEP = 5
 
 /** The top cards the seat looked at and has not put back: its known top cards while its last look is still open. */
 function lookedOf(
@@ -217,7 +214,15 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       className="grid gap-2 px-2 pt-1 pb-2"
     >
       {command.choice === undefined ? null : <Choice kind={command.choice} draft={draft} set={set} />}
-      {command.amount === undefined ? null : <Amount command={command} draft={draft} set={set} />}
+      {command.amount === undefined ? null : (
+        <AmountField
+          spec={command.amount}
+          label={command.amount.signed ? 'Change' : 'How many'}
+          plainPresets
+          value={draft.amount}
+          onChange={(amount) => set({ amount })}
+        />
+      )}
       <p
         data-slot="command-preview"
         aria-live="polite"
@@ -241,49 +246,6 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
 interface PartProps {
   draft: PanelDraft
   set: (next: Partial<PanelDraft>) => void
-}
-
-/** The quick amounts and the field; a signed command's buttons add to the pending change. */
-function Amount({ command, draft, set }: PartProps & { command: Command }) {
-  const spec = command.amount
-  if (spec === undefined) return null
-  const word = spec.signed ? 'Change' : 'How many'
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
-    const step = event.key === 'PageUp' ? PAGE_STEP : event.key === 'PageDown' ? -PAGE_STEP : 0
-    if (step === 0) return
-    event.preventDefault()
-    set({
-      amount: Math.min(spec.max, Math.max(spec.min, (Number.isNaN(draft.amount) ? 0 : draft.amount) + step)),
-    })
-  }
-  return (
-    <div className="flex flex-wrap items-center gap-1">
-      {spec.presets.map((preset) => (
-        <Button
-          key={preset}
-          variant="outline"
-          size="sm"
-          className="min-w-10 px-2 tabular-nums"
-          aria-label={spec.signed ? `${preset > 0 ? 'Add' : 'Take'} ${Math.abs(preset)}` : `${preset}`}
-          onClick={() => set({ amount: pressPreset(spec, draft.amount, preset) })}
-        >
-          {spec.signed && preset > 0 ? `+${preset}` : preset}
-        </Button>
-      ))}
-      <Input
-        type="number"
-        aria-label={word}
-        // A numeric keypad has no minus sign, so a field that takes one gets the full keyboard.
-        inputMode={spec.signed ? 'text' : 'numeric'}
-        min={spec.min}
-        max={spec.max}
-        value={Number.isNaN(draft.amount) ? '' : draft.amount}
-        onKeyDown={onKeyDown}
-        onChange={(event) => set({ amount: event.currentTarget.valueAsNumber })}
-        className="h-8 w-20 tabular-nums pointer-coarse:h-11"
-      />
-    </div>
-  )
 }
 
 /** The token or the kind of mana a command makes. */
