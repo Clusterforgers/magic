@@ -24,6 +24,7 @@ mod fixtures;
 mod flow;
 #[cfg(test)]
 mod help_tests;
+mod land_types;
 mod layers;
 mod legend;
 mod mana_ability;

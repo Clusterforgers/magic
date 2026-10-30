@@ -9,7 +9,7 @@ import type { Subtype } from "./Subtype";
 /**
  * What an effect changes.
  */
-export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddKeyword": unknown } | { "RemoveKeyword": unknown } | { "GrantAbility": unknown } | "LoseAbilities" | { "SetController": PlayerId } | { "SetPowerToughness": { 
+export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddKeyword": unknown } | { "RemoveKeyword": unknown } | { "GrantAbility": unknown } | "LoseAbilities" | { "SetController": PlayerId } | { "SetPowerToughness": { 
 /**
  * New power.
  */

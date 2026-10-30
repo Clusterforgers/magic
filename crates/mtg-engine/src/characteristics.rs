@@ -8,6 +8,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::effects::Modification;
+use crate::land_types::is_land_type;
 use crate::layers::{Held, outside};
 use crate::object::{GameObject, ObjectKind};
 use crate::resolve::Scope;
@@ -28,6 +29,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub creature_types_set: bool,
+    /// An effect set the land types: the printed ones no longer count, only those in `subtypes` do (CR 305.7).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub land_types_set: bool,
     /// An effect made it every creature type (changeling, CR 702.73): it has each of them, unless another effect sets the types.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -57,7 +62,8 @@ impl Characteristics {
         self.subtypes.contains(subtype)
             || (self.all_creature_types && subtype.is_creature_type())
             || (printed.contains(subtype)
-                && !(self.creature_types_set && subtype.is_creature_type()))
+                && !(self.creature_types_set && subtype.is_creature_type())
+                && !(self.land_types_set && is_land_type(subtype)))
     }
 
     /// What nothing has: no types, colors, power, toughness or abilities.
@@ -66,6 +72,7 @@ impl Characteristics {
             types: CardTypes::default(),
             subtypes: Vec::new(),
             creature_types_set: false,
+            land_types_set: false,
             all_creature_types: false,
             colors: ColorSet::default(),
             power: None,
@@ -331,6 +338,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
             Vec::new()
         },
         creature_types_set: false,
+        land_types_set: false,
         all_creature_types: false,
         colors: card.colors(),
         power: card.power,

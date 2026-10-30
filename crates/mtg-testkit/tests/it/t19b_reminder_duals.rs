@@ -135,7 +135,6 @@ fn a_dual_offers_no_mana_its_types_do_not_give(
 }
 
 #[test]
-#[ignore = "t19c: a land type an effect gives (Urborg, Yavimaya) does not give its mana ability yet"]
 fn a_land_type_an_effect_gives_adds_its_mana_to_the_two_the_land_has() {
     let land = dual("Volcanic Island", "Island Mountain", VOLCANIC);
     let mut driver = table(2, land.clone());

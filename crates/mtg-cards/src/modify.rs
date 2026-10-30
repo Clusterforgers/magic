@@ -49,6 +49,9 @@ pub enum Modification {
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
+    /// Makes these the land types, the old ones and the abilities of the land gone, and gives it the mana ability of each
+    /// basic land type among them (layer 4): "Nonbasic lands are Mountains" (CR 305.7).
+    SetLandTypes(Vec<Subtype>),
     /// Makes it every creature type (layer 4): changeling (CR 702.73).
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
@@ -120,6 +123,7 @@ impl Modification {
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => Some("4"),
             Modification::SetColors(_) => Some("5"),
             Modification::AddKeyword(_)

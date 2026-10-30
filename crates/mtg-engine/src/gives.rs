@@ -117,6 +117,7 @@ impl Gives {
             | Modification::SetTypes(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,
             Modification::SetColors(_) => GivenRule::SetColors,
             Modification::Goaded { .. } => GivenRule::Goaded,
