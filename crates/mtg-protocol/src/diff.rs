@@ -84,6 +84,7 @@ mod tests {
             attached_to: None,
             attached_player: None,
             attachments: Vec::new(),
+            gives: None,
             manual: Vec::new(),
             identity: None,
             activated: Vec::new(),
