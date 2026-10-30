@@ -16,10 +16,15 @@ import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
 import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
 import { LookTopBody } from './LookTopBody'
+import { useRevealOnOpen } from './reveal'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
 const NO_CARDS: readonly ObjectId[] = []
+
+/** The commands no other command takes back (the library's order is lost), and what their row says about it. */
+const LASTING: ReadonlySet<CommandId> = new Set<CommandId>(['mill', 'exileTop', 'bottomTop', 'shuffle'])
+const LASTING_WORDS = 'This cannot be undone: the library’s order is lost.'
 
 /** The step of Page Up and Page Down in an amount field. */
 const PAGE_STEP = 5
@@ -138,12 +143,15 @@ interface RowProps {
 function Row({ command, input, open, onToggle, onClose }: RowProps) {
   const form = useId()
   const toggle = useRef<HTMLButtonElement>(null)
+  const self = useRef<HTMLDivElement>(null)
+  useRevealOnOpen(self, open)
   const close = (): void => {
     onClose()
     toggle.current?.focus({ preventScroll: true })
   }
   return (
     <div
+      ref={self}
       data-command={command.id}
       data-open={open || undefined}
       className={cn('rounded-md', open && 'bg-muted')}
@@ -233,6 +241,11 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       >
         {ready ? preview.apply : 'Apply'}
       </Button>
+      {LASTING.has(command.id) ? (
+        <p data-slot="command-lasting" className="text-xs text-muted-foreground">
+          {LASTING_WORDS}
+        </p>
+      ) : null}
       <FeedbackLine feedback={feedback} />
     </div>
   )

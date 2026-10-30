@@ -295,7 +295,7 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
       }
     case 'token':
       return {
-        preview: `${plural(amount, `${draft.token} token`)} enter under your control`,
+        preview: `${plural(amount, `${draft.token} token`)} ${amount === 1 ? 'enters' : 'enter'} under your control`,
         apply: `Create ${plural(amount, draft.token)}`,
         action: { CreateToken: { token: { Common: draft.token }, count: amount } },
       }

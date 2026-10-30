@@ -38,7 +38,7 @@ function panelTable(
 describe('the Commands tab', () => {
   it('is the first tab of a seat and on show when the table opens', () => {
     renderTable({ seats: 2, options: { viewport: WIDE } })
-    const side = screen.getByRole('complementary', { name: 'Game log and chat' })
+    const side = screen.getByRole('complementary', { name: 'Commands, log, chat and stack' })
     const tabs = within(side).getAllByRole('tab')
     expect(tabs[0]).toHaveTextContent('Commands')
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
@@ -137,5 +137,22 @@ describe('a command', () => {
     await user.click(row('Draw'))
     expect(row('Life')).toHaveAttribute('aria-expanded', 'false')
     expect(row('Draw')).toHaveAttribute('aria-expanded', 'true')
+  })
+})
+
+describe('a command no other command takes back', () => {
+  it.each([
+    ['Mill', true],
+    ['Exile from the top', true],
+    ['Top to the bottom', true],
+    ['Shuffle', true],
+    ['Life', false],
+    ['Draw', false],
+  ])('%s says it cannot be undone: %s', async (name, lasting) => {
+    const { user, panel, row } = panelTable()
+    await user.click(row(name))
+    const note = panel.querySelector('[data-slot="command-lasting"]')
+    if (lasting) expect(note).toHaveTextContent('This cannot be undone')
+    else expect(note).toBeNull()
   })
 })

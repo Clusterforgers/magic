@@ -22,7 +22,7 @@ const logs = (table: TableHarness, ...events: EventView[]): void =>
 const said = (table: TableHarness, from: number, text: string): void =>
   table.update((state: PlayState) => ({ chat: appendChat(state.chat, { from, text }) }))
 
-const side = () => screen.getByRole('complementary', { name: 'Game log and chat' })
+const side = () => screen.getByRole('complementary', { name: 'Commands, log, chat and stack' })
 const tab = (name: string | RegExp) => screen.getByRole('tab', { name })
 
 describe('a wide window: the column', () => {
@@ -143,14 +143,14 @@ describe.each([
   ['a tablet', NARROW],
   ['a phone', PHONE],
 ])('%s: the sheet', (_name, viewport) => {
-  const button = () => screen.getByRole('button', { name: /^Log, chat and stack/ })
+  const button = () => screen.getByRole('button', { name: /^Commands, log, chat and stack/ })
 
   it('has no column, and a button in the top bar that opens a sheet with the same tabs', async () => {
     const { user } = renderTable({ seats: 2, options: { viewport } })
-    expect(screen.queryByRole('complementary', { name: 'Game log and chat' })).toBeNull()
-    expect(screen.queryByRole('dialog', { name: 'Game log, chat and stack' })).toBeNull()
+    expect(screen.queryByRole('complementary', { name: 'Commands, log, chat and stack' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: 'Commands, log, chat and stack' })).toBeNull()
     await user.click(button())
-    const sheet = screen.getByRole('dialog', { name: 'Game log, chat and stack' })
+    const sheet = screen.getByRole('dialog', { name: 'Commands, log, chat and stack' })
     expect(within(sheet).getAllByRole('tab')).toHaveLength(4)
     expect(within(sheet).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
     await user.click(within(sheet).getByRole('tab', { name: /^Log/ }))
@@ -163,20 +163,20 @@ describe.each([
     const { user } = renderTable({ seats: 2, options: { viewport } })
     await user.click(button())
     await user.click(screen.getByRole('button', { name: 'Close' }))
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Game log, chat and stack' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Commands, log, chat and stack' })).toBeNull())
     await user.click(button())
     await user.keyboard('{Escape}')
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Game log, chat and stack' })).toBeNull())
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Commands, log, chat and stack' })).toBeNull())
   })
 
   it('says on the button how much wants a look: new lines, chat of others and the spells on the stack', () => {
     const table = renderTable({ seats: 4, options: { viewport } })
     // Three spells are on the stack at the start.
-    expect(button()).toHaveAccessibleName('Log, chat and stack, 3 new')
+    expect(button()).toHaveAccessibleName('Commands, log, chat and stack, 3 new')
     said(table, 2, 'hello')
     logs(table, turn(6))
     act(() => undefined)
-    expect(button()).toHaveAccessibleName('Log, chat and stack, 5 new')
+    expect(button()).toHaveAccessibleName('Commands, log, chat and stack, 5 new')
   })
 
   it('counts nothing for the tab on show while the sheet is open, and everything else', async () => {
@@ -185,7 +185,7 @@ describe.each([
     await table.user.click(screen.getByRole('tab', { name: /^Log/ }))
     said(table, 1, 'while you read')
     logs(table, turn(9))
-    const sheet = screen.getByRole('dialog', { name: 'Game log, chat and stack' })
+    const sheet = screen.getByRole('dialog', { name: 'Commands, log, chat and stack' })
     expect(within(sheet).getByRole('tab', { name: 'Chat 1 unread' })).toBeInTheDocument()
     expect(within(sheet).getByRole('tab', { name: 'Log' })).toBeInTheDocument()
   })

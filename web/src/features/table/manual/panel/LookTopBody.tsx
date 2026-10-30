@@ -13,7 +13,6 @@ import {
   arrangeAction,
   DESTINATIONS,
   isUnchanged,
-  lookedWords,
   moveWithin,
   previewWords,
   sendTo,
@@ -176,9 +175,7 @@ function ArrangeForm({ id, input, onClose, onMore, onSent }: FormProps) {
       onKeyDown={onKeyDown}
       className="grid gap-2 px-2 pt-1 pb-2"
     >
-      <p className="text-xs text-muted-foreground">
-        {lookedWords(looked.length)} Choose where each card goes.
-      </p>
+      <p className="text-xs text-muted-foreground">Choose where each card goes.</p>
       <div ref={list} className="grid gap-2">
         {DESTINATIONS.map((place) => {
           const cards = arrangement[place.id]
@@ -257,28 +254,12 @@ function CardLine({ card, name, object, place, at, total, onSend, onMove }: Line
       data-card={card}
       className="grid gap-1 rounded-md border border-border p-1"
     >
-      <div className="flex min-w-0 items-center gap-2">
+      {/* The moves sit on the name's line, so the three places keep one line in a 280 px column. */}
+      <div data-slot="look-card-head" className="flex min-w-0 items-center gap-1">
         <Thumb object={object} />
-        <span className="min-w-0 truncate text-sm font-medium">
+        <span className="min-w-0 flex-1 truncate text-sm font-medium">
           <span className="tabular-nums text-muted-foreground">{at + 1}.</span> {name}
         </span>
-      </div>
-      <div className="flex flex-wrap items-center gap-1">
-        <div role="group" aria-label={`Where ${name} goes`} className="flex gap-1">
-          {DESTINATIONS.map((option) => (
-            <Button
-              key={option.id}
-              size="sm"
-              variant={option.id === place ? 'default' : 'outline'}
-              aria-pressed={option.id === place}
-              data-control={option.id}
-              onClick={() => onSend(card, option.id)}
-              className="px-2"
-            >
-              {option.label}
-            </Button>
-          ))}
-        </div>
         <Button
           size="icon-sm"
           variant="outline"
@@ -299,6 +280,21 @@ function CardLine({ card, name, object, place, at, total, onSend, onMove }: Line
         >
           <ArrowDown aria-hidden="true" />
         </Button>
+      </div>
+      <div role="group" aria-label={`Where ${name} goes`} className="flex flex-wrap gap-1">
+        {DESTINATIONS.map((option) => (
+          <Button
+            key={option.id}
+            size="sm"
+            variant={option.id === place ? 'default' : 'outline'}
+            aria-pressed={option.id === place}
+            data-control={option.id}
+            onClick={() => onSend(card, option.id)}
+            className="px-2"
+          >
+            {option.label}
+          </Button>
+        ))}
       </div>
     </li>
   )

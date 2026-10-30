@@ -109,6 +109,13 @@ describe('previewOf', () => {
       { CreateToken: { token: { Common: 'Soldier' }, count: 2 } },
     ],
     [
+      'token',
+      draft(1, { token: 'Treasure' }),
+      '1 Treasure token enters under your control',
+      'Create 1 Treasure',
+      { CreateToken: { token: { Common: 'Treasure' }, count: 1 } },
+    ],
+    [
       'mana',
       draft(2),
       'Ana: {G}{G} into your mana pool until the step ends',
