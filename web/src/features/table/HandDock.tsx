@@ -1,9 +1,10 @@
-import { memo, useMemo, useRef } from 'react'
+import { memo, useLayoutEffect, useMemo, useRef } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
-import { handLayout } from './handFit'
+import { COMMAND_GAP_PX, handDockNeed, handLayout } from './handFit'
+import { HAND_GROW_VAR } from './layout'
 import { HandFan } from './HandFan'
 import type { HandCommander } from './HandFan'
 import type { HandLayout } from './handFit'
@@ -17,9 +18,6 @@ const PAD_PX = 4
 
 /** A card narrower than this draws the compact face (name and cost); from here it draws the type line and the rest too. */
 const NORMAL_FACE_PX = 76
-
-/** The room between the commanders and the hand: the gap and the divider line. */
-const COMMAND_GAP_PX = 10
 
 const NO_COMMANDERS: ReadonlyMap<ObjectId, HandCommander> = new Map()
 
@@ -54,9 +52,16 @@ export function commandersInHand(
  * click plays or casts them as the active prompt says. The fan stays inside the dock's width, so it never reaches the
  * pass controls beside it. The commanders waiting in the command zone stand in a list of their own before the hand, each
  * with a crown and the tax on its cast,
- * so a commander is cast from here like any card of the hand.
+ * so a commander is cast from here like any card of the hand. A hand that one row of the narrowest card does not hold
+ * grows the dock to the height of its rows, up to `growMost` px (`HAND_GROW_VAR` on the table's main area).
  */
-export const HandDock = memo(function HandDock({ seat }: { seat: PlayerId }) {
+export const HandDock = memo(function HandDock({
+  seat,
+  growMost = 0,
+}: {
+  seat: PlayerId
+  growMost?: number
+}) {
   const owner = useSeatNamer()(seat)
   const player = usePlay((state) => playerOf(state, seat))
   const objects = usePlay((state) => state.objectsById)
@@ -78,6 +83,23 @@ export const HandDock = memo(function HandDock({ seat }: { seat: PlayerId }) {
     const command: HandLayout = { ...hand, rows: 1, perRow: waiting.size, scrolls: false, overlap: 0 }
     return { hand, command }
   }, [room, cards, waiting, coarse])
+  const need =
+    room === null || cards === null || coarse || growMost <= 0
+      ? 0
+      : handDockNeed({
+          width: room.width - 2 * PAD_PX,
+          count: cards.length,
+          commanders: waiting.size,
+          most: growMost,
+        })
+  useLayoutEffect(() => {
+    const main = zone.current?.closest<HTMLElement>('[data-slot="table-main"]')
+    if (main == null || need <= 0) return undefined
+    main.style.setProperty(HAND_GROW_VAR, `${need}px`)
+    return () => {
+      main.style.removeProperty(HAND_GROW_VAR)
+    }
+  }, [need])
   const layout = layouts?.hand
   const size = layout !== undefined && layout.box.width < NORMAL_FACE_PX ? 'compact' : 'normal'
   return (
