@@ -82,6 +82,10 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Monstrous => adjectives.push("monstrous".to_owned()),
             Pred::Renowned => adjectives.push("renowned".to_owned()),
+            Pred::Paired => adjectives.push("paired".to_owned()),
+            Pred::Not(inner) if matches!(**inner, Pred::Paired) => {
+                adjectives.push("unpaired".to_owned());
+            }
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
@@ -958,9 +962,32 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
     })
 }
 
+/// The question of the pairing of soulbond: the creature that entered is the partner, or the player picks one first.
+fn pairing(effects: &[Effect]) -> Option<&'static str> {
+    match effects {
+        [
+            Effect::Pair {
+                with: Ref::Triggering,
+                ..
+            },
+        ] => Some("Pair this creature with the creature that entered?"),
+        [
+            Effect::Choose { .. },
+            Effect::Pair {
+                with: Ref::Bound(_),
+                ..
+            },
+        ] => Some("Pair this creature with another creature?"),
+        _ => None,
+    }
+}
+
 /// The question of a "may": what the effects do as a card says it ("Draw a card?", "Draw a card and gain 3 life?").
 /// It is empty when an effect has no phrase yet, and the prompt then asks in general words.
 pub(crate) fn may(effects: &[Effect]) -> String {
+    if let Some(question) = pairing(effects) {
+        return question.to_owned();
+    }
     let phrases: Option<Vec<String>> = effects.iter().map(verb_phrase).collect();
     let Some(mut phrases) = phrases.filter(|phrases| !phrases.is_empty()) else {
         return String::new();
@@ -1594,6 +1621,14 @@ mod tests {
     #[case::an_amount_that_is_not_a_number("[{\"Draw\":{\"count\":\"X\"}}]", "")]
     #[case::one_effect_without_words("[{\"Draw\":{}},{\"Untap\":{\"what\":\"This\"}}]", "")]
     #[case::no_effect("[]", "")]
+    #[case::pairing_with_the_creature_that_entered(
+        r#"[{"Pair":{"what":"This","with":"Triggering"}}]"#,
+        "Pair this creature with the creature that entered?"
+    )]
+    #[case::pairing_with_a_chosen_creature(
+        r#"[{"Choose":{"from":"This","as":"partner"}},{"Pair":{"what":"This","with":{"Bound":"partner"}}}]"#,
+        "Pair this creature with another creature?"
+    )]
     fn a_may_asks_what_its_effects_do_or_nothing(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(may_words(json), expected);
     }
@@ -1640,6 +1675,12 @@ mod tests {
     )]
     #[case::of_what_was_found(r#"{"Bound":"found"}"#, 1, 1, "Choose a card.")]
     #[case::some_of_what_was_found(r#"{"Bound":"found"}"#, 2, 2, "Choose 2 cards.")]
+    #[case::an_unpaired_creature_of_the_player(
+        r#"{"Each":[{"Type":"Creature"},"Other",{"ControlledBy":"You"},{"Not":"Paired"}]}"#,
+        1,
+        1,
+        "Choose an other unpaired creature you control."
+    )]
     fn a_choice_of_objects_asks_for_what_it_takes(
         #[case] from: &str,
         #[case] min: usize,

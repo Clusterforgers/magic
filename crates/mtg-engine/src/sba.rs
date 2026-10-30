@@ -159,6 +159,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     let died = leaving(&events);
     events.extend(annihilation(state, &died));
     events.extend(crate::attach::state_based(state, &died));
+    events.extend(crate::soulbond::state_based(state, &died));
     events.extend(card_copies(state));
     events
 }

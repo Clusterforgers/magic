@@ -121,6 +121,10 @@ attached_to?: ObjectId,
  */
 attached_player?: PlayerId, 
 /**
+ * The creature this one is paired with (soulbond), when both are on the battlefield; public, like an attachment.
+ */
+paired_with?: ObjectId, 
+/**
  * The permanents attached to this one, in id order; left out while there are none.
  */
 attachments?: Array<ObjectId>, 

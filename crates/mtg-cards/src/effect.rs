@@ -725,6 +725,14 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// Two creatures become paired (CR 702.95): `what` and the creature `with` names; nothing happens unless both are
+    /// unpaired creatures on the battlefield under one controller who is the player that resolves it.
+    Pair {
+        /// The creature that is paired (the soulbond creature, or the creature that entered).
+        what: Ref,
+        /// The creature it is paired with.
+        with: Ref,
+    },
     /// The source Vehicle becomes crewed (CR 702.122) by the creatures tapped to pay the ability, or the source Mount
     /// becomes saddled (CR 702.171) by them when `saddle`: the event cards trigger on; the type change is its own effect.
     Crewed {

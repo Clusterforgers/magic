@@ -111,6 +111,7 @@ pub mod scenario;
 pub mod script_error;
 pub mod shown_by_hand;
 pub mod small_cards;
+pub mod soulbond_cards;
 pub mod spectacle_cards;
 pub mod split_second_cards;
 pub mod static_cards;
@@ -250,6 +251,7 @@ pub use scenario::{
 };
 pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;
+pub use soulbond_cards::soulbond_fuzz_setup;
 pub use spectacle_cards::spectacle_fuzz_setup;
 pub use split_second_cards::split_second_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;

@@ -583,7 +583,23 @@ target: AttackTarget, } } | { "Unattached": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "Transformed": { 
+object: ObjectId, } } | { "Paired": { 
+/**
+ * The creature that was paired, a soulbond creature or the creature that entered.
+ */
+object: ObjectId, 
+/**
+ * The creature it was paired with.
+ */
+with: ObjectId, } } | { "Unpaired": { 
+/**
+ * One creature of the pair.
+ */
+object: ObjectId, 
+/**
+ * The other.
+ */
+with: ObjectId, } } | { "Transformed": { 
 /**
  * The permanent.
  */

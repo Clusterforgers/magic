@@ -77,6 +77,8 @@ pub(crate) struct Possible {
     pub(crate) protection: bool,
     /// A card has been exiled until a permanent leaves the battlefield, so the cards waiting in exile are watched.
     pub(crate) linked_exile: bool,
+    /// Two creatures have been paired (soulbond), so the pairs are watched.
+    pub(crate) pairs: bool,
 }
 
 /// A kind of event the game counts in a turn: for each player ("your second card each turn") or for each object

@@ -624,6 +624,9 @@ pub(super) fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     if attached.is_some() {
         return Some((Ref::Attached, false));
     }
+    if let Some(pair) = super::soulbond::subject(r) {
+        return Some(pair);
+    }
     if let Some(group) = each(r) {
         return Some((group, false));
     }
@@ -689,6 +692,10 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
         return None;
     };
     let condition = leading.or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))));
+    // The pair exists only while the card is paired: "Each of those creatures has ..." alone names nobody.
+    if !super::soulbond::allowed(&affected, condition.as_ref()) {
+        return None;
+    }
     Some(statics(affected, mods, condition))
 }
 
@@ -765,6 +772,9 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         mods = where_x::put_in(&mods, &count)?;
     }
     let condition = leading.or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))));
+    if !super::soulbond::allowed(&affected, condition.as_ref()) {
+        return None;
+    }
     if affected == Ref::This
         && condition.is_none()
         && !counts_stats(&mods)
@@ -1638,6 +1648,10 @@ fn each_combat(who: &Ref, verb: &str) -> Vec<String> {
 /// The subjects of a static ability and whether each is plural: the card, what it is attached to
 /// (an Equipment says "equipped", an Aura "enchanted") or a group.
 pub(super) fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
+    let pair = super::soulbond::subject_texts(affected);
+    if !pair.is_empty() {
+        return pair;
+    }
     match affected {
         Ref::You => vec![("You".to_owned(), true)],
         Ref::This if itself => vec![("~".to_owned(), false)],

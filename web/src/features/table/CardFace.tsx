@@ -2,7 +2,7 @@ import { CARD_CORNER } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
 import type { ImageSize } from '@/features/cards/images'
-import { Unlink } from 'lucide-react'
+import { Link as LinkIcon, Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import {
@@ -81,7 +81,9 @@ const ART_ROW_PX = 20
 /** The rows of the art slot of a face `height` px high that the marks of attachments may fill; the slot clips the rest. */
 function artRoom(height: number, chips: number, links: Links | undefined): number {
   const rows = Math.floor((height - FACE_FRAME_PX) / ART_ROW_PX)
-  return rows - (chips > 0 ? 1 : 0) - (links?.host === undefined ? 0 : 1)
+  return (
+    rows - (chips > 0 ? 1 : 0) - (links?.host === undefined ? 0 : 1) - (links?.partner === undefined ? 0 : 1)
+  )
 }
 
 /**
@@ -277,6 +279,18 @@ export function TextFace({
           span={width * ART_SHARE}
           text={classes.text}
         />
+        {object.paired_with === undefined ? null : (
+          <span
+            data-slot="card-paired"
+            className={cn(
+              'inline-flex h-fit max-w-full items-center gap-0.5 rounded-sm border border-foreground bg-background px-1 leading-snug text-foreground',
+              classes.text,
+            )}
+          >
+            <LinkIcon aria-hidden="true" className="size-3 shrink-0" />
+            <span className={cn(size === 'compact' && 'sr-only')}>Paired</span>
+          </span>
+        )}
         {isUnattached(object) ? (
           <span
             data-slot="card-unattached"

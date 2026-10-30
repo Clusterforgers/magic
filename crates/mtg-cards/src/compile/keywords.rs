@@ -696,6 +696,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "umbra armor" => Keyword::UmbraArmor,
         "cipher" => Keyword::Cipher,
         "exploit" => Keyword::Exploit,
+        "soulbond" => Keyword::Soulbond,
         "extort" => Keyword::Extort,
         "evolve" => Keyword::Evolve,
         "saddled" => Keyword::Saddled,
@@ -1176,6 +1177,7 @@ mod tests {
     #[case::afflict("Afflict 3", Keyword::Afflict(3))]
     #[case::renown("Renown 2", Keyword::Renown(2))]
     #[case::exploit("Exploit", Keyword::Exploit)]
+    #[case::soulbond("Soulbond", Keyword::Soulbond)]
     #[case::extort("Extort", Keyword::Extort)]
     #[case::evolve("Evolve", Keyword::Evolve)]
     #[case::annihilator("Annihilator 2", Keyword::Annihilator(2))]
@@ -1659,6 +1661,7 @@ mod tests {
             "Replicate {1}{R}",
             "Renown 1",
             "Exploit",
+            "Soulbond",
             "Read ahead",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

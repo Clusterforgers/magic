@@ -196,6 +196,8 @@ pub struct PermanentState {
     pub(crate) phased: PhasedState,
     /// The players who exerted it, whose next untap step it skips (CR 701.43c).
     pub(crate) exerted: crate::w11a_exert::W11aExerted,
+    /// The creature it is paired with (CR 702.95); `GameState::partner_of` says whether that pair still holds.
+    pub(crate) paired: crate::soulbond::Pairing,
 }
 
 impl PermanentState {
@@ -231,7 +233,14 @@ impl PermanentState {
             merged: None,
             phased: PhasedState::default(),
             exerted: crate::w11a_exert::W11aExerted::default(),
+            paired: crate::soulbond::Pairing::default(),
         }
+    }
+
+    /// The creature the permanent was paired with, named as it was when paired (soulbond, CR 702.95); `GameState::partner_of`
+    /// says whether that pair still holds.
+    pub const fn paired_with(&self) -> Option<ObjectRef> {
+        self.paired.0
     }
 
     /// The players who exerted the permanent and whose next untap step it skips (CR 701.43c).

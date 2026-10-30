@@ -603,6 +603,21 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// Two creatures became paired (CR 702.95): each is the partner of the other until a `Unpaired`.
+    Paired {
+        /// The creature that was paired, a soulbond creature or the creature that entered.
+        object: ObjectId,
+        /// The creature it was paired with.
+        with: ObjectId,
+    },
+    /// Two paired creatures stopped being paired (CR 702.95e): one left the battlefield, stopped being a creature or changed
+    /// controller. `with` may have left the battlefield.
+    Unpaired {
+        /// One creature of the pair.
+        object: ObjectId,
+        /// The other.
+        with: ObjectId,
+    },
     /// A transforming double-faced permanent was turned over (CR 701.28): the same object with the other face up.
     Transformed {
         /// The permanent.
@@ -1130,6 +1145,7 @@ impl Event {
             | Event::ObjectLeftGame { object }
             | Event::InitiativeTaken { object, .. } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
+            Event::Paired { object, with } | Event::Unpaired { object, with } => vec![*object, *with],
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()
             }

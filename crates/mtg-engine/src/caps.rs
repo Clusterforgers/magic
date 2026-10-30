@@ -179,6 +179,7 @@ const RUNS: &[&str] = &[
     "Effect.PhaseOut",
     "Effect.Attach",
     "Effect.Unattach",
+    "Effect.Pair",
     "Effect.JoinAttack",
     "Effect.Transform",
     "Effect.Flip",
@@ -515,6 +516,7 @@ const RUNS: &[&str] = &[
     "Keyword.Replicate",
     "Keyword.Renown",
     "Keyword.Exploit",
+    "Keyword.Soulbond",
     "Keyword.Emerge",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
@@ -1023,6 +1025,8 @@ mod tests {
     #[case::replicate("Keyword.Replicate", true)]
     #[case::renown("Keyword.Renown", true)]
     #[case::exploit("Keyword.Exploit", true)]
+    #[case::soulbond("Keyword.Soulbond", true)]
+    #[case::pairing("Effect.Pair", true)]
     #[case::emerge("Keyword.Emerge", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]

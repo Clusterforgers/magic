@@ -43,6 +43,7 @@ pub(super) fn body(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
     triggers::monarch_condition(r)
         .or_else(|| r.attempt(|r| state(r, it)))
         .or_else(|| r.attempt(|r| super::c11h_attached::c11h_read(r, it)))
+        .or_else(|| r.attempt(super::soulbond::condition))
         .or_else(|| r.attempt(super::dk1a_attached::controls_read))
         .or_else(|| r.attempt(super::dk1a_attached::entered_read))
         .or_else(|| r.attempt(|r| counters_held(r, it)))
@@ -280,6 +281,7 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         facts::texts(condition),
         super::c11h_attached::c11h_texts(condition),
         super::dk1a_attached::controls_texts(condition),
+        super::soulbond::condition_texts(condition),
         super::dk1a_attached::entered_texts(condition),
     ]
     .concat();

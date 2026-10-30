@@ -114,6 +114,7 @@ mod reveal;
 mod reveal_until;
 mod selectors;
 mod shortened;
+mod soulbond;
 mod spell_keywords;
 mod spend;
 mod spent;

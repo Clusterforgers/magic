@@ -281,11 +281,14 @@ export interface Links {
   copyOf?: string | undefined
   /** The front face of a card the permanent shows as another face. */
   frontFace?: string | undefined
+  /** The creature it is paired with (soulbond); a hidden one is "a face-down creature". */
+  partner?: string | undefined
 }
 
 /** "attached to Grizzly Bears" for an Aura or Equipment; "Pacifism and Bonesplitter attached" for its host. */
-export function linkWords({ host, attached = [], spoken = [] }: Links): string[] {
+export function linkWords({ host, attached = [], spoken = [], partner }: Links): string[] {
   const words: string[] = []
+  if (partner !== undefined) words.push(`paired with ${partner}`)
   if (host !== undefined) words.push(`attached to ${host}`)
   if (spoken.length > 0) words.push(...spoken)
   else if (attached.length > 0) words.push(`${attached.join(' and ')} attached`)

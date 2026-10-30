@@ -342,6 +342,7 @@ mod sample_sz_two_writers;
 mod search_by_controller;
 mod search_lists;
 mod search_pairs;
+mod soulbond;
 mod spell_copies;
 mod spell_keywords;
 mod spell_x_costs;
