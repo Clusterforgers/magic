@@ -520,3 +520,5 @@ mod zones_fuzz;
 
 // dk1c
 mod dk1c_triggers;
+// dk1b
+mod dk1b_attach;

@@ -65,18 +65,25 @@ pub fn c6_au_exile_it(r: &mut Reader<'_>) -> Option<Ref> {
     r.word("it").then(other_dead_card)
 }
 
-/// "return it to the battlefield under your control", also "return that card ...": the card of the creature that died
-/// enters under the control of the ability's controller.
+/// "return it to the battlefield [tapped] under your control", also "return that card ..." and "... under its owner's
+/// control": the card of the creature that died enters under the control of the ability's controller or of its owner.
 pub fn c6_au_return_under_you(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.others_died.then_some(())?;
     r.attempt(|r| {
         (r.word("it") || r.words("that card")).then_some(())?;
-        r.need("to the battlefield under your control")?;
+        r.need("to the battlefield")?;
+        let tapped = r.word("tapped");
+        let under = if r.words("under your control") {
+            Some(Ref::You)
+        } else {
+            r.need("under its owner's control")?;
+            None
+        };
         Some(vec![Effect::Move {
             what: other_dead_card(),
             to: Destination::Battlefield {
-                tapped: false,
-                under: Some(Ref::You),
+                tapped,
+                under,
                 transformed: false,
                 counters: Vec::new(),
             },

@@ -64,6 +64,9 @@ mod mill;
 mod modal;
 mod monstrosity;
 mod move_counters;
+// dk1b
+#[cfg(test)]
+mod move_attached;
 mod move_to;
 mod multiply_counters;
 mod myriad_copies;

@@ -257,6 +257,8 @@ mod w16a_defending;
 mod w16a_enchanted_control;
 mod w16a_entry_if;
 mod w16a_named_yours;
+// dk1b
+mod dk1b_attached;
 mod w16a_owner;
 mod w16a_return_cost;
 mod w16a_state_trigger;
@@ -409,6 +411,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     t15a_three_events::add(ability, texts);
     t15a_rewordings::add(texts);
     add_t17b(ability, texts);
+    // dk1b
+    dk1b_attached::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of

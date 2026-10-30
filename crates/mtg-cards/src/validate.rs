@@ -1637,11 +1637,14 @@ impl Walker<'_> {
     }
 
     fn destination(&mut self, to: &Destination) {
-        if let Destination::Battlefield {
-            under: Some(who), ..
-        } = to
-        {
-            self.at("under", |w| w.reference(who, Kind::Player));
+        match to {
+            Destination::Battlefield {
+                under: Some(who), ..
+            } => self.at("under", |w| w.reference(who, Kind::Player)),
+            Destination::BattlefieldAttached { to } => {
+                self.at("to", |w| w.reference(to, Kind::Object));
+            }
+            _ => {}
         }
     }
 
@@ -1969,6 +1972,13 @@ impl Walker<'_> {
                 to: Destination::Battlefield { .. },
                 ..
             } => self.uses("Effect", "Move.Battlefield"),
+            Effect::Move {
+                to: Destination::BattlefieldAttached { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.Attached");
+            }
             Effect::Move {
                 to:
                     Destination::Library {
@@ -3744,6 +3754,7 @@ mod tests {
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
+    #[case::a_move_to_the_battlefield_attached(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":"This","to":{"BattlefieldAttached":{"to":{"Target":0}}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Attached"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
     #[case::a_move_to_the_battlefield_transformed(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{"transformed":true}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.Transformed"])]
     #[case::a_move_to_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Top"])]

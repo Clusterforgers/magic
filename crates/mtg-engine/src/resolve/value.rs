@@ -560,6 +560,12 @@ impl<'a> Scope<'a> {
         Ok(true)
     }
 
+    /// The name under which the targets of the specification `index` of the running effect that were legal as the
+    /// resolution began are kept, which a step that puts them onto the battlefield binds again to the permanents.
+    pub(crate) fn legal_name(&self, index: usize) -> String {
+        format!("{W7D_LEGAL}{}", self.target_base + index)
+    }
+
     /// The targets chosen for the specification `index` of the running effect that still count: a legal one, or one an earlier step of this
     /// resolution moved away, whose last known information the later steps read (CR 608.2h). Any other illegal one is
     /// ignored (CR 608.2b).

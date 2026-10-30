@@ -83,3 +83,78 @@ fn without_a_creature_that_died_it_is_not_the_card_in_the_graveyard(#[case] text
         "{text}"
     );
 }
+
+// dk1b: the card returns to its owner, tapped or not.
+#[rstest]
+#[case::tapped(
+    "When enchanted creature dies, return it to the battlefield tapped under its owner's control.",
+    true,
+    None
+)]
+#[case::untapped(
+    "When enchanted creature dies, return it to the battlefield under its owner's control.",
+    false,
+    None
+)]
+#[case::another_creature(
+    "Whenever another creature you control dies, return it to the battlefield under its owner's control.",
+    false,
+    None
+)]
+#[case::tapped_under_you(
+    "When enchanted creature dies, return it to the battlefield tapped under your control.",
+    true,
+    Some(Ref::You)
+)]
+fn dk1b_the_card_that_died_returns_to_its_owner(
+    #[case] text: &str,
+    #[case] tapped: bool,
+    #[case] under: Option<Ref>,
+) {
+    let effects = effects_of(clause(text, ClauseKind::Triggered, false).expect(text));
+    assert_eq!(
+        effects,
+        vec![Effect::Move {
+            what: the_dead_card(),
+            to: Destination::Battlefield {
+                tapped,
+                under,
+                transformed: false,
+                counters: Vec::new(),
+            },
+        }],
+        "{text}"
+    );
+}
+
+#[rstest]
+#[case::tapped(
+    "When enchanted creature dies, return it to the battlefield tapped under its owner's control."
+)]
+#[case::untapped(
+    "When enchanted creature dies, return it to the battlefield under its owner's control."
+)]
+#[case::tapped_under_you(
+    "When enchanted creature dies, return it to the battlefield tapped under your control."
+)]
+fn dk1b_the_return_to_its_owner_is_written_back(#[case] text: &str) {
+    golden(text, ClauseKind::Triggered, false);
+}
+
+#[rstest]
+#[case::another_player(
+    "When enchanted creature dies, return it to the battlefield under an opponent's control."
+)]
+#[case::tapped_after(
+    "When enchanted creature dies, return it to the battlefield under its owner's control tapped."
+)]
+#[case::enters(
+    "Whenever another creature you control enters, return it to the battlefield tapped under its owner's control."
+)]
+fn dk1b_other_returns_are_left_to_the_table(#[case] text: &str) {
+    let read = clause(text, ClauseKind::Triggered, false);
+    assert!(
+        read.is_none_or(|ability| !format!("{ability:?}").contains("SameCard")),
+        "{text}"
+    );
+}

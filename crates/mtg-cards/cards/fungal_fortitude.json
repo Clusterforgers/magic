@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cf73d2e7-584f-41d0-8fc7-50d886dcf9fe",
+  "name": "Fungal Fortitude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fungal Fortitude",
+      "oracle_fingerprint": "dfd0559586975cc17a59a32cfd6c5121",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
