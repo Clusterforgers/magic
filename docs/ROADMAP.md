@@ -214,7 +214,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (dk1c3) "Put an Aura or Equipment card from your hand or graveyard onto the battlefield attached to ~": a `Move` destination that names the host (an Aura enters attached to it, an Equipment is attached after) and the `May` of a trigger written: Danitha, Benalia's Hope
 - [ ] (dk1c4) Soulbond: the pairing (made as either creature enters, ended when one leaves or changes controller), "as long as ~ is paired with another creature, each of those creatures has ..." and the keyword reader: Tandem Lookout
 - [ ] (dk1c5) Eerie with "whenever you fully unlock a Room" needs Rooms (c11): Entity Tracker
-- [~] (dk1d) (deck-spells) Spells and mana of the deck: `If` on a spell (Long River's Pull), `Destroy` and `Modal` writers (Winds of Rath, Orzhov Charm), an added phase (Fae Flight), a commander by a static ability (Duelist's Heritage), the energy symbol `{E}` (Suppression Ray), a cast from the graveyard paying life and a discard (Demonic Embrace), Disturb (Twinblade Geist), `Either` (Martial Impetus) and the Path of Ancestry mismatch
+- [ ] (dk1d2) Orzhov Charm: a selector for the Auras attached to a target ("all Auras you control attached to it") with its engine test, and a mode writer for "you lose life equal to its toughness"
+- [ ] (dk1d3) Suppression Ray // Orderly Plaza: pay any amount of `{E}` (`PayEnergy` with a chosen amount), then choose up to that many of the creatures tapped this way and put a stun counter on each
+- [ ] (dk1d4) Demonic Embrace: a cast permission from the graveyard that adds costs (3 life and a discarded card)
+- [ ] (dk1d5) Twinblade Geist // Twinblade Invocation: Disturb (cast the back face from the graveyard for its cost)
+- [ ] (dk1d6) Path of Ancestry: its card once the mana rider of t15e exists (the model's rules put the scry trigger outside the mana ability)
 - [ ] (dk1e) A testkit game with the deck plays under every invariant, the four-seat Playwright game can use it, and the builder shows no card of it as unsupported (after dk1a to dk1d)
 - [ ] (lb1a) The precon list item carries the commanders' cards (picture, colour identity), so a precon row in the lobby chooser shows its commanders and the chooser filters precons by colour identity
 - [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)

@@ -10,6 +10,9 @@ use super::{Effect, TargetSpec};
 /// effects of each target joined, and counters on targets that differ in one sentence; empty when an effect acts on
 /// more than one target or the targets are not used in order.
 pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
+    if let Some(sentences) = super::dk1d_gift_target::sentences(targets, effects) {
+        return vec![sentences];
+    }
     if let Some(sentence) = super::each_target::text(targets, effects)
         .or_else(|| super::target_counts::text(targets, effects))
         .or_else(|| super::shuffled_in::text(targets, effects))
