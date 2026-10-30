@@ -263,7 +263,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 |---|---|---|
 | You | Life; Poison; Other counters (energy, experience, a named kind) | `Life`, `PlayerCounters` |
 | Library | Draw; Look at the top (scry, surveil, reorder); Mill; Exile from the top; Put on the bottom; Shuffle; Reveal the top card | `Draw`, `MoveTop`; new: `LookTop`, `ArrangeTop`, `Shuffle`, `Reveal` |
-| Make | Tokens (the common list, a custom token); Mana | `CreateToken`, `AddMana` |
+| Make | Tokens (the common list, a custom token); Mana; Roll a die / Flip a coin | `CreateToken`, `AddMana`, new: `Roll` |
 | Card | the picked card's commands, as its card menu lists them: Move to, Counters, Tap, Attach, Deal damage, Pump, Reveal, Note | `Move`, `Counters`, `Tap`, `Untap`, `Attach`, `Unattach`, `Damage`, `Pump`; new: `Reveal`, `Note` |
 
 - A group is a heading and its rows; a row is a button with an icon, the command's name and one line of what it does ("Draw: put the top cards of your library into your hand"). A press opens the row in place (one open at a time): an amount with presets (life and counters −5 −1 +1 +5, cards 1 2 3 and a field), the preview line in the seat's words ("Ana: 40 → 35 life", "Draw 2: library 52 → 50, hand 4 → 6", "Mill 3: the top 3 cards go to your graveyard"), and one Apply button that names the change ("Lose 5 life"). Nothing is sent before Apply.
@@ -274,7 +274,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 - Manual actions are allowed at any time, whoever holds priority; the panel is inert with the reason once the seat has lost or the game is over. A spectator has no Commands tab.
 - Keyboard: the panel is a `region` named "Commands"; Tab walks the rows, Enter or Space opens one, the amount is a `spinbutton` (arrows ±1, Page Up and Page Down ±5), Enter applies, Escape closes the row and returns to it. The preview is `aria-live="polite"`. Targets are 44 px on a touch screen and 32 px with a mouse.
 - The card menu keeps the commands about its card (Move to, Counters, Tap, Attach, Deal damage, Pump, a token); life, draws, library cards and mana are the panel's, and the menu's last entry, "In the panel", opens the panel on that card. The menu stays up with "Sending…" until the server takes the action and shows a refusal as "Refused: …" in its header.
-- Dice and a coin are not in the panel: a roll needs the engine's random stream (an item of its own).
+- Roll a die / Flip a coin: a choice of Coin, d6, d20 and d N (a field of 2 to 100 faces), the preview "Rolls a d20; everyone sees the result" and Apply "Roll a d20" or "Flip a coin" sending one `Roll`; the engine draws the result from the game's random stream, and every seat reads "Ana rolls a d20: 14" or "Ana flips a coin: heads" in the log.
 
 ## Game browser and lobby
 

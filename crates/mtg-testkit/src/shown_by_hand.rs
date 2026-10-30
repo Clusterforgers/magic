@@ -133,16 +133,16 @@ impl ShownByHand {
         for (owner, held) in std::mem::take(&mut self.hidden) {
             let buried = here(&held).is_some_and(|o| o.zone() == Zone::Library(owner));
             let by_rule = state.revealed_top(owner).is_some();
-            if buried && !by_rule {
-                if let Some(seen) = seats
+            if buried
+                && !by_rule
+                && let Some(seen) = seats
                     .iter()
                     .find(|viewer| **viewer != owner && state.is_shown_to(**viewer, held.id))
-                {
-                    return Err(bad(format!(
-                        "{:?} was revealed, its library was shuffled and {seen:?} still identifies it",
-                        held.id
-                    )));
-                }
+            {
+                return Err(bad(format!(
+                    "{:?} was revealed, its library was shuffled and {seen:?} still identifies it",
+                    held.id
+                )));
             }
         }
         self.check_notes(state)

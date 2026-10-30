@@ -730,6 +730,7 @@ impl InvariantChecker {
     /// Consumes every event of `log` not yet seen, then (on schedule) runs the whole-state checks against `live`.
     pub fn observe(&mut self, live: &GameState, log: &[Event]) -> Result<(), Violation> {
         for event in log.get(self.events_seen..).unwrap_or_default() {
+            self.shown.before(&self.shadow, event);
             self.observe_event(event)?;
             self.events_seen += 1;
         }
@@ -840,7 +841,6 @@ impl InvariantChecker {
     }
 
     fn observe_event(&mut self, event: &Event) -> Result<(), Violation> {
-        self.shown.before(&self.shadow, event);
         // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
         let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }
             if self.shadow.object(*object).is_some_and(|o| o.kind() == ObjectKind::Ability));

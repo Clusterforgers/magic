@@ -221,10 +221,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [~] (ma7g) (panel-validate) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
 - [~] (ma7h) (panel-validate) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
-- [~] (ma7i) (panel-roll) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
 - [~] (ma7k) (panel-cleanup) The table shows what Reveal and Note put in the view: a seat's `revealed_hand` and `revealed_top` cards face up beside its hand and library, and `ObjectView.note` as a mark on the card's face and in its preview
 - [~] (ma7l) (panel-validate) The look-at-the-top list and the new rows at the six sizes in both themes: screenshots looked at, `e2e/layout.spec.ts` and `e2e/fit.spec.ts` with `/dev/table?panel=top`
-- [~] (ma7m) (panel-roll) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
+- [ ] (ma7q) `manual_anytime` at 200 games (`MTG_FUZZ_GAMES=200`) breaks an invariant at 2, 3 and 4 seats with the script as it was before dice (seeds 130, 73, 188): a creature of toughness 0 or less left on the battlefield after a Pump by hand, and an effect of an earlier turn still listed
 - [ ] (ma7j) `ManualScript` also takes `LookTop`, `ArrangeTop` and `Shuffle`; with them seed 6 of `manual_anytime` (two seats) shows a bot cast of a card that an out-of-band `Move` had put onto the battlefield being accepted (`event does not apply`)
 - [~] (ma7n) (panel-cleanup) The card menu's forms that nothing opens since the panel took the entries (`Ask` gain and lose life, your counters, draw, mill, move top, mana, their `buildAction` cases, `ManualForm` parts and tests) are removed
 - [~] (ma7o) (panel-cleanup) The panel's Tokens row also makes a custom token (name, power, toughness, as the card menu's form does) so that the menu's "Create a token…" can go
