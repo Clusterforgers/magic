@@ -3,7 +3,6 @@
 
 mod all_others;
 mod chosen_inline;
-mod every_basic;
 mod have_lose;
 mod investigate_times;
 mod no_control;
@@ -19,7 +18,6 @@ use crate::ability::Ability;
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     all_others::add(ability, texts);
     chosen_inline::add(ability, texts);
-    every_basic::add(ability, texts);
     have_lose::add(ability, texts);
     investigate_times::add(ability, texts);
     no_control::add(ability, texts);

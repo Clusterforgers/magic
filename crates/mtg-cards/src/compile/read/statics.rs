@@ -810,6 +810,9 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
     if r.words(&format!("{lose} all creature types")) {
         return Some(vec![Modification::SetCreatureTypes(Vec::new())]);
     }
+    if let Some(land_types) = r.attempt(|r| super::land_types::mods(r, plural)) {
+        return Some(land_types);
+    }
     let mut mods = Vec::new();
     if r.word(gets) {
         let stats = power_toughness(r)?;

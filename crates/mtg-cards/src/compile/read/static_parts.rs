@@ -16,6 +16,7 @@ pub(super) fn predicates(mods: &[Modification], plural: bool) -> Vec<String> {
     let mut rest = mods;
     while let Some((first, tail)) = rest.split_first() {
         let (taken, found) = match first {
+            _ if let Some(part) = super::land_types::part(rest, plural) => (part.0, vec![part.1]),
             Modification::AddKeyword(_) | Modification::AddProtectionFromChosenColor => {
                 let end = rest
                     .iter()

@@ -87,6 +87,7 @@ mod group_pump;
 mod instead_pairs;
 mod joined;
 mod kicked_copies;
+mod land_types;
 mod lands;
 mod leave_combat;
 mod levels;
