@@ -192,6 +192,10 @@ pub enum Pred {
     Monstrous,
     /// Is renowned (CR 702.112): a permanent on the battlefield that has become renowned since it entered.
     Renowned,
+    /// Is paired with another creature (CR 702.95): a creature on the battlefield that a soulbond pairing holds.
+    Paired,
+    /// Is the creature paired with one of the objects the reference names (the partner: "each of those creatures" is `AnyOf` of `This` and `PairedWith(This)`).
+    PairedWith(Ref),
     /// Is attacking.
     Attacking,
     /// Is attacking the player, not a planeswalker of theirs ("attacking that player").

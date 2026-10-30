@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1576f031-57ca-4894-b461-8ea57b6cefdc",
+  "name": "Tandem Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tandem Lookout",
+      "oracle_fingerprint": "71ab4c4a36b05a4d89b1b65a289ed8cb",
+      "abilities": [
+        { "Keyword": "Soulbond" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "AnyOf": ["This", { "PairedWith": "This" }] }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Paired"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

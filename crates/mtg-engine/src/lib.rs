@@ -47,6 +47,7 @@ mod price;
 mod replace_dry;
 mod saga;
 mod sba;
+mod soulbond;
 mod spell_keywords;
 #[cfg(test)]
 mod spend_tests;

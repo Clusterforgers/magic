@@ -121,6 +121,7 @@ mod scavenge;
 mod shadow;
 mod shroud;
 mod skulk;
+mod soulbond;
 mod spectacle;
 mod split_second;
 mod squad;
@@ -537,6 +538,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Replicate(_) => &replicate::Replicate,
         Keyword::Renown(_) => &c6_kw_renown::Renown,
         Keyword::Exploit => &c6_kw_exploit::Exploit,
+        Keyword::Soulbond => &soulbond::Soulbond,
         Keyword::Emerge(_) => &c9_emerge_emerge::Emerge,
         Keyword::Harmonize(_) => &c9_emerge_harmonize::Harmonize,
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
@@ -909,6 +911,7 @@ mod tests {
             Keyword::Replicate(cost()),
             Keyword::Renown(2),
             Keyword::Exploit,
+            Keyword::Soulbond,
             Keyword::Emerge(cost()),
             Keyword::Harmonize(cost()),
             Keyword::ReadAhead,
@@ -1056,6 +1059,7 @@ mod tests {
         "Keyword.Replicate",
         "Keyword.Renown",
         "Keyword.Exploit",
+        "Keyword.Soulbond",
         "Keyword.Emerge",
         "Keyword.Harmonize",
         "Keyword.ReadAhead",
@@ -1204,6 +1208,7 @@ mod tests {
     #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::renown(Keyword::Renown(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::exploit(Keyword::Exploit, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::soulbond(Keyword::Soulbond, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::emerge(Keyword::Emerge(Cost::mana("{5}{U}{U}".parse().unwrap())), Hooks::none())]
     #[case::harmonize(Keyword::Harmonize(Cost::mana("{4}{R}".parse().unwrap())), Hooks::none())]
     #[case::read_ahead(Keyword::ReadAhead, Hooks { abilities: 1, ..Hooks::none() })]

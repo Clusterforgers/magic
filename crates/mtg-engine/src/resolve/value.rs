@@ -22,6 +22,7 @@ use thiserror::Error;
 use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
+mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
 
@@ -1066,6 +1067,7 @@ impl<'a> Scope<'a> {
             | Pred::Goaded
             | Pred::HasAttached(_)
             | Pred::AttachedTo(_) => self.w6d_pred(pred, seen)?,
+            Pred::Paired | Pred::PairedWith(_) => self.soulbond_pred(pred, reference)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,

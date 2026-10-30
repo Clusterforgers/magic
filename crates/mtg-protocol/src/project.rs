@@ -385,6 +385,7 @@ impl ObjectView {
                 .collect(),
             attached_to: state.host_of(id),
             attached_player: state.player_host_of(id),
+            paired_with: state.partner_of(id),
             attachments: if object.permanent().is_some() {
                 attachments()
             } else {
@@ -433,6 +434,8 @@ impl ObjectView {
             loyalty_abilities: Vec::new(),
             attached_to: None,
             attached_player: None,
+            // Who is paired with whom is told by the public `Paired` event, so a face-down permanent shows it too.
+            paired_with: state.partner_of(id),
             attachments: Vec::new(),
             gives: None,
             face_down: true,

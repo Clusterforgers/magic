@@ -450,6 +450,7 @@ impl<'a> Walker<'a> {
             | Pred::Saddled(r)
             | Pred::DamagedBy(r)
             | Pred::AttachedTo(r)
+            | Pred::PairedWith(r)
             | Pred::SameCard(r) => {
                 self.reference(r, Kind::Object);
             }
@@ -493,6 +494,7 @@ impl<'a> Walker<'a> {
             | Pred::Untapped
             | Pred::Monstrous
             | Pred::Renowned
+            | Pred::Paired
             | Pred::EnteredThisTurn
             | Pred::MilledThisTurn
             | Pred::DamagedThisTurn
@@ -2259,6 +2261,10 @@ impl Walker<'_> {
             | Effect::Learn { who }
             | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+            }
+            Effect::Pair { what, with } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("with", |w| w.reference(with, Kind::Object));
             }
             Effect::ExtraTurn { who, count, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));

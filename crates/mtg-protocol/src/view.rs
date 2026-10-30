@@ -221,6 +221,10 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub attached_player: Option<PlayerId>,
+    /// The creature this one is paired with (soulbond), when both are on the battlefield; public, like an attachment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub paired_with: Option<ObjectId>,
     /// The permanents attached to this one, in id order; left out while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]

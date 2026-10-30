@@ -326,6 +326,8 @@ pub enum Keyword {
     Renown(u32),
     /// Exploit (CR 702.110): when the creature enters, its controller may sacrifice a creature; the creature exploits the one sacrificed.
     Exploit,
+    /// Soulbond (CR 702.95): the creature may be paired with another unpaired creature of its controller as either enters, and the pair lasts while both stay creatures under that controller on the battlefield.
+    Soulbond,
     /// Emerge with its cost (CR 702.119): an alternative cost to cast the card from a hand by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.
     Emerge(Cost),
     /// Harmonize with its cost (CR 702.180): an alternative cost to cast the card from its owner's graveyard, reduced by the power of a creature its caster may tap; the spell is exiled when it leaves the stack.
@@ -503,6 +505,7 @@ impl Keyword {
         "Replicate",
         "Renown",
         "Exploit",
+        "Soulbond",
         "Emerge",
         "Harmonize",
         "Read ahead",
@@ -663,6 +666,7 @@ impl Keyword {
             Keyword::Replicate(_) => "Replicate",
             Keyword::Renown(_) => "Renown",
             Keyword::Exploit => "Exploit",
+            Keyword::Soulbond => "Soulbond",
             Keyword::Emerge(_) => "Emerge",
             Keyword::Harmonize(_) => "Harmonize",
             Keyword::ReadAhead => "Read ahead",
@@ -864,6 +868,7 @@ mod tests {
             Keyword::Replicate(Cost::default()),
             Keyword::Renown(2),
             Keyword::Exploit,
+            Keyword::Soulbond,
             Keyword::Emerge(Cost::default()),
             Keyword::Harmonize(Cost::default()),
             Keyword::ReadAhead,

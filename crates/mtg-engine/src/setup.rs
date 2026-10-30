@@ -300,6 +300,7 @@ fn preset_state(
         merged: None,
         phased: crate::object::PhasedState::default(),
         exerted: crate::w11a_exert::W11aExerted::default(),
+        paired: crate::soulbond::Pairing::default(),
     }
 }
 
