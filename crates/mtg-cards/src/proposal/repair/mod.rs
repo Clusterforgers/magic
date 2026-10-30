@@ -9,6 +9,7 @@ mod controller;
 mod declare;
 mod effectless;
 mod faces;
+mod implied;
 mod manual;
 mod targets;
 #[cfg(test)]
@@ -49,6 +50,8 @@ pub enum RepairClass {
     ControllerOfPlayer,
     /// An `X` where the card prints none.
     InventedX,
+    /// A mana ability the basic land types of the face give.
+    ImpliedMana,
 }
 
 impl RepairClass {
@@ -66,6 +69,7 @@ impl RepairClass {
             RepairClass::TargetUnused => "target no effect uses",
             RepairClass::ControllerOfPlayer => "controller of a player",
             RepairClass::InventedX => "X the card does not have",
+            RepairClass::ImpliedMana => "mana the land types give",
         }
     }
 }
@@ -120,6 +124,9 @@ pub(super) fn repair(value: &mut Value, printed: &PrintedCard) -> Vec<Repair> {
         let text = shown.map_or("", |shown| shown.oracle_text.as_str());
         let at = format!("faces[{index}]");
         effectless::repair(abilities, &at, &mut repairs);
+        if let Some(face) = shown {
+            implied::repair(abilities, face, &at, &mut repairs);
+        }
         manual::repair(abilities, text, &at, &mut repairs);
         let kinds: Vec<String> = abilities
             .iter_mut()

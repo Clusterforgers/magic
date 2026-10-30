@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 use mtg_cards::builtin;
 use mtg_cards::load::{canonical, slug};
 use mtg_cards::proposal::{Report, Verdict, check};
+use mtg_cards::support::{Support, support};
 use mtg_cards::{Caps, PrintedCard};
 use mtg_db::Database;
 
@@ -23,6 +24,8 @@ pub struct Subject {
     pub oracle_id: String,
     /// The name of the card and of each of its faces.
     pub names: Vec<String>,
+    /// Whether the card is `Verified` with no rules at all (its text is only reminder text), so no proposal holds it back.
+    pub plain: bool,
 }
 
 /// The checked proposals of a run, in the order of the files.
@@ -154,6 +157,7 @@ pub async fn check_rules(db: &Database, args: &CheckRulesArgs) -> Result<Checked
             names: std::iter::once(printed.name.clone())
                 .chain(printed.faces.iter().map(|face| face.name.clone()))
                 .collect(),
+            plain: support(None, printed, &caps).support == Support::Verified,
         });
         checked.reports.push(report);
     }

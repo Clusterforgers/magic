@@ -243,10 +243,16 @@ pub fn blockers(report: &Report, names: &[String]) -> BTreeSet<Blocker> {
 }
 
 /// The cards the checked proposals leave out of the verified set. A card with several proposals counts once, by the one
-/// with the fewest blockers (the first of equals); a card with a proposal that nothing holds back is not held.
+/// with the fewest blockers (the first of equals); a card with a proposal that nothing holds back is not held, and neither
+/// is a card that is `Verified` with no rules (its text is only reminder text), whatever the proposal says.
 pub fn held_cards(checked: &Checked, popularity: &Popularity, marks: &Marks) -> Vec<Held> {
     let mut best: BTreeMap<&str, Held> = BTreeMap::new();
-    for (report, subject) in checked.reports.iter().zip(&checked.subjects) {
+    let unverified = checked
+        .reports
+        .iter()
+        .zip(&checked.subjects)
+        .filter(|(_, subject)| !subject.plain);
+    for (report, subject) in unverified {
         let held = Held {
             name: report.card.clone(),
             weight: popularity.rank(&subject.oracle_id).map_or(0.0, weight_of),

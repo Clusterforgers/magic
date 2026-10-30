@@ -17,7 +17,7 @@ enum Line {
 }
 
 /// The text without its reminders in parentheses.
-fn without_reminders(text: &str) -> String {
+pub(super) fn without_reminders(text: &str) -> String {
     let mut out = String::with_capacity(text.len());
     let mut depth = 0usize;
     for c in text.chars() {
