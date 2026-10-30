@@ -120,7 +120,11 @@ export function DevTableRoute() {
     [menu, view],
   )
   useOpenDevMenu(candidates)
-  useOpenDevPanel(panel)
+  const panelCards = useMemo(
+    () => (panel !== 'card' || view === null ? undefined : menuCandidates(view, view.viewer, 'permanent')),
+    [panel, view],
+  )
+  useOpenDevPanel(panel, panelCards)
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
     () => ({ mode, focus, effects: fx === undefined ? undefined : true, effectsSlow: slow }),
