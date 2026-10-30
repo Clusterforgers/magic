@@ -242,8 +242,16 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
             let state = assembled.support.support;
             if matches!(state, Support::Verified | Support::Partial) {
                 let rules = library.card(&printed.oracle_id).unwrap();
-                let lowered: Vec<Lowered> =
-                    rules.faces[0].abilities.iter().filter_map(lower).collect();
+                // A Room as a whole is both doors unlocked, so it holds the rules of every face.
+                let faces = if shown.is_room() {
+                    rules.faces.len()
+                } else {
+                    1
+                };
+                let lowered: Vec<Lowered> = rules.faces[..faces]
+                    .iter()
+                    .flat_map(|face| face.abilities.iter().filter_map(lower))
+                    .collect();
                 assert!(
                     carried
                         .iter()

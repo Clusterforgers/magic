@@ -25,7 +25,7 @@ pub(super) fn dk1c5_door_event(
         room(r)?;
         None
     } else {
-        // The face the ability is printed on is set as the card is assembled; the reader names the first.
+        // The face the ability is printed on is set as the card is compiled; the reader names the first.
         r.need("this door")?;
         Some(0)
     };

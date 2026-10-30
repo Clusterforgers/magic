@@ -36,7 +36,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "when": { "DoorUnlocked": { "who": "You", "door": 1 } },
             "targets": [
               { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
             ],

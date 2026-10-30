@@ -358,7 +358,7 @@ pub enum TriggerPattern {
         who: Ref,
     },
     /// A player unlocks a door of a Room (CR 709.5): "when you unlock this door" (`door`, the face of the source, set as the
-    /// card is assembled) or "whenever you fully unlock a Room" (`fully`, its last locked door); `Triggering` is that player.
+    /// card is compiled) or "whenever you fully unlock a Room" (`fully`, its last locked door); `Triggering` is that player.
     DoorUnlocked {
         /// Who unlocks it.
         #[serde(

@@ -84,7 +84,10 @@ pub fn compile_among(printed: &PrintedCard, known: Option<&BTreeSet<String>>) ->
         faces.push(Face {
             name: shown.name.clone(),
             oracle_fingerprint: oracle_fingerprint(&shown.oracle_text),
-            abilities: read_face(index, shown, known, &mut listed),
+            abilities: crate::dk1c5_rooms::dk1c5_this_door(
+                read_face(index, shown, known, &mut listed),
+                index,
+            ),
         });
     }
     let card = build(printed, faces, &mut listed);
