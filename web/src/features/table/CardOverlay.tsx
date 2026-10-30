@@ -35,6 +35,9 @@ const CORNER = {
 }
 // The share of a face's width that the foot stack may take (its `max-w-[62%]`).
 const FOOT_SHARE = 0.62
+// The head column takes 70 % of the face's width; the "By hand" mark with its word is 70 px wide, so a narrower head shows the icon.
+const HEAD_SHARE = 0.7
+const BY_HAND_WORD_PX = 70
 // A damage, counter or link mark is a line of the page's 24 px and the 2 px gap under it high.
 const OTHER_MARK_PX = 26
 // The power/toughness or loyalty box at the bottom right, which lies at the bottom left once turned.
@@ -160,7 +163,12 @@ export function Overlay({ object, role, size, turned, note, links, width }: Over
           data-slot="card-marks-head"
           className={cn('absolute flex max-h-[34%] gap-0.5 overflow-hidden', corner.head)}
         >
-          <ByHandMark object={object} spot="corner" compact={size === 'compact'} text={text} />
+          <ByHandMark
+            object={object}
+            spot="corner"
+            compact={size === 'compact' || width * HEAD_SHARE < BY_HAND_WORD_PX}
+            text={text}
+          />
           {sick ? (
             <span
               data-slot="card-sick"

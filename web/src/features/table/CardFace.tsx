@@ -47,7 +47,7 @@ interface CardFaceProps {
   imageSize?: ImageSize
 }
 
-/** The lines of name a face can spare: a face on its side is low, and a compact one has no cost or type line. */
+/** The lines of name a face can spare: a face on its side is low, and a compact one has no type line (nor a cost, unless asked). */
 function nameLinesOf(turned: boolean, full: boolean, size: CardSize): string {
   if (turned) return size === 'compact' ? 'line-clamp-1' : 'line-clamp-2'
   return full ? 'line-clamp-2' : 'line-clamp-3'
@@ -181,7 +181,8 @@ export function TextFace({
   const counters = counterLabels(object)
   const loyalty = loyaltyOf(object)
   const modified = statBadge(object, usePrinted(object), loyalty)?.modified ?? null
-  const nameLines = nameLinesOf(turned, full, size)
+  // A compact face that draws its cost keeps two lines of name, so the name and the cost fit the top a hand row shows.
+  const nameLines = nameLinesOf(turned, full || (cost && object.mana_cost !== null), size)
   // A token whose picture is missing still looks like a card: the card back's colours, its name, "Token" and its type.
   const token = object.kind === 'Token'
   // Only a token drawn as text is dark; one drawn as a card (its picture is missing) keeps its frame colour.

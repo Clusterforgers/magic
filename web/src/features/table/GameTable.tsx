@@ -14,7 +14,7 @@ import { FxTravel } from './fx/FxTravel'
 import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { HandDock } from './HandDock'
 import { ManualMenuProvider } from './manual/ManualMenu'
-import { planTable, POD_COLUMN_PX, ZONE_GAP_PX } from './layout'
+import { handGrowMost, planTable, POD_COLUMN_PX, ZONE_GAP_PX } from './layout'
 import type { TableMode } from './layout'
 import { createMarksStore, MarksContext } from './prompt/marks'
 import { createPreviewStore, PreviewContext } from './preview'
@@ -102,7 +102,7 @@ const Table = memo(function Table() {
                         />
                       }
                       own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
-                      hand={<HandDock seat={plan.viewer} />}
+                      hand={<HandDock seat={plan.viewer} growMost={handGrowMost(regions)} />}
                       controls={<ControlsDock stopsRow={table.stopsRow} />}
                       side={<SideTabs />}
                       // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.

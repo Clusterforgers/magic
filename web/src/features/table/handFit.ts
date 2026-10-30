@@ -26,6 +26,44 @@ export function handCardWidth(height: number): number {
   return Math.max(FIT_LIMITS.minWidth, Math.min(FIT_LIMITS.maxWidth, fits))
 }
 
+/** What the hand dock draws round its cards in px: its top edge, its padding and the line's padding. */
+export const HAND_DOCK_CHROME_PX = 17
+
+/** What `handDockNeed` needs. */
+export interface DockNeedInput {
+  /** The room for the line in px, less the padding kept round it. */
+  width: number
+  /** The cards of the hand. */
+  count: number
+  /** The commanders that stand at the head of the dock, one card wide each and a divider after them. */
+  commanders: number
+  /** The tallest the dock may grow, in px. */
+  most: number
+}
+
+/**
+ * How tall the hand dock must be (px, with its chrome) to hold the hand in two or three rows of `HAND_FLOOR_PX` cards
+ * without scrolling: 0 while one row of them fits the width, and 0 when the rows it needs would be taller than `most`
+ * (the hand then scrolls in one row). It reads the width only, so a dock that grows to it does not change it.
+ */
+export function handDockNeed({ width, count, commanders, most }: DockNeedInput): number {
+  const cardHeight = Math.round(HAND_FLOOR_PX * CARD_ASPECT)
+  const head = commanders > 0 ? commanders * (HAND_FLOOR_PX + HAND_GAP_PX) + COMMAND_GAP_PX : 0
+  const room = width - head
+  const cards = Math.max(1, count)
+  for (let rows = 1; rows <= HAND_MAX_ROWS && rows <= cards; rows += 1) {
+    const perRow = Math.ceil(cards / rows)
+    if (perRow * HAND_FLOOR_PX + (perRow - 1) * HAND_GAP_PX > room) continue
+    if (rows === 1) return 0
+    const need = cardHeight + (rows - 1) * HAND_HEAD_PX + HAND_DOCK_CHROME_PX
+    return need <= most ? need : 0
+  }
+  return 0
+}
+
+/** The room between the commanders and the hand in the dock: the gap and the divider line. */
+export const COMMAND_GAP_PX = 10
+
 /** What `handLayout` needs. */
 export interface HandInput {
   /** The room for the line in px, less the padding kept round it. */

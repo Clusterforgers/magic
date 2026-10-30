@@ -98,6 +98,7 @@ export function DeckChooser({
   const details = useDeckDetails(decks, precons, rested)
   const verdicts = useVerdicts(decks, game, rested === null || rested.kind === 'builtin' ? [] : [rested.id])
   const select = useCallback((entry: DeckEntry) => setSelected(entry), [])
+  const clear = useCallback(() => setSelected(null), [])
   const use = (entry: DeckEntry): void => {
     choice.choose({ id: entry.id, name: entry.name })
     setSheet(false)
@@ -134,6 +135,7 @@ export function DeckChooser({
     selectedId: selected?.id ?? null,
     pictures: (id: string) => details.known(id)?.commanders ?? [],
     onSelect: select,
+    onClear: clear,
     onActivate: () => setSheet(!wide),
     onChoose: use,
   }

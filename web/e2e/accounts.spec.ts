@@ -374,7 +374,8 @@ const ACCOUNT_STOPS: readonly AccountStop[] = [
     actions: { ...DECK_ACTIONS, 'Edit a deck': 'main ul[aria-label="Your decks"] a[aria-label^="Edit "]' },
     async open(page) {
       await page.goto('/decks')
-      await expect(page.getByRole('list', { name: 'Your decks' }).getByRole('listitem')).toHaveCount(8)
+      // The rows only: a Commander deck's row holds a list of its commanders.
+      await expect(page.getByRole('list', { name: 'Your decks' }).locator(':scope > li')).toHaveCount(8)
     },
   },
   {
@@ -450,9 +451,8 @@ const ACCOUNT_STOPS: readonly AccountStop[] = [
     async open(page) {
       await openBuilder(page)
       await showPane(page, 'Deck')
-      await expect(
-        page.getByRole('list', { name: 'Main deck cards' }).getByRole('listitem').first(),
-      ).toBeVisible()
+      // The deck pane opens on pictures, a list per type ("Main deck creatures"); the list look names one "Main deck cards".
+      await expect(page.locator('main [data-line^="main:"]').first()).toBeVisible()
     },
   },
 ]

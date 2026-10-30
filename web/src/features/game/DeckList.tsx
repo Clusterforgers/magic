@@ -47,6 +47,8 @@ interface DeckListProps {
   /** Commanders a view that was read knows for a deck whose row has no picture. */
   pictures(id: string): DeckEntry['commanders']
   onSelect(entry: DeckEntry): void
+  /** Drops the selection, which the search or the filters hid while no row is left to stand in for it. */
+  onClear?(): void
   /** A click on a row, after it selected it (a phone opens the preview). */
   onActivate?(entry: DeckEntry): void
   onChoose(entry: DeckEntry): void
@@ -84,6 +86,7 @@ export function DeckList({
   colours,
   pictures,
   onSelect,
+  onClear,
   onActivate,
   onChoose,
   onRetry,
@@ -95,11 +98,15 @@ export function DeckList({
   const entries = state.status === 'ready' ? state.entries : null
   const shown = useMemo(() => (entries === null ? [] : filterEntries(entries, filter)), [entries, filter])
 
+  // A selection the search or a filter hides moves to the first row shown, or goes, so the preview and "Use this deck"
+  // never stay on a deck the list no longer shows.
   useEffect(() => {
-    if (!autoSelect || selectedId !== null || shown.length === 0) return
+    if (!autoSelect || entries === null) return
+    if (selectedId !== null && shown.some((entry) => entry.id === selectedId)) return
     const first = shown.find((entry) => entry.id === chosenId) ?? shown[0]
     if (first !== undefined) onSelect(first)
-  }, [autoSelect, selectedId, shown, chosenId, onSelect])
+    else if (selectedId !== null) onClear?.()
+  }, [autoSelect, entries, selectedId, shown, chosenId, onSelect, onClear])
 
   if (state.status === 'loading') return <Rows />
   if (state.status === 'failed') {

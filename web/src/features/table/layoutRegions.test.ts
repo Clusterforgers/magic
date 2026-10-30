@@ -181,7 +181,7 @@ function readClamp(css: string): { min: number; vh: number; max: number } {
 describe('the CSS templates', () => {
   it('writes the rows the design names for a wide window', () => {
     expect(gridRows({ phone: false, landscape: false })).toBe(
-      '44px minmax(0, 1fr) clamp(56px, 7dvh, 72px) minmax(0, 1.15fr) clamp(96px, 13dvh, 168px)',
+      '44px minmax(0, 1fr) clamp(56px, 7dvh, 72px) minmax(0, 1.15fr) max(clamp(96px, 13dvh, 168px), var(--hand-grow, 0px))',
     )
   })
 

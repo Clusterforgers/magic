@@ -28,6 +28,8 @@ interface SourceProps {
   active: boolean
   pictures(id: string): DeckEntry['commanders']
   onSelect(entry: DeckEntry): void
+  /** Drops the selection, which a search or filter hid and no row stands in for. */
+  onClear(): void
   onActivate(entry: DeckEntry): void
   onChoose(entry: DeckEntry): void
 }
@@ -71,6 +73,7 @@ function List({
       colours={colours}
       pictures={source.pictures}
       onSelect={source.onSelect}
+      onClear={source.onClear}
       onActivate={source.onActivate}
       onChoose={source.onChoose}
       onRetry={retry}

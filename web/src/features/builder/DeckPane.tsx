@@ -327,7 +327,7 @@ export function DeckPane({
           </p>
         )}
       </header>
-      <div className="min-h-0 flex-1 p-3 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
+      <div className="relative min-h-0 flex-1 p-3 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
         {total === 0 && !slot ? (
           <EmptyState icon={LibraryIcon} as="h3" title="This deck has no cards">
             Search for a card and add it with the row or the Enter key. Each card appears here with its

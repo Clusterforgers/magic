@@ -246,7 +246,7 @@ export function SearchPane({
         {state.status === 'loading' ? 'Searching cards…' : null}
         {state.status === 'ready' ? `${state.page.total} cards found.` : null}
       </p>
-      <div ref={listRef} className="min-h-0 flex-1 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
+      <div ref={listRef} className="relative min-h-0 flex-1 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
         {body}
       </div>
       {shown === null || shown.cards.length === 0 ? null : <Pager page={shown} onGo={go} busy={busy} />}

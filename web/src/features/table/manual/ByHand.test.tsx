@@ -82,7 +82,7 @@ describe('which cards show the mark', () => {
     })
     expect(container.querySelectorAll('[data-slot="card-support"]')).toHaveLength(1)
     expect(mark()?.getAttribute('data-spot')).toBe('corner')
-    expect(mark()).toHaveTextContent('By hand')
+    // The word shows from a 100 px face (`byHandWord.test.tsx`); jsdom measures none.
     expect(container.querySelector('[data-slot="card-marks-head"]')).toContainElement(mark())
   })
 

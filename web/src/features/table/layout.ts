@@ -175,6 +175,13 @@ export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
 /** The hand dock; a phone held upright gets the lower one. */
 export const HAND_CLAMP: HeightClamp = { min: 96, vh: 13, max: 168 }
 export const HAND_PHONE_CLAMP: HeightClamp = { min: 96, vh: 14, max: 120 }
+/**
+ * A hand that one row does not hold grows the dock (not a phone's) to the height of its rows, up to this percent of the
+ * window height (`HAND_GROW_VAR`, `handDockNeed`); the boards give up that room.
+ */
+export const HAND_GROW_VH = 23
+/** The custom property of the table's main area that holds the height the hand dock needs for its rows, in px. */
+export const HAND_GROW_VAR = '--hand-grow'
 /** The own board is this many times as tall as the opponents' area (`minmax(0, 1.15fr)` against `minmax(0, 1fr)`). */
 export const OWN_SHARE = 1.15
 /** The tallest a long prompt grows, in percent of the window height. */
@@ -267,10 +274,17 @@ export function gridRows(
   regions: Pick<Regions, 'phone' | 'landscape'> & Partial<Pick<Regions, 'opponents' | 'own'>>,
 ): string {
   const bar = regions.landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
-  const hand = clampCss(regions.phone ? HAND_PHONE_CLAMP : HAND_CLAMP)
+  const hand = regions.phone
+    ? clampCss(HAND_PHONE_CLAMP)
+    : `max(${clampCss(HAND_CLAMP)}, var(${HAND_GROW_VAR}, 0px))`
   const weighted = (regions.opponents ?? 0) > 0 && (regions.own ?? 0) > 0
   const [theirs, own] = weighted ? [weight(regions.opponents), weight(regions.own)] : [1, OWN_SHARE]
   return `${bar}px minmax(0, ${theirs}fr) ${clampCss(SHARED_CLAMP)} minmax(0, ${own}fr) ${hand}`
+}
+
+/** The tallest the hand dock grows for its rows in a window of these regions, in px; 0 on a phone, whose dock keeps its size. */
+export function handGrowMost(regions: Pick<Regions, 'phone' | 'main'>): number {
+  return regions.phone ? 0 : (regions.main.height * HAND_GROW_VH) / 100
 }
 
 const weight = (px: number | undefined): number => Math.round((px ?? 0) * 100) / 100
