@@ -188,6 +188,16 @@ describe('the fixture game', () => {
     expect(fixtureSession(one.session.store).store).toBe(one.session.store)
   })
 
+  it('moves the life of the seat in the view when a manual Life action is sent, and leaves the others', () => {
+    const { session } = fixtureGame({ seats: 3 })
+    const lives = (): number[] => must(session.store.getState().view).players.map((player) => player.life)
+    const before = lives()
+    let answer: unknown
+    session.manual({ Life: { player: 0, delta: -5 } }, (result) => (answer = result))
+    expect(answer).toEqual({ ok: true })
+    expect(lives()).toEqual(before.map((life, seat) => (seat === 0 ? life - 5 : life)))
+  })
+
   it('carries a marker the production build is searched for', () => {
     expect(FIXTURE_MARKER).toMatch(/^dev-table-fixture-/)
   })

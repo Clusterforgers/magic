@@ -26,7 +26,7 @@ const COMMANDS: readonly CommandId[] = [
   'mana',
 ]
 
-/** The row `?panel=` opens: `1` the life row, a command by its id, `top` or `card`; `undefined` for anything else. */
+/** The row `?panel=` opens: `1` the "More life options" row, a command by its id, `top` or `card`; `undefined` for anything else. */
 export function panelOf(value: unknown): DevPanel | undefined {
   if (value === 'top') return 'top'
   if (value === 1 || value === true || value === '1') return 'life'
