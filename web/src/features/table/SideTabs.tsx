@@ -232,7 +232,7 @@ export function SidePanelMount({ rows }: { rows: string }) {
   if (side.kind === 'column') return null
   return (
     <div
-      ref={side.setMount}
+      ref={(element) => side.setMount(element)}
       data-slot="side-overlay"
       style={{ gridRow: rows, gridColumn: '1 / -1' } as CSSProperties}
       className="pointer-events-none relative z-40 min-h-0 min-w-0"

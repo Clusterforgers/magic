@@ -256,8 +256,8 @@ The seat does by hand what the engine does not run from one persistent panel at 
 | Size | Where | Why |
 |---|---|---|
 | L, XL | the first tab of the side column, "Commands", before Log, Chat and Stack, and the tab on show when the table opens | the column keeps its 280 to 320 px, so the card sizes the layout gate protects do not change; the log keeps its unread count and the panel's own feedback says what an action did |
-| M | the first icon of the rail, opening over the table | the same 44 px rail |
-| S, XS | the first tab of the side sheet; the top bar's sheet button reads "Commands, log, chat and stack" | the hand and the board keep the window |
+| M | the first icon of the rail, opening a 320 px panel over the boards, from under the top bar down to the hand and controls row | the same 44 px rail; the hand, the pass control and your life stay in reach, and the same icon closes the panel |
+| S, XS | the first tab of the side sheet, a non-modal sheet that hangs from the top bar over the opponents and the shared strip (and over your board where those are under 300 px high), full width at XS and 24 rem from S; the top bar's sheet button reads "Commands, log, chat and stack" and toggles it | your board with your life, the hand and the pass control stay in reach; a press on the tab on show keeps the sheet open, Close shuts it |
 
 | Group | Commands, in order | Action |
 |---|---|---|

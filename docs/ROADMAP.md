@@ -220,9 +220,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ui3a) Each panel row shows its icon and an open or closed chevron, so a first-time player sees the row is a button (`panel/CommandsPanel.tsx`, `panel/CardGroup.tsx`)
-- [~] (ui3b) (panel-reach) At M and on a phone the open rail panel or sheet leaves the pass button, hand and life in reach, and `/dev/table?panel=card` joins `e2e/layout.spec.ts` and `e2e/fit.spec.ts` (`SideTabs.tsx` `rail-panel`, `SideSheet`)
 - [ ] (ui3c) Life sits open at the top of You beside the large total, as a life counter does, instead of a closed row (`panel/CommandsPanel.tsx`)
-- [~] (ui3d) (panel-reach) On a phone the side sheet opened during the first turn shuts or redraws under the first press of a panel row; the phone case of `e2e/manual-panel.spec.ts` (`test.fixme`) passes (`SideTabs.tsx` `SideSheet`, `components/ui/sheet.tsx`)
 - [~] (ma7i) (panel-roll) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
 - [~] (ma7m) (panel-roll) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries

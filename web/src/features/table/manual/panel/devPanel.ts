@@ -38,7 +38,9 @@ export function panelOf(value: unknown): DevPanel | undefined {
 export function showPanel(root: ParentNode = document): boolean {
   if (root.querySelector('[data-slot="commands-panel"]') !== null) return true
   root
-    .querySelector<HTMLElement>('aside[data-side="rail"] [role="tab"], button[aria-label^="Commands, log, chat"]')
+    .querySelector<HTMLElement>(
+      'aside[data-side="rail"] [role="tab"], button[aria-label^="Commands, log, chat"]',
+    )
     ?.click()
   return false
 }
