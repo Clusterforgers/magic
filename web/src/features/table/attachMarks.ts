@@ -282,15 +282,16 @@ const linesOf = (marks: readonly Mark[]): number => marks.reduce((sum, mark) => 
 
 /**
  * The marks that fit `room` lines. All of them while they fit, each in up to two lines; else each in one line while
- * those fit; else the first ones in one line each and the rest as one mark that sums what the other attachments give
- * ("+5/+3 Haste Shroud"), in as many lines as are left (two at most).
+ * those fit; else the first `room - 2` in one line each and the rest as one mark that sums what the other attachments
+ * give ("+5/+3 Haste Shroud"), in the two lines that are left. With a room of two or less that is every attachment in
+ * one sum, which tells their total.
  */
 export function foldMarks(attaches: readonly Attach[], room: number, options: MarkOptions = {}): FoldedMarks {
   const whole = marksFrom(attaches, options)
   if (linesOf(whole) <= room) return { shown: whole, rest: null }
   const lone = marksFrom(attaches, { ...options, maxLines: 1 })
   if (lone.length <= room) return { shown: lone, rest: null }
-  const keep = Math.max(0, room <= 2 ? room - 1 : room - 2)
+  const keep = Math.max(0, room - 2)
   const shown = lone.slice(0, keep)
   const left = new Set(lone.slice(keep).flatMap((mark) => mark.ids))
   const rest = restMark(

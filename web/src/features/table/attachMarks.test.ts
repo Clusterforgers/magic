@@ -269,7 +269,7 @@ describe('foldMarks', () => {
     [5, 5, 0, null],
     [4, 2, 3, '+12/+0'],
     [3, 1, 4, '+14/+0'],
-    [2, 1, 4, '+14/+0'],
+    [2, 0, 5, '+15/+0'],
     [1, 0, 5, '+15/+0'],
   ])(
     'fits five attachments in %i lines as %i marks and the sum of %i others "%s"',
@@ -302,7 +302,7 @@ describe('foldMarks', () => {
       HOST,
       [2, 3, 4, 5].map((id) => piece(id, `Sword ${id}`, 'Equipment')),
     )
-    expect(foldMarks(attaches, 2).rest).toMatchObject({ text: '+3', count: 3, tone: 'plain' })
+    expect(foldMarks(attaches, 2).rest).toMatchObject({ text: '+4', count: 4, tone: 'plain' })
   })
 
   it('counts the attachments left out, not the marks', () => {
@@ -315,10 +315,11 @@ describe('foldMarks', () => {
     ])
     expect(marksFrom(attaches)).toHaveLength(3)
     expect(foldMarks(attaches, 3).rest).toBeNull()
-    // The mark of the first three stands for three attachments; the other two are summed.
+    // The mark of the first three stands for three attachments; with four lines, the other two are summed beside it.
     const folded = foldMarks(attaches, 2)
-    expect(folded.shown.map((mark) => mark.ids.length)).toEqual([3])
-    expect(folded.rest).toMatchObject({ count: 2, text: '+13/+0' })
+    expect(folded.shown).toHaveLength(0)
+    expect(folded.rest).toMatchObject({ count: 5, text: '+16/+0' })
+    expect(foldMarks(attaches, 3).rest).toBeNull()
   })
 
   it('gives a mark a second line only while they all fit, else one line each', () => {
