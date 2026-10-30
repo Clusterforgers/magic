@@ -17,6 +17,7 @@ import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
 import { STATES_BASE_PERMANENTS, withStates } from './states'
 import { withEquip } from './equip'
+import { withRevealed } from './revealScene'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -163,6 +164,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   states?: true
   /** The attachments scene joins the table (`dev/equip.ts`). */
   equip?: true
+  /** The first opponent's revealed hand cards and top card, a revealed card of the viewer's and two notes join the table (`dev/revealScene.ts`). */
+  reveal?: true
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
   /** Gives the viewer a plain priority decision (nothing to play) when no prompt is named, so manual actions can be taken. */
@@ -186,7 +189,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const sized = options.states === true ? { ...options, permanents: STATES_BASE_PERMANENTS } : options
   const laid = buildFixture(sized.turn === 'you' ? { ...sized, active: sized.viewer ?? 0 } : sized)
   const stated = options.states === true ? withStates(laid) : laid
-  const plain = options.equip === true ? withEquip(stated) : stated
+  const equipped = options.equip === true ? withEquip(stated) : stated
+  const plain = options.reveal === true ? withRevealed(equipped) : equipped
   const built = options.real === undefined ? plain : withRealCards(plain, options.real, options.viewer ?? 0)
   const store = createPlayStore()
   const name = options.prompt ?? ''

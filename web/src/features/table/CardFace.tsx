@@ -21,6 +21,7 @@ import type { CardSize } from './cardSize'
 import { isUnattached } from '@/play/hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
 import { GrantMarks } from './GrantMarks'
+import { NoteMark, RevealedMark } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
 import { statBadge } from './overlay'
@@ -43,6 +44,10 @@ interface CardFaceProps {
   stacked?: boolean
   /** What it is attached to and what is attached to it, by name: a cue beside the counters. */
   links?: Links | undefined
+  /** The card is face up to every seat (`revealedPlace`): the "Revealed" mark. */
+  revealed?: boolean
+  /** The note a seat put on the card (`ObjectView.note`): the mark with its first words. */
+  handNote?: string | undefined
   /** The picture size to ask for; the one the drawn width needs when left out. */
   imageSize?: ImageSize
 }
@@ -102,6 +107,8 @@ export function CardFace(props: CardFaceProps) {
         size={size}
         note={props.note}
         links={props.links}
+        revealed={props.revealed}
+        handNote={props.handNote}
       />
     )
   const source = imageSourceOf(object)
@@ -118,6 +125,8 @@ export function CardFace(props: CardFaceProps) {
       size={size}
       note={props.note}
       links={props.links}
+      revealed={props.revealed}
+      handNote={props.handNote}
     >
       {(status) => (
         <TextFace {...props} stacked={false} card={status === 'failed' && source.kind === 'token'} />
@@ -167,6 +176,8 @@ export function TextFace({
   note,
   stacked = false,
   links,
+  revealed = false,
+  handNote,
   card = false,
 }: TextFaceProps) {
   const classes = SIZE[size]
@@ -278,6 +289,10 @@ export function TextFace({
             <span className={cn(size === 'compact' && 'sr-only')}>Unattached</span>
           </span>
         ) : null}
+        {revealed ? <RevealedMark compact={size === 'compact'} text={classes.text} /> : null}
+        {handNote === undefined ? null : (
+          <NoteMark note={handNote} compact={size === 'compact'} text={classes.text} />
+        )}
         {note?.label === undefined ? null : (
           <span
             data-slot="card-note"
