@@ -724,6 +724,39 @@ mod tests {
         redact(state, event, viewer).map_or(Ok(()), Err)
     }
 
+    /// A search tells the viewer which cards it found in a zone the viewer sees into and only how many in any other.
+    #[test]
+    fn a_search_tells_the_cards_found_in_the_zones_a_viewer_sees_into() {
+        let t = table();
+        let hidden = Err(HiddenEvent::CardsFound {
+            player: OWNER,
+            count: 1,
+        });
+        let cases = [
+            (Zone::Library(OWNER), hidden.clone()),
+            (Zone::Hand(OWNER), hidden),
+            (Zone::Graveyard(OWNER), Ok(())),
+            (Zone::Exile, Ok(())),
+        ];
+        for (zone, other) in cases {
+            let found = Event::CardsFound(CardsFound {
+                player: OWNER,
+                zone,
+                cards: vec![t.creature],
+            });
+            assert_eq!(
+                told(&t.state, &found, OWNER),
+                Ok(()),
+                "{zone:?} to the searcher"
+            );
+            assert_eq!(
+                told(&t.state, &found, OTHER),
+                other,
+                "{zone:?} to another seat"
+            );
+        }
+    }
+
     #[test]
     fn what_a_player_learned_by_looking_is_theirs_and_the_others_get_counts() {
         let t = table();

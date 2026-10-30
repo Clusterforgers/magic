@@ -185,3 +185,46 @@ fn zones_searched(
         .nth(at)
         .ok_or_else(|| Stop::Fail(ResolveError::Invalid("no zones were chosen".into())))
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the choice of zones to search lists every non-empty set of the zones a card names, the whole set first and the single zones last, in the order the card names them, with a label that reads as the words of the choice.
+    use ZoneKind::{Graveyard, Hand, Library};
+    use rstest::rstest;
+
+    use super::*;
+
+    #[rstest]
+    #[case::one(vec![Library], vec![vec![Library]])]
+    #[case::two(vec![Library, Hand], vec![vec![Library, Hand], vec![Library], vec![Hand]])]
+    #[case::three(
+        vec![Library, Hand, Graveyard],
+        vec![
+            vec![Library, Hand, Graveyard],
+            vec![Library, Hand],
+            vec![Library, Graveyard],
+            vec![Hand, Graveyard],
+            vec![Library],
+            vec![Hand],
+            vec![Graveyard],
+        ]
+    )]
+    #[case::another_order(
+        vec![Graveyard, Library],
+        vec![vec![Graveyard, Library], vec![Graveyard], vec![Library]]
+    )]
+    fn every_set_of_the_zones_is_a_choice(
+        #[case] zones: Vec<ZoneKind>,
+        #[case] expected: Vec<Vec<ZoneKind>>,
+    ) {
+        assert_eq!(choices(&zones), expected);
+    }
+
+    #[rstest]
+    #[case::one(vec![Hand], "Hand")]
+    #[case::two(vec![Library, Graveyard], "Library and graveyard")]
+    #[case::three(vec![Library, Hand, Graveyard], "Library, hand and graveyard")]
+    fn a_choice_reads_as_words(#[case] zones: Vec<ZoneKind>, #[case] expected: &str) {
+        assert_eq!(labelled(&zones), expected);
+    }
+}

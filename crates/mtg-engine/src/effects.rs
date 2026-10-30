@@ -697,6 +697,77 @@ mod tests {
         }
     }
 
+    fn counters(game: &mut GameState, on: &str, counter: &str, delta: i32) {
+        let on = crate::choose::Target::Object(named(game, on));
+        let counter = match counter {
+            "charge" => CounterKind::Charge,
+            other => CounterKind::Other(other.into()),
+        };
+        let event = Event::CountersChanged(crate::counters::CountersChanged { on, counter, delta });
+        apply_event(game, &event).unwrap();
+    }
+
+    #[rstest]
+    #[case::no_counter_yet(&[], false)]
+    #[case::the_counter_is_there(&[("Wolf", "vow", 1)], true)]
+    #[case::a_second_counter_changes_nothing(&[("Wolf", "vow", 2)], true)]
+    #[case::the_counter_is_off(&[("Wolf", "vow", 1), ("Wolf", "vow", -1)], false)]
+    #[case::one_of_two_counters_off(&[("Wolf", "vow", 2), ("Wolf", "vow", -1)], true)]
+    #[case::the_counter_is_on_another_creature(&[("Bear", "vow", 1)], false)]
+    #[case::a_counter_of_another_kind(&[("Wolf", "charge", 1)], false)]
+    fn an_effect_that_follows_a_counter_lasts_while_every_object_it_names_holds_one(
+        #[case] changes: &[(&str, &str, i32)],
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        let effect = effect(
+            &game,
+            Duration::WhileHasCounter(CounterKind::Other("vow".into())),
+            ME,
+        );
+        for (on, counter, delta) in changes {
+            counters(&mut game, on, counter, *delta);
+        }
+        assert_eq!(effect.is_active(&game), active);
+        assert_eq!(effect.is_active_before_control(&game), active);
+    }
+
+    #[test]
+    fn an_effect_that_follows_a_counter_ends_with_the_object_and_for_good() {
+        let vow = CounterKind::Other("vow".into());
+        let mut game = game();
+        let effect = effect(&game, Duration::WhileHasCounter(vow.clone()), ME);
+        counters(&mut game, "Wolf", "vow", 1);
+        assert!(effect.is_active(&game));
+        let wolf = named(&game, "Wolf");
+        leaves(&mut game, wolf);
+        assert!(!effect.is_active(&game), "it left the battlefield");
+        let back = Event::ZoneChanged {
+            object: wolf.id,
+            from: Zone::Graveyard(ME),
+            to: Zone::Battlefield,
+            cause: ZoneCause::Moved,
+        };
+        apply_event(&mut game, &back).unwrap();
+        counters(&mut game, "Wolf", "vow", 1);
+        assert!(
+            !effect.is_active(&game),
+            "the permanent that came back with a counter is a new object (CR 400.7)"
+        );
+    }
+
+    #[rstest]
+    #[case::all_creatures(Selector::AllCreatures)]
+    #[case::the_creatures_of_a_player(Selector::CreaturesControlledBy(ME))]
+    fn a_group_effect_never_follows_a_counter(#[case] selector: Selector) {
+        let vow = CounterKind::Other("vow".into());
+        let mut game = game();
+        counters(&mut game, "Wolf", "vow", 1);
+        let mut effect = effect(&game, Duration::WhileHasCounter(vow), ME);
+        effect.selector = selector;
+        assert!(!effect.is_active(&game));
+    }
+
     #[test]
     fn an_effect_without_a_source_does_not_follow_one() {
         let game = game();

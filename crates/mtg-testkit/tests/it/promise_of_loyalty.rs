@@ -200,7 +200,10 @@ fn each_player_keeps_the_creature_they_choose_with_a_vow_counter_and_sacrifices_
         let chandra = driver.id_of("Chandra")?;
         let free = defenders(&driver, &format!("Raider{seat}")).unwrap_or_default();
         assert!(free.contains(&AttackTarget::Player(pid(0))), "seat {seat}");
-        assert!(free.contains(&AttackTarget::Planeswalker(chandra)), "seat {seat}");
+        assert!(
+            free.contains(&AttackTarget::Planeswalker(chandra)),
+            "seat {seat}"
+        );
     }
     replays(&driver, &setup);
     Ok(())

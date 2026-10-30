@@ -1226,6 +1226,28 @@ mod tests {
     }
 
     #[rstest]
+    #[case::one(&["Library"], "your library")]
+    #[case::two(&["Library", "Hand"], "your library and/or hand")]
+    #[case::three(&["Library", "Hand", "Graveyard"], "your library, hand, and/or graveyard")]
+    #[case::another_order(&["Graveyard", "Hand", "Library"], "your graveyard, hand, and/or library")]
+    #[case::exile_among_them(&["Library", "Exile"], "your library and/or exile")]
+    fn the_zones_of_a_search_are_listed_as_a_card_lists_them(
+        #[case] zones: &[&str],
+        #[case] expected: &str,
+    ) {
+        let zones: Vec<ZoneKind> = zones
+            .iter()
+            .map(|zone| serde_json::from_str(&format!("\"{zone}\"")).unwrap())
+            .collect();
+        assert_eq!(search_places(&zones), expected);
+        let filter = serde_json::from_str(r#"[{"Subtype":"Rune"}]"#).unwrap();
+        assert_eq!(
+            search_zones(&zones, &filter, 1, 1),
+            format!("Search {expected} for a Rune card.")
+        );
+    }
+
+    #[rstest]
     #[case::two_kinds(
         r#"[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]"#,
         1,

@@ -1383,6 +1383,10 @@ mod tests {
         Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
         r#"{"Search":{"filter":[{"Supertype":"Basic"}],"as":"land"}}"#
     )]
+    #[case::search_of_several_zones(
+        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
+        r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
+    )]
     #[case::pay(
         Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },
         r#"{"Pay":{"who":"Triggering","cost":"{1}","unpaid":[{"Draw":{}}]}}"#

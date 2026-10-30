@@ -554,6 +554,25 @@ mod tests {
         assert_eq!(serde_json::from_str::<GameRule>(json).unwrap(), rule);
     }
 
+    #[rstest]
+    #[case(Duration::UntilEndOfTurn, r#""UntilEndOfTurn""#)]
+    #[case(Duration::WhileYouControlSource, r#""WhileYouControlSource""#)]
+    #[case(
+        Duration::WhileHasCounter(CounterKind::Other("vow".into())),
+        r#"{"WhileHasCounter":{"Other":"vow"}}"#
+    )]
+    #[case(
+        Duration::WhileHasCounter(CounterKind::PlusOnePlusOne),
+        r#"{"WhileHasCounter":"+1/+1"}"#
+    )]
+    fn a_duration_is_a_word_or_follows_a_counter_kind(
+        #[case] duration: Duration,
+        #[case] json: &str,
+    ) {
+        assert_eq!(serde_json::to_string(&duration).unwrap(), json);
+        assert_eq!(serde_json::from_str::<Duration>(json).unwrap(), duration);
+    }
+
     #[test]
     fn a_pump_is_written_with_bare_numbers() {
         let pump = Modification::ModifyPT {

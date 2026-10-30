@@ -427,6 +427,7 @@ fn condition() -> impl Strategy<Value = Condition> {
             op: Cmp::Ge,
             level
         }),
+        (leaf_ref(), zone()).prop_map(|(who, zone)| Condition::Searched { who, zone }),
     ]
     .prop_recursive(2, 8, 2, |inner| {
         prop_oneof![
@@ -501,15 +502,23 @@ fn granted() -> impl Strategy<Value = Ability> {
 }
 
 fn duration() -> impl Strategy<Value = Duration> {
-    select(vec![
-        Duration::UntilEndOfTurn,
-        Duration::UntilEndOfCombat,
-        Duration::UntilYourNextTurn,
-        Duration::UntilEndOfYourNextTurn,
-        Duration::WhileSourceOnBattlefield,
-        Duration::UntilOpponentBecomesMonarch,
-        Duration::Forever,
-    ])
+    let counted = prop_oneof![
+        Just(CounterKind::PlusOnePlusOne),
+        Just(CounterKind::Other("vow".to_owned())),
+    ]
+    .prop_map(Duration::WhileHasCounter);
+    prop_oneof![
+        select(vec![
+            Duration::UntilEndOfTurn,
+            Duration::UntilEndOfCombat,
+            Duration::UntilYourNextTurn,
+            Duration::UntilEndOfYourNextTurn,
+            Duration::WhileSourceOnBattlefield,
+            Duration::UntilOpponentBecomesMonarch,
+            Duration::Forever,
+        ]),
+        counted,
+    ]
 }
 
 fn game_rule() -> impl Strategy<Value = GameRule> {

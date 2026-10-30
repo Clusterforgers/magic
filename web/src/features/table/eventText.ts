@@ -21,7 +21,7 @@ import type {
   Zone,
   ZoneCause,
 } from '@/protocol/generated'
-import { colorsInSet, manaLetter } from './cardModel'
+import { colorsInSet, counterName, manaLetter } from './cardModel'
 import type { EventContext } from './eventContext'
 import { distinctTargets } from './prompt/targetText'
 import { sameHost } from '@/play/hosts'
@@ -156,7 +156,7 @@ function describeEffect(effect: ContinuousEffect, n: EventNames): string {
   const group =
     typeof selector === 'string' || 'CreaturesControlledBy' in selector || selector.Objects.length !== 1
   const what = modificationWords(modification, group, n)
-  return `${who} ${what}${durationWords(duration, source, n)}`
+  return `${who} ${what}${durationWords(duration, source, n, group)}`
 }
 
 /** How long a change lasts, as the end of a sentence (nothing for a change that never ends). */
@@ -164,8 +164,13 @@ function durationWords(
   duration: ContinuousEffect['duration'],
   source: ObjectRef | null,
   n: EventNames,
+  several = false,
 ): string {
-  const UNTIL: Record<ContinuousEffect['duration'], string> = {
+  if (typeof duration === 'object') {
+    const counter = `${counterName(duration.WhileHasCounter)} counter`
+    return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
+  }
+  const UNTIL: Record<Exclude<ContinuousEffect['duration'], object>, string> = {
     UntilEndOfTurn: ' until end of turn',
     UntilEndOfCombat: ' until end of combat',
     UntilYourNextTurn: " until their controller's next turn",
@@ -176,6 +181,7 @@ function durationWords(
       source === null
         ? ' while its controller controls its source'
         : ` while its controller controls ${n.card(source.id)}`,
+    UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     Forever: '',
   }

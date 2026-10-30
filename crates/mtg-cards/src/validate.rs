@@ -3776,6 +3776,37 @@ mod tests {
             .collect()
     }
 
+    const FOLLOWS_A_COUNTER: &str = r#"{"WhileHasCounter":{"Other":"vow"}}"#;
+
+    /// Only a continuous effect follows a counter, and a search of several zones names each searchable zone once.
+    #[rstest]
+    #[case::a_rule_with_a_counter_duration(
+        format!(r#"{{"Spell":{{"effects":[{{"Rule":{{"rule":{{"CantDraw":"You"}},"duration":{FOLLOWS_A_COUNTER}}}}}]}}}}"#),
+        &["faces[0].abilities[0].Spell.effects[0].Rule.rule: only a continuous effect lasts for as long as the permanents it names have a counter"]
+    )]
+    #[case::a_shield_with_a_counter_duration(
+        format!(r#"{{"Spell":{{"effects":[{{"Shield":{{"when":{{"Damage":{{"to":"You"}}}},"by":"Prevent","duration":{FOLLOWS_A_COUNTER}}}}}]}}}}"#),
+        &["faces[0].abilities[0].Spell.effects[0].Shield: only a continuous effect lasts for as long as the permanents it names have a counter"]
+    )]
+    #[case::the_same_zone_twice(
+        r#"{"Spell":{"effects":[{"Search":{"also":["Hand","Hand"],"filter":[],"as":"card"}}]}}"#.to_owned(),
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+    )]
+    #[case::the_zone_of_the_search_again(
+        r#"{"Spell":{"effects":[{"Search":{"also":["Library"],"filter":[],"as":"card"}}]}}"#.to_owned(),
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+    )]
+    #[case::a_zone_nobody_searches(
+        r#"{"Spell":{"effects":[{"Search":{"also":["Battlefield"],"filter":[],"as":"card"}}]}}"#.to_owned(),
+        &["faces[0].abilities[0].Spell.effects[0].Search: a search of several zones names a library, hand, graveyard or exile, each once"]
+    )]
+    fn a_counter_duration_and_a_search_of_several_zones_are_checked(
+        #[case] ability: String,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(problems(&ability), expected);
+    }
+
     #[rstest]
     #[case::a_choice_of_two(r#""dice":2,"choose":true,"results":[]"#, 0)]
     #[case::one_die_with_no_table(r#""results":[]"#, 0)]
@@ -3875,6 +3906,9 @@ mod tests {
     #[case::an_exile_until_the_source_leaves(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"WhileSourceOnBattlefield"}}]}}"#, &["Ability.Spell", "Effect.Exile"])]
     #[case::a_control_for_as_long_as_you_control_the_source(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetController":"You"}],"duration":"WhileYouControlSource"}}]}}"#, &["Ability.Triggered", "Duration.WhileYouControlSource", "Effect.Continuous", "Mod.SetController", "Trigger.ZoneChange"])]
     #[case::a_rule_for_as_long_as_you_control_the_source(r#"{"Spell":{"effects":[{"Rule":{"rule":{"CantDraw":"You"},"duration":"WhileYouControlSource"}}]}}"#, &["Ability.Spell", "Effect.Rule", "Rule.CantDraw", "Rule.Duration.WhileYouControlSource"])]
+    #[case::a_continuous_effect_for_as_long_as_it_has_a_counter(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":["CantAttack"],"duration":{"WhileHasCounter":{"Other":"vow"}}}}]}}"#, &["Ability.Spell", "Duration.WhileHasCounter", "Effect.Continuous", "Mod.CantAttack"])]
+    #[case::a_search_of_several_zones(r#"{"Spell":{"effects":[{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}]}}"#, &["Ability.Spell", "Effect.Search", "Search.Zones"])]
+    #[case::a_condition_on_a_search_of_the_library(r#"{"Spell":{"effects":[{"Search":{"filter":[],"as":"card"}},{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}]}}"#, &["Ability.Spell", "Condition.Searched", "Effect.If", "Effect.Search", "Effect.Shuffle"])]
     #[case::an_exile_with_another_duration(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Effect.Exile", "Exile.Duration.UntilYourNextTurn"])]
     #[case::mana_spent_to_cast(r#"{"Spell":{"effects":[{"If":{"condition":{"ManaSpent":"Red"},"then":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Condition.ManaSpent", "Effect.Draw", "Effect.If"])]
     #[case::an_x_that_the_ability_never_announced(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Amount.X.Elsewhere", "Cost.Tap", "Effect.Draw"])]

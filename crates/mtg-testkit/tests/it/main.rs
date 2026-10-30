@@ -392,6 +392,7 @@ mod reveal_until_fuzz;
 mod riot;
 mod rules_fuzz;
 mod rules_games;
+mod runed_crown;
 mod saga;
 mod saga_phasing;
 mod saga_transform;
