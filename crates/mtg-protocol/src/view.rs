@@ -17,6 +17,7 @@ use mtg_engine::combat::AttackTarget;
 use mtg_engine::companions::CompanionStage;
 use mtg_engine::day_night::DayNight;
 use mtg_engine::forecast::CombatForecast;
+use mtg_engine::gives::GivenRule;
 use mtg_engine::mana::ManaPool;
 use mtg_engine::object::ObjectKind;
 use mtg_engine::player::{LossReason, MulliganStatus};
@@ -81,6 +82,37 @@ pub struct LoyaltyAbilityView {
     pub ability: AbilityRef,
     /// Its cost: loyalty counters put on, removed, or neither.
     pub cost: LoyaltyCost,
+}
+
+/// What an Aura, Equipment or Fortification gives its host as the layers apply it now (public, like the host).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct GivesView {
+    /// The net change to the host's power; left out while 0.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[ts(as = "Option<i32>", optional)]
+    pub power: i32,
+    /// The net change to the host's toughness; left out while 0.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[ts(as = "Option<i32>", optional)]
+    pub toughness: i32,
+    /// The power and toughness it sets the host to ("is a 1/1"), when it sets them.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub set: Option<(i32, i32)>,
+    /// Names of the keywords it grants, such as `Flying` and `Protection from red`; left out while none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub keywords: Vec<String>,
+    /// The other changes it makes (`CantAttack`, `LoseAbilities`, `UmbraArmor`, ...); left out while none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<GivenRule>>", optional)]
+    pub rules: Vec<GivenRule>,
+}
+
+/// Whether a number is 0, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(value: &i32) -> bool {
+    *value == 0
 }
 
 /// An activated ability of an object in the words of its card, for a menu to name what `PriorityOptions` offers.
@@ -188,6 +220,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
     pub attachments: Vec<ObjectId>,
+    /// What this attachment gives the permanent it is attached to as the layers apply it now; left out while it gives
+    /// nothing or is attached to no permanent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub gives: Option<GivesView>,
     /// Whether the object lies face down (a foretold card in exile). The seat that may look at it sees its characteristics
     /// besides; every other seat sees an object with no name, types, colours, abilities or counters.
     #[serde(default, skip_serializing_if = "is_false")]

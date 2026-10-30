@@ -110,6 +110,8 @@ export type { FullControlMode } from "./FullControlMode";
 export type { GameInfo } from "./GameInfo";
 export type { GameResult } from "./GameResult";
 export type { GameSeat } from "./GameSeat";
+export type { GivenRule } from "./GivenRule";
+export type { GivesView } from "./GivesView";
 export type { Grant } from "./Grant";
 export type { HandLimit } from "./HandLimit";
 export type { Handicap } from "./Handicap";
