@@ -8,6 +8,7 @@ import type { EventView } from "./EventView";
 import type { FullControlMode } from "./FullControlMode";
 import type { GameResult } from "./GameResult";
 import type { LobbySeat } from "./LobbySeat";
+import type { LogName } from "./LogName";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
@@ -98,7 +99,13 @@ state: StateView,
  * event at index `i` has log position `seq - log.len() + i`. Left out while there are none (a game that has just
  * started) or when the server leaves it out.
  */
-log?: Array<EventView>, } | { "type": "Chat", 
+log?: Array<EventView>, 
+/**
+ * The names of objects the events of `log` can mention that `state` no longer shows (a token that died, a card put
+ * away), at most [`SNAPSHOT_NAMES`](crate::SNAPSHOT_NAMES), as this client saw them; a client names such a line
+ * from here. Left out while there are none.
+ */
+names?: Array<LogName>, } | { "type": "Chat", 
 /**
  * The sender.
  */

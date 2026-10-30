@@ -624,6 +624,7 @@ fn server_samples() -> Vec<ServerMessage> {
             seq: 12,
             state: Box::new(view),
             log: Vec::new(),
+            names: Vec::new(),
         },
         ServerMessage::Chat {
             from: PlayerId(2),
@@ -1155,6 +1156,7 @@ fn snapshots_stay_one_flat_object_with_the_same_table_fields_as_a_batch() {
         seq: 3,
         state: Box::new(view),
         log: Vec::new(),
+        names: Vec::new(),
     };
     let value = serde_json::to_value(snapshot).unwrap();
     let state = value["state"].as_object().unwrap();

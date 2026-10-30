@@ -11,7 +11,7 @@ use mtg_engine::{Answer, Decision};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::events::{EventBatch, EventView};
+use crate::events::{EventBatch, EventView, LogName};
 use crate::view::StateView;
 
 /// Version of this wire protocol; both sides state it in the handshake.
@@ -303,6 +303,12 @@ pub enum ServerMessage {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[ts(as = "Option<Vec<EventView>>", optional)]
         log: Vec<EventView>,
+        /// The names of objects the events of `log` can mention that `state` no longer shows (a token that died, a card put
+        /// away), at most [`SNAPSHOT_NAMES`](crate::SNAPSHOT_NAMES), as this client saw them; a client names such a line
+        /// from here. Left out while there are none.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[ts(as = "Option<Vec<LogName>>", optional)]
+        names: Vec<LogName>,
     },
     /// A chat line from a player.
     Chat {

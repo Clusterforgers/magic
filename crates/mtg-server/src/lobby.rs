@@ -283,7 +283,7 @@ impl<S: EventStore> GameActor<S> {
             .decks
             .as_ref()
             .and_then(SeatDecks::recipe)
-            .map(|recipe| recipe.oracle_ids());
+            .map(|recipe| recipe.card_art());
         recorder.warm_images(chosen);
     }
 

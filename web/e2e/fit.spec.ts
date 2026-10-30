@@ -44,6 +44,8 @@ interface Look {
   dividerRise: number | null
   /** The combat lines that run over your life figure (each line's key). */
   overLife: string[]
+  /** How many px the controls dock and the hand dock scroll inside themselves; null off the table. */
+  dockScroll: { controls: number; hand: number } | null
 }
 
 /** What each thing is, as a selector. A prompt's controls are in the dock; the hand is the first card of the row nothing lies over. */
@@ -141,6 +143,10 @@ function readPage(arg: { things: Record<string, string>; areas: string[] }): Loo
   }
   const divider = document.querySelector('[data-slot="hand-command"]')
   const dock = document.querySelector('[data-area="hand"]')
+  const inner = (selector: string): number => {
+    const element = document.querySelector(selector)
+    return element === null ? 0 : element.scrollHeight - element.clientHeight
+  }
   return {
     inner: { width: window.innerWidth, height: window.innerHeight },
     scroll: { width: root.scrollWidth, height: root.scrollHeight, y: window.scrollY, x: window.scrollX },
@@ -148,6 +154,10 @@ function readPage(arg: { things: Record<string, string>; areas: string[] }): Loo
     things,
     covered,
     overLife,
+    dockScroll:
+      arg.areas.length === 0
+        ? null
+        : { controls: inner('[data-region="controls"]'), hand: inner('[data-region="hand"]') },
     dividerRise:
       divider === null || dock === null
         ? null
@@ -208,6 +218,9 @@ async function expectFits(page: Page, size: Size, needs: readonly Thing[], where
           problems.push(`the combat line ${line} runs over your life`)
         if (look.dividerRise !== null && look.dividerRise > 0.5) {
           problems.push(`the divider of the commanders rises ${look.dividerRise}px over the battlefield`)
+        }
+        for (const [name, scrolled] of Object.entries(look.dockScroll ?? {})) {
+          if (scrolled > 1) problems.push(`the ${name} dock scrolls inside itself by ${scrolled}px`)
         }
         return problems
       },

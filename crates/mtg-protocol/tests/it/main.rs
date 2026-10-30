@@ -40,6 +40,7 @@ mod improvise_hidden;
 mod impulse_hidden;
 mod keyword_view;
 mod lobby_message;
+mod log_names;
 mod loyalty_view;
 mod mana_cost_hidden;
 mod mana_lasts_view;

@@ -175,7 +175,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
 - [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
-- [~] (ui2i) (small-fixes) The controls dock needs 99 px (the Stops button, the pass row and their padding) and the hand dock is 96 px high at 1280x720, so the dock scrolls inside itself by 3 px: the hand row clamp or the dock padding gives way (`TableGrid.tsx`, `ControlsDock.tsx`)
 - [ ] (k3d) A four-seat precon game asks a seat 3 to 54 priority windows in which no hand card, commander or battlefield ability is marked legal ("Your turn · 12 · Precombat main" three times in a row, then "Postcombat main"): find what the server offers there (a cast from the graveyard or exile, an ability the prompt does not mark) and mark it, or pass for the seat (`commander-four.spec.ts` prints them as "idle windows of ...")
 - [ ] (ts3) `groupPermanents` keeps apart permanents that differ in copy (and of what), shown face, face down, merge, prepared, level and the player an Aura enchants, so a copy never hides inside a stack of its original's tokens
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
@@ -450,15 +449,13 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
-- [~] (w2i) (small-fixes) A rebuilt log names the cards that left the view since (a token that died, a card put away): the lines of a `Snapshot` log read "a card" for them and an attach line has no old host, so the snapshot could list the names of the cards its window mentions (`play/store.ts` `mergeHistory`)
+- [ ] (w2j) An attach line of a rebuilt log has no old host: `Snapshot` could carry the host each attach event of its window replaced (its name in `names`), so the line reads "moves from A to B" as it did live (`play/store.ts` `mergeHistory`, `hosts.ts`)
 - [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
 - [ ] (f1d) The builder links its check bar to `/decks/$deckId/unvalidated` (`docs/web.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
-- [~] (v89l) (small-fixes) The picture warm-up fetches the printing each deck line chose (a precon names them), not only the newest paper printing of each card, so the table's pictures of precon cards are cached when the first turn starts
-- [~] (v89m) (small-fixes) The doc of `CardHit` in `mtg-protocol` says "without manual steps" for the played-by-hand flag; it reads "played by hand" like the web and the bindings follow
 - [ ] (v91a) The by-hand reasons players read (deck preview, the table's by-hand list) say what the player does, without "the compiler does not read yet" (`mtg-cards` `compile/manual.rs`, `ByHandList`)
 - [ ] (v91b) The import review names the support of the list before it is saved ("19 of 26 verified, 7 played by hand") and its format issues, not only the lines not found (`ImportDialog.tsx`)
 - [ ] (v91c) The decks list row says how many cards are played by hand, as the builder bar does, in place of a bare "Not validated cards" link (`DeckLibrary.tsx`)

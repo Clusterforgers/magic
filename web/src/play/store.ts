@@ -101,6 +101,12 @@ export interface PlayState {
   clock: DecisionClock | null
   /** The most recent events (at most `LOG_LIMIT`), oldest first. */
   log: readonly LogEntry[]
+  /**
+   * The names of objects the view no longer shows (a token that died, a card put away), by id, for the lines of `log`
+   * that tell of them: from the snapshots' name tables and from the batches that took them from the view; at most
+   * `LOG_NAMES_LIMIT`, the newest objects.
+   */
+  logNames: Readonly<Record<ObjectId, string>>
   /** How many snapshots the session has applied: a state that jumped with one is no batch, whatever its log holds. */
   snapshots: number
   /** The most recent chat lines (at most `CHAT_LIMIT`), oldest first. */
@@ -148,6 +154,7 @@ export function initialPlayState(): PlayState {
     preview: null,
     clock: null,
     log: [],
+    logNames: {},
     chat: [],
     snapshots: 0,
     phase: 'lobby',

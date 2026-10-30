@@ -66,6 +66,7 @@ fn bindings_cover_the_wire_surface() {
         "ServerMessage.ts",
         "StateView.ts",
         "EventBatch.ts",
+        "LogName.ts",
         "Decision.ts",
         "Answer.ts",
         "Event.ts",

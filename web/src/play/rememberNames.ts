@@ -1,7 +1,40 @@
-/** Pure: the names of the cards a manual look, put-back or reveal tells, kept with the log entry so the line still names a card that has since left the view. */
-import type { EventView, ObjectId, ObjectView } from '@/protocol/generated'
+/** Pure: the names of cards that have left the view, kept so the log still says which card a line is about: those a manual look, put-back or reveal tells stay with their entry, the rest of the objects that departed are kept for the whole log. */
+import type { EventView, LogName, ObjectId, ObjectView } from '@/protocol/generated'
 
 type Objects = Readonly<Record<ObjectId, ObjectView>>
+type Names = Readonly<Record<ObjectId, string>>
+
+/** How many names of objects that left the view `logNames` keeps; the newest objects stay. */
+export const LOG_NAMES_LIMIT = 1000
+
+function newest(names: Record<ObjectId, string>): Names {
+  const ids = Object.keys(names).map(Number)
+  if (ids.length <= LOG_NAMES_LIMIT) return names
+  const kept: Record<ObjectId, string> = {}
+  for (const id of ids.sort((a, b) => a - b).slice(-LOG_NAMES_LIMIT)) kept[id] = names[id] ?? ''
+  return kept
+}
+
+/** `held` with the names a snapshot brought for the objects its log window mentions that its state no longer shows. */
+export function mergeLogNames(held: Names, given: readonly LogName[] = []): Names {
+  if (given.length === 0) return held
+  const merged: Record<ObjectId, string> = { ...held }
+  for (const { object, name } of given) merged[object] = name
+  return newest(merged)
+}
+
+/** `held` with the names of the objects a batch took from the view (`gone`), read from the objects before it. */
+export function rememberDeparted(held: Names, before: Objects, gone: readonly ObjectId[]): Names {
+  const merged: Record<ObjectId, string> = { ...held }
+  let added = false
+  for (const id of gone) {
+    const name = before[id]?.name
+    if (name === undefined || name === '' || merged[id] === name) continue
+    merged[id] = name
+    added = true
+  }
+  return added ? newest(merged) : held
+}
 
 /** The cards a public event names that the view stops showing once they move: looked at, put back or revealed. */
 export function idsToRemember(event: EventView): ObjectId[] {

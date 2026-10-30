@@ -19,6 +19,7 @@ import { createManualLedger, isManualOf } from './manualLedger'
 import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
+import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank } from './view'
@@ -269,6 +270,7 @@ export function createSession(deps: SessionDeps): Session {
         pending: null, // the server sends the current decision right after the snapshot
         preview: null,
         log: mergeHistory(state.log, message.seq, message.log),
+        logNames: mergeLogNames(state.logNames, message.names),
         snapshots: state.snapshots + 1,
         phase: state.result === null ? 'playing' : 'over',
         lobby: null, // the game is on, so the roster of the table before it is over
@@ -304,6 +306,7 @@ export function createSession(deps: SessionDeps): Session {
       objectsById,
       seq: batch.from_seq + batch.events.length,
       log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById),
+      logNames: rememberDeparted(state.logNames, state.objectsById, batch.gone),
       phase: state.result === null ? 'playing' : 'over',
       lobby: null,
       ...(passed ? { pending: null, preview: null } : {}),

@@ -4,7 +4,9 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::decision::PriorityAction;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision, DecisionKind};
-use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, EventView, ServerMessage, YieldUntil};
+use mtg_protocol::{
+    ClientMessage, DecisionId, ErrorCode, EventView, LogName, ServerMessage, YieldUntil,
+};
 use mtg_server::GameHandle;
 use mtg_testkit::RandomBot;
 use mtg_testkit::SeatWindows;
@@ -51,6 +53,8 @@ pub struct Bot {
     pub snapshots: usize,
     /// The position and log of every snapshot it was sent.
     pub snapshot_logs: Vec<(u64, Vec<EventView>)>,
+    /// The log names of every snapshot it was sent, in the same order.
+    pub snapshot_names: Vec<Vec<LogName>>,
     pub errors: Vec<(ErrorCode, String)>,
 }
 
@@ -90,6 +94,7 @@ impl Bot {
             answers: 0,
             snapshots: 0,
             snapshot_logs: Vec::new(),
+            snapshot_names: Vec::new(),
             errors: Vec::new(),
         }
     }
@@ -126,9 +131,15 @@ impl Bot {
                 self.yielding = yielding;
             }
             ServerMessage::Yielding { until } => self.yielding = until,
-            ServerMessage::Snapshot { seq, state, log } => {
+            ServerMessage::Snapshot {
+                seq,
+                state,
+                log,
+                names,
+            } => {
                 assert_eq!(state.table.viewer, self.seat);
                 self.snapshot_logs.push((seq, log));
+                self.snapshot_names.push(names);
                 self.next_seq = seq;
                 self.stack = state.table.stack.count;
                 self.snapshots += 1;

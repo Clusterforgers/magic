@@ -1,5 +1,7 @@
 //! Projecting the engine's event log for one viewer without leaking hidden cards.
 
+use std::collections::BTreeMap;
+
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::abilities::Cause;
 use mtg_engine::apply_event;
@@ -658,6 +660,69 @@ pub fn project_log(
     events: &[Event],
     viewer: PlayerId,
 ) -> Result<Vec<EventView>, ProtocolError> {
+    fold_views(before, events, viewer, |_| {}).map(|(views, _)| views)
+}
+
+/// How many names a snapshot's log window carries at most; the oldest objects go first.
+pub const SNAPSHOT_NAMES: usize = 600;
+
+/// The name of an object that the log window of a snapshot may mention and the snapshot's state no longer shows.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct LogName {
+    /// The object.
+    pub object: ObjectId,
+    /// The name the viewer read on it while it was in sight.
+    pub name: String,
+}
+
+/// The log window of a snapshot with the names it needs.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LogWindow {
+    /// The events as [`project_log`] gives them.
+    pub log: Vec<EventView>,
+    /// Objects the viewer had in sight at some point of the window that the state after it shows by no name (a token
+    /// that died, a card put away), by object id, at most [`SNAPSHOT_NAMES`]; nothing the viewer never saw.
+    pub names: Vec<LogName>,
+}
+
+/// [`project_log`] with the names of the objects the viewer saw during the window and cannot read in the state after it,
+/// so that a client that rebuilds its log from a snapshot can still say which card a line is about.
+///
+/// A name is the one [`ObjectView::of`] gives while the viewer may identify the object, so a card that stays hidden
+/// from them is never named.
+pub fn project_window(
+    before: &GameState,
+    events: &[Event],
+    viewer: PlayerId,
+) -> Result<LogWindow, ProtocolError> {
+    let mut names = BTreeMap::new();
+    note_names(before, viewer, &mut names);
+    let (log, state) = fold_views(before, events, viewer, |state| {
+        note_names(state, viewer, &mut names);
+    })?;
+    for shown in visible_objects(&state, viewer) {
+        if !shown.name.is_empty() {
+            names.remove(&shown.id);
+        }
+    }
+    while names.len() > SNAPSHOT_NAMES {
+        names.pop_first();
+    }
+    let names = names
+        .into_iter()
+        .map(|(object, name)| LogName { object, name })
+        .collect();
+    Ok(LogWindow { log, names })
+}
+
+/// The views of `events` for `viewer`, each judged against the state ahead of it, and the state after the last one;
+/// `after_each` sees the state after every event.
+fn fold_views(
+    before: &GameState,
+    events: &[Event],
+    viewer: PlayerId,
+    mut after_each: impl FnMut(&GameState),
+) -> Result<(Vec<EventView>, GameState), ProtocolError> {
     let mut state = before.clone();
     let mut views = Vec::with_capacity(events.len());
     for event in events {
@@ -666,8 +731,22 @@ pub fn project_log(
             None => EventView::Public(event.clone()),
         });
         apply_event(&mut state, event)?;
+        after_each(&state);
     }
-    Ok(views)
+    Ok((views, state))
+}
+
+/// Adds the name of every object `viewer` may identify in `state` that is not named yet.
+fn note_names(state: &GameState, viewer: PlayerId, names: &mut BTreeMap<ObjectId, String>) {
+    for object in state.objects() {
+        let id = object.id();
+        if names.contains_key(&id) || !knows(state, id, viewer) {
+            continue;
+        }
+        if let Some(view) = ObjectView::of(state, viewer, id).filter(|view| !view.name.is_empty()) {
+            names.insert(id, view.name);
+        }
+    }
 }
 
 /// The cards the resolution in progress has shown so far, and to whom.

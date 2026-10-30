@@ -8,7 +8,7 @@ use common::{
     start_table, table_setup,
 };
 use mtg_engine::replay;
-use mtg_protocol::{ClientMessage, EventView, SNAPSHOT_LOG, ServerMessage};
+use mtg_protocol::{ClientMessage, EventView, SNAPSHOT_LOG, SNAPSHOT_NAMES, ServerMessage};
 use mtg_server::{EventStore, GameConfig, MIN_QUEUE, MemoryStore, Pace, spawn_game_with};
 use rstest::rstest;
 use tokio::sync::mpsc::error::TryRecvError;
@@ -91,6 +91,11 @@ async fn a_client_that_drops_mid_game_resyncs_and_the_game_ends_exactly_as_if_no
             assert_eq!(shown, event, "the log is aligned with the game's events");
         }
     }
+    // The names are the snapshot's own: bounded, in id order, and of objects the seat could read while they were in sight.
+    let names = &bots[victim].snapshot_names[0];
+    assert!(names.len() <= SNAPSHOT_NAMES);
+    assert!(names.windows(2).all(|pair| pair[0].object < pair[1].object));
+    assert!(names.iter().all(|name| !name.name.is_empty()));
     let status = handle.status().await.unwrap();
     assert_eq!(status.state_hash, Some(straight.final_hash));
     assert_eq!(

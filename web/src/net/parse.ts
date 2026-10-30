@@ -17,6 +17,7 @@ import type {
   FullControlMode,
   GameResult,
   LobbySeat,
+  LogName,
   ObjectKind,
   ObjectView,
   PlayerForecast,
@@ -154,6 +155,8 @@ export function parseMessage(value: unknown): ParsedFrame {
 }
 
 const isIdList = (value: unknown): value is number[] => isListOf(value, isCount)
+const isLogName = (value: unknown): value is LogName =>
+  isRecord(value) && isCount(value.object) && isText(value.name) && value.name !== ''
 // An externally tagged enum value: a bare name for a unit variant, a one-key object for the others.
 const isTag = (value: unknown): boolean => isText(value) || isRecord(value)
 const isOneKey = (value: Record<string, unknown>): boolean => Object.keys(value).length === 1
@@ -447,12 +450,20 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Snapshot':
       if (!isCount(v.seq)) return '"seq" must be a whole number'
       if (!isStateView(v.state)) return '"state" is not a state view'
-      // The history of the log is optional, and a server without it leaves the key out.
-      if (v.log !== undefined) {
-        if (!isListOf(v.log, isEventView)) return '"log" must be a list of Public or Hidden events'
-        return { type, seq: v.seq, state: v.state, log: v.log }
+      // The history of the log and its names are optional, and a server without them leaves the keys out.
+      if (v.log !== undefined && !isListOf(v.log, isEventView)) {
+        return '"log" must be a list of Public or Hidden events'
       }
-      return { type, seq: v.seq, state: v.state }
+      if (v.names !== undefined && !isListOf(v.names, isLogName)) {
+        return '"names" must be a list of objects with names'
+      }
+      return {
+        type,
+        seq: v.seq,
+        state: v.state,
+        ...(v.log === undefined ? {} : { log: v.log }),
+        ...(v.names === undefined ? {} : { names: v.names }),
+      }
     case 'Chat':
       if (!isCount(v.from)) return '"from" must be a seat number'
       if (!isText(v.text)) return '"text" must be text'
