@@ -59,6 +59,22 @@ describe('the pods', () => {
     )
   })
 
+  it('keeps the name of a commander that goes where the viewer cannot see it', () => {
+    const table = show((view) => {
+      const atraxa = must(view.players[1]?.commanders?.[0]).object
+      must(view.players[2]).commander_damage = [{ commander: atraxa, damage: 6 }]
+    })
+    const atraxa = must(table.store.getState().view?.players[1]?.commanders?.[0]).object
+    table.update((state) => {
+      const objectsById = { ...state.objectsById }
+      delete objectsById[atraxa]
+      return { objectsById }
+    })
+    expect(must(pod(2).querySelector('[data-slot="commander-damage"]'))).toHaveAccessibleName(
+      '6 of 21 commander damage from Atraxa, Praetors’ Voice',
+    )
+  })
+
   it('draws no damage chip on a seat that took none', () => {
     show()
     expect(pod(3).querySelector('[data-slot="commander-damage"]')).toBeNull()

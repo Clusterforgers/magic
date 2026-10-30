@@ -1,5 +1,5 @@
 import { Crown, Swords } from 'lucide-react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
@@ -53,13 +53,20 @@ export function taxChips(player: PlayerView | undefined, objects: Objects): Comm
   })
 }
 
-/** The commander damage chips of the seat that took it: "Atraxa 14/21", one per commander, highest first. */
-export function damageChips(player: PlayerView | undefined, objects: Objects): CommanderChip[] {
+/**
+ * The commander damage chips of the seat that took it: "Atraxa 14/21", one per commander, highest first. A commander
+ * the viewer cannot see now (in a hand or a library) keeps the name `seen` holds for it.
+ */
+export function damageChips(
+  player: PlayerView | undefined,
+  objects: Objects,
+  seen: ReadonlyMap<ObjectId, string> = new Map(),
+): CommanderChip[] {
   const lethal = player?.commander_lethal
   return [...(player?.commander_damage ?? [])]
     .sort((a, b) => b.damage - a.damage || a.commander - b.commander)
     .map((entry): CommanderChip => {
-      const name = objects[entry.commander]?.name ?? 'A commander'
+      const name = objects[entry.commander]?.name ?? seen.get(entry.commander) ?? 'A commander'
       return {
         key: entry.commander,
         text: `${shortName(name)} ${damageFraction(entry.damage, lethal)}`,
@@ -74,10 +81,26 @@ export function damageChips(player: PlayerView | undefined, objects: Objects): C
 export function useCommanderChips(seat: PlayerId): { tax: CommanderChip[]; damage: CommanderChip[] } {
   const player = usePlay((state) => playerOf(state, seat))
   const objects = usePlay((state) => state.objectsById)
+  const seen = useSeenNames(player, objects)
   return useMemo(
-    () => ({ tax: taxChips(player, objects), damage: damageChips(player, objects) }),
-    [player, objects],
+    () => ({ tax: taxChips(player, objects), damage: damageChips(player, objects, seen) }),
+    [player, objects, seen],
   )
+}
+
+/**
+ * The names of the commanders that dealt this seat damage, as the page last saw them: a commander that goes to a hand
+ * or a library leaves the viewer's objects, but its name is public.
+ */
+function useSeenNames(player: PlayerView | undefined, objects: Objects): ReadonlyMap<ObjectId, string> {
+  const [seen, setSeen] = useState<ReadonlyMap<ObjectId, string>>(() => new Map())
+  const fresh = (player?.commander_damage ?? []).flatMap(({ commander }) => {
+    const name = objects[commander]?.name
+    return name === undefined || seen.get(commander) === name ? [] : [[commander, name] as const]
+  })
+  // Kept while rendering, as React allows for state that follows props: the next render has the name at once.
+  if (fresh.length > 0) setSeen(new Map([...seen, ...fresh]))
+  return seen
 }
 
 interface ChipsProps {
