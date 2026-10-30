@@ -63,6 +63,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantAttackYou { .. }
         | Modification::CantBlock
         | Modification::DoesntUntap
+        | Modification::CantBeTurnedFaceUp
         | Modification::CantBeBlocked
         | Modification::CantBeBlockedBy { .. }
         | Modification::CanBlockOnly { .. }
@@ -97,6 +98,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
         | Wanted::DoesntUntap
+        | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)
@@ -135,6 +137,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
         | Wanted::DoesntUntap
+        | Wanted::CantBeTurnedFaceUp
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)

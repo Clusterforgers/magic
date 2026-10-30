@@ -3,4 +3,4 @@
 /**
  * A change an attachment makes to its host beyond power, toughness and keywords, named for a mark.
  */
-export type GivenRule = "CantAttack" | "CantAttackYou" | "CantBlock" | "CanBlockOnly" | "CantBeBlocked" | "CantBeBlockedBy" | "BlockerLimit" | "BlocksAdditional" | "DoesntUntap" | "LoseAbilities" | "LoseKeyword" | "GainAbility" | "SetController" | "SwitchPowerToughness" | "ChangeTypes" | "SetColors" | "Goaded" | "UmbraArmor";
+export type GivenRule = "CantAttack" | "CantAttackYou" | "CantBlock" | "CanBlockOnly" | "CantBeBlocked" | "CantBeBlockedBy" | "BlockerLimit" | "BlocksAdditional" | "DoesntUntap" | "CantBeTurnedFaceUp" | "LoseAbilities" | "LoseKeyword" | "GainAbility" | "SetController" | "SwitchPowerToughness" | "ChangeTypes" | "SetColors" | "Goaded" | "UmbraArmor";

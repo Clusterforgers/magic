@@ -177,6 +177,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         },
         Wanted::CantBlock => Modification::CantBlock,
         Wanted::DoesntUntap => Modification::DoesntUntap,
+        Wanted::CantBeTurnedFaceUp => Modification::CantBeTurnedFaceUp,
         Wanted::CantBeBlocked => Modification::CantBeBlocked,
         Wanted::Goaded => Modification::Goaded {
             by: scope.controller,

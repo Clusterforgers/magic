@@ -291,6 +291,7 @@ const RUNS: &[&str] = &[
     "Mod.CantAttackYou",
     "Mod.CantBlock",
     "Mod.DoesntUntap",
+    "Mod.CantBeTurnedFaceUp",
     "Mod.CantBeBlocked",
     "Mod.CantBeBlockedBy",
     "Mod.CanBlockOnly",
@@ -687,6 +688,7 @@ mod tests {
     #[case::attack_restrictions("Mod.CantAttack", true)]
     #[case::attack_restrictions_on_you("Mod.CantAttackYou", true)]
     #[case::block_restrictions("Mod.CantBlock", true)]
+    #[case::no_turning_face_up("Mod.CantBeTurnedFaceUp", true)]
     #[case::static_abilities("Ability.Static", true)]
     #[case::characteristic_defining_abilities("Ability.Static.Defining", true)]
     #[case::keywords_given_to_spells("Ability.Static.SpellKeywords", true)]

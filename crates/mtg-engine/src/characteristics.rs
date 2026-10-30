@@ -212,6 +212,14 @@ pub(crate) fn doesnt_untap(state: &GameState, id: ObjectId) -> bool {
     }) || crate::w11a_exert::w11a_held(state, id)
 }
 
+/// Whether an effect that applies to `id` says it can't be turned face up: the one place the special action of turning a
+/// permanent up reads this restriction.
+pub(crate) fn cant_be_turned_face_up(state: &GameState, id: ObjectId) -> bool {
+    restricted(state, id, |modification| {
+        matches!(modification, Modification::CantBeTurnedFaceUp)
+    })
+}
+
 /// Whether an effect that applies to `id` says it can't block: the one place the block rules read this restriction.
 pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
     restricted(state, id, |modification| {

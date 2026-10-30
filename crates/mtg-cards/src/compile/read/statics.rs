@@ -804,6 +804,9 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
     if !plural && r.words("isn't a creature") {
         return Some(vec![Modification::RemoveType(CardType::Creature)]);
     }
+    if !plural && r.words("can't be turned face up") {
+        return Some(vec![Modification::CantBeTurnedFaceUp]);
+    }
     if r.words(&format!("{lose} all creature types")) {
         return Some(vec![Modification::SetCreatureTypes(Vec::new())]);
     }
@@ -1931,6 +1934,9 @@ pub(super) fn predicate(
             return w6a_attacks_you::w6a_text(restriction).map(str::to_owned);
         }
         [Modification::CantBlock] => return Some("can't block".to_owned()),
+        [Modification::CantBeTurnedFaceUp] if !plural => {
+            return Some("can't be turned face up".to_owned());
+        }
         [Modification::CantBeBlocked] => {
             return Some("can't be blocked".to_owned());
         }

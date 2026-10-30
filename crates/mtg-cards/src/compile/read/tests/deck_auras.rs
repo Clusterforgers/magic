@@ -52,3 +52,68 @@ fn a_landwalk_of_the_chosen_type_reads_as_the_hand_written_files_say(
 fn a_near_miss_of_the_land_type_is_left_to_the_table(#[case] text: &str) {
     assert!(clause(text, ClauseKind::Static, false).is_none(), "{text}");
 }
+
+#[rstest]
+#[case::the_loss_then_the_types(
+    "Enchanted creature loses all abilities and is a Toy artifact creature with base power and toughness 0/2 in addition to its other types.",
+    r#"{"Static":{"affected":"Attached","mods":["LoseAbilities",{"AddType":"Artifact"},{"AddType":"Creature"},{"AddSubtype":"Toy"},{"SetPT":{"power":0,"toughness":2}}]}}"#
+)]
+#[case::no_loss(
+    "Enchanted creature is a Toy artifact creature with base power and toughness 0/2 in addition to its other types.",
+    r#"{"Static":{"affected":"Attached","mods":[{"AddType":"Artifact"},{"AddType":"Creature"},{"AddSubtype":"Toy"},{"SetPT":{"power":0,"toughness":2}}]}}"#
+)]
+#[case::no_artifact(
+    "Enchanted creature loses all abilities and is a Treefolk creature with base power and toughness 0/4 in addition to its other types.",
+    r#"{"Static":{"affected":"Attached","mods":["LoseAbilities",{"AddType":"Creature"},{"AddSubtype":"Treefolk"},{"SetPT":{"power":0,"toughness":4}}]}}"#
+)]
+#[case::two_types(
+    "Enchanted creature is a Human Wizard artifact creature with base power and toughness 1/1 in addition to its other types.",
+    r#"{"Static":{"affected":"Attached","mods":[{"AddType":"Artifact"},{"AddType":"Creature"},{"AddSubtype":"Human"},{"AddSubtype":"Wizard"},{"SetPT":{"power":1,"toughness":1}}]}}"#
+)]
+fn an_aura_that_adds_types_and_a_size_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] json: &str,
+) {
+    reads_as(text, ClauseKind::Static, false, json);
+}
+
+#[rstest]
+#[case::as_long_as_it_is_face_down(
+    "As long as enchanted creature is face down, it can't be turned face up.",
+    r#"{"Static":{"affected":"Attached","mods":["CantBeTurnedFaceUp"],"condition":{"Matches":{"subject":"Attached","selector":["FaceDown"]}}}}"#
+)]
+fn a_face_down_creature_that_stays_so_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] json: &str,
+) {
+    reads_as(text, ClauseKind::Static, false, json);
+}
+
+#[rstest]
+#[case::a_color_would_replace_the_others(
+    "Enchanted creature is a green Toy artifact creature with base power and toughness 0/2 in addition to its other types."
+)]
+#[case::no_creature_type(
+    "Enchanted creature is an artifact creature with base power and toughness 0/2 in addition to its other types."
+)]
+#[case::no_creature(
+    "Enchanted creature is a Toy artifact with base power and toughness 0/2 in addition to its other types."
+)]
+#[case::no_size("Enchanted creature is a Toy artifact creature in addition to its other types.")]
+#[case::the_words_of_the_end_changed(
+    "Enchanted creature is a Toy artifact creature with base power and toughness 0/2 in addition to its colors."
+)]
+#[case::a_group(
+    "Creatures you control are Toy artifact creatures with base power and toughness 0/2 in addition to their other types."
+)]
+#[case::face_up("As long as enchanted creature is face up, it can't be turned face up.")]
+#[case::turned_down("As long as enchanted creature is face down, it can't be turned face down.")]
+#[case::another_restriction_after(
+    "As long as enchanted creature is face down, it can't be turned face up and can't attack."
+)]
+#[case::a_group_of_creatures(
+    "As long as enchanted creature is face down, creatures you control can't be turned face up."
+)]
+fn near_misses_of_the_toy_and_the_face_down_creature_are_left_to_the_table(#[case] text: &str) {
+    assert!(clause(text, ClauseKind::Static, false).is_none(), "{text}");
+}

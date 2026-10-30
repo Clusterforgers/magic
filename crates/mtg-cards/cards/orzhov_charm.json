@@ -1,0 +1,75 @@
+{
+  "oracle_id": "26f8626a-ce64-450c-bda5-833df2fbb4fb",
+  "name": "Orzhov Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Charm",
+      "oracle_fingerprint": "bcc4782ef27df9b6e9c519e1e0eff00a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [
+                                { "Subtype": "Aura" },
+                                { "ControlledBy": "You" },
+                                { "AttachedTo": { "Target": 0 } }
+                              ]
+                            },
+                            "to": "Hand"
+                          }
+                        },
+                        { "Move": { "what": { "Target": 0 }, "to": "Hand" } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        {
+                          "LoseLife": {
+                            "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
