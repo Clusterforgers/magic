@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import { cornerHeight } from './cornerFit'
+import { useEnchantChips } from './enchantChips'
+import { EnchantChips } from './EnchantChips'
 import { useDefender } from './combat/defender'
 import type { DefenderState } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
@@ -86,6 +88,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     })),
   )
   const chips = useCommanderChips(seat)
+  const enchants = useEnchantChips(seat)
   const defender = useDefender(seat)
   const commanderGame = usePlay((state) => state.view?.format.toLowerCase() === 'commander')
   // The blocks above the corner: its room is the column less these (the column is measured by `PodColumn`).
@@ -192,6 +195,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           {mana}
           <TaxChips chips={chips.tax} density="line" />
           <DamageChips chips={chips.damage} density="line" />
+          <EnchantChips chips={enchants} density="line" />
           {notes}
         </div>
       </section>
@@ -241,6 +245,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             className="max-w-full"
           />
           <TaxChips chips={taxLoose} density="line" className="max-w-full" />
+          <EnchantChips chips={enchants} density="line" />
         </div>
       </div>
       <SeatCorner

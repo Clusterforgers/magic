@@ -24,6 +24,8 @@ import type {
 import { colorsInSet, manaLetter } from './cardModel'
 import type { EventContext } from './eventContext'
 import { distinctTargets } from './prompt/targetText'
+import { sameHost } from '@/play/hosts'
+import type { HostRef } from '@/play/hosts'
 import { STEP_LABEL } from './turnText'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
@@ -867,8 +869,46 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   return quiet('A step of the resolution is done')
 }
 
-/** The log line for one event as this viewer saw it. */
-export function describeEvent(event: EventView, names: EventNames, context?: EventContext): LogLine {
+/**
+ * The line of an attach event that knows where the attachment hung before: "Bonesplitter moves from Hill Giant to
+ * Llanowar Elves", or "Bonesplitter is attached to Llanowar Elves" when it hung on nothing. Null for any other event,
+ * and for one that attaches to the same host again, which keep their usual line.
+ */
+function attachLine(event: Event | string, was: HostRef | null, n: EventNames): LogLine | null {
+  if (typeof event === 'string') return null
+  const to: HostRef | null =
+    'Attached' in event
+      ? { card: event.Attached.to }
+      : 'AttachedToPlayer' in event
+        ? { player: event.AttachedToPlayer.player }
+        : null
+  const object =
+    'Attached' in event
+      ? event.Attached.object
+      : 'AttachedToPlayer' in event
+        ? event.AttachedToPlayer.object
+        : null
+  if (to === null || object === null || sameHost(was, to)) return null
+  const name = (host: HostRef): string => ('card' in host ? n.card(host.card) : n.seat(host.player))
+  if (was === null) return 'card' in to ? line(`${n.card(object)} is attached to ${name(to)}`) : null
+  return line(`${n.card(object)} moves from ${name(was)} to ${name(to)}`)
+}
+
+/**
+ * The log line for one event as this viewer saw it. `context` is what the batch around the event tells (the resolving
+ * spell, the targets of an activation); `hostBefore` is where the attachment of an attach event hung before it (null:
+ * on nothing), when the caller knows; without it the line only says what became attached.
+ */
+export function describeEvent(
+  event: EventView,
+  names: EventNames,
+  context?: EventContext,
+  hostBefore?: HostRef | null,
+): LogLine {
+  if (hostBefore !== undefined && 'Public' in event) {
+    const moved = attachLine(event.Public, hostBefore, names)
+    if (moved !== null) return moved
+  }
   return 'Public' in event
     ? describePublic(event.Public, names, context)
     : describeHidden(event.Hidden, names)

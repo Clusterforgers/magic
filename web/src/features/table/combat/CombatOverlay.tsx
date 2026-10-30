@@ -1,5 +1,6 @@
 import { useContext, useMemo, useRef } from 'react'
 import { cn } from '@/lib/utils'
+import { useAttachLines } from './attachLines'
 import { anchorKey, anchorsOf } from './plan'
 import type { LineSpec } from './plan'
 import { RectProviderContext, shapesOf, useAnchorRects } from './rects'
@@ -7,6 +8,7 @@ import type { DrawnLine } from './rects'
 import { useCombatPlan } from './useCombatPlan'
 import { useStackArrows } from './useStackArrows'
 import './combat.css'
+import './attach.css'
 
 interface LayerProps {
   drawn: readonly DrawnLine[]
@@ -79,6 +81,10 @@ function Lines({ lines }: { lines: readonly LineSpec[] }) {
 export function CombatOverlay() {
   const combat = useCombatPlan()
   const stack = useStackArrows()
-  const lines = useMemo(() => (stack.length === 0 ? combat : [...combat, ...stack]), [combat, stack])
+  const moved = useAttachLines()
+  const lines = useMemo(
+    () => (stack.length === 0 && moved.length === 0 ? combat : [...combat, ...stack, ...moved]),
+    [combat, stack, moved],
+  )
   return lines.length === 0 ? null : <Lines lines={lines} />
 }

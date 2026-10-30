@@ -11,6 +11,7 @@ import { withGhosts } from './fx/ghosts'
 import { NO_GHOSTS } from './fx/model'
 import type { Ghost } from './fx/model'
 import type { RowEntry } from './rowStacks'
+import { TuckedCard } from './TuckedCard'
 import { objectIdOf, useRoving } from './useRoving'
 
 interface CardRowProps {
@@ -96,15 +97,13 @@ interface TuckedProps {
  */
 function TuckedCards({ ids, size, each, lift, current }: TuckedProps) {
   return ids.map((id, at) => (
-    <div
+    <TuckedCard
       key={id}
-      data-tucked={id}
-      // The ground under each card keeps a dimmed or translucent face from showing the one behind it.
-      className="absolute left-0 rounded-md bg-lane"
+      id={id}
+      size={size}
+      tabbable={id === current}
       style={{ top: lift - (ids.length - at) * each, zIndex: at }}
-    >
-      <Card id={id} size={size} fit tabbable={id === current} />
-    </div>
+    />
   ))
 }
 

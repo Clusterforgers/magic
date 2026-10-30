@@ -1,0 +1,42 @@
+/*
+ * The arrow of an attachment that moved between hosts, drawn by the combat overlay's layer: an accent line, thicker than
+ * an attack's. It draws itself in over 450 ms; for a person who asks for less motion it is drawn still and fades in
+ * over 100 ms. Both stand for 1 s (`ARROW_MS`).
+ */
+.combat-group[data-kind='attach'] {
+  --line: var(--primary);
+}
+
+.combat-group[data-kind='attach'] .combat-halo {
+  stroke-width: 6;
+}
+
+.combat-group[data-kind='attach'] .combat-line {
+  stroke-width: 2.75;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(.combat-overlay, .combat-ghost) .combat-group[data-kind='attach'] :is(.combat-halo, .combat-line) {
+    animation-duration: 450ms;
+  }
+
+  :is(.combat-overlay, .combat-ghost) .combat-group[data-kind='attach'] .combat-head {
+    animation-delay: 320ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.combat-overlay, .combat-ghost) .combat-group[data-kind='attach'] {
+    animation: attach-fade 100ms ease-out both;
+  }
+
+  @keyframes attach-fade {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}

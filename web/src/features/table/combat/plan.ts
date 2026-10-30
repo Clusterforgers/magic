@@ -21,9 +21,10 @@ export type Anchor =
 
 /**
  * An attack goes from an attacker to what it attacks; a block from a blocker to the attacker it blocks; a target
- * from the chip of a stack item to what it aims at (`stackArrows.ts`).
+ * from the chip of a stack item to what it aims at (`stackArrows.ts`); an attach from the old host of an attachment
+ * to its new one (`attachLines.ts`).
  */
-export type LineKind = 'attack' | 'block' | 'target'
+export type LineKind = 'attack' | 'block' | 'target' | 'attach'
 
 /** One line of the overlay. */
 export interface LineSpec {

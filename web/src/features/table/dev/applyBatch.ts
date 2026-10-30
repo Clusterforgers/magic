@@ -13,7 +13,7 @@ export function applyBatchToStore(store: PlayStore, batch: EventBatch): boolean 
     view,
     objectsById: view.objects === state.view.objects ? state.objectsById : indexById(view.objects),
     seq: batch.from_seq + batch.events.length,
-    log: appendLog(state.log, batch.from_seq, batch.events),
+    log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById),
   })
   return true
 }

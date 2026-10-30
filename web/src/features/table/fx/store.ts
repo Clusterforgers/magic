@@ -9,6 +9,8 @@ import { prefersReducedMotion } from '@/hooks/useReducedMotion'
 import { browserTimers } from '@/net/timers'
 import type { Timers } from '@/net/timers'
 import type { ObjectId, PlayerId } from '@/protocol/generated'
+import { createArrows } from './arrows'
+import type { Arrows } from './arrows'
 import { FX_MS, isLifeEffect, NO_ENTRIES, NO_GHOSTS, rowKey } from './model'
 import { createTravel } from './travel'
 import type { Travel, TravelOptions } from './travel'
@@ -47,6 +49,8 @@ export interface Fx {
   readonly slow: number
   /** The cards that fly between places; started by `watchBatches`, drawn by `FxTravel`. */
   readonly travel: Travel
+  /** The arrows of attachments that moved, which play in every mode but `off`. */
+  readonly arrows: Arrows
   /** Starts the effects of a batch, each expiring on its own after its time. Nothing at all while the mode is `off`. */
   play(effects: readonly Effect[]): void
   /** Ends every effect now and cancels the timers. */
@@ -93,6 +97,7 @@ export function createFx(options: FxOptions = {}): Fx {
   const store = createStore<FxState>(emptyState)
   const travel = createTravel({ ...options.travel, mode: modeNow, slow })
   const waiting = new Set<number>()
+  const arrows = createArrows({ timers, enabled: () => modeNow() !== 'off', slow })
   let last = 0
 
   // One timer per kind and batch: a board wipe ends in one update, not one per card.
@@ -158,9 +163,10 @@ export function createFx(options: FxOptions = {}): Fx {
     waiting.clear()
     const { objects, seats, ghosts } = store.getState()
     if (objects.size + seats.size + ghosts.size > 0) store.setState(emptyState())
+    arrows.clear()
   }
 
-  return { store, slow, travel, play, clear }
+  return { store, slow, travel, play, clear, arrows }
 }
 
 /** The layer that cards outside a table share: it plays nothing. */

@@ -281,7 +281,7 @@ export function createSession(deps: SessionDeps): Session {
       view,
       objectsById: view.objects === state.view?.objects ? state.objectsById : indexById(view.objects),
       seq: batch.from_seq + batch.events.length,
-      log: appendLog(state.log, batch.from_seq, batch.events),
+      log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById),
       phase: state.result === null ? 'playing' : 'over',
       lobby: null,
       ...(passed ? { pending: null, preview: null } : {}),
