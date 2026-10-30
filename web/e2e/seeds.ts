@@ -12,5 +12,9 @@ const pick = (pinned: number): string => {
 /** The in-memory server (`full-game.spec.ts`). */
 export const GAME_SEED = pick(1)
 
-/** The server on the scratch database, shared by `precon-game.spec.ts` and `commander-four.spec.ts`. */
+/**
+ * The server on the scratch database, shared by `precon-game.spec.ts` and `commander-four.spec.ts`. Seed 1 plays the
+ * four-seat game to a winner in 242 decisions, and passes both specs every run; seed 2 does the same in 240. A random
+ * seed ends the four-seat game in about four runs of five, so a failure there could not be told from a regression.
+ */
 export const ACCOUNTS_SEED = pick(1)

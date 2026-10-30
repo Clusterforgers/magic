@@ -21,8 +21,8 @@ fn pair() -> Vec<SeatRequest> {
 
 /// A registry whose configuration came from the environment variable `MTG_SEED=seed`.
 fn registry_from_env(seed: u64) -> Registry {
-    let config = ServerConfig::from_lookup(|key| (key == "MTG_SEED").then(|| seed.to_string()))
-        .unwrap();
+    let config =
+        ServerConfig::from_lookup(|key| (key == "MTG_SEED").then(|| seed.to_string())).unwrap();
     Registry::new(&config)
 }
 

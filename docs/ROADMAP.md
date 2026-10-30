@@ -171,7 +171,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2a) `/dev/builder?deck=...` shows the commander slot (the fixture check knows commander pairs) and screenshots at 1400 and 390 settle the slot's height and the identity switch
 - [ ] (k2b) The lobby's deck chooser and the precon rows show each Commander deck's commanders as a picture and a name, as the deck list does
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
-- [~] (k3a) (e2e-seed) `MTG_SEED` sets the server's `fixed_seed` (now only tests set it), so an e2e game replays exactly; `commander-four.spec.ts` and `precon-game.spec.ts` pin it
 - [ ] (ui2a) `CommanderDamageView` carries the commander's name, so a page opened while the commander is in a hand or a library names its damage chip (the web keeps only the names it saw, `CommanderChips.tsx`)
 - [ ] (ui2b) The viewer's own cast stands large for a moment as another seat's does: today it flies at the hand card's size (about 70 px at 1440x900) into a stack chip and is easy to miss (`fx/spotlight.ts`, `fx/Spotlight.tsx`)
 - [ ] (ui2c) Grant marks read whole on the 100 to 120 px hosts of a tucked lane ("Can't atta…", "+3/+3 …" at 1440x900 with `equip=1`): shorter rule words or a second line (`attachMarks.ts`, `GrantMarks.tsx`)
@@ -189,7 +188,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pl2b) The tiles of focus mode and of the phone's strip show the life chip and take the defender click (only the pod does today)
 - [ ] (pl2c) A pending block's arrow takes the colour of the preview's outcome for its pair, as a declared block does
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
-- [~] (pl2k) (e2e-seed) `join.spec.ts` "a guest follows an invite link" timed out once in the full run (the "Join game" button never stable for 15 s) and passes alone: find what moves the button
+- [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once in a full run on the Join button; it did not recur in 50 solo runs, a full run and CPU-throttled runs, and the page holds the button still at every width from 300 to 1700, so a recurrence needs a Playwright trace (`trace: "retain-on-failure"` for that run) to name the cause
 - [ ] (pl3a) `ObjectView` carries what a mana ability gives as data (mana, count, cost, sacrifice), so the corner strip and the preview stop reading the words of `activated` (an ability with a count by a condition, a chosen colour or an extra cost shows nothing today)
 - [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
 - [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
