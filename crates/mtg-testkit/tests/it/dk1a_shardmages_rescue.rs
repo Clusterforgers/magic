@@ -60,7 +60,7 @@ fn an_aura_cast_this_turn_gives_hexproof_until_the_turn_ends() -> Result<(), Scr
         }
         driver.answer_passively()?;
     }
-    assert!(driver.state().zone(Zone::Hand(pid(0))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), 0);
     assert!(hexproof(&driver));
     assert_eq!(power(&driver), 3);
     // The next turn: the Aura is no longer new, the bonus stays.

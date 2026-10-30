@@ -115,5 +115,5 @@ fn a_pair_of_other_abilities_writes_nothing() {
     let second = ability(
         r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Flying"}],"condition":{"Not":{"Matches":{"subject":"Attached","selector":["Untapped"]}}}}}"#,
     );
-    assert!(static_pair_texts(&first, &second).is_empty());
+    assert_eq!(static_pair_texts(&first, &second), Vec::<String>::new());
 }
