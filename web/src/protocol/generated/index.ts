@@ -148,6 +148,7 @@ export type { ManaSymbol } from "./ManaSymbol";
 export type { ManaType } from "./ManaType";
 export type { ManualAction } from "./ManualAction";
 export type { ManualClause } from "./ManualClause";
+export type { ManualReveal } from "./ManualReveal";
 export type { ManualToken } from "./ManualToken";
 export type { ManualZone } from "./ManualZone";
 export type { MergedCardView } from "./MergedCardView";

@@ -46,6 +46,8 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::LookTop { .. } => "look at the top",
         ManualAction::ArrangeTop { .. } => "arrange the top",
         ManualAction::Shuffle {} => "shuffle",
+        ManualAction::Reveal { .. } => "reveal",
+        ManualAction::Note { .. } => "note",
     }
 }
 

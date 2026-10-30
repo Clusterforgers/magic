@@ -85,7 +85,7 @@ export function DevTableRoute() {
       equip,
       seats,
       board,
-      prompt,
+      prompt: panel === 'top' ? 'look-top' : prompt,
       holding: menu === undefined && panel === undefined ? undefined : true,
       turn,
       step,
@@ -120,7 +120,7 @@ export function DevTableRoute() {
     [menu, view],
   )
   useOpenDevMenu(candidates)
-  useOpenDevPanel(panel)
+  useOpenDevPanel(panel === 'top' ? 'look' : panel)
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(
     () => ({ mode, focus, effects: fx === undefined ? undefined : true, effectsSlow: slow }),

@@ -401,6 +401,7 @@ impl ObjectView {
             } else {
                 Vec::new()
             },
+            note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
             identity: card.identity.clone().filter(|_| printed),
             activated,
         })
@@ -439,6 +440,7 @@ impl ObjectView {
             copy: None,
             merged: Vec::new(),
             manual: Vec::new(),
+            note: None,
             identity: None,
             activated: Vec::new(),
         }
@@ -466,7 +468,10 @@ impl PlayerView {
             mulligan: player.mulligan_status(),
             hand: zone_view(state, viewer, Zone::Hand(seat)),
             library: zone_view(state, viewer, Zone::Library(seat)),
-            revealed_top: state.revealed_top(seat),
+            revealed_top: state
+                .revealed_top(seat)
+                .or_else(|| mtg_engine::sight::revealed_top_by_hand(state, seat)),
+            revealed_hand: mtg_engine::sight::revealed_hand(state, seat),
             known_top: if seat == viewer {
                 mtg_engine::sight::known_top(state, seat)
             } else {

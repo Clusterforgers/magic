@@ -70,6 +70,11 @@ revealed_top?: ObjectId,
  */
 known_top?: Array<ObjectId>, 
 /**
+ * The cards of the hand that the seat showed to every seat by hand and that are still there; left out while there
+ * are none.
+ */
+revealed_hand?: Array<ObjectId>, 
+/**
  * Graveyard (public).
  */
 graveyard: ZoneView, 

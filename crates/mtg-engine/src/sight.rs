@@ -61,6 +61,12 @@ impl GameState {
         let Some(object) = self.object(id) else {
             return false;
         };
+        // A card the table showed by hand stays shown in the place it was shown in.
+        if matches!(object.zone(), Zone::Hand(_) | Zone::Library(_))
+            && self.revealed_by_hand.contains(&object.reference())
+        {
+            return true;
+        }
         if let Zone::Library(owner) = object.zone() {
             if self.revealed_top(owner) == Some(id) {
                 return true;
@@ -118,6 +124,97 @@ pub(crate) fn look_by_hand(state: &mut GameState, seat: PlayerId, count: u32) {
             .map(|card| (seat, card))
             .collect();
     state.looked_by_hand = kept.into_iter().chain(looked).collect();
+}
+
+/// Whether `card` is still the object it was, in a hand or a library.
+fn still_there(state: &GameState, card: &ObjectRef) -> bool {
+    state.object(card.id).is_some_and(|object| {
+        object.reference() == *card && matches!(object.zone(), Zone::Hand(_) | Zone::Library(_))
+    })
+}
+
+/// Records that `card` was shown to every seat by hand, and forgets the cards shown before that have left their place.
+pub(crate) fn reveal_by_hand(state: &mut GameState, card: ObjectId) {
+    let Some(shown) = state.object(card).map(GameObject::reference) else {
+        return;
+    };
+    let mut kept: Vec<_> = state
+        .revealed_by_hand
+        .iter()
+        .filter(|held| **held != shown && still_there(state, held))
+        .copied()
+        .collect();
+    kept.push(shown);
+    state.revealed_by_hand = kept;
+}
+
+/// Forgets the cards of `seat`'s library that were shown by hand: a shuffled library hides them again.
+pub(crate) fn forget_revealed(state: &mut GameState, seat: PlayerId) {
+    let kept: Vec<_> = state
+        .revealed_by_hand
+        .iter()
+        .filter(|card| {
+            state
+                .object(card.id)
+                .is_some_and(|object| object.zone() != Zone::Library(seat))
+        })
+        .copied()
+        .collect();
+    state.revealed_by_hand = kept;
+}
+
+/// The cards of `seat`'s hand that it showed to every seat by hand and that are still there, in the hand's order.
+pub fn revealed_hand(state: &GameState, seat: PlayerId) -> Vec<ObjectId> {
+    state
+        .zone(Zone::Hand(seat))
+        .iter()
+        .filter(|id| {
+            state
+                .object(**id)
+                .is_some_and(|object| state.revealed_by_hand.contains(&object.reference()))
+        })
+        .copied()
+        .collect()
+}
+
+/// The top card of `seat`'s library when it showed it to every seat by hand and no card has covered it since.
+pub fn revealed_top_by_hand(state: &GameState, seat: PlayerId) -> Option<ObjectId> {
+    let top = state.zone(Zone::Library(seat)).last().copied()?;
+    let held = state.object(top)?.reference();
+    state.revealed_by_hand.contains(&held).then_some(top)
+}
+
+/// Puts `text` as the note of `card`, replacing its note and dropping the notes of cards that are other objects now;
+/// an empty text takes the note away.
+pub(crate) fn note_by_hand(state: &mut GameState, card: ObjectId, text: &str) {
+    let Some(on) = state.object(card).map(GameObject::reference) else {
+        return;
+    };
+    let mut kept: Vec<_> = state
+        .notes
+        .iter()
+        .filter(|(held, _)| {
+            held.id != card
+                && state
+                    .object(held.id)
+                    .is_some_and(|o| o.reference() == *held)
+        })
+        .cloned()
+        .collect();
+    if !text.is_empty() {
+        kept.push((on, text.to_owned()));
+    }
+    state.notes = kept;
+}
+
+/// The note on `card`, while it is still the object the note was put on.
+pub fn note_of(state: &GameState, card: ObjectId) -> Option<&str> {
+    let held = state.object(card)?.reference();
+    state
+        .notes
+        .iter()
+        .find(|(on, _)| *on == held)
+        .map(|(_, text)| text.as_str())
 }
 
 /// Records that the resolution in progress showed `cards` to `to`, or to every seat when it is `None`. Nothing is

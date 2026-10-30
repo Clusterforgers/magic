@@ -260,6 +260,11 @@ pub struct GameState {
     /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
     /// still the object it looked at and the library has not been shuffled.
     pub(crate) looked_by_hand: Vec<(PlayerId, crate::object::ObjectRef)>,
+    /// The cards a seat showed to every seat by hand (`ManualAction::Reveal`), identified by all while each is still the
+    /// object it showed in the place it was shown in (a shuffle ends it for a library).
+    pub(crate) revealed_by_hand: Vec<crate::object::ObjectRef>,
+    /// The notes seats put on cards by hand (`ManualAction::Note`), kept while the card is still the object it was put on.
+    pub(crate) notes: Vec<(crate::object::ObjectRef, String)>,
 }
 
 impl GameState {
@@ -699,6 +704,13 @@ impl Hash for GameState {
         // Likewise a game in which no seat looked at its library by hand.
         if !self.looked_by_hand.is_empty() {
             self.looked_by_hand.hash(state);
+        }
+        // Likewise a game in which nothing was shown or noted by hand.
+        if !self.revealed_by_hand.is_empty() {
+            self.revealed_by_hand.hash(state);
+        }
+        if !self.notes.is_empty() {
+            self.notes.hash(state);
         }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {

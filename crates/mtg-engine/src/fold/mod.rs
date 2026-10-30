@@ -153,6 +153,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             if let crate::manual::ManualAction::LookTop { count } = **action {
                 sight::look_by_hand(state, *player, count);
             }
+            crate::manual_show::apply(state, *player, action);
             Ok(())
         }
         Event::Scried(scried) => {

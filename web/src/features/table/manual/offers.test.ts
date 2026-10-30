@@ -181,12 +181,12 @@ describe('which groups and entries a card offers', () => {
 
   it('lists the groups in the order move, counters, tap, attach, effects, token, you', () => {
     const menu = manualMenu(input({ ...card(), subtypes: ['Aura'] }))
-    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'token', 'other'])
+    expect(groupIds(menu)).toEqual(['move', 'counters', 'tap', 'attach', 'effect', 'show', 'token', 'other'])
   })
 
   it('leaves out counters, tapping and attaching for a card that is not a permanent', () => {
     const menu = manualMenu(input(card({ zone: { Hand: SEAT }, permanent: null, subtypes: ['Aura'] })))
-    expect(groupIds(menu)).toEqual(['move', 'effect', 'token', 'other'])
+    expect(groupIds(menu)).toEqual(['move', 'effect', 'show', 'token', 'other'])
   })
 })
 
