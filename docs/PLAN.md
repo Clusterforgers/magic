@@ -84,8 +84,8 @@ The rules are in `CLAUDE.md`. Workspace lints forbid `unsafe` and deny `unwrap` 
 
 ## Deployment
 
-- A multi-stage Docker image holds the Rust server and the built SPA, served by the server or by nginx.
-- Kustomize or Helm manifests; Postgres via CloudNativePG, or a StatefulSet to start; k3s Traefik ingress with cert-manager TLS on the owner's domain, WebSocket-capable.
+- One multi-stage image holds the Rust server and the data tool; a second holds the built SPA behind nginx.
+- A Helm chart in the cluster's manifests repo, deployed by ArgoCD; Postgres as a StatefulSet; the nginx ingress with cert-manager TLS on the owner's domain, WebSocket-capable. `docs/deploy.md` has the release flow.
 - Each game lives in memory in a game actor with its event log persisted, so a single replica can restart and resume. Scale-out is out of scope.
 - Use is private and non-commercial among friends, which fits Wizards' Fan Content Policy; card art stays attributed and nothing is monetized.
 

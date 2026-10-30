@@ -96,6 +96,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             let report = ingest(&cache, &db, &options, &progress).await?;
             Ok(report.summary(started.elapsed()))
         }
+        Command::Migrate => migrate_summary(&connect(cli.database_url).await?).await,
         Command::Status => status::status(&cache, cli.database_url.as_deref())
             .await
             .map(|text| text.trim_end().to_owned()),
@@ -116,8 +117,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         }
         Command::CheckRules(args) => check_rules_command(cli.database_url, &cache, &args).await,
         Command::FixMarks(args) => {
-            let db = connect(cli.database_url).await?;
-            fix_marks::fix_marks(&db, &args).await
+            fix_marks::fix_marks(&connect(cli.database_url).await?, &args).await
         }
         Command::ForgeCheck(args) => {
             let db = connect(cli.database_url).await?;
@@ -192,6 +192,12 @@ fn cache_dir(flag: Option<PathBuf>) -> Result<PathBuf, CliError> {
                     .into(),
             )
         })
+}
+
+/// Applies the pending migrations of the card tables; safe to repeat and to run beside a server.
+pub async fn migrate_summary(db: &Database) -> Result<String, CliError> {
+    db.migrate().await?;
+    Ok("migrate: the card tables are current".to_owned())
 }
 
 /// The one-line summary of `fetch scryfall`.

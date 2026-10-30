@@ -38,6 +38,8 @@ pub enum Command {
     },
     /// Load the cached files into the database; inputs that were loaded before are skipped.
     Ingest(IngestArgs),
+    /// Create or update the card tables, as a new server version needs; reads no cache.
+    Migrate,
     /// Show what is cached, the latest import runs and the row counts.
     Status,
     /// Report how well the compiler and the engine cover the stored precons, and what would free the most cards.

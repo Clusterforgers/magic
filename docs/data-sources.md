@@ -17,6 +17,7 @@ docker compose up -d db
 cargo run -p mtg-cli -- fetch scryfall   # Oracle Cards and rulings, about 30 MiB
 cargo run -p mtg-cli -- fetch scryfall --printings   # and Default Cards, every printing, about 76 MiB more
 cargo run -p mtg-cli -- fetch decks      # the 198 Commander precons, about 100 MiB
+cargo run -p mtg-cli -- migrate          # applies the migrations of the card tables and loads nothing
 cargo run -p mtg-cli -- ingest           # applies the migrations, then loads the cache
 cargo run -p mtg-cli -- status           # cache, row counts, latest import runs
 cargo run -p mtg-cli -- coverage         # compiler and engine coverage of the precons, ranked blockers (--deck, --top, --all, --out)

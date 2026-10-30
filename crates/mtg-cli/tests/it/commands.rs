@@ -1,4 +1,4 @@
-//! Goal: the commands as a person meets them: a dry run needs no database while an ingest does, the status report shows the cache, the rows and the latest runs of a loaded database and says so for an empty one, and every summary is one line.
+//! Goal: the commands as a person meets them: a migrate creates the card tables and repeats without harm, a dry run needs no database while an ingest does, the status report shows the cache, the rows and the latest runs of a loaded database and says so for an empty one, and every summary is one line.
 
 use crate::common;
 
@@ -10,7 +10,7 @@ use mtg_cli::fetch::decks::DeckFetchReport;
 use mtg_cli::fetch::scryfall::{BulkAction, BulkOutcome};
 use mtg_cli::ingest::{IngestOptions, ingest};
 use mtg_cli::status::{database_report, status};
-use mtg_cli::{decks_summary, run, scryfall_summary};
+use mtg_cli::{decks_summary, migrate_summary, run, scryfall_summary};
 use mtg_db::Database;
 use sqlx::PgPool;
 
@@ -182,4 +182,20 @@ fn summaries_are_one_line_and_say_what_happened() {
         decks,
         "fetch decks: 198 selected, 190 downloaded, 5 unchanged, 2 current, 1 missing (62.0 s)"
     );
+}
+
+#[sqlx::test]
+async fn migrate_creates_the_card_tables_and_can_run_again(pool: PgPool) {
+    let db = Database::from_pool(pool);
+    assert!(
+        db.row_counts().await.is_err(),
+        "an empty database has no card tables"
+    );
+
+    let first = migrate_summary(&db).await.unwrap();
+    let again = migrate_summary(&db).await.unwrap();
+
+    assert_eq!(first, "migrate: the card tables are current");
+    assert_eq!(again, first);
+    assert_eq!(db.row_counts().await.unwrap().cards, 0);
 }
