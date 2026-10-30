@@ -4,6 +4,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::compile::protection_quality_word;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
@@ -247,6 +248,19 @@ fn copy_view(state: &GameState, sight: &Sight<'_>, object: &GameObject) -> Optio
         })
 }
 
+/// The counters on a permanent by kind, in the order of the kind; none for an object that is no permanent.
+fn counters_view(object: &GameObject) -> Vec<(CounterKind, u32)> {
+    object
+        .permanent()
+        .map(|permanent| {
+            permanent
+                .counters()
+                .map(|(kind, count)| (kind.clone(), count))
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
 /// The cards of a merged permanent from the top down; every card of a face-up permanent is public (CR 729).
 fn merged_view(object: &GameObject) -> Vec<MergedCardView> {
     object.merged().map_or_else(Vec::new, |merged| {
@@ -369,15 +383,7 @@ impl ObjectView {
             targets: object.choices().targets.clone(),
             targets_legal: targets_legal(state, id),
             // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
-            counters: object
-                .permanent()
-                .map(|permanent| {
-                    permanent
-                        .counters()
-                        .map(|(kind, count)| (kind.clone(), count))
-                        .collect()
-                })
-                .unwrap_or_default(),
+            counters: counters_view(object),
             // The abilities of a planeswalker on the battlefield are printed on the card every seat can read.
             loyalty_abilities: loyalty_abilities(state, id)
                 .into_iter()

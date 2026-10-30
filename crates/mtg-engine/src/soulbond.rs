@@ -238,7 +238,7 @@ mod tests {
         apply_event(&mut game, &ended[0]).unwrap();
         let held = game.object(ids[0]).unwrap().permanent().unwrap();
         assert_eq!(held.paired_with(), None);
-        assert!(state_based(&game, &[]).is_empty());
+        assert_eq!(state_based(&game, &[]), Vec::new());
     }
 
     #[test]
@@ -258,7 +258,7 @@ mod tests {
         pair(&mut game, ids[0], ids[1]);
         assert_eq!(game.partner_of(ids[0]), Some(ids[1]));
         assert_eq!(game.partner_of(ids[1]), Some(ids[0]));
-        assert!(state_based(&game, &[]).is_empty());
+        assert_eq!(state_based(&game, &[]), Vec::new());
     }
 
     #[rstest]
@@ -281,7 +281,7 @@ mod tests {
     fn a_pair_whose_creatures_both_leave_in_the_pass_has_nothing_to_release() {
         let (mut game, ids) = game();
         pair(&mut game, ids[0], ids[3]);
-        assert!(state_based(&game, &[ids[0], ids[3]]).is_empty());
+        assert_eq!(state_based(&game, &[ids[0], ids[3]]), Vec::new());
         assert_eq!(state_based(&game, &[ids[0]]).len(), 1);
     }
 
