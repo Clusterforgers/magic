@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest'
 import { playRequest } from './play'
 import { board, cardLine, checked, preconItem, preconView } from './fakePrecons'
 import {
-  byHandCopies,
   checkLine,
   commandersText,
   copyList,
@@ -43,13 +42,9 @@ describe('statusOf and statusWords', () => {
     expect(statusWords(item)).toBe(words)
   })
 
-  it('counts partial, manual and stale copies as played by hand, not the unplayable ones', () => {
-    expect(byHandCopies({ total: 100, verified: 90, partial: 1, manual: 2, stale: 3, unplayable: 4 })).toBe(6)
-  })
-
   it('says what the check found beside the badge', () => {
     expect(checkLine(checked(preconItem(), { partial: 2, manual: 3 }))).toBe(
-      '95 of 100 cards verified; 2 partial, 3 manual',
+      '95 of 100 cards verified; 5 played by hand',
     )
     expect(checkLine(preconItem())).toBe('100 of 100 cards verified')
   })

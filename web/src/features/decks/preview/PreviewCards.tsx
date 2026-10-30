@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { SupportMark } from '@/features/decks/SupportMark'
+import { BY_HAND, BY_HAND_TITLE, PARTLY_BY_HAND } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { Support } from '@/protocol/generated'
 import { copiesOf } from './model'
@@ -10,9 +11,9 @@ import type { CardGroup, PreviewCard } from './model'
 
 const PLAYED_BY_HAND: Readonly<Record<Support, string>> = {
   verified: 'runs whole',
-  partial: 'partly played by hand',
-  manual: 'played by hand',
-  stale: 'played by hand until it is checked again',
+  partial: PARTLY_BY_HAND,
+  manual: BY_HAND,
+  stale: `${BY_HAND} until it is checked again`,
   unplayable: 'the game cannot play it',
 }
 
@@ -40,10 +41,7 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
               <DialogDescription>{card.typeLine}</DialogDescription>
               <SupportMark support={card.support} />
               {card.reasons.length === 0 ? null : (
-                <ul
-                  aria-label="Played by hand"
-                  className="grid gap-1 text-left text-xs text-muted-foreground"
-                >
+                <ul aria-label={BY_HAND_TITLE} className="grid gap-1 text-left text-xs text-muted-foreground">
                   {[...new Set(card.reasons)].map((reason) => (
                     <li key={reason} className="[overflow-wrap:anywhere]">
                       {reason}

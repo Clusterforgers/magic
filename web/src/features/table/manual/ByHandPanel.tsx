@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef } from 'react'
 import type { CSSProperties, KeyboardEvent } from 'react'
 import { usePlay } from '@/features/game/gameContext'
+import { BY_HAND } from '@/lib/byHand'
 import { ByHandList } from './ByHand'
 import { clausesOf } from './clauses'
 import { useMenuStore } from './menuStore'
@@ -40,7 +41,7 @@ export function ByHandPanel({ target }: { target: MenuTarget }) {
       ref={panel}
       role="dialog"
       tabIndex={-1}
-      aria-label={`${object.name}: rules played by hand`}
+      aria-label={`${object.name}: rules ${BY_HAND}`}
       aria-describedby={listId}
       data-slot="by-hand-panel"
       data-card={target.id}

@@ -1,4 +1,4 @@
-// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 3 manual, 1 partial"), a deck's note counts what needs manual steps or what blocks it and leaves a changed deck to its marker, and an import summary counts cards per zone; the format list is the one the server checks.
+// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it and leaves a changed deck to its marker, and an import summary counts cards per zone; the format list is the one the server checks.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -62,7 +62,7 @@ describe('formatLabel', () => {
 describe('STATE_LABEL', () => {
   it.each([
     ['verified', 'Verified'],
-    ['manual_play', 'Manual play'],
+    ['manual_play', 'Played by hand'],
     ['blocked', 'Blocked'],
     ['unchecked', 'Unchecked'],
   ] satisfies ReadonlyArray<[DeckState, string]>)('words %s as %s', (state, word) => {
@@ -85,17 +85,17 @@ describe('SUPPORT_LABEL', () => {
 describe('countsText', () => {
   it.each([
     ['a clean deck', counts(), '100 of 100 verified'],
-    ['manual cards', counts({ verified: 97, manual: 3 }), '97 of 100 verified, 3 manual'],
+    ['manual cards', counts({ verified: 97, manual: 3 }), '97 of 100 verified, 3 played by hand'],
     [
       'the example of the design',
       counts({ verified: 96, manual: 3, partial: 1 }),
-      '96 of 100 verified, 3 manual, 1 partial',
+      '96 of 100 verified, 4 played by hand',
     ],
-    ['stale cards', counts({ verified: 98, stale: 2 }), '98 of 100 verified, 2 stale'],
+    ['stale cards', counts({ verified: 98, stale: 2 }), '98 of 100 verified, 2 played by hand'],
     [
-      'every state',
+      'every state (the three kinds played by hand are added up)',
       counts({ total: 10, verified: 4, partial: 3, manual: 1, stale: 1, unplayable: 1 }),
-      '4 of 10 verified, 1 manual, 3 partial, 1 stale, 1 unplayable',
+      '4 of 10 verified, 5 played by hand, 1 unplayable',
     ],
     ['an unplayable card', counts({ verified: 99, unplayable: 1 }), '99 of 100 verified, 1 unplayable'],
     ['no cards', counts({ total: 0, verified: 0 }), '0 of 0 verified'],
@@ -121,19 +121,27 @@ describe('checkNote', () => {
   })
 
   it.each([
-    ['manual cards', counts({ verified: 97, manual: 3 }), '97 of 100 verified, 3 manual'],
+    ['manual cards', counts({ verified: 97, manual: 3 }), '97 of 100 verified, 3 played by hand'],
     [
       'manual and partial',
       counts({ verified: 96, manual: 3, partial: 1 }),
-      '96 of 100 verified, 3 manual, 1 partial',
+      '96 of 100 verified, 4 played by hand',
     ],
     [
       'all three kinds',
       counts({ verified: 94, manual: 3, partial: 2, stale: 1 }),
-      '94 of 100 verified, 3 manual, 2 partial, 1 stale',
+      '94 of 100 verified, 6 played by hand',
     ],
-    ['only stale cards', counts({ total: 60, verified: 59, stale: 1 }), '59 of 60 verified, 1 stale'],
-    ['no cards verified', counts({ total: 40, verified: 0, manual: 40 }), '0 of 40 verified, 40 manual'],
+    [
+      'only stale cards',
+      counts({ total: 60, verified: 59, stale: 1 }),
+      '59 of 60 verified, 1 played by hand',
+    ],
+    [
+      'no cards verified',
+      counts({ total: 40, verified: 0, manual: 40 }),
+      '0 of 40 verified, 40 played by hand',
+    ],
   ])('counts %s in a deck that is played by hand', (_what, deckCounts, note) => {
     const deck = deckIn('manual_play', { summary: summary({ state: 'manual_play', counts: deckCounts }) })
     expect(checkNote(deck)).toBe(note)

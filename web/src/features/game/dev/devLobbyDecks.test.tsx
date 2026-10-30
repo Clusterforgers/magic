@@ -87,7 +87,7 @@ describe('/dev/lobby with decks', () => {
       timeout: scaled(5000),
     })
     expect(document.querySelectorAll('[data-slot="seat-deck"]')[1]).toHaveTextContent(
-      'Burn, Modern, 3 cards need manual steps',
+      'Burn, Modern, 3 cards played by hand',
     )
   }, 20_000)
 

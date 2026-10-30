@@ -1,10 +1,11 @@
 /** The precon browser as plain data: a deck's check in words, the filters, the dates and the copyable list. Pure, so tables test it. */
 import { cardsText } from '@/features/decks/format'
+import { BY_HAND, byHandCopies, cardsByHand } from '@/lib/byHand'
 import { copyText } from '@/features/decks/unvalidated/model'
 import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
-import type { Counts, DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
+import type { DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
 
-/** How a game treats a precon: it runs the whole deck, it plays some cards by hand, or it cannot take the deck. */
+/** How a game treats a precon: it runs the whole deck, some cards are played by hand, or it cannot take the deck. */
 export type PreconStatus = 'whole' | 'hand' | 'blocked'
 
 /** The statuses from the best to the worst, which the state filter lists in this order. */
@@ -16,13 +17,10 @@ export function statusOf(precon: Pick<PreconListItem, 'state' | 'playable'>): Pr
   return precon.state === 'verified' ? 'whole' : 'hand'
 }
 
-/** Copies the game plays by hand: the cards that are partial, manual or stale. */
-export const byHandCopies = (counts: Counts): number => counts.partial + counts.manual + counts.stale
-
 /** The words of a status for the state filter. */
 export const STATUS_LABEL: Readonly<Record<PreconStatus, string>> = {
   whole: 'Whole deck runs',
-  hand: 'Some cards by hand',
+  hand: `Some cards ${BY_HAND}`,
   blocked: 'Cannot be taken',
 }
 
@@ -30,8 +28,7 @@ export const STATUS_LABEL: Readonly<Record<PreconStatus, string>> = {
 export function statusWords(precon: PreconListItem): string {
   const status = statusOf(precon)
   if (status !== 'hand') return STATUS_LABEL[status]
-  const copies = byHandCopies(precon.summary.counts)
-  return `${copies} ${copies === 1 ? 'card' : 'cards'} played by hand`
+  return cardsByHand(byHandCopies(precon.summary.counts))
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const
@@ -104,10 +101,9 @@ export function countLine(shown: number, total: number): string {
 /** The line under the badge of the details: the cards in the deck and what the check found in them. */
 export function checkLine(precon: PreconListItem): string {
   const { counts } = precon.summary
+  const hand = byHandCopies(counts)
   const parts = [
-    counts.partial > 0 ? `${counts.partial} partial` : null,
-    counts.manual > 0 ? `${counts.manual} manual` : null,
-    counts.stale > 0 ? `${counts.stale} stale` : null,
+    hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)
   const base = `${counts.verified} of ${cardsText(counts.total)} verified`

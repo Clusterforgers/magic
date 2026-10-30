@@ -1,6 +1,7 @@
 /** How a card says which of its clauses the game leaves to the table: the list of them and the mark on the face. */
 import { Hand } from 'lucide-react'
 import type { MouseEvent } from 'react'
+import { BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { ManualClause, ObjectView } from '@/protocol/generated'
 import { clausesOf, showClauses } from './clauses'
@@ -60,7 +61,7 @@ export function ByHandMark({ object, spot, compact, text }: ByHandMarkProps) {
     <span
       data-slot="card-support"
       data-spot={spot}
-      title={`Played by hand: ${clauses.map((clause) => `${clause.text} (${clause.reason})`).join('; ')}`}
+      title={`${BY_HAND_TITLE}: ${clauses.map((clause) => `${clause.text} (${clause.reason})`).join('; ')}`}
       aria-hidden="true"
       onClick={store === null ? undefined : open}
       // A finger on the mark is not the long press of the card's menu.

@@ -18,7 +18,8 @@ import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { DeckMarker } from '@/features/decks/DeckMarker'
 import { cardsText, DECK_FORMATS, formatLabel } from '@/features/decks/format'
-import { byHand, copiesOf, landCopies } from '@/features/decks/preview/model'
+import { copiesOf, landCopies } from '@/features/decks/preview/model'
+import { BY_HAND_TITLE, byHandCopies } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { DeckState, DeckZone } from '@/protocol/generated'
@@ -207,7 +208,7 @@ export function DeckPane({
   const played = copiesOf([...preview.commanders, ...preview.cards])
   const lands = landCopies([...preview.commanders, ...preview.cards])
   const counts = report.summary.counts
-  const byHandCopies = byHand(counts)
+  const byHandCount = byHandCopies(counts)
   const status = saveStatus({
     dirty,
     saving,
@@ -268,7 +269,7 @@ export function DeckPane({
             </Pill>
           ) : null}
           <p className="text-sm text-muted-foreground tabular-nums">{cardsText(total)}</p>
-          {total === 0 ? null : byHandCopies > 0 || counts.unplayable > 0 ? (
+          {total === 0 ? null : byHandCount > 0 || counts.unplayable > 0 ? (
             <Button
               type="button"
               variant="link"
@@ -371,8 +372,8 @@ export function DeckPane({
                   </Disclosure>
                   <Disclosure
                     id={`${id}-hand`}
-                    title="Played by hand"
-                    count={byHandCopies}
+                    title={BY_HAND_TITLE}
+                    count={byHandCount}
                     open={handOpen}
                     onToggle={() => setHandOpen((open) => !open)}
                     sectionRef={handRef}
@@ -383,8 +384,7 @@ export function DeckPane({
                 <div className="grid gap-4 max-lg:group-data-[part=stats]/pane:hidden">
                   {shown.length === 0 ? (
                     <EmptyState icon={ShieldCheckIcon} as="h3" title="No cards with issues">
-                      Every card in this deck plays without manual steps. Turn off Issues only to see the
-                      whole deck.
+                      Every card in this deck runs whole. Turn off Issues only to see the whole deck.
                     </EmptyState>
                   ) : null}
                   {shown.map(({ zone, lines }) => {

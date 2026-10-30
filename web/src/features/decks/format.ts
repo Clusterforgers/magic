@@ -1,4 +1,5 @@
 /** Words for the decks page: format names, the check state and its note, card counts and the kind of a pasted list. */
+import { BY_HAND, BY_HAND_TITLE, byHandCopies } from '@/lib/byHand'
 import type {
   Counts,
   DeckListItem,
@@ -41,7 +42,7 @@ export function formatLabel(key: string): string {
 /** The word of each check state; the badge shows it beside an icon so colour never carries the meaning alone. */
 export const STATE_LABEL: Readonly<Record<DeckState, string>> = {
   verified: 'Verified',
-  manual_play: 'Manual play',
+  manual_play: BY_HAND_TITLE,
   blocked: 'Blocked',
   unchecked: 'Unchecked',
 }
@@ -61,13 +62,12 @@ export const cardsText = (count: number): string => `${count} ${count === 1 ? 'c
 const plural = (count: number, noun: string): string => `${count} ${noun}${count === 1 ? '' : 's'}`
 
 /**
- * What a check found, in copies: "96 of 100 verified, 3 manual, 1 partial". Only the states that have copies are named.
+ * What a check found, in copies: "96 of 100 verified, 4 played by hand, 1 unplayable". Only the states that have copies are named.
  */
 export function countsText(counts: Counts): string {
+  const hand = byHandCopies(counts)
   const parts = [
-    counts.manual > 0 ? `${counts.manual} manual` : null,
-    counts.partial > 0 ? `${counts.partial} partial` : null,
-    counts.stale > 0 ? `${counts.stale} stale` : null,
+    hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)
   return [`${counts.verified} of ${counts.total} verified`, ...parts].join(', ')
@@ -78,7 +78,7 @@ export const hasUnvalidated = (counts: Counts): boolean =>
   counts.partial + counts.manual + counts.stale + counts.unplayable > 0
 
 /**
- * The line under a deck's name that explains its check state: how many cards need manual steps, what blocks it, or that
+ * The line under a deck's name that explains its check state: how many cards are played by hand, what blocks it, or that
  * it was never checked. A verified deck, and one that changed since its check, need no line: its marker says so.
  */
 export function checkNote(deck: DeckListItem): string | null {

@@ -70,7 +70,7 @@ describe('plus and minus', () => {
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
     await click(user, 'Remove one Lightning Bolt')
     expect(pane().queryByText('Unsaved changes')).toBeNull()
-    expect(pane().getByText('Manual play')).toBeInTheDocument()
+    expect(pane().getByText('Played by hand', { selector: '[data-deck-state]' })).toBeInTheDocument()
   })
 })
 

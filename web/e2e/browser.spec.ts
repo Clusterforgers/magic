@@ -53,14 +53,18 @@ test('a guest joins a public game from the open games list and lands in its lobb
     await expect(seatRows(hostPage).filter({ hasText: 'Ivy' })).toHaveCount(1)
 
     // The host's seat shows its deck to both lobbies; the taken seat has none, and Ready waits for a choice.
-    await expect(deckLines(hostPage).nth(0)).toHaveText('Deck: Mono Green Stompers, Normal, no manual steps')
+    await expect(deckLines(hostPage).nth(0)).toHaveText(
+      'Deck: Mono Green Stompers, Normal, no cards played by hand',
+    )
     await expect(deckLines(guestPage).nth(1)).toHaveText('Deck: no deck yet')
     await expect(deckLines(hostPage).nth(1)).toHaveText('Deck: no deck yet')
     const guestReady = guestPage.getByRole('button', { name: 'Ready', exact: true })
     await expect(guestReady).toBeDisabled()
     await expect(guestPage.getByText('Ready needs a deck. Choose one under Your deck.')).toBeVisible()
     await chooseDeck(guestPage, { id: 'mono-red', name: 'Mono Red Giants' })
-    await expect(deckLines(hostPage).nth(1)).toHaveText('Deck: Mono Red Giants, Normal, no manual steps')
+    await expect(deckLines(hostPage).nth(1)).toHaveText(
+      'Deck: Mono Red Giants, Normal, no cards played by hand',
+    )
     await expect(guestReady).toBeEnabled()
     await guestReady.click()
     await expect(guestPage.getByRole('button', { name: 'Not ready', exact: true })).toBeVisible()

@@ -16,7 +16,7 @@ const RANK: Readonly<Record<Support, number>> = {
   verified: 4,
 }
 
-/** True for a state the game cannot play without manual steps. */
+/** True for a state the game does not run whole. */
 export const isIssue = (support: Support): boolean => support !== 'verified'
 
 /** What the check says of one card: how far the game plays it and the clauses it leaves to the table. */

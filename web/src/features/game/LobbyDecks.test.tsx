@@ -1,4 +1,4 @@
-// Goal: every named seat of the lobby shows its deck to the whole table as the deck's name, format and a count of cards that need manual steps (one, many or none), a seat without a deck says "no deck yet", an open seat and a page that has only the lookup say nothing about decks, the summary waits for a seat without a deck to choose one, and no card name ever reaches the page, whatever the roster carries.
+// Goal: every named seat of the lobby shows its deck to the whole table as the deck's name, format and a count of cards played by hand (one, many or none), a seat without a deck says "no deck yet", an open seat and a page that has only the lookup say nothing about decks, the summary waits for a seat without a deck to choose one, and no card name ever reaches the page, whatever the roster carries.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { SeatDeck } from '@/protocol/generated'
@@ -7,7 +7,7 @@ import { jsonResponse } from '@/test-utils/fakeFetch'
 import { renderGame } from '@/test-utils/gameHarness'
 import { lobbyMessage, SEAT_DECK } from '@/test-utils/lobbyFrames'
 import type { SeatFlags } from '@/test-utils/lobbyFrames'
-import { deckFormat, deckWords, issueWords, manualWords, sameDeck, stillWords } from './deckWords'
+import { deckFormat, deckWords, issueWords, sameDeck, stillWords } from './deckWords'
 import { lobbyRows, mayReady, summaryText } from './lobbyModel'
 import type { LobbyRow } from './lobbyModel'
 
@@ -52,9 +52,11 @@ describe('what each seat shows the table', () => {
 
   it('writes name, format and the count of manual cards for a seat that has a deck', async () => {
     await lobby(TABLE)
-    expect(deckLine(rows()[0] as HTMLElement)).toBe('Deck: Mono Green Stompers, Normal, no manual steps')
-    expect(deckLine(rows()[1] as HTMLElement)).toBe('Deck: Burn, Modern, 3 cards need manual steps')
-    expect(deckLine(rows()[2] as HTMLElement)).toBe('Deck: Pauper Mill, Pauper, 1 card needs manual steps')
+    expect(deckLine(rows()[0] as HTMLElement)).toBe(
+      'Deck: Mono Green Stompers, Normal, no cards played by hand',
+    )
+    expect(deckLine(rows()[1] as HTMLElement)).toBe('Deck: Burn, Modern, 3 cards played by hand')
+    expect(deckLine(rows()[2] as HTMLElement)).toBe('Deck: Pauper Mill, Pauper, 1 card played by hand')
   })
 
   it('says "no deck yet" for a joined seat without one, and nothing for an open seat', async () => {
@@ -99,7 +101,7 @@ describe('what each seat shows the table', () => {
       ]),
     )
     expect(rows().map(deckLine)).toEqual([
-      'Deck: Mono Green Stompers, Normal, no manual steps',
+      'Deck: Mono Green Stompers, Normal, no cards played by hand',
       'Deck: no deck yet',
     ])
     h.fail()
@@ -125,7 +127,7 @@ describe('no card name reaches the lobby', () => {
 
   it('can tell: the scan finds a card in text that has one', () => {
     expect(mentions('Burn, Modern, with Lightning Bolt')).toEqual(['Lightning Bolt'])
-    expect(mentions('Burn, Modern, 3 cards need manual steps')).toEqual([])
+    expect(mentions('Burn, Modern, 3 cards played by hand')).toEqual([])
   })
 
   it('shows only the three facts when a roster carries more about a deck', async () => {
@@ -142,8 +144,8 @@ describe('no card name reaches the lobby', () => {
       },
     )
     expect(rows().map(deckLine)).toEqual([
-      'Deck: Burn, Modern, 3 cards need manual steps',
-      'Deck: Pauper Mill, Pauper, 1 card needs manual steps',
+      'Deck: Burn, Modern, 3 cards played by hand',
+      'Deck: Pauper Mill, Pauper, 1 card played by hand',
     ])
     expect(
       mentions(
@@ -177,12 +179,12 @@ describe('no card name reaches the lobby', () => {
 
 describe('the words for a deck', () => {
   it.each<[number, string]>([
-    [0, 'no manual steps'],
-    [1, '1 card needs manual steps'],
-    [2, '2 cards need manual steps'],
-    [60, '60 cards need manual steps'],
-  ])('counts %i manual cards as "%s"', (count, words) => {
-    expect(manualWords(count)).toBe(words)
+    [0, 'no cards played by hand'],
+    [1, '1 card played by hand'],
+    [2, '2 cards played by hand'],
+    [60, '60 cards played by hand'],
+  ])('says %i cards as "%s"', (count, words) => {
+    expect(deckWords({ name: 'Burn', format: 'modern', manual_cards: count })).toBe(`Burn, Modern, ${words}`)
   })
 
   it.each<[string, string]>([
@@ -196,7 +198,7 @@ describe('the words for a deck', () => {
   })
 
   it('spells name, format and count in one phrase, and tells decks apart by all three', () => {
-    expect(deckWords(BURN)).toBe('Burn, Modern, 3 cards need manual steps')
+    expect(deckWords(BURN)).toBe('Burn, Modern, 3 cards played by hand')
     expect(sameDeck(BURN, { ...BURN })).toBe(true)
     expect(sameDeck(BURN, { ...BURN, manual_cards: 2 })).toBe(false)
     expect(sameDeck(BURN, { ...BURN, format: 'legacy' })).toBe(false)
@@ -204,7 +206,7 @@ describe('the words for a deck', () => {
   })
 
   it.each<[SeatDeck | null | undefined, string]>([
-    [BURN, 'Your deck is still Burn, Modern, 3 cards need manual steps.'],
+    [BURN, 'Your deck is still Burn, Modern, 3 cards played by hand.'],
     [null, 'You still have no deck.'],
     [undefined, 'Your deck has not changed.'],
   ])('says what is still true of %j', (current, words) => {

@@ -7,6 +7,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
+import { SIDE_DECISION_MIN_PX } from './layout'
 import { ChatPanel } from './ChatPanel'
 import { LogPanel } from './LogPanel'
 import { CommandsPanel } from './manual/panel/CommandsPanel'
@@ -224,17 +225,28 @@ export function SideSheetButton({ compact = false }: { compact?: boolean }) {
 
 /**
  * The overlay of the table's main area that an open rail panel or sheet is drawn into: the rows from the opponents down
- * to `rows` (`sidePanelRows`), so the top bar, the hand and the controls dock are never under it. It lets every press
- * through but the panel's own. A column needs none.
+ * to `rows` (`sidePanelRows`), so the top bar, the hand and the controls dock are never under it, and while `lowered` (a
+ * prompt waits in the strip) no further than the top of the prompt sheet. It lets every press through but the panel's
+ * own. A column needs none.
  */
-export function SidePanelMount({ rows }: { rows: string }) {
+export function SidePanelMount({ rows, lowered = false }: { rows: string; lowered?: boolean }) {
   const side = useSide()
   if (side.kind === 'column') return null
+  // Lowered: the overlay ends where the prompt sheet of the strip starts, and keeps room for the tabs.
+  const style: CSSProperties = lowered
+    ? {
+        gridRow: rows,
+        gridColumn: '1 / -1',
+        marginBottom: 'var(--sheet-overhang, 0px)',
+        minHeight: SIDE_DECISION_MIN_PX,
+      }
+    : { gridRow: rows, gridColumn: '1 / -1' }
   return (
     <div
       ref={(element) => side.setMount(element)}
       data-slot="side-overlay"
-      style={{ gridRow: rows, gridColumn: '1 / -1' } as CSSProperties}
+      data-lowered={lowered || undefined}
+      style={style}
       className="pointer-events-none relative z-40 min-h-0 min-w-0"
     />
   )

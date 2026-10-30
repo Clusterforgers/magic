@@ -2,8 +2,9 @@
  * The draft as the deck views read it: the lines with the check's verdict as the cards of a deck preview (so the shared
  * grouping, curve and counts apply), and the cards the game leaves to the table with their reasons. Pure, so tables test it.
  */
-import { byHand, KIND_LABEL, KIND_ORDER, kindOf } from '@/features/decks/preview/model'
+import { KIND_LABEL, KIND_ORDER, kindOf } from '@/features/decks/preview/model'
 import type { CardKind, DeckPreviewData, PreviewCard } from '@/features/decks/preview/model'
+import { byHandCopies, cardsByHand } from '@/lib/byHand'
 import type { CardHit, Counts, Support } from '@/protocol/generated'
 import type { Draft, Line } from './deckEdit'
 import { checkOf, reasonLines, SUPPORT_ORDER } from './report'
@@ -113,15 +114,11 @@ export function handCards(draft: Draft, checks: ReadonlyMap<string, LineCheck>):
 
 /** "7 cards played by hand", "1 card played by hand, 1 cannot be played" or "The whole deck runs." */
 export function handSentence(counts: Counts): string {
-  const hand = byHand(counts)
+  const hand = byHandCopies(counts)
   const { unplayable } = counts
-  const cards = (n: number): string => `${n} ${n === 1 ? 'card' : 'cards'}`
   if (hand === 0 && unplayable === 0)
     return counts.total === 0 ? 'No cards to count.' : 'The whole deck runs.'
-  return [
-    hand === 0 ? null : `${cards(hand)} played by hand`,
-    unplayable === 0 ? null : `${unplayable} cannot be played`,
-  ]
+  return [hand === 0 ? null : cardsByHand(hand), unplayable === 0 ? null : `${unplayable} cannot be played`]
     .filter((part) => part !== null)
     .join(', ')
 }

@@ -1,9 +1,9 @@
 // Goal: the deck preview counts a deck right: each card falls in one type group, the curve buckets spells by mana value with 7+ merged and lands left out, support counts add up, and a stored deck and a precon read into the same shape.
 import { describe, expect, it } from 'vitest'
 import { cardHit, deckView, lineOf, reportCard, reportOf } from '@/features/decks/fakeDecks'
+import { byHandCopies } from '@/lib/byHand'
 import type { PreconView } from '@/protocol/generated'
 import {
-  byHand,
   colourCounts,
   CURVE_LAST,
   groupByKind,
@@ -132,7 +132,7 @@ describe('support counts', () => {
   })
 
   it('counts what is played by hand without the unplayable', () => {
-    expect(byHand(supportCounts(cards))).toBe(6)
+    expect(byHandCopies(supportCounts(cards))).toBe(6)
   })
 })
 

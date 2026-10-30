@@ -185,7 +185,7 @@ describe('the precons on offer', () => {
     expect(put).toHaveLength(1)
     expect(put[0]?.body).toEqual({ deck: 'precon:c18-draconic-domination' })
     expect(document.querySelector('[data-slot="deck-note"]')).toHaveTextContent(
-      'Your deck is now Draconic Domination, Commander, no manual steps.',
+      'Your deck is now Draconic Domination, Commander, no cards played by hand.',
     )
   })
 

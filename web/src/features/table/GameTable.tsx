@@ -17,6 +17,7 @@ import { ManualMenuProvider } from './manual/ManualMenu'
 import { handGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
 import type { TableMode } from './layout'
 import { createMarksStore, MarksContext } from './prompt/marks'
+import { promptInStrip } from './prompt/ownDecision'
 import { createPreviewStore, PreviewContext } from './preview'
 import { Opponents, SeatArea } from './Seats'
 import { defaultFocusOf, seatCountOf } from './selectors'
@@ -46,6 +47,7 @@ const Table = memo(function Table() {
   )
   const followed = usePlay(defaultFocusOf)
   const active = usePlay((state) => state.view?.turn.active ?? null)
+  const lowered = usePlay(promptInStrip)
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
@@ -105,7 +107,7 @@ const Table = memo(function Table() {
                       hand={<HandDock seat={plan.viewer} growMost={handGrowMost(regions)} />}
                       controls={<ControlsDock stopsRow={table.stopsRow} />}
                       side={<SideTabs />}
-                      sidePanel={<SidePanelMount rows={sidePanelRows(regions)} />}
+                      sidePanel={<SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />}
                       // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
                       overlay={<CombatOverlay />}
                     />

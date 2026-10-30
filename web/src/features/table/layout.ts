@@ -332,14 +332,23 @@ export function gridColumns(side: SideKind): string {
 /** The least height a sheet that stops above your board gets from the opponents' area and the shared strip, in px. */
 export const SIDE_PANEL_MIN_PX = 300
 
+/** The least height an open rail panel or sheet keeps while a prompt waits in the shared strip, in px: the tabs and a row. */
+export const SIDE_DECISION_MIN_PX = 144
+
 /**
  * The `grid-row` of the overlay that holds an open rail panel or sheet, by the lines of the main area's five rows (bar,
  * opponents, shared strip, own board, hand and controls). Never the bar, whose menu stays in reach, and never the
  * hand and controls row, so the hand and the pass control stay pressable. A rail's panel reaches down over your board
  * (your life is in the pod beside it); a sheet stops above your board while the opponents' area and the strip give it
- * `SIDE_PANEL_MIN_PX`, so your life stays in view, and else takes your board as well.
+ * `SIDE_PANEL_MIN_PX`, so your life stays in view, and else takes your board as well. While a prompt waits in the strip
+ * (`decisionInStrip`) either takes the opponents' row only, which `SidePanelMount` shortens by the prompt sheet's
+ * overhang, so the prompt and the cards it asks you to click stay in view and pressable.
  */
-export function sidePanelRows(regions: Pick<Regions, 'side' | 'opponents' | 'shared'>): string {
+export function sidePanelRows(
+  regions: Pick<Regions, 'side' | 'opponents' | 'shared'>,
+  decisionInStrip = false,
+): string {
+  if (decisionInStrip) return '2 / 3'
   const aboveOwn = regions.side === 'sheet' && regions.opponents + regions.shared >= SIDE_PANEL_MIN_PX
   return aboveOwn ? '2 / 4' : '2 / 5'
 }

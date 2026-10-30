@@ -3,6 +3,7 @@
  * played by hand, or the table cannot take it, with the reasons. Pure, so the wording is tested without a page.
  */
 import { issueWords } from '@/features/game/deckWords'
+import { cardsByHand } from '@/lib/byHand'
 import type { DeckReport, DeckState } from '@/protocol/generated'
 
 /** The verdict of one deck at one table. */
@@ -37,7 +38,7 @@ export function verdictLabel(verdict: Verdict): string {
     case 'runs':
       return 'Whole deck runs'
     case 'hand':
-      return `${plural(verdict.cards, 'card')} played by hand`
+      return cardsByHand(verdict.cards)
     case 'blocked':
       return 'Cannot be taken'
   }

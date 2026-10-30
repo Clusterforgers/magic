@@ -83,7 +83,7 @@ describe('the counts of the check', () => {
   it('says how many copies the table plays by itself, from the summary of the report', async () => {
     await renderBuilder({ view: checked() })
     expect(deckPane().querySelector('[data-slot="check-counts"]')).toHaveTextContent(
-      /^22 of 30 verified, 2 manual, 4 partial, 1 stale, 1 unplayable$/,
+      /^22 of 30 verified, 7 played by hand, 1 unplayable$/,
     )
   })
 
@@ -205,7 +205,7 @@ describe('the legality section', () => {
 describe('the marker beside the name', () => {
   it.each([
     ['a clean saved check', { state: 'verified', verified: true }, 'Verified'],
-    ['a deck played by hand', { state: 'manual_play' }, 'Manual play'],
+    ['a deck played by hand', { state: 'manual_play' }, 'Played by hand'],
     ['a blocked deck', { state: 'blocked' }, 'Blocked'],
     ['a deck never checked', { state: 'unchecked', changed: false }, 'Unchecked'],
     ['a stale stored check', { state: 'unchecked', changed: true }, 'Changed since the last check'],

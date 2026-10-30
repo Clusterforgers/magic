@@ -1,23 +1,18 @@
 /**
- * The words for a seat's deck in the lobby: what the whole table is told (name, format and a count of cards that need
- * manual steps, never the name of a card) and what the owner is told about a deck that was refused. Pure, so the
+ * The words for a seat's deck in the lobby: what the whole table is told (name, format and a count of cards played
+ * by hand, never the name of a card) and what the owner is told about a deck that was refused. Pure, so the
  * wording is tested without a page.
  */
 import { formatLabel } from '@/features/decks/format'
+import { cardsByHand } from '@/lib/byHand'
 import type { Issue, SeatDeck } from '@/protocol/generated'
 
 /** The format of a seat's deck as people say it: a built-in deck is a Normal deck, the rest keep their names. */
 export const deckFormat = (key: string): string => (key === 'normal' ? 'Normal' : formatLabel(key))
 
-/** "no manual steps", "1 card needs manual steps", "3 cards need manual steps". */
-export function manualWords(count: number): string {
-  if (count === 0) return 'no manual steps'
-  return count === 1 ? '1 card needs manual steps' : `${count} cards need manual steps`
-}
-
-/** "Burn, Modern, 3 cards need manual steps": everything the table learns of a deck. */
+/** "Burn, Modern, 3 cards played by hand": everything the table learns of a deck. */
 export function deckWords(deck: SeatDeck): string {
-  return `${deck.name}, ${deckFormat(deck.format)}, ${manualWords(deck.manual_cards)}`
+  return `${deck.name}, ${deckFormat(deck.format)}, ${cardsByHand(deck.manual_cards)}`
 }
 
 /** Whether two decks are the same to the table: the same name, format and count. */

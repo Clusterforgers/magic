@@ -71,10 +71,10 @@ describe('the live check in the builder', () => {
     expect(status()).toHaveTextContent('Checking…')
     expect(checks.requests).toHaveLength(0)
 
-    await waitFor(() => expect(counts()).toHaveTextContent(/^26 of 27 verified, 1 manual$/), WAIT)
+    await waitFor(() => expect(counts()).toHaveTextContent(/^26 of 27 verified, 1 played by hand$/), WAIT)
     expect(counts()).not.toHaveTextContent('as saved')
     expect(status()).not.toHaveTextContent('Checking')
-    expect(status()).toHaveTextContent('Checked: 26 of 27 verified, 1 manual.')
+    expect(status()).toHaveTextContent('Checked: 26 of 27 verified, 1 played by hand.')
     const line = deckLine('Giant Growth')
     expect(line).toHaveAttribute('data-support', 'manual')
     expect(within(line).getByText('No rules for this card yet.')).toBeInTheDocument()
@@ -104,7 +104,7 @@ describe('the live check in the builder', () => {
   it('shows the saved counts at once when the draft is the saved list again, and asks nothing more', async () => {
     const { user, checks } = await renderBuilder(judging())
     await add(user, 'giant', 'Giant Growth')
-    await waitFor(() => expect(counts()).toHaveTextContent(/^26 of 27 verified, 1 manual$/), WAIT)
+    await waitFor(() => expect(counts()).toHaveTextContent(/^26 of 27 verified, 1 played by hand$/), WAIT)
     await user.click(screen.getByRole('button', { name: 'Remove one Giant Growth' }))
     expect(counts()).toHaveTextContent(new RegExp(`^${SAVED_COUNTS}$`))
     expect(within(deckPane()).queryByRole('region', { name: /^Not legal/ })).toBeNull()
@@ -151,7 +151,7 @@ describe('a check that fails', () => {
 
     down = false
     await user.click(within(note).getByRole('button', { name: 'Try again' }))
-    await waitFor(() => expect(counts()).toHaveTextContent(/^26 of 27 verified, 1 manual$/), WAIT)
+    await waitFor(() => expect(counts()).toHaveTextContent(/^26 of 27 verified, 1 played by hand$/), WAIT)
     expect(deckPane().querySelector('[data-slot="check-failed"]')).toBeNull()
     expect(checks.requests).toHaveLength(2)
   })
