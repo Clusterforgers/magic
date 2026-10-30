@@ -3,7 +3,6 @@ import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { CardRow } from './CardRow'
-import type { CardBox } from './CardRow'
 import { TaxChips } from './CommanderChips'
 import type { CommanderChip } from './CommanderChips'
 import { CORNER_GAP_PX, CORNER_ROOM_PX, PARTNER_HEAD_PX, planCorner } from './cornerFit'
@@ -12,9 +11,6 @@ import { ZonePicture } from './ZonePicture'
 import { ZONE_ICON } from './PodParts'
 import { emptyLabel, zoneLabel } from './podFigures'
 import { NO_IDS } from './selectors'
-
-/** The box of a commander in the chips form: the smallest card the fit engine draws. */
-const COMMAND_BOX: CardBox = { width: 44, height: 62 }
 
 interface SeatCornerProps {
   /** The seat's name, in the titles and names of the lists. */
@@ -91,7 +87,7 @@ function CommanderSlot({ owner, ids, width, height, tax }: CommanderSlotProps) {
 /**
  * The corner of a seat's pod: its commanders, graveyard and exile as pictures in a grid sized by `planCorner`, each with
  * its count, the commanders with their tax. Where the pod column leaves no room for the least picture it keeps the
- * zone chips and the small commander cards.
+ * zone chips alone, in one row, and the tax chips under them.
  */
 export function SeatCorner({
   owner,
@@ -113,31 +109,18 @@ export function SeatCorner({
   )
   const group = `${owner}'s zones`
   if (plan === null) {
-    const partners = drawn.length > 1
+    // No room for the least picture is none for a small card either (it is as high), so the chips come whole.
     return (
       <>
-        <div className="flex gap-2">
-          <div
-            role="group"
-            aria-label={group}
-            className={cn(
-              'grid min-w-0 flex-1 content-start gap-1',
-              partners ? 'grid-cols-1' : 'grid-cols-2',
-            )}
-          >
-            <ZoneButton zone="graveyard" owner={owner} ids={graveyard} />
-            <ZoneButton zone="exile" owner={owner} ids={exile} />
-            {commanders.length > 0 ? <ZoneButton zone="command" owner={owner} ids={commanders} /> : null}
-          </div>
-          {drawn.length === 0 ? null : (
-            <CardRow
-              ids={drawn}
-              label={`${owner}'s command zone`}
-              size="compact"
-              box={COMMAND_BOX}
-              className={cn('shrink-0 content-start', partners && 'flex-col')}
-            />
-          )}
+        <div
+          role="group"
+          aria-label={group}
+          data-slot="corner-chips"
+          className={cn('grid min-w-0 gap-1', commanders.length > 0 ? 'grid-cols-3' : 'grid-cols-2')}
+        >
+          <ZoneButton zone="graveyard" owner={owner} ids={graveyard} />
+          <ZoneButton zone="exile" owner={owner} ids={exile} />
+          {commanders.length > 0 ? <ZoneButton zone="command" owner={owner} ids={commanders} /> : null}
         </div>
         {tax.length === 0 ? null : (
           <div data-slot="commander-chips" className="flex flex-wrap gap-1">

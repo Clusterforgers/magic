@@ -6,8 +6,8 @@ import {
   attachName,
   attachedWords,
   attachesOf,
-  capMarks,
   compactTone,
+  foldMarks,
   givesWords,
   itemsOf,
   listWords,
@@ -15,8 +15,10 @@ import {
   marksOf,
   roomFor,
   shortKeyword,
+  sumGives,
 } from './attachMarks'
 import type { MarkTone } from './attachMarks'
+import { markPx } from './markLayout'
 
 const HOST = card({ id: 1, controller: 0 })
 
@@ -41,35 +43,56 @@ const piece = (
 const SEAT = (id: number): string => ['Ana', 'Bo', 'Cy'][id] ?? `Seat ${id + 1}`
 
 // Every rule the engine names, with the mark it makes: a rule left out of this table fails the type check.
-const RULE_MARKS: Record<GivenRule, [text: string, words: string, tone: MarkTone]> = {
-  CantAttack: ["Can't attack", "can't attack", 'restrict'],
-  CantAttackYou: ["Can't attack you", "can't attack its controller", 'restrict'],
-  CantBlock: ["Can't block", "can't block", 'restrict'],
-  CanBlockOnly: ['Blocks few', 'can block only some attackers', 'restrict'],
-  CantBeBlocked: ['Unblockable', "can't be blocked", 'raise'],
-  CantBeBlockedBy: ['Evasive', "can't be blocked by some creatures", 'raise'],
-  BlockerLimit: ['Block limit', 'needs or allows only some blockers', 'plain'],
-  BlocksAdditional: ['Extra blocks', 'can block additional creatures', 'raise'],
-  DoesntUntap: ["Doesn't untap", "doesn't untap", 'restrict'],
-  CantBeTurnedFaceUp: ['Stays face down', "can't be turned face up", 'restrict'],
-  LoseAbilities: ['Loses abilities', 'loses all abilities', 'restrict'],
-  LoseKeyword: ['Loses a keyword', 'loses a keyword', 'restrict'],
-  GainAbility: ['New ability', 'gains an ability', 'raise'],
-  SetController: ['Stolen', 'changes controller', 'restrict'],
-  SwitchPowerToughness: ['Swaps P/T', 'power and toughness are switched', 'plain'],
-  ChangeTypes: ['New types', 'changes its types', 'plain'],
-  SetColors: ['New colour', 'changes its colour', 'plain'],
-  Goaded: ['Goaded', 'is goaded', 'restrict'],
-  UmbraArmor: ['Umbra', 'umbra armor, so it is not destroyed', 'raise'],
+type RuleMark = [text: string, brief: string, words: string, tone: MarkTone]
+const RULE_MARKS: Record<GivenRule, RuleMark> = {
+  CantAttack: ["Can't attack", 'No attack', "can't attack", 'restrict'],
+  CantAttackYou: ["Can't attack you", 'Spares you', "can't attack its controller", 'restrict'],
+  CantBlock: ["Can't block", 'No block', "can't block", 'restrict'],
+  CanBlockOnly: ['Blocks few', 'Blocks few', 'can block only some attackers', 'restrict'],
+  CantBeBlocked: ['Unblockable', 'Evades', "can't be blocked", 'raise'],
+  CantBeBlockedBy: ['Evasive', 'Evasive', "can't be blocked by some creatures", 'raise'],
+  BlockerLimit: ['Block limit', 'Blockers', 'needs or allows only some blockers', 'plain'],
+  BlocksAdditional: ['Extra blocks', 'More blocks', 'can block additional creatures', 'raise'],
+  DoesntUntap: ["Doesn't untap", 'No untap', "doesn't untap", 'restrict'],
+  CantBeTurnedFaceUp: ['Stays face down', 'Face down', "can't be turned face up", 'restrict'],
+  LoseAbilities: ['Loses abilities', 'Blanked', 'loses all abilities', 'restrict'],
+  LoseKeyword: ['Loses a keyword', 'No keyword', 'loses a keyword', 'restrict'],
+  GainAbility: ['New ability', 'Ability', 'gains an ability', 'raise'],
+  SetController: ['Stolen', 'Stolen', 'changes controller', 'restrict'],
+  SwitchPowerToughness: ['Swaps P/T', 'P/T swap', 'power and toughness are switched', 'plain'],
+  ChangeTypes: ['New types', 'Types', 'changes its types', 'plain'],
+  SetColors: ['New colour', 'Colour', 'changes its colour', 'plain'],
+  Goaded: ['Goaded', 'Goaded', 'is goaded', 'restrict'],
+  UmbraArmor: ['Umbra', 'Umbra', 'umbra armor, so it is not destroyed', 'raise'],
 }
 
 describe('itemsOf', () => {
-  it.each(Object.entries(RULE_MARKS) as Array<[GivenRule, [string, string, MarkTone]]>)(
+  it.each(Object.entries(RULE_MARKS) as Array<[GivenRule, RuleMark]>)(
     'makes the rule %s a mark',
-    (rule, [text, words, tone]) => {
-      expect(itemsOf({ rules: [rule] })).toEqual([{ text, words, tone }])
+    (rule, [text, brief, words, tone]) => {
+      expect(itemsOf({ rules: [rule] })).toEqual([{ text, brief, words, tone }])
     },
   )
+
+  it.each(Object.entries(RULE_MARKS) as Array<[GivenRule, RuleMark]>)(
+    'writes the rule %s in a brief form no longer than its text, of whole short words',
+    (rule, [text, brief]) => {
+      expect(brief.length).toBeLessThanOrEqual(text.length)
+      expect(markPx(brief)).toBeLessThanOrEqual(markPx(text))
+      // A single word of the brief form fits the foot stack of a 100 px card (62 px) with its padding.
+      for (const word of brief.split(' ')) expect(markPx(word), `${rule}: ${word}`).toBeLessThanOrEqual(62)
+    },
+  )
+
+  it('writes the brief form of the long keywords and leaves the rest as they are', () => {
+    expect(itemsOf({ keywords: ['Indestructible', 'Flying', 'Protection from multicolored'] })).toMatchObject(
+      [
+        { text: 'Indestructible', brief: 'Indestr.' },
+        { text: 'Flying', brief: 'Flying' },
+        { text: 'Pro multicolored', brief: 'Pro multi' },
+      ],
+    )
+  })
 
   it.each<[string, GivesView | undefined, string[]]>([
     ['nothing', undefined, []],
@@ -183,11 +206,21 @@ describe('marksOf', () => {
     ])
   })
 
-  it('leaves items out that do not fit and says so', () => {
+  it.each<[string, number, number, string[], boolean]>([
+    ['a wide mark in one line', 200, 2, ['+3/+3 First strike'], false],
+    ['a mark of 75 px in two lines', 75, 2, ['+3/+3 First', 'strike'], false],
+    ['a mark of 75 px in one line leaves the keyword out', 75, 1, ['+3/+3 …'], true],
+    ['a mark narrower than its first item', 20, 1, ['+3/+3'], true],
+  ])('writes %s', (_name, span, maxLines, lines, cut) => {
     const armor = piece(2, 'Ethereal Armor', 'Aura', { power: 3, toughness: 3, keywords: ['First strike'] })
-    expect(marksOf(HOST, [armor], { chars: 18 })[0]).toMatchObject({ text: '+3/+3 First strike', cut: false })
-    expect(marksOf(HOST, [armor], { chars: 12 })[0]).toMatchObject({ text: '+3/+3 …', cut: true })
-    expect(marksOf(HOST, [armor], { chars: 2 })[0]).toMatchObject({ text: '+3/+3 …', cut: true })
+    const [mark] = marksOf(HOST, [armor], { span, maxLines })
+    expect(mark).toMatchObject({ lines, text: lines.join(' '), cut })
+  })
+
+  it('writes Pacifism as "Pacified" where the full words do not fit one line', () => {
+    const pacifism = piece(2, 'Pacifism', 'Aura', { rules: ['CantAttack', 'CantBlock'] })
+    expect(marksOf(HOST, [pacifism], { span: 93 })[0]?.lines).toEqual(['Pacified'])
+    expect(marksOf(HOST, [pacifism], { span: 130 })[0]?.lines).toEqual(["Can't attack or block"])
   })
 
   it('does not count the host among its attachments', () => {
@@ -200,37 +233,122 @@ describe('marksOf', () => {
   })
 })
 
-describe('capMarks', () => {
-  const marks = marksOf(
-    HOST,
-    [1, 2, 3, 4, 5].map((id) => piece(10 + id, `Aura ${id}`, 'Aura', { power: id })),
+describe('sumGives', () => {
+  it.each<[string, Array<GivesView | undefined>, GivesView]>([
+    ['powers and toughnesses added', [{ power: 2 }, { power: 3, toughness: 3 }], { power: 5, toughness: 3 }],
+    ['a raise and a lowering that cancel', [{ power: 2 }, { power: -2 }], {}],
+    [
+      'the same keyword once, whatever its case',
+      [{ keywords: ['Haste'] }, { keywords: ['haste', 'Shroud'] }],
+      {
+        keywords: ['Haste', 'Shroud'],
+      },
+    ],
+    [
+      'a rule once',
+      [{ rules: ['CantBlock'] }, { rules: ['CantBlock', 'Goaded'] }],
+      {
+        rules: ['CantBlock', 'Goaded'],
+      },
+    ],
+    ['the last set value', [{ set: [1, 1] }, { set: [0, 4] }, {}], { set: [0, 4] }],
+    ['an attachment that gives nothing', [undefined, { power: 1 }, {}], { power: 1 }],
+    ['nothing at all', [], {}],
+  ])('adds up %s', (_name, all, sum) => {
+    expect(sumGives(all)).toEqual(sum)
+  })
+})
+
+describe('foldMarks', () => {
+  const auras = [1, 2, 3, 4, 5].map((id) => piece(10 + id, `Aura ${id}`, 'Aura', { power: id }))
+  const lines = (marks: readonly { lines: readonly string[] }[]): number =>
+    marks.reduce((sum, mark) => sum + mark.lines.length, 0)
+
+  it.each<[number, number, number, string | null]>([
+    [6, 5, 0, null],
+    [5, 5, 0, null],
+    [4, 2, 3, '+12/+0'],
+    [3, 1, 4, '+14/+0'],
+    [2, 0, 5, '+15/+0'],
+    [1, 0, 5, '+15/+0'],
+  ])(
+    'fits five attachments in %i lines as %i marks and the sum of %i others "%s"',
+    (room, shown, count, text) => {
+      const folded = foldMarks(attachesOf(HOST, auras), room)
+      expect(folded.shown).toHaveLength(shown)
+      expect(folded.rest?.count ?? 0).toBe(count)
+      expect(folded.rest?.text ?? null).toBe(text)
+      expect(lines(folded.shown) + (folded.rest?.lines.length ?? 0)).toBeLessThanOrEqual(room)
+    },
   )
 
-  it.each([
-    [6, 5, 0],
-    [5, 5, 0],
-    [4, 3, 2],
-    [3, 2, 3],
-    [2, 1, 4],
-    [1, 0, 5],
-  ])('fits %i lines with %i marks and "+%i"', (room, shown, more) => {
-    const capped = capMarks(marks, room)
-    expect(capped.shown).toHaveLength(shown)
-    expect(capped.more).toBe(more)
+  it('sums what the marks past the room give, whole attachments of any kind', () => {
+    const attaches = attachesOf(HOST, [
+      piece(2, 'Ethereal Armor', 'Aura', { power: 3, toughness: 3, keywords: ['First strike'] }),
+      piece(3, 'Rancor', 'Aura', { power: 2 }),
+      piece(4, 'Bonesplitter', 'Equipment', { power: 1, toughness: 1 }),
+      piece(5, 'Boots', 'Equipment', { power: 2, toughness: 2, keywords: ['Haste'] }),
+      piece(6, 'Cloak', 'Equipment', { keywords: ['Shroud', 'haste'] }),
+    ])
+    const { shown, rest } = foldMarks(attaches, 3)
+    expect(shown.map((mark) => mark.text)).toEqual(['+3/+3 First strike'])
+    expect(rest).toMatchObject({ text: '+5/+3 Haste Shroud', count: 4, tone: 'raise' })
+    expect(rest?.words).toBe('4 more attachments: +5/+3, haste and shroud')
+    expect(rest?.ids).toEqual([3, 4, 5, 6])
+  })
+
+  it('sums attachments that give nothing as their count', () => {
+    const attaches = attachesOf(
+      HOST,
+      [2, 3, 4, 5].map((id) => piece(id, `Sword ${id}`, 'Equipment')),
+    )
+    expect(foldMarks(attaches, 2).rest).toMatchObject({ text: '+4', count: 4, tone: 'plain' })
   })
 
   it('counts the attachments left out, not the marks', () => {
-    const merged = marksOf(HOST, [
+    const attaches = attachesOf(HOST, [
       piece(2, 'A', 'Aura', { power: 1 }),
       piece(3, 'B', 'Aura', { power: 1 }),
       piece(4, 'C', 'Aura', { power: 1 }),
       piece(5, 'D', 'Aura', { power: 4 }),
+      piece(6, 'E', 'Aura', { power: 9 }),
     ])
-    expect(merged).toHaveLength(2)
-    expect(capMarks(merged, 1).more).toBe(4)
-    expect(capMarks(merged, 2)).toMatchObject({ more: 0 })
-    const third = marksOf(HOST, [piece(9, 'E', 'Aura', { power: 9 })])
-    expect(capMarks([...merged, ...third], 2).more).toBe(2)
+    expect(marksFrom(attaches)).toHaveLength(3)
+    expect(foldMarks(attaches, 3).rest).toBeNull()
+    // The mark of the first three stands for three attachments; with four lines, the other two are summed beside it.
+    const folded = foldMarks(attaches, 2)
+    expect(folded.shown).toHaveLength(0)
+    expect(folded.rest).toMatchObject({ count: 5, text: '+16/+0' })
+    expect(foldMarks(attaches, 3).rest).toBeNull()
+  })
+
+  it('gives a mark a second line only while they all fit, else one line each', () => {
+    const pair = attachesOf(HOST, [
+      piece(2, 'Pacifism', 'Aura', { rules: ['CantAttack', 'CantBlock'] }),
+      piece(3, 'Armor', 'Aura', { power: 3, toughness: 3, keywords: ['First strike'] }),
+    ])
+    const tight = { span: 75 }
+    expect(foldMarks(pair, 4, tight).shown.map((mark) => mark.lines)).toEqual([
+      ['Pacified'],
+      ['+3/+3 First', 'strike'],
+    ])
+    expect(foldMarks(pair, 2, tight).shown.map((mark) => mark.lines)).toEqual([['Pacified'], ['+3/+3 …']])
+  })
+
+  it('keeps every line of every mark inside the span, never a cut word', () => {
+    const attaches = attachesOf(HOST, [
+      piece(2, 'Pacifism', 'Aura', { rules: ['CantAttack', 'CantBlock'] }),
+      piece(3, 'Armor', 'Aura', { power: 3, toughness: 3, keywords: ['Indestructible', 'First strike'] }),
+      piece(4, 'Sword of Fire and Ice', 'Equipment'),
+    ])
+    for (const span of [62, 74, 93, 150]) {
+      for (const room of [2, 3, 4, 5]) {
+        const { shown, rest } = foldMarks(attaches, room, { span })
+        for (const line of [...shown, ...(rest === null ? [] : [rest])].flatMap((mark) => mark.lines)) {
+          expect(markPx(line), `${span}px, ${room} lines: ${line}`).toBeLessThanOrEqual(span)
+        }
+      }
+    }
   })
 })
 
