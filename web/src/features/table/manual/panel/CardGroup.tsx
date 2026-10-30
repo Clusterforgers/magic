@@ -64,6 +64,11 @@ export function CardGroup({ open, setOpen }: { open: string | null; setOpen: (id
   const input = useMenuInput(card ?? -1)
   const shown = card !== null && input !== null ? input : null
   const header = useRef<HTMLParagraphElement>(null)
+  const root = useRef<HTMLDivElement>(null)
+  // The group sits under the others, so a card chosen scrolls it to the top of the panel, where its commands are.
+  useEffect(() => {
+    if (card !== null) root.current?.scrollIntoView?.({ block: 'start' })
+  }, [card])
   // A card chosen while this is on show takes the focus, so the keyboard continues with its commands.
   const was = useRef(card)
   useEffect(() => {
@@ -73,7 +78,7 @@ export function CardGroup({ open, setOpen }: { open: string | null; setOpen: (id
   }, [card, pick.phase])
   const commands = useMemo(() => (shown === null ? [] : commandsFor(shown)), [shown])
   return (
-    <div role="group" aria-labelledby={heading} data-group="card" className="grid gap-0.5 py-1">
+    <div ref={root} role="group" aria-labelledby={heading} data-group="card" className="grid gap-0.5 py-1">
       <h3 id={heading} className="px-2 pt-1 text-xs font-medium text-muted-foreground">
         Card
       </h3>
