@@ -48,7 +48,8 @@ function setup() {
 const cast = (over: Partial<Move> = {}): Move => ({
   kind: 'cast',
   object: 5,
-  look: card({ id: 5, zone: 'Stack', name: 'Lightning Bolt' }),
+  // Another controller than the viewer keeps the viewer's own spotlight (`TableSpotlight.test.tsx`) out of these fliers.
+  look: card({ id: 5, zone: 'Stack', name: 'Lightning Bolt', controller: FOE }),
   from: { seat: ME, zone: 'hand', object: 5 },
   to: { stack: true, object: 5 },
   order: 0,

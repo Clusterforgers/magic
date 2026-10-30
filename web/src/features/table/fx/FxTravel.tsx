@@ -72,8 +72,9 @@ function Flier({ flight, travel }: { flight: Flight; travel: Travel }) {
 /**
  * The cards that fly while a batch's moves play: a picture of each card (a card back for one the viewer may not
  * identify, turning face up as it reaches the stack) or a chip for an ability, flying from where it was to where it
- * goes, and the spell of a cast by another seat stands large over the shared strip between its legs (`Spotlight`). The layer lies over the table, is `aria-hidden` and takes no pointer, and sits outside the layout: nothing
- * moves because of it. A newer batch ends these flights at once; the table underneath already shows the result.
+ * goes, and the spell of a cast stands large over the shared strip between its legs (`Spotlight`: another seat's in
+ * full time, the viewer's own shorter). The layer lies over the table, is `aria-hidden` and takes no pointer, and sits
+ * outside the layout: nothing moves because of it. A newer batch ends these flights at once; the table underneath already shows the result.
  */
 export function FxTravel() {
   const travel = useFx().travel

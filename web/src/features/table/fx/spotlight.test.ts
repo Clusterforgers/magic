@@ -1,4 +1,4 @@
-// Goal: the spotlight stands for a cast by another seat, or one that passes through the stack inside the batch, never for the viewer's own cast that stays on the stack; it comes after the first leg (at once under reduced motion, where it is still), lasts `--fx-spotlight-ms`, is stretched by the slow-down, shows a back for a card the viewer may not identify, is 1.6 times a hand card (shrunk to the room above the strip, kept inside the window), and holds the second leg of the same card back until it is over.
+// Goal: the spotlight stands for a cast by another seat or one that passes through the stack inside the batch, and for the viewer's own cast that stays on the stack, for 0.6 of the time and never as a card back; it comes after the first leg (at once under reduced motion, where it is still), lasts `--fx-spotlight-ms` (0.6 of it for the viewer's own), is stretched by the slow-down, shows a back for a card the viewer may not identify, is 1.6 times a hand card (shrunk to the room above the strip, kept inside the window), and holds the second leg of the same card back until it is over.
 import { describe, expect, it } from 'vitest'
 import { card } from '@/test-utils/cards'
 import { MOVE_MS } from './moves'
@@ -6,11 +6,13 @@ import type { Move } from './moves'
 import type { Box, Spot } from './places'
 import {
   CAPTION_PX,
+  OWN_SHARE,
   planSpotlight,
   SPOTLIGHT_FLOOR_PX,
   SPOTLIGHT_GAP_PX,
   SPOTLIGHT_MIN_PX,
   spotlightBoxes,
+  spotlightMs,
   spotlightKeyframes,
   spotlightSize,
 } from './spotlight'
@@ -35,14 +37,54 @@ const cast = (over: Partial<Move> = {}): Move => ({
   ...over,
 })
 
+/** The viewer's own cast of the same spell: it stays on the stack, so it has no full spotlight. */
+const mine = (over: Partial<Move> = {}): Move =>
+  cast({
+    look: card({ id: 5, zone: 'Stack', name: 'Lightning Bolt', controller: ME, owner: ME }),
+    from: { seat: ME, zone: 'hand', object: 5 },
+    spotlight: false,
+    ...over,
+  })
+
 const plan = (moves: Move[], over: Partial<SpotlightInput> = {}) =>
-  planSpotlight({ moves, strip: STRIP, hand: HAND, window: WINDOW, batch: 3, still: false, ...over })
+  planSpotlight({
+    moves,
+    strip: STRIP,
+    hand: HAND,
+    window: WINDOW,
+    viewer: ME,
+    batch: 3,
+    still: false,
+    ...over,
+  })
 
 describe('who stands in the spotlight', () => {
   it.each<[string, Move[], string | null]>([
     ['a cast by another seat', [cast()], 'Lightning Bolt'],
-    ['the viewer’s own cast that stays on the stack', [cast({ spotlight: false })], null],
-    ['the viewer’s own cast that resolves in the same batch', [cast({ spotlight: true })], 'Lightning Bolt'],
+    ['the viewer’s own cast that stays on the stack', [mine()], 'Lightning Bolt'],
+    ['the viewer’s own cast that resolves in the same batch', [mine({ spotlight: true })], 'Lightning Bolt'],
+    [
+      'another seat’s cast, which wins over the viewer’s own in the same batch',
+      [mine(), cast({ order: 1, look: card({ id: 7, name: 'Shock', controller: FOE }), object: 7 })],
+      'Shock',
+    ],
+    [
+      'the viewer’s own cast after a land',
+      [mine({ kind: 'landed', spotlight: false }), mine({ order: 1 })],
+      'Lightning Bolt',
+    ],
+    ['a cast with no card to show', [mine({ look: null })], null],
+    [
+      'a face-down card of the viewer’s own',
+      [mine({ look: card({ id: 5, name: 'Lightning Bolt', controller: ME, face_down: true }) })],
+      null,
+    ],
+    [
+      'a nameless card of the viewer’s own',
+      [mine({ look: card({ id: 5, name: '', controller: ME }) })],
+      null,
+    ],
+    ['an ability of the viewer’s own', [mine({ kind: 'activated' })], null],
     [
       'the first of two casts',
       [cast(), cast({ object: 6, look: card({ id: 6, name: 'Shock', controller: FOE }), order: 1 })],
@@ -79,6 +121,29 @@ describe('when it stands', () => {
   it('lasts the spotlight token, stretched by the slow-down', () => {
     expect(plan([cast()])?.duration).toBe(MOVE_MS.spotlight)
     expect(plan([cast()], { slow: 3 })?.duration).toBe(3 * MOVE_MS.spotlight)
+  })
+
+  it.each<[string, Move[], Partial<SpotlightInput>, boolean, number, number]>([
+    ['another seat’s cast', [cast()], {}, false, MOVE_MS.spotlight, MOVE_MS.travel],
+    ['the viewer’s own cast', [mine()], {}, true, 540, MOVE_MS.travel],
+    ['the viewer’s own cast, stretched', [mine()], { slow: 5 }, true, 5 * 540, 5 * MOVE_MS.travel],
+    ['the viewer’s own cast under reduced motion', [mine()], { still: true }, true, 540, 0],
+    ['the viewer’s own cast that resolves in the batch', [mine({ spotlight: true })], {}, false, 900, 380],
+  ])('%s: own %s, lasts %s ms after %s ms', (_, moves, over, own, duration, delay) => {
+    expect(plan(moves, over)).toMatchObject({ own, duration, delay })
+  })
+
+  it('stands for 0.6 of the full time in the same 150 ms fades, so it holds for 240 ms', () => {
+    expect(OWN_SHARE).toBe(0.6)
+    expect(spotlightMs(true)).toBe(0.6 * MOVE_MS.spotlight)
+    const frames = spotlightKeyframes({ still: false, own: true })
+    const duration = spotlightMs(true)
+    expect((frames[1]?.offset ?? 0) * duration).toBeCloseTo(150)
+    expect((1 - (frames[2]?.offset ?? 0)) * duration).toBeCloseTo(150)
+    const held = ((frames[2]?.offset ?? 0) - (frames[1]?.offset ?? 0)) * duration
+    expect(held).toBeCloseTo(240)
+    const still = spotlightKeyframes({ still: true, own: true })
+    expect(still.map((frame) => frame.opacity)).toEqual([0, 1, 1, 0])
   })
 
   it('keeps a whole cast under 1.7 s: the leg, the spotlight and the leg of the resolution', () => {
