@@ -7,15 +7,13 @@ import type { LineSpec } from './plan'
 
 /** One line for each arrow, between the boxes measured when the batch arrived. */
 export function effectLines(arrows: readonly EffectArrow[]): LineSpec[] {
-  return arrows.map(
-    ({ token, kind, from, to }): LineSpec => ({
-      key: `effect:${token}:${kind}`,
-      kind: 'effect',
-      pending: false,
-      from: { kind: 'spot', id: `${token}:from`, box: from },
-      to: { kind: 'spot', id: `${token}:to`, box: to },
-    }),
-  )
+  return arrows.map(({ token, kind, from, to }): LineSpec => ({
+    key: `effect:${token}:${kind}`,
+    kind: 'effect',
+    pending: false,
+    from: { kind: 'spot', id: `${token}:from`, box: from },
+    to: { kind: 'spot', id: `${token}:to`, box: to },
+  }))
 }
 
 const NO_LINES: readonly LineSpec[] = []

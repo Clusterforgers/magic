@@ -220,6 +220,19 @@ export const PLAY_MOVES = {
       events.push({ SpellCast: { player: scene.foe, object: top.id } })
     }
     events.push({ ResolutionBegan: { object: top.id } })
+    // What it aims at, when that is a creature on the battlefield, dies of it; an instant that aims at nothing takes an
+    // opponent's creature.
+    const aimedAt = (top.targets ?? [])
+      .flat()
+      .flatMap((target) => ('Object' in target ? [target.Object.id] : []))[0]
+    const victim =
+      aimedAt === undefined && top.types.includes('Instant')
+        ? creatureOf(scene.next, scene.foe)
+        : scene.next.objects.find((object) => object.id === aimedAt)
+    if (victim !== undefined && victim.zone === 'Battlefield' && victim.types.includes('Creature')) {
+      relocate(scene, victim.id, { Graveyard: victim.owner })
+      events.push({ CreatureDied: { object: victim.id, cause: 'LethalDamage' } })
+    }
     resolveInto(scene, top, events)
     events.push({ ResolutionEnded: { object: top.id, outcome: 'Resolved' } })
     return events

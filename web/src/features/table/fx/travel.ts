@@ -46,7 +46,7 @@ export interface Flight {
   readonly reveal: boolean
   /** The badge it carries in flight: a spell that resolves, is countered or fizzles says so on its way out. */
   readonly mark: MarkFx | null
-    /** Milliseconds after the batch's first leg, stretched by the slow-down. */
+  /** Milliseconds after the batch's first leg, stretched by the slow-down. */
   readonly delay: number
   /** Milliseconds, stretched by the slow-down. */
   readonly duration: number
@@ -113,7 +113,8 @@ export function planFlights({ moves, viewer, starts, ends, batch, slow = 1 }: Pl
       size: isChip(move) ? null : sizeOf(from, to),
       faceDown,
       reveal: faceDown && move.look !== null,
-      mark: move.kind === 'resolved' || move.kind === 'countered' || move.kind === 'fizzled' ? move.kind : null,
+      mark:
+        move.kind === 'resolved' || move.kind === 'countered' || move.kind === 'fizzled' ? move.kind : null,
       delay: delay * slow,
       duration: MOVE_MS.travel * slow,
     })

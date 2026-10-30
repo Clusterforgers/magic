@@ -30,7 +30,8 @@ export function CardPicture({
   face?: Ref<HTMLSpanElement> | undefined
   children?: ReactNode
 }) {
-  const layer = 'relative col-start-1 row-start-1 grid h-(--card-h) w-(--card-w) place-items-center rounded-md'
+  const layer =
+    'relative col-start-1 row-start-1 grid h-(--card-h) w-(--card-w) place-items-center rounded-md'
   const showFace = look !== null
   return (
     <span className="relative grid shadow-lg" style={pictureStyle(size)}>

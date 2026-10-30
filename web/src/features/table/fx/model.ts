@@ -6,7 +6,16 @@ import type { ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
 import type { RowKind } from '../cardModel'
 
 /** The marks a card or a stack chip shows for a moment (docs/ui-design.md, Playing is legible), each with an icon and a word. */
-export const MARK_FX = ['activated', 'triggered', 'resolved', 'countered', 'fizzled', 'exiled', 'bounced', 'drawn'] as const
+export const MARK_FX = [
+  'activated',
+  'triggered',
+  'resolved',
+  'countered',
+  'fizzled',
+  'exiled',
+  'bounced',
+  'drawn',
+] as const
 
 /** One of the marks. */
 export type MarkFx = (typeof MARK_FX)[number]

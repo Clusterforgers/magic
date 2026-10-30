@@ -180,14 +180,16 @@ A single mark stays at most 600 ms; a whole sequence stays under 1,700 ms (two l
 
 ### Reduced motion
 
-Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and the destination take their marks as still outlines at once, the spotlight is the ring of the top stack chip, and arrows appear without drawing in. The store drops moves under `reduced` as it drops ghosts.
+Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and the destination take their marks as still outlines at once, the spotlight appears and goes without motion for as long as it stands, marks show as badges that simply appear and go, and arrows appear without drawing in. The store drops moves under `reduced` as it drops ghosts.
 
 ### The stack
 
 - The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo", at most 3 names, then "+N more") and a dot in its controller's colour. Every chip's label for a screen reader ends with ", targeting Hill Giant and Bo".
 - Arrows run from the top chip to each target (a card, a player's pod, or the chip of another stack item) while it is on the stack, at most 6; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer (its own layer above the strip), in `--primary` for the viewer's items and `--destructive` for another seat's, and appear without drawing in under reduced motion.
 - A target that is gone (its player lost, or it left where it was since the item went on the stack) gets no arrow and drops out of the line; an item with none left says "no legal target" on a dashed chip.
-- The spotlight is a picture at 1.6 times the hand card's height, centred over the shared strip. It never stays, so the layout gate measures the table without it.
+- The spotlight is the card at 1.6 times the hand card's height (at least 168 px, at most 40 % of the window, shrunk to 96 px at the least to fit above the strip), centred over the shared strip with its foot above the strip, and under it a caption: who casts, the name and the targets line. It stands for the first cast of a batch that another seat made or that passes through the stack, comes in and goes out in 150 ms each, takes no pointer, shows a card back for a card the viewer may not identify, and a newer batch with moves replaces it. It never stays, so the layout gate measures the table without it.
+- A mark is a badge with an icon and a short word (`FxMark`) on the card or chip it names, its edge and icon in a token colour (primary: activated, bounced; warning: triggered; success: resolved, drawn; destructive: countered; border-strong: fizzled; turn-them: exiled) and its words in `--foreground` on `--card`; `markTokens.test.ts` holds the contrast. A spell that resolves, is countered or fizzles carries its badge on its flying card.
+- A resolving object points a short arrow at what it counters, exiles, bounces or destroys, from the box it had when the batch arrived to the box of its target, on the layer above the strip for `--fx-arrow-ms` plus `--fx-mark-ms`; an object cast in the same batch has no box to start from and gives no arrow.
 - The Stack tab shows the top item as a large picture with its text and one row per target (a gone one struck out), the rest as rows with their target line.
 
 ### The hand
@@ -217,8 +219,9 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 
 - `fx/moves.ts` (pure): `deriveMoves(before, after, events)` gives `Move[]` (`kind`, `object`, `look`, `from`, `to`, `order`, `targets`) and the marks; `MOVE_MS` holds the tokens, which `fx.css` repeats.
 - The travel layer (`fx/travel.ts`, `fx/places.ts`, `fx/FxTravel.tsx`) measures a move's source in the store subscriber of `watchBatches`, which runs before React draws the batch, so a card that left the hand is measured where it stood; it measures the destination on the next frame, a place it does not find falls back to its zone, and a move with no place on screen is left out.
+- `fx/spotlight.ts` (pure) plans the spotlight and its boxes, `fx/Spotlight.tsx` draws it; `fx/marks.ts` (pure) picks the marks and arrows of a batch, `fx/FxMark.tsx` draws a badge, `fx/effectArrows.ts` holds the arrows and `combat/effectLines.ts` gives them to the combat overlay.
 - `handReason.ts` (pure): `unplayableReason(object, view, options)` gives the reason of a dimmed hand card; `REASON_WORDS` its label and line.
-- `/dev/table?fx=` `cast`, `activate`, `resolve`, `counter`, `land` and `draw` play these moments on the fixture table, beside `attack`, `block`, `damage`, `death` (the die moment), `life` and `enter`.
+- `/dev/table?fx=` `cast`, `rival` (another seat casts), `activate`, `resolve`, `counter`, `land` and `draw` play these moments on the fixture table, beside `attack`, `block`, `damage`, `death` (the die moment), `life` and `enter`.
 
 ## Attachments
 

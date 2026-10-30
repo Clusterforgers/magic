@@ -17,7 +17,9 @@ const REDUCE = '@media (prefers-reduced-motion: reduce)'
 const motion = blockAfter(css, NO_PREFERENCE)
 const reduced = blockAfter(css, REDUCE)
 const outside = css.replace(motion, '').replace(reduced, '')
-const KINDS = (Object.keys(FX_MS) as FxKind[]).filter((kind) => !(MARK_FX as readonly string[]).includes(kind))
+const KINDS = (Object.keys(FX_MS) as FxKind[]).filter(
+  (kind) => !(MARK_FX as readonly string[]).includes(kind),
+)
 
 describe('motion', () => {
   it('lives only inside the no-preference block', () => {

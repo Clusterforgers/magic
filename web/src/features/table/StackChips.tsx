@@ -57,7 +57,9 @@ const Chip = memo(function Chip({ id, top, tabbable, aims, aria, empty }: ChipPr
         {object.mana_cost === null ? null : (
           <ManaPips pips={costPips(object.mana_cost)} sizeClass={SIZE.compact.pip} label="Mana cost" />
         )}
-        {fx.map((entry) => (isMarkFx(entry.kind) ? <FxMark key={entry.token} kind={entry.kind} inline /> : null))}
+        {fx.map((entry) =>
+          isMarkFx(entry.kind) ? <FxMark key={entry.token} kind={entry.kind} inline /> : null,
+        )}
         {top && aims !== '' ? (
           <span
             data-slot="chip-targets"

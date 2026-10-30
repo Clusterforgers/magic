@@ -15,6 +15,9 @@ export const SPOTLIGHT_SCALE = 1.6
 export const SPOTLIGHT_MIN_PX = 168
 export const SPOTLIGHT_MAX_SHARE = 0.4
 
+/** A window too short for that shrinks the card to this height and no further, in px. */
+export const SPOTLIGHT_FLOOR_PX = 96
+
 /** The card's shape: width over height. */
 const ASPECT = 5 / 7
 
@@ -84,13 +87,18 @@ export interface SpotlightInput {
   readonly slow?: number
 }
 
-/** The card's size: 1.6 times the hand card, at least `SPOTLIGHT_MIN_PX` high, at most `SPOTLIGHT_MAX_SHARE` of the window. */
+/**
+ * The card's size: 1.6 times the hand card, at least `SPOTLIGHT_MIN_PX` high, at most `SPOTLIGHT_MAX_SHARE` of the
+ * window and no higher than the room above the strip leaves (`room`), down to `SPOTLIGHT_FLOOR_PX`.
+ */
 export function spotlightSize(
   hand: { width: number; height: number } | null,
   window: { width: number; height: number },
+  room: number = Infinity,
 ): { width: number; height: number } {
   const wanted = (hand?.height ?? 140) * SPOTLIGHT_SCALE
-  const height = Math.max(SPOTLIGHT_MIN_PX, Math.min(wanted, window.height * SPOTLIGHT_MAX_SHARE))
+  const fitting = Math.max(SPOTLIGHT_MIN_PX, Math.min(wanted, window.height * SPOTLIGHT_MAX_SHARE))
+  const height = Math.min(fitting, Math.max(SPOTLIGHT_FLOOR_PX, room))
   return { width: height * ASPECT, height }
 }
 
@@ -117,7 +125,15 @@ export function spotlightBoxes(
  * The spotlight of the batch: the first cast that stands in it, `MOVE_MS.travel` after the batch (its first leg has
  * landed on the stack by then) or at once when nothing flies. Null when no cast does, or no strip is on screen.
  */
-export function planSpotlight({ moves, strip, hand, window, batch, still, slow = 1 }: SpotlightInput): Spotlight | null {
+export function planSpotlight({
+  moves,
+  strip,
+  hand,
+  window,
+  batch,
+  still,
+  slow = 1,
+}: SpotlightInput): Spotlight | null {
   const move = moves.find((candidate) => candidate.kind === 'cast' && candidate.spotlight)
   if (move === undefined || strip === null) return null
   const seat = 'stack' in move.from ? null : move.from.seat
@@ -134,6 +150,10 @@ export function planSpotlight({ moves, strip, hand, window, batch, still, slow =
     delay: (move.order * MOVE_MS.stagger + (still ? 0 : MOVE_MS.travel)) * slow,
     duration: MOVE_MS.spotlight * slow,
     still,
-    ...spotlightBoxes(strip, spotlightSize(hand, window), window),
+    ...spotlightBoxes(
+      strip,
+      spotlightSize(hand, window, strip.y - SPOTLIGHT_GAP_PX - MARGIN_PX - CAPTION_PX),
+      window,
+    ),
   }
 }

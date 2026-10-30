@@ -22,7 +22,13 @@ const ICONS: Readonly<Record<MarkFx, LucideIcon>> = {
 export function FxMark({ kind, inline = false }: { kind: MarkFx; inline?: boolean }) {
   const Icon = ICONS[kind]
   return (
-    <span aria-hidden="true" data-slot="fx-mark" data-fx-mark={kind} data-inline={inline || undefined} className="fx-mark">
+    <span
+      aria-hidden="true"
+      data-slot="fx-mark"
+      data-fx-mark={kind}
+      data-inline={inline || undefined}
+      className="fx-mark"
+    >
       <Icon aria-hidden="true" className="size-3.5 shrink-0" />
       <span className="truncate">{MARK_WORDS[kind]}</span>
     </span>

@@ -9,7 +9,7 @@ import type { StoreApi } from 'zustand/vanilla'
 import type { Timers } from '@/net/timers'
 import type { MarkArrow } from './marks'
 import { MOVE_MS } from './moves'
-import { measureObject, measurePlace } from './places'
+import { measureObject } from './places'
 import type { Box } from './places'
 
 /** How long an arrow stays drawn, in milliseconds (times the dev slow-down): it draws in, then holds for the mark. */
@@ -58,9 +58,10 @@ export function createEffectArrows({ timers, enabled, slow, root }: EffectArrows
       const started: EffectArrow[] = []
       for (const { by, object, kind } of arrows) {
         const to = measureObject(page, object)
-        // A resolving object that was cast in this very batch has no chip yet: the stack stands for it.
-        const from = measureObject(page, by) ?? measurePlace(page, { stack: true })
-        if (to !== null && from !== null) started.push({ token: (last += 1), kind, from: from.box, to: to.box })
+        // An object cast in this very batch had no chip before it: there is nothing to start the arrow at.
+        const from = measureObject(page, by)
+        if (to !== null && from !== null)
+          started.push({ token: (last += 1), kind, from: from.box, to: to.box })
       }
       if (started.length === 0) return
       const tokens = new Set(started.map((arrow) => arrow.token))

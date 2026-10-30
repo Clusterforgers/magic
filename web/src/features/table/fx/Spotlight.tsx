@@ -49,7 +49,13 @@ export function Spotlight({ spotlight, travel }: { spotlight: SpotlightPlan; tra
   const name = faceDown || look === null ? 'a card' : look.name
   const style: CSSProperties = { left: box.x, top: box.y, width: box.width }
   return (
-    <div ref={root} data-slot="fx-spotlight" data-still={still || undefined} className="fx-spotlight" style={style}>
+    <div
+      ref={root}
+      data-slot="fx-spotlight"
+      data-still={still || undefined}
+      className="fx-spotlight"
+      style={style}
+    >
       <CardPicture
         look={faceDown ? null : look}
         size={{ width: card.width, height: card.height }}
