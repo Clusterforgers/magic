@@ -906,11 +906,17 @@ pub(super) fn gives(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
 pub(super) fn quoted_ability(r: &mut Reader<'_>) -> Option<Ability> {
     r.quoted(abilities::activated)
         .or_else(|| r.quoted(abilities::triggered))
+        .or_else(|| r.quoted(super::dk1a_attached::granted_static))
 }
 
 /// What `gives` reads, written back.
 pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
     match mods {
+        [Modification::GrantAbility(ability)]
+            if super::dk1a_attached::granted_static_text(ability).is_some() =>
+        {
+            super::dk1a_attached::granted_static_text(ability)
+        }
         [Modification::GrantAbility(ability)]
             if matches!(
                 **ability,

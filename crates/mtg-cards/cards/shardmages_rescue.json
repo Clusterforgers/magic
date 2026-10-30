@@ -1,0 +1,28 @@
+{
+  "oracle_id": "406247ee-2b86-4068-b5fa-65cdc83a82f4",
+  "name": "Shardmage's Rescue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shardmage's Rescue",
+      "oracle_fingerprint": "97ddc2caf1e856999ae27b0dfb6c5bb3",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

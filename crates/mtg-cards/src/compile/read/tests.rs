@@ -446,6 +446,7 @@ mod x_after;
 mod zone_moves;
 // dk1a
 mod dk1a_attached;
+mod dk1a_granted;
 
 mod mana {
     //! Goal: a plain mana ability reads in the shapes of the cards, and a cost, a choice or a count it does not model stays with the table.

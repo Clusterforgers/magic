@@ -138,3 +138,62 @@ pub(super) fn otherwise_texts(first: &Ability, second: &Ability) -> Vec<String> 
         .map(|sentence| format!("{sentence} Otherwise, ~ has {keywords}."))
         .collect()
 }
+
+/// "this Aura entered this turn", "~ entered the battlefield this turn": the card itself came onto the battlefield this
+/// turn.
+pub(super) fn entered_read(r: &mut Reader<'_>) -> Option<Condition> {
+    r.source().then_some(())?;
+    (r.words("entered this turn") || r.words("entered the battlefield this turn")).then_some(())?;
+    Some(Condition::Matches {
+        subject: Ref::This,
+        selector: Selector(vec![Pred::EnteredThisTurn]),
+    })
+}
+
+/// What `entered_read` reads, written back.
+pub(super) fn entered_texts(condition: &Condition) -> Vec<String> {
+    let Condition::Matches {
+        subject: Ref::This,
+        selector: Selector(preds),
+    } = condition
+    else {
+        return Vec::new();
+    };
+    if preds.as_slice() != [Pred::EnteredThisTurn] {
+        return Vec::new();
+    }
+    vec![
+        "~ entered this turn".to_owned(),
+        "~ entered the battlefield this turn".to_owned(),
+    ]
+}
+
+/// A static ability a permanent is given in quotes that gives keywords to what that permanent is attached to: "Equipped
+/// creature has lifelink."
+pub(super) fn granted_static(r: &mut Reader<'_>) -> Option<Ability> {
+    let found = statics::ability(r)?;
+    keywords_for_attached(&found).then_some(found)
+}
+
+/// Whether the ability is "Equipped creature has K." without a condition: the one static a quote may hold.
+fn keywords_for_attached(ability: &Ability) -> bool {
+    matches!(
+        ability,
+        Ability::Static {
+            affected: Ref::Attached,
+            mods,
+            condition: None,
+            defining: false,
+            from: ZoneKind::Battlefield,
+        } if !mods.is_empty() && mods.iter().all(|m| matches!(m, Modification::AddKeyword(_)))
+    )
+}
+
+/// The quoted wording of a granted static ability that `granted_static` reads.
+pub(super) fn granted_static_text(ability: &Ability) -> Option<String> {
+    if !keywords_for_attached(ability) {
+        return None;
+    }
+    let sentence = statics::texts(ability).into_iter().next()?;
+    Some(format!("\"{sentence}\""))
+}

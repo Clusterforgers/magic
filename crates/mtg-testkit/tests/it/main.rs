@@ -518,3 +518,5 @@ mod zone_moves;
 mod zones_fuzz;
 // dk1a
 mod dk1a_dog_umbra;
+mod dk1a_rune_of_sustenance;
+mod dk1a_shardmages_rescue;
