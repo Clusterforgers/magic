@@ -132,20 +132,22 @@ impl Gives {
     }
 }
 
-/// What the attachment `id` gives the permanent it is attached to, or none while it is attached to no permanent or
-/// gives it nothing: the effects of its static abilities and of the effects whose source it is, as the layers applied
-/// them to the host in this state.
+/// What the attachment `id` gives the permanent or player it is attached to, or none while it is attached to neither
+/// or gives nothing: the effects of its static abilities and of the effects whose source it is, as the layers applied
+/// them to the host in this state. An Aura on a player gives keywords or takes them (`GivenRule::LoseKeyword`).
 pub fn gives(state: &GameState, id: ObjectId) -> Option<Gives> {
-    let host = state.host_of(id)?;
+    let layers = state.layers();
+    let applied: &[Applied] = if let Some(host) = state.host_of(id) {
+        layers.get(host).map_or(&[], |held| held.applied.as_slice())
+    } else {
+        let player = state.player_host_of(id)?;
+        layers
+            .player(player)
+            .map_or(&[], |held| held.applied.as_slice())
+    };
     let mut gives = Gives::default();
-    if let Some(held) = state.layers().get(host) {
-        for applied in held
-            .applied
-            .iter()
-            .filter(|applied| from(state, applied, id))
-        {
-            gives.add(&applied.modification);
-        }
+    for applied in applied.iter().filter(|applied| from(state, applied, id)) {
+        gives.add(&applied.modification);
     }
     if keywords_of(state, id).contains(&&Keyword::UmbraArmor) {
         gives.rule(GivenRule::UmbraArmor);

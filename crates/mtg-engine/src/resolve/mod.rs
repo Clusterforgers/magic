@@ -286,6 +286,41 @@ fn scope_of<'a>(
     }
 }
 
+/// Whether each target the spell or ability `id` chose is legal now, one list for each target specification in the
+/// order of its chosen targets: the check it makes as it resolves (CR 608.2b). Empty while it chose none.
+pub fn targets_legal(state: &GameState, id: ObjectId) -> Vec<Vec<bool>> {
+    let Some(object) = state.object(id) else {
+        return Vec::new();
+    };
+    let targets = &object.choices().targets;
+    if targets.is_empty() {
+        return Vec::new();
+    }
+    // An Aura spell targets the object or player it will enchant (CR 303.4a), which `spell_host` checks.
+    if crate::attach::is_aura_spell(state, id) && !object.bestowed() {
+        let legal = crate::attach::spell_host(state, id).is_some();
+        return targets.iter().map(|set| vec![legal; set.len()]).collect();
+    }
+    let Some(rules) = rules_of(state, object) else {
+        return targets
+            .iter()
+            .map(|set| set.iter().map(|t| still_there(state, *t)).collect())
+            .collect();
+    };
+    let resolving = Resolving::begin(id);
+    scope_of(state, object, &resolving, &rules).targets_legal()
+}
+
+/// Whether a target is still the object it was when chosen (CR 400.7), or a player still in the game.
+pub(crate) fn still_there(state: &GameState, target: Target) -> bool {
+    match target {
+        Target::Player(player) => state.is_alive(player),
+        Target::Object(object) => state
+            .object(object.id)
+            .is_some_and(|now| now.reference() == object),
+    }
+}
+
 /// The events that end a resolution that did what it says.
 fn finish(state: &GameState, object: &GameObject) -> Vec<Event> {
     let mut events = vec![Event::ResolutionEnded {

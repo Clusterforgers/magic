@@ -2,8 +2,8 @@
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
+use mtg_cards::compile::protection_quality_word;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Pred, Selector};
 use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
@@ -15,6 +15,7 @@ use mtg_engine::keywords::{keywords_of, summoning_sick};
 use mtg_engine::loyalty::loyalty_abilities;
 use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
+use mtg_engine::resolve::targets_legal;
 use mtg_engine::sight::offered_cards;
 use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
@@ -165,22 +166,33 @@ fn gives_view(state: &GameState, id: ObjectId) -> Option<GivesView> {
         power: gives.power,
         toughness: gives.toughness,
         set: gives.set,
-        keywords: gives.keywords.iter().map(given_keyword_name).collect(),
+        keywords: given_keyword_names(&gives.keywords),
         rules: gives.rules,
     })
 }
 
-/// A granted keyword's name, with its colour for protection from one colour ("Protection from red").
-fn given_keyword_name(keyword: &Keyword) -> String {
-    match keyword {
-        Keyword::Protection(Selector(preds)) => match preds.as_slice() {
-            [Pred::Color(color)] => {
-                format!("Protection from {}", format!("{color:?}").to_lowercase())
+/// The names of granted keywords, protection with its qualities in oracle wording: "Protection from creatures", and
+/// one name for protections granted one after the other ("Protection from red and from blue"). A quality without a
+/// word stays "Protection".
+fn given_keyword_names(keywords: &[Keyword]) -> Vec<String> {
+    let mut names: Vec<String> = Vec::new();
+    let mut protecting = false;
+    for keyword in keywords {
+        let word = match keyword {
+            Keyword::Protection(quality) => protection_quality_word(quality),
+            _ => None,
+        };
+        match (word, names.last_mut()) {
+            (Some(word), Some(last)) if protecting => {
+                last.push_str(" and from ");
+                last.push_str(word);
             }
-            _ => keyword.name().to_owned(),
-        },
-        _ => keyword.name().to_owned(),
+            (Some(word), _) => names.push(format!("Protection from {word}")),
+            (None, _) => names.push(keyword.name().to_owned()),
+        }
+        protecting = word.is_some();
     }
+    names
 }
 
 /// The names of the keywords a card prints, each once: what the controller of a face-down permanent reads on its card.
@@ -355,6 +367,7 @@ impl ObjectView {
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
             targets: object.choices().targets.clone(),
+            targets_legal: targets_legal(state, id),
             // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
             counters: object
                 .permanent()
@@ -414,6 +427,7 @@ impl ObjectView {
             kind: ObjectKind::Card,
             source: None,
             targets: Vec::new(),
+            targets_legal: Vec::new(),
             counters: Vec::new(),
             loyalty_abilities: Vec::new(),
             attached_to: None,
@@ -475,6 +489,10 @@ impl PlayerView {
                     let damage = state.commander_damage(id, seat);
                     (damage > 0).then_some(CommanderDamageView {
                         commander: id,
+                        name: state
+                            .object(id)
+                            .map(|card| card.whole_card().name.clone())
+                            .unwrap_or_default(),
                         damage,
                     })
                 })

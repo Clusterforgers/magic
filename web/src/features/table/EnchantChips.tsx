@@ -18,6 +18,11 @@ function Mark({ chip, density }: { chip: Chip; density: ChipDensity }) {
       <span aria-hidden="true" className="truncate tabular-nums">
         {density === 'tile' && chip.count > 1 ? `×${chip.count}` : chip.text}
       </span>
+      {density !== 'tile' && chip.gives.length > 0 && (
+        <span aria-hidden="true" data-slot="enchant-gives" className="truncate font-normal">
+          {`· ${chip.gives.map((item) => item.text).join(' · ')}`}
+        </span>
+      )}
     </>
   )
 }
