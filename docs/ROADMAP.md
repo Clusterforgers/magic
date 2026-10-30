@@ -42,7 +42,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 
 ## Done
 
-- Deployment: two amd64 images (server with `mtg-cli`, web behind nginx), the Helm chart and ArgoCD app in `k3s-cluster-manifests`, and `scripts/release.sh` (build, push, bump the tag, roll out, roll back) (`docs/deploy.md`).
+- Deployment: two amd64 images (server with `mtg-cli`, web behind nginx), the Helm chart and ArgoCD app in `k3s-cluster-manifests`, and `scripts/release.sh` (build, push, bump the tag, roll out, roll back), and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 - Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres and the React stack (`docs/spike-react.md`).
 - Card data: Scryfall and MTGJSON import, deck-list parsers, the schema with card search and precons, and `mtg-cli` fetch, ingest, compile and coverage.
 - Engine core: zones, turns, priority, stack, combat with forecast and block preview, bots with a repeat guard, `mtg-testkit`, and crowded tables of thousands of permanents.
@@ -219,7 +219,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries
-- [ ] (ma7r) `e2e/fit.spec.ts` "attachments scene on four seats" fails at 1366x768 ("the combat line block:71 runs over your life")
 
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs
@@ -453,7 +452,7 @@ The server is settled first, then the web is built once against the final types.
 
 ## M7 Product
 
-- [ ] (d1a) Snapshots and dumps of the database volume (a Longhorn recurring job and a nightly `pg_dump` to a second disk or a backup target), so a bad migration or an accidental delete can be undone
+- [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
