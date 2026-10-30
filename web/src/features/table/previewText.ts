@@ -4,6 +4,7 @@ import { isUnattached } from '@/play/hosts'
 import { attachName, givesWords } from './attachMarks'
 import type { Attach } from './attachMarks'
 import type { SeatNamer } from './names'
+import { abilityKey } from './prompt/activations'
 
 /** One attachment of a host in the preview: "Rancor: +2/+0, trample", "Bo's Pacifism: can't attack or block"; its name alone while it gives nothing. */
 export function attachLine(attach: Attach, seat: SeatNamer): string {
@@ -61,4 +62,34 @@ export function combatText(
     if (attacker.blockers.includes(id)) return `Blocking ${cardName(attacker.object)}`
   }
   return null
+}
+
+/** One activated ability of a card in the preview: its words, and whether the viewer can activate it now. */
+export interface ActivatedLine {
+  /** Tells the lines of one card apart. */
+  key: string
+  /** The ability as the card words it: `{2}, {T}: Draw a card.`, or `Equip {1} ({1}: Attach to target creature you control.)` for a keyword. */
+  text: string
+  /** True while the prompt offers it (`CardNote.usable`). */
+  now: boolean
+}
+
+/**
+ * The activated abilities of `object` in its card's words, in the order of the card: every one that is not a mana ability
+ * (the preview's mana line tells those), with the ones named by `usable` (`abilityKey`) marked as available now. Empty
+ * while the server sent no words, which it does for a card the viewer may not read.
+ */
+export function activatedLines(object: ObjectView, usable: readonly string[] = []): ActivatedLine[] {
+  return (object.activated ?? []).flatMap((entry, index) => {
+    if (entry.mana === true) return []
+    const full = entry.cost === '' ? entry.effect : `${entry.cost}: ${entry.effect}`
+    const text =
+      entry.unworded === true
+        ? entry.effect
+        : entry.keyword === undefined
+          ? full
+          : `${entry.keyword} (${full})`
+    const now = entry.ability !== undefined && usable.includes(abilityKey(entry.ability))
+    return [{ key: `${index}-${text}`, text, now }]
+  })
 }

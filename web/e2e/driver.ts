@@ -234,6 +234,12 @@ async function watch(player: Player, ready: (seen: Seen) => boolean, ms = 3_000)
   }
 }
 
+/** Whether the card's spoken name says it has an ability to activate, so that a click on it may open the chooser beside its play. */
+export const hasAbility = (card: Card): boolean => /\bActivate\b/.test(card.label)
+
+/** Whether the card can be cast or played: a hand card that is legal for its ability alone (cycling) says it is "not castable". */
+export const isPlayable = (card: Card): boolean => !/, not castable/.test(card.label)
+
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
 const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
@@ -302,6 +308,35 @@ async function recallCommander(player: Player, name: string): Promise<boolean> {
   return true
 }
 
+/**
+ * A card with an ability beside its play (cycling beside the cast) opens a chooser at the card instead of answering.
+ * Waits until the chooser is up or the next decision has come, and picks `play` (`land` or `cast`) in the chooser.
+ * Gives the words the trail adds: " from the chooser", or nothing when the click answered at once.
+ */
+export async function pickPlay(page: Page, was: string, play: 'land' | 'cast'): Promise<string> {
+  const outcome = await page
+    .waitForFunction(
+      (id) =>
+        document.querySelector('[data-slot="ability-chooser"]') !== null
+          ? 'chooser'
+          : document.querySelector('[data-decision-id]')?.getAttribute('data-decision-id') !== id
+            ? 'moved'
+            : false,
+      was,
+      { timeout: POLL_MS },
+    )
+    .then(
+      (handle) => handle.jsonValue(),
+      (error: unknown) => {
+        if (error instanceof errors.TimeoutError) return 'none'
+        throw error
+      },
+    )
+  if (outcome !== 'chooser') return ''
+  await page.locator(`[data-slot="ability-chooser"] [data-play="${play}"]`).click()
+  return ' from the chooser'
+}
+
 /** Each decision kind's answer; the string says what was done, for the trail. */
 const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   async Mulligan({ player, style, seen }) {
@@ -340,7 +375,8 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       seen = (await watch(player, (now) => now.command.length > 0)) ?? seen
     }
     // Lands first, so the mana is there for the creature that follows, then a commander; with nothing to play, go on.
-    const open = seen.hand.filter((candidate) => !run.skip.has(candidate.id))
+    // A hand card that is legal for its ability alone (cycling) is left in the hand: the run casts and plays.
+    const open = seen.hand.filter((candidate) => !run.skip.has(candidate.id) && isPlayable(candidate))
     const commander = seen.command.find((candidate) => !run.skip.has(candidate.id))
     const play = open.find((candidate) => candidate.land) ?? commander ?? open[0]
     if (play === undefined) {
@@ -355,7 +391,9 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     run.lastPlay.set(player.name, play.id)
     if (play === commander) run.castOn.set(player.name, turn)
     await card(player.page, play.id).click()
-    return `${recalled}${play.land ? 'plays' : 'casts'} ${named(play)}`
+    // With an ability beside the play, the click opens a chooser and the cast or the land is picked in it.
+    const chooser = hasAbility(play) ? await pickPlay(player.page, seen.id, play.land ? 'land' : 'cast') : ''
+    return `${recalled}${play.land ? 'plays' : 'casts'} ${named(play)}${chooser}`
   },
 
   async PayMana({ player, style, seen }) {

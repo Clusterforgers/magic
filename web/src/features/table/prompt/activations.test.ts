@@ -1,8 +1,17 @@
-// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own graveyard, exile and command zone, never an opponent's card, a hand card or a mana ability, none for a spectator, and the plays of a card in the order land or spell, ability, mana.
+// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability, none for a spectator, and the plays of a card in the order land or spell, ability, mana; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons.
 import { describe, expect, it } from 'vitest'
 import type { AbilityRef, ActivatedView, ObjectView, PriorityOptions, Zone } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
-import { abilityPlays, activateWords, activationNotes, playsOf, spoken } from './activations'
+import type { CardNote, CardNotes } from './marks'
+import {
+  abilityKey,
+  abilityPlays,
+  activateWords,
+  activationNotes,
+  mergeNotes,
+  playsOf,
+  spoken,
+} from './activations'
 
 const ME = 0
 const THEM = 1
@@ -62,7 +71,8 @@ describe('which cards are offered an ability', () => {
     ['an opponent permanent', placed(10, 'Battlefield', THEM), ME, false],
     ['a card in an opponent graveyard', placed(10, { Graveyard: THEM }, THEM), ME, false],
     ['a card in an opponent command zone', placed(10, { Command: THEM }, THEM), ME, false],
-    ['a card in your hand', placed(10, { Hand: ME }, ME), ME, false],
+    ['a card in your hand', placed(10, { Hand: ME }, ME), ME, true],
+    ['a card in an opponent hand', placed(10, { Hand: THEM }, THEM), ME, false],
     ['a card in your library', placed(10, { Library: ME }, ME), ME, false],
     ['an object on the stack', placed(10, 'Stack', ME), ME, false],
     ['your permanent, seen by a spectator', placed(10, 'Battlefield', ME), null, false],
@@ -246,6 +256,78 @@ describe('what a screen reader hears', () => {
   it('gives every offered card a note and no other card', () => {
     const notes = activationNotes(found)
     expect([...notes.keys()].sort()).toEqual([10, 11])
-    expect(notes.get(11)).toEqual({ words: 'Activate tap: Scry 1.' })
+    expect(notes.get(11)).toEqual({
+      words: 'Activate tap: Scry 1.',
+      usable: [abilityKey(ref(11, 0))],
+    })
+    expect(notes.get(10)?.usable).toEqual([abilityKey(ref(10, 0)), abilityKey(ref(10, 1))])
+  })
+})
+
+describe('a hand card with an ability', () => {
+  const cycling = worded(ref(10, 0), {
+    cost: '',
+    effect: 'Cycling {2}',
+    keyword: 'Cycling {2}',
+    unworded: true,
+  })
+  const objects = table(placed(10, { Hand: ME }, ME, [cycling]))
+  const found = abilityPlays(options([ref(10, 0)]), objects, ME)
+
+  it('lists its cast first and its cycling second', () => {
+    const plays = playsOf(10, 'Cycler', options([ref(10, 0)], { castable: [10] }), found, [])
+    expect(plays.map((play) => play.label)).toEqual(['Cast Cycler', 'Cycling {2}'])
+    expect(plays.map((play) => play.action)).toEqual([{ CastSpell: 10 }, { Activate: ref(10, 0) }])
+  })
+
+  it('offers its cycling alone while it cannot be cast', () => {
+    const plays = playsOf(10, 'Cycler', options([ref(10, 0)]), found, [])
+    expect(plays.map((play) => play.words)).toEqual(['Activate Cycling 2'])
+  })
+})
+
+describe('the notes laid over the hand reasons', () => {
+  const reason: CardNote = { hint: 'Needs mana', line: 'Not enough mana', words: 'needs mana' }
+  const doing: CardNote = { words: 'Activate Cycling 2', usable: ['k'] }
+  const cases: [string, CardNotes, CardNotes, CardNotes][] = [
+    [
+      'no activation leaves the hand notes as they are',
+      new Map([[1, reason]]),
+      new Map(),
+      new Map([[1, reason]]),
+    ],
+    [
+      'an activation alone is the note of the card',
+      new Map([[2, reason]]),
+      new Map([[1, doing]]),
+      new Map([
+        [1, doing],
+        [2, reason],
+      ]),
+    ],
+    [
+      'a card that cannot be cast keeps no hint, and its words and preview line say why',
+      new Map([[1, reason]]),
+      new Map([[1, doing]]),
+      new Map([
+        [
+          1,
+          {
+            words: 'Activate Cycling 2, not castable: needs mana',
+            line: 'Not castable: not enough mana',
+            usable: ['k'],
+          },
+        ],
+      ]),
+    ],
+    [
+      'a reason with no preview line adds none',
+      new Map([[1, { hint: 'Not now', words: 'not now' }]]),
+      new Map([[1, doing]]),
+      new Map([[1, { words: 'Activate Cycling 2, not castable: not now', usable: ['k'] }]]),
+    ],
+  ]
+  it.each(cases)('%s', (_name, hand, activation, expected) => {
+    expect(mergeNotes(hand, activation)).toEqual(expected)
   })
 })

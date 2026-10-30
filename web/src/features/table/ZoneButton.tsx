@@ -4,11 +4,12 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { CardRow } from './CardRow'
-import { ZONE_ICON } from './PodParts'
+import { LEGAL_RING, LegalBadge, ZONE_ICON } from './PodParts'
 import type { ChipDensity } from './PodParts'
-import { cardCount, zoneLabel, ZONE_NAME } from './podFigures'
+import { cardCount, legalWords, zoneLabel, zoneOpenLabel, zoneTitle, ZONE_NAME } from './podFigures'
 import type { ZoneKey } from './podFigures'
 import { usePreviewStore } from './preview'
+import { useLegalCount } from './prompt/marks'
 
 /** The zones whose cards a pod lists in a dialog. */
 export type ListedZone = Extract<ZoneKey, 'graveyard' | 'exile' | 'command'>
@@ -21,6 +22,12 @@ interface ZoneDialogProps {
   ids: readonly ObjectId[]
   open: boolean
   onOpenChange: (open: boolean) => void
+}
+
+/** The sentence "2 can be played or used." under the list's title; it reads the marks only while the list is open. */
+function LegalLine({ ids }: { ids: readonly ObjectId[] }) {
+  const legal = useLegalCount(ids)
+  return legal === 0 ? null : <> {legalWords(legal)}.</>
 }
 
 /** The list of every card of a zone, most recent first, in a dialog. */
@@ -40,7 +47,10 @@ export function ZoneDialog({ zone, owner, ids, open, onOpenChange }: ZoneDialogP
         <DialogTitle>
           {owner}&rsquo;s {name}
         </DialogTitle>
-        <DialogDescription>{cardCount(ids.length)}, most recent first.</DialogDescription>
+        <DialogDescription>
+          {cardCount(ids.length)}, most recent first.
+          <LegalLine ids={ids} />
+        </DialogDescription>
         <CardRow ids={[...ids].reverse()} label={`${owner}'s ${name} cards`} size="normal" />
       </DialogContent>
     </Dialog>
@@ -58,11 +68,17 @@ interface ZoneButtonProps {
   density?: Exclude<ChipDensity, 'tile'>
 }
 
-/** A chip with the zone's icon and count that opens the list of every card in it, most recent first. */
+const NONE: readonly ObjectId[] = []
+
+/**
+ * A chip with the zone's icon and count that opens the list of every card in it, most recent first. A graveyard or
+ * exile with a card the viewer can play or use now (flashback, an ability) wears the ring of a legal card and a play
+ * mark, and says how many in its name; the command zone does not, its commanders are cast from the hand dock.
+ */
 export function ZoneButton({ zone, owner, ids, density = 'panel' }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const Icon = ZONE_ICON[zone]
-  const label = zoneLabel(zone, ids.length)
+  const legal = useLegalCount(zone === 'command' ? NONE : ids)
   const line = density === 'line'
   return (
     <>
@@ -71,16 +87,22 @@ export function ZoneButton({ zone, owner, ids, density = 'panel' }: ZoneButtonPr
         size="xs"
         disabled={ids.length === 0}
         aria-haspopup="dialog"
-        aria-label={ids.length === 0 ? label : `${label}, opens the list`}
-        title={label}
+        aria-label={ids.length === 0 ? zoneLabel(zone, 0) : zoneOpenLabel(zone, ids.length, legal)}
+        title={zoneTitle(zone, ids.length, legal)}
         data-zone={zone}
+        data-legal={legal > 0 ? legal : undefined}
         onClick={() => setOpen(true)}
-        className={cn('min-w-0 text-xs', line ? 'gap-0.5 px-0.5' : 'gap-1 px-1.5')}
+        className={cn(
+          'min-w-0 text-xs',
+          line ? 'gap-0.5 px-0.5' : 'gap-1 px-1.5',
+          legal > 0 && cn('relative', LEGAL_RING),
+        )}
       >
         <Icon aria-hidden="true" className={line ? 'size-3.5' : 'size-4'} />
         <span aria-hidden="true" className="tabular-nums">
           {ids.length}
         </span>
+        {legal > 0 ? <LegalBadge className="right-auto -left-1" /> : null}
       </Button>
       <ZoneDialog zone={zone} owner={owner} ids={ids} open={open} onOpenChange={setOpen} />
     </>

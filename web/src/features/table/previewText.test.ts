@@ -1,10 +1,11 @@
-// Goal: the words under the large card in the preview say where the card is, who controls and owns it, what it is doing in combat and, for a host and its attachments, what each attachment gives and what it hangs on, for every zone and every combat role.
+// Goal: the words under the large card in the preview say where the card is, who controls and owns it, what it is doing in combat and, for a host and its attachments, what each attachment gives and what it hangs on, for every zone and every combat role; the abilities a card activates are worded as it prints them (cost and effect, a keyword with its reminder text, a loyalty ability), without its mana abilities, and the ones the prompt offers are marked.
 import { describe, expect, it } from 'vitest'
-import type { CombatView, GivesView, ObjectView, Zone } from '@/protocol/generated'
+import type { AbilityRef, ActivatedView, CombatView, GivesView, ObjectView, Zone } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
 import { itemsOf } from './attachMarks'
 import type { Attach } from './attachMarks'
-import { attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
+import { abilityKey } from './prompt/activations'
+import { activatedLines, attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
 
 const name = (seat: number): string => ['Ana', 'Bo', 'Cy'][seat] ?? `Seat ${seat + 1}`
 const cardName = (id: number): string => ({ 5: 'Grizzly Bears', 6: 'Jace Beleren' })[id] ?? 'a card'
@@ -113,5 +114,76 @@ describe('hostLine', () => {
     ['a creature', {}, undefined, null],
   ])('says it for %s', (_what, over, host, line) => {
     expect(hostLine(card({ name: 'Rancor', ...over }), host)).toBe(line)
+  })
+})
+
+describe('activatedLines', () => {
+  const at = (ability: number): AbilityRef => ({ object: 7, ability })
+  const draw: ActivatedView = { ability: at(1), cost: '{2}, {T}', effect: 'Draw a card.' }
+  const equip: ActivatedView = {
+    ability: { object: 7, ability: 0, source: { PrintedKeyword: 3 } },
+    cost: '{1}',
+    effect: 'Attach to target creature you control.',
+    keyword: 'Equip {1}',
+  }
+  const cycling: ActivatedView = {
+    ability: at(2),
+    cost: '',
+    effect: 'Cycling {2}',
+    keyword: 'Cycling {2}',
+    unworded: true,
+  }
+  const tap: ActivatedView = { cost: '{T}', effect: 'Add {G}.', mana: true }
+  const loyalty: ActivatedView = { ability: at(3), cost: '+1', effect: 'Scry 2.', loyalty: { Plus: 1 } }
+  const bare: ActivatedView = { ability: at(4), cost: '', effect: 'Draw a card.' }
+  const blind: ActivatedView = { ability: at(5), cost: '{1}', effect: 'Activated ability 6', unworded: true }
+
+  it.each<[string, ActivatedView[], string[]]>([
+    ['a cost and an effect', [draw], ['{2}, {T}: Draw a card.']],
+    [
+      'a keyword, with its cost and effect as reminder text',
+      [equip],
+      ['Equip {1} ({1}: Attach to target creature you control.)'],
+    ],
+    ['a keyword the writer cannot word, by its keyword line', [cycling], ['Cycling {2}']],
+    ['a loyalty ability', [loyalty], ['+1: Scry 2.']],
+    ['an effect with no cost', [bare], ['Draw a card.']],
+    ['an ability named only by its place', [blind], ['Activated ability 6']],
+    ['a mana ability, which the mana line tells', [tap], []],
+    [
+      'mana abilities among others, left out in the order of the card',
+      [tap, draw, tap, equip],
+      ['{2}, {T}: Draw a card.', 'Equip {1} ({1}: Attach to target creature you control.)'],
+    ],
+    ['nothing', [], []],
+  ])('words %s', (_what, activated, lines) => {
+    expect(activatedLines(card({ id: 7, activated }), []).map((line) => line.text)).toEqual(lines)
+  })
+
+  it('has no lines for a card the server sent no words for', () => {
+    expect(activatedLines(card({ id: 7 }))).toEqual([])
+  })
+
+  it('marks the abilities the prompt offers now, by their address', () => {
+    const object = card({ id: 7, activated: [draw, equip, cycling] })
+    const usable = [abilityKey(at(2)), abilityKey(equip.ability as AbilityRef)]
+    expect(activatedLines(object, usable).map((line) => line.now)).toEqual([false, true, true])
+    expect(activatedLines(object).map((line) => line.now)).toEqual([false, false, false])
+  })
+
+  it('tells two abilities of one index apart by where they come from', () => {
+    const granted: ActivatedView = {
+      ...draw,
+      ability: { object: 7, ability: 1, source: { PrintedKeyword: 4 } },
+    }
+    const object = card({ id: 7, activated: [draw, granted] })
+    expect(
+      activatedLines(object, [abilityKey(granted.ability as AbilityRef)]).map((line) => line.now),
+    ).toEqual([false, true])
+  })
+
+  it('gives each line its own key, even for two of the same words', () => {
+    const lines = activatedLines(card({ id: 7, activated: [draw, draw] }))
+    expect(new Set(lines.map((line) => line.key)).size).toBe(2)
   })
 })

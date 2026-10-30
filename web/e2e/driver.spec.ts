@@ -1,6 +1,6 @@
-// Goal: the driver's own helpers read a prompt as the pages draw it: the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield, which windows count as idle, and which defender an attack aims at.
+// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield, which windows count as idle, and which defender an attack aims at.
 import { expect, test } from '@playwright/test'
-import { aimAt, attackersOffered, isIdle, look, turnOf } from './driver'
+import { aimAt, attackersOffered, hasAbility, isIdle, isPlayable, look, pickPlay, turnOf } from './driver'
 import type { Card, Seen } from './driver'
 
 const card = (id: string): Card => ({ id, label: `Card ${id}`, land: false })
@@ -94,6 +94,56 @@ test.describe('driver helpers', () => {
     expect(isIdle(seen)).toBe(false)
     // The prompt that was answered is not read again.
     expect(await page.evaluate(look, { me: 'Ada', answered: '7' })).toBeNull()
+  })
+
+  const labelled = (label: string): Card => ({ id: '1', label, land: false })
+  const named: { label: string; ability: boolean; playable: boolean }[] = [
+    { label: 'Grizzly Bears, Creature, available', ability: false, playable: true },
+    { label: 'Cycler, Creature, available, Activate one of 2 abilities', ability: true, playable: true },
+    {
+      label: 'Cycler, Creature, available, Activate Cycling 2, not castable: needs mana',
+      ability: true,
+      playable: false,
+    },
+    { label: 'Mind Stone, Artifact, not available, needs mana', ability: false, playable: true },
+  ]
+  for (const { label, ability, playable } of named) {
+    test(`"${label}" ${ability ? 'has' : 'has no'} ability and is ${playable ? '' : 'not '}for casting`, () => {
+      expect(hasAbility(labelled(label))).toBe(ability)
+      expect(isPlayable(labelled(label))).toBe(playable)
+    })
+  }
+
+  // The chooser the table opens beside a card with an ability, and the decision that follows a pick.
+  const table = (chooser: boolean): string => `
+    <div data-decision="Priority" data-decision-id="7"><p data-slot="prompt-text">You have priority</p></div>
+    ${
+      chooser
+        ? `<div data-slot="ability-chooser" role="menu">
+            <button role="menuitem" data-play="cast" onclick="document.querySelector('[data-decision]').dataset.decisionId = '8'; this.parentElement.remove()">Cast Cycler</button>
+            <button role="menuitem" data-play="ability-0-null" onclick="document.body.dataset.wrong = 'yes'">Cycling {2}</button>
+          </div>`
+        : ''
+    }`
+
+  test('a chooser beside a cast is answered with the cast', async ({ page }) => {
+    await page.setContent(table(true))
+    expect(await pickPlay(page, '7', 'cast')).toBe(' from the chooser')
+    expect(await page.locator('[data-decision]').getAttribute('data-decision-id')).toBe('8')
+    expect(await page.locator('body').getAttribute('data-wrong')).toBeNull()
+  })
+
+  test('a click that answered at once opens no chooser, and nothing more is done', async ({ page }) => {
+    await page.setContent(table(false))
+    await page.evaluate(() => {
+      document.querySelector<HTMLElement>('[data-decision]')?.setAttribute('data-decision-id', '8')
+    })
+    expect(await pickPlay(page, '7', 'cast')).toBe('')
+  })
+
+  test('a click that does neither is left to the run after the wait', async ({ page }) => {
+    await page.setContent(table(false))
+    expect(await pickPlay(page, '7', 'land')).toBe('')
   })
 
   test('an attack aims at the first wanted player the list offers', async ({ page }) => {

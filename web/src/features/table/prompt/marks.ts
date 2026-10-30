@@ -19,13 +19,15 @@ export const NO_MARKS: CardMarks = new Map()
  * What a prompt says on a card: `words` for a screen reader, a short `label` drawn on the face only where the state has
  * no arrow or ring of its own (an attacker that still needs blockers), `hint` drawn on the card's foot only while it is
  * hovered or focused (why a hand card cannot be played), `line` for the preview of the card (the reason in a sentence,
- * which a touch screen reaches) and `cue` for the card a click flow waits on.
+ * which a touch screen reaches), `usable` for the abilities (`abilityKey`) the preview marks as available now, and `cue`
+ * for the card a click flow waits on.
  */
 export interface CardNote {
   label?: string
   hint?: string
   line?: string
   words: string
+  usable?: readonly string[]
   cue?: 'active'
 }
 
@@ -36,7 +38,12 @@ export type CardNotes = ReadonlyMap<ObjectId, CardNote>
 export const NO_NOTES: CardNotes = new Map()
 
 const sameNote = (a: CardNote, b: CardNote): boolean =>
-  a.label === b.label && a.hint === b.hint && a.line === b.line && a.words === b.words && a.cue === b.cue
+  a.label === b.label &&
+  a.hint === b.hint &&
+  a.line === b.line &&
+  a.words === b.words &&
+  a.cue === b.cue &&
+  (a.usable ?? []).join() === (b.usable ?? []).join()
 
 /** Every card of `own` dimmed, then the `legal` ones legal and the `selected` ones selected (they may lie outside `own`). */
 export function markCards(
@@ -206,4 +213,22 @@ export function useCardNotes(notes: CardNotes): void {
     store.publishNotes(notes)
   }, [store, notes])
   useLayoutEffect(() => () => store.clearNotes(), [store])
+}
+
+/**
+ * How many of `ids` the prompt marks legal for a click that acts at once (a play or an ability, not a pick among
+ * choices): a zone's chip says so without the list being opened. Every pick counts none.
+ */
+export function useLegalCount(ids: readonly ObjectId[]): number {
+  const store = useMarksStore()
+  const subscribe = useCallback(
+    (listener: () => void) => {
+      const stops = ids.map((id) => store.subscribe(id, listener))
+      return () => stops.forEach((stop) => stop())
+    },
+    [store, ids],
+  )
+  return useSyncExternalStore(subscribe, () =>
+    store.toggles() ? 0 : ids.filter((id) => store.markOf(id) === 'legal').length,
+  )
 }

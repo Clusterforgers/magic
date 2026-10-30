@@ -1,4 +1,4 @@
-import { X } from 'lucide-react'
+import { Play, X } from 'lucide-react'
 import { useEffect } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { Button } from '@/components/ui/button'
@@ -11,7 +11,7 @@ import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
 import { dockOf, usePreviewStore, usePreviewTarget } from './preview'
 import type { Dock, PreviewTarget } from './preview'
-import { attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
+import { activatedLines, attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
 import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
@@ -35,6 +35,19 @@ export function CardPreview() {
   return target === null ? null : <PreviewBody target={target} />
 }
 
+/** The tag after an ability the viewer can activate now, in the look of the reason tag under the card's name. */
+function NowTag() {
+  return (
+    <span
+      data-slot="preview-now"
+      className="ml-1.5 inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 align-middle text-xs font-medium text-foreground"
+    >
+      <Play aria-hidden="true" className="size-3 fill-current" />
+      Can activate now
+    </span>
+  )
+}
+
 function PreviewBody({ target }: { target: PreviewTarget }) {
   const store = usePreviewStore()
   const name = useSeatNamer()
@@ -49,7 +62,8 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       : combatText(state.view.combat, id, name, (other) => state.objectsById[other]?.name ?? 'a card'),
   )
   const links = useLinks(object)
-  const reason = useCardMark(id).note?.line
+  const note = useCardMark(id).note
+  const reason = note?.line
   const gone = object === undefined
 
   useEffect(() => {
@@ -67,6 +81,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const wide = dock === 'left' || dock === 'right'
   const pt = powerToughness(object)
   const keywords = keywordLine(object)
+  const activated = activatedLines(object, note?.usable)
   const status = statusWords(object, role)
   const hosted = hostLine(object, links.host)
   const attaches = links.attaches ?? []
@@ -107,7 +122,9 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         {pt === null ? null : <p>Power/toughness {pt}</p>}
         {keywords === null ? null : <p data-slot="preview-keywords">Keywords: {keywords}</p>}
         {object.abilities.length === 0 ? (
-          <p className="text-muted-foreground">No abilities.</p>
+          activated.length === 0 ? (
+            <p className="text-muted-foreground">No abilities.</p>
+          ) : null
         ) : (
           <ul aria-label="Abilities" className="grid gap-0.5">
             {object.abilities.map((ability, index) => (
@@ -116,6 +133,16 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
           </ul>
         )}
         <ManaPreviewLine object={object} />
+        {activated.length === 0 ? null : (
+          <ul aria-label="Activated abilities" data-slot="preview-activated" className="grid gap-0.5">
+            {activated.map((line) => (
+              <li key={line.key} data-now={line.now || undefined}>
+                {line.text}
+                {line.now ? <NowTag /> : null}
+              </li>
+            ))}
+          </ul>
+        )}
         {status.length === 0 ? null : <p>Status: {status.join(', ')}</p>}
         {hosted === null ? null : <p data-slot="preview-host">{hosted}.</p>}
         {attaches.length === 0 ? null : (

@@ -40,6 +40,24 @@ export function zoneLabel(zone: ZoneKey, count: number): string {
   return `${ZONE_NAME[zone]} ${cardCount(count)}`
 }
 
+/** What a chip adds to its name when `legal` cards of the zone can be played or used now: "2 can be played or used"; empty for none. */
+export function legalWords(legal: number): string {
+  return legal === 0 ? '' : `${legal} can be played or used`
+}
+
+/** The tooltip of a zone chip or picture: its name, how many cards in it can be played or used, and its top card when it shows one. */
+export function zoneTitle(zone: ZoneKey, count: number, legal: number, top?: string): string {
+  return [zoneLabel(zone, count), legalWords(legal), top === undefined ? '' : `Top card: ${top}`]
+    .filter((part) => part !== '')
+    .join('. ')
+}
+
+/** A zone's name for a screen reader, the list it opens and, when cards in it can be played or used now, how many. */
+export function zoneOpenLabel(zone: ZoneKey, count: number, legal: number): string {
+  const label = zoneLabel(zone, count)
+  return legal === 0 ? `${label}, opens the list` : `${label}, ${legalWords(legal)}, opens the list`
+}
+
 /** The cards in each zone of a pod. */
 export type PodCounts = Record<ZoneKey, number>
 

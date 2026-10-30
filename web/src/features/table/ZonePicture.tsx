@@ -5,8 +5,9 @@ import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { CardFace } from './CardFace'
 import { CardWidthContext } from './ImageFace'
-import { ZONE_ICON } from './PodParts'
-import { emptyLabel, zoneLabel } from './podFigures'
+import { LEGAL_RING, LegalBadge, ZONE_ICON } from './PodParts'
+import { emptyLabel, zoneLabel, zoneOpenLabel, zoneTitle } from './podFigures'
+import { useLegalCount } from './prompt/marks'
 import { usePreviewHandlers } from './usePreviewHandlers'
 import { ZoneDialog } from './ZoneButton'
 import type { ListedZone } from './ZoneButton'
@@ -21,6 +22,8 @@ interface ZonePictureProps {
   width: number
   height: number
 }
+
+const NONE: readonly ObjectId[] = []
 
 const BOX = 'relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md'
 
@@ -71,15 +74,16 @@ function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {
   const name = usePlay((state) => state.objectsById[topId]?.name)
   const handlers = usePreviewHandlers(topId, () => setOpen(true))
   const Icon = ZONE_ICON[zone]
-  const label = zoneLabel(zone, ids.length)
+  const legal = useLegalCount(zone === 'command' ? NONE : ids)
   return (
     <>
       <button
         type="button"
         aria-haspopup="dialog"
-        aria-label={`${label}, opens the list`}
-        title={name === undefined ? label : `${label}. Top card: ${name}`}
+        aria-label={zoneOpenLabel(zone, ids.length, legal)}
+        title={zoneTitle(zone, ids.length, legal, name)}
         data-zone={zone}
+        data-legal={legal > 0 ? legal : undefined}
         data-top={topId}
         style={boxStyle(width, height)}
         {...handlers}
@@ -87,6 +91,7 @@ function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {
           BOX,
           'outline-offset-2 outline-primary focus-visible:outline-2',
           name === undefined && 'bg-muted',
+          legal > 0 && LEGAL_RING,
         )}
       >
         <TopFace id={topId} width={width} />
@@ -98,6 +103,7 @@ function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {
           <Icon className="size-3" />
           {ids.length}
         </span>
+        {legal > 0 ? <LegalBadge /> : null}
       </button>
       <ZoneDialog zone={zone} owner={owner} ids={ids} open={open} onOpenChange={setOpen} />
     </>
