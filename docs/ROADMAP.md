@@ -463,7 +463,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
-- [ ] (v89a) Every seat keeps or mulligans at once: the engine asks one seat at a time (`mulligan.rs`, first `Deciding` seat) with a 60 s clock each, so a four-seat opening waits up to four minutes and the "Waiting for" line names seats not yet asked
+- [~] (v89a) (openings) Every seat keeps or mulligans at once: the engine asks one seat at a time (`mulligan.rs`, first `Deciding` seat) with a 60 s clock each, so a four-seat opening waits up to four minutes and the "Waiting for" line names seats not yet asked
 - [ ] (v89b) The host sees the invite link and code without scrolling at 1366x768 and 1440x900: "Invite players" sits under the seats, below the fold (lobby page, `features/game`)
 - [ ] (v89c) The hand dock fits ten or more cards beside the action panel at 1440x900: the last card slides under the panel and its "Drawn" and "Needs mana" tags are cut to "Dra…" and "Needs m…" (`features/table` hand dock)
 - [ ] (v89d) The "Your turn" pill does not cover the step ladder of the top bar (1024 to 1440) or the banner on a phone while it shows
