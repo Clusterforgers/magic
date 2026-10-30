@@ -36,9 +36,9 @@ pub(super) fn form(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     r.punct('/').then_some(())?;
     let toughness = i32::try_from(r.number()?).ok()?;
     if r.words(aura_additive::IN_ADDITION) {
+        paint.is_none().then_some(())?;
         let form = aura_additive::Form {
             lose: lose_first,
-            painted: paint.is_some(),
             kinds: &kinds,
             artifact,
             creature,

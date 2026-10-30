@@ -117,3 +117,79 @@ fn a_face_down_creature_that_stays_so_reads_and_writes_back(
 fn near_misses_of_the_toy_and_the_face_down_creature_are_left_to_the_table(#[case] text: &str) {
     assert!(clause(text, ClauseKind::Static, false).is_none(), "{text}");
 }
+
+/// Whether some wording the checker accepts for the rules is the clause.
+fn da_written(json: &str, clause: &str) -> bool {
+    written_variants(&ability(json))
+        .iter()
+        .any(|wording| same_text(wording, clause))
+}
+
+const DA_MY_AURAS: &str = r#"{"Move":{"what":{"Each":[{"Subtype":"Aura"},{"ControlledBy":"You"},{"AttachedTo":{"Target":0}}]},"to":"Hand"}}"#;
+const DA_THE_TARGET_TO_HAND: &str = r#"{"Move":{"what":{"Target":0},"to":"Hand"}}"#;
+const DA_DESTROY: &str = r#"{"Destroy":{"what":{"Target":0}}}"#;
+const DA_TOUGHNESS: &str =
+    r#"{"LoseLife":{"amount":{"Stat":{"of":{"Target":0},"stat":"Toughness"}}}}"#;
+const DA_BACK: &str = r#"{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":1}},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{}}}}]}"#;
+
+/// The modal spell of Orzhov Charm with the effects given for its first two modes.
+fn da_charm(first: &str, second: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"effects":[{{"Modal":{{"modes":[{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}},{{"ControlledBy":"You"}}]}}}}],"effects":[{first}]}},{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{second}]}},{DA_BACK}]}}}}]}}}}"#
+    )
+}
+
+const DA_CHARM_TEXT: &str = "Choose one \u{2014}\n\u{2022} Return target creature you control and all Auras you control attached to it to their owner's hand.\n\u{2022} Destroy target creature and you lose life equal to its toughness.\n\u{2022} Return target creature card with mana value 1 or less from your graveyard to the battlefield.";
+
+#[test]
+fn orzhov_charm_is_written_back_as_the_oracle_wording() {
+    let rules = da_charm(
+        &format!("{DA_MY_AURAS},{DA_THE_TARGET_TO_HAND}"),
+        &format!("{DA_DESTROY},{DA_TOUGHNESS}"),
+    );
+    assert!(da_written(&rules, DA_CHARM_TEXT));
+}
+
+#[rstest]
+#[case::the_creature_before_its_auras(
+    format!("{DA_THE_TARGET_TO_HAND},{DA_MY_AURAS}"),
+    format!("{DA_DESTROY},{DA_TOUGHNESS}")
+)]
+#[case::the_creature_alone(
+    DA_THE_TARGET_TO_HAND.to_owned(),
+    format!("{DA_DESTROY},{DA_TOUGHNESS}")
+)]
+#[case::auras_of_any_controller(
+    format!(r#"{{"Move":{{"what":{{"Each":[{{"Subtype":"Aura"}},{{"AttachedTo":{{"Target":0}}}}]}},"to":"Hand"}}}},{DA_THE_TARGET_TO_HAND}"#),
+    format!("{DA_DESTROY},{DA_TOUGHNESS}")
+)]
+#[case::equipment_in_place_of_auras(
+    format!("{},{DA_THE_TARGET_TO_HAND}", DA_MY_AURAS.replace("Aura", "Equipment")),
+    format!("{DA_DESTROY},{DA_TOUGHNESS}")
+)]
+#[case::auras_sent_to_the_graveyard(
+    format!("{},{DA_THE_TARGET_TO_HAND}", DA_MY_AURAS.replace(r#""Hand""#, r#""Graveyard""#)),
+    format!("{DA_DESTROY},{DA_TOUGHNESS}")
+)]
+#[case::the_life_lost_before_the_destruction(
+    format!("{DA_MY_AURAS},{DA_THE_TARGET_TO_HAND}"),
+    format!("{DA_TOUGHNESS},{DA_DESTROY}")
+)]
+#[case::the_life_of_the_power(
+    format!("{DA_MY_AURAS},{DA_THE_TARGET_TO_HAND}"),
+    format!("{DA_DESTROY},{}", DA_TOUGHNESS.replace("Toughness", "Power"))
+)]
+#[case::the_life_of_an_opponent(
+    format!("{DA_MY_AURAS},{DA_THE_TARGET_TO_HAND}"),
+    format!(r#"{DA_DESTROY},{{"LoseLife":{{"who":{{"ControllerOf":{{"Target":0}}}},"amount":{{"Stat":{{"of":{{"Target":0}},"stat":"Toughness"}}}}}}}}"#)
+)]
+#[case::no_life_lost(
+    format!("{DA_MY_AURAS},{DA_THE_TARGET_TO_HAND}"),
+    DA_DESTROY.to_owned()
+)]
+fn a_changed_orzhov_charm_is_not_written_as_the_oracle_wording(
+    #[case] first: String,
+    #[case] second: String,
+) {
+    assert!(!da_written(&da_charm(&first, &second), DA_CHARM_TEXT));
+}

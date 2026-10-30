@@ -15,8 +15,6 @@ pub(super) const IN_ADDITION: &str = "in addition to its other types";
 pub(super) struct Form<'a> {
     /// It loses all abilities first.
     pub lose: bool,
-    /// It names a color, which would replace the others.
-    pub painted: bool,
     /// The creature types.
     pub kinds: &'a [Subtype],
     /// It is an artifact too.
@@ -28,17 +26,16 @@ pub(super) struct Form<'a> {
 }
 
 /// The changes of "[loses all abilities and] is a Toy artifact creature with base power and toughness 0/2 in addition to
-/// its other types"; none for a color or for a permanent that is no creature.
+/// its other types"; none for a permanent that is no creature (a color would replace the others, and the reader leaves it out).
 pub(super) fn mods(form: &Form<'_>) -> Option<Vec<Modification>> {
     let Form {
         lose,
-        painted,
         kinds,
         artifact,
         creature,
         size,
     } = *form;
-    (creature && !painted && !kinds.is_empty()).then_some(())?;
+    (creature && !kinds.is_empty()).then_some(())?;
     let mut mods = Vec::new();
     mods.extend(lose.then_some(Modification::LoseAbilities));
     mods.extend(artifact.then_some(Modification::AddType(CardType::Artifact)));

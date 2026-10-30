@@ -24,6 +24,10 @@ use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod w21a_atoms;
 mod w6d_shares;
+
+// deck-auras
+#[cfg(test)]
+mod da_attached_auras;
 use crate::abilities::Cause;
 use crate::announce::{kicked_with, payments};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
