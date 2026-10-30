@@ -24,6 +24,8 @@ use crate::zones::Zone;
 pub(crate) struct Commanders {
     /// The commander cards, fixed when the game is set up.
     ids: BTreeSet<ObjectId>,
+    /// The printed name of each, kept for the commander damage it dealt once the card has left the game.
+    names: BTreeMap<ObjectId, String>,
     /// Times each was cast from the command zone.
     casts: BTreeMap<ObjectId, u32>,
     /// Combat damage each has dealt to each player.
@@ -55,9 +57,11 @@ impl Hash for Commanders {
 
 impl Commanders {
     /// The commanders of a game set up with these cards.
-    pub(crate) fn of(ids: impl IntoIterator<Item = ObjectId>) -> Commanders {
+    pub(crate) fn of(cards: impl IntoIterator<Item = (ObjectId, String)>) -> Commanders {
+        let names: BTreeMap<ObjectId, String> = cards.into_iter().collect();
         Commanders {
-            ids: ids.into_iter().collect(),
+            ids: names.keys().copied().collect(),
+            names,
             ..Commanders::default()
         }
     }
@@ -115,6 +119,14 @@ impl GameState {
     /// Every commander of the game, in object order.
     pub fn commanders(&self) -> impl Iterator<Item = ObjectId> + '_ {
         self.commanders.ids()
+    }
+
+    /// The name of the commander `id`: the whole card while it is in the game, else the name it was set up with.
+    pub fn commander_name(&self, id: ObjectId) -> Option<&str> {
+        match self.object(id) {
+            Some(card) => Some(card.whole_card().name.as_str()),
+            None => self.commanders.names.get(&id).map(String::as_str),
+        }
     }
 
     /// How many times the commander `id` was cast from the command zone this game.

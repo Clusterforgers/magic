@@ -38,7 +38,7 @@ use crate::abilities::{AbilityRef, Cause};
 use crate::ability_reader;
 use crate::choose::{Choices, Target};
 use crate::combat::AttackTarget;
-use crate::decision::{Decision, DecisionKind};
+use crate::decision::{Decision, DecisionKind, Unplayable};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
@@ -125,6 +125,19 @@ impl Phase {
             Phase::Legality => 'e',
             Phase::Total => 'f',
             Phase::Payment => 'g',
+        }
+    }
+
+    /// Why an announcement that cannot get past this step is taken back, in the words of the priority decision.
+    const fn hindrance(self) -> Unplayable {
+        match self {
+            Phase::Face | Phase::Modes | Phase::Targets | Phase::Division | Phase::Legality => {
+                Unplayable::Targets
+            }
+            Phase::Parts => Unplayable::Cost,
+            Phase::Alternative | Phase::Optional | Phase::X | Phase::Total | Phase::Payment => {
+                Unplayable::Mana
+            }
         }
     }
 
@@ -243,6 +256,8 @@ pub(crate) struct Done {
     pub(crate) w2f_kind_picked: Option<u8>,
     /// The step whose decision the player has been asked.
     asked: Option<Phase>,
+    /// Why the announcement was taken back: the step that could not be met.
+    pub(crate) rewound: Option<Unplayable>,
 }
 
 /// A special action that pays a cost and does not use the stack (CR 116.2): the cost is paid through the normal payment
@@ -617,7 +632,10 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     for phase in Phase::ORDER {
         match phase.run(&ctx, &mut work) {
             None => {}
-            Some(Next::Drop) => return ctx.rewind(),
+            Some(Next::Drop) => {
+                work.done.rewound = Some(phase.hindrance());
+                return ctx.rewind();
+            }
             Some(Next::Ask(decision)) => {
                 // Entwine is paid before the modes are chosen: the costs it asks are answered as the optional costs.
                 let asks_costs = matches!(

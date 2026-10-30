@@ -561,3 +561,4 @@ mod t20c_pay_cards;
 mod dk1f_cards;
 mod dk1f_pippin;
 mod dk1f_suppression_ray;
+mod target_reductions;

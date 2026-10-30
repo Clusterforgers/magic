@@ -1,4 +1,4 @@
-//! Goal: the engine asks the optional costs and X of a cast one after the other, refuses an answer outside the options and asks again, keeps the answers in the `SpellCast` it logs and pays the total they make, and a cast backed out of at either question leaves the log and the state as they were.
+//! Goal: the engine asks the optional costs and X of a cast one after the other, refuses an answer outside the options and asks again, keeps the answers in the `SpellCast` it logs and pays the total they make, and a cast backed out of at either question leaves the log and the state as they were, while one that cannot go on is taken back with only its reason logged.
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -10,12 +10,14 @@ use rstest::rstest;
 
 use super::{Needs, Optional, Pending, What, XCost};
 use crate::choose::{CostsChoice, NumberChoice};
-use crate::decision::{Answer, DecisionKind, PayChoice};
+use crate::decision::{Answer, DecisionKind, PayChoice, Unplayable};
 use crate::engine::Engine;
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::fixtures::{creature, setup};
+use crate::ways::Way;
 use crate::zones::Zone;
+use mtg_cards::value::CastWay;
 
 const SEAT: PlayerId = PlayerId(0);
 
@@ -132,5 +134,42 @@ fn backing_out_leaves_the_log_and_the_state_as_they_were(#[case] after: usize) {
     .unwrap();
     assert_eq!(events, Vec::<Event>::new());
     assert_eq!((engine.events().len(), engine.state_hash()), before);
+    assert_eq!(asked(&engine), "priority", "the caster has priority again");
+}
+
+#[test]
+fn a_cast_that_cannot_go_on_is_taken_back_with_a_logged_reason_and_nothing_else() {
+    let forest = Arc::new(CardDefinition::basic_land(Some(Color::Green)));
+    let mut engine = Engine::new(setup(
+        vec![vec![spell()], vec![]],
+        vec![vec![forest; 4], vec![]],
+    ))
+    .unwrap();
+    let card = engine.state().zone(Zone::Hand(SEAT))[0];
+    let before = engine.events().len();
+    // The only way to cast it costs more than the four Forests make.
+    let needs = Needs {
+        ways: vec![Way {
+            alternative: Some(CastWay::Overload),
+            label: "Overload {9}".to_owned(),
+            mana: Some(ManaCost::parse("{9}").unwrap()),
+            instant: true,
+            variant: 0,
+            parts: Vec::new(),
+        }],
+        ..Needs::default()
+    };
+    engine
+        .begin(Pending::needing(SEAT, What::Spell(card), needs))
+        .unwrap();
+    assert_eq!(
+        engine.events()[before..],
+        [Event::AnnouncementRewound {
+            player: SEAT,
+            object: card,
+            reason: Unplayable::Mana,
+        }]
+    );
+    assert_eq!(engine.state().zone(Zone::Hand(SEAT)), [card]);
     assert_eq!(asked(&engine), "priority", "the caster has priority again");
 }

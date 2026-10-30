@@ -44,6 +44,7 @@ import type { Surveilled } from "./Surveilled";
 import type { Target } from "./Target";
 import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
+import type { Unplayable } from "./Unplayable";
 import type { W11dVentured } from "./W11dVentured";
 import type { Zone } from "./Zone";
 import type { ZoneCause } from "./ZoneCause";
@@ -136,7 +137,19 @@ player: PlayerId,
 /**
  * What they could not do.
  */
-kind: NothingToDo, } } | { "PriorityGranted": { 
+kind: NothingToDo, } } | { "AnnouncementRewound": { 
+/**
+ * Who began it.
+ */
+player: PlayerId, 
+/**
+ * The card or permanent it was of.
+ */
+object: ObjectId, 
+/**
+ * Why it could not go on.
+ */
+reason: Unplayable, } } | { "PriorityGranted": { 
 /**
  * Who has priority.
  */

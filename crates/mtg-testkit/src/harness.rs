@@ -48,6 +48,9 @@ pub struct PlayOptions {
     /// Take an out-of-band manual action (`Engine::manual`) by a random seat in the game before one decision in this
     /// many, of any kind and whoever it belongs to; 0 never.
     pub manual_anytime_every: usize,
+    /// At every priority decision, try each offered play this many times on a copy of the game ([`crate::offers`])
+    /// and fail with [`FailureKind::Unanswered`] when one cannot be taken; 0 never.
+    pub check_offers: u64,
 }
 
 impl Default for PlayOptions {
@@ -61,6 +64,7 @@ impl Default for PlayOptions {
             bot_windows: false,
             manual_every: 0,
             manual_anytime_every: 0,
+            check_offers: 0,
         }
     }
 }
@@ -104,6 +108,9 @@ pub enum FailureKind {
     /// The game ended in an inconsistent way.
     #[error("bad ending: {0}")]
     BadEnding(String),
+    /// A priority window offered plays that end with nothing done whichever way they are answered.
+    #[error("unanswered plays: {0}")]
+    Unanswered(String),
 }
 
 /// A failed bot game, carrying everything needed to reproduce it.
@@ -205,6 +212,7 @@ pub fn play_game_with(
             observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
             continue;
         }
+        check_offers(&engine, seed, options.check_offers).map_err(|kind| fail(kind, &[]))?;
         let table_passes = windows.passes(engine.state(), &decision);
         let scripted = scripted_action(&mut script, &engine, &decision, table_passes);
         let answer = if table_passes {
@@ -391,4 +399,17 @@ fn finish(
         option_asks: 0,
         manual_actions: 0,
     })
+}
+
+/// Fails with the plays of the priority decision of `engine` that cannot be taken in `tries` tries ([`crate::offers`]).
+fn check_offers(engine: &Engine, seed: u64, tries: u64) -> Result<(), FailureKind> {
+    if tries == 0 {
+        return Ok(());
+    }
+    let unanswered = crate::offers::unanswered_plays(engine, seed, tries);
+    if unanswered.is_empty() {
+        return Ok(());
+    }
+    let lines: Vec<String> = unanswered.iter().map(ToString::to_string).collect();
+    Err(FailureKind::Unanswered(lines.join("; ")))
 }

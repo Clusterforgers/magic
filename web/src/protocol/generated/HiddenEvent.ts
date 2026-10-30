@@ -9,7 +9,11 @@ import type { ZoneCause } from "./ZoneCause";
 /**
  * What a viewer learns about an event that moved or revealed hidden cards: who and how many, never which.
  */
-export type HiddenEvent = { "CardDrawn": { 
+export type HiddenEvent = { "AnnouncementRewound": { 
+/**
+ * Who took it back.
+ */
+player: PlayerId, } } | { "CardDrawn": { 
 /**
  * Who drew.
  */

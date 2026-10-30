@@ -39,8 +39,12 @@ export function latestNothingToDo(state: PlayState): NothingToDoNote | null {
  */
 export function useNothingToDo(): NothingToDoNote | null {
   const note = usePlay(useShallow(latestNothingToDo))
+  return useUntilAnswered(note, note === null ? null : `${note.seq}:${note.kind}`)
+}
+
+/** `note`, named by `key`, until the player has been asked something after it and answered it. */
+export function useUntilAnswered<T>(note: T | null, key: string | null): T | null {
   const deciding = usePlay((state) => state.pending !== null)
-  const key = note === null ? null : `${note.seq}:${note.kind}`
   const [answered, setAnswered] = useState<string | null>(null)
   const seen = useRef<{ key: string | null; asked: boolean }>({ key: null, asked: false })
   useEffect(() => {

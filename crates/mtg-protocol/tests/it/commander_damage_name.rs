@@ -1,4 +1,4 @@
-//! Goal: `CommanderDamageView.name` names the commander that dealt the damage to every seat wherever the commander is (battlefield, command zone, a hand, a library), while the hand or library it is in stays hidden from the seats that may not see it.
+//! Goal: `CommanderDamageView.name` names the commander that dealt the damage to every seat wherever the commander is (battlefield, command zone, a hand, a library) and after it left the game with its owner, while the hand or library it is in stays hidden from the seats that may not see it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -98,4 +98,26 @@ fn the_name_is_in_the_json_beside_the_damage() {
     let json = serde_json::to_value(&view.table.players[2]).unwrap();
     assert_eq!(json["commander_damage"][0]["name"], "Cmd");
     assert_eq!(json["commander_damage"][0]["damage"], 7);
+}
+
+#[rstest]
+fn the_name_stays_once_the_owner_left_the_game_and_the_commander_with_them(
+    #[values(1, 2)] viewer: usize,
+) {
+    let mut driver = after_damage(None);
+    let id = driver.state().commanders().next().unwrap();
+    driver.concede(PlayerId(0)).unwrap();
+    assert!(
+        driver.state().object(id).is_none(),
+        "the commander left the game"
+    );
+    let view = StateView::for_player(driver.state(), PlayerId::from_index(viewer));
+    let damage = &view.table.players[2].commander_damage;
+    assert_eq!(
+        damage
+            .iter()
+            .map(|entry| (entry.name.as_str(), entry.damage))
+            .collect::<Vec<_>>(),
+        [("Cmd", 7)]
+    );
 }

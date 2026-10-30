@@ -41,7 +41,12 @@ pub(super) fn apply(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) ->
         return mana;
     }
     let specs = targets::specs(ctx, choices);
-    modified(ctx.state, ctx.player, *spell, &specs, choices, mana, false)
+    // Before its targets are chosen a spell is judged as if it found the targets a modifier asks for, among the ones
+    // its specifications allow, so a step before the targets does not give up on a reduction the targets bring.
+    let judging = (choices.targets.len() < specs.len()).then_some(specs.as_slice());
+    modified(
+        ctx.state, ctx.player, *spell, &specs, choices, mana, judging,
+    )
 }
 
 /// The mana cost `player` pays for `spell` before anything is announced, at least: the printed cost with the
@@ -62,9 +67,28 @@ pub(crate) fn cheapest<'a>(
         &[],
         &Choices::default(),
         Some(printed.clone()),
-        true,
+        Some(&possible_specs(state, spell)),
     );
     Cow::Owned(cost.unwrap_or(ManaCost::ZERO))
+}
+
+/// Every target specification `spell` may announce: its enchant restriction as an Aura spell, else the targets of its
+/// spell ability in each of its modes.
+fn possible_specs(state: &GameState, spell: ObjectId) -> Vec<TargetSpec> {
+    if let Some(spec) = crate::attach::spell_target(state, spell) {
+        return vec![spec];
+    }
+    let Some((_, rules)) = crate::resolve::spell_ability(state, spell) else {
+        return Vec::new();
+    };
+    match crate::choose::modal_of(&rules) {
+        Some(modal) => modal
+            .modes
+            .iter()
+            .flat_map(|mode| mode.targets.iter().cloned())
+            .collect(),
+        None => rules.targets().to_vec(),
+    }
 }
 
 /// A cost modifier in play.
@@ -151,7 +175,7 @@ pub(crate) fn modified(
     specs: &[TargetSpec],
     choices: &Choices,
     mana: Option<ManaCost>,
-    judging: bool,
+    judging: Option<&[TargetSpec]>,
 ) -> Option<ManaCost> {
     let Some(target) = state
         .object(spell)

@@ -242,10 +242,6 @@ fn a_target_that_makes_the_total_unaffordable_rewinds_the_announcement(
     let two: Vec<_> = named(&driver, "Sol Ring").into_iter().take(2).collect();
     driver.choose_targets(&two)?;
     driver.expect_decision(0, "priority")?;
-    assert_eq!(
-        (driver.engine().events().len(), driver.engine().state_hash()),
-        before,
-        "nothing was paid and nothing was logged"
-    );
+    crate::common::casting::assert_rewound(&driver, before, mtg_engine::decision::Unplayable::Mana);
     Ok(())
 }

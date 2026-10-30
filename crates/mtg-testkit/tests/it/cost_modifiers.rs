@@ -353,11 +353,7 @@ fn a_total_the_player_cannot_pay_after_the_targets_rewinds_the_announcement()
     let before = (driver.engine().events().len(), driver.engine().state_hash());
     aim_fireball(&mut driver, 3, 1)?;
     driver.expect_decision(0, "priority")?;
-    assert_eq!(
-        (driver.engine().events().len(), driver.engine().state_hash()),
-        before,
-        "nothing was paid and nothing was logged"
-    );
+    crate::common::casting::assert_rewound(&driver, before, mtg_engine::decision::Unplayable::Mana);
     // The same spell with one target less goes through.
     aim_fireball(&mut driver, 3, 0)?;
     assert_eq!(driver.pay_options()?.cost, cost("{3}{R}"));

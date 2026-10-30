@@ -376,7 +376,7 @@ impl GameState {
                 create(owner, card, Zone::Graveyard(owner));
             }
             for card in &setup_player.commanders {
-                commander_ids.push(create(owner, card, Zone::Command(owner)));
+                commander_ids.push((create(owner, card, Zone::Command(owner)), card.name.clone()));
             }
             let status = match setup.start {
                 Start::Mulligan => MulliganStatus::NeedsHand,

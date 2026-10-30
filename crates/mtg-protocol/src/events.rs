@@ -21,6 +21,11 @@ use crate::view::{ObjectView, TableView};
 /// What a viewer learns about an event that moved or revealed hidden cards: who and how many, never which.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub enum HiddenEvent {
+    /// A player took back a cast or activation they began; which one is theirs to know.
+    AnnouncementRewound {
+        /// Who took it back.
+        player: PlayerId,
+    },
     /// A player drew a card.
     CardDrawn {
         /// Who drew.
@@ -232,6 +237,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::CardDrawn { player, .. } if !own(player) => {
             Some(HiddenEvent::CardDrawn { player: *player })
         }
+        Event::AnnouncementRewound { player, .. } if *player != viewer => {
+            Some(HiddenEvent::AnnouncementRewound { player: *player })
+        }
         Event::ObjectLeftGame { object } => {
             (!knows(before, *object, viewer)).then_some(HiddenEvent::ObjectLeftGame)
         }
@@ -270,6 +278,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::PhasesAdded { .. }
         | Event::StepBegan { .. }
         | Event::NothingToDo { .. }
+        | Event::AnnouncementRewound { .. }
         | Event::PriorityGranted { .. }
         | Event::PriorityPassed { .. }
         | Event::LandPlayed { .. }
