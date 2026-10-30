@@ -709,6 +709,10 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), 'CantBeBlocked', 'UntilEndOfTurn'), "Hill Giant can't be blocked until end of turn"],
     [
+      effect(objects(2), 'CantBeTurnedFaceUp', 'UntilEndOfTurn'),
+      "Hill Giant can't be turned face up until end of turn",
+    ],
+    [
       effect(objects(2), 'AddAllCreatureTypes', 'UntilEndOfTurn'),
       'Hill Giant becomes every creature type until end of turn',
     ],

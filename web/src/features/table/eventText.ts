@@ -89,6 +89,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantBlock: "can't block",
       DoesntUntap: `${group ? "don't" : "doesn't"} untap during their controller's untap step`,
       CantBeBlocked: "can't be blocked",
+      CantBeTurnedFaceUp: "can't be turned face up",
       AddAllCreatureTypes: `${becomes} every creature type`,
     }[modification]
   }
