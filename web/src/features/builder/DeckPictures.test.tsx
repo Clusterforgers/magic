@@ -25,6 +25,14 @@ describe('the pictures', () => {
     expect(pane().getByRole('heading', { name: 'Main deck 28' })).toBeInTheDocument()
   })
 
+  it('keeps a tile in its column and what the pane holds inside the pane (a hidden line cannot stretch the page)', async () => {
+    await renderBuilder({ view: checked(), look: 'pictures' })
+    expect(deckLine('Lightning Bolt', 'main').className).toContain('grid-cols-[minmax(0,1fr)]')
+    const scrolls = [...document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]')]
+    expect(scrolls.length).toBeGreaterThan(0)
+    for (const region of scrolls) expect(region.className).toMatch(/(^| )relative( |$)/)
+  })
+
   it('gives every card a tile with its copies as a badge and as the stepper, and the mark of a card that is not verified', async () => {
     await renderBuilder({ view: checked(), look: 'pictures' })
     const bolt = deckLine('Lightning Bolt', 'main')

@@ -184,7 +184,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pl2b) The tiles of focus mode and of the phone's strip show the life chip and take the defender click (only the pod does today)
 - [ ] (pl2c) A pending block's arrow takes the colour of the preview's outcome for its pair, as a declared block does
 - [ ] (pl2d) Playwright: attack and block by clicks in a real two-seat game and at four seats (the click flows are tested on the dev table only)
-- [~] (pl2j) (ui-validate) `accounts.spec.ts` layout gate fails three cases: Decks lists 10 items for 8 decks, the builder's search pane scrolls the page (11082 px, a result cut off sideways) and its deck pane shows no list named "Main deck cards"; a failure restarts the worker, which registers again and ends a fourth case on the registration limit
 - [ ] (pl2k) `join.spec.ts` "a guest follows an invite link" timed out once in the full run (the "Join game" button never stable for 15 s) and passes alone: find what moves the button
 - [ ] (pl3a) `ObjectView` carries what a mana ability gives as data (mana, count, cost, sacrifice), so the corner strip and the preview stop reading the words of `activated` (an ability with a count by a condition, a chosen colour or an extra cost shows nothing today)
 - [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
