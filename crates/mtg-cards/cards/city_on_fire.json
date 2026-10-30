@@ -1,0 +1,20 @@
+{
+  "oracle_id": "41eec4e8-92d3-4f98-9346-3a3e3cc602ce",
+  "name": "City on Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "City on Fire",
+      "oracle_fingerprint": "1ea9976aeacdac35bd742c587a449ac3",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "ControlledBy": "You" }] } },
+            "by": { "Multiply": 3 }
+          }
+        }
+      ]
+    }
+  ]
+}
