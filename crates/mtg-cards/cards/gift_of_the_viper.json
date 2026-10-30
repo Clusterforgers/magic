@@ -1,0 +1,24 @@
+{
+  "oracle_id": "7b1a59db-0ffc-490b-a881-c8192f3747db",
+  "name": "Gift of the Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of the Viper",
+      "oracle_fingerprint": "d69701498f1aef99a6822943c18835b8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "reach" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "deathtouch" } } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

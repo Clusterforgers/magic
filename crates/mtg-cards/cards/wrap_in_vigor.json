@@ -1,0 +1,24 @@
+{
+  "oracle_id": "39da2aa8-f4d9-44f6-a446-488beaec821f",
+  "name": "Wrap in Vigor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wrap in Vigor",
+      "oracle_fingerprint": "464f107cb08b86dc0652f2cb02c3c262",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Regenerate": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

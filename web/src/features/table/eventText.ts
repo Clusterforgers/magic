@@ -277,18 +277,34 @@ function leftWord(zone: Zone): string {
   return 'the command zone'
 }
 
-/** How a seat put back the top cards it looked at by hand, by count: "Ana puts back the top 3 cards of their library: 1 on top, 2 on the bottom (by hand)". */
+/** The cards a seat put back, by place; a sentence names them for the seat that knows them. */
+export interface Arranged {
+  top: readonly ObjectId[]
+  bottom: readonly ObjectId[]
+  graveyard: readonly ObjectId[]
+}
+
+/**
+ * How a seat put back the top cards it looked at by hand: "Ana puts back the top 3 cards of their library: A on top, B
+ * and C on the bottom (by hand)" for the seat that knows them (`named`), "1 on top, 2 on the bottom" by count for any
+ * other.
+ */
 export function describeArrange(
   player: PlayerId,
   top: number,
   bottom: number,
   graveyard: number,
   n: EventNames,
+  named?: Arranged,
 ): string {
+  const place = (count: number, ids: readonly ObjectId[] | undefined, where: string): string | null => {
+    if (count === 0) return null
+    return `${ids === undefined ? count : joinWords(ids.map(n.card))} ${where}`
+  }
   const said = [
-    top > 0 ? `${top} on top` : null,
-    bottom > 0 ? `${bottom} on the bottom` : null,
-    graveyard > 0 ? `${graveyard} into their graveyard` : null,
+    place(top, named?.top, 'on top'),
+    place(bottom, named?.bottom, 'on the bottom'),
+    place(graveyard, named?.graveyard, 'into their graveyard'),
   ].filter((part) => part !== null)
   const all = cards(top + bottom + graveyard)
   return `${n.seat(player)} puts back the top ${all} of their library: ${said.join(', ')} (by hand)`
@@ -298,7 +314,13 @@ export function describeArrange(
  * What a seat did by hand, as one sentence; the events of the change follow it in the log. `from` is the zone a moved
  * card left, which the action does not name and the change does (`foldLog` passes it).
  */
-export function describeManual(player: PlayerId, action: ManualAction, n: EventNames, from?: Zone): string {
+export function describeManual(
+  player: PlayerId,
+  action: ManualAction,
+  n: EventNames,
+  from?: Zone,
+  shown?: readonly ObjectId[],
+): string {
   const who = n.seat(player)
   if ('Move' in action) {
     const left = from === undefined ? '' : ` from ${leftWord(from)}`
@@ -344,13 +366,28 @@ export function describeManual(player: PlayerId, action: ManualAction, n: EventN
     const { mana, count } = action.AddMana
     return `${who} adds ${`{${manaLetter(mana)}}`.repeat(count)} (by hand)`
   }
-  if ('LookTop' in action)
-    return `${who} looks at the top ${cards(action.LookTop.count)} of their library (by hand)`
+  if ('LookTop' in action) {
+    // The seat that looked is told the cards; the others see how many.
+    const told = shown === undefined || shown.length === 0 ? '' : `: ${joinWords(shown.map(n.card))}`
+    return `${who} looks at the top ${cards(action.LookTop.count)} of their library${told} (by hand)`
+  }
   if ('ArrangeTop' in action) {
     const { top, bottom, graveyard } = action.ArrangeTop
-    return describeArrange(player, top.length, bottom.length, graveyard.length, n)
+    return describeArrange(player, top.length, bottom.length, graveyard.length, n, action.ArrangeTop)
   }
   if ('Shuffle' in action) return `${who} shuffles their library (by hand)`
+  if ('Reveal' in action) {
+    const { what } = action.Reveal
+    if ('Hand' in what) return `${who} reveals ${n.card(what.Hand.object)} from their hand (by hand)`
+    const top = shown?.at(0)
+    return `${who} reveals the top card of their library${top === undefined ? '' : `: ${n.card(top)}`} (by hand)`
+  }
+  if ('Note' in action) {
+    const { object, text } = action.Note
+    return text.trim() === ''
+      ? `${who} clears the note on ${n.card(object)} (by hand)`
+      : `${who} puts a note on ${n.card(object)}: “${text.trim()}” (by hand)`
+  }
   const { object, power, toughness } = action.Pump
   const signed = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
   return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`

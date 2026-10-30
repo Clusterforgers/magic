@@ -24,6 +24,8 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   LookTop: ['LibraryLooked'],
   ArrangeTop: ['Scried', 'Surveilled', 'ZoneChanged'],
   Shuffle: ['LibraryShuffled'],
+  Reveal: ['Revealed'],
+  Note: [],
 }
 
 type ActionKind = ManualAction extends infer U ? (U extends unknown ? keyof U : never) : never
@@ -65,11 +67,26 @@ export function leftFrom(log: readonly LogEntry[], at: number, count: number): Z
   return undefined
 }
 
+/** The cards the `count` events after the action at `at` tell the viewer: a look at the library or a reveal. */
+function shownIn(log: readonly LogEntry[], at: number, count: number): ObjectId[] | undefined {
+  for (const entry of log.slice(at + 1, at + 1 + count)) {
+    const inner = 'Public' in entry.event ? entry.event.Public : null
+    if (inner === null || typeof inner === 'string') continue
+    if ('LibraryLooked' in inner) return inner.LibraryLooked.cards
+    if ('Revealed' in inner) return inner.Revealed.cards
+  }
+  return undefined
+}
+
 /** A manual action in the log: how many events after it tell the same thing and where a moved card came from. */
 export interface ManualRun {
   /** The events right after the action that its sentence tells again. */
   consumed: number
   from: Zone | undefined
+  /** The cards the run told the viewer: those looked at or revealed. */
+  shown?: ObjectId[]
+  /** The names `LogEntry.names` kept for the action and the events its sentence tells again. */
+  names?: Record<ObjectId, string>
 }
 
 /** For the event at `at`, the run of a manual action; null when it is not one. */
@@ -80,7 +97,14 @@ export function manualRun(log: readonly LogEntry[], at: number): ManualRun | nul
   const hidden = 'Hidden' in entry.event ? entry.event.Hidden : null
   if (event !== null && typeof event !== 'string' && 'ManualAction' in event) {
     const consumed = changeLength(event, log, at)
-    return { consumed, from: leftFrom(log, at, consumed) }
+    const shown = shownIn(log, at, consumed)
+    const kept = Object.assign({}, ...log.slice(at, at + 1 + consumed).map((each) => each.names))
+    return {
+      consumed,
+      from: leftFrom(log, at, consumed),
+      ...(shown === undefined ? {} : { shown }),
+      ...(Object.keys(kept).length === 0 ? {} : { names: kept }),
+    }
   }
   // A move the viewer cannot name is told by its hidden twin, whose change is the hidden `ZoneChanged` after it.
   if (hidden !== null && typeof hidden === 'object' && 'ManualMove' in hidden) {
@@ -89,6 +113,15 @@ export function manualRun(log: readonly LogEntry[], at: number): ManualRun | nul
     return { consumed, from: leftFrom(log, at, consumed) }
   }
   return null
+}
+
+/** `names` with the card names a log entry remembered (`LogEntry.names`) read first. */
+export function remember(
+  names: EventNames,
+  remembered: Readonly<Record<ObjectId, string>> | undefined,
+): EventNames {
+  if (remembered === undefined) return names
+  return { ...names, card: (id) => remembered[id] ?? names.card(id) }
 }
 
 /** The longest clause the log quotes whole. */
@@ -132,10 +165,15 @@ export function byHandLine(event: EventView, names: EventNames): string | null {
 }
 
 /** The sentence of a manual action (or of the hidden twin of a move) as the viewer reads it. */
-export function manualText(event: EventView, from: Zone | undefined, names: EventNames): string {
+export function manualText(
+  event: EventView,
+  from: Zone | undefined,
+  names: EventNames,
+  shown?: readonly ObjectId[],
+): string {
   if ('Public' in event && typeof event.Public !== 'string' && 'ManualAction' in event.Public) {
     const { player, action } = event.Public.ManualAction
-    return describeManual(player, action, names, from)
+    return describeManual(player, action, names, from, shown)
   }
   if ('Hidden' in event && typeof event.Hidden === 'object' && 'ManualMove' in event.Hidden) {
     return describeHiddenManual(event.Hidden.ManualMove.player, event.Hidden.ManualMove.to, names, from)

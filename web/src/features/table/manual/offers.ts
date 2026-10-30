@@ -46,6 +46,7 @@ export const LIMITS = {
   damage: 99,
   mana: 20,
   pump: 99,
+  note: 80,
 } as const
 
 /** The forms that ask for what an action still needs. */
@@ -64,6 +65,7 @@ export type Ask =
   | 'damage'
   | 'mana'
   | 'pump'
+  | 'note'
 
 /** One entry of the menu: an action sent as it is (`action`) or the form that completes it (`ask`). */
 export interface ManualItem {
@@ -75,10 +77,12 @@ export interface ManualItem {
   unavailable?: string
   action?: ManualAction
   ask?: Ask
+  /** Opens the card in the Commands panel instead of acting. */
+  panel?: true
 }
 
 /** The groups of the menu, in order. */
-export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'token' | 'other'
+export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'token' | 'panel'
 
 /** A titled run of entries, or a note that says why it has none. */
 export interface ManualGroup {
@@ -287,26 +291,19 @@ function attachGroup(input: MenuInput, off: string | undefined): ManualGroup | n
   return group
 }
 
-function otherGroup(input: MenuInput, off: string | undefined): ManualGroup {
-  const noCards = input.library === 0 ? 'Your library is empty.' : undefined
-  const items: ManualItem[] = [
-    { key: 'draw', label: 'Draw cards…', ask: 'draw', unavailable: off },
-    { key: 'mill', label: 'Mill cards…', ask: 'mill', unavailable: off ?? noCards },
-    { key: 'move-top', label: 'Move top cards of library…', ask: 'moveTop', unavailable: off ?? noCards },
-    { key: 'gain-life', label: 'Gain life…', ask: 'gainLife', unavailable: off },
-    { key: 'lose-life', label: 'Lose life…', ask: 'loseLife', unavailable: off },
-    { key: 'add-player', label: 'Add your counters…', ask: 'addPlayerCounters', unavailable: off },
-    {
-      key: 'remove-player',
-      label: 'Remove your counters…',
-      ask: 'removePlayerCounters',
-      unavailable: off ?? (input.counters.length === 0 ? 'You have no counters.' : undefined),
-    },
-  ]
-  return { id: 'other', label: 'You', items }
+/** The last entry: the panel's Card group takes over this card, for the commands the menu does not list. */
+function panelGroup(off: string | undefined): ManualGroup {
+  const item: ManualItem = {
+    key: 'in-panel',
+    label: 'In the panel',
+    hint: 'You, Library, Make',
+    panel: true,
+    unavailable: off,
+  }
+  return { id: 'panel', label: 'Commands panel', items: [item] }
 }
 
-/** What a card does when the seat plays one of its abilities by hand: damage and mana from its own, a pump on any creature. */
+/** What a card does when the seat plays one of its abilities by hand: damage from its own, a pump on any creature. */
 function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | null {
   const { object, seat } = input
   const items: ManualItem[] = []
@@ -316,7 +313,6 @@ function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | n
     if (kind !== 'hand' && kind !== 'library') {
       items.push({ key: 'damage', label: 'Deal damage…', ask: 'damage', unavailable: off })
     }
-    items.push({ key: 'mana', label: 'Add mana…', ask: 'mana', unavailable: off })
   }
   if (zoneKind(object.zone) === 'battlefield' && object.types.includes('Creature')) {
     items.push({ key: 'pump', label: 'Pump…', hint: 'until end of turn', ask: 'pump', unavailable: off })
@@ -324,10 +320,39 @@ function effectGroup(input: MenuInput, off: string | undefined): ManualGroup | n
   return items.length === 0 ? null : { id: 'effect', label: 'Effects', items }
 }
 
+/** What the seat shows or says about a card: a hand card to every seat, a note on a card every seat sees. */
+function showGroup(input: MenuInput, off: string | undefined): ManualGroup | null {
+  const { object, seat } = input
+  const mine = object.owner === seat || object.controller === seat
+  const items: ManualItem[] = []
+  if (mine && zoneKind(object.zone) === 'hand' && object.owner === seat) {
+    items.push({
+      key: 'reveal',
+      label: 'Reveal to the table',
+      hint: 'every seat reads it',
+      action: { Reveal: { what: { Hand: { object: object.id } } } },
+      unavailable: off,
+    })
+  }
+  const seen = ['battlefield', 'graveyard', 'exile', 'command', 'stack'].includes(zoneKind(object.zone))
+  if (mine && seen) {
+    const has = object.note !== undefined
+    items.push({
+      key: 'note',
+      label: has ? 'Change the note…' : 'Add a note…',
+      ...(has ? { hint: object.note } : {}),
+      ask: 'note',
+      unavailable: off,
+    })
+  }
+  return items.length === 0 ? null : { id: 'show', label: 'Show', items }
+}
+
 /**
  * The menu of one card, as the protocol allows it (`ManualAction`) at any time: moves, discards and attachments of
- * what the seat owns or controls, damage and mana from its cards, counters, tapping and pumps of any permanent, and
- * life, counters, draws, library cards and tokens of the seat itself. With `off` set the entries are listed and inert.
+ * what the seat owns or controls, damage from its cards, counters, tapping and pumps of any permanent, a token, and
+ * the way into the Commands panel for the seat's own numbers, library and mana. With `off` set the entries are listed
+ * and inert.
  */
 export function manualMenu(input: MenuInput): ManualMenu {
   const { off } = input
@@ -337,12 +362,13 @@ export function manualMenu(input: MenuInput): ManualMenu {
     tapGroup(input, off),
     attachGroup(input, off),
     effectGroup(input, off),
+    showGroup(input, off),
     {
       id: 'token' as const,
       label: 'Token',
       items: [{ key: 'token', label: 'Create a token…', ask: 'token' as const, unavailable: off }],
     },
-    otherGroup(input, off),
+    panelGroup(off),
   ].filter((group): group is ManualGroup => group !== null)
   return { title: input.object.name, notice: off, clauses: input.object.manual ?? [], groups }
 }
@@ -437,6 +463,8 @@ export interface Draft {
   /** What damage is dealt to. */
   hit: DamageTarget | null
   mana: ManaType
+  /** The text of a note. */
+  text: string
 }
 
 /** The start of every form. */
@@ -452,6 +480,7 @@ export const EMPTY_DRAFT: Draft = {
   toughness: 1,
   hit: null,
   mana: 'Colorless',
+  text: '',
 }
 
 /** The kind a draft names, or null while it names none the protocol takes. */
@@ -469,6 +498,7 @@ export function startDraft(ask: Ask, input: Omit<BuildInput, 'draft'>): Draft {
       : ask === 'removePlayerCounters'
         ? input.counters
         : undefined
+  if (ask === 'note') return { ...EMPTY_DRAFT, text: input.object.note ?? '' }
   const first = held?.at(0)
   return first === undefined ? EMPTY_DRAFT : { ...EMPTY_DRAFT, kind: counterName(first[0]) }
 }
@@ -565,6 +595,14 @@ export function buildAction(ask: Ask, input: BuildInput): Built {
       }
       if (power === 0 && toughness === 0) return problem('Change power or toughness.')
       return { action: { Pump: { object: object.id, power, toughness } } }
+    }
+    case 'note': {
+      const text = draft.text.trim()
+      if (text.length > LIMITS.note) return problem(`Write at most ${LIMITS.note} characters.`)
+      if (/\p{Cc}/u.test(text)) return problem('Write the note on one line.')
+      if (text === (object.note ?? ''))
+        return problem(text === '' ? 'Write a note.' : 'The note is the same.')
+      return { action: { Note: { object: object.id, text } } }
     }
   }
 }

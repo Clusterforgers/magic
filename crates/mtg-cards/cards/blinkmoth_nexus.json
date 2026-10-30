@@ -1,0 +1,56 @@
+{
+  "oracle_id": "40d45c02-6416-4e19-8fe3-0ddadf5ba627",
+  "name": "Blinkmoth Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blinkmoth Nexus",
+      "oracle_fingerprint": "84b8a0b3f2e0e93f4d3f6af9259b1ecc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "SetCreatureTypes": ["Blinkmoth"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Blinkmoth" }, { "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

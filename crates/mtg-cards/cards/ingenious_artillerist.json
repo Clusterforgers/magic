@@ -1,0 +1,26 @@
+{
+  "oracle_id": "752c7723-90f8-4e3a-8266-f251ee0dadd8",
+  "name": "Ingenious Artillerist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ingenious Artillerist",
+      "oracle_fingerprint": "9aa541972f1a6eef0844cf705b4bad62",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "ControlledBy": "You" }, { "Type": "Artifact" }],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

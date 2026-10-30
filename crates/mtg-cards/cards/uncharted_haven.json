@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d23c3613-bc5e-4fc5-939c-62a090c53a79",
+  "name": "Uncharted Haven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncharted Haven",
+      "oracle_fingerprint": "eb329db35373566f96a6c61e13580950",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

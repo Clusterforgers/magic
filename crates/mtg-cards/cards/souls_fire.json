@@ -1,0 +1,30 @@
+{
+  "oracle_id": "62d7ed6e-c386-477e-b155-982c3790f842",
+  "name": "Soul's Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul's Fire",
+      "oracle_fingerprint": "dcf35e6f47a555515e217097f184de4a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": "AnyTarget" }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

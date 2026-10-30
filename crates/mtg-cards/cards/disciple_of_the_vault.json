@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c8625113-0ce4-4454-83a1-25c31b8bfb9a",
+  "name": "Disciple of the Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciple of the Vault",
+      "oracle_fingerprint": "a5bfea4e1722bfbb3944c1074f6b6128",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "May": { "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

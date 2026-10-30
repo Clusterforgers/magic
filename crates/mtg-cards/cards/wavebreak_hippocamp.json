@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3405c8a9-a8d6-4b45-9b64-94141076603b",
+  "name": "Wavebreak Hippocamp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wavebreak Hippocamp",
+      "oracle_fingerprint": "6c51553e3f14af638b83fdc3a32bdf30",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": { "Not": "YourTurn" },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

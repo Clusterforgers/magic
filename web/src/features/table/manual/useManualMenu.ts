@@ -5,6 +5,7 @@ import type { ObjectId } from '@/protocol/generated'
 import { clausesOf, opensClauses, showClauses } from './clauses'
 import { useMenuStore } from './menuStore'
 import type { MenuStore } from './menuStore'
+import { useArmed, usePickStore } from './panel/pick'
 
 /** The events that open the menu of one card; spread them on its element. Empty where there is no menu to open. */
 export interface ManualMenuHandlers {
@@ -53,6 +54,8 @@ function openBelow(store: MenuStore, id: ObjectId, element: HTMLElement): void {
  */
 export function useManualMenu(id: ObjectId): ManualMenuHandlers {
   const store = useMenuStore()
+  const picks = usePickStore()
+  const armed = useArmed()
   const plays = usePlay((state) => state.seat !== null && state.view?.spectator !== true)
   const clauses = usePlay((state) => {
     const object = state.objectsById[id]
@@ -72,6 +75,15 @@ export function useManualMenu(id: ObjectId): ManualMenuHandlers {
       return true
     }
     if (!plays) return clauses ? { onKeyDown: lists } : NONE
+    // The panel waits for a card: any press on this one, by mouse, key or finger, chooses it and does nothing else.
+    if (armed && picks !== null) {
+      const choose = (event: MouseEvent<HTMLElement>): void => {
+        event.preventDefault()
+        event.stopPropagation()
+        picks.dispatch({ type: 'choose', card: id })
+      }
+      return { onContextMenu: choose, onClickCapture: choose }
+    }
     const cancel = (): void => window.clearTimeout(timer.current)
     return {
       onContextMenu(event) {
@@ -111,5 +123,5 @@ export function useManualMenu(id: ObjectId): ManualMenuHandlers {
         event.stopPropagation()
       },
     }
-  }, [store, plays, clauses, id])
+  }, [store, picks, armed, plays, clauses, id])
 }

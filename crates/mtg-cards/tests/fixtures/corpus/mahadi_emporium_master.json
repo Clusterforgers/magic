@@ -1,0 +1,170 @@
+{
+  "object": "card",
+  "id": "c3da2b1a-76c5-4d36-bdf8-025b86f61eb5",
+  "oracle_id": "1b3e841e-0f8f-467d-9983-f9b8d081a67f",
+  "multiverse_ids": [
+    563165
+  ],
+  "mtgo_id": 100602,
+  "tcgplayer_id": 272705,
+  "cardmarket_id": 659059,
+  "name": "Mahadi, Emporium Master",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5",
+  "scryfall_uri": "https://scryfall.com/card/clb/282/mahadi-emporium-master?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:04:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "large": "https://cards.scryfall.io/large/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "png": "https://cards.scryfall.io/png/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.png?1783922689",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "display": "https://cards.scryfall.io/display/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "art": "https://cards.scryfall.io/art/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689"
+  },
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Devil",
+  "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "7c502480-111e-46a3-9f2f-9c4901d88323",
+      "component": "combo_piece",
+      "name": "Mahadi, Emporium Master",
+      "type_line": "Legendary Creature — Devil",
+      "uri": "https://api.scryfall.com/cards/7c502480-111e-46a3-9f2f-9c4901d88323"
+    },
+    {
+      "object": "related_card",
+      "id": "770b988d-4f31-4746-8c23-4ed8d9a6b393",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/770b988d-4f31-4746-8c23-4ed8d9a6b393"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1b3e841e-0f8f-467d-9983-f9b8d081a67f&unique=prints",
+  "collector_number": "282",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Welcome to the Wandering Emporium. Feel free to browse the bazaar. We have everything a lost soul could want, need, or afford.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ilse Gort",
+  "artist_ids": [
+    "12070c2e-4de6-46bc-b379-8a580dfb34c5"
+  ],
+  "illustration_id": "7064957b-d9a4-4cbe-a4cb-5b6cfaa93950",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 1291,
+  "preview": {
+    "source": "AusGamers",
+    "source_uri": "https://www.ausgamers.com/news/read/3640225/magic-the-gathering-commander-legends-battle-for-baldurs-gate-exclusive-card-reveal",
+    "previewed_at": "2022-05-18"
+  },
+  "prices": {
+    "usd": "1.13",
+    "usd_foil": "4.88",
+    "usd_etched": null,
+    "eur": "2.08",
+    "eur_foil": "2.49",
+    "tix": "8.20"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563165&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMahadi%252C%2BEmporium%2BMaster",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMahadi%252C%2BEmporium%2BMaster",
+    "edhrec": "https://edhrec.com/route/?cc=Mahadi%2C+Emporium+Master"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272705%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659059&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100602?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

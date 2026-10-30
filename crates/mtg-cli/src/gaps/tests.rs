@@ -619,6 +619,7 @@ fn checked_of(reports: Vec<Report>) -> Checked {
         .map(|n| Subject {
             oracle_id: format!("id{n}"),
             names: Vec::new(),
+            plain: false,
         })
         .collect();
     Checked {
@@ -670,6 +671,26 @@ fn repairs_get_a_row_each_with_the_cards_repaired_and_those_nothing_holds_back_n
         repaired_line(&rows).as_deref(),
         Some("repaired before judging: 2 unusable Manual span, 1 token size from the text")
     );
+}
+
+#[rstest]
+#[case::a_stray_keyword(&["Keyword"], vec![])]
+#[case::an_ability_written_as_other_text(&[], vec![(differs("Fire."), "Fire.")])]
+fn a_card_verified_with_no_rules_is_never_held_back_by_a_proposal(
+    #[case] strays: &[&str],
+    #[case] clauses: Vec<(ClauseState, &str)>,
+) {
+    let proposal = valid(clauses, strays, None);
+    let mut checked = checked_of(vec![proposal.clone(), proposal]);
+    checked.subjects[0].plain = true;
+    let ranks = Popularity::new(BTreeMap::from([
+        ("id0".to_owned(), 1),
+        ("id1".to_owned(), 2),
+    ]))
+    .expect("ranks");
+    let held = held_cards(&checked, &ranks, &Marks::new());
+    assert_eq!(held.len(), 1, "only the card that needs rules is held");
+    assert!(held[0].weight < weight_of(1), "it is the second card");
 }
 
 #[test]

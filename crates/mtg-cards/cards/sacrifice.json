@@ -1,0 +1,31 @@
+{
+  "oracle_id": "068b3692-411b-44d4-a7e9-005262760cfc",
+  "name": "Sacrifice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacrifice",
+      "oracle_fingerprint": "39164f13b1bf1a392fca5691b6528fc3",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

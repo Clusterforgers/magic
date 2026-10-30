@@ -1,22 +1,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { useShallow } from 'zustand/react/shallow'
-import { useGame, usePlay } from '@/features/game/gameContext'
+import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { CounterKind, ManualAction } from '@/protocol/generated'
+import type { ManualAction } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
-import { playerOf } from '../selectors'
 import { ManualForm } from './ManualForm'
 import { ByHandList } from './ByHand'
 import { ByHandPanel } from './ByHandPanel'
 import { createMenuStore, ManualMenuContext, useMenuStore, useMenuTarget } from './menuStore'
+import { feedbackWords, useManualSender } from './panel/feedback'
+import { PickBanner } from './panel/PickBanner'
+import { createPickStore, PickContext, usePickStore } from './panel/pick'
 import type { MenuTarget } from './menuStore'
-import { GAME_OVER, manualMenu, OUT_OF_GAME } from './offers'
+import { manualMenu } from './offers'
 import type { Ask, ManualGroup, ManualItem } from './offers'
 import { containerOf, useCloseOutside, usePlaced, useReturnFocus } from './popup'
+import { useMenuInput } from './useMenuInput'
 
-const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
 function focusables(panel: HTMLElement): HTMLElement[] {
   return [...panel.querySelectorAll<HTMLElement>('[role="menuitem"]')]
 }
@@ -86,46 +87,15 @@ function Group({
 /** The menu of one card, open at `target`. */
 function Panel({ target }: { target: MenuTarget }) {
   const store = useMenuStore()
-  const { session } = useGame()
+  const sender = useManualSender()
+  const picks = usePickStore()
   const nameOf = useSeatNamer()
   const panel = useRef<HTMLDivElement>(null)
   const [ask, setAsk] = useState<Ask | null>(null)
   const [error, setError] = useState<string | undefined>(undefined)
-  const seat = usePlay((state) => state.seat)
-  const object = usePlay((state) => state.objectsById[target.id])
   const objects = usePlay((state) => state.objectsById)
-  const hasCommandZone = usePlay((state) => state.view?.format.toLowerCase() === 'commander')
-  const mine = usePlay(
-    useShallow((state) => {
-      const player = seat === null ? undefined : playerOf(state, seat)
-      return {
-        library: player?.library.count ?? 0,
-        counters: player?.counters ?? NO_COUNTERS,
-        off: state.result !== null ? GAME_OVER : (player?.lost ?? null) !== null ? OUT_OF_GAME : undefined,
-      }
-    }),
-  )
-  const players = usePlay(
-    useShallow((state) => (state.view?.players ?? []).filter((p) => p.lost === null).map((p) => p.seat)),
-  )
   const close = useCallback((): void => store?.close(), [store])
-
-  const input = useMemo(
-    () =>
-      object === undefined || seat === null
-        ? null
-        : {
-            seat,
-            object,
-            off: mine.off,
-            players,
-            hasCommandZone,
-            library: mine.library,
-            counters: mine.counters,
-            ownerName: nameOf(object.owner),
-          },
-    [seat, object, players, hasCommandZone, mine, nameOf],
-  )
+  const input = useMenuInput(target.id)
   const menu = useMemo(() => (input === null ? null : manualMenu(input)), [input])
 
   // The card left the table (or the seat is gone) while the menu was open.
@@ -151,17 +121,23 @@ function Panel({ target }: { target: MenuTarget }) {
 
   if (menu === null || input === null) return null
 
-  // Sent at any time, apart from any decision; a refusal comes back as the session's notice with the engine's reason.
+  // Sent at any time, apart from any decision. The menu stays up until the server has taken the action, so that a
+  // refusal is read here, in the menu's own words, and not in the table notice.
   const send = (action: ManualAction): void => {
     if (menu.notice !== undefined) setError(menu.notice)
-    else if (session.manual(action)) close()
-    else setError('The action could not be sent; the connection is not open.')
+    else sender.send(action, menu.title, close)
   }
   const use = (item: ManualItem): void => {
     setError(undefined)
-    if (item.action !== undefined) send(item.action)
+    sender.clear()
+    if (item.panel === true) {
+      // The panel takes this card; the menu has done its part.
+      picks?.dispatch({ type: 'choose', card: target.id })
+      close()
+    } else if (item.action !== undefined) send(item.action)
     else if (item.ask !== undefined) setAsk(item.ask)
   }
+  const failed = sender.feedback !== null && !['sending', 'done'].includes(sender.feedback.state)
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
     event.stopPropagation()
     if (event.key === 'Escape') {
@@ -242,11 +218,16 @@ function Panel({ target }: { target: MenuTarget }) {
             <ByHandList clauses={menu.clauses} className="text-xs" />
           </section>
         )}
-        {error === undefined ? null : (
-          <p role="alert" className="text-xs text-destructive">
-            {error}
+        {error === undefined && !failed ? null : (
+          <p role="alert" data-slot="menu-feedback" className="text-xs text-destructive">
+            {error ?? (sender.feedback === null ? '' : feedbackWords(sender.feedback))}
           </p>
         )}
+        {sender.feedback?.state === 'sending' ? (
+          <p role="status" data-slot="menu-feedback" className="text-xs text-muted-foreground">
+            {feedbackWords(sender.feedback)}
+          </p>
+        ) : null}
       </div>
       {body}
     </div>
@@ -271,10 +252,14 @@ export function ManualMenuHost() {
 /** The menu store of a table and the host that draws its menu, around the cards. */
 export function ManualMenuProvider({ children }: { children: ReactNode }) {
   const [store] = useState(createMenuStore)
+  const [picks] = useState(createPickStore)
   return (
     <ManualMenuContext value={store}>
-      {children}
-      <ManualMenuHost />
+      <PickContext value={picks}>
+        {children}
+        <ManualMenuHost />
+        <PickBanner />
+      </PickContext>
     </ManualMenuContext>
   )
 }

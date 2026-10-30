@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5c5b308c-07d5-422a-8b45-b8b19cb967ca",
+  "name": "Blacksmith's Skill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blacksmith's Skill",
+      "oracle_fingerprint": "374a9d34b611447e43c1ab9e18ee1008",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Artifact" }, { "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

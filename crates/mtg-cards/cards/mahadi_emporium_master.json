@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1b3e841e-0f8f-467d-9983-f9b8d081a67f",
+  "name": "Mahadi, Emporium Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mahadi, Emporium Master",
+      "oracle_fingerprint": "8f438a1dc39394763e23ece3b34b77e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

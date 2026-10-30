@@ -1,0 +1,40 @@
+{
+  "oracle_id": "675281ff-b81f-4e5e-9f85-9f8cd202b50b",
+  "name": "Inkmoth Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inkmoth Nexus",
+      "oracle_fingerprint": "669f0855c3271c3ac4a9a5991d1d83bb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "SetCreatureTypes": ["Phyrexian Blinkmoth"] },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "Infect" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

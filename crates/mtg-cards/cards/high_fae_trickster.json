@@ -1,0 +1,16 @@
+{
+  "oracle_id": "28c1a4a0-f58c-4d07-a918-51ff8a74f050",
+  "name": "High Fae Trickster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Fae Trickster",
+      "oracle_fingerprint": "09ab7918326dbed4e1770c2ebae714aa",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "MayCast": { "flash": true } } } }
+      ]
+    }
+  ]
+}

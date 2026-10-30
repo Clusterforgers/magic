@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6fec368d-374d-4318-861b-ff478ba51a3c",
+  "name": "Octopus Form",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Octopus Form",
+      "oracle_fingerprint": "41afa83a755388a515b545e9bf237f06",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Hexproof" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

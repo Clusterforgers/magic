@@ -1,0 +1,25 @@
+{
+  "oracle_id": "00b36996-43c6-42a5-892c-c7c8864cf973",
+  "name": "Blur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blur",
+      "oracle_fingerprint": "a9e191243c8fab70297e4fdc8963c01e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

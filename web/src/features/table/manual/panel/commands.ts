@@ -1,5 +1,12 @@
 /** Pure: the commands of the Commands panel, what each one says it does, the preview of its change and the action it sends. */
-import type { CommonToken, CounterKind, ManaType, ManualAction, PlayerId } from '@/protocol/generated'
+import type {
+  CommonToken,
+  CounterKind,
+  ManaType,
+  ManualAction,
+  ObjectId,
+  PlayerId,
+} from '@/protocol/generated'
 import { COMMON_TOKENS, counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
 
 /** The groups of the panel, in order. */
@@ -12,10 +19,12 @@ export type CommandId =
   | 'energy'
   | 'experience'
   | 'draw'
+  | 'look'
   | 'mill'
   | 'exileTop'
   | 'bottomTop'
   | 'shuffle'
+  | 'revealTop'
   | 'token'
   | 'mana'
 
@@ -61,6 +70,8 @@ export interface PanelInput {
   library: number
   hand: number
   counters: readonly (readonly [CounterKind, number])[]
+  /** The top cards the seat looked at and has not put back yet, top first; none otherwise. */
+  looked: readonly ObjectId[]
   /** Why nothing can be done by hand (a seat that lost, a finished game); left out while the seat plays. */
   off?: string
 }
@@ -132,6 +143,7 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
       amount: count(LIMITS.cards),
       unavailable: noCards,
     },
+    lookCommand(input, noCards),
     {
       id: 'mill',
       group: 'library',
@@ -163,6 +175,7 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
       effect: 'Shuffle your library into a random order.',
       unavailable: off,
     },
+    revealTopCommand(noCards),
   ]
   const make: Command[] = [
     {
@@ -189,6 +202,33 @@ export function panelGroups(input: PanelInput): PanelGroup[] {
     { id: 'library', label: 'Library', commands: library },
     { id: 'make', label: 'Make', commands: make },
   ]
+}
+
+/** Look at the top: scry, surveil or reorder the cards looked at; pending cards say so on the row. */
+function lookCommand(input: PanelInput, unavailable: string | undefined): Command {
+  const waiting = input.looked.length
+  return {
+    id: 'look',
+    group: 'library',
+    label: 'Look at the top',
+    effect:
+      waiting > 0
+        ? `You looked at the top ${plural(waiting, 'card')}: arrange them.`
+        : 'Look at the top cards of your library, then put them back, on the bottom or in the graveyard.',
+    amount: count(LIMITS.cards),
+    unavailable,
+  }
+}
+
+/** Reveal the top card: every seat reads it until it leaves the top or the library is shuffled. */
+function revealTopCommand(unavailable: string | undefined): Command {
+  return {
+    id: 'revealTop',
+    group: 'library',
+    label: 'Reveal the top card',
+    effect: 'Show the top card of your library to every seat.',
+    unavailable,
+  }
 }
 
 /** The draft a row of `command` opens with. */
@@ -238,6 +278,20 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
         preview: `${input.name}: ${plural(input.library, 'card')} in a new random order`,
         apply: 'Shuffle your library',
         action: { Shuffle: {} },
+      }
+    case 'look': {
+      const seen = Math.min(amount, input.library)
+      return {
+        preview: `${input.name}: you see the top ${plural(seen, 'card')}; the other seats are told how many`,
+        apply: `Look at the top ${plural(seen, 'card')}`,
+        action: { LookTop: { count: amount } },
+      }
+    }
+    case 'revealTop':
+      return {
+        preview: `${input.name}: the top card of your library is shown to every seat`,
+        apply: 'Reveal the top card',
+        action: { Reveal: { what: { Top: {} } } },
       }
     case 'token':
       return {

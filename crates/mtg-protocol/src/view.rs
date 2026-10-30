@@ -256,6 +256,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ManualClause>>", optional)]
     pub manual: Vec<ManualClause>,
+    /// The note a seat put on the object by hand, which every seat that sees the object reads; left out while there is
+    /// none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub note: Option<String>,
     /// Which printed card the object shows, for a client to find its image and rules text: the card of the face in use or
     /// of the copy effect. Left out for a token, an ability, a card the game has no record of, and a face-down object to a
     /// seat that may not look at it.
@@ -356,6 +361,11 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
     pub known_top: Vec<ObjectId>,
+    /// The cards of the hand that the seat showed to every seat by hand and that are still there; left out while there
+    /// are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectId>>", optional)]
+    pub revealed_hand: Vec<ObjectId>,
     /// Graveyard (public).
     pub graveyard: ZoneView,
     /// Command zone (public).

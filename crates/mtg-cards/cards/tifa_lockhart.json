@@ -1,0 +1,40 @@
+{
+  "oracle_id": "878df304-9d6d-4ce9-b65b-1439c251f3e0",
+  "name": "Tifa Lockhart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tifa Lockhart",
+      "oracle_fingerprint": "7d4b9d70d7bd245c140860b762907567",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

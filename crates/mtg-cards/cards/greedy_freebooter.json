@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d4a9d63a-5a8a-4f51-9e49-43d6dc3234b1",
+  "name": "Greedy Freebooter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greedy Freebooter",
+      "oracle_fingerprint": "14995bb870df5608068c06920517ca79",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Scry": {} }, { "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

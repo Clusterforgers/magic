@@ -1,0 +1,25 @@
+{
+  "oracle_id": "05a039ad-1689-4d13-b393-6c1219583b5d",
+  "name": "Sleight of Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleight of Hand",
+      "oracle_fingerprint": "e3c492cb3cae692681e25e0ba58f1027",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": { "what": { "Bound": "rest" }, "to": { "Library": { "place": "Bottom" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

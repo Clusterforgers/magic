@@ -1,0 +1,32 @@
+{
+  "oracle_id": "809edfed-89a9-4327-b7db-1bcec63f3e66",
+  "name": "Brokers Ascendancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brokers Ascendancy",
+      "oracle_fingerprint": "59636cb0330bf2b357a56aa130596b8e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                  "counter": "loyalty"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

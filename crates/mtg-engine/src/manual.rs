@@ -56,6 +56,8 @@ pub const MAX_STAT: i32 = 99;
 pub const MAX_DAMAGE: u32 = 99;
 /// Most mana one action adds.
 pub const MAX_MANA: u32 = 20;
+/// Most characters of a note on a card.
+pub const MAX_NOTE_CHARS: usize = 80;
 
 /// Where a card goes: a zone of its owner, or the shared battlefield or exile.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -89,6 +91,19 @@ impl ManualZone {
             ManualZone::Command => Zone::Command(owner),
         }
     }
+}
+
+/// Which card a seat shows to every seat.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ManualReveal {
+    /// A card of the seat's hand.
+    Hand {
+        /// The card.
+        object: ObjectId,
+    },
+    /// The top card of the seat's library.
+    Top {},
 }
 
 /// A token from the list of the common ones; the first three are the predefined tokens of `cards/tokens`.
@@ -430,6 +445,19 @@ pub enum ManualAction {
     },
     /// The seat shuffles its library.
     Shuffle {},
+    /// The seat shows a card of its hand or its top card to every seat, which identify it until it leaves the place it
+    /// was shown in (a library that is shuffled hides it too).
+    Reveal {
+        /// The card.
+        what: ManualReveal,
+    },
+    /// The seat puts a short note on a card in a zone every seat sees into, or clears the note with an empty text.
+    Note {
+        /// The card, which the seat owns or controls.
+        object: ObjectId,
+        /// The text, up to 80 characters on one line.
+        text: String,
+    },
 }
 
 /// Why a manual action is refused.
@@ -586,6 +614,10 @@ pub(crate) fn events(
             graveyard,
         } => crate::manual_library::arrange_top(state, player, top, bottom, graveyard)?,
         ManualAction::Shuffle {} => crate::manual_library::shuffle(state, player),
+        ManualAction::Reveal { what } => crate::manual_show::reveal(state, player, *what)?,
+        ManualAction::Note { object, text } => {
+            crate::manual_show::note(state, player, *object, text)?
+        }
     };
     let mut events = Vec::with_capacity(changes.len() + 1);
     events.push(Event::ManualAction {
@@ -610,7 +642,11 @@ fn tap(state: &GameState, id: ObjectId, tap: bool) -> Result<Vec<Event>, ManualR
 }
 
 /// The object `id` when the seat owns or controls it.
-fn own(state: &GameState, player: PlayerId, id: ObjectId) -> Result<&GameObject, ManualRefusal> {
+pub(crate) fn own(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+) -> Result<&GameObject, ManualRefusal> {
     let object = state
         .object(id)
         .filter(|object| object.kind() != ObjectKind::Ability)
