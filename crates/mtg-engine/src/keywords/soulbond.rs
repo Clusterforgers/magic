@@ -40,7 +40,7 @@ impl KeywordRules for Soulbond {
             return Vec::new();
         }
         let mut others = free_creature();
-        others.push(Pred::Other);
+        others.insert(1, Pred::Other);
         let enters = Ability::Triggered {
             when: TriggerPattern::ZoneChange {
                 what: Selector::this(),
