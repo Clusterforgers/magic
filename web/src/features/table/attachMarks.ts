@@ -33,6 +33,7 @@ const RULES: Record<GivenRule, RuleWords> = {
   BlockerLimit: { text: 'Block limit', words: 'needs or allows only some blockers', tone: 'plain' },
   BlocksAdditional: { text: 'Extra blocks', words: 'can block additional creatures', tone: 'raise' },
   DoesntUntap: { text: "Doesn't untap", words: "doesn't untap", tone: 'restrict' },
+  CantBeTurnedFaceUp: { text: 'Stays face down', words: "can't be turned face up", tone: 'restrict' },
   LoseAbilities: { text: 'Loses abilities', words: 'loses all abilities', tone: 'restrict' },
   LoseKeyword: { text: 'Loses a keyword', words: 'loses a keyword', tone: 'restrict' },
   GainAbility: { text: 'New ability', words: 'gains an ability', tone: 'raise' },

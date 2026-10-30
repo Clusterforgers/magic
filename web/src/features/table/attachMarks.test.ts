@@ -51,6 +51,7 @@ const RULE_MARKS: Record<GivenRule, [text: string, words: string, tone: MarkTone
   BlockerLimit: ['Block limit', 'needs or allows only some blockers', 'plain'],
   BlocksAdditional: ['Extra blocks', 'can block additional creatures', 'raise'],
   DoesntUntap: ["Doesn't untap", "doesn't untap", 'restrict'],
+  CantBeTurnedFaceUp: ['Stays face down', "can't be turned face up", 'restrict'],
   LoseAbilities: ['Loses abilities', 'loses all abilities', 'restrict'],
   LoseKeyword: ['Loses a keyword', 'loses a keyword', 'restrict'],
   GainAbility: ['New ability', 'gains an ability', 'raise'],
