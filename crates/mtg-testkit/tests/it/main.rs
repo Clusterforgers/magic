@@ -516,3 +516,6 @@ mod x_places;
 mod zone_abilities;
 mod zone_moves;
 mod zones_fuzz;
+
+// dk1c
+mod dk1c_triggers;

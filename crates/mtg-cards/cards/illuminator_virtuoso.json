@@ -1,0 +1,22 @@
+{
+  "oracle_id": "ed2af15e-955b-43a1-80af-2484be373db3",
+  "name": "Illuminator Virtuoso",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illuminator Virtuoso",
+      "oracle_fingerprint": "1abf935296f3aacbca554f10daf4e0dc",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": ["This"], "by": ["Spell", { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

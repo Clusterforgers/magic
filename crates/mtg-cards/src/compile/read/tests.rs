@@ -1082,3 +1082,6 @@ mod sentences {
         assert_eq!(effects.len(), 2);
     }
 }
+
+// dk1c
+mod dk1c_writers;

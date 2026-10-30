@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0d44bd43-77da-449e-b771-8a14da88b677",
+  "name": "Hero of Iroas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hero of Iroas",
+      "oracle_fingerprint": "a02b017ccf5afda41ec107cb1c62384b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Aura" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
