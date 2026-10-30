@@ -1,0 +1,19 @@
+{
+  "oracle_id": "94fac5fe-97d5-4c12-a80c-8efff9d853ae",
+  "name": "Blood Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Moon",
+      "oracle_fingerprint": "13388a24375e310d94bd6ec736454a9e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] },
+            "mods": [{ "SetLandTypes": ["Mountain"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

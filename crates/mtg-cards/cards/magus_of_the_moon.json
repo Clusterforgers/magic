@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6800d01c-345d-4932-a2a4-8df0fb1902f2",
+  "name": "Magus of the Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Moon",
+      "oracle_fingerprint": "13388a24375e310d94bd6ec736454a9e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] },
+            "mods": [{ "SetLandTypes": ["Mountain"] }]
+          }
+        }
+      ]
+    }
+  ]
+}

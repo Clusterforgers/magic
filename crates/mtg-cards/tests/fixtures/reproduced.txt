@@ -156,6 +156,7 @@ Blazing Sunsteel
 Blight Mamba
 Blight Pile
 Blightwidow
+Blood Moon
 Blood Seeker
 Blood for the Blood God!
 Bloodbraid Elf
@@ -428,6 +429,7 @@ Drove of Elves
 Drownyard Temple
 Drudge Beetle
 Drudge Skeletons
+Dryad of the Ilysian Grove
 Dual Casting
 Dual Strike
 Dualcaster Mage
@@ -888,6 +890,7 @@ Maestros Theater
 Mage Hunter
 Magistrate's Scepter
 Magmatic Insight
+Magus of the Moon
 Make Disappear
 Makeshift Mauler
 Malakir Blood-Priest

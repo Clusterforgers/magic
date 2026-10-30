@@ -277,6 +277,7 @@ mod hideaway;
 mod if_sentence;
 mod impulse;
 mod instead_pairs;
+mod land_types;
 mod lands;
 mod leave_combat;
 mod levels;
