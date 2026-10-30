@@ -287,12 +287,13 @@ const OBJECT_KINDS: Record<ObjectKind, true> = {
   Initiative: true,
 }
 
-// A card, token, ability or emblem; the server leaves the field out for a card, and the other two fields out when empty.
+// A card, token, ability or emblem; the server leaves the field out for a card, and the other fields out when empty.
 function isObjectKindInfo(value: Record<string, unknown>): boolean {
   return (
     (value.kind === undefined || (isText(value.kind) && Object.hasOwn(OBJECT_KINDS, value.kind))) &&
     (value.source === undefined || isCount(value.source)) &&
-    (value.targets === undefined || isListOf(value.targets, Array.isArray))
+    (value.targets === undefined || isListOf(value.targets, Array.isArray)) &&
+    (value.targets_legal === undefined || isListOf(value.targets_legal, Array.isArray))
   )
 }
 

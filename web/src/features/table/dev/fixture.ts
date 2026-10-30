@@ -102,6 +102,7 @@ function commanderDamage(
   seat: PlayerId,
   seats: number,
   cards: readonly SeatCards[],
+  objects: readonly ObjectView[],
 ): Pick<PlayerView, 'commander_damage'> {
   const of = (owner: PlayerId): ObjectId | undefined => cards[owner]?.command[0]
   const hits: [PlayerId, PlayerId, number][] = [
@@ -111,7 +112,8 @@ function commanderDamage(
   ]
   const damage = hits.flatMap(([from, to, amount]) => {
     const commander = of(from)
-    return to === seat && to < seats && commander !== undefined ? [{ commander, damage: amount }] : []
+    const name = objects.find((object) => object.id === commander)?.name ?? ''
+    return to === seat && to < seats && commander !== undefined ? [{ commander, name, damage: amount }] : []
   })
   return damage.length === 0 ? {} : { commander_damage: damage }
 }
@@ -287,7 +289,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     ),
     commanders: mine.command.map((object, index) => ({ object, ...commanderCasts(seat, index) })),
     commander_lethal: 21,
-    ...commanderDamage(seat, seats, cards),
+    ...commanderDamage(seat, seats, cards, objects),
     bank: 0,
   }))
 

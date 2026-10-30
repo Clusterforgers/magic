@@ -320,7 +320,7 @@ describe('optional fields of a changed part', () => {
       const player = must(t.players[0], 'player')
       player.life -= 1
       player.commanders = [{ object: permanent.id, casts: 1, tax: 2 }]
-      player.commander_damage = [{ commander: permanent.id, damage: 3 }]
+      player.commander_damage = [{ commander: permanent.id, name: permanent.name, damage: 3 }]
       t.phased_out = [permanent.id]
     })
     const tapped = {
@@ -330,7 +330,7 @@ describe('optional fields of a changed part', () => {
     const next = applyBatch(deepFreeze(clone(base)), batchOf(base, { table, objects: [tapped] }))
     const player = must(next.players[0], 'player')
     expect(player.commanders).toEqual([{ object: permanent.id, casts: 1, tax: 2 }])
-    expect(player.commander_damage).toEqual([{ commander: permanent.id, damage: 3 }])
+    expect(player.commander_damage).toEqual([{ commander: permanent.id, name: permanent.name, damage: 3 }])
     expect(next.phased_out).toEqual([permanent.id])
     expect(next.objects.find((object) => object.id === permanent.id)?.identity).toEqual({ oracle_id: 'o-1' })
   })

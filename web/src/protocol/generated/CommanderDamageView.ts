@@ -10,6 +10,11 @@ export type CommanderDamageView = {
  */
 commander: ObjectId, 
 /**
+ * The commander's name: commanders are public wherever they are, so every seat names it while it is in a hand or
+ * a library.
+ */
+name: string, 
+/**
  * The damage, summed over the game.
  */
 damage: number, };

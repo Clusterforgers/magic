@@ -571,6 +571,7 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
     kind: 'Ability',
     source: 5,
     targets: [[{ Player: 0 }]],
+    targets_legal: [[true]],
   }
 
   it('accepts a decision of every kind, the effects’ ones included, and hands it on unchanged', () => {
@@ -624,6 +625,7 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
     ['a source that is not a number', { source: 'Pinger' }],
     ['targets that are not a list of lists', { targets: [{ Player: 0 }] }],
     ['targets that are not a list', { targets: 'none' }],
+    ['target legality that is not a list of lists', { targets_legal: [true] }],
     ['keywords that are text', { keywords: 'Flying' }],
     ['keywords that are not all text', { keywords: ['Flying', 2] }],
     ['keywords that are null', { keywords: null }],
