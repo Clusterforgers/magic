@@ -307,6 +307,7 @@ const RUNS: &[&str] = &[
     "Effect.Pay",
     "Effect.Pay.Counted",
     "Effect.Pay.X",
+    "Effect.Pay.X.Energy",
     "Effect.Choose",
     "Effect.ChooseAtRandom",
     "Effect.Modal",
@@ -1039,6 +1040,7 @@ mod tests {
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", true)]
+    #[case::paying_energy_of_a_chosen_amount_in_an_effect("Effect.Pay.X.Energy", true)]
     #[case::paying_a_part_that_counts_x_in_an_effect("Effect.Pay.X.Parts", false)]
     #[case::faces(FACES, true)]
     #[case::the_prepared_cast(PREPARE, true)]

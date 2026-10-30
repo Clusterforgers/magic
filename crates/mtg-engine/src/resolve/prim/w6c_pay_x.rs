@@ -46,18 +46,22 @@ pub(super) fn mana_text(mana: &ManaCost, x_symbols: u32) -> String {
 }
 
 /// The X of a player who said yes, read from the journal, or the question for it; a cost without `{X}` is paid as it
-/// is. X runs from 0 to the most the player can pay.
+/// is. X runs from 0 to the most the player can pay, and counts the energy of a part that takes X (`Pay X {E}`) as well as the mana.
 pub(super) fn announced<'a>(
     cx: &Cx<'_>,
     player: PlayerId,
     template: &Price,
     journal: &mut Peekable<impl Iterator<Item = &'a (PlayerId, Choice)>>,
 ) -> Result<Announced, ResolveError> {
-    if template.x == 0 {
+    if template.x == 0 && !template.counted() {
         return Ok(Announced::Price(template.clone(), None));
     }
     // The answer was checked against the most the player could pay when it was asked; the mana is spent since.
     match journal.next_if(|entry| entry.0 == player) {
+        // A counted part is paid after the answer, so the answer is held to what the player holds now.
+        Some((_, Choice::Number(x))) if template.x == 0 && *x > most(cx, player, template) => Err(
+            ResolveError::Invalid(format!("{x} is more than {player:?} can pay")),
+        ),
         Some((_, Choice::Number(x))) => Ok(Announced::Price(at(template, *x), Some(*x))),
         None => Ok(Announced::Ask(Decision {
             player,

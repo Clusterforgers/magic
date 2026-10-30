@@ -12,7 +12,7 @@ impl Writer<'_> {
     /// covers.
     pub(super) fn c7_untap_held(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         let [
-            tap @ Effect::Tap { what },
+            tap @ Effect::Tap { what, bind: None },
             Effect::Continuous {
                 affected,
                 mods,

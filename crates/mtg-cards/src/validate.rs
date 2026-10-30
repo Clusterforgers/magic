@@ -781,9 +781,9 @@ impl<'a> Walker<'a> {
     /// deals X damage"), whatever the mana cost of the card.
     fn c11f_paid_x(&mut self, cost: &Cost, paid: &[Effect]) {
         let (saved, saved_now) = (self.x_free, self.x_now);
-        self.x_free |= has_x_mana(cost);
+        self.x_free |= announces_x(cost);
         // The resolution reads the X the payer announced (`Effect.Pay.X`), wherever the ability stands.
-        self.x_now |= has_x_mana(cost);
+        self.x_now |= announces_x(cost);
         self.effect_list("paid", paid, false);
         (self.x_free, self.x_now) = (saved, saved_now);
     }
@@ -1088,8 +1088,20 @@ impl<'a> Walker<'a> {
         if has_x_mana(cost) {
             self.uses("Effect", "Pay.X");
         }
-        if cost.0.iter().any(amount_is_x) {
+        // Energy of that count is paid once X is announced; any other part is not.
+        if cost
+            .0
+            .iter()
+            .any(|item| amount_is_x(item) && !matches!(item, CostItem::PayEnergy(_)))
+        {
             self.uses("Effect", "Pay.X.Parts");
+        }
+        if cost
+            .0
+            .iter()
+            .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
+        {
+            self.uses("Effect", "Pay.X.Energy");
         }
     }
 
@@ -2116,10 +2128,15 @@ impl Walker<'_> {
                     w.uses("Exile", &format!("Duration.{}", tag_of(&duration)));
                 }
             }
+            Effect::Tap { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::Reveal { what }
             | Effect::ExileHidden { what }
             | Effect::Counter { what }
-            | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::TapOrUntap { what }
             | Effect::Transform { what }
@@ -2538,7 +2555,10 @@ impl Walker<'_> {
                 unpaid,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                let saved = w.x_free;
+                w.x_free |= announces_x(cost);
                 w.at("cost", |w| w.c6_eg_paid_cost(cost));
+                w.x_free = saved;
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
                 w.c11f_paid_x(cost, paid);
@@ -3342,6 +3362,15 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::TapPower { .. }
         ),
     })
+}
+
+/// Whether a payment an effect asks announces an X: an `{X}` in its mana or energy of that count.
+fn announces_x(cost: &Cost) -> bool {
+    has_x_mana(cost)
+        || cost
+            .0
+            .iter()
+            .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
 }
 
 /// Whether a cost has an `{X}` in its mana.

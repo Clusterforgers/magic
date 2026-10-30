@@ -4,8 +4,9 @@ use mtg_cards::effect::Effect;
 use mtg_cards::refs::Ref;
 
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::events::Event;
-use crate::resolve::{Cx, ResolveError, Run};
+use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
 /// Each permanent the effect names that is still on the battlefield and untapped becomes tapped, all together, in
@@ -13,31 +14,53 @@ use crate::zones::Zone;
 /// changed zones since it was named (CR 400.7), a player and a name that repeats are passed over, and naming nothing
 /// taps nothing.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Tap { what } = effect else {
+    let Effect::Tap { what, bind } = effect else {
         return Err(wrong_effect("Tap"));
     };
-    set(cx, what, true)
+    let (events, fresh) = set_events(cx, what, true)?;
+    Ok(Run::Done {
+        events,
+        bound: bind
+            .iter()
+            .map(|name| (name.clone(), fresh.clone()))
+            .collect(),
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
 }
 
 /// Taps (`tapped`) or untaps the permanents `what` names that are not in that state yet; `Untap` is the same step in
 /// the other direction.
 pub(super) fn set(cx: &Cx<'_>, what: &Ref, tapped: bool) -> Result<Run, ResolveError> {
+    set_events(cx, what, tapped).map(|(events, _)| Run::events(events))
+}
+
+/// The events of [`set`], and the permanents that tap (a permanent with a stun counter stays tapped and is not among
+/// those that untap).
+fn set_events(
+    cx: &Cx<'_>,
+    what: &Ref,
+    tapped: bool,
+) -> Result<(Vec<Event>, Vec<Target>), ResolveError> {
     let mut events = Vec::new();
+    let mut fresh = Vec::new();
     for object in cx.scope.live_objects(what)? {
         let changes = object.zone() == Zone::Battlefield
             && object
                 .permanent()
                 .is_some_and(|permanent| permanent.tapped() != tapped);
         if changes {
-            let object = object.id();
-            events.push(if tapped {
-                Event::PermanentTapped { object }
+            if tapped {
+                events.push(Event::PermanentTapped {
+                    object: object.id(),
+                });
+                fresh.push(Target::Object(object.reference()));
             } else {
-                Event::PermanentUntapped { object }
-            });
+                events.push(crate::stun::untap_event(object));
+            }
         }
     }
-    Ok(Run::events(events))
+    Ok((events, fresh))
 }
 
 #[cfg(test)]

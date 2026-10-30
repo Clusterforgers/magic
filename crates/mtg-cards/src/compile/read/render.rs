@@ -2022,7 +2022,7 @@ impl Writer<'_> {
     fn on_objects(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::Destroy { what, .. } => format!("destroy {}", self.object(what)?),
-            Effect::Tap { what } => format!("tap {}", self.object(what)?),
+            Effect::Tap { what, bind: None } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
             Effect::TapOrUntap { what } => format!("tap or untap {}", self.object(what)?),
             Effect::Goad { what } if self.named && self.single(what) => "goad it".to_owned(),

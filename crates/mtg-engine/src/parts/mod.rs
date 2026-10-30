@@ -228,6 +228,11 @@ impl Part {
         matches!(self, Part::X(_))
     }
 
+    /// Whether the part is energy of the X announced.
+    pub(crate) fn is_counted_energy(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(**inner, Part::Energy(_)))
+    }
+
     /// The most X the player could pay for this part now, `None` for a part that is not counted: all their life (a player
     /// pays up to what they have, CR 119.4), the counters on the source, the energy they hold, the objects they may pick.
     pub(crate) fn most(&self, payer: &Payer<'_>) -> Option<u32> {
@@ -282,7 +287,11 @@ impl Part {
                 format!("Remove {count} {} counter{plural}", counter.name())
             }
             Part::Pick(pick) => pick.text().trim_end_matches('.').to_owned(),
-            Part::X(inner) => inner.text(),
+            Part::X(inner) => match &**inner {
+                Part::Life(_) => "Pay X life".to_owned(),
+                Part::Energy(_) => "Pay X {E}".to_owned(),
+                other => other.text(),
+            },
         }
     }
 

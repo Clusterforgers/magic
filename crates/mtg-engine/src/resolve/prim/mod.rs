@@ -90,9 +90,13 @@ mod shield;
 mod shuffle;
 mod surveil;
 mod tap;
+#[cfg(test)]
+mod tap_bound_tests;
 mod time_travel;
 mod transform;
 mod untap;
+#[cfg(test)]
+mod untap_stun_tests;
 mod vote;
 mod w11d_venture;
 mod w15a_take_initiative;

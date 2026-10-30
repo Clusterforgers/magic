@@ -1217,7 +1217,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             duration,
         },
         "tap" if either => Effect::TapOrUntap { what },
-        "tap" => Effect::Tap { what },
+        "tap" => Effect::Tap { what, bind: None },
         "untap" => Effect::Untap { what },
         "regenerate" => Effect::Regenerate { what },
         _ => Effect::Counter { what },

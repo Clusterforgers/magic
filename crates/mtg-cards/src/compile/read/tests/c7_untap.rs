@@ -35,7 +35,7 @@ fn the_tapped_permanents_stay_tapped_through_the_next_untap_step(
 ) {
     let effects = effects_of(golden(text, kind, false));
     let [
-        Effect::Tap { what },
+        Effect::Tap { what, bind: _ },
         Effect::Continuous {
             affected,
             mods,

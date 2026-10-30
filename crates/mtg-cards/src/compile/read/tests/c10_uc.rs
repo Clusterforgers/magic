@@ -45,7 +45,7 @@ fn c10_uc_the_tapped_permanents_are_held_down(
 ) {
     let effects = c10_uc_effects(golden(text, kind, false));
     let [
-        Effect::Tap { what },
+        Effect::Tap { what, bind: _ },
         Effect::Continuous {
             affected,
             mods,

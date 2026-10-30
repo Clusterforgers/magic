@@ -561,6 +561,10 @@ pub enum Effect {
     Tap {
         /// What is tapped.
         what: Ref,
+        /// The name the permanents that became tapped are bound to, not those that were tapped already ("creatures tapped
+        /// this way").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Untaps permanents.
     Untap {
