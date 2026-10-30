@@ -1,4 +1,4 @@
-//! Goal: `ObjectView.gives` says what each Aura and Equipment gives its host as the layers apply it now (power and toughness, keywords, restrictions, umbra armor), to every seat alike, only its own share when a host has several, nothing for an unattached Equipment, an attachment that gives nothing or a condition that fails, and the host's characteristics are its base plus the sum of what its attachments give.
+//! Goal: `ObjectView.gives` says what each Aura and Equipment gives its host as the layers apply it now (power and toughness, keywords with protection worded by its qualities, restrictions, umbra armor), and what an Aura on a player gives that player, to every seat alike, only its own share when a host has several, nothing for an unattached Equipment, an attachment that gives nothing or a condition that fails, and the host's characteristics are its base plus the sum of what its attachments give.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -9,12 +9,13 @@ use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::gives::GivenRule;
+use mtg_engine::keywords::player_keywords;
 use mtg_engine::setup::PresetPermanent;
 use mtg_engine::zones::Zone;
 use mtg_protocol::{GivesView, ObjectView, StateView};
 use mtg_testkit::cards::bear;
 use mtg_testkit::corpus;
-use mtg_testkit::{Driver, Scenario, attached_to, ready};
+use mtg_testkit::{Driver, Scenario, attached_to, enchanting, ready};
 use proptest::prelude::*;
 use rstest::rstest;
 use serde_json::json;
@@ -166,6 +167,93 @@ fn an_attachment_shows_what_it_gives_its_host(
     assert_eq!(object(&driver, 0, "Grizzly Bears").gives, None);
 }
 
+/// Equipment that grants each of `qualities` (protection data) one after the other, then `after`.
+fn protector(qualities: &[&str], after: &[&str]) -> Arc<CardDefinition> {
+    let mut mods: Vec<String> = qualities
+        .iter()
+        .map(|quality| format!(r#"{{"AddKeyword":{{"Protection":{quality}}}}}"#))
+        .collect();
+    mods.extend(
+        after
+            .iter()
+            .map(|keyword| format!(r#"{{"AddKeyword":"{keyword}"}}"#)),
+    );
+    equipment("Protector", &[&on_host(&format!("[{}]", mods.join(",")))])
+}
+
+#[rstest]
+#[case::one_color(&[r#"[{"Color":"Red"}]"#], &[], &["Protection from red"])]
+#[case::two_colors(&[r#"[{"Color":"Red"}]"#, r#"[{"Color":"Blue"}]"#], &[], &["Protection from red and from blue"])]
+#[case::a_kind(&[r#"[{"Type":"Creature"}]"#], &[], &["Protection from creatures"])]
+#[case::a_color_and_a_kind(&[r#"[{"Color":"White"}]"#, r#"[{"Type":"Land"}]"#], &[], &["Protection from white and from lands"])]
+#[case::a_keyword_between(&[r#"[{"Color":"Red"}]"#], &["Flying"], &["Protection from red", "Flying"])]
+#[case::no_word(&[r#"[{"Subtype":"Rat"},{"Color":"Black"}]"#], &[], &["Protection"])]
+fn protection_is_worded_by_its_qualities(
+    #[case] qualities: &[&str],
+    #[case] after: &[&str],
+    #[case] expected: &[&str],
+) {
+    let driver = table(vec![protector(qualities, after)], vec![]);
+    for viewer in 0..2 {
+        let shown = object(&driver, viewer, "Protector").gives.unwrap();
+        assert_eq!(shown.keywords, expected, "seat {viewer}");
+    }
+}
+
+/// An Aura that enchants a player, with a static ability that makes `mods` (data) to that player.
+fn curse(name: &str, mods: &str) -> Arc<CardDefinition> {
+    card(
+        name,
+        CardType::Enchantment,
+        "Aura",
+        &[
+            r#"{"Keyword":{"EnchantPlayer":{"opponent":false}}}"#,
+            &format!(r#"{{"Static":{{"affected":"AttachedPlayer","mods":{mods}}}}}"#),
+        ],
+    )
+}
+
+/// Seat 0 controls `auras`, each enchanting seat 1.
+fn cursed(auras: Vec<Arc<CardDefinition>>) -> Driver {
+    let permanents = auras.into_iter().map(|a| enchanting(ready(a), 1));
+    Driver::from_scenario(Scenario::new(2).battlefield(0, permanents)).unwrap()
+}
+
+#[rstest]
+#[case::hexproof("Ward of Hexes", r#"[{"AddKeyword":"Hexproof"}]"#, gives(0, 0, &["Hexproof"], &[]))]
+#[case::shroud_and_protection("Veil", r#"[{"AddKeyword":"Shroud"},{"AddKeyword":{"Protection":[{"Type":"Creature"}]}}]"#, gives(0, 0, &["Shroud", "Protection from creatures"], &[]))]
+#[case::takes_a_keyword("Exposure", r#"[{"RemoveKeyword":"Hexproof"}]"#, gives(0, 0, &[], &[GivenRule::LoseKeyword]))]
+#[case::gives_nothing("Empty Curse", "[]", None)]
+fn an_aura_on_a_player_shows_what_it_gives_that_player(
+    #[case] name: &str,
+    #[case] mods: &str,
+    #[case] expected: Option<GivesView>,
+) {
+    let driver = cursed(vec![curse(name, mods)]);
+    for viewer in 0..2 {
+        let view = StateView::for_player(driver.state(), PlayerId::from_index(viewer));
+        let aura = view.objects.iter().find(|o| o.name == name).unwrap();
+        assert_eq!(aura.gives, expected, "seat {viewer}");
+        assert_eq!(view.table.players[1].enchanted_by, [aura.id]);
+    }
+}
+
+#[test]
+fn each_aura_on_a_player_shows_only_its_own_share() {
+    let driver = cursed(vec![
+        curse("Ward of Hexes", r#"[{"AddKeyword":"Hexproof"}]"#),
+        curse("Veil", r#"[{"AddKeyword":"Shroud"}]"#),
+    ]);
+    assert_eq!(
+        object(&driver, 1, "Ward of Hexes").gives,
+        gives(0, 0, &["Hexproof"], &[])
+    );
+    assert_eq!(
+        object(&driver, 0, "Veil").gives,
+        gives(0, 0, &["Shroud"], &[])
+    );
+}
+
 #[test]
 fn an_aura_that_sets_and_takes_abilities_shows_both() {
     let driver = table(vec![frog_curse()], vec![]);
@@ -272,4 +360,42 @@ fn an_effect_the_attachment_made_counts_and_another_source_does_not() {
     }
     assert_eq!(object(&driver, 1, "Splitter").gives, gives(3, 1, &[], &[]));
     assert_eq!(object(&driver, 1, "Grizzly Bears").power, Some(6));
+}
+
+/// The Auras on a player the property draws from.
+fn curses() -> Vec<Arc<CardDefinition>> {
+    vec![
+        curse("Ward of Hexes", r#"[{"AddKeyword":"Hexproof"}]"#),
+        curse("Veil", r#"[{"AddKeyword":"Shroud"}]"#),
+        curse(
+            "Twin Ward",
+            r#"[{"AddKeyword":"Hexproof"},{"AddKeyword":"Shroud"}]"#,
+        ),
+        curse("Empty Curse", "[]"),
+    ]
+}
+
+proptest! {
+    #![proptest_config(ProptestConfig::with_cases(16))]
+
+    #[test]
+    fn a_player_has_the_keywords_their_auras_give(picks in proptest::collection::vec(0..4usize, 0..4)) {
+        let pool = curses();
+        let driver = cursed(picks.iter().map(|i| Arc::clone(&pool[*i])).collect());
+        let view = StateView::for_player(driver.state(), PlayerId::from_index(0));
+        let mut given: Vec<String> = view.table.players[1]
+            .enchanted_by
+            .iter()
+            .filter_map(|id| view.objects.iter().find(|o| o.id == *id)?.gives.clone())
+            .flat_map(|gives| gives.keywords)
+            .collect();
+        given.sort();
+        given.dedup();
+        let mut has: Vec<String> = player_keywords(driver.state(), PlayerId(1))
+            .into_iter()
+            .map(|keyword| keyword.name().to_owned())
+            .collect();
+        has.sort();
+        prop_assert_eq!(given, has);
+    }
 }

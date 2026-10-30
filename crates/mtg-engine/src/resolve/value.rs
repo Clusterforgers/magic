@@ -28,6 +28,7 @@ mod w6d_shares;
 // deck-auras
 #[cfg(test)]
 mod da_attached_auras;
+use super::still_there;
 use crate::abilities::Cause;
 use crate::announce::{kicked_with, payments};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
@@ -652,22 +653,46 @@ impl<'a> Scope<'a> {
             .is_some_and(|object| self.departed.iter().any(|shot| shot.reference() == object))
     }
 
+    /// The legal choices now for the target specification at `index` of the announced ones, or none without one.
+    fn legal_for(&self, index: usize) -> Option<Vec<Target>> {
+        let spec = self.specs.get(index)?;
+        Some(legal_from(
+            self.state,
+            spec,
+            self.source,
+            &self.snapshots,
+            self.controller,
+            self.cause,
+            Some(self.x_value()),
+        ))
+    }
+
+    /// Whether each chosen target is legal now, in the shape of `Choices::targets`; a target of no announced
+    /// specification is legal while it is the object it was (CR 400.7) or a player still in the game.
+    pub(crate) fn targets_legal(&self) -> Vec<Vec<bool>> {
+        let state = self.state;
+        let mut out = Vec::with_capacity(self.choices.targets.len());
+        for (index, set) in self.choices.targets.iter().enumerate() {
+            let legal = self.legal_for(index);
+            out.push(
+                set.iter()
+                    .map(|target| match &legal {
+                        Some(legal) => legal.contains(target),
+                        None => still_there(state, *target),
+                    })
+                    .collect(),
+            );
+        }
+        out
+    }
+
     /// CR 608.2b: whether targets were chosen and every one of them is illegal now, so the spell or ability does nothing.
     pub(crate) fn all_targets_illegal(&self) -> bool {
         let mut any = false;
         for (index, set) in self.choices.targets.iter().enumerate() {
-            let Some(spec) = self.specs.get(index) else {
+            let Some(legal) = self.legal_for(index) else {
                 continue;
             };
-            let legal = legal_from(
-                self.state,
-                spec,
-                self.source,
-                &self.snapshots,
-                self.controller,
-                self.cause,
-                Some(self.x_value()),
-            );
             for target in set {
                 any = true;
                 if legal.contains(target) {

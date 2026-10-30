@@ -2,6 +2,8 @@
 import { useMemo } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
+import { givesWords, itemsOf } from './attachMarks'
+import type { GiveItem } from './attachMarks'
 import { shortName } from './commander'
 import { useSeatNamer } from './names'
 
@@ -12,8 +14,10 @@ export interface EnchantChip {
   count: number
   /** "Curse of Opulence" or "Curse of Opulence ×2"; the figure is the count alone. */
   text: string
-  /** "Curse of Opulence (Cy's) enchants Bo", for a screen reader and the tooltip. */
+  /** "Curse of Opulence (Cy's) enchants Bo", and what it gives Bo after a colon, for a screen reader and the tooltip. */
   words: string
+  /** What the Aura gives the player as the server reads it (`ObjectView.gives`): "Hexproof", "Pro creatures". */
+  gives: GiveItem[]
 }
 
 /**
@@ -38,12 +42,14 @@ export function enchantChips(
     if (first === undefined) return []
     const count = group.length
     const by = first.controller === seat ? '' : ` (${nameOf(first.controller)}'s)`
+    const given = givesWords(first.gives)
     return [
       {
         key: first.id,
         count,
         text: count === 1 ? shortName(first.name) : `${shortName(first.name)} ×${count}`,
-        words: `${count === 1 ? '' : `${count} × `}${first.name}${by} enchants ${nameOf(seat)}`,
+        words: `${count === 1 ? '' : `${count} × `}${first.name}${by} enchants ${nameOf(seat)}${given === null ? '' : `: ${given}`}`,
+        gives: itemsOf(first.gives),
       },
     ]
   })

@@ -293,8 +293,17 @@ impl Held {
 #[derive(Debug)]
 pub(crate) struct Layers {
     held: BTreeMap<ObjectId, Held>,
-    /// The keywords static abilities give to players ("You have hexproof."), in the order they were gained.
-    players: BTreeMap<PlayerId, Vec<Keyword>>,
+    /// What static abilities give to players ("You have hexproof.").
+    players: BTreeMap<PlayerId, PlayerHeld>,
+}
+
+/// What the layers gave a player: their keywords, and the record of the effects that changed them.
+#[derive(Debug, Clone, Default)]
+pub(crate) struct PlayerHeld {
+    /// The keywords static abilities give them, in the order they were gained.
+    pub(crate) keywords: Vec<Keyword>,
+    /// The effects that gave them a keyword or took one, in the order applied.
+    pub(crate) applied: Vec<Applied>,
 }
 
 impl Layers {
@@ -305,7 +314,14 @@ impl Layers {
 
     /// The keywords the layers gave to the player `id`.
     pub(crate) fn player_keywords(&self, id: PlayerId) -> &[Keyword] {
-        self.players.get(&id).map_or(&[], Vec::as_slice)
+        self.players
+            .get(&id)
+            .map_or(&[], |held| held.keywords.as_slice())
+    }
+
+    /// What the layers gave the player `id`, or none while they gave nothing.
+    pub(crate) fn player(&self, id: PlayerId) -> Option<&PlayerHeld> {
+        self.players.get(&id)
     }
 }
 
@@ -587,7 +603,7 @@ fn outside_zones(state: &GameState) -> Vec<ZoneKind> {
 struct Pass<'a> {
     state: &'a GameState,
     held: BTreeMap<ObjectId, Held>,
-    players: BTreeMap<PlayerId, Vec<Keyword>>,
+    players: BTreeMap<PlayerId, PlayerHeld>,
     /// The continuous effects of resolved spells and abilities that still apply.
     registered: Vec<&'a ContinuousEffect>,
     started: BTreeMap<AbilityRef, Started>,
@@ -1064,6 +1080,16 @@ impl<'a> Pass<'a> {
         }
         for player in &foot.players {
             self.give_player(*player, &foot.modification);
+            self.players
+                .entry(*player)
+                .or_default()
+                .applied
+                .push(Applied {
+                    origin: cand.origin,
+                    layer: cand.layer,
+                    timestamp: cand.timestamp,
+                    modification: foot.modification.clone(),
+                });
         }
         for id in &foot.set {
             if let Some(held) = self.held.get_mut(id) {
@@ -1085,14 +1111,14 @@ impl<'a> Pass<'a> {
     fn give_player(&mut self, player: PlayerId, modification: &Modification) {
         match modification {
             Modification::AddKeyword(keyword) => {
-                let held = self.players.entry(player).or_default();
+                let held = &mut self.players.entry(player).or_default().keywords;
                 if !held.contains(keyword) {
                     held.push(keyword.clone());
                 }
             }
             Modification::RemoveKeyword(keyword) => {
                 if let Some(held) = self.players.get_mut(&player) {
-                    held.retain(|kept| kept != keyword);
+                    held.keywords.retain(|kept| kept != keyword);
                 }
             }
             _ => {}
