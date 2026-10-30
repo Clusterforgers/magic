@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest'
 import { blockAfter, rulesIn } from '@/test-utils/cssBlocks'
 import { FX_MS } from './model'
 import type { FxKind } from './model'
+import { MOVE_MS } from './moves'
+import { EASE_OUT } from './travel'
 
 // Read as text rather than imported, which would hand back what Tailwind builds from it.
 const css = readFileSync(join(import.meta.dirname, 'fx.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
@@ -65,6 +67,25 @@ describe('durations', () => {
     const uses = [...css.matchAll(/--fx-slow/g)].length
     const inTimes = [...css.matchAll(/(?:animation|animation-duration):[^;]*--fx-slow[^;]*;/g)].length
     expect(uses).toBe(inTimes)
+  })
+})
+
+describe('moves', () => {
+  it.each(Object.entries(MOVE_MS))('mirrors MOVE_MS for %s', (name, ms) => {
+    const value = new RegExp(`--fx-${name}-ms:\\s*(\\d+)ms`).exec(css)?.[1]
+    expect(Number(value)).toBe(ms)
+  })
+
+  it("flies on a layer outside the layout that takes no pointer, and sizes an ability's chip by variables", () => {
+    const layer = rulesIn(outside).find((rule) => rule.selector === '.fx-travel')
+    expect(layer?.body).toMatch(/position:\s*fixed/)
+    expect(layer?.body).toMatch(/pointer-events:\s*none/)
+    const chip = rulesIn(outside).find((rule) => rule.selector.includes('.fx-flier[data-chip]'))
+    expect(chip?.body).toMatch(/width:\s*var\(--fx-chip-w\)/)
+  })
+
+  it('eases as the app stylesheet does', () => {
+    expect(app).toContain(`--ease-out: ${EASE_OUT};`)
   })
 })
 

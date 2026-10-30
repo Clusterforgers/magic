@@ -84,6 +84,7 @@ export const HandDock = memo(function HandDock({ seat }: { seat: PlayerId }) {
     <section
       aria-label="Your hand"
       data-region="hand"
+      data-fx-anchor={`${seat}:hand`}
       className="flex min-h-0 min-w-0 items-center justify-center border-t bg-table px-1 py-1"
     >
       <div ref={zone} className="flex size-full min-h-0 min-w-0 items-end justify-center gap-1">
