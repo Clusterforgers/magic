@@ -12,8 +12,8 @@ use mtg_cards::support::{PrintedCard, PrintedFace};
 use rstest::rstest;
 
 use RepairClass::{
-    Faces, Identity, InventedX, ManualSpan, NoEffect, TargetDeclared, TargetIndex, TargetUnused,
-    TokenSize, TriggeringTarget,
+    ControllerGroup, Faces, Identity, InventedX, ManualSpan, NoEffect, StaticSubject,
+    TargetDeclared, TargetIndex, TargetUnused, TokenSize, TriggeringDeclared, TriggeringTarget,
 };
 
 /// A card as imported: the faces are `(name, type line, oracle text)`.
@@ -381,4 +381,78 @@ fn a_target_the_text_names_is_not_dropped_for_being_unused() {
     assert!(!classes(&report).contains(&TargetUnused));
     assert_eq!(report.verdict(), Verdict::Invalid);
     assert!(has_problem(&report, "is never used"));
+}
+
+fn doom_blade() -> PrintedCard {
+    card(
+        "Doom Blade",
+        "6ce2d4a4-27c0-4a83-bd62-0b43d1cf0f21",
+        &[("Doom Blade", "Instant", "Destroy target creature.")],
+    )
+}
+
+fn untap_lands() -> PrintedCard {
+    card(
+        "Vitalize",
+        "0a5bd6f2-a2e0-4c1d-8d2b-4c7c6a6ad5c8",
+        &[("Vitalize", "Instant", "Untap all lands you control.")],
+    )
+}
+
+fn hexproof_artifacts() -> PrintedCard {
+    card(
+        "Bastion",
+        "8d4c0c6a-5d52-4e51-9f6d-9f6a8d3b6a11",
+        &[(
+            "Bastion",
+            "Enchantment",
+            "Artifacts you control have hexproof.",
+        )],
+    )
+}
+
+const DOOM_TRIGGERING: &str =
+    r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"Destroy":{"what":"Triggering"}}]}}]}]}"#;
+const EXILE_TRIGGERING: &str =
+    r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"Exile":{"what":"Triggering"}}]}}]}]}"#;
+const UNTAP_CONTROLLER: &str = r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"Untap":{"what":{"ControllerOf":"You"}}}]}}]}]}"#;
+const TAP_CONTROLLER: &str = r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"Tap":{"what":{"ControllerOf":"You"}}}]}}]}]}"#;
+const HEXPROOF_BARE: &str = r#"{"faces":[{"abilities":[{"Static":{"affected":{"Target":0},"mods":[{"AddKeyword":"Hexproof"}]}}]}]}"#;
+const LIFELINK_BARE: &str = r#"{"faces":[{"abilities":[{"Static":{"affected":{"Target":0},"mods":[{"AddKeyword":"Lifelink"}]}}]}]}"#;
+
+#[rstest]
+#[case::triggering_for_the_declared_target(doom_blade(), DOOM_TRIGGERING, &[TriggeringDeclared, TargetDeclared])]
+#[case::controller_of_for_the_group(untap_lands(), UNTAP_CONTROLLER, &[ControllerGroup])]
+#[case::bare_target_for_the_subject(hexproof_artifacts(), HEXPROOF_BARE, &[StaticSubject])]
+fn a_second_round_repair_leaves_a_proposal_the_read_back_accepts(
+    #[case] printed: PrintedCard,
+    #[case] rules: &str,
+    #[case] expected: &[RepairClass],
+) {
+    let report = judge(&printed, rules);
+    assert_eq!(classes(&report), expected, "{}", report.render(false));
+    assert_eq!(
+        report.verdict(),
+        Verdict::Accepted,
+        "{}",
+        report.render(false)
+    );
+}
+
+#[rstest]
+#[case::another_effect_than_the_text(doom_blade(), EXILE_TRIGGERING)]
+#[case::another_action_than_the_text(untap_lands(), TAP_CONTROLLER)]
+#[case::another_keyword_than_the_text(hexproof_artifacts(), LIFELINK_BARE)]
+fn a_wrong_second_round_repair_ends_as_a_mismatch(
+    #[case] printed: PrintedCard,
+    #[case] rules: &str,
+) {
+    let report = judge(&printed, rules);
+    assert!(!report.repairs.is_empty(), "{}", report.render(false));
+    assert_eq!(
+        report.verdict(),
+        Verdict::Mismatch,
+        "{}",
+        report.render(false)
+    );
 }

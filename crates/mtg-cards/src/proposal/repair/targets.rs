@@ -60,7 +60,7 @@ fn shift(value: &mut Value, by: u64) {
 }
 
 /// Replaces `Triggering` by a reference to the target `index`, and says how many it replaced.
-fn trigger_to_target(value: &mut Value, index: u64) -> usize {
+pub(super) fn trigger_to_target(value: &mut Value, index: u64) -> usize {
     match value {
         Value::String(word) if word == "Triggering" => {
             *value = json!({ "Target": index });

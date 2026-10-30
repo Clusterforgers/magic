@@ -9,12 +9,16 @@ mod controller;
 mod declare;
 mod effectless;
 mod faces;
+mod groups;
 mod manual;
 mod targets;
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod tests_round2;
 mod text;
 mod tokens;
+mod trigger_target;
 mod unused;
 mod x_cost;
 
@@ -49,6 +53,12 @@ pub enum RepairClass {
     ControllerOfPlayer,
     /// An `X` where the card prints none.
     InventedX,
+    /// `Triggering` outside a trigger where the printed phrase declares a target.
+    TriggeringDeclared,
+    /// `ControllerOf` in an object slot where the text names a group.
+    ControllerGroup,
+    /// A bare target as the subject of a static ability where the line starts with a group.
+    StaticSubject,
 }
 
 impl RepairClass {
@@ -66,6 +76,9 @@ impl RepairClass {
             RepairClass::TargetUnused => "target no effect uses",
             RepairClass::ControllerOfPlayer => "controller of a player",
             RepairClass::InventedX => "X the card does not have",
+            RepairClass::TriggeringDeclared => "Triggering for a declared target",
+            RepairClass::ControllerGroup => "group for the controller of a player",
+            RepairClass::StaticSubject => "group for a static ability's bare target",
         }
     }
 }
@@ -125,6 +138,9 @@ pub(super) fn repair(value: &mut Value, printed: &PrintedCard) -> Vec<Repair> {
             .iter_mut()
             .map(|ability| body_of(ability).map_or(String::new(), |(name, _)| name.to_owned()))
             .collect();
+        if let Some(face) = shown {
+            groups::static_subjects(abilities, face, &at, &mut repairs);
+        }
         for (n, ability) in abilities.iter_mut().enumerate() {
             let at = format!("{at}.abilities[{n}]");
             tokens::repair(ability, text, &at, &mut repairs);
@@ -138,7 +154,9 @@ pub(super) fn repair(value: &mut Value, printed: &PrintedCard) -> Vec<Repair> {
                     count: kinds.iter().filter(|name| same(name)).count(),
                     at: &at,
                 };
+                trigger_target::repair(ability, &site, &mut repairs);
                 declare::repair(ability, &site, &mut repairs);
+                groups::controller_group(ability, &site, &mut repairs);
                 unused::repair(ability, &site, &mut repairs);
                 x_cost::repair(ability, &site, &mut repairs);
             }

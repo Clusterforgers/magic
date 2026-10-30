@@ -27,9 +27,9 @@ pub use classify::ClauseKind;
 pub use keywords::read as read_keyword;
 pub use keywords::read_all as read_keywords;
 pub use read::{
-    BlockPlan, block_plan, die_row, die_row_texts, keyword_grant, render_ability, render_cost,
-    render_mode, render_variants, same_text, static_pair_texts, target_phrases, without_header,
-    written_variants,
+    BlockPlan, all_groups, block_plan, die_row, die_row_texts, keyword_grant, render_ability,
+    render_cost, render_mode, render_variants, same_text, static_pair_texts, subject_group,
+    target_phrases, without_header, written_variants,
 };
 
 /// Reads a dungeon room's text as a clause of this kind, with no face of its own.
