@@ -1,4 +1,4 @@
-//! Goal: the announcement of a spell walks the steps of CR 601.2b to 601.2h in their order whatever the spell asks for (modes, optional costs, X, targets, a division, the payment), passes over the steps it has no question for, adds the optional costs and X to the cost it asks the player to pay, keeps every answer in the choices of the cast, and rewinds the whole announcement, with nothing paid or logged, when a step cannot be met.
+//! Goal: the announcement of a spell walks the steps of CR 601.2b to 601.2h in their order whatever the spell asks for (modes, optional costs, X, targets, a division, the payment), passes over the steps it has no question for, adds the optional costs and X to the cost it asks the player to pay, keeps every answer in the choices of the cast, and rewinds the whole announcement, with nothing paid and the reason of the step kept for the log, when a step cannot be met.
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -11,7 +11,7 @@ use rstest::rstest;
 
 use super::{Answered, Needs, Next, Optional, Pending, Phase, What, XCost, announce};
 use crate::choose::{ChoiceOption, Target};
-use crate::decision::{Decision, DecisionKind, PayOptions};
+use crate::decision::{Decision, DecisionKind, PayOptions, Unplayable};
 use crate::fixtures::{creature, state};
 use crate::mana::can_afford;
 use crate::object::ObjectRef;
@@ -366,15 +366,34 @@ fn an_overloaded_spell_asks_for_no_targets() {
 }
 
 #[rstest]
-#[case::a_target_that_cannot_be_met(Shape::Creature, 0, needs(false, 0), Vec::new())]
-#[case::x_that_cannot_be_paid_even_as_nothing(Shape::Plain, 0, needs(false, 1), Vec::new())]
-#[case::a_cost_that_cannot_be_paid(Shape::Plain, 0, needs(false, 0), Vec::new())]
-#[case::a_division_that_cannot_give_each_target_one(Shape::Stingy, 3, needs(false, 0), Vec::new())]
-fn a_step_that_cannot_be_met_rewinds_the_announcement(
+#[case::a_target_that_cannot_be_met(
+    Shape::Creature,
+    0,
+    needs(false, 0),
+    Vec::new(),
+    Unplayable::Targets
+)]
+#[case::x_that_cannot_be_paid_even_as_nothing(
+    Shape::Plain,
+    0,
+    needs(false, 1),
+    Vec::new(),
+    Unplayable::Mana
+)]
+#[case::a_cost_that_cannot_be_paid(Shape::Plain, 0, needs(false, 0), Vec::new(), Unplayable::Mana)]
+#[case::a_division_that_cannot_give_each_target_one(
+    Shape::Stingy,
+    3,
+    needs(false, 0),
+    Vec::new(),
+    Unplayable::Targets
+)]
+fn a_step_that_cannot_be_met_rewinds_the_announcement_and_says_why(
     #[case] shape: Shape,
     #[case] lands: usize,
     #[case] needs: Needs,
     #[case] kicked: Vec<usize>,
+    #[case] reason: Unplayable,
 ) {
     let game = bare_table(shape, lands);
     let mut pending = pending(&game, needs);
@@ -387,6 +406,7 @@ fn a_step_that_cannot_be_met_rewinds_the_announcement(
         other => greedy(other),
     });
     assert!(matches!(end, End::Rewound), "{end:?}");
+    assert_eq!(pending.done.rewound, Some(reason));
     // Nothing was paid: the announcement only ever looked at the game.
     assert_eq!(game.zone(Zone::Hand(SEAT)).len(), 1);
 }
