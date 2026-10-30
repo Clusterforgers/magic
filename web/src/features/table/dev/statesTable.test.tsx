@@ -37,7 +37,7 @@ describe('the table over the states fixture', () => {
   it('marks a host with what is attached to it and each attachment with its host', () => {
     const { container } = draw()
     const lion = must(container.querySelector('[data-hosting="2"]'))
-    expect(lion.getAttribute('aria-label')).toMatch(/Pacifism and Bonesplitter attached/)
+    expect(lion.getAttribute('aria-label')).toMatch(/Pacifism attached, Bonesplitter attached/)
     const id = Number(lion.getAttribute('data-object-id'))
     const attached = [...container.querySelectorAll('[data-attached]')].filter((button) =>
       (button.getAttribute('aria-label') ?? '').includes('attached to Silvercoat Lion'),

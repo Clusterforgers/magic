@@ -11,8 +11,9 @@ import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
 import { dockOf, usePreviewStore, usePreviewTarget } from './preview'
 import type { Dock, PreviewTarget } from './preview'
-import { combatText, controlText, zoneText } from './previewText'
+import { attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
 import { combatRoleIn } from './selectors'
+import { useLinks } from './useLinks'
 
 // Whole class names, so Tailwind can see them.
 const DOCK: Record<Dock, string> = {
@@ -44,6 +45,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       ? null
       : combatText(state.view.combat, id, name, (other) => state.objectsById[other]?.name ?? 'a card'),
   )
+  const links = useLinks(object)
   const gone = object === undefined
 
   useEffect(() => {
@@ -62,6 +64,8 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const pt = powerToughness(object)
   const keywords = keywordLine(object)
   const status = statusWords(object, role)
+  const hosted = hostLine(object, links.host)
+  const attaches = links.attaches ?? []
   return (
     <div
       role="group"
@@ -95,6 +99,16 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         )}
         <ManaPreviewLine object={object} />
         {status.length === 0 ? null : <p>Status: {status.join(', ')}</p>}
+        {hosted === null ? null : <p data-slot="preview-host">{hosted}.</p>}
+        {attaches.length === 0 ? null : (
+          <ul aria-label="Attachments" data-slot="preview-attachments" className="grid gap-0.5">
+            {attaches.map((attach) => (
+              <li key={attach.id} data-foreign={attach.foreign ?? undefined}>
+                {attachLine(attach, name)}
+              </li>
+            ))}
+          </ul>
+        )}
         {fight === null ? null : <p>{fight}</p>}
         {outlook === null ? null : (
           <p data-slot="preview-forecast">Combat forecast: {outlookText(outlook)}.</p>

@@ -1,8 +1,10 @@
-// Goal: the words under the large card in the preview say where the card is, who controls and owns it, and what it is doing in combat, for every zone and every combat role.
+// Goal: the words under the large card in the preview say where the card is, who controls and owns it, what it is doing in combat and, for a host and its attachments, what each attachment gives and what it hangs on, for every zone and every combat role.
 import { describe, expect, it } from 'vitest'
-import type { CombatView, Zone } from '@/protocol/generated'
+import type { CombatView, GivesView, ObjectView, Zone } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
-import { combatText, controlText, zoneText } from './previewText'
+import { itemsOf } from './attachMarks'
+import type { Attach } from './attachMarks'
+import { attachLine, combatText, controlText, hostLine, zoneText } from './previewText'
 
 const name = (seat: number): string => ['Ana', 'Bo', 'Cy'][seat] ?? `Seat ${seat + 1}`
 const cardName = (id: number): string => ({ 5: 'Grizzly Bears', 6: 'Jace Beleren' })[id] ?? 'a card'
@@ -62,5 +64,54 @@ describe('combatText', () => {
   it('has nothing to say when nobody attacks', () => {
     const quiet: CombatView = { attackers: [], attackers_declared: false, blockers_declared: [] }
     expect(combatText(quiet, 1, name, cardName)).toBeNull()
+  })
+})
+
+describe('attachLine', () => {
+  const attach = (name: string, gives: GivesView | undefined, foreign?: number): Attach => ({
+    id: 9,
+    name,
+    foreign,
+    items: itemsOf(gives),
+  })
+
+  it.each<[string, Attach, string]>([
+    [
+      'a raise and a keyword',
+      attach('Rancor', { power: 2, keywords: ['Trample'] }),
+      'Rancor: +2/+0, trample',
+    ],
+    ['a protection', attach('Sword', { keywords: ['Protection from red'] }), 'Sword: protection from red'],
+    [
+      'a restriction of another seat',
+      attach('Pacifism', { rules: ['CantAttack'] }, 1),
+      "Bo's Pacifism: can't attack",
+    ],
+    ['a set value', attach('Song', { set: [1, 1] }), 'Song: power and toughness set to 1/1'],
+    [
+      'an umbra',
+      attach('Eel Umbra', { rules: ['UmbraArmor'] }),
+      'Eel Umbra: umbra armor, so it is not destroyed',
+    ],
+    ['nothing given', attach('Sword of Fire and Ice', undefined), 'Sword of Fire and Ice'],
+  ])('lists %s', (_what, given, line) => {
+    expect(attachLine(given, name)).toBe(line)
+  })
+})
+
+describe('hostLine', () => {
+  it.each<[string, Partial<ObjectView>, string | undefined, string | null]>([
+    ['an Aura that gives', { gives: { power: 2 } }, 'Hill Giant', 'Attached to Hill Giant, giving +2/+0'],
+    ['an Equipment that gives nothing', {}, 'Hill Giant', 'Attached to Hill Giant'],
+    ['a Curse on a player', { attached_player: 1 }, 'Bo', 'Enchants Bo'],
+    [
+      'an Equipment on no host',
+      { subtypes: ['Equipment'], types: ['Artifact'] },
+      undefined,
+      'Not attached to anything',
+    ],
+    ['a creature', {}, undefined, null],
+  ])('says it for %s', (_what, over, host, line) => {
+    expect(hostLine(card({ name: 'Rancor', ...over }), host)).toBe(line)
   })
 })
