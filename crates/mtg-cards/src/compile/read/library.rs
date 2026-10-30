@@ -752,10 +752,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     // The name a single search binds is bookkeeping: a proposal may call the card by its type. A pair needs the
     // conventional name, from which the second is derived.
     let pair = matches!(rest, [Effect::Search { .. }, ..]);
-    if !also.is_empty() {
-        return None;
-    }
-    if (pair && *bind != bound_as(who, filter)) || searcher != who {
+    if (pair && *bind != bound_as(who, filter)) || searcher != who || !also.is_empty() {
         return None;
     }
     // A pair: a second search that leaves out the first card, and a move for each.

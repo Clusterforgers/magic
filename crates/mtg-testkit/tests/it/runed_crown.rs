@@ -99,7 +99,7 @@ fn runes_attached(driver: &Driver) -> Vec<Option<ObjectId>> {
         .map(|object| {
             object
                 .permanent()
-                .and_then(|permanent| permanent.attached_to())
+                .and_then(mtg_engine::object::PermanentState::attached_to)
                 .map(|host| host.id)
         })
         .collect()

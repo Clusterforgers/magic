@@ -12,12 +12,12 @@ impl Writer<'_> {
         &mut self,
         affected: &Ref,
         mods: &[Modification],
-        duration: Duration,
+        duration: &Duration,
     ) -> Option<String> {
         let [Modification::SwitchPT] = mods else {
             return None;
         };
-        (duration == Duration::UntilEndOfTurn).then_some(())?;
+        (*duration == Duration::UntilEndOfTurn).then_some(())?;
         if *affected == Ref::This {
             return Some("switch ~'s power and toughness until end of turn".to_owned());
         }

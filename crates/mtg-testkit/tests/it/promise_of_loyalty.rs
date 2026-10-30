@@ -37,11 +37,11 @@ fn game(seats: usize, held: &[usize]) -> Scenario {
     let mut scenario = Scenario::new(seats)
         .at(2, 0, Step::Main1)
         .hand_named(0, ["Promise of Loyalty"]);
-    for seat in 0..seats {
+    for (seat, held) in held.iter().take(seats).enumerate() {
         if seat > 0 {
             scenario = scenario.hand(seat, [free_creature(&format!("Raider{seat}"), 1, 1)]);
         }
-        let mut ours = creatures(seat, held[seat]);
+        let mut ours = creatures(seat, *held);
         if seat == 0 {
             ours.extend((0..5).map(|_| ready(mtg_testkit::cards::plains())));
             ours.push(ready(walker("Chandra", 3)));
@@ -60,7 +60,7 @@ fn promise(driver: &mut Driver, keep: &str) -> Result<usize, ScriptError> {
         match decision.kind {
             DecisionKind::ChooseCards(options) => {
                 asked += 1;
-                let seat = decision.player.0 as usize;
+                let seat = usize::try_from(decision.player.0).unwrap();
                 let name = format!("{keep}{seat}");
                 let pick = options
                     .from

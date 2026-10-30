@@ -13,9 +13,9 @@ pub(super) fn text(
     subject: &str,
     group: &Selector,
     mods: &[Modification],
-    duration: Duration,
+    duration: &Duration,
 ) -> Option<String> {
-    (duration == Duration::UntilEndOfTurn).then_some(())?;
+    (*duration == Duration::UntilEndOfTurn).then_some(())?;
     let ([
         Modification::AddType(CardType::Creature),
         Modification::SetPT {

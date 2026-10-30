@@ -21,7 +21,7 @@ const END_OF_TURN: &str = "until end of turn";
 const NEXT_TURN: &str = "until your next turn";
 
 /// The words that end a change: the duration it lasts.
-fn duration_words(duration: Duration) -> Option<&'static str> {
+fn duration_words(duration: &Duration) -> Option<&'static str> {
     match duration {
         Duration::UntilEndOfTurn => Some(END_OF_TURN),
         Duration::UntilYourNextTurn => Some(NEXT_TURN),
@@ -354,7 +354,7 @@ pub(super) fn text(
     subject: &str,
     plural: bool,
     mods: &[Modification],
-    duration: Duration,
+    duration: &Duration,
 ) -> Option<String> {
     let (parts, tail) = part_texts(mods, plural)?;
     (!parts.is_empty()).then_some(())?;

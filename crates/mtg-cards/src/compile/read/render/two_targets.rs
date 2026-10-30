@@ -53,7 +53,7 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
             "{} becomes a copy of {}{}",
             spec_text(first)?,
             spec_text(second)?,
-            crate::compile::read::copy_spells::c10_xp_copy_duration_text(duration.clone())?
+            crate::compile::read::copy_spells::c10_xp_copy_duration_text(duration)?
         )),
         _ => None,
     }

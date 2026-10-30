@@ -14,7 +14,7 @@ impl Writer<'_> {
         &mut self,
         affected: &Ref,
         mods: &[Modification],
-        duration: Duration,
+        duration: &Duration,
     ) -> Option<String> {
         let [Modification::SetController(new)] = mods else {
             return None;
@@ -34,7 +34,7 @@ impl Writer<'_> {
                 Some(format!("gain control of {}{until}", self.name_target()?))
             }
             (Ref::This, Ref::Target(0))
-                if duration == Duration::Forever
+                if *duration == Duration::Forever
                     && self.single(new)
                     && self.target_is(|what| {
                         matches!(what, Targetable::Player | Targetable::Opponent)
@@ -63,7 +63,7 @@ impl Writer<'_> {
         else {
             return None;
         };
-        self.control(affected, mods, duration.clone())
+        self.control(affected, mods, duration)
     }
 
     /// "untap all creatures and gain control of them until end of turn. They gain haste until end of turn": the untap

@@ -335,7 +335,7 @@ fn c10_xp_target_becomes_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// The words of how long a copy lasts, after the copied object; `None` for a duration no card says.
-pub(super) fn c10_xp_copy_duration_text(duration: Duration) -> Option<&'static str> {
+pub(super) fn c10_xp_copy_duration_text(duration: &Duration) -> Option<&'static str> {
     match duration {
         Duration::UntilEndOfTurn => Some(" until end of turn"),
         Duration::UntilYourNextTurn => Some(" until your next turn"),
@@ -455,7 +455,7 @@ pub(super) fn becomes_text(effect: &Effect, target: &str) -> Option<String> {
     else {
         return None;
     };
-    let until = c10_xp_copy_duration_text(duration.clone())?;
+    let until = c10_xp_copy_duration_text(duration)?;
     let except = if except.is_empty() {
         String::new()
     } else {

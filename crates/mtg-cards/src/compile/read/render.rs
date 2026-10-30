@@ -2150,7 +2150,7 @@ impl Writer<'_> {
                 affected,
                 mods,
                 duration: duration @ (Duration::UntilEndOfTurn | Duration::UntilYourNextTurn),
-            } => self.pump(affected, mods, duration.clone())?,
+            } => self.pump(affected, mods, duration)?,
             Effect::May {
                 who: Ref::You,
                 effects,
@@ -2901,20 +2901,20 @@ impl Writer<'_> {
         &mut self,
         affected: &Ref,
         mods: &[Modification],
-        duration: Duration,
+        duration: &Duration,
     ) -> Option<String> {
-        if let Some(sentence) = self.switched(affected, mods, duration.clone()) {
+        if let Some(sentence) = self.switched(affected, mods, duration) {
             return Some(sentence);
         }
-        if let Some(sentence) = self.control(affected, mods, duration.clone()) {
+        if let Some(sentence) = self.control(affected, mods, duration) {
             return Some(sentence);
         }
-        if duration == Duration::UntilEndOfTurn
+        if *duration == Duration::UntilEndOfTurn
             && let Some(sentence) = becomes::text(affected, mods)
         {
             return Some(sentence);
         }
-        if duration == Duration::UntilEndOfTurn
+        if *duration == Duration::UntilEndOfTurn
             && let Some(doubled) = super::c9_fight_double::c9_fight_doubled(affected, mods)
         {
             let subject = self.object(affected)?;
@@ -2969,7 +2969,7 @@ impl Writer<'_> {
                 _ => None,
             };
         }
-        if duration == Duration::UntilEndOfTurn
+        if *duration == Duration::UntilEndOfTurn
             && matches!(
                 mods,
                 [Modification::CantAttack | Modification::CantBlock]
@@ -2983,12 +2983,12 @@ impl Writer<'_> {
             return Some(sentence);
         }
         if let Ref::Each(group) = affected
-            && let Some(sentence) = group_becomes::text(&subject, group, mods, duration.clone())
+            && let Some(sentence) = group_becomes::text(&subject, group, mods, duration)
         {
             return Some(sentence);
         }
         if !plural
-            && duration == Duration::UntilEndOfTurn
+            && *duration == Duration::UntilEndOfTurn
             && *affected != Ref::This
             && let Some(sentence) = becomes::text_for(&subject, mods)
         {
