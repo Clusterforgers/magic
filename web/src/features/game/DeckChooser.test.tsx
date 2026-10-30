@@ -123,6 +123,32 @@ describe('search and filters', () => {
   })
 
   it.each([
+    ['pauper', 'Pauper Affinity'],
+    ['zzz', null],
+  ])(
+    'moves a selection the search %j hides to the first row shown, or clears it',
+    async (query, selected) => {
+      width(true)
+      const { user } = await open({ format: 'normal' })
+      await user.click(await screen.findByRole('option', { name: /^Burn/ }))
+      await waitFor(() => expect(within(pane()).getByRole('heading', { name: 'Burn' })).toBeInTheDocument())
+      await user.type(screen.getByRole('searchbox'), query)
+      if (selected === null) {
+        await waitFor(() => expect(within(pane()).queryByRole('heading', { name: 'Burn' })).toBeNull())
+        expect(within(pane()).queryByRole('button', { name: 'Use this deck' })).toBeNull()
+      } else {
+        await waitFor(() =>
+          expect(screen.getByRole('option', { name: new RegExp(selected) })).toHaveAttribute(
+            'aria-selected',
+            'true',
+          ),
+        )
+        expect(await within(pane()).findByRole('heading', { name: selected })).toBeInTheDocument()
+      }
+    },
+  )
+
+  it.each([
     ['Fully validated', ['Rakdos Midrange']],
     ['Has hand-played cards', ['Burn']],
     ['All decks', ['Burn', 'Pauper Affinity', 'Rakdos Midrange']],
