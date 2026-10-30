@@ -220,8 +220,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [ ] (ma7c) The panel's Look at the top: `LookTop`, the known cards with Top, Bottom and Graveyard and their order, one `ArrangeTop`; Shuffle; the log lines of the three (`describeManual`) and their hidden forms
-- [ ] (ma7d) Reveal and a note as manual actions: `ManualAction::Reveal` (a hand card or the top card, to every seat) and `Note` with `ObjectView.note`, in the panel, the card menu and the log
+- [~] (ma7c) (panel-top) The panel's Look at the top: `LookTop`, the known cards with Top, Bottom and Graveyard and their order, one `ArrangeTop`; Shuffle; the log lines of the three (`describeManual`) and their hidden forms
+- [~] (ma7d) (panel-top) Reveal and a note as manual actions: `ManualAction::Reveal` (a hand card or the top card, to every seat) and `Note` with `ObjectView.note`, in the panel, the card menu and the log
 - [ ] (ma7e) The panel's Card group: "Pick a card" and the card menu's "In the panel" fill it with the card's commands (`manualMenu`); the card menu drops the You entries
 - [ ] (ma7f) A refused manual action shows in the panel row's or the menu's own feedback instead of the table notice, and a `BadMessage` refusal of a manual action is not taken for a pending combat preview's refusal
 - [ ] (ma7g) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
