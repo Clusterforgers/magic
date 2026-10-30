@@ -5,6 +5,9 @@ import { cardsText } from './format'
 
 const SUGGESTED = 3
 
+/** A message ends with a full stop, so a suggestion after it reads as a sentence of its own. */
+const sentence = (text: string): string => (/[.!?]$/.test(text.trim()) ? text.trim() : `${text.trim()}.`)
+
 const lines = (count: number): string => `${count} ${count === 1 ? 'line' : 'lines'}`
 
 /**
@@ -31,7 +34,7 @@ export function ImportNotes({ result }: { result: ImportResult }) {
                   <span className="font-medium text-foreground">
                     {line.count} {line.name}
                   </span>
-                  {`: ${line.message}`}
+                  {`: ${line.suggestions.length === 0 ? line.message : sentence(line.message)}`}
                   {line.suggestions.length === 0
                     ? null
                     : ` Did you mean ${line.suggestions

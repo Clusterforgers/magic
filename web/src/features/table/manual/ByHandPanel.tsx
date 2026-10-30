@@ -52,7 +52,9 @@ export function ByHandPanel({ target }: { target: MenuTarget }) {
       <div className="grid gap-1">
         <p className="truncate text-sm font-medium">{object.name}</p>
         <p className="text-xs font-medium">By hand</p>
-        <p className="text-xs text-muted-foreground">The game does not run these. The table applies them.</p>
+        <p className="text-xs text-muted-foreground">
+          The game does not run these. Apply them yourself with the Commands panel or the card's menu.
+        </p>
       </div>
       <ByHandList id={listId} clauses={clauses} className="rounded-md bg-muted px-2 py-2 text-xs" />
       <button

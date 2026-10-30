@@ -24,8 +24,19 @@ describe('clockText', () => {
     expect(clockText(kind, seconds)).toBe(text)
   })
 
-  it('does not claim a consequence for a kind that has no clock', () => {
-    expect(clockText('Discard', 5)).toBe('The game goes on without you in 5 s')
+  it.each([
+    ['Mulligan', 60, 'Keeping this hand for you in 60 s'],
+    ['BottomCards', 9, 'Putting the first cards on the bottom for you in 9 s'],
+    ['Discard', 5, 'Discarding the first cards for you in 5 s'],
+    ['DeclareAttackers', 8, 'Declaring no attacks in 8 s'],
+    ['ChooseReplacement', 7, 'Choosing the first effect for you in 7 s'],
+    ['DivideAmount', 6, 'Dividing it evenly for you in 6 s'],
+  ] as const)('%s, which the server answers at zero, with %i s left reads "%s"', (kind, seconds, text) => {
+    expect(clockText(kind, seconds)).toBe(text)
+  })
+
+  it('does not claim a consequence it cannot name', () => {
+    expect(clockText('PayMana', 5)).toBe('The game goes on without you in 5 s')
   })
 })
 
@@ -51,6 +62,13 @@ describe('clockAnnouncement', () => {
     ],
     ['ChooseCardsNone', 10, 'You have 10 seconds to answer; after that the game chooses no cards for you.'],
     ['OrderCards', 10, 'You have 10 seconds to answer; after that the game keeps the order for you.'],
+    ['Mulligan', 60, 'You have 60 seconds to answer; after that the game keeps your hand for you.'],
+    [
+      'Discard',
+      5,
+      'You have 5 seconds to answer; after that the game discards the first cards of your hand for you.',
+    ],
+    ['PayMana', 5, 'You have 5 seconds to answer; after that the game goes on without you.'],
   ] as const)('%s with %i s reads "%s"', (kind, seconds, text) => {
     expect(clockAnnouncement(kind, seconds)).toBe(text)
   })

@@ -121,6 +121,7 @@ describe('the keyboard path', () => {
       STASIS.map((clause) => `${clause.text} ${clause.reason}`),
     )
     expect(panel()).toHaveAccessibleDescription(/When this Aura enters/)
+    expect(panel()).toHaveTextContent("Apply them yourself with the Commands panel or the card's menu.")
     await user.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(cardButton()).toHaveFocus()

@@ -197,7 +197,7 @@ describe('the review', () => {
       .getByText(/2 lines were not found and are left out of the deck/)
       .closest('[data-note]') as HTMLElement
     expect(missing).toHaveTextContent(
-      '2 Lightening Bolt: no card has this name Did you mean Lightning Bolt, Lightning Helix?',
+      '2 Lightening Bolt: no card has this name. Did you mean Lightning Bolt, Lightning Helix?',
     )
     expect(missing).toHaveTextContent('1 Bolt: several cards match')
     expect(missing).not.toHaveTextContent('Did you mean Bolt')
