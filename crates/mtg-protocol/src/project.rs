@@ -17,7 +17,7 @@ use mtg_engine::loyalty::loyalty_abilities;
 use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::resolve::targets_legal;
-use mtg_engine::sight::offered_cards;
+use mtg_engine::sight::offered_to;
 use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
@@ -91,10 +91,7 @@ pub(crate) struct Sight<'a> {
 
 impl<'a> Sight<'a> {
     pub(crate) fn new(state: &'a GameState, viewer: PlayerId) -> Self {
-        let offered = offered_cards(state)
-            .filter(|(seat, _)| *seat == viewer)
-            .map(|(_, cards)| cards)
-            .unwrap_or_default();
+        let offered = offered_to(state, viewer);
         Sight {
             state,
             viewer,

@@ -119,7 +119,7 @@ async fn bot_game_matches_the_bare_engine_under_the_same_rule(players: usize, se
 
     let straight = reference_auto_pass(table_setup(players, seed), seed);
     assert!(straight.auto_passes > 0, "the table has idle windows");
-    assert_eq!(store.load(game_id(1)).await.unwrap(), straight.events);
+    common::assert_same_game(&store.load(game_id(1)).await.unwrap(), &straight.events);
     assert_eq!(
         handle.status().await.unwrap().state_hash,
         Some(straight.final_hash)
@@ -166,7 +166,7 @@ async fn with_the_setting_off_idle_priority_still_reaches_its_seat(
     let reports = play_table(&handle, players, seed).await;
 
     let straight = reference(players, seed);
-    assert_eq!(store.load(game_id(1)).await.unwrap(), straight.events);
+    common::assert_same_game(&store.load(game_id(1)).await.unwrap(), &straight.events);
     let idle: usize = reports.iter().map(|r| r.idle_decisions).sum();
     assert!(idle > 0, "every priority window is delivered");
     assert_eq!(

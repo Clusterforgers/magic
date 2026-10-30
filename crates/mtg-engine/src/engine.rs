@@ -13,6 +13,7 @@ use crate::events::Event;
 use crate::flow::{Progress, next};
 use crate::fold::apply_event;
 use crate::forecast::CombatForecast;
+use crate::mulligan;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::LossReason;
 use crate::prepared;
@@ -20,7 +21,7 @@ use crate::preview::preview_forecast;
 use crate::replace::{self, Processed};
 use crate::rules::{Rule, RuleEffect};
 use crate::setup::GameSetup;
-use crate::state::{GameResult, GameState};
+use crate::state::{GameResult, GameState, Stage};
 use crate::triggers;
 
 /// Internal progress steps allowed between decisions before the engine reports a stall.
@@ -61,7 +62,7 @@ fn applies(state: &GameState, events: &[Event]) -> bool {
 }
 
 /// A running game: state, the event log that produced it, and the decision it is waiting on.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Engine {
     setup: GameSetup,
     state: GameState,
@@ -127,6 +128,45 @@ impl Engine {
     /// The pending decision; `None` once the game is over.
     pub fn decision(&self) -> Option<&Decision> {
         self.decision.as_ref()
+    }
+
+    /// Every decision the game waits on now: in the opening each seat with a question (keep or mulligan, the cards to
+    /// bottom, a scry) is asked at once, [`decision`](Engine::decision) first; otherwise that decision alone.
+    pub fn decisions(&self) -> Vec<Decision> {
+        if self.opening() {
+            return mulligan::open_decisions(&self.state);
+        }
+        self.decision.iter().cloned().collect()
+    }
+
+    /// Validates `player`'s answer to its decision among [`decisions`](Engine::decisions) and advances, as
+    /// [`apply`](Engine::apply) does for [`decision`](Engine::decision). The log keeps the order the answers came in.
+    pub fn apply_for(
+        &mut self,
+        player: PlayerId,
+        answer: Answer,
+    ) -> Result<Vec<Event>, EngineError> {
+        let primary = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
+        if primary.player == player {
+            return self.apply(answer);
+        }
+        let decision = self
+            .opening()
+            .then(|| mulligan::seat_decision(&self.state, player))
+            .flatten()
+            .ok_or(EngineError::NoDecision)?;
+        let outcome = handle(&self.state, None, false, &decision, answer)?;
+        let checkpoint = self.checkpoint();
+        let result = self.run(outcome, player).and_then(|()| self.advance());
+        self.finish(checkpoint, result)
+    }
+
+    /// Whether the opening is asking its questions: each seat answers its own, in any order.
+    fn opening(&self) -> bool {
+        self.state.stage() == Stage::Mulligan
+            && self.decision.is_some()
+            && self.pending.is_none()
+            && self.held.is_none()
     }
 
     /// The result once the game has ended.

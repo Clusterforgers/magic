@@ -75,6 +75,32 @@ pub fn table_setup(players: usize, seed: u64) -> GameSetup {
     fuzz_setup(players, seed)
 }
 
+/// Asserts that a game's log is the reference's: the same events from the end of the opening on, and the same opening
+/// events, whose answers every seat gives at once and so may stand in another order.
+pub fn assert_same_game(logged: &[Event], reference: &[Event]) {
+    let split = |log: &[Event]| -> usize {
+        log.iter()
+            .position(|e| matches!(e, Event::MulliganPhaseEnded))
+            .unwrap_or(log.len())
+    };
+    let (mine, theirs) = (split(logged), split(reference));
+    assert_eq!(
+        logged[mine..],
+        reference[theirs..],
+        "the game after the opening"
+    );
+    let sorted = |log: &[Event]| -> Vec<String> {
+        let mut all: Vec<String> = log.iter().map(|e| format!("{e:?}")).collect();
+        all.sort_unstable();
+        all
+    };
+    assert_eq!(
+        sorted(&logged[..mine]),
+        sorted(&reference[..theirs]),
+        "the opening"
+    );
+}
+
 /// The same game played straight on an engine with the same bots, as the yardstick for actor games.
 pub struct Reference {
     pub events: Vec<Event>,

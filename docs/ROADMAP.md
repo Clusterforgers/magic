@@ -459,7 +459,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
-- [ ] (v89a) Every seat keeps or mulligans at once: the engine asks one seat at a time (`mulligan.rs`, first `Deciding` seat) with a 60 s clock each, so a four-seat opening waits up to four minutes and the "Waiting for" line names seats not yet asked
 - [ ] (v89l) The picture warm-up fetches the printing each deck line chose (a precon names them), not only the newest paper printing of each card, so the table's pictures of precon cards are cached when the first turn starts
 - [ ] (v89m) The doc of `CardHit` in `mtg-protocol` says "without manual steps" for the played-by-hand flag; it reads "played by hand" like the web and the bindings follow
 

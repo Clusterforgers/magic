@@ -23,7 +23,7 @@ async fn bots_play_full_games_on_the_postgres_store(pool: PgPool) {
 
         let straight = reference(players, seed);
         let logged = store.load(id).await.unwrap();
-        assert_eq!(logged, straight.events, "{players} players, seed {seed}");
+        common::assert_same_game(&logged, &straight.events);
         let status = handle.status().await.unwrap();
         assert_eq!(status.state_hash, Some(straight.final_hash));
         assert_eq!(status.events, logged.len() as u64);
@@ -81,7 +81,7 @@ async fn a_game_resumes_from_its_rows_after_a_restart(
 
     let straight = reference(players, seed);
     assert_eq!(result, Some(straight.result));
-    assert_eq!(store.load(id).await.unwrap(), straight.events);
+    common::assert_same_game(&store.load(id).await.unwrap(), &straight.events);
     assert_eq!(
         second.status().await.unwrap().state_hash,
         Some(straight.final_hash)

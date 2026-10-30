@@ -110,6 +110,7 @@ mod companion_fuzz;
 mod compiled_chance;
 mod concede;
 mod concede_mid_cast;
+mod concurrent_opening;
 mod conditional_statics;
 mod conditional_statics_fuzz;
 mod connive;

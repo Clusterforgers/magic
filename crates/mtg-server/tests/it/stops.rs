@@ -662,7 +662,7 @@ async fn bots_that_hold_everything(players: usize, seed: u64) {
     // Nothing reads them: the log is the one the same bots write on a bare engine.
     let log = store.load(game_id(1)).await.unwrap();
     let straight = common::reference(players, seed);
-    assert_eq!(log, straight.events);
+    common::assert_same_game(&log, &straight.events);
     let status = handle.status().await.unwrap();
     assert_eq!(status.state_hash, Some(straight.final_hash));
     assert_eq!(

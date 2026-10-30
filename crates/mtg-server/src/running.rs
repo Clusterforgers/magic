@@ -134,6 +134,8 @@ pub(crate) enum Halt {
 pub(crate) struct Running {
     pub(crate) engine: Engine,
     pending: Option<Pending>,
+    /// The other seats' opening decisions, asked together with the engine's own, each with its own id and clock.
+    side: Vec<Pending>,
     last_id: u64,
     pace: Pace,
     /// The dwells of the idle windows, drawn apart from the game.
@@ -158,6 +160,7 @@ fn millis(span: Duration) -> u64 {
 }
 
 mod manual;
+mod opening;
 
 impl Running {
     /// Wraps `engine`; call [`settle`](Running::settle) to issue the first decision id.
@@ -167,6 +170,7 @@ impl Running {
         Running {
             engine,
             pending: None,
+            side: Vec::new(),
             last_id: 0,
             pace,
             waits: Waits::fresh(pace.dwell),
@@ -201,7 +205,7 @@ impl Running {
 
     /// The pending decision's clock has run out and the table answers for its seat: the seat used a clock.
     pub(crate) fn clock_ran_out(&mut self) {
-        let seat = self.pending.as_ref().map(|p| p.decision.player);
+        let seat = self.expiring().map(|p| p.decision.player);
         if let Some(seat) = seat {
             self.banks
                 .ran_out(seat, self.engine.state().active_player());
@@ -215,10 +219,11 @@ impl Running {
     /// table answers for the seat.
     pub(crate) fn extend(&mut self) -> Option<Extended> {
         let length = self.pace.extension?;
-        let pending = self.pending.as_mut()?;
-        let due = pending.due?;
-        let seat = pending.decision.player;
-        if pending.hidden || !self.banks.spend(seat) {
+        let (seat, due, hidden) = self
+            .expiring()
+            .map(|p| (p.decision.player, p.due, p.hidden))?;
+        let due = due?;
+        if hidden || !self.banks.spend(seat) {
             return None;
         }
         self.banks
@@ -226,13 +231,15 @@ impl Running {
         let now = Instant::now();
         let from = due.max(now);
         let new_due = from.checked_add(length).unwrap_or(from);
+        let bank = self.banks.held(seat);
+        let pending = self.expiring_mut()?;
         pending.due = Some(new_due);
         pending.shown_at = None;
         Some(Extended {
             id: pending.id,
             decision: pending.decision.clone(),
             deadline_ms: millis(new_due.saturating_duration_since(now)),
-            bank: self.banks.held(seat),
+            bank,
         })
     }
 
@@ -243,25 +250,25 @@ impl Running {
 
     /// When the pending decision's clock runs out, if it has one.
     pub(crate) fn due(&self) -> Option<Instant> {
-        self.pending.as_ref().and_then(|p| p.due)
+        self.expiring().and_then(|p| p.due)
     }
 
     /// The seat and kind of the pending decision when it was sent (so its clock is a response clock, not a dwell).
     pub(crate) fn sent_decision(&self) -> Option<(PlayerId, &'static str)> {
-        let pending = self.pending.as_ref().filter(|p| !p.hidden)?;
+        let pending = self.expiring().filter(|p| !p.hidden)?;
         Some((pending.decision.player, pending.decision.kind.name()))
     }
 
     /// Moves the clock of the pending decision to `due` (nothing happens for a decision without one).
     pub(crate) fn postpone(&mut self, due: Instant) {
-        if let Some(pending) = self.pending.as_mut().filter(|p| p.due.is_some()) {
+        if let Some(pending) = self.expiring_mut().filter(|p| p.due.is_some()) {
             pending.due = Some(due);
         }
     }
 
     /// Drops the clock of the pending decision, so a decision the server cannot answer for is not retried forever.
     pub(crate) fn stop_clock(&mut self) {
-        if let Some(pending) = self.pending.as_mut() {
+        if let Some(pending) = self.expiring_mut() {
             pending.due = None;
         }
     }
@@ -305,7 +312,8 @@ impl Running {
         held && self.verdict_pending(seat, stops, yields) == Some(Verdict::Ask)
     }
 
-    /// Aligns the pending decision with the engine's and returns what a client must be sent, if anything.
+    /// Aligns the pending decisions with the engine's and returns what clients must be sent: in the opening every seat's at once
+    /// ([`settle_opening`](Running::settle_opening)), otherwise the one decision, if anything.
     ///
     /// Every new decision gets a fresh id and, when [`Pace`] gives it one, a clock that starts now. With
     /// `keep_unchanged`, a decision that did not change keeps its id and clock and is not sent again, so a
@@ -314,7 +322,16 @@ impl Running {
     /// At `Halt::Dwell` the decision is held back instead of sent: it gets no clock but a dwell of its own
     /// ([`Waits::wait`], drawn now, whatever the windows before it were), and the actor passes for the seat at that
     /// time. A decision that is held back and unchanged keeps its wait.
-    pub(crate) fn settle(&mut self, keep_unchanged: bool, halt: Halt) -> Option<Issued> {
+    pub(crate) fn settle(&mut self, keep_unchanged: bool, halt: Halt) -> Vec<Issued> {
+        if self.engine.state().stage() == Stage::Mulligan && halt == Halt::Ask {
+            return self.settle_opening();
+        }
+        self.side.clear();
+        self.settle_one(keep_unchanged, halt).into_iter().collect()
+    }
+
+    /// [`settle`](Running::settle) outside the opening: the engine's one decision.
+    fn settle_one(&mut self, keep_unchanged: bool, halt: Halt) -> Option<Issued> {
         let Some(decision) = self.engine.decision().cloned() else {
             self.pending = None;
             return None;
@@ -397,10 +414,7 @@ impl Running {
             state: Box::new(view),
             log: self.recent_log(seat),
         }];
-        let visible = self
-            .pending
-            .as_ref()
-            .filter(|p| p.decision.player == seat && !p.hidden);
+        let visible = self.all().find(|p| p.decision.player == seat && !p.hidden);
         if let Some(pending) = visible {
             let now = Instant::now();
             messages.push(ServerMessage::Decision {
@@ -430,7 +444,7 @@ impl Running {
         id: DecisionId,
         answer: Answer,
     ) -> Result<Step, Rejection> {
-        if self.pending.as_ref().is_none_or(|p| p.hidden) {
+        if self.all().find(|p| p.id == id).is_none_or(|p| p.hidden) {
             return Err(Rejection::stale());
         }
         if pace::is_removal(&answer) && self.is_pending_for(seat, id) {
@@ -444,9 +458,7 @@ impl Running {
 
     /// Whether the decision `id` is the pending one and is `seat`'s.
     fn is_pending_for(&self, seat: PlayerId, id: DecisionId) -> bool {
-        self.pending
-            .as_ref()
-            .is_some_and(|p| p.id == id && p.decision.player == seat)
+        self.all().any(|p| p.id == id && p.decision.player == seat)
     }
 
     /// [`answer`](Running::answer) for the pending decision whether or not a client was sent it.
@@ -460,7 +472,7 @@ impl Running {
             return Err(Rejection::stale());
         }
         let passes = answer == pace::pass();
-        self.step(seat, false, |engine| engine.apply(answer))
+        self.step(seat, false, |engine| engine.apply_for(seat, answer))
             .map(|step| Step {
                 passed: passes,
                 ..step
@@ -499,7 +511,7 @@ impl Running {
     /// It goes through the same checks, log and projection as [`answer`](Running::answer), so it is handled like the
     /// seat's own move, whether the decision was sent to the seat or held back for its dwell.
     pub(crate) fn fall_back(&mut self) -> Result<Step, Rejection> {
-        let pending = self.pending.as_ref();
+        let pending = self.expiring();
         let Some((id, seat, answer)) = pending.and_then(|p| {
             pace::fallback(&p.decision).map(|answer| (p.id, p.decision.player, answer))
         }) else {
@@ -719,7 +731,7 @@ mod tests {
 
     fn held_back(dwell: Dwell) -> Running {
         let mut running = idle_with_a_spell(dwell);
-        assert!(running.settle(false, Halt::Dwell).is_none());
+        assert!(running.settle(false, Halt::Dwell).is_empty());
         running
     }
 
@@ -831,12 +843,12 @@ mod tests {
         let setup = Scenario::new(2).setup().unwrap();
         let mut running = Running::new(Engine::new(setup).unwrap(), pace);
         // Seat 0 is the active player, so it has no clock; the table's pass for it is the seat's own move.
-        let first = running.settle(false, Halt::Ask).unwrap();
+        let first = running.settle(false, Halt::Ask).remove(0);
         assert_eq!(first.deadline_ms, None);
         let step = running.fall_back().unwrap();
         assert!(step.passed);
         // Seat 1 is not, so a window it is sent has the response clock, and the pass at its end is the same step.
-        let afterwards = running.settle(false, Halt::Ask).unwrap();
+        let afterwards = running.settle(false, Halt::Ask).remove(0);
         assert_eq!(afterwards.decision.player, SEATS[1]);
         assert_eq!(afterwards.deadline_ms, Some(10_000));
         let step = running.fall_back().unwrap();
@@ -848,7 +860,7 @@ mod tests {
         let mut running = held_back(Dwell::DEFAULT);
         let (id, due) = (running.pending.as_ref().unwrap().id, running.due());
         tokio::time::advance(Duration::from_millis(100)).await;
-        assert!(running.settle(true, Halt::Dwell).is_none());
+        assert!(running.settle(true, Halt::Dwell).is_empty());
         assert_eq!(running.pending.as_ref().unwrap().id, id);
         assert_eq!(
             running.due(),
@@ -856,7 +868,7 @@ mod tests {
             "a concession elsewhere does not move it"
         );
 
-        assert!(running.settle(false, Halt::Dwell).is_none());
+        assert!(running.settle(false, Halt::Dwell).is_empty());
         assert_ne!(running.pending.as_ref().unwrap().id, id);
         let wait = running.due().unwrap() - Instant::now();
         let (shortest, longest) = Dwell::DEFAULT.range();
@@ -867,7 +879,7 @@ mod tests {
     async fn when_the_rules_ask_a_held_back_seat_its_decision_is_issued_with_a_new_id() {
         let mut running = held_back(Dwell::fixed(500));
         let held = running.pending.as_ref().unwrap().id;
-        let issued = running.settle(true, Halt::Ask).unwrap();
+        let issued = running.settle(true, Halt::Ask).remove(0);
         assert_ne!(issued.id, held);
         assert_eq!(issued.decision.player, SEATS[0]);
         let messages = running.sync_messages(SEATS[0]);

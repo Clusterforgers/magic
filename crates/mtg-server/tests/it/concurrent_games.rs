@@ -30,7 +30,7 @@ async fn thirty_games_run_side_by_side_and_each_matches_its_reference() {
         let (id, players, seed, reports, status) = task.await.unwrap();
         let straight = reference(players, seed);
         let logged = store.load(id).await.unwrap();
-        assert_eq!(logged, straight.events, "game {id} (seed {seed}) diverged");
+        common::assert_same_game(&logged, &straight.events);
         assert_eq!(status.state_hash, Some(straight.final_hash));
         assert_eq!(status.result, Some(straight.result));
         assert_eq!(

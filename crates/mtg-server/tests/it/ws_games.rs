@@ -139,7 +139,9 @@ async fn a_seat_that_returns_with_its_token_is_resynced_and_the_game_ends_the_sa
     // Seat 0 plays until it faces the n-th decision, then leaves with the answer unsent.
     assert_eq!(victim.play().await, Stop::Paused);
     let waiting = handle.status().await.unwrap().waiting_on;
-    assert_eq!(waiting, Some(seat0));
+    // The opening asks every seat at once, so the game need not name seat 0 while the others still answer.
+    let opening = pause_at == 1;
+    assert!(opening || waiting == Some(seat0));
     if comeback == Comeback::HangUp {
         victim.client.hang_up();
         for _ in 0..200 {
@@ -150,7 +152,10 @@ async fn a_seat_that_returns_with_its_token_is_resynced_and_the_game_ends_the_sa
         }
         let status = handle.status().await.unwrap();
         assert!(!status.connected.contains(&seat0), "the server noticed");
-        assert_eq!(status.waiting_on, waiting, "the game waits for the seat");
+        assert!(
+            opening || status.waiting_on == waiting,
+            "the game waits for the seat"
+        );
     }
 
     let mut previous = victim.reconnect(server.addr, &game, &tokens[0]).await;

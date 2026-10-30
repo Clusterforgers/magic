@@ -118,7 +118,11 @@ async fn the_engine_exists_only_once_every_seat_is_ready() {
             .filter(|m| matches!(m, ServerMessage::Decision { .. }))
             .count();
     }
-    assert_eq!(deciding, 1, "exactly one seat is asked to decide");
+    assert_eq!(
+        deciding,
+        received.len(),
+        "every seat is asked to decide at once"
+    );
     let waiting = status.waiting_on.unwrap().index();
     assert!(matches!(
         received[waiting].last(),

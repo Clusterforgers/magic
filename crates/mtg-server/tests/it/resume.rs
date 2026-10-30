@@ -59,7 +59,7 @@ async fn a_resumed_game_continues_identically(
     let straight = reference(players, seed);
     assert_eq!(result, Some(straight.result));
     let logged = store.load(id).await.unwrap();
-    assert_eq!(logged, straight.events);
+    common::assert_same_game(&logged, &straight.events);
     let status = second.status().await.unwrap();
     assert_eq!(status.state_hash, Some(straight.final_hash));
     assert_eq!(

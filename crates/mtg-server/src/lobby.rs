@@ -322,7 +322,7 @@ impl<S: EventStore> GameActor<S> {
                 let mut running = Running::new(engine, self.pace).with_manual_play(manual_play);
                 let first = running.settle(false, Halt::Ask);
                 // A game starts in the mulligans, but a scenario can open on a priority decision nobody is asked.
-                let idle = first.as_ref().is_some_and(|issued| {
+                let idle = first.first().is_some_and(|issued| {
                     running.passes_pending(issued.decision.player, &self.stops, &self.yields)
                 });
                 self.phase = Phase::Running(Box::new(running));
@@ -330,7 +330,7 @@ impl<S: EventStore> GameActor<S> {
                     recorder.started().await;
                 }
                 self.warm_images();
-                self.announce(batches, Vec::new(), if idle { None } else { first });
+                self.announce(batches, Vec::new(), if idle { Vec::new() } else { first });
                 if idle {
                     return self.start_up().await;
                 }

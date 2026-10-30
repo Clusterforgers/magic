@@ -31,7 +31,7 @@ async fn bots_play_a_full_game_through_the_handle(
 
     // The same bots on a bare engine play the very same game.
     let straight = reference(players, seed);
-    assert_eq!(logged, straight.events);
+    common::assert_same_game(&logged, &straight.events);
     assert_eq!(status.state_hash, Some(straight.final_hash));
     assert_eq!(status.result, Some(straight.result));
 
