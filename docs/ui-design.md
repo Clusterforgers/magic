@@ -145,7 +145,7 @@ Every play reads on the table without the log: what was played, from where, at w
 
 ### Moments
 
-A move is a picture of the card (a card back for a card the viewer may not identify) that flies on an overlay layer, `aria-hidden` and without a pointer, from one place to another. A place is a card on the table (`data-object-id`) or a zone anchor (`data-fx-anchor="<seat>:<zone>"` on the hand, library, graveyard, exile and command chips of a pod, a tile and the hand dock; `stack` on the shared strip's stack). A mark is a still attribute on a card (`data-fx`).
+A move is a picture of the card (a card back for a card the viewer may not identify) that flies on an overlay layer, `aria-hidden` and without a pointer, from one place to another. A place is a card on the table (`data-object-id`) or a zone: `data-fx-anchor` on the hand dock (`<seat>:hand`) and the shared strip's stack (`stack`), the `data-zone` chip of a seat's pod (`data-seat`) or tile (`data-tile-seat`). A mark is a still attribute on a card (`data-fx`).
 
 | Moment | Comes from | Moves | Marks | Log line |
 |---|---|---|---|---|
@@ -215,7 +215,7 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 ### Code
 
 - `fx/moves.ts` (pure): `deriveMoves(before, after, events)` gives `Move[]` (`kind`, `object`, `look`, `from`, `to`, `order`, `targets`) and the marks; `MOVE_MS` holds the tokens, which `fx.css` repeats.
-- The travel layer measures a move's source in the store subscriber of `watchBatches`, which runs before React draws the batch, so a card that left the hand is measured where it stood; it measures the destination on the next frame, and a place it does not find falls back to its zone's anchor.
+- The travel layer (`fx/travel.ts`, `fx/places.ts`, `fx/FxTravel.tsx`) measures a move's source in the store subscriber of `watchBatches`, which runs before React draws the batch, so a card that left the hand is measured where it stood; it measures the destination on the next frame, a place it does not find falls back to its zone, and a move with no place on screen is left out.
 - `handReason.ts` (pure): `unplayableReason(object, view, options)` gives the reason of a dimmed hand card; `REASON_WORDS` its label and line.
 - `/dev/table?fx=` `cast`, `activate`, `resolve`, `counter`, `land` and `draw` play these moments on the fixture table, beside `attack`, `block`, `damage`, `death` (the die moment), `life` and `enter`.
 

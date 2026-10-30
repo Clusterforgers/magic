@@ -10,6 +10,8 @@ import { browserTimers } from '@/net/timers'
 import type { Timers } from '@/net/timers'
 import type { ObjectId, PlayerId } from '@/protocol/generated'
 import { FX_MS, isLifeEffect, NO_ENTRIES, NO_GHOSTS, rowKey } from './model'
+import { createTravel } from './travel'
+import type { Travel, TravelOptions } from './travel'
 import type { Effect, FxEntry, FxKind, Ghost } from './model'
 
 /** `off` plays nothing, `reduced` only the highlights that need no motion, `full` everything. */
@@ -33,6 +35,8 @@ export interface FxOptions {
   mode?: () => FxMode
   /** Multiplies every duration, for looking at an effect slowly during development; 1 by default. */
   slow?: number
+  /** What the travel layer measures and waits on: the page and the frame, for tests. */
+  travel?: Pick<TravelOptions, 'root' | 'frame'>
 }
 
 /** The decoration layer of one table. */
@@ -41,6 +45,8 @@ export interface Fx {
   readonly store: StoreApi<FxState>
   /** The duration multiplier. */
   readonly slow: number
+  /** The cards that fly between places; started by `watchBatches`, drawn by `FxTravel`. */
+  readonly travel: Travel
   /** Starts the effects of a batch, each expiring on its own after its time. Nothing at all while the mode is `off`. */
   play(effects: readonly Effect[]): void
   /** Ends every effect now and cancels the timers. */
@@ -85,6 +91,7 @@ export function createFx(options: FxOptions = {}): Fx {
   const modeNow = options.mode ?? systemMode
   const slow = options.slow ?? 1
   const store = createStore<FxState>(emptyState)
+  const travel = createTravel({ ...options.travel, mode: modeNow, slow })
   const waiting = new Set<number>()
   let last = 0
 
@@ -146,13 +153,14 @@ export function createFx(options: FxOptions = {}): Fx {
   }
 
   function clear(): void {
+    travel.clear()
     for (const timer of waiting) timers.clearTimeout(timer)
     waiting.clear()
     const { objects, seats, ghosts } = store.getState()
     if (objects.size + seats.size + ghosts.size > 0) store.setState(emptyState())
   }
 
-  return { store, slow, play, clear }
+  return { store, slow, travel, play, clear }
 }
 
 /** The layer that cards outside a table share: it plays nothing. */

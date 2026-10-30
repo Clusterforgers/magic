@@ -10,6 +10,7 @@ import { CombatOverlay } from './combat/CombatOverlay'
 import { CombatProviders } from './combat/CombatProviders'
 import { ControlsDock, ControlsSlotProvider } from './ControlsDock'
 import { FxContext } from './fx/hooks'
+import { FxTravel } from './fx/FxTravel'
 import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { HandDock } from './HandDock'
 import { ManualMenuProvider } from './manual/ManualMenu'
@@ -110,6 +111,7 @@ const Table = memo(function Table() {
                     <SideSheet top={regions.landscape ? 'top-8' : 'top-11'} />
                   </SideProvider>
                 )}
+                <FxTravel />
               </section>
             </ControlsSlotProvider>
             <CardPreview />
