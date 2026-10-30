@@ -2,7 +2,8 @@
 //! toughness play through the engine at two to four seats: a player at 0 life keeps playing while they can't lose and
 //! loses once the rule is gone, opponents can't cast spells during the controller's turn but can on their own, cards in
 //! graveyards are no legal targets, counters remain on a card that dies (a new object, CR 400.7) and not on one without
-//! the rule, and a creature assigns combat damage by its toughness with trample and first strike; each log replays.
+//! the rule, and a creature assigns combat damage by its toughness with trample and first strike, and a player the
+//! Herald keeps in with ten poison counters or 21 commander damage leaves the invariants kept; each log replays.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -20,9 +21,14 @@ use mtg_engine::setup::PresetPermanent;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{burn, creature, keyworded_creature, mountain, one_target};
+use mtg_testkit::commander_cards::legend;
 use mtg_testkit::corpus::card;
-use mtg_testkit::{Driver, Scenario};
+use mtg_testkit::{Driver, Scenario, check_settled};
 use rstest::rstest;
+use std::sync::Arc;
+
+use mtg_core::house::HouseRules;
+use mtg_engine::format::Commander;
 
 /// The log of the driver replays to its state.
 fn replays(scenario: &Scenario, driver: &Driver) {
@@ -203,4 +209,58 @@ fn w17b_combat_damage_by_toughness(
     driver.idle_until(3, Step::End).unwrap();
     assert_eq!(life - driver.state().player(pid(1)).unwrap().life(), lost);
     replays(&scenario, &driver);
+}
+
+/// A table of `seats` where seat 1 controls the Herald and holds ten poison counters (`poison`),
+/// or seat 0's 21-power commander hits seat 1 once (every seat at 1000 life).
+fn herald_holds(seats: usize, poison: bool) -> Driver {
+    let herald = || PresetPermanent::new(card("Herald of Eternal Dawn").unwrap());
+    if poison {
+        let scenario = Scenario::new(seats)
+            .at(3, 0, Step::Main1)
+            .counters(1, CounterKind::Poison, 10)
+            .battlefield(1, [herald()]);
+        let mut driver = Driver::from_scenario(scenario).unwrap();
+        driver.pass().unwrap();
+        return driver;
+    }
+    let house = HouseRules {
+        starting_life: Some(1000),
+        ..HouseRules::default()
+    };
+    let scenario = Scenario::new(seats)
+        .format(Arc::new(Commander))
+        .house_rules(house)
+        .battlefield(1, [herald()])
+        .commanders(0, [legend("Cmd", 0, &[], 21, 21)]);
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.cast("Cmd").unwrap();
+    for _ in 0..seats {
+        driver.pass().unwrap();
+    }
+    let turn = u32::try_from(seats).unwrap() + 1;
+    driver.idle_until(turn, Step::DeclareAttackers).unwrap();
+    driver.attack(&[("Cmd", 1)]).unwrap();
+    driver.idle_until(turn, Step::EndCombat).unwrap();
+    driver
+}
+
+#[rstest]
+#[case::poison_two(2, true)]
+#[case::poison_four(4, true)]
+#[case::commander_damage_two(2, false)]
+#[case::commander_damage_three(3, false)]
+#[case::commander_damage_four(4, false)]
+fn w17b_a_herald_keeps_a_player_with_a_lethal_count_in_and_the_invariants_kept(
+    #[case] seats: usize,
+    #[case] poison: bool,
+) {
+    let driver = herald_holds(seats, poison);
+    let state = driver.state();
+    assert!(alive(&driver, 1), "the Herald keeps its controller in");
+    if !poison {
+        let cmd = state.commanders().next().unwrap();
+        assert_eq!(state.commander_damage(cmd, pid(1)), 21);
+    }
+    assert_eq!(check_settled(state), Ok(()));
 }
