@@ -421,6 +421,7 @@ mod symbol_fuzz;
 mod t15a_popular;
 mod t15a_validate;
 mod t16a_named_abilities;
+mod t19b_reminder_duals;
 mod tail_alone;
 mod tail_fuzz;
 mod tail_pairs;
