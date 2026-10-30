@@ -564,7 +564,7 @@ impl Engine {
                     self.decision = None;
                     return Ok(());
                 }
-                Progress::Put(pending) => self.pending = Some(pending),
+                Progress::Put(pending) => self.pending = Some(*pending),
                 Progress::Events(events) => self.commit(events)?,
                 Progress::Fail(error) => return Err(error),
             }

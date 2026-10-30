@@ -295,10 +295,10 @@ pub(crate) fn next(state: &GameState) -> Option<Progress> {
                 kind: DecisionKind::OrderTriggers(TriggersOptions { triggers }),
             }));
         }
-        return Some(Progress::Put(Pending::trigger(
+        return Some(Progress::Put(Box::new(Pending::trigger(
             player,
             state.pending_triggers[*first].clone(),
-        )));
+        ))));
     }
     None
 }

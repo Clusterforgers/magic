@@ -26,6 +26,7 @@ pub(crate) mod turn_up;
 mod w2f_counter_kinds;
 mod x;
 
+use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
@@ -40,6 +41,7 @@ use crate::decision::{Decision, DecisionKind};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
+use crate::object::{GameObject, ObjectRef};
 use crate::parts::Part;
 use crate::price::Price;
 use crate::resolve::spell_ability;
@@ -270,6 +272,9 @@ pub(crate) struct Pending {
     /// Set when the card is the subject of a special action that pays a cost and does not use the stack.
     pub(crate) special: Option<Special>,
     needs: Option<Needs>,
+    /// The card or permanent announced and the objects picked to pay for it as the questions first found them: a zone
+    /// change after that ends the announcement (`moved_away`).
+    seen: BTreeMap<ObjectId, ObjectRef>,
 }
 
 impl Pending {
@@ -282,6 +287,7 @@ impl Pending {
             granted: None,
             needs: None,
             special: None,
+            seen: BTreeMap::new(),
         }
     }
 
@@ -526,6 +532,27 @@ fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
     }
 }
 
+/// Whether a manual action moved the card being cast, the source of the ability or an object picked to pay for it since
+/// the questions first saw it: it is a new object then (CR 400.7) and the announcement cannot go on.
+fn moved_away(state: &GameState, pending: &mut Pending) -> bool {
+    let subject = match &pending.what {
+        What::Spell(object) | What::Ability(AbilityRef { object, .. }) => Some(*object),
+        What::Trigger(_) | What::Attack(..) => None,
+    };
+    let picked = pending.choices.cost_picks().iter().flatten().copied();
+    for id in subject.into_iter().chain(picked) {
+        let now = state.object(id).map(GameObject::reference);
+        match (pending.seen.get(&id), now) {
+            (Some(first), now) if now != Some(*first) => return true,
+            (None, Some(now)) => {
+                pending.seen.insert(id, now);
+            }
+            _ => {}
+        }
+    }
+    false
+}
+
 /// The next decision of a pending cast or activation, or the events that complete it.
 ///
 /// The steps of [`Phase::ORDER`] run in turn, each passing over what it has no question for. A step that cannot be
@@ -533,6 +560,9 @@ fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
 /// a cast or activation is dropped with no event, and a triggered ability that cannot be given what it needs is
 /// removed (CR 603.3d).
 pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
+    if moved_away(state, pending) {
+        return Next::Drop;
+    }
     let Pending {
         player,
         what,
@@ -541,6 +571,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         granted,
         special,
         needs,
+        seen: _,
     } = pending;
     if let What::Attack(attackers, _) = what {
         return crate::attack_tax::next(state, *player, attackers);
