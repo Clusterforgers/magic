@@ -22,9 +22,9 @@ function Picture({ flight, size, face }: { flight: Flight; size: Size; face: Ref
     'relative col-start-1 row-start-1 grid h-(--card-h) w-(--card-w) place-items-center rounded-md'
   return (
     <span className="grid shadow-lg" style={pictureStyle(size)}>
-      {flight.faceDown ? <CardBack className={`${layer}`} /> : null}
+      {flight.faceDown ? <CardBack className={layer} /> : null}
       {look !== null && (!flight.faceDown || flight.reveal) ? (
-        <span ref={face} className={layer}>
+        <span ref={face} className={`${layer} bg-background`}>
           <CardWidthContext.Provider value={size.width}>
             <CardFace
               object={look}
@@ -63,7 +63,8 @@ function Flier({ flight, travel }: { flight: Flight; travel: Travel }) {
     // An ability's chip has the size its stylesheet gives it; before the animation starts nothing moves it.
     const size = flight.size ?? element.getBoundingClientRect()
     const timing = { duration: flight.duration, delay: flight.delay, easing: EASE_OUT, fill: 'both' } as const
-    const flying = element.animate(keyframesOf(flight, size), timing)
+    const bounds = { width: window.innerWidth, height: window.innerHeight }
+    const flying = element.animate(keyframesOf(flight, size, bounds), timing)
     flying.onfinish = () => travel.done(flight.key)
     const turning =
       face.current === null || !flight.reveal

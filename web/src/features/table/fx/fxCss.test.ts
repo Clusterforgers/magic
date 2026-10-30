@@ -1,4 +1,4 @@
-// Goal: the table-feedback stylesheet starts motion only where motion is welcome (every animation sits in the no-preference block, which holds all the keyframes, while reduced motion gets still outlines), applies only to elements that carry an effect attribute, takes every duration from the variables that mirror FX_MS and stretches it by the dev slow-down, and is part of the app's stylesheet.
+// Goal: the table-feedback stylesheet starts motion only where motion is welcome (every animation sits in the no-preference block, which holds all the keyframes, while reduced motion gets still outlines), applies only to elements that carry an effect attribute, takes every duration from the variables that mirror FX_MS and stretches it by the dev slow-down, repeats the move times of `MOVE_MS`, lays the layer of flying cards outside the layout without a pointer, and is part of the app's stylesheet.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'

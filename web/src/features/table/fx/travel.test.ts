@@ -89,6 +89,10 @@ describe('the plan of a batch', () => {
     },
   )
 
+  it('leaves out a move that would not go anywhere, as when both ends are the same place', () => {
+    expect(plan({ starts: [HAND], ends: [HAND] })).toEqual([])
+  })
+
   it('plans nothing for nothing, and for a move the page shows neither end of', () => {
     expect(plan({ moves: [] })).toEqual([])
     expect(plan({ starts: [null], ends: [null] })).toEqual([])
@@ -190,8 +194,6 @@ describe('the path of a leg', () => {
     const steps = frames(HAND, STACK).map((frame) => pose(frame, SIZE))
     expect(steps[0]?.scale).toBe(1)
     expect(steps.at(-1)?.scale).toBeCloseTo(32 / 140, 6)
-    const scales = steps.map((step) => step.scale)
-    expect(scales).toEqual([...scales].sort((a, b) => b - a))
   })
 
   it('lands exactly on a card it flies to', () => {
@@ -201,11 +203,26 @@ describe('the path of a leg', () => {
     expect(steps.at(-1)?.scale).toBe(1)
   })
 
-  it('is whole halfway between two chips, so it can be read', () => {
+  it('is whole halfway, even from and to a chip, so it can be read', () => {
     const steps = frames(spot(10, 10, 24, 16), STACK).map((frame) => pose(frame, REFERENCE_CARD))
     expect(steps[1]?.scale).toBe(1)
     expect(steps[0]?.scale).toBeGreaterThanOrEqual(MIN_SCALE)
     expect(steps[0]?.scale).toBeLessThan(0.5)
+  })
+
+  it('stays inside the window it flies in, whatever edge its source is at', () => {
+    const bounds = { width: 390, height: 844 }
+    const edge = spot(-10, 600, 40, 56, true)
+    const [flight] = plan({ moves: [move()], starts: [edge], ends: [spot(380, 840, 30, 30)] })
+    if (flight === undefined) throw new Error('no flight')
+    for (const frame of keyframesOf(flight, SIZE, bounds)) {
+      const [, left, top, scale] =
+        /translate\((-?[\d.]+)px, (-?[\d.]+)px\) scale\(([\d.]+)\)/.exec(String(frame.transform)) ?? []
+      expect(Number(left)).toBeGreaterThanOrEqual(0)
+      expect(Number(top)).toBeGreaterThanOrEqual(0)
+      expect(Number(left) + SIZE.width * Number(scale)).toBeLessThanOrEqual(bounds.width)
+      expect(Number(top) + SIZE.height * Number(scale)).toBeLessThanOrEqual(bounds.height)
+    }
   })
 
   it('keeps an ability chip at its own size all the way', () => {

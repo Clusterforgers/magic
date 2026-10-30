@@ -74,7 +74,9 @@ describe('a card that flies', () => {
     const [flight] = fx.travel.store.getState().flights
     const [started] = animate.started
     if (flight?.size == null) throw new Error('no flight')
-    expect(started?.keyframes).toEqual(keyframesOf(flight, flight.size))
+    expect(started?.keyframes).toEqual(
+      keyframesOf(flight, flight.size, { width: window.innerWidth, height: window.innerHeight }),
+    )
     expect(started?.timing).toEqual({ duration: MOVE_MS.travel, delay: 0, easing: EASE_OUT, fill: 'both' })
     expect(started?.element).toBe(fliers()[0])
   })
@@ -106,7 +108,9 @@ describe('a card that flies', () => {
   })
 
   it('draws only a back for a card nobody identifies, and never turns it up', () => {
-    place(page, { 'data-seat': String(FOE) }, { x: 0, y: 0, width: 168, height: 300 })
+    const pod = place(page, { 'data-seat': String(FOE) }, { x: 0, y: 0, width: 168, height: 300 })
+    place(pod, { 'data-zone': 'library' }, { x: 10, y: 80, width: 30, height: 20 }, 'span')
+    place(pod, { 'data-zone': 'hand' }, { x: 60, y: 80, width: 30, height: 20 }, 'span')
     const { launch } = setup()
     launch([
       cast({

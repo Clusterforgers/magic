@@ -91,7 +91,7 @@ export function planFlights({ moves, viewer, starts, ends, batch, slow = 1 }: Pl
   moves.slice(0, MAX_MOVES).forEach((move, index) => {
     const from = starts[index]
     const to = ends[index]
-    if (from == null || to == null) return
+    if (from == null || to == null || (from.box.x === to.box.x && from.box.y === to.box.y)) return
     const delay = Math.max(
       move.order * MOVE_MS.stagger,
       move.object === null ? 0 : (landed.get(move.object) ?? 0),
@@ -142,35 +142,34 @@ function scaleAt(spot: Spot, size: Size): number {
 /** The point of the way after which the picture fades out. */
 const FADE_AT = 0.85
 
+/** `at` kept inside 0 to `limit` for a length of `length`, as far as the length fits. */
+const within = (at: number, length: number, limit: number | undefined): number =>
+  limit === undefined ? at : Math.max(0, Math.min(at, limit - length))
+
 /** The steps of a leg, which the easing runs over: it leaves, is at its fullest halfway and fades as it lands. */
 const STEPS = [0, 0.5, FADE_AT, 1] as const
 
 /**
  * The keyframes of a leg for a picture of `size` (an ability's chip is measured by the caller): a straight path from
- * the middle of the source to the middle of the destination, the picture taking the size of each end and the larger
- * of the two between them unless the leg runs between two chips, where it is whole. It fades in the last part, once
- * it has landed on what the table already shows.
+ * the middle of the source to the middle of the destination, the picture taking the size of each end and whole halfway,
+ * where it can be read. It fades in the last part, once it has landed on what the table already shows. The picture
+ * stays inside `bounds` (the window) when they are given, so a source at the edge of the screen does not draw it half off.
  */
-export function keyframesOf(flight: Flight, size: Size): Keyframe[] {
+export function keyframesOf(flight: Flight, size: Size, bounds?: Size): Keyframe[] {
   const { from, to } = flight
   const chip = flight.size === null
   const a = center(from)
   const b = center(to)
   const start: Pose = { ...a, scale: chip ? 1 : scaleAt(from, size) }
   const end: Pose = { ...b, scale: chip ? 1 : scaleAt(to, size) }
-  const whole = !chip && !from.card && !to.card
-  const middle: Pose = {
-    x: lerp(a.x, b.x, 0.5),
-    y: lerp(a.y, b.y, 0.5),
-    scale: chip || whole ? 1 : (start.scale + end.scale) / 2,
-  }
+  const middle: Pose = { x: lerp(a.x, b.x, 0.5), y: lerp(a.y, b.y, 0.5), scale: 1 }
   const pose = (t: number): Pose =>
     t <= 0.5 ? mix(start, middle, t / 0.5) : mix(middle, end, (t - 0.5) / 0.5)
   return STEPS.map((offset) => {
     const { x, y, scale } = pose(offset)
     // The origin is the top left corner, so the corner goes where the scaled picture's centre minus half of it is.
-    const left = x - (size.width * scale) / 2
-    const top = y - (size.height * scale) / 2
+    const left = within(x - (size.width * scale) / 2, size.width * scale, bounds?.width)
+    const top = within(y - (size.height * scale) / 2, size.height * scale, bounds?.height)
     return {
       offset,
       transform: `translate(${left}px, ${top}px) scale(${scale})`,
