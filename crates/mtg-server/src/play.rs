@@ -213,7 +213,7 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Sends saved events to their seats, then each notice of a change (yields, then stops and Full Control), then
-    /// the next decision to the seat it names, then the result.
+    /// each next decision to the seat it names, then the result.
     ///
     /// A yield that ended is told before the decision that ended it, so the prompt never appears under a
     /// "passing" notice; the stops are told in the same place.
@@ -221,7 +221,7 @@ impl<S: EventStore> GameActor<S> {
         &mut self,
         batches: Vec<(PlayerId, EventBatch)>,
         notices: Vec<(PlayerId, ServerMessage)>,
-        next: Option<Issued>,
+        next: Vec<Issued>,
     ) {
         for (seat, batch) in batches {
             self.seats.send(seat, ServerMessage::Events(batch));
@@ -229,12 +229,12 @@ impl<S: EventStore> GameActor<S> {
         for (seat, notice) in notices {
             self.seats.send(seat, notice);
         }
-        if let Some(Issued {
+        for Issued {
             id,
             decision,
             deadline_ms,
             show_after_ms,
-        }) = next
+        } in next
         {
             let seat = decision.player;
             self.seats.send(

@@ -4,9 +4,6 @@ import type { MulliganStatus } from '@/protocol/generated'
 import { useSeatNamer } from './names'
 import { describeOpening } from './turnText'
 
-/** What this seat reads while the seats before it in turn order decide on their hands. */
-export const WAITING_TO_DECIDE = 'waiting for your turn to decide'
-
 /** How a status groups for the eye: still choosing, done, or going again. */
 function kindOf(status: MulliganStatus): 'choosing' | 'done' | 'again' {
   if (status === 'Deciding') return 'choosing'
@@ -24,8 +21,6 @@ export function OpeningStatus() {
   const stage = usePlay((state) => state.view?.stage)
   const players = usePlay((state) => state.view?.players)
   const me = usePlay((state) => state.seat)
-  // The engine asks the seats one at a time in turn order, so a seat still deciding with nothing to answer waits its turn.
-  const asked = usePlay((state) => state.pending !== null)
   if (stage !== 'Mulligan' || players === undefined) return null
   return (
     <section aria-label="Opening hand decisions" data-slot="opening-status" className="basis-full">
@@ -41,9 +36,7 @@ export function OpeningStatus() {
             >
               <span className="font-medium">{player.seat === me ? 'You' : name(player.seat)}:</span>{' '}
               <span className={cn(kind === 'choosing' ? 'text-foreground' : 'text-muted-foreground')}>
-                {player.seat === me && player.mulligan === 'Deciding' && !asked
-                  ? WAITING_TO_DECIDE
-                  : describeOpening(player.mulligan, player.mulligans)}
+                {describeOpening(player.mulligan, player.mulligans)}
               </span>
             </li>
           )

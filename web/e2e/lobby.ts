@@ -39,6 +39,7 @@ export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]
   await first.page.goto('/new')
   await first.page.getByRole('radio', { name: /^Normal/ }).check()
   await expect(first.page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
+  await first.page.getByLabel('Seats').fill(String(plans.length))
   // The earlier way of making a game: every seat gets a name, a deck and a link of its own, and all are held.
   await first.page.getByText('Advanced', { exact: true }).click()
   await first.page.getByRole('checkbox', { name: 'Give every seat its own link' }).check()

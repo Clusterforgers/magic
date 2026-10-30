@@ -177,13 +177,13 @@ describe('waitingOn', () => {
     const state = quiet((view) => {
       view.stage = 'Mulligan'
       view.priority = null
-      const statuses: MulliganStatus[] = ['Deciding', 'Deciding', { Bottoming: 1 }, 'Kept']
+      const statuses: MulliganStatus[] = ['Deciding', 'Deciding', { Bottoming: 1 }, 'Scrying']
       view.players.forEach((player, index) => {
         player.mulligan = statuses[index] ?? 'Kept'
       })
       must(view.players[1]).lost = 'Conceded'
     })
-    expect(waitingOn(state)).toEqual({ kind: 'others', seats: [2] })
+    expect(waitingOn(state)).toEqual({ kind: 'others', seats: [2, 3] })
   })
 
   it('has nothing to wait for once every seat has kept', () => {

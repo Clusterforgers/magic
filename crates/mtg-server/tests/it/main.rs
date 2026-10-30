@@ -23,6 +23,7 @@ mod manual_play;
 mod many_seats;
 mod net;
 mod open_seats;
+mod opening_together;
 mod pace_leak;
 mod pay_leak;
 mod pg_account_settings;

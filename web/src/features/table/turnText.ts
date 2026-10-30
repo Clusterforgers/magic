@@ -170,7 +170,7 @@ export function waitingOn(state: PlayState): Waiting {
   if (view.stage === 'Mulligan') {
     const deciding = view.players.filter(
       (player) =>
-        player.lost === null && (player.mulligan === 'Deciding' || typeof player.mulligan !== 'string'),
+        player.lost === null && (player.mulligan === 'Deciding' || player.mulligan === 'Scrying' || typeof player.mulligan !== 'string'),
     )
     return others(deciding.map((player) => player.seat).filter((who) => who !== seat))
   }

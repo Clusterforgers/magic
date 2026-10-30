@@ -8,11 +8,10 @@ import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import type { TableSetup } from '@/test-utils/tableHarness'
 import { KINDS } from '@/test-utils/decisions'
-import { WAITING_TO_DECIDE } from './OpeningStatus'
 import { describeOpening } from './turnText'
 
-/** This seat still deciding while an earlier seat is asked: the engine asks one seat at a time. */
-const YOU_WAIT = `You: ${WAITING_TO_DECIDE}`
+/** This seat still deciding: every seat is asked at once, so it reads like the others. */
+const YOU_WAIT = 'You: deciding'
 
 type Each = (seat: number) => [MulliganStatus, number]
 
@@ -113,13 +112,11 @@ describe('the opening hands list', () => {
     expect(entries()).toEqual(['You: keeping', 'Bo: taking a mulligan', 'Cy: keeping'])
   })
 
-  it('says "deciding" for this seat only while it is asked, and that it waits its turn before', () => {
+  it('says "deciding" for this seat whether or not its prompt has arrived, since every seat is asked at once', () => {
     const h = opening(3, () => ['Deciding', 0])
     expect(entries()[0]).toBe(YOU_WAIT)
     h.update(() => ({ pending: { id: 1, decision: { player: 0, kind: KINDS.Mulligan } } }))
-    expect(entries()[0]).toBe('You: deciding')
-    h.update(() => ({ pending: null }))
-    expect(entries()[0]).toBe(YOU_WAIT)
+    expect(entries()).toEqual([YOU_WAIT, 'Bo: deciding', 'Cy: deciding'])
   })
 
   it('uses the names the lookup gives, and "Seat N" for a seat it does not know', () => {

@@ -111,12 +111,8 @@ fn closer_to_the_share(
     distance(candidate) < distance(first)
 }
 
-/// The scry a seat that kept a hand after a mulligan owes: whether the top card of its library goes to the bottom.
-pub(crate) fn scry_decision(state: &GameState) -> Option<Decision> {
-    let player = state
-        .turn_order_from(state.first_player())
-        .into_iter()
-        .find(|seat| status(state, *seat) == Some(MulliganStatus::Scrying))?;
+/// The scry `player`, who kept a hand after a mulligan, owes: whether the top card of its library goes to the bottom.
+pub(crate) fn scry_decision(state: &GameState, player: PlayerId) -> Option<Decision> {
     let top = *state.zone(Zone::Library(player)).last()?;
     Some(Decision {
         player,
@@ -150,6 +146,50 @@ pub(crate) fn scry_answer(
     })]))
 }
 
+/// The question the opening asks `player` now, if any: the cards to bottom, the scry, or keep or mulligan.
+pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decision> {
+    let kind = match status(state, player)? {
+        MulliganStatus::Bottoming(count) => DecisionKind::BottomCards(BottomOptions {
+            hand: state.zone(Zone::Hand(player)).to_vec(),
+            count,
+        }),
+        MulliganStatus::Scrying => return scry_decision(state, player),
+        MulliganStatus::Deciding => {
+            let taken = state.player(player).map_or(0, Player::mulligans);
+            DecisionKind::Mulligan(state.ruleset().mulligan_options(
+                player,
+                state.zone(Zone::Hand(player)).to_vec(),
+                taken,
+            ))
+        }
+        MulliganStatus::NeedsHand | MulliganStatus::Mulliganing | MulliganStatus::Kept => {
+            return None;
+        }
+    };
+    Some(Decision { player, kind })
+}
+
+/// Every question the opening asks at once, one per seat (CR 103.5: each seat decides about its own hand only, so the
+/// answers may come in any order). The first is the engine's own decision: bottoming, then a scry, then keep or
+/// mulligan, each in turn order from the first player; the other seats follow in turn order.
+pub(crate) fn open_decisions(state: &GameState) -> Vec<Decision> {
+    let mut asked: Vec<Decision> = state
+        .turn_order_from(state.first_player())
+        .into_iter()
+        .filter_map(|player| seat_decision(state, player))
+        .collect();
+    let rank = |decision: &Decision| match decision.kind {
+        DecisionKind::BottomCards(_) => 0,
+        DecisionKind::ChooseCards(_) => 1,
+        _ => 2,
+    };
+    if let Some(first) = (0..asked.len()).min_by_key(|at| rank(&asked[*at])) {
+        let primary = asked.remove(first);
+        asked.insert(0, primary);
+    }
+    asked
+}
+
 /// The next step of the opening procedure: deal, ask, shuffle back, or begin turn one.
 pub(crate) fn next(state: &GameState) -> Progress {
     let order = state.turn_order_from(state.first_player());
@@ -165,32 +205,8 @@ pub(crate) fn next(state: &GameState) -> Progress {
     if !needs_hand.is_empty() {
         return Progress::Events(deal(state, &needs_hand));
     }
-    if let Some(player) = with_status(|s| matches!(s, MulliganStatus::Bottoming(_))).first() {
-        let count = match status(state, *player) {
-            Some(MulliganStatus::Bottoming(n)) => n,
-            _ => 0,
-        };
-        return Progress::Decide(Decision {
-            player: *player,
-            kind: DecisionKind::BottomCards(BottomOptions {
-                hand: state.zone(Zone::Hand(*player)).to_vec(),
-                count,
-            }),
-        });
-    }
-    if let Some(decision) = scry_decision(state) {
+    if let Some(decision) = open_decisions(state).into_iter().next() {
         return Progress::Decide(decision);
-    }
-    if let Some(player) = with_status(|s| s == MulliganStatus::Deciding).first() {
-        let taken = state.player(*player).map_or(0, Player::mulligans);
-        return Progress::Decide(Decision {
-            player: *player,
-            kind: DecisionKind::Mulligan(state.ruleset().mulligan_options(
-                *player,
-                state.zone(Zone::Hand(*player)).to_vec(),
-                taken,
-            )),
-        });
     }
     let takers = with_status(|s| s == MulliganStatus::Mulliganing);
     if !takers.is_empty() {

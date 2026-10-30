@@ -80,3 +80,40 @@ test('the lobby shows who has pressed Ready as it happens, and Ready can be take
     await Promise.all(players.map(({ context }) => context.close()))
   }
 })
+
+test('four seats are each asked to keep or mulligan within a second of the start', async ({ browser }) => {
+  const players = await createAndJoin(browser, [
+    { name: 'Ada', deck: 'mono-green' },
+    { name: 'Bo', deck: 'mono-red' },
+    { name: 'Cy', deck: 'mono-green' },
+    { name: 'Dee', deck: 'mono-red' },
+  ])
+  const [ada] = players
+  const last = players.at(-1)
+  if (ada === undefined || last === undefined) throw new Error('four players expected')
+  try {
+    for (const { page } of players.slice(0, -1)) {
+      await page.getByRole('button', { name: 'Ready', exact: true }).click()
+      await expect(page.getByRole('button', { name: 'Not ready', exact: true })).toBeVisible()
+    }
+    const start = Date.now()
+    await last.page.getByRole('button', { name: 'Ready', exact: true }).click()
+    // Every seat is asked at once: no seat waits for the answers or the clocks of the others.
+    const after = await Promise.all(
+      players.map(async ({ page }) => {
+        await expect(page.getByRole('button', { name: 'Keep', exact: true })).toBeVisible({ timeout: 5_000 })
+        return Date.now() - start
+      }),
+    )
+    for (const ms of after) expect(ms).toBeLessThan(1_000)
+    // One seat keeps; the others keep their own prompt and read that seat as keeping.
+    await ada.page.getByRole('button', { name: 'Keep', exact: true }).click()
+    for (const { page } of players.slice(1)) {
+      await expect(page.locator('[data-seat-status="0"]')).toContainText('Ada: keeping')
+      await expect(page.getByRole('button', { name: 'Keep', exact: true })).toBeVisible()
+    }
+    for (const player of players) expect(player.errors, `${player.name}'s page errors`).toEqual([])
+  } finally {
+    await Promise.all(players.map(({ context }) => context.close()))
+  }
+})

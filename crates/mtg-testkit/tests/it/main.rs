@@ -99,6 +99,7 @@ mod combat_keywords_fuzz;
 mod combat_preview;
 mod combination_mana;
 mod commander;
+mod concurrent_opening;
 mod commander_casts;
 mod commander_draw;
 mod commander_fuzz;

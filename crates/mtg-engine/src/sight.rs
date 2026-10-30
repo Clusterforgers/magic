@@ -239,14 +239,11 @@ pub(crate) fn show(state: &mut GameState, to: Option<PlayerId>, cards: &[ObjectI
 /// the same question until it is answered, so it holds for a state rebuilt from the log as for the live one.
 pub fn offered_cards(state: &GameState) -> Option<(PlayerId, Vec<ObjectId>)> {
     if state.stage() == Stage::Mulligan {
-        // The seat that scries after keeping its hand is asked about the top card of its library.
-        return match crate::mulligan::scry_decision(state)? {
-            Decision {
-                player,
-                kind: DecisionKind::ChooseCards(options),
-            } => Some((player, options.from)),
-            _ => None,
-        };
+        // The first seat that scries after keeping its hand is asked about the top card of its library.
+        return state
+            .turn_order_from(state.first_player())
+            .into_iter()
+            .find_map(|seat| opening_scry(state, seat));
     }
     state.resolving()?;
     match step(state) {
@@ -255,6 +252,28 @@ pub fn offered_cards(state: &GameState) -> Option<(PlayerId, Vec<ObjectId>)> {
             DecisionKind::OrderCards(options) => Some((player, options.cards)),
             _ => None,
         },
+        _ => None,
+    }
+}
+
+/// The cards `viewer` is asked to choose among or to put in an order now ([`offered_cards`]); in the opening every seat
+/// that scries after keeping its hand is asked at once, each about the top card of its own library.
+pub fn offered_to(state: &GameState, viewer: PlayerId) -> Vec<ObjectId> {
+    if state.stage() == Stage::Mulligan {
+        return opening_scry(state, viewer).map_or_else(Vec::new, |(_, cards)| cards);
+    }
+    offered_cards(state)
+        .filter(|(seat, _)| *seat == viewer)
+        .map_or_else(Vec::new, |(_, cards)| cards)
+}
+
+/// The card `seat` scries in the opening, if it is scrying.
+fn opening_scry(state: &GameState, seat: PlayerId) -> Option<(PlayerId, Vec<ObjectId>)> {
+    match crate::mulligan::seat_decision(state, seat)? {
+        Decision {
+            player,
+            kind: DecisionKind::ChooseCards(options),
+        } => Some((player, options.from)),
         _ => None,
     }
 }
