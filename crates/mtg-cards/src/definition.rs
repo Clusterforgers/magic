@@ -202,6 +202,15 @@ impl CardDefinition {
         self.faces.get(usize::from(index)).unwrap_or(self)
     }
 
+    /// Whether the card is a Room (CR 709.5): a split card whose halves are doors a permanent locks and unlocks.
+    pub fn is_room(&self) -> bool {
+        self.layout == Layout::Split
+            && self
+                .faces
+                .iter()
+                .any(|face| face.subtypes.iter().any(|subtype| subtype.0 == "Room"))
+    }
+
     /// Whether the card has more than one face.
     pub fn is_multi_face(&self) -> bool {
         !self.faces.is_empty()

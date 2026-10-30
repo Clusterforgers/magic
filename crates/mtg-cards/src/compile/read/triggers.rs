@@ -597,6 +597,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(first_time(r, TriggerPattern::Surveilled { who: by }))
     } else if verb == if third { "creates" } else { "create" } {
         tokens_created(r, &by)
+    } else if verb == "fully" || verb == if third { "unlocks" } else { "unlock" } {
+        super::dk1c5_rooms::dk1c5_door_event(r, verb, by, third)
     } else if verb == if third { "ventures" } else { "venture" }
         || verb == if third { "completes" } else { "complete" }
     {
@@ -1462,6 +1464,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Ventured { .. } | TriggerPattern::CompletedDungeon { .. } => {
             w11d_dungeon_text(pattern)
         }
+        TriggerPattern::DoorUnlocked { .. } => super::dk1c5_rooms::dk1c5_door_text(pattern),
         TriggerPattern::DayNightChanges { to } => Some(super::day_night::changes_text(*to)),
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))

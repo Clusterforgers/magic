@@ -1463,6 +1463,7 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::LifeGained { who }
             | TriggerPattern::LifeLost { who }
+            | TriggerPattern::DoorUnlocked { who, .. }
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
@@ -1577,6 +1578,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
                 | TriggerPattern::CompletedDungeon { .. }
+                | TriggerPattern::DoorUnlocked { .. }
                 | TriggerPattern::DayNightChanges { .. }
                 | TriggerPattern::Proliferated { .. }
                 | TriggerPattern::CoinFlipWon { .. }
@@ -2292,6 +2294,7 @@ impl Walker<'_> {
             | Effect::BecomeMonarch { who }
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
+            | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
             | Effect::Exploit { who } => {

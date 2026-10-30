@@ -137,6 +137,7 @@ mod untap_rules;
 mod vote;
 mod w11a_joins;
 mod w11b_phase;
+mod dk1c5_rooms;
 mod w11c_clash;
 mod w13b_mill_rad;
 mod w14a_limits;

@@ -32,6 +32,7 @@ pub mod trigger;
 pub mod validate;
 pub mod value;
 pub mod vanilla;
+pub mod dk1c5_rooms;
 pub mod w11d_dungeon;
 
 pub use assemble::{Assembled, assemble};

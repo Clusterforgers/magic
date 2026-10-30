@@ -392,6 +392,7 @@ mod w11b_phase;
 mod w11c_clash;
 mod w11c_crime;
 mod w11d_venture;
+mod dk1c5_rooms;
 mod w12a_writers;
 mod w13a_writers;
 mod w13b_mill_rad;

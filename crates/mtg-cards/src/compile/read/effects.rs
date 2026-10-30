@@ -475,6 +475,7 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         },
         "proliferate" => Effect::Proliferate { who },
         "venture" => w11d_venture(r, who)?,
+        "unlock" => super::dk1c5_rooms::dk1c5_unlock(r, who)?,
         "time" if r.words("travel") => Effect::TimeTravel { who },
         "learn" => Effect::Learn { who },
         "planeswalk" => Effect::Planechase {

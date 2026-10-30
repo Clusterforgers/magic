@@ -10,11 +10,16 @@ pub(super) fn joined_text(patterns: &[TriggerPattern]) -> Option<String> {
     let [first, second] = patterns else {
         return None;
     };
-    // Only a batch is joined this way; the lists of events of one subject, and a card and another creature, are worded
-    // by `any_of_listed`.
+    // Only a batch and an unlock (Eerie) are joined this way; the lists of events of one subject, and a card and another
+    // creature, are worded by `any_of_listed`.
     patterns
         .iter()
-        .any(|pattern| matches!(pattern, TriggerPattern::Batch(_)))
+        .any(|pattern| {
+            matches!(
+                pattern,
+                TriggerPattern::Batch(_) | TriggerPattern::DoorUnlocked { .. }
+            )
+        })
         .then_some(())?;
     let (first, second) = (pattern_text(first)?, pattern_text(second)?);
     let opens = |text: &str| text.starts_with("When ") || text.starts_with("Whenever ");
