@@ -281,6 +281,7 @@ const RUNS: &[&str] = &[
     "Mod.RemoveSupertype",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
+    "Mod.SetLandTypes",
     "Mod.AddAllCreatureTypes",
     "Mod.SetColors",
     "Mod.RemoveKeyword",
@@ -628,6 +629,7 @@ mod tests {
     #[case::evasion_by_power("Keyword.Skulk", true)]
     #[case::evasion_by_shadow("Keyword.Shadow", true)]
     #[case::all_creature_types("Mod.AddAllCreatureTypes", true)]
+    #[case::land_types("Mod.SetLandTypes", true)]
     #[case::replacement_effects("Ability.Replacement", true)]
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]

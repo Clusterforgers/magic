@@ -115,6 +115,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`
   }
+  if ('SetLandTypes' in modification) return `${becomes} ${joinWords(modification.SetLandTypes)}`
   if ('SetColors' in modification) {
     const colors = colorsInSet(modification.SetColors).map((color) => color.toLowerCase())
     return `${becomes} ${colors.length === 0 ? 'colorless' : joinWords(colors)}`

@@ -11,6 +11,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::Characteristics;
+use crate::land_types::is_land_type;
 use crate::object::{GameObject, ObjectRef};
 use crate::state::GameState;
 use crate::turn::Step;
@@ -95,6 +96,9 @@ pub enum Modification {
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
+    /// Makes these the land types (layer 4): the land types and the abilities it had are gone and it has the mana ability of
+    /// each basic land type among them (CR 305.7); the other subtypes stay.
+    SetLandTypes(Vec<Subtype>),
     /// Makes the object every creature type (layer 4): changeling (CR 702.73).
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
@@ -194,6 +198,7 @@ impl Modification {
             | Modification::SetTypes(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => Layer::Type,
             Modification::SetColors(_) => Layer::Color,
             Modification::AddKeyword(_)
@@ -245,6 +250,17 @@ impl Modification {
                         chars.subtypes.push(subtype.clone());
                     }
                 }
+            }
+            Modification::SetLandTypes(types) => {
+                chars.subtypes.retain(|subtype| !is_land_type(subtype));
+                chars.land_types_set = true;
+                for subtype in types {
+                    if !chars.subtypes.contains(subtype) {
+                        chars.subtypes.push(subtype.clone());
+                    }
+                }
+                // The intrinsic mana abilities of the new types come back once the layer is through (`land_types::sync`).
+                chars.abilities.clear();
             }
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
             Modification::SetColors(colors) => chars.colors = *colors,

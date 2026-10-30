@@ -34,6 +34,7 @@ use crate::ability_reader::{
 use crate::characteristics::{Characteristics, base};
 use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
 use crate::events::Event;
+use crate::land_types;
 use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::resolve::{Scope, lower, zone_kind};
 use crate::state::GameState;
@@ -253,7 +254,8 @@ impl Held {
                         && !matches!(&*held.body, Ability::Keyword(named) if named == keyword)
                 });
             }
-            Modification::LoseAbilities => {
+            // The land has no ability of its rules text any more (CR 305.7); a layer 6 effect can still give one.
+            Modification::LoseAbilities | Modification::SetLandTypes(_) => {
                 self.keywords.clear();
                 self.abilities.clear();
             }
@@ -522,6 +524,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::RemoveSupertype(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
+        | Wanted::SetLandTypes(_)
         | Wanted::AddAllCreatureTypes => Layer::Type,
         Wanted::SetColors(_) => Layer::Color,
         Wanted::AddKeyword(_)
@@ -735,6 +738,26 @@ impl<'a> Pass<'a> {
                     }
                 }
                 Self::order(&mut waiting);
+            }
+        }
+        if layer == Some(Layer::Type) {
+            self.sync_land_mana();
+        }
+    }
+
+    /// The mana abilities of the basic land types each land has once the type layer is through (CR 305.6, 305.7): they
+    /// come before the abilities of the layers that follow, which can take them away.
+    fn sync_land_mana(&mut self) {
+        let state = self.state;
+        for (id, held) in &mut self.held {
+            if held.applied.is_empty() {
+                continue;
+            }
+            if let Some(object) = state
+                .object(*id)
+                .filter(|object| object.zone() == Zone::Battlefield)
+            {
+                land_types::sync(&mut held.chars, object.card());
             }
         }
     }
@@ -1343,6 +1366,8 @@ mod defining;
 mod dependencies;
 #[cfg(test)]
 mod keyword_counters;
+#[cfg(test)]
+mod lands;
 #[cfg(test)]
 mod outside;
 #[cfg(test)]

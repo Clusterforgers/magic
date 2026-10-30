@@ -1287,6 +1287,7 @@ impl<'a> Walker<'a> {
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddProtectionFromChosenColor

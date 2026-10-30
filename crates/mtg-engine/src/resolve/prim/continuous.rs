@@ -153,6 +153,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         }
         Wanted::AddSubtype(subtype) => Modification::AddSubtype(subtype.clone()),
         Wanted::SetCreatureTypes(types) => Modification::SetCreatureTypes(types.clone()),
+        Wanted::SetLandTypes(types) => Modification::SetLandTypes(types.clone()),
         Wanted::AddAllCreatureTypes => Modification::AddAllCreatureTypes,
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),
