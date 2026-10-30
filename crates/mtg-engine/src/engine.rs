@@ -6,7 +6,7 @@ use crate::announce::{Answered, Next, Pending, Special, What, announce};
 use crate::answers::{Outcome, handle};
 use crate::characteristics::controller_of_object;
 use crate::choose::Choice;
-use crate::decision::{Answer, Decision};
+use crate::decision::{Answer, Decision, Unplayable};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::error::{EngineError, PreviewError};
 use crate::events::Event;
@@ -61,7 +61,7 @@ fn applies(state: &GameState, events: &[Event]) -> bool {
 }
 
 /// A running game: state, the event log that produced it, and the decision it is waiting on.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Engine {
     setup: GameSetup,
     state: GameState,
@@ -596,21 +596,31 @@ impl Engine {
         Err(EngineError::Stalled(MAX_INTERNAL_STEPS))
     }
 
-    /// Rewinds the announcement under way without a trace. A cast the resolution of another spell or ability began that
-    /// cannot go on tells it so (CR 608.2g).
+    /// Rewinds the announcement under way: nothing it chose is paid or kept. A cast the resolution of another spell or
+    /// ability began that cannot go on tells it so (CR 608.2g); one the player began at priority logs why it was taken
+    /// back, so the player is told.
     fn drop_pending(&mut self) -> Result<(), EngineError> {
-        if let Some(Pending {
+        let Some(pending) = self.pending.take() else {
+            return Ok(());
+        };
+        let player = pending.player;
+        let object = match (&pending.what, pending.granted) {
+            (_, Some(_)) => {
+                return self.commit(vec![Event::ChoiceMade {
+                    player,
+                    choice: Choice::YesNo(false),
+                }]);
+            }
+            (What::Spell(card), None) => *card,
+            (What::Ability(ability), None) => ability.object,
+            (What::Trigger(_) | What::Attack(..), None) => return Ok(()),
+        };
+        let reason = pending.done.rewound.unwrap_or(Unplayable::Restricted);
+        self.commit(vec![Event::AnnouncementRewound {
             player,
-            granted: Some(_),
-            ..
-        }) = self.pending.take()
-        {
-            self.commit(vec![Event::ChoiceMade {
-                player,
-                choice: Choice::YesNo(false),
-            }])?;
-        }
-        Ok(())
+            object,
+            reason,
+        }])
     }
 
     /// Whether the resolution step under way has taken answers and a manual action came since it began: read from the

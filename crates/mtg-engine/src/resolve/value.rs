@@ -111,8 +111,9 @@ pub struct Scope<'a> {
 pub(crate) struct CastTargets<'a> {
     /// The choices announced.
     pub(crate) choices: &'a Choices,
-    /// Nothing is announced yet: the cost is judged for the priority decision, where a target is assumed to be found.
-    pub(crate) judging: bool,
+    /// The targets are not announced yet: the cost is judged as if the spell found a target among the legal targets of
+    /// these specifications (the priority decision, the steps before the targets).
+    pub(crate) judging: Option<&'a [TargetSpec]>,
 }
 
 /// What is known of an object: the object itself if it is still the one that was named, else how it was.
@@ -378,6 +379,30 @@ impl<'a> Scope<'a> {
         Ok(most)
     }
 
+    /// Whether the spell `spell` being cast, its targets not announced yet, could target an object `inner` selects: one
+    /// of the legal targets of `specs` other than the spell itself. A spell with no target specification finds none.
+    fn judged_target(
+        &self,
+        inner: &Selector,
+        spell: ObjectRef,
+        specs: &[TargetSpec],
+    ) -> Result<bool, ResolveError> {
+        let Some((_, caster)) = self.casting else {
+            return Ok(false);
+        };
+        for spec in specs {
+            for target in crate::choose::legal_targets(self.state, spec, spell.id, caster) {
+                if let Target::Object(object) = target
+                    && object.id != spell.id
+                    && self.selects(inner, object)?
+                {
+                    return Ok(true);
+                }
+            }
+        }
+        Ok(false)
+    }
+
     /// Whether the spell `seen` being cast, or on the stack, has a target an object `inner` selects: a spell being
     /// cast reads what it announced, and before anything is announced a target is found where some object in play
     /// matches; a spell or ability on the stack reads its own targets.
@@ -392,24 +417,10 @@ impl<'a> Scope<'a> {
         }
         let casting = self.casting.is_some_and(|(cast, _)| cast == reference.id);
         let chosen: Vec<ObjectRef> = match self.cast_targets {
-            Some(CastTargets { judging: true, .. }) if casting => {
-                let mut found = false;
-                for id in self
-                    .state
-                    .zone(Zone::Battlefield)
-                    .iter()
-                    .chain(self.state.zone(Zone::Stack).iter())
-                {
-                    let Some(object) = self.state.object(*id) else {
-                        continue;
-                    };
-                    if *id != reference.id && self.selects(inner, object.reference())? {
-                        found = true;
-                        break;
-                    }
-                }
-                return Ok(found);
-            }
+            Some(CastTargets {
+                judging: Some(specs),
+                ..
+            }) if casting => return self.judged_target(inner, reference, specs),
             Some(CastTargets { choices, .. }) if casting => choices.targeted_objects(),
             _ => seen
                 .card

@@ -118,13 +118,14 @@ impl Seen {
 
 /// Plays the owner's deck in the seat `seed % seats` against `others(seed, seat)` for every other seat.
 fn play_campaign(
+    games: u64,
     seats: usize,
     options: PlayOptions,
     others: impl Fn(u64, usize) -> &'static FixtureDeck + Sync,
 ) {
     let owner = decks().0;
     let seen = Mutex::new(Seen::default());
-    for_each_seed(0..games(), |seed| {
+    for_each_seed(0..games, |seed| {
         let at = usize::try_from(seed).unwrap() % seats;
         let table: Vec<&FixtureDeck> = (0..seats)
             .map(|seat| {
@@ -146,7 +147,7 @@ fn play_campaign(
         seen.casts.values().sum::<u64>() > seen.games,
         "the games cast the deck's cards: {seen:?}"
     );
-    if games() >= 25 {
+    if games >= 25 {
         assert!(seen.commander_cast > 0, "Y'shtola was never cast: {seen:?}");
     }
 }
@@ -171,7 +172,7 @@ fn decks() -> (&'static FixtureDeck, &'static [FixtureDeck]) {
 #[case(3)]
 #[case(4)]
 fn the_owners_deck_plays_against_precon_decks_under_every_invariant(#[case] seats: usize) {
-    play_campaign(seats, PlayOptions::default(), |seed, seat| {
+    play_campaign(games(), seats, PlayOptions::default(), |seed, seat| {
         let precons = decks().1;
         &precons[(usize::try_from(seed).unwrap() + seat) % precons.len()]
     });
@@ -182,7 +183,7 @@ fn the_owners_deck_plays_against_precon_decks_under_every_invariant(#[case] seat
 #[case(3)]
 #[case(4)]
 fn the_owners_deck_plays_against_itself_under_every_invariant(#[case] seats: usize) {
-    play_campaign(seats, PlayOptions::default(), |_, _| decks().0);
+    play_campaign(games(), seats, PlayOptions::default(), |_, _| decks().0);
 }
 
 #[rstest]
@@ -201,8 +202,28 @@ fn the_owners_deck_plays_under_the_servers_windows_with_payments_and_manual_acti
         manual_anytime_every: 25,
         ..PlayOptions::default()
     };
-    play_campaign(seats, options, |seed, seat| {
+    play_campaign(games(), seats, options, |seed, seat| {
         let precons = decks().1;
         &precons[(usize::try_from(seed).unwrap() + seat) % precons.len()]
+    });
+}
+
+#[rstest]
+fn every_play_a_priority_window_offers_can_be_taken_to_the_stack(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(false, true)] mirror: bool,
+) {
+    // Each offered cast, activation and special action is tried on a copy of the game; a failure names the seed.
+    let options = PlayOptions {
+        check_offers: 3,
+        ..PlayOptions::default()
+    };
+    play_campaign(fuzz_games(50), seats, options, |seed, seat| {
+        let precons = decks().1;
+        if mirror {
+            decks().0
+        } else {
+            &precons[(usize::try_from(seed).unwrap() + seat) % precons.len()]
+        }
     });
 }

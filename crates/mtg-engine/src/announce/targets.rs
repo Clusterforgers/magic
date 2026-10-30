@@ -6,9 +6,9 @@
 use mtg_cards::refs::TargetSpec;
 use mtg_cards::value::CastWay;
 
-use super::{Ctx, Next, What, Work};
+use super::{Ctx, Next, What, Work, total};
 use crate::attach;
-use crate::choose::{Choices, announced_specs, asks, options_for, without_earlier};
+use crate::choose::{Choices, Target, announced_specs, asks, options_for, without_earlier};
 use crate::decision::DecisionKind;
 
 /// The target specifications announced, in the order they are asked: an Aura spell's one, from its enchant ability
@@ -40,6 +40,33 @@ pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     })
 }
 
+/// Leaves out of `legal`, the targets offered for the next of a spell's `specs` target specifications, those with
+/// which its cost can no longer be paid: a reduction that reads the targets ("spells that target a creature cost {2}
+/// less") is counted on before the targets are chosen, so only the targets that bring it are offered. Nothing is left
+/// out while the cost can be paid whatever is chosen.
+fn payable_targets(ctx: &Ctx<'_>, choices: &Choices, specs: usize, legal: &mut Vec<Target>) {
+    if !matches!(ctx.what, What::Spell(_)) || !ctx.state.possible.costs {
+        return;
+    }
+    let payable = |targets: Vec<Vec<Target>>| {
+        let trial = Choices {
+            targets,
+            ..choices.clone()
+        };
+        total::of(ctx, &trial).is_some_and(|total| total::affordable(ctx, &total))
+    };
+    let mut none = choices.targets.clone();
+    none.resize(specs, Vec::new());
+    if payable(none) {
+        return;
+    }
+    legal.retain(|target| {
+        let mut chosen = choices.targets.clone();
+        chosen.push(vec![*target]);
+        payable(chosen)
+    });
+}
+
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let specs = specs(ctx, work.choices);
     while work.choices.targets.len() < specs.len() {
@@ -60,6 +87,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         };
         // "Another target" cannot name what an earlier specification took: the minimum may no longer be met.
         without_earlier(&specs[index], &work.choices.targets, &mut options.legal);
+        payable_targets(ctx, work.choices, specs.len(), &mut options.legal);
         let left = u32::try_from(options.legal.len()).unwrap_or(u32::MAX);
         if left < options.min {
             return Some(Next::Drop);

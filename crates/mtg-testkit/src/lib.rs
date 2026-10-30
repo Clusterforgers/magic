@@ -89,6 +89,7 @@ pub mod move_cards;
 pub mod multiply_cards;
 pub mod mutate_cards;
 pub mod nth_cards;
+pub mod offers;
 pub mod pair_cards;
 pub mod part_cards;
 pub mod party_cards;

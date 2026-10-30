@@ -11,6 +11,7 @@ use crate::combat::{AttackTarget, DamageForm, DamageTarget};
 use crate::copies::{AbilityCopy, BecameCopy, CardCopy, SpellCopy};
 use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
+use crate::decision::Unplayable;
 use crate::effects::ContinuousEffect;
 use crate::library::{CardsFound, LibraryLooked, Revealed, Scried, Surveilled};
 use crate::manual::{ManualAction, ManualRoll};
@@ -151,6 +152,16 @@ pub enum Event {
         player: PlayerId,
         /// What they could not do.
         kind: NothingToDo,
+    },
+    /// A cast or activation a player began was taken back before it reached the stack: a step of its announcement could
+    /// not be met. Nothing else changed.
+    AnnouncementRewound {
+        /// Who began it.
+        player: PlayerId,
+        /// The card or permanent it was of.
+        object: ObjectId,
+        /// Why it could not go on.
+        reason: Unplayable,
     },
     /// A priority round started with this player.
     PriorityGranted {
@@ -1017,6 +1028,7 @@ impl Event {
             | Event::PhasesAdded { .. }
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
+            | Event::AnnouncementRewound { .. }
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }

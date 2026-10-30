@@ -181,7 +181,7 @@ impl Supply {
 }
 
 /// Every action a priority decision offers, passing first; the bot picks one of them at random.
-fn priority_actions(options: &PriorityOptions) -> Vec<PriorityAction> {
+pub(crate) fn priority_actions(options: &PriorityOptions) -> Vec<PriorityAction> {
     let mut actions = vec![PriorityAction::Pass];
     actions.extend(
         options
