@@ -24,6 +24,9 @@ use mtg_testkit::{
 use rstest::rstest;
 use serde_json::Value;
 
+/// Keys whose bare numbers count the cards of a pile, while a list under the same key names them.
+const COUNT_KEYS: &[&str] = &["top", "bottom", "graveyard"];
+
 /// Keys whose numbers are counters or seat numbers, never object ids.
 const SCALAR_KEYS: &[&str] = &[
     "PayLife",
@@ -103,13 +106,15 @@ const SNAPSHOT_EVERY: usize = 20;
 
 /// Games per table size in the prevention campaign.
 const PREVENTION_GAMES: u64 = 1;
-
+/// The objects `viewer` may not identify, by id and name; a commander is public wherever it is, and a card the viewer looked at
+/// at the top of its library is known to it.
 /// The objects `viewer` may not identify, by id and name; a commander is public wherever it is.
 pub(crate) fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectId, String> {
     let tops: Vec<ObjectId> = revealed_tops(state).into_values().collect();
     state
         .objects()
         .filter(|o| is_hidden(o.zone(), viewer) && !tops.contains(&o.id()))
+        .filter(|o| !state.is_shown_to(viewer, o.id()))
         .filter(|o| !state.is_commander(o.id()))
         .map(|o| (o.id(), o.card().name.clone()))
         .collect()
@@ -128,6 +133,7 @@ pub(crate) fn hidden_across(
             after
                 .object(*id)
                 .is_none_or(|o| is_hidden(o.zone(), viewer) && !tops.contains(id))
+                && !after.is_shown_to(viewer, *id)
         })
         .collect()
 }
@@ -144,7 +150,8 @@ pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<S
             Value::Number(n) => {
                 let id = n.as_u64().map(ObjectId);
                 let hidden_id = id.filter(|id| hidden.contains_key(id));
-                if let (Some(id), false) = (hidden_id, SCALAR_KEYS.contains(&key)) {
+                let counted = SCALAR_KEYS.contains(&key) || COUNT_KEYS.contains(&key);
+                if let (Some(id), false) = (hidden_id, counted) {
                     out.push(format!("{id:?} under {key}"));
                 }
             }
@@ -154,6 +161,13 @@ pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<S
                     if let Some(object) = pair.get(0) {
                         walk(object, key, hidden, out);
                     }
+                }
+            }
+            // The hidden form of a scry or surveil counts its piles; the lists of an action name cards.
+            Value::Array(items) if COUNT_KEYS.contains(&key) => {
+                let listed = format!("{key}[]");
+                for item in items {
+                    walk(item, &listed, hidden, out);
                 }
             }
             Value::Array(items) => items.iter().for_each(|v| walk(v, key, hidden, out)),

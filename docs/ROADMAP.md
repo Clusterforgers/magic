@@ -225,7 +225,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (ma7k) The table shows what Reveal and Note put in the view: a seat's `revealed_hand` and `revealed_top` cards face up beside its hand and library, and `ObjectView.note` as a mark on the card's face and in its preview
 - [ ] (ma7l) The look-at-the-top list and the new rows at the six sizes in both themes: screenshots looked at, `e2e/layout.spec.ts` and `e2e/fit.spec.ts` with `/dev/table?panel=top`
 - [ ] (ma7m) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
-- [ ] (ma7j) `ManualScript` also takes `LookTop`, `ArrangeTop` and `Shuffle`; with them seed 6 of `manual_anytime` (two seats) shows a bot cast of a card that an out-of-band `Move` had put onto the battlefield being accepted (`event does not apply`)
 - [ ] (ma7n) The card menu's forms that nothing opens since the panel took the entries (`Ask` gain and lose life, your counters, draw, mill, move top, mana, their `buildAction` cases, `ManualForm` parts and tests) are removed
 - [ ] (ma7o) The panel's Tokens row also makes a custom token (name, power, toughness, as the card menu's form does) so that the menu's "Create a token…" can go
 - [ ] (ma7p) `CommandsPanel` takes its amount field from `panel/AmountField.tsx`, which the Card group already uses

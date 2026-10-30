@@ -52,6 +52,14 @@ pub fn replay(setup: &GameSetup, events: &[Event]) -> Result<GameState, EngineEr
     Ok(state)
 }
 
+/// Whether `events` all apply one after the other to a copy of `state`.
+fn applies(state: &GameState, events: &[Event]) -> bool {
+    let mut probe = state.clone();
+    events
+        .iter()
+        .all(|event| apply_event(&mut probe, event).is_ok())
+}
+
 /// A running game: state, the event log that produced it, and the decision it is waiting on.
 #[derive(Debug)]
 pub struct Engine {
@@ -108,6 +116,12 @@ impl Engine {
     /// the state is not settled (a creature that is to die is still in play).
     pub const fn replacing(&self) -> bool {
         self.held.is_some()
+    }
+
+    /// Whether a spell, ability or attack is being announced: the decision asks the next question of it. State-based
+    /// actions wait for its end (CR 704.3), so what a manual action changed meanwhile is not settled yet.
+    pub const fn announcing(&self) -> bool {
+        self.pending.is_some()
     }
 
     /// The pending decision; `None` once the game is over.
@@ -208,6 +222,12 @@ impl Engine {
         }
         let made = events(&self.state, player, action).map_err(refused)?;
         let checkpoint = self.checkpoint();
+        // A triggered ability goes on the stack whatever else changes (CR 603.3); a spell or activation is checked.
+        if let Some(pending) = self.pending.as_mut()
+            && !matches!(pending.what, What::Trigger(_))
+        {
+            pending.touched = true;
+        }
         let result = self.commit(made).and_then(|()| self.advance());
         self.finish(checkpoint, result)
     }
@@ -364,6 +384,13 @@ impl Engine {
     fn run(&mut self, outcome: Outcome, player: PlayerId) -> Result<(), EngineError> {
         match outcome {
             Outcome::Events(events) if self.held.is_some() => self.answer_held(events),
+            // The payment of an announcement a manual action touched: its other costs may no longer apply.
+            Outcome::Events(events)
+                if self.pending.as_ref().is_some_and(|p| p.touched)
+                    && !applies(&self.state, &events) =>
+            {
+                self.drop_pending()
+            }
             Outcome::Events(events) => {
                 self.pending = None;
                 self.commit(events)
@@ -523,29 +550,21 @@ impl Engine {
                 return Ok(());
             }
             if let Some(pending) = self.pending.as_mut() {
+                let touched = pending.touched;
                 match announce(&self.state, pending) {
                     Next::Ask(decision) => {
                         self.decision = Some(decision);
                         return Ok(());
                     }
+                    // A manual action may have left a cost that no longer applies (a source tapped, a card gone).
+                    Next::Commit(events) if touched && !applies(&self.state, &events) => {
+                        self.drop_pending()?;
+                    }
                     Next::Commit(events) => {
                         self.pending = None;
                         self.commit(events)?;
                     }
-                    // A cast the resolution of another spell or ability began that cannot go on tells it so (CR 608.2g).
-                    Next::Drop => {
-                        if let Some(Pending {
-                            player,
-                            granted: Some(_),
-                            ..
-                        }) = self.pending.take()
-                        {
-                            self.commit(vec![Event::ChoiceMade {
-                                player,
-                                choice: Choice::YesNo(false),
-                            }])?;
-                        }
-                    }
+                    Next::Drop => self.drop_pending()?,
                 }
                 continue;
             }
@@ -558,12 +577,29 @@ impl Engine {
                     self.decision = None;
                     return Ok(());
                 }
-                Progress::Put(pending) => self.pending = Some(pending),
+                Progress::Put(pending) => self.pending = Some(*pending),
                 Progress::Events(events) => self.commit(events)?,
                 Progress::Fail(error) => return Err(error),
             }
         }
         Err(EngineError::Stalled(MAX_INTERNAL_STEPS))
+    }
+
+    /// Rewinds the announcement under way without a trace. A cast the resolution of another spell or ability began that
+    /// cannot go on tells it so (CR 608.2g).
+    fn drop_pending(&mut self) -> Result<(), EngineError> {
+        if let Some(Pending {
+            player,
+            granted: Some(_),
+            ..
+        }) = self.pending.take()
+        {
+            self.commit(vec![Event::ChoiceMade {
+                player,
+                choice: Choice::YesNo(false),
+            }])?;
+        }
+        Ok(())
     }
 
     /// The events since `checkpoint` on success; on failure the step is undone so it never half-applies.

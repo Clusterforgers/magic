@@ -301,6 +301,7 @@ mod manual_cards;
 mod manual_fuzz;
 mod manual_library;
 mod manual_show;
+mod manual_stale;
 mod manual_triggers;
 mod many_seats;
 mod mayhem;

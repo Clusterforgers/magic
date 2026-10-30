@@ -641,6 +641,8 @@ pub struct InvariantChecker {
     since_full: usize,
     /// The engine is asking about events it has not applied: what state-based actions would do is still to come.
     replacing: bool,
+    /// A cast, activation or attack is being announced, so state-based actions wait for its end.
+    announcing: bool,
 }
 
 impl InvariantChecker {
@@ -702,6 +704,7 @@ impl InvariantChecker {
             events_seen: 0,
             full_every: 1,
             replacing: false,
+            announcing: false,
             since_full: 0,
         })
     }
@@ -709,6 +712,7 @@ impl InvariantChecker {
     /// [`observe`](Self::observe) for a live engine, with the checks that depend on the decision it stands at.
     pub fn observe_engine(&mut self, engine: &Engine) -> Result<(), Violation> {
         self.replacing = engine.replacing();
+        self.announcing = engine.announcing();
         self.observe(engine.state(), engine.events())?;
         if self.replacing {
             return Ok(());
@@ -740,7 +744,7 @@ impl InvariantChecker {
     pub fn full_check(&mut self, live: &GameState) -> Result<(), Violation> {
         self.since_full = 0;
         check_state(live)?;
-        if !self.replacing {
+        if !self.replacing && !self.announcing {
             check_settled(live)?;
         }
         let (live_hash, shadow_hash) = (live.state_hash(), self.shadow.state_hash());
