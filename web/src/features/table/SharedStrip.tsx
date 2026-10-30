@@ -98,7 +98,7 @@ export function SharedStrip({
             <div className="min-w-0 empty:hidden">
               <CombatLegend />
             </div>
-            <div className="hidden min-w-0 has-data-[slot=nothing-to-do]:block">
+            <div className="hidden min-w-0 has-data-[slot=nothing-to-do]:block has-data-[slot=rewound]:block">
               <NothingToDoBanner />
             </div>
           </div>

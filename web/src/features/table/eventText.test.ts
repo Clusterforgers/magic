@@ -140,6 +140,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],
   NothingToDo: [{ NothingToDo: { player: 0, kind: 'Attack' } }, 'Ana has no possible attackers'],
+  AnnouncementRewound: [
+    { AnnouncementRewound: { player: 0, object: 3, reason: 'Mana' } },
+    'Ana cannot play Forest: not enough mana',
+  ],
   PriorityGranted: [{ PriorityGranted: { player: 0 } }, 'Ana receives priority'],
   PriorityPassed: [{ PriorityPassed: { player: 1 } }, 'Bo passes priority'],
   LandPlayed: [{ LandPlayed: { player: 0, object: 3 } }, 'Ana plays Forest'],
@@ -421,6 +425,7 @@ function snapshotOf(id: number): Snapshot {
 
 const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardDrawn: [{ CardDrawn: { player: 1 } }, 'Bo draws a card'],
+  AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
   LibraryRefilled: [

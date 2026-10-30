@@ -27,6 +27,7 @@ import { distinctTargets } from './prompt/targetText'
 import { sameHost } from '@/play/hosts'
 import type { HostRef } from '@/play/hosts'
 import { STEP_LABEL } from './turnText'
+import { REASON_WORDS } from './handReason'
 import { rollSentence } from './manual/panel/roll'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
@@ -775,6 +776,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
   }
   if ('StepBegan' in event) return quiet(`${STEP_LABEL[event.StepBegan.step]} begins`)
+  if ('AnnouncementRewound' in event) {
+    const { player, object, reason } = event.AnnouncementRewound
+    return line(`${n.seat(player)} cannot play ${n.card(object)}: ${REASON_WORDS[reason].line.toLowerCase()}`)
+  }
   if ('NothingToDo' in event) {
     const what = event.NothingToDo.kind === 'Attack' ? 'attackers' : 'blockers'
     return quiet(`${n.seat(event.NothingToDo.player)} has no possible ${what}`)
@@ -938,6 +943,9 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('ManualArrange' in event) {
     const { player, top, bottom, graveyard } = event.ManualArrange
     return line(describeArrange(player, top, bottom, graveyard, n))
+  }
+  if ('AnnouncementRewound' in event) {
+    return quiet(`${n.seat(event.AnnouncementRewound.player)} could not finish a play`)
   }
   void (event satisfies { StepDone: unknown })
   return quiet('A step of the resolution is done')
