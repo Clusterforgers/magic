@@ -6,7 +6,6 @@ import type {
   ManaType,
   ManualAction,
   ManualClause,
-  ManualToken,
   ManualZone,
   ObjectId,
   ObjectView,
@@ -50,22 +49,7 @@ export const LIMITS = {
 } as const
 
 /** The forms that ask for what an action still needs. */
-export type Ask =
-  | 'addCounters'
-  | 'removeCounters'
-  | 'attach'
-  | 'token'
-  | 'gainLife'
-  | 'loseLife'
-  | 'addPlayerCounters'
-  | 'removePlayerCounters'
-  | 'draw'
-  | 'mill'
-  | 'moveTop'
-  | 'damage'
-  | 'mana'
-  | 'pump'
-  | 'note'
+export type Ask = 'addCounters' | 'removeCounters' | 'attach' | 'damage' | 'pump' | 'note'
 
 /** One entry of the menu: an action sent as it is (`action`) or the form that completes it (`ask`). */
 export interface ManualItem {
@@ -82,7 +66,7 @@ export interface ManualItem {
 }
 
 /** The groups of the menu, in order. */
-export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'token' | 'panel'
+export type GroupId = 'move' | 'counters' | 'tap' | 'attach' | 'effect' | 'show' | 'panel'
 
 /** A titled run of entries, or a note that says why it has none. */
 export interface ManualGroup {
@@ -112,10 +96,6 @@ export interface MenuInput {
   players: readonly PlayerId[]
   /** Whether the format has a command zone to move a card to. */
   hasCommandZone: boolean
-  /** Cards in the seat's library. */
-  library: number
-  /** The seat's own counters. */
-  counters: readonly (readonly [CounterKind, number])[]
   /** The name of the card's owner. */
   ownerName: string
 }
@@ -350,9 +330,9 @@ function showGroup(input: MenuInput, off: string | undefined): ManualGroup | nul
 
 /**
  * The menu of one card, as the protocol allows it (`ManualAction`) at any time: moves, discards and attachments of
- * what the seat owns or controls, damage from its cards, counters, tapping and pumps of any permanent, a token, and
- * the way into the Commands panel for the seat's own numbers, library and mana. With `off` set the entries are listed
- * and inert.
+ * what the seat owns or controls, damage from its cards, counters, tapping and pumps of any permanent, a note or a
+ * reveal, and the way into the Commands panel for the seat's own numbers, library, tokens and mana. With `off` set the
+ * entries are listed and inert.
  */
 export function manualMenu(input: MenuInput): ManualMenu {
   const { off } = input
@@ -363,11 +343,6 @@ export function manualMenu(input: MenuInput): ManualMenu {
     attachGroup(input, off),
     effectGroup(input, off),
     showGroup(input, off),
-    {
-      id: 'token' as const,
-      label: 'Token',
-      items: [{ key: 'token', label: 'Create a token…', ask: 'token' as const, unavailable: off }],
-    },
     panelGroup(off),
   ].filter((group): group is ManualGroup => group !== null)
   return { title: input.object.name, notice: off, clauses: input.object.manual ?? [], groups }
@@ -453,16 +428,11 @@ export interface Draft {
   /** A kind of `KNOWN_COUNTERS`, or `other` with the name in `other`. */
   kind: string
   other: string
-  to: ManualZone
   target: ObjectId | null
-  /** A `CommonToken` or `custom`. */
-  token: string
-  name: string
   power: number
   toughness: number
   /** What damage is dealt to. */
   hit: DamageTarget | null
-  mana: ManaType
   /** The text of a note. */
   text: string
 }
@@ -472,14 +442,10 @@ export const EMPTY_DRAFT: Draft = {
   count: 1,
   kind: '+1/+1',
   other: '',
-  to: 'Graveyard',
   target: null,
-  token: 'Treasure',
-  name: '',
   power: 1,
   toughness: 1,
   hit: null,
-  mana: 'Colorless',
   text: '',
 }
 
@@ -492,14 +458,8 @@ export function draftKind(draft: Draft): CounterKind | null {
 
 /** The draft a form starts from: removal starts on a kind that is held. */
 export function startDraft(ask: Ask, input: Omit<BuildInput, 'draft'>): Draft {
-  const held =
-    ask === 'removeCounters'
-      ? input.object.counters
-      : ask === 'removePlayerCounters'
-        ? input.counters
-        : undefined
   if (ask === 'note') return { ...EMPTY_DRAFT, text: input.object.note ?? '' }
-  const first = held?.at(0)
+  const first = ask === 'removeCounters' ? input.object.counters?.at(0) : undefined
   return first === undefined ? EMPTY_DRAFT : { ...EMPTY_DRAFT, kind: counterName(first[0]) }
 }
 
@@ -524,7 +484,7 @@ export interface BuildInput extends MenuInput {
 
 /** The action a filled form stands for, or the first thing wrong with it. */
 export function buildAction(ask: Ask, input: BuildInput): Built {
-  const { object, seat, draft } = input
+  const { object, draft } = input
   const { count } = draft
   const range = (low: number, high: number, what: string): Built | null =>
     whole(count, low, high) ? null : problem(`Enter ${what} from ${low} to ${high}.`)
@@ -540,53 +500,14 @@ export function buildAction(ask: Ask, input: BuildInput): Built {
       if (bad !== null) return bad
       return { action: { Counters: { object: object.id, counter: kind, delta: adding ? count : -count } } }
     }
-    case 'addPlayerCounters':
-    case 'removePlayerCounters': {
-      const kind = draftKind(draft)
-      if (kind === null) return problem('Name the counter with letters, digits, spaces and - + /.')
-      const adding = ask === 'addPlayerCounters'
-      const held = heldOf(input.counters, kind)
-      if (!adding && held === 0) return problem(`You have no ${counterName(kind)} counter.`)
-      const bad = range(1, adding ? LIMITS.counters : Math.min(LIMITS.counters, held), 'a number')
-      if (bad !== null) return bad
-      return {
-        action: { PlayerCounters: { player: seat, counter: kind, delta: adding ? count : -count } },
-      }
-    }
-    case 'gainLife':
-    case 'loseLife': {
-      const bad = range(1, LIMITS.life, 'an amount')
-      if (bad !== null) return bad
-      return { action: { Life: { player: seat, delta: ask === 'gainLife' ? count : -count } } }
-    }
-    case 'draw': {
-      const bad = range(1, LIMITS.cards, 'a number of cards')
-      return bad ?? { action: { Draw: { count } } }
-    }
-    case 'mill':
-    case 'moveTop': {
-      const bad = range(1, Math.min(LIMITS.cards, input.library), 'a number of cards')
-      if (bad !== null) return bad
-      return { action: { MoveTop: { count, to: ask === 'mill' ? 'Graveyard' : draft.to } } }
-    }
     case 'attach':
       return draft.target === null
         ? problem('Choose what to attach it to.')
         : { action: { Attach: { object: object.id, to: draft.target } } }
-    case 'token': {
-      const bad = range(1, LIMITS.tokens, 'a number of tokens')
-      if (bad !== null) return bad
-      const token = tokenOf(draft)
-      return 'problem' in token ? token : { action: { CreateToken: { token: token.token, count } } }
-    }
     case 'damage': {
       if (draft.hit === null) return problem('Choose what is dealt the damage.')
       const bad = range(1, LIMITS.damage, 'an amount')
       return bad ?? { action: { Damage: { source: object.id, target: draft.hit, amount: count } } }
-    }
-    case 'mana': {
-      const bad = range(1, LIMITS.mana, 'an amount')
-      return bad ?? { action: { AddMana: { mana: draft.mana, count } } }
     }
     case 'pump': {
       const { power, toughness } = draft
@@ -604,30 +525,5 @@ export function buildAction(ask: Ask, input: BuildInput): Built {
         return problem(text === '' ? 'Write a note.' : 'The note is the same.')
       return { action: { Note: { object: object.id, text } } }
     }
-  }
-}
-
-function tokenOf(draft: Draft): { token: ManualToken } | { problem: string } {
-  if (draft.token !== 'custom') {
-    const common = COMMON_TOKENS.find((token) => token === draft.token)
-    return common === undefined ? problem('Choose a token.') : { token: { Common: common } }
-  }
-  const name = draft.name.trim()
-  if (name.length === 0 || name.length > 40) return problem('Name the token in 1 to 40 characters.')
-  if (!whole(draft.power, 0, 99) || !whole(draft.toughness, 0, 99)) {
-    return problem('Power and toughness are whole numbers from 0 to 99.')
-  }
-  return {
-    token: {
-      Custom: {
-        name,
-        colors: [],
-        types: ['Creature'],
-        // The protocol takes letters only as a subtype, so a name with digits is a token with none.
-        subtypes: /^[\p{L} '-]{1,24}$/u.test(name) ? [name] : [],
-        power: draft.power,
-        toughness: draft.toughness,
-      },
-    },
   }
 }

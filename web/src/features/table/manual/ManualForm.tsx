@@ -3,16 +3,14 @@ import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { NativeSelect } from '@/components/ui/native-select'
-import type { DamageTarget, ManaType, ManualAction, ManualZone, ObjectView } from '@/protocol/generated'
+import type { DamageTarget, ManualAction, ObjectView } from '@/protocol/generated'
 import {
   attachTargets,
   buildAction,
-  COMMON_TOKENS,
   counterName,
   damageTargets,
   KNOWN_COUNTERS,
   LIMITS,
-  MANA_KINDS,
   startDraft,
   targetKey,
 } from './offers'
@@ -32,26 +30,10 @@ const FORMS: Record<Ask, FormWords> = {
   addCounters: { title: (name) => `Add counters to ${name}`, submit: 'Add', count: 'How many' },
   removeCounters: { title: (name) => `Remove counters from ${name}`, submit: 'Remove', count: 'How many' },
   attach: { title: (name) => `Attach ${name} to`, submit: 'Attach', count: '' },
-  token: { title: () => 'Create a token', submit: 'Create', count: 'How many' },
-  gainLife: { title: () => 'Gain life', submit: 'Gain', count: 'Life' },
-  loseLife: { title: () => 'Lose life', submit: 'Lose', count: 'Life' },
-  addPlayerCounters: { title: () => 'Add counters to you', submit: 'Add', count: 'How many' },
-  removePlayerCounters: { title: () => 'Remove counters from you', submit: 'Remove', count: 'How many' },
-  draw: { title: () => 'Draw cards', submit: 'Draw', count: 'How many' },
-  mill: { title: () => 'Mill cards', submit: 'Mill', count: 'How many' },
-  moveTop: { title: () => 'Move top cards of your library', submit: 'Move', count: 'How many' },
   damage: { title: (name) => `Deal damage with ${name}`, submit: 'Deal', count: 'Damage' },
-  mana: { title: () => 'Add mana to your pool', submit: 'Add', count: 'How much' },
   pump: { title: (name) => `Pump ${name} until end of turn`, submit: 'Pump', count: '' },
   note: { title: (name) => `Note on ${name}`, submit: 'Save note', count: '' },
 }
-
-const TOP_DESTINATIONS: readonly [ManualZone, string][] = [
-  ['Hand', 'Hand'],
-  ['Graveyard', 'Graveyard'],
-  ['Exile', 'Exile'],
-  ['LibraryBottom', 'Bottom of library'],
-]
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -97,8 +79,8 @@ interface FormProps {
 }
 
 /**
- * The form that completes an action the menu cannot send as it is: counters, life, cards, a token, an attachment,
- * damage, mana or a pump.
+ * The form that completes an action the menu cannot send as it is: counters on the card, an attachment, damage, a
+ * pump or a note.
  */
 export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: FormProps) {
   const [draft, setDraft] = useState(() => startDraft(ask, input))
@@ -106,12 +88,7 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
   const words = FORMS[ask]
   const built = buildAction(ask, { ...input, draft })
   const problem = 'problem' in built ? built.problem : undefined
-  const kinds = ask === 'removeCounters' ? input.object.counters : input.counters
-  const kindsAsked =
-    ask === 'addCounters' ||
-    ask === 'removeCounters' ||
-    ask === 'addPlayerCounters' ||
-    ask === 'removePlayerCounters'
+  const kindsAsked = ask === 'addCounters' || ask === 'removeCounters'
 
   const head = (
     <p className="px-1 text-sm font-medium" id="manual-form-title">
@@ -156,7 +133,9 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
             >
               {ask.startsWith('add')
                 ? KNOWN_COUNTERS.map((kind) => <option key={kind}>{kind}</option>)
-                : (kinds ?? []).map(([kind]) => <option key={counterName(kind)}>{counterName(kind)}</option>)}
+                : (input.object.counters ?? []).map(([kind]) => (
+                    <option key={counterName(kind)}>{counterName(kind)}</option>
+                  ))}
               {ask.startsWith('add') ? <option value="other">Other…</option> : null}
             </NativeSelect>
           </Field>
@@ -171,72 +150,8 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
           ) : null}
         </>
       ) : null}
-      {ask === 'token' ? (
-        <>
-          <Field label="Token">
-            <NativeSelect
-              value={draft.token}
-              data-autofocus
-              onChange={(event) => set({ token: event.currentTarget.value })}
-            >
-              {COMMON_TOKENS.map((token) => (
-                <option key={token}>{token}</option>
-              ))}
-              <option value="custom">Custom creature…</option>
-            </NativeSelect>
-          </Field>
-          {draft.token === 'custom' ? (
-            <>
-              <Field label="Name of the token">
-                <Input
-                  value={draft.name}
-                  maxLength={40}
-                  onChange={(event) => set({ name: event.currentTarget.value })}
-                />
-              </Field>
-              <div className="grid grid-cols-2 gap-2">
-                <NumberField label="Power" value={draft.power} onChange={(power) => set({ power })} />
-                <NumberField
-                  label="Toughness"
-                  value={draft.toughness}
-                  onChange={(toughness) => set({ toughness })}
-                />
-              </div>
-            </>
-          ) : null}
-        </>
-      ) : null}
-      {ask === 'moveTop' ? (
-        <Field label="Move them to">
-          <NativeSelect
-            value={draft.to}
-            onChange={(event) => set({ to: event.currentTarget.value as ManualZone })}
-          >
-            {TOP_DESTINATIONS.map(([zone, label]) => (
-              <option key={zone} value={zone}>
-                {label}
-              </option>
-            ))}
-          </NativeSelect>
-        </Field>
-      ) : null}
       {ask === 'damage' ? (
         <DamageTargetField input={input} objects={objects} nameOf={nameOf} draft={draft} set={set} />
-      ) : null}
-      {ask === 'mana' ? (
-        <Field label="Kind of mana">
-          <NativeSelect
-            value={draft.mana}
-            data-autofocus
-            onChange={(event) => set({ mana: event.currentTarget.value as ManaType })}
-          >
-            {MANA_KINDS.map(([mana, symbol]) => (
-              <option key={mana} value={mana}>
-                {`${mana} (${symbol})`}
-              </option>
-            ))}
-          </NativeSelect>
-        </Field>
       ) : null}
       {ask === 'note' ? (
         <Field label="Note">
@@ -265,13 +180,7 @@ export function ManualForm({ ask, input, objects, nameOf, onBack, onSend }: Form
           />
         </div>
       ) : (
-        <NumberField
-          label={words.count}
-          value={draft.count}
-          autoFocus={!kindsAsked && ask !== 'token' && ask !== 'damage' && ask !== 'mana'}
-          min={1}
-          onChange={(count) => set({ count })}
-        />
+        <NumberField label={words.count} value={draft.count} min={1} onChange={(count) => set({ count })} />
       )}
       <p role="status" className="min-h-5 px-1 text-xs text-muted-foreground">
         {problem}

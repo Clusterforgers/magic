@@ -13,8 +13,6 @@ function input(object: ObjectView, over: Partial<MenuInput> = {}): MenuInput {
     object,
     players: [0, 1],
     hasCommandZone: true,
-    library: 40,
-    counters: [],
     ownerName: 'Bo',
     ...over,
   }
