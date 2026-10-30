@@ -1,5 +1,7 @@
 /** Pure layout of the table: the sizes of its regions for a window, the mode for a seat count, and who is drawn where. */
 import type { PlayerId } from '@/protocol/generated'
+import type { DockForm } from './dockLayout'
+import { handRowPx } from './handFit'
 
 /** Grid mode draws every opponent's battlefield; focus mode draws one large and the others as tiles. */
 export type TableMode = 'grid' | 'focus'
@@ -303,6 +305,22 @@ export function mainColumns(regions: Pick<Regions, 'phone'>, stopsRow = false): 
   return `minmax(0, 1fr) fit-content(${widest}px)`
 }
 
+/** The cards of the hand the controls dock leaves one row for: an opening hand, with a pair of partners to cast beside it. */
+const DOCK_HAND_CARDS = 7
+const DOCK_HAND_COMMANDERS = 2
+
+/**
+ * The narrowest main area in px whose hand dock holds an opening hand and two commanders in one row beside the widest
+ * controls dock: the room for the key hints and the whole words of the primary button.
+ */
+export const DOCK_FULL_MIN_MAIN_PX = handRowPx(DOCK_HAND_CARDS, DOCK_HAND_COMMANDERS) + CONTROLS_MAX_PX
+
+/** How much the controls dock writes in these regions: all of it where the hand keeps its row, less where it would not, the least on a phone. */
+export function dockForm(regions: Pick<Regions, 'phone' | 'main'>): DockForm {
+  if (regions.phone) return 'compact'
+  return regions.main.width >= DOCK_FULL_MIN_MAIN_PX ? 'full' : 'short'
+}
+
 /** The `grid-template-columns` of the table: the main area, then the side column or rail. */
 export function gridColumns(side: SideKind): string {
   if (side === 'column') {
@@ -389,6 +407,8 @@ export interface TablePlan {
   opponentPod: PodPlace
   /** Whether the controls dock draws the stop ladder and Full Control as one row; otherwise they open from its "Stops" button. */
   stopsRow: boolean
+  /** How much the controls dock writes (`dockForm`). */
+  dock: DockForm
 }
 
 /** Sizes the regions, chooses the mode and arranges the seats. */
@@ -406,5 +426,6 @@ export function planTable(input: TableInput): TablePlan {
     pod,
     opponentPod: regions.phone && seats.shape === 'focus' ? 'none' : pod,
     stopsRow: BREAKPOINT_FROM[regions.breakpoint] >= STOPS_ROW_MIN_WIDTH_PX,
+    dock: dockForm(regions),
   }
 }

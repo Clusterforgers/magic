@@ -1,4 +1,4 @@
-// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen, every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
+// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen (whole, with key hints, from a 1150 px main area; short without them below it), every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, FullControlMode, Step, YieldUntil } from '@/protocol/generated'
@@ -169,21 +169,34 @@ describe('the Stops button', () => {
 
 describe('the pass button', () => {
   it.each([
-    ['a spell on the stack', { stacked: true }, 'Resolve Lightning Bolt', true],
-    ['your first main phase', { own: true, stacked: false, step: 'Main1' as const }, 'Next: Combat', true],
+    ['a spell on the stack', { stacked: true }, 'Resolve Lightning Bolt', 'Resolve', true],
+    [
+      'your first main phase',
+      { own: true, stacked: false, step: 'Main1' as const },
+      'Next: Combat',
+      'Next: Combat',
+      true,
+    ],
     [
       'your declare attackers',
       { own: true, stacked: false, step: 'DeclareAttackers' as const },
       'Next: Declare blockers',
+      'Next: Blockers',
       true,
     ],
-    ['the end step of your turn', { own: true, stacked: false, step: 'End' as const }, 'End turn', false],
-    ['an opponent’s empty step', { stacked: false, step: 'Upkeep' as const }, 'Continue', true],
-  ])('says what passing does in %s, at every size', (_name, situation, words, endTurn) => {
-    for (const [width, height] of [
-      [1920, 1080],
-      [1024, 768],
-      [390, 844],
+    [
+      'the end step of your turn',
+      { own: true, stacked: false, step: 'End' as const },
+      'End turn',
+      'End turn',
+      false,
+    ],
+    ['an opponent’s empty step', { stacked: false, step: 'Upkeep' as const }, 'Continue', 'Continue', true],
+  ])('says what passing does in %s, at every size', (_name, situation, whole, short, endTurn) => {
+    for (const [width, height, words] of [
+      [1920, 1080, whole],
+      [1024, 768, short],
+      [390, 844, short],
     ] as const) {
       const { unmount } = dockOf({ ...situation, width, height })
       expect(primaryButton()).toHaveTextContent(words)
@@ -191,6 +204,29 @@ describe('the pass button', () => {
       expect(dock().querySelector('[data-slot="secondary-action"]') !== null).toBe(endTurn && width > 640)
       unmount()
     }
+  })
+
+  it.each([
+    [1920, 1080, true],
+    [1600, 1000, true],
+    [1470, 900, true],
+    [1469, 900, false],
+    [1440, 900, false],
+    [1280, 720, false],
+    [1024, 768, false],
+    [390, 844, false],
+  ])('draws the key hints at %i x %i: %s', (width, height, hints) => {
+    dockOf({ own: true, stacked: false, step: 'Main1', width, height })
+    expect(dock().querySelectorAll('[data-slot="key-cap"]').length > 0).toBe(hints)
+    // The keys are still told: by a tooltip and to a screen reader, whatever the window.
+    expect(primaryButton()).toHaveAttribute('aria-keyshortcuts', 'Space')
+    expect(primaryButton()).toHaveAttribute('title', 'Space')
+  })
+
+  it('leaves the spell’s name to the stack strip in a dock without hints, and says it to a screen reader', () => {
+    dockOf({ width: 1280, height: 720 })
+    expect(primaryButton()).toHaveTextContent(/^Resolve$/)
+    expect(primaryButton()).toHaveAccessibleDescription(/Lightning Bolt resolves/)
   })
 
   it('is described as passing priority, though it never says so in words', () => {

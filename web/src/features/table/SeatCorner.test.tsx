@@ -1,4 +1,4 @@
-// Goal: a seat's corner draws its commanders, the top card of its graveyard and of its exile as pictures with their counts (the commander with its tax), an empty zone as a faint outline with its name, sizes the pictures by the lane card and the room its pod column leaves and keeps the chips where the least picture does not fit, opens the zone's list from a press or the keyboard, and leaves your own commanders to the hand dock.
+// Goal: a seat's corner draws its commanders, the top card of its graveyard and of its exile as pictures with their counts (the commander with its tax), an empty zone as a faint outline with its name, sizes the pictures by the lane card and the room its pod column leaves and keeps the chips, the tax among them, in one row where the least picture does not fit, opens the zone's list from a press or the keyboard, and leaves your own commanders to the hand dock.
 import { screen, within } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -326,10 +326,38 @@ describe('the size of the pictures', () => {
     expect(within(bo).getByRole('button', { name: 'Exile 2 cards, opens the list' })).toHaveTextContent('2')
     expect(within(bo).getByRole('button', { name: /^Command zone/ })).toBeInTheDocument()
     const row = must(bo.querySelector<HTMLElement>('[data-slot="corner-chips"]'))
-    expect(row).toHaveClass('grid-cols-3')
     expect(within(row).getAllByRole('button')).toHaveLength(3)
     expect(within(bo).queryByRole('list', { name: "Bo's command zone" })).toBeNull()
-    expect(bo.querySelector('[data-slot="commander-chips"] [data-slot="commander-tax"]')).not.toBeNull()
+    // The tax is a chip of the same row, the figure alone, not a row of its own under it.
+    expect(bo.querySelector('[data-slot="commander-chips"]')).toBeNull()
+    const tax = within(row).getByRole('img', { name: /tax 4 mana/ })
+    expect(tax).toHaveAttribute('data-slot', 'commander-tax')
+    expect(tax).toHaveTextContent('+4')
+  })
+
+  it.each<[string, (view: StateView) => void, string, number]>([
+    ['a commander that was cast', () => undefined, 'flex', 4],
+    [
+      'a commander that was never cast',
+      (view) => {
+        for (const commander of must(view.players[1]).commanders ?? []) {
+          commander.tax = 0
+          commander.casts = 0
+        }
+      },
+      'grid-cols-3',
+      3,
+    ],
+  ])('keeps the chips in one row with %s: %s', (_name, edit, layout, chips) => {
+    above(74)
+    show({ room: { height: 100, card: 120 }, edit })
+    const row = must(pod('Bo').querySelector<HTMLElement>('[data-slot="corner-chips"]'))
+    expect(row).toHaveClass(layout)
+    // The zone chips, and the tax chip when the commander has one, all as direct children of the one row.
+    expect(
+      [...row.children].filter((child) => child.getAttribute('data-slot') !== 'commander-tax'),
+    ).toHaveLength(3)
+    expect(row.children).toHaveLength(chips)
   })
 
   it.each<[string, number, 'picture' | 'chips']>([

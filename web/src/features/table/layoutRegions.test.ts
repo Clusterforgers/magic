@@ -1,12 +1,16 @@
 // Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, 56 to 88 px shared strip, 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), and in focus mode the strip of tiles leads with the seat whose turn it is.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
+import { handRowPx } from './handFit'
 import {
   activeFirst,
   arrangeSeats,
   breakpointOf,
   chooseMode,
   clampedHeight,
+  CONTROLS_MAX_PX,
+  DOCK_FULL_MIN_MAIN_PX,
+  dockForm,
   gridColumns,
   gridColumnWidth,
   gridRows,
@@ -394,5 +398,52 @@ describe('planTable', () => {
     expect(plan.seats.mode).toBe('focus')
     expect(plan.seats.focused).toBe(3)
     expect(plan.seats.tiles).toEqual([2, 3, 0])
+  })
+})
+
+describe('the form of the controls dock', () => {
+  const OPENING_HAND = 7
+  const PARTNERS = 2
+
+  it('draws the key hints and whole words from the main area that keeps an opening hand and two commanders in one row beside the widest dock', () => {
+    expect(DOCK_FULL_MIN_MAIN_PX).toBe(handRowPx(OPENING_HAND, PARTNERS) + CONTROLS_MAX_PX)
+    expect(DOCK_FULL_MIN_MAIN_PX).toBe(1150)
+  })
+
+  it.each([
+    // width, height, form
+    [1920, 1080, 'full'],
+    [1600, 1000, 'full'],
+    // The least window whose main area (the window less a 320 px column) is 1150 px.
+    [1470, 900, 'full'],
+    [1469, 900, 'short'],
+    [1440, 900, 'short'],
+    [1366, 768, 'short'],
+    [1280, 720, 'short'],
+    // A rail takes 44 px where a column takes 282 to 320: the main area of a 1279 px window is wider than of a 1280 px one.
+    [1279, 720, 'full'],
+    [1194, 768, 'full'],
+    [1193, 768, 'short'],
+    [1024, 768, 'short'],
+    [768, 1024, 'short'],
+    [844, 390, 'short'],
+    [390, 844, 'compact'],
+    [320, 568, 'compact'],
+  ])('writes the dock of a %ix%i window in the %s form', (width, height, form) => {
+    expect(planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 }).dock).toBe(form)
+  })
+
+  it('is the full form exactly where the widest dock leaves an opening hand and two commanders their row', () => {
+    for (let width = 640; width <= 2560; width += 1) {
+      const regions = regionSizes({ width, height: 900 })
+      const room = regions.main.width - handRowPx(OPENING_HAND, PARTNERS)
+      expect(dockForm(regions) === 'full', `${width} px`).toBe(room >= CONTROLS_MAX_PX)
+    }
+  })
+
+  it('is never the full form on a window of a sheet or a phone, whose main area is the window or less', () => {
+    for (let width = 320; width < 1024; width += 1) {
+      expect(dockForm(regionSizes({ width, height: 900 })), `${width} px`).not.toBe('full')
+    }
   })
 })

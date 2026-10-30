@@ -1,7 +1,8 @@
 import { createContext, useContext, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { CompactDockContext } from './dockLayout'
+import { DockFormContext } from './dockLayout'
+import type { DockForm } from './dockLayout'
 import { StopsDock } from './stops/StopsDock'
 import { useEdgeFade } from './useEdgeFade'
 import { YieldIndicator } from './YieldIndicator'
@@ -11,21 +12,15 @@ const SlotContext = createContext<HTMLElement | null | undefined>(undefined)
 const SetSlotContext = createContext<(element: HTMLElement | null) => void>(() => undefined)
 
 /**
- * Lets the pass controls of a prompt draw inside the controls dock, wherever the prompt itself sits. `compact` is the
- * dock of a phone (`useCompactDock`).
+ * Lets the pass controls of a prompt draw inside the controls dock, wherever the prompt itself sits. `form` says how
+ * much the dock writes (`DockForm`).
  */
-export function ControlsSlotProvider({
-  children,
-  compact = false,
-}: {
-  children: ReactNode
-  compact?: boolean
-}) {
+export function ControlsSlotProvider({ children, form = 'full' }: { children: ReactNode; form?: DockForm }) {
   const [slot, setSlot] = useState<HTMLElement | null>(null)
   return (
     <SetSlotContext value={setSlot}>
       <SlotContext value={slot}>
-        <CompactDockContext value={compact}>{children}</CompactDockContext>
+        <DockFormContext value={form}>{children}</DockFormContext>
       </SlotContext>
     </SetSlotContext>
   )

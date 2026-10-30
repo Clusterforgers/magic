@@ -56,10 +56,12 @@ interface ZoneButtonProps {
   ids: readonly ObjectId[]
   /** The panel's chip, or the smaller one of a one-line pod. */
   density?: Exclude<ChipDensity, 'tile'>
+  /** More classes for the button, to size it in its row. */
+  className?: string
 }
 
 /** A chip with the zone's icon and count that opens the list of every card in it, most recent first. */
-export function ZoneButton({ zone, owner, ids, density = 'panel' }: ZoneButtonProps) {
+export function ZoneButton({ zone, owner, ids, density = 'panel', className }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const Icon = ZONE_ICON[zone]
   const label = zoneLabel(zone, ids.length)
@@ -75,7 +77,7 @@ export function ZoneButton({ zone, owner, ids, density = 'panel' }: ZoneButtonPr
         title={label}
         data-zone={zone}
         onClick={() => setOpen(true)}
-        className={cn('min-w-0 text-xs', line ? 'gap-0.5 px-0.5' : 'gap-1 px-1.5')}
+        className={cn('min-w-0 text-xs', line ? 'gap-0.5 px-0.5' : 'gap-1 px-1.5', className)}
       >
         <Icon aria-hidden="true" className={line ? 'size-3.5' : 'size-4'} />
         <span aria-hidden="true" className="tabular-nums">

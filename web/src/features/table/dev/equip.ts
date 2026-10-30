@@ -108,13 +108,23 @@ export function withEquip(fixture: Fixture): Fixture {
       gives: { power: 1, toughness: 1 },
     })
   if (third !== undefined)
-    pieces.push({
-      name: 'Pacifism',
-      subtype: 'Aura',
-      controller: rival,
-      host: third.id,
-      gives: { rules: ['CantAttack', 'CantBlock'] },
-    })
+    pieces.push(
+      {
+        name: 'Pacifism',
+        subtype: 'Aura',
+        controller: rival,
+        host: third.id,
+        gives: { rules: ['CantAttack', 'CantBlock'] },
+      },
+      // A keyword alone in its mark, wider than the foot stack of a 100 px card ("Deathtouch" is 73 px with its padding).
+      {
+        name: 'Basilisk Collar',
+        subtype: 'Equipment',
+        controller: viewer,
+        host: third.id,
+        gives: { keywords: ['Deathtouch'] },
+      },
+    )
   if (theirs !== undefined)
     pieces.push({
       name: 'Eel Umbra',

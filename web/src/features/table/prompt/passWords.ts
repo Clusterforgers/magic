@@ -4,6 +4,7 @@
  */
 import type { PlayState } from '@/play/store'
 import type { Step, YieldUntil } from '@/protocol/generated'
+import type { DockForm } from '../dockLayout'
 import { topOfStack } from './priorityText'
 
 /** What the table shows that the primary button's words depend on. */
@@ -16,22 +17,30 @@ export interface PassSituation {
   top: string | null
 }
 
+/** What a step is called after the one before it: in full, and in the short form of a narrow dock. */
+interface StepWords {
+  full: string
+  short: string
+}
+
+const words = (full: string, short: string = full): StepWords => ({ full, short })
+
 /**
  * What the step after this one is called ("Next: Combat"), by the step a pass leaves; null in the last window of the
  * turn, where the button says "End turn". Untap and Cleanup never give priority, so their words are never seen.
  */
-const NEXT_STEP: Record<Step, string | null> = {
-  Untap: 'Upkeep',
-  Upkeep: 'Draw',
-  Draw: 'Precombat main',
-  Main1: 'Combat',
-  BeginCombat: 'Declare attackers',
-  DeclareAttackers: 'Declare blockers',
-  DeclareBlockers: 'Combat damage',
-  FirstStrikeDamage: 'Combat damage',
-  CombatDamage: 'End of combat',
-  EndCombat: 'Postcombat main',
-  Main2: 'End step',
+const NEXT_STEP: Record<Step, StepWords | null> = {
+  Untap: words('Upkeep'),
+  Upkeep: words('Draw'),
+  Draw: words('Precombat main', 'Main 1'),
+  Main1: words('Combat'),
+  BeginCombat: words('Declare attackers', 'Attackers'),
+  DeclareAttackers: words('Declare blockers', 'Blockers'),
+  DeclareBlockers: words('Combat damage', 'Damage'),
+  FirstStrikeDamage: words('Combat damage', 'Damage'),
+  CombatDamage: words('End of combat', 'End combat'),
+  EndCombat: words('Postcombat main', 'Main 2'),
+  Main2: words('End step'),
   End: null,
   Cleanup: null,
 }
@@ -39,12 +48,16 @@ const NEXT_STEP: Record<Step, string | null> = {
 /**
  * The label of the primary button, which passes priority: "Resolve Lightning Bolt" over a spell, on the viewer's turn
  * "Next: Combat" (or "End turn" in the last window), and "Continue" on anybody else's turn. Never "pass priority".
+ * A dock without room for whole words (`short`, `compact`) leaves the spell's name to the stack strip, where it is
+ * the top chip ("Resolve"), and names the next step in one or two short words ("Next: Attackers").
  */
-export function primaryLabel({ step, yourTurn, top }: PassSituation): string {
-  if (top !== null) return `Resolve ${top}`
+export function primaryLabel({ step, yourTurn, top }: PassSituation, form: DockForm = 'full'): string {
+  const whole = form === 'full'
+  if (top !== null) return whole ? `Resolve ${top}` : 'Resolve'
   if (!yourTurn) return 'Continue'
   const next = NEXT_STEP[step]
-  return next === null ? 'End turn' : `Next: ${next}`
+  if (next === null) return 'End turn'
+  return `Next: ${whole ? next.full : next.short}`
 }
 
 /** Whether the primary button already ends the turn, so a second "End turn" beside it would only repeat it. */

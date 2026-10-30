@@ -1,12 +1,14 @@
-// Goal: the hand dock grows only for a hand that one row of the narrowest card does not hold, to the height of the two or three rows that do (never past its most), and at that height the hand's layout holds every card without scrolling, commanders at its head included.
+// Goal: the hand dock grows only for a hand that one row of the narrowest card does not hold, to the height of the two or three rows that do (never past its most), and at that height the hand's layout holds every card without scrolling, commanders at its head included, and the width one row needs (`handRowPx`, which sizes the controls dock) is exactly the least at which the dock does not grow.
 import { describe, expect, it } from 'vitest'
 import {
   COMMAND_GAP_PX,
   HAND_DOCK_CHROME_PX,
+  HAND_DOCK_SIDES_PX,
   HAND_FLOOR_PX,
   HAND_GAP_PX,
   handDockNeed,
   handLayout,
+  handRowPx,
 } from './handFit'
 
 const TWO_ROWS = 95 + 54 + HAND_DOCK_CHROME_PX
@@ -54,4 +56,29 @@ describe('handDockNeed', () => {
       expect(layout.box.width).toBeGreaterThanOrEqual(HAND_FLOOR_PX)
     },
   )
+})
+
+describe('handRowPx', () => {
+  it.each([
+    // cards, commanders, width
+    [7, 0, 7 * 68 + 6 * 4 + HAND_DOCK_SIDES_PX],
+    [7, 1, 7 * 68 + 6 * 4 + 72 + 10 + HAND_DOCK_SIDES_PX],
+    [7, 2, 670],
+    [0, 0, 68 + HAND_DOCK_SIDES_PX],
+    [16, 2, 16 * 68 + 15 * 4 + 154 + HAND_DOCK_SIDES_PX],
+  ])('holds %i cards and %i commanders in a row %i px wide', (count, commanders, width) => {
+    expect(handRowPx(count, commanders)).toBe(width)
+  })
+
+  it.each([
+    [7, 0],
+    [7, 1],
+    [7, 2],
+    [9, 2],
+    [12, 1],
+  ])('is the least width at which %i cards and %i commanders need no second row', (count, commanders) => {
+    const inner = handRowPx(count, commanders) - HAND_DOCK_SIDES_PX
+    expect(handDockNeed({ width: inner, count, commanders, most: 1000 })).toBe(0)
+    expect(handDockNeed({ width: inner - 1, count, commanders, most: 1000 })).toBeGreaterThan(0)
+  })
 })
