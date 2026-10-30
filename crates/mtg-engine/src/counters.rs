@@ -37,6 +37,7 @@ pub(crate) fn changes_characteristics(kind: &CounterKind) -> bool {
 pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(), EngineError> {
     match event.on {
         Target::Object(named) => {
+            let stamp = state.next_timestamp;
             let object = state
                 .objects
                 .get_mut(&named.id)
@@ -52,6 +53,18 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
                 )));
             };
             change(counters, &event.counter, event.delta)?;
+            if event.counter.keyword().is_some()
+                && let Some(permanent) = object.permanent.as_mut()
+            {
+                if permanent.counters_of(&event.counter) == 0 {
+                    permanent.keyword_stamps.remove(&event.counter);
+                } else if !permanent.keyword_stamps.contains_key(&event.counter) {
+                    permanent
+                        .keyword_stamps
+                        .insert(event.counter.clone(), stamp);
+                    state.next_timestamp += 1;
+                }
+            }
             if event.delta > 0 && changes_characteristics(&event.counter) {
                 state.possible.counters = true;
             }

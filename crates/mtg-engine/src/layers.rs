@@ -154,6 +154,9 @@ pub(crate) struct Held {
     pub(crate) abilities: Vec<HeldAbility>,
     /// The keywords it has, in the order they were gained; one it already has is not listed twice.
     pub(crate) keywords: Vec<Keyword>,
+    /// The keywords its keyword counters give with the timestamp each held since: an effect older than the counter does not
+    /// take it away (CR 613.7).
+    counter_keywords: Vec<(Keyword, u64)>,
     /// The effects that changed it.
     pub(crate) applied: Vec<Applied>,
 }
@@ -190,6 +193,7 @@ impl Held {
             controller: object.controller(),
             abilities,
             keywords,
+            counter_keywords: Vec::new(),
             applied: Vec::new(),
         }
     }
@@ -224,6 +228,15 @@ impl Held {
         }
     }
 
+    /// Gives back the keywords of the keyword counters put on after the effect with the timestamp `stamp` that `named` selects.
+    fn keep_newer_counter_keywords(&mut self, stamp: u64, named: impl Fn(&Keyword) -> bool) {
+        for (keyword, since) in &self.counter_keywords {
+            if *since > stamp && named(keyword) && !self.keywords.contains(keyword) {
+                self.keywords.push(keyword.clone());
+            }
+        }
+    }
+
     /// Makes the change `modification` says, as the effect `origin` with the timestamp `stamp` gives it.
     fn change(&mut self, modification: &Modification, origin: Grant, stamp: u64) {
         modification.apply(&mut self.chars);
@@ -248,6 +261,7 @@ impl Held {
             }
             Modification::RemoveKeyword(keyword) => {
                 self.keywords.retain(|held| held != keyword);
+                self.keep_newer_counter_keywords(stamp, |held| held == keyword);
                 self.abilities.retain(|held| {
                     held.keyword.as_ref() != Some(keyword)
                         && !matches!(&*held.body, Ability::Keyword(named) if named == keyword)
@@ -256,6 +270,7 @@ impl Held {
             Modification::LoseAbilities => {
                 self.keywords.clear();
                 self.abilities.clear();
+                self.keep_newer_counter_keywords(stamp, |_| true);
             }
             Modification::GrantAbility(granted) => self.abilities.push(HeldAbility {
                 address: AbilityRef::granted(self.id, origin),
@@ -748,10 +763,15 @@ impl<'a> Pass<'a> {
             let Some(permanent) = state.object(*id).and_then(GameObject::permanent) else {
                 continue;
             };
-            for keyword in permanent.counters().filter_map(|(kind, _)| kind.keyword()) {
+            for (kind, _) in permanent.counters() {
+                let Some(keyword) = kind.keyword() else {
+                    continue;
+                };
+                let since = permanent.keyword_stamps.get(kind).copied().unwrap_or(0);
                 if !held.keywords.contains(&keyword) {
-                    held.keywords.push(keyword);
+                    held.keywords.push(keyword.clone());
                 }
+                held.counter_keywords.push((keyword, since));
             }
         }
     }

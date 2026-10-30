@@ -549,3 +549,6 @@ mod dk1e_announcing;
 mod dk1e_deck;
 // t20c
 mod t20c_pay_cards;
+
+// dk1f
+mod dk1f_cards;

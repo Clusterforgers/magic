@@ -168,6 +168,9 @@ pub struct PermanentState {
     /// began. Echo reads it in the upkeep (CR 702.30a), after the turn has cleared `summoning_sick`.
     pub(crate) new_to: Option<PlayerId>,
     pub(crate) counters: BTreeMap<CounterKind, u32>,
+    /// The timestamp each kind of keyword counter on it has held since the first of the kind was put on (CR 122.1b, 613.7): an
+    /// effect that takes the abilities away leaves the keyword of a counter put on after it.
+    pub(crate) keyword_stamps: BTreeMap<CounterKind, u64>,
     pub(crate) attached_to: Option<ObjectRef>,
     /// The player it is attached to (an Aura that enchants a player, CR 303.4); never set together with `attached_to`.
     pub(crate) attached_player: Option<PlayerId>,
@@ -213,6 +216,7 @@ impl PermanentState {
             summoning_sick: true,
             new_to: None,
             counters: BTreeMap::new(),
+            keyword_stamps: BTreeMap::new(),
             attached_to: None,
             attached_player: None,
             timestamp,

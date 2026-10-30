@@ -1,0 +1,39 @@
+{
+  "oracle_id": "48a773d0-c433-4463-b50f-b6d4604a042c",
+  "name": "Abigale, Eloquent First-Year",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abigale, Eloquent First-Year",
+      "oracle_fingerprint": "ab43b84115697f777e6425ccd1e9bc8e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["LoseAbilities"],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "first strike" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

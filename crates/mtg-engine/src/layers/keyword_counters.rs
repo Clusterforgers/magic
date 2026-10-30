@@ -1,4 +1,4 @@
-//! Goal: a keyword counter gives its permanent the keyword in layer 6 (CR 122.1b) in a game with no effect and no static ability: the keyword is there with one counter or several and held once beside the same printed keyword, gone when the last counter is removed, kept while another counter of the kind is left, taken away by an effect that removes the keyword or the abilities and applied before it, and a counter of any other kind gives none.
+//! Goal: a keyword counter gives its permanent the keyword in layer 6 (CR 122.1b) in a game with no effect and no static ability: the keyword is there with one counter or several and held once beside the same printed keyword, gone when the last counter is removed, kept while another counter of the kind is left, taken away by an effect that removes the keyword or the abilities and applied before it, kept when the counter was put on after the effect, and a counter of any other kind gives none.
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -126,4 +126,46 @@ fn an_effect_that_gives_another_keyword_adds_to_the_counters_keyword() {
         5,
     );
     assert_eq!(has(&game, "Bear"), [Keyword::Lifelink, Keyword::Haste]);
+}
+
+#[rstest]
+#[case::the_keyword_removed(Modification::RemoveKeyword(Keyword::Lifelink))]
+#[case::all_abilities_lost(Modification::LoseAbilities)]
+fn a_counter_put_on_after_the_effect_keeps_its_keyword(#[case] modification: Modification) {
+    let mut game = game_with(&[]);
+    let before = game.next_timestamp;
+    effect(&mut game, "Bear", modification, before);
+    game.next_timestamp = before + 1;
+    change(&mut game, "Bear", "lifelink", 1);
+    assert_eq!(has(&game, "Bear"), [Keyword::Lifelink]);
+    assert_eq!(
+        game.next_timestamp,
+        before + 2,
+        "the counter took a timestamp"
+    );
+}
+
+#[test]
+fn a_counter_put_on_again_after_the_last_one_left_is_newer_than_the_effect() {
+    let mut game = game_with(&[(counter("lifelink"), 1)]);
+    effect(&mut game, "Bear", Modification::LoseAbilities, 3);
+    assert_eq!(has(&game, "Bear"), Vec::<Keyword>::new());
+    change(&mut game, "Bear", "lifelink", -1);
+    game.next_timestamp = 4;
+    change(&mut game, "Bear", "lifelink", 1);
+    assert_eq!(has(&game, "Bear"), [Keyword::Lifelink]);
+}
+
+#[test]
+fn more_counters_of_a_kind_keep_the_timestamp_of_the_first() {
+    let mut game = game_with(&[]);
+    game.next_timestamp = 10;
+    change(&mut game, "Bear", "lifelink", 1);
+    effect(&mut game, "Bear", Modification::LoseAbilities, 11);
+    change(&mut game, "Bear", "lifelink", 1);
+    assert_eq!(
+        has(&game, "Bear"),
+        Vec::<Keyword>::new(),
+        "a second counter of the kind does not renew the first"
+    );
 }
