@@ -142,7 +142,9 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
         ? { bow: 0.12, head: 8 }
         : line.kind === 'attach'
           ? ATTACH_CURVE
-          : { bow: 0.1, head: 10 }
+          : // A block runs from the attacker to the blocker, the way an attack runs the other way round, so it bows to
+            // the other side of its travel: both bow the same way on the screen, clear of the pod column at the left.
+            { bow: -0.1, head: 10 }
     const shape = connect(from, to, curve)
     if (shape === null) continue
     const same = `${shape.d}|${line.kind}|${line.pending}|${line.outcome ?? ''}`
