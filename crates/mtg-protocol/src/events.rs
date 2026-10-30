@@ -413,10 +413,15 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
                 count: count(looked.cards.len()),
             })
         }
-        Event::CardsFound(found) if found.player != viewer => Some(HiddenEvent::CardsFound {
-            player: found.player,
-            count: count(found.cards.len()),
-        }),
+        // A search of a zone the viewer sees into (a graveyard, a hand with open hands) tells the viewer which cards.
+        Event::CardsFound(found)
+            if found.player != viewer && !zone_is_visible_in(before, found.zone, viewer) =>
+        {
+            Some(HiddenEvent::CardsFound {
+                player: found.player,
+                count: count(found.cards.len()),
+            })
+        }
         Event::Scried(scried) if scried.player != viewer => Some(HiddenEvent::Scried {
             player: scried.player,
             top: count(scried.top.len()),

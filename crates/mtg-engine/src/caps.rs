@@ -134,6 +134,7 @@ const RUNS: &[&str] = &[
     "Effect.LookAtTop",
     "Effect.Reveal",
     "Effect.Search",
+    "Search.Zones",
     "Effect.Shuffle",
     "Effect.Move",
     "Effect.Move.Battlefield",
@@ -522,6 +523,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
     "Condition.Level",
+    "Condition.Searched",
     "Condition.Step",
     "Condition.BeforeAttackers",
     "Condition.InCombat",
@@ -597,6 +599,7 @@ mod tests {
     #[case::moving_to_the_battlefield_attached("Effect.Move.Attached", true)]
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
+    #[case::searching_several_zones("Search.Zones", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
@@ -990,6 +993,7 @@ mod tests {
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::a_class_level("Condition.Level", true)]
+    #[case::a_search_of_the_library_this_way("Condition.Searched", true)]
     #[case::a_step_of_the_turn("Condition.Step", true)]
     #[case::before_attackers("Condition.BeforeAttackers", true)]
     #[case::in_combat("Condition.InCombat", true)]
