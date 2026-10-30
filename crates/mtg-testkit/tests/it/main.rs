@@ -543,3 +543,6 @@ mod deck_auras;
 mod t20b_replacement;
 // t20a
 mod t20a_tribute;
+// dk1e
+mod dk1e_announcing;
+mod dk1e_deck;

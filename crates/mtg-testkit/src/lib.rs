@@ -54,6 +54,7 @@ pub mod extra_cost_cards;
 pub mod face_cards;
 pub mod family_cards;
 pub mod fight_cards;
+pub mod fixture_decks;
 pub mod flip_cards;
 pub mod foretell_cards;
 pub mod free_cast_cards;
