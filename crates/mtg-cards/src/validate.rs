@@ -1290,6 +1290,7 @@ impl<'a> Walker<'a> {
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddProtectionFromChosenColor
+            | Modification::AddProtectionFromChosenCardType
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
@@ -2718,12 +2719,15 @@ impl Walker<'_> {
         if names_spells(affected) {
             self.spell_keywords(mods);
         }
-        if mods
-            .iter()
-            .any(|m| matches!(m, Modification::AddProtectionFromChosenColor))
-        {
+        if mods.iter().any(|m| {
+            matches!(
+                m,
+                Modification::AddProtectionFromChosenColor
+                    | Modification::AddProtectionFromChosenCardType
+            )
+        }) {
             self.at("mods", |w| {
-                w.problem("a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it");
+                w.problem("a colour or card type is chosen as an effect begins, so only a `Continuous` effect adds protection from it");
             });
         }
         if let Some(condition) = condition {
@@ -3968,7 +3972,7 @@ mod tests {
     )]
     #[case::a_colour_is_chosen_as_an_effect_begins(
         r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
-        "a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
+        "a colour or card type is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
     )]
     #[case::a_supertype_goes_with_a_copy_only(
         r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,

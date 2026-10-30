@@ -283,6 +283,7 @@ fn preset_state(
         summoning_sick: preset.summoning_sick,
         new_to: None,
         counters,
+        keyword_stamps: BTreeMap::new(),
         // Every object of a fresh game is on its first incarnation (counter 0).
         attached_to: host.map(|id| ObjectRef { id, counter: 0 }),
         attached_player: enchanted,

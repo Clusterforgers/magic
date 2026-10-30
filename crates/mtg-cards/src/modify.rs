@@ -58,6 +58,9 @@ pub enum Modification {
     /// Adds protection from a colour the controller chooses as the effect begins (layer 6): "protection from the
     /// color of your choice". Only an effect of a spell or ability has it, never a static ability.
     AddProtectionFromChosenColor,
+    /// Adds protection from a card type the controller chooses as the effect begins (layer 6): "protection from the
+    /// card type of your choice". Only an effect of a spell or ability has it, never a static ability.
+    AddProtectionFromChosenCardType,
     /// Removes a keyword ability (layer 6).
     RemoveKeyword(Keyword),
     /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
@@ -121,6 +124,7 @@ impl Modification {
             Modification::SetColors(_) => Some("5"),
             Modification::AddKeyword(_)
             | Modification::AddProtectionFromChosenColor
+            | Modification::AddProtectionFromChosenCardType
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbilities => Some("6"),

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "25afddd2-6e48-4742-b34e-e3b5def7c0fd",
+  "name": "Pippin, Guard of the Citadel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pippin, Guard of the Citadel",
+      "oracle_fingerprint": "19fc5e13b0ceb624b084059cc065afdc",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddProtectionFromChosenCardType"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

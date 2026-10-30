@@ -100,6 +100,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         summoning_sick: true,
         new_to: None,
         counters: BTreeMap::new(),
+        keyword_stamps: BTreeMap::new(),
         attached_to: None,
         attached_player: None,
         timestamp: state.next_timestamp,

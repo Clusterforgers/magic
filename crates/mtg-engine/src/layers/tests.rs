@@ -223,6 +223,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddKeyword(_)
             // Only an effect has it, and it works out its keyword with an answer, so it is not a row of the table.
             | mtg_cards::modify::Modification::AddProtectionFromChosenColor
+            | mtg_cards::modify::Modification::AddProtectionFromChosenCardType
             | mtg_cards::modify::Modification::RemoveKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::LoseAbilities
