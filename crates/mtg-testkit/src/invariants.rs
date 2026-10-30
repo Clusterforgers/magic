@@ -24,6 +24,7 @@ use mtg_engine::player::Player;
 use mtg_engine::resolve::Scope;
 use mtg_engine::spend::{Restricted, Spend};
 use mtg_engine::state::Stage;
+use mtg_engine::w17b_statics::w17b_cant_lose;
 use mtg_engine::zones::{Zone, Zones};
 use mtg_engine::{Characteristics, characteristics};
 use mtg_engine::{
@@ -380,7 +381,8 @@ fn check_legends(engine: &Engine) -> Result<(), Violation> {
 }
 
 /// At a decision point no permanent holds both a +1/+1 and a -1/-1 counter (CR 704.5q) and no player in the game holds ten
-/// poison counters (CR 704.5c): state-based actions took them off, or the player out.
+/// poison counters (CR 704.5c) or lethal commander damage (CR 704.6c): state-based actions took them off, or the player
+/// out, unless the player can't lose the game (CR 104.3).
 fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
     for &id in state.zone(Zone::Battlefield) {
         let held = |kind: &CounterKind| {
@@ -405,8 +407,9 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
             )));
         }
     }
-    for player in state.players().iter().filter(|p| p.is_in_game()) {
-        if player.counters_of(&CounterKind::Poison) >= state.ruleset().poison_threshold() {
+    let can_lose = |p: &&Player| p.is_in_game() && !w17b_cant_lose(state, p.id());
+    for player in state.players().iter().filter(can_lose) {
+        if player.counters_of(&CounterKind::Poison) >=state.ruleset().poison_threshold() {
             return Err(Violation::Counters(format!(
                 "{:?} holds {} poison counters and is still in the game",
                 player.id(),
