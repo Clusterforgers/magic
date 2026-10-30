@@ -2,6 +2,7 @@ import { CARD_CORNER } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
 import type { ImageSize } from '@/features/cards/images'
+import { Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import {
@@ -17,6 +18,7 @@ import {
 import type { CombatRole, Frame, Links } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
+import { isUnattached } from './hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
 import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'
@@ -255,6 +257,18 @@ export function TextFace({
             + {name}
           </span>
         ))}
+        {isUnattached(object) ? (
+          <span
+            data-slot="card-unattached"
+            className={cn(
+              'inline-flex h-fit max-w-full items-center gap-0.5 rounded-sm border border-dashed border-foreground bg-background px-1 leading-snug text-foreground',
+              classes.text,
+            )}
+          >
+            <Unlink aria-hidden="true" className="size-3 shrink-0" />
+            <span className={cn(size === 'compact' && 'sr-only')}>Unattached</span>
+          </span>
+        ) : null}
         {note?.label === undefined ? null : (
           <span
             data-slot="card-note"

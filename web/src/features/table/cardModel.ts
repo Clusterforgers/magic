@@ -10,6 +10,7 @@ import type {
   ObjectId,
   ObjectView,
 } from '@/protocol/generated'
+import { isUnattached } from './hosts'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from './manaSymbols'
 
 /** Where a permanent sits on its controller's battlefield. */
@@ -373,6 +374,7 @@ export function statusWords(object: ObjectView, role: CombatRole | null, links: 
   }
   if (state?.prepared === true) words.push('prepared')
   if (state?.level !== undefined) words.push(`level ${state.level}`)
+  if (isUnattached(object)) words.push('unattached')
   return words
 }
 

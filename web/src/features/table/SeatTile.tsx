@@ -7,6 +7,8 @@ import { LifeFx } from './fx/LifeFx'
 import { ManaPool } from './ManaPool'
 import { useSeatNamer } from './names'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
+import { useEnchantChips } from './enchantChips'
+import { EnchantChips } from './EnchantChips'
 import { ACTIVE_EDGE, ACTIVE_TINT, CountChip, PriorityDot, SeatDot } from './PodParts'
 import { chipZones, podCounts, podState, priorityName, showsPriorityDot, tileName } from './podFigures'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
@@ -39,6 +41,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
     })),
   )
   const chips = useCommanderChips(seat)
+  const enchants = useEnchantChips(seat)
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const counts = podCounts(player, exile)
@@ -59,6 +62,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         eliminated,
         focused,
         commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
+        enchanted: enchants.map((chip) => chip.words),
       })}
       onClick={() => onFocusSeat(seat)}
       className={cn(
@@ -93,6 +97,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           <CountChip key={zone} zone={zone} count={counts[zone]} density="tile" />
         ))}
         <TaxChips chips={chips.tax} density="tile" />
+        <EnchantChips chips={enchants} density="tile" />
         <ManaPool pool={player.mana} className="shrink-0 flex-nowrap text-xs" />
         {eliminated ? (
           <b className="shrink-0 rounded bg-destructive/10 px-1 text-destructive">Eliminated</b>

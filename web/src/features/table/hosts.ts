@@ -11,6 +11,15 @@ export function hostOf(object: ObjectView | undefined): HostRef | null {
   return null
 }
 
+/** An Equipment or Fortification on the battlefield that hangs on no permanent: it waits to be attached. */
+export function isUnattached(object: ObjectView): boolean {
+  return (
+    object.zone === 'Battlefield' &&
+    object.attached_to === undefined &&
+    object.subtypes.some((subtype) => subtype === 'Equipment' || subtype === 'Fortification')
+  )
+}
+
 /** Whether two hosts are the same permanent or the same player; two missing hosts are the same. */
 export function sameHost(a: HostRef | null, b: HostRef | null): boolean {
   if (a === null || b === null) return a === b
