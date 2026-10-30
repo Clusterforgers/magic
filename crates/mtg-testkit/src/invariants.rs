@@ -405,7 +405,12 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
             )));
         }
     }
-    for player in state.players().iter().filter(|p| p.is_in_game()) {
+    // A player who can't lose stays in the game whatever would make them lose (CR 104.3).
+    for player in state
+        .players()
+        .iter()
+        .filter(|p| p.is_in_game() && !mtg_engine::w17b_statics::w17b_cant_lose(state, p.id()))
+    {
         if player.counters_of(&CounterKind::Poison) >= state.ruleset().poison_threshold() {
             return Err(Violation::Counters(format!(
                 "{:?} holds {} poison counters and is still in the game",
