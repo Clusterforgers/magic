@@ -311,6 +311,21 @@ export function gridColumns(side: SideKind): string {
   return side === 'rail' ? `minmax(0, 1fr) ${RAIL_PX}px` : 'minmax(0, 1fr)'
 }
 
+/** The least height a sheet that stops above your board gets from the opponents' area and the shared strip, in px. */
+export const SIDE_PANEL_MIN_PX = 300
+
+/**
+ * The `grid-row` of the overlay that holds an open rail panel or sheet, by the lines of the main area's five rows (bar,
+ * opponents, shared strip, own board, hand and controls). Never the bar, whose menu stays in reach, and never the
+ * hand and controls row, so the hand and the pass control stay pressable. A rail's panel reaches down over your board
+ * (your life is in the pod beside it); a sheet stops above your board while the opponents' area and the strip give it
+ * `SIDE_PANEL_MIN_PX`, so your life stays in view, and else takes your board as well.
+ */
+export function sidePanelRows(regions: Pick<Regions, 'side' | 'opponents' | 'shared'>): string {
+  const aboveOwn = regions.side === 'sheet' && regions.opponents + regions.shared >= SIDE_PANEL_MIN_PX
+  return aboveOwn ? '2 / 4' : '2 / 5'
+}
+
 // ---- Mode and shape ----------------------------------------------------------------------------------------------
 
 /** Space around the zones of the table and between them, in px. */

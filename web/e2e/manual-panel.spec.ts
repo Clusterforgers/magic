@@ -22,7 +22,7 @@ async function openSide(page: Page, tab: 'Commands' | 'Log'): Promise<void> {
 async function openRow(page: Page, name: string): Promise<Locator> {
   const panel = page.getByRole('region', { name: 'Commands' })
   const toggle = panel.locator('button[aria-expanded]', { hasText: new RegExp(`^${name}`) }).first()
-  // A phone's sheet can shut while the turn starts (roadmap ui3d): open it again until the row is open.
+  // The table redraws while a turn starts: look again until the row is open.
   await expect(async () => {
     if (!(await panel.isVisible())) await openSide(page, 'Commands')
     if ((await toggle.getAttribute('aria-expanded', { timeout: 2000 })) !== 'true')
@@ -65,8 +65,6 @@ for (const size of SIZES) {
   test(`the Commands panel acts for one seat and both logs tell it, at ${size.name} size`, async ({
     browser,
   }) => {
-    // On a phone the side sheet shuts or redraws under the first press of a row during the first turn (roadmap ui3d).
-    test.fixme(size.name === 'phone', 'the side sheet is not stable on a phone during the first turn (ui3d)')
     test.setTimeout(3 * 60_000)
     const players = await createAndJoin(browser, [
       { name: 'Ada', deck: 'mono-green' },
