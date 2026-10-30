@@ -4,7 +4,7 @@ import { PIP, PIP_FROM, PIP_INK, PIP_TO } from './cardSize'
 
 interface ManaPipsProps {
   pips: readonly ManaPip[]
-  /** Size classes for one symbol, such as `size-4 text-[0.6875rem]`. */
+  /** Size classes for one symbol, such as `size-4 text-xs`. */
   sizeClass: string
   /** Names the group for a screen reader, such as "Mana cost". */
   label: string

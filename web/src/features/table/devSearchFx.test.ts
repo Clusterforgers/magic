@@ -31,6 +31,16 @@ describe('?fx=', () => {
   })
 })
 
+describe('?newturn=', () => {
+  it.each([1, true, '1'])('passes the turn for %j', (newturn) => {
+    expect(parseDevSearch({ newturn }).newturn).toBe(true)
+  })
+
+  it.each([undefined, 0, '0', '', 'yes', 2, false, null])('leaves the turn alone for %j', (newturn) => {
+    expect(parseDevSearch({ newturn }).newturn).toBeUndefined()
+  })
+})
+
 describe('?bar=', () => {
   it.each([1, true, '1'])('opens the bar for %j', (bar) => {
     expect(parseDevSearch({ bar }).bar).toBe(true)

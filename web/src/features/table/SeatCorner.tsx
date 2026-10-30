@@ -47,7 +47,7 @@ function EmptyCommand({ width, height }: { width: number; height: number }) {
       className="grid shrink-0 content-center justify-items-center gap-1 rounded-md border border-dashed border-border-strong/60 text-muted-foreground"
     >
       <Icon aria-hidden="true" className="size-4" />
-      <span aria-hidden="true" className="text-[0.6875rem] leading-4">
+      <span aria-hidden="true" className="text-xs leading-4">
         {emptyLabel('command', width)}
       </span>
     </span>

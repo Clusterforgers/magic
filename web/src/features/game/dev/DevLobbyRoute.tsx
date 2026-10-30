@@ -1,8 +1,9 @@
 import { useSearch } from '@tanstack/react-router'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import { GameContext } from '@/features/game/gameContext'
+import { saveInvites } from '@/lib/invites'
 import { Lobby } from '@/features/game/Lobby'
 import { deckFacts, lobbyDecks, lobbyPrecons } from './deckApis'
 import { lobbyApi, lobbyGame, LOBBY_FIXTURE_MARKER } from './lobbyGame'
@@ -13,7 +14,7 @@ import { lobbyApi, lobbyGame, LOBBY_FIXTURE_MARKER } from './lobbyGame'
  * page plays (0 is the host, who gets the toggle, Remove and Close; any other seat gets Leave); `names=long` gives
  * every seat a name of 32 characters; `visibility=invite` makes the game invite only; `nodeck` lists the seats that
  * have chosen no deck yet; `account=1` makes this page a signed-in player, whose chooser lists stored decks beside the
- * built-in ones; `format=commander` makes it a Commander game and `rules=1` gives the game house rules. Ready, the toggle, Remove and the choice of a deck work on the fixture as if a server answered them;
+ * built-in ones; `format=commander` makes it a Commander game, `rules=1` gives the game house rules and `invites=1` gives the host the invite link and code. Ready, the toggle, Remove and the choice of a deck work on the fixture as if a server answered them;
  * Close and Leave go to Play.
  */
 export function DevLobbyRoute() {
@@ -28,11 +29,21 @@ export function DevLobbyRoute() {
     account,
     format,
     rules,
+    invites,
     decks: many,
     list,
     detail,
   } = useSearch({
     from: '/dev/lobby',
+  })
+  // The host's tab holds the code the server showed once; the lobby reads it when it mounts, so it is stored first.
+  useState(() => {
+    if (invites === true)
+      saveInvites({
+        game: 'dev-lobby',
+        code: 'K7M29QXA',
+        seats: [{ seat: 0, name: 'Ada', token: 'dev-token' }],
+      })
   })
   const game = useMemo(
     () => lobbyGame({ seats, ready, away, me, names, visibility, nodeck, format, rules }),

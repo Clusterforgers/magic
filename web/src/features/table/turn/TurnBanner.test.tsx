@@ -169,11 +169,13 @@ describe('what it does for a reader and for an answer', () => {
 })
 
 describe('where it sits', () => {
-  it('lies over the middle of the top bar, whose turn badge says the same, and not in the shared strip', () => {
+  it('stands in the free room of the top bar, after the step ladder, and not in the shared strip', () => {
     renderCueTable()
     expect(document.querySelector('[data-region="bar"]')).toContainElement(banner())
     expect(document.querySelector('[data-region="shared"]')).not.toContainElement(banner())
-    expect(banner()).toHaveClass('absolute', 'inset-y-0.5', 'mx-auto', 'w-fit')
+    expect(banner()).toHaveAttribute('data-place', 'bar')
+    expect(banner()).toHaveClass('absolute', 'inset-y-0.5', 'right-0')
+    expect(document.querySelector('[data-slot="turn-banner-room"]')).toContainElement(banner())
   })
 
   it.each([88, 190, 360])('stays in the bar however tall a prompt of %i px makes the sheet', (height) => {
@@ -183,9 +185,9 @@ describe('where it sits', () => {
     expect(banner()?.style.bottom).toBe('')
   })
 
-  it('keeps to the width of the bar and is for the eye only', () => {
+  it('keeps to the room it stands in and is for the eye only', () => {
     renderCueTable()
-    expect(banner()).toHaveClass('max-w-[calc(100%-1rem)]')
+    expect(banner()).toHaveClass('max-w-full')
     expect(banner()).toHaveAttribute('aria-hidden', 'true')
   })
 })

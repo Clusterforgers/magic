@@ -53,7 +53,7 @@ export function ManaChoice({ card, options, onPick, onCancel }: ManaChoiceProps)
             aria-label={`Add ${label} mana`}
             onClick={() => onPick(option)}
           >
-            <ManaMade gives={gives} sizeClass="size-4 text-[0.6875rem]" />
+            <ManaMade gives={gives} sizeClass="size-4 text-xs" />
             {label}
           </Button>
         )

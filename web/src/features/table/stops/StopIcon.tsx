@@ -35,7 +35,7 @@ export function StopIcon({ step }: { step: StopStep }) {
     <span aria-hidden="true" className="relative inline-flex items-center justify-center">
       <Icon className="size-4" />
       {mark === undefined ? null : (
-        <span className="absolute -right-1.5 -bottom-1 text-[0.6875rem] leading-none font-bold">{mark}</span>
+        <span className="absolute -right-1.5 -bottom-1 text-xs leading-none font-bold">{mark}</span>
       )}
     </span>
   )

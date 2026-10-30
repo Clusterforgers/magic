@@ -82,7 +82,7 @@ describe('attachments', () => {
       card({ id: 902, name: 'Bonesplitter', types: ['Artifact'] }),
     ])
     const cues = [...container.querySelectorAll('[data-slot="card-grant"]')].map((c) => c.textContent)
-    expect(cues).toEqual(['Pacifism', 'Bonesplitter'])
+    expect(cues).toEqual(['Pacifism', 'Bonesplitt.'])
     expect(screen.getByRole('button').getAttribute('aria-label')).toMatch(
       /Pacifism attached, Bonesplitter attached/,
     )

@@ -273,7 +273,7 @@ export function CardRow({
                   aria-label={`Close the stack of ${entry.ids.length}`}
                   aria-expanded={true}
                   onClick={() => toggle(item)}
-                  className="absolute -bottom-1 -left-1 rounded-full bg-foreground px-1.5 text-[0.6875rem] leading-4 font-semibold text-background tabular-nums ring-2 ring-primary"
+                  className="absolute -bottom-1 -left-1 rounded-full bg-foreground px-1.5 text-xs leading-4 font-semibold text-background tabular-nums ring-2 ring-primary"
                 >
                   ×{entry.ids.length}
                 </button>

@@ -1,4 +1,4 @@
-// Goal: no text on a card face is under 11 px at any card size, so shrinking a zone to fit more permanents never shrinks the type; the sizes keep the 5:7 shape of a card.
+// Goal: no text on a card face is under 12 px at any card size, so shrinking a zone to fit more permanents never shrinks the type; the sizes keep the 5:7 shape of a card.
 import { describe, expect, it } from 'vitest'
 import { MIN_TEXT_REM, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
@@ -16,7 +16,7 @@ const SIZES = Object.keys(SIZE) as CardSize[]
 
 describe('the card sizes', () => {
   it.each(SIZES.flatMap((size) => (['name', 'text', 'pip'] as const).map((part) => [size, part] as const)))(
-    'set the %s %s text at 11 px or more',
+    'set the %s %s text at 12 px or more',
     (size, part) => {
       expect(textRem(SIZE[size][part])).toBeGreaterThanOrEqual(MIN_TEXT_REM)
     },

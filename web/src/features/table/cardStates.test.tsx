@@ -148,7 +148,7 @@ describe('what is attached', () => {
     ])
     // The foot stack grows upward: the first attachment, the deepest tucked, is the highest mark.
     const marks = [...container.querySelectorAll('[data-slot="card-grant"]')]
-    expect(marks.map((mark) => mark.textContent)).toEqual(['Boots', 'Pacifism'])
+    expect(marks.map((mark) => mark.textContent)).toEqual(['Boots', 'Pacifis.'])
   })
 
   it('names the player a Curse enchants', () => {

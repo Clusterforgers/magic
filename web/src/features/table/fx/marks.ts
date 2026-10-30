@@ -25,6 +25,20 @@ export const MARK_WORDS: Readonly<Record<MarkFx, string>> = {
   drawn: 'Drawn',
 }
 
+/** What a mark's badge needs besides its word in px: border, padding, icon and the gap after it. */
+const MARK_CHROME_PX = 34
+
+/** The width of a letter of a mark's word in px (12 px, semibold). */
+const MARK_CHAR_PX = 7
+
+/** The room a badge leaves at the edges of a card in px (`fx.css`). */
+const MARK_MARGIN_PX = 4
+
+/** Whether a badge of `kind` can write its word on a card `cardWidth` px wide; a narrower card (a hand card) gets the icon alone. */
+export function markShowsWord(kind: MarkFx, cardWidth: number): boolean {
+  return cardWidth - MARK_MARGIN_PX >= MARK_CHROME_PX + MARK_WORDS[kind].length * MARK_CHAR_PX
+}
+
 const shown = (kind: MarkKind): kind is MarkFx => (MARK_FX as readonly string[]).includes(kind)
 
 /** The marks to show: those with a face, each kind once on an object, the first `MAX_MARKS`. */

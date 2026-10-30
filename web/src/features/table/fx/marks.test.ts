@@ -1,7 +1,7 @@
-// Goal: the marks of a batch become the badges to show and the arrows to draw: only the eight kinds with a face are shown, each kind once on an object, at most `MAX_MARKS`; only a counter, an exile, a bounce or a death caused by a resolving object points an arrow from it, each pair once, never from an object to itself, at most `MAX_MARK_ARROWS`.
+// Goal: a badge writes its word only on a card wide enough for it and shows its icon alone on a narrower one (a hand card); the marks of a batch become the badges to show and the arrows to draw: only the eight kinds with a face are shown, each kind once on an object, at most `MAX_MARKS`; only a counter, an exile, a bounce or a death caused by a resolving object points an arrow from it, each pair once, never from an object to itself, at most `MAX_MARK_ARROWS`.
 import { describe, expect, it } from 'vitest'
 import { MARK_FX, FX_MS } from './model'
-import { markArrows, markEffects, MARK_WORDS, MAX_MARK_ARROWS, MAX_MARKS } from './marks'
+import { markArrows, markEffects, markShowsWord, MARK_WORDS, MAX_MARK_ARROWS, MAX_MARKS } from './marks'
 import { MOVE_MS } from './moves'
 import type { MarkKind, MoveMark } from './moves'
 
@@ -72,5 +72,28 @@ describe('which marks point an arrow', () => {
   it('stops at the cap', () => {
     const wipe = Array.from({ length: MAX_MARK_ARROWS + 3 }, (_, object) => mark('died', object + 10, 3))
     expect(markArrows(wipe)).toHaveLength(MAX_MARK_ARROWS)
+  })
+})
+
+describe('the word of a badge on a card of this width', () => {
+  it.each([
+    // kind, card width in px, whether the word fits
+    ['drawn', 68, false],
+    ['drawn', 71, false],
+    ['drawn', 73, true],
+    ['drawn', 80, true],
+    ['drawn', 96, true],
+    ['activated', 96, false],
+    ['activated', 104, true],
+    ['resolved', 96, true],
+    ['countered', 100, false],
+    ['countered', 120, true],
+    ['resolved', 56, false],
+  ] as const)('%s on a card %i px wide: the word %s', (kind, width, shows) => {
+    expect(markShowsWord(kind, width)).toBe(shows)
+  })
+
+  it.each(MARK_FX)('%s is written on a preview-sized card', (kind) => {
+    expect(markShowsWord(kind, 240)).toBe(true)
   })
 })

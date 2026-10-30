@@ -62,10 +62,10 @@ describe('handRowPx', () => {
   it.each([
     // cards, commanders, width
     [7, 0, 7 * 68 + 6 * 4 + HAND_DOCK_SIDES_PX],
-    [7, 1, 7 * 68 + 6 * 4 + 72 + 10 + HAND_DOCK_SIDES_PX],
-    [7, 2, 670],
+    [7, 1, 7 * 68 + 6 * 4 + 72 + 13 + HAND_DOCK_SIDES_PX],
+    [7, 2, 681],
     [0, 0, 68 + HAND_DOCK_SIDES_PX],
-    [16, 2, 16 * 68 + 15 * 4 + 154 + HAND_DOCK_SIDES_PX],
+    [16, 2, 16 * 68 + 15 * 4 + 157 + HAND_DOCK_SIDES_PX],
   ])('holds %i cards and %i commanders in a row %i px wide', (count, commanders, width) => {
     expect(handRowPx(count, commanders)).toBe(width)
   })

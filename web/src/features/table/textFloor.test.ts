@@ -1,10 +1,10 @@
-// Goal: no class in the table sets a text size under the 11 px floor of the type scale (0.6875rem), so the layout gate (`e2e/layout.spec.ts`) finds no small text there: the parser reads rem and px sizes of `text-[...]` and the sources of the table keep every one at the floor or above.
+// Goal: no class in the table sets a text size under the 12 px floor of the type scale (0.75rem), so the layout gate (`e2e/layout.spec.ts`) finds no small text there: the parser reads rem and px sizes of `text-[...]` and the sources of the table keep every one at the floor or above.
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 const TABLE = import.meta.dirname
-const FLOOR_PX = 11
+const FLOOR_PX = 12
 
 /** The sizes in px that a line of source writes as `text-[0.6rem]` or `text-[10px]`; `em` sizes follow their parent. */
 function writtenSizes(line: string): number[] {
@@ -42,7 +42,7 @@ describe('text sizes in the table', () => {
     expect(files.length).toBeGreaterThan(40)
   })
 
-  it('keeps every written size at the 11 px floor or above', () => {
+  it('keeps every written size at the 12 px floor or above', () => {
     const small: string[] = []
     for (const file of files) {
       readFileSync(file, 'utf8')

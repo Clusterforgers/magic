@@ -141,7 +141,7 @@ describe('the foot stack of a picture', () => {
     const stack = foot('normal', 96)
     // 96 px wide is 134 px high: three lines, so one mark of one line and the sum of the other four in two.
     expect(texts(stack)).toEqual(['+3/+3 …'])
-    expect(texts(stack, 'card-grants-more')).toEqual(['+5/+1 Umbra …'])
+    expect(texts(stack, 'card-grants-more')).toEqual(['+5/+1 …'])
   })
 
   it('has room for all five on a large face', () => {
