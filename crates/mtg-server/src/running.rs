@@ -9,8 +9,8 @@ use mtg_engine::manual::ManualAction;
 use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState, replay};
 use mtg_protocol::{
-    DecisionId, ErrorCode, EventView, ProtocolError, SNAPSHOT_LOG, ServerMessage, StateView,
-    TableView, project_log,
+    DecisionId, ErrorCode, LogWindow, ProtocolError, SNAPSHOT_LOG, ServerMessage, StateView,
+    TableView, project_window,
 };
 use tokio::time::Instant;
 
@@ -388,17 +388,21 @@ impl Running {
         })
     }
 
-    /// The latest events of the game (at most `SNAPSHOT_LOG`) as `seat` saw them, rebuilt from the setup and the log; a
-    /// failure leaves the list empty, since the log is only a courtesy of the snapshot.
-    fn recent_log(&self, seat: PlayerId) -> Vec<EventView> {
+    /// The latest events of the game (at most `SNAPSHOT_LOG`) as `seat` saw them, with the names of the objects they
+    /// mention that the state no longer shows, rebuilt from the setup and the log; a failure leaves both empty, since the
+    /// log is only a courtesy of the snapshot.
+    fn recent_log(&self, seat: PlayerId) -> LogWindow {
         let events = self.engine.events();
         let (ahead, window) = events.split_at(events.len().saturating_sub(SNAPSHOT_LOG));
         let rebuilt = replay(self.engine.setup(), ahead)
             .map_err(ProtocolError::from)
-            .and_then(|before| project_log(&before, window, seat));
+            .and_then(|before| project_window(&before, window, seat));
         rebuilt.unwrap_or_else(|error| {
             tracing::warn!(%error, "could not rebuild the log for a snapshot");
-            Vec::new()
+            LogWindow {
+                log: Vec::new(),
+                names: Vec::new(),
+            }
         })
     }
 
@@ -409,10 +413,12 @@ impl Running {
     pub(crate) fn sync_messages(&self, seat: PlayerId) -> Vec<ServerMessage> {
         let mut view = StateView::for_player(self.engine.state(), seat);
         self.banks.stamp(&mut view.table);
+        let LogWindow { log, names } = self.recent_log(seat);
         let mut messages = vec![ServerMessage::Snapshot {
             seq: count(self.engine.events().len()),
             state: Box::new(view),
-            log: self.recent_log(seat),
+            log,
+            names,
         }];
         let visible = self.all().find(|p| p.decision.player == seat && !p.hidden);
         if let Some(pending) = visible {

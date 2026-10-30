@@ -287,6 +287,8 @@ describe('parseFrame checks the fields of each message', () => {
     ['Snapshot', 'log as text', ['log'], 'none'],
     ['Snapshot', 'log as an object', ['log'], {}],
     ['Snapshot', 'log as null', ['log'], null],
+    ['Snapshot', 'names as text', ['names'], 'none'],
+    ['Snapshot', 'names as null', ['names'], null],
     ['Events', 'from_seq as a fraction', ['from_seq'], 1.5],
     ['Events', 'from_seq as negative', ['from_seq'], -1],
     ['Events', 'from_seq as text', ['from_seq'], '0'],
@@ -593,6 +595,28 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
     const snapshot = put(samples.Snapshot, ['log'], events)
     expect(parseFrame(wire(snapshot))).toEqual({ ok: true, message: snapshot })
     expect(parseFrame(wire(samples.Snapshot))).toEqual({ ok: true, message: samples.Snapshot })
+  })
+
+  it('accepts a snapshot with the names of the objects its log mentions, and keeps them', () => {
+    const names = [
+      { object: 7, name: 'Goblin token' },
+      { object: 9, name: 'Llanowar Elves' },
+    ]
+    const snapshot = put(put(samples.Snapshot, ['log'], events), ['names'], names)
+    expect(parseFrame(wire(snapshot))).toEqual({ ok: true, message: snapshot })
+    const alone = put(samples.Snapshot, ['names'], names)
+    expect(parseFrame(wire(alone))).toEqual({ ok: true, message: alone })
+  })
+
+  it.each([
+    ['text', 'Goblin token'],
+    ['an entry with no object', { name: 'Goblin token' }],
+    ['an object as text', { object: '7', name: 'Goblin token' }],
+    ['an empty name', { object: 7, name: '' }],
+    ['a name that is a number', { object: 7, name: 7 }],
+  ])('refuses a snapshot whose names hold %s', (_what, entry) => {
+    const snapshot = put(samples.Snapshot, ['names'], [entry])
+    expect(parseFrame(wire(snapshot))).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
   })
 
   it('accepts an ability on the stack among the objects of a batch, with its source and targets', () => {

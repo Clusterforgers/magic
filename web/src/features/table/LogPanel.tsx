@@ -46,6 +46,7 @@ const FOLLOW_SLACK = 24
 export function LogPanel() {
   const log = usePlay((state) => state.log)
   const objects = usePlay((state) => state.objectsById)
+  const logNames = usePlay((state) => state.logNames)
   const seat = useSeatNamer()
   const players = usePlay((state) => state.view?.players)
   const seats = usePlay(
@@ -60,12 +61,12 @@ export function LogPanel() {
         log,
         {
           seat,
-          card: (id) => objects[id]?.name || 'a card',
+          card: (id) => objects[id]?.name || logNames[id] || 'a card',
           clauses: (id) => objects[id]?.manual?.map((clause) => clause.text) ?? [],
         },
         { seats, players },
       ),
-    [log, objects, seat, seats, players],
+    [log, objects, logNames, seat, seats, players],
   )
   const scroller = useRef<HTMLDivElement>(null)
   const following = useRef(true)
