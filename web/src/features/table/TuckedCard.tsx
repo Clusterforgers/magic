@@ -47,10 +47,11 @@ export function TuckedCard({ id, size, tabbable, style }: TuckedCardProps) {
       <Card id={id} size={size} fit tabbable={tabbable} />
       {foreign === undefined ? null : (
         <>
+          {/* Drawn outside the face, whose own edge would fill the gaps of a dash and make the line look solid. */}
           <span
             aria-hidden="true"
             data-slot="tuck-foreign"
-            className="pointer-events-none absolute inset-0 rounded-md border-2 border-dashed border-border-strong"
+            className="pointer-events-none absolute -inset-0.5 rounded-lg border-2 border-dashed border-border-strong"
           />
           {size === 'compact' ? null : (
             <span

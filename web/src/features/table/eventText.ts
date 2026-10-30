@@ -22,8 +22,8 @@ import type {
   ZoneCause,
 } from '@/protocol/generated'
 import { colorsInSet, manaLetter } from './cardModel'
-import { sameHost } from './hosts'
-import type { HostRef } from './hosts'
+import { sameHost } from '@/play/hosts'
+import type { HostRef } from '@/play/hosts'
 import { STEP_LABEL } from './turnText'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */

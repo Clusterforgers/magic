@@ -10,7 +10,7 @@ import type {
   ObjectId,
   ObjectView,
 } from '@/protocol/generated'
-import { isUnattached } from './hosts'
+import { isUnattached } from '@/play/hosts'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from './manaSymbols'
 
 /** Where a permanent sits on its controller's battlefield. */

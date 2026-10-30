@@ -20,6 +20,7 @@ import type { Draft } from '@/test-utils/miniTable'
 import { fakeRects } from '@/test-utils/rects'
 import { renderTable } from '@/test-utils/tableHarness'
 import { GameTable } from '../GameTable'
+import type { Anchor } from './plan'
 import { RectProviderContext } from './rects'
 
 // The opponent's artifact stands for an Equipment; it starts on the viewer's Bear.
@@ -43,11 +44,11 @@ function stubReducedMotion(): void {
   }))
 }
 
-function mount(options: TableOptions = {}) {
+function mount(options: TableOptions = {}, layout?: Parameters<typeof fakeRects>[0]) {
   const fixture = miniFixture()
   const gear = must(fixture.view.objects.find((object) => object.id === GEAR))
   gear.attached_to = MY_BEAR
-  const rects = fakeRects()
+  const rects = fakeRects(layout)
   const table = renderTable({
     fixture,
     options: { effects: true, ...options },
@@ -136,6 +137,17 @@ describe('the arrow of an attachment that moved', () => {
     const { send, arrows } = mount({ effects: false })
     send(hang(MY_GIANT), attached(MY_GIANT))
     expect(arrows()).toEqual([])
+  })
+
+  it('is drawn between hosts that stand 5 px apart, where an edge to edge line has no room', () => {
+    const next = (anchor: Anchor) =>
+      anchor.kind === 'seat'
+        ? { x: 0, y: 5000, width: 1000, height: 200 }
+        : { x: anchor.id * 105, y: 100, width: 100, height: 140 }
+    const { send, container } = mount({}, next)
+    send(hang(MY_GIANT), attached(MY_GIANT))
+    const path = container.querySelector('[data-layer="lines"] g[data-kind="attach"] .combat-line')
+    expect(path?.getAttribute('d')).toMatch(/^M [\d.]+ [\d.]+ Q/)
   })
 
   it('draws the next arrow beside one that is still standing', () => {

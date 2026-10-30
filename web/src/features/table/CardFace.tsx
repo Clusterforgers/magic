@@ -18,7 +18,7 @@ import {
 import type { CombatRole, Frame, Links } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
-import { isUnattached } from './hosts'
+import { isUnattached } from '@/play/hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
 import { ByHandMark } from './manual/ByHand'
 import { ManaPips } from './ManaPips'

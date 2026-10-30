@@ -10,7 +10,7 @@ import type {
 } from '@/protocol/generated'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
-import type { HostRef } from './hosts'
+import type { HostRef } from '@/play/hosts'
 
 const SEATS = ['Ana', 'Bo', 'Cy']
 const CARDS: Record<number, string> = {

@@ -11,8 +11,8 @@
 import { sameJson } from '@/play/view'
 import type { CombatView, EventView, ObjectId, ObjectView, PlayerId, StateView } from '@/protocol/generated'
 import { rowOf } from '../cardModel'
-import { hostOf, sameHost } from '../hosts'
-import type { HostRef } from '../hosts'
+import { hostOf, sameHost } from '@/play/hosts'
+import type { HostRef } from '@/play/hosts'
 import { splitBattlefield } from '../selectors'
 import type { DiedEffect, Effect } from './model'
 

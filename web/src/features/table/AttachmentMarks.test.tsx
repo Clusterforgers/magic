@@ -11,7 +11,6 @@ import { Card } from './Card'
 import { SeatPanel } from './SeatPanel'
 import { SeatTile } from './SeatTile'
 import { CardRow } from './CardRow'
-import { isUnattached } from './hosts'
 import type { ObjectView } from '@/protocol/generated'
 
 const fixture = () => withEquip(buildFixture({ seats: 2 }))
@@ -175,17 +174,5 @@ describe('an Equipment on no host', () => {
     renderTable({ fixture: scene, ui: <Card id={sword.id} size="compact" /> })
     const chip = must(document.querySelector<HTMLElement>('[data-slot="card-unattached"]'))
     expect(chip.querySelector('.sr-only')).toHaveTextContent('Unattached')
-  })
-
-  it.each([
-    ['an Equipment on no host', { subtypes: ['Equipment'] }, true],
-    ['a Fortification on no host', { subtypes: ['Fortification'] }, true],
-    ['an Equipment on a creature', { subtypes: ['Equipment'], attached_to: 3 }, false],
-    ['an Equipment in a graveyard', { subtypes: ['Equipment'], zone: { Graveyard: 0 } }, false],
-    ['an Aura on no host', { subtypes: ['Aura'] }, false],
-    ['a creature', { subtypes: ['Bear'] }, false],
-  ] as const)('%s is unattached: %s', (_name, over, unattached) => {
-    const base = must(fixture().view.objects[0])
-    expect(isUnattached({ ...base, zone: 'Battlefield', ...over } as unknown as ObjectView)).toBe(unattached)
   })
 })

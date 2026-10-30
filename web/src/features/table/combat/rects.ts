@@ -107,6 +107,12 @@ export function sameRects(a: RectMap, b: RectMap): boolean {
   return true
 }
 
+/**
+ * The curve of an attach arrow. Hosts of a lane stand a few pixels apart, so the arrow starts and ends inside the
+ * boxes (a negative gap): from edge to edge there would be no room for it.
+ */
+const ATTACH_CURVE = { bow: 0.15, head: 10, gap: -20 }
+
 /** A line with the curve that joins its two anchors. */
 export interface DrawnLine {
   line: LineSpec
@@ -128,7 +134,7 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
       line.kind === 'block'
         ? { bow: 0.1, head: 10 }
         : line.kind === 'attach'
-          ? { bow: 0.15, head: 10 }
+          ? ATTACH_CURVE
           : { bow: 0.12, head: 8 }
     const shape = connect(from, to, curve)
     if (shape === null) continue

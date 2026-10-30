@@ -212,6 +212,8 @@ describe('equip', () => {
     expect(after.objects.find((object) => object.id === host)?.attachments).toContain(gear.id)
     const old = must(after.objects.find((object) => object.id === gear.attached_to))
     expect(old.attachments ?? []).not.toContain(gear.id)
+    // The log keeps where it hung, so that its line can say "moves from".
+    expect(store.getState().log.at(-1)).toMatchObject({ hostBefore: { card: gear.attached_to } })
   })
 })
 
