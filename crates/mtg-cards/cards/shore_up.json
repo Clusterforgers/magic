@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c9d8c983-2845-42e6-b6b8-bf7cf2729b23",
+  "name": "Shore Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shore Up",
+      "oracle_fingerprint": "41afa83a755388a515b545e9bf237f06",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Hexproof" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

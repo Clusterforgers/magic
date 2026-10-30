@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0fd57894-b917-41c8-a394-360d1d31b236",
+  "name": "Ephemerate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ephemerate",
+      "oracle_fingerprint": "1c66b525722298357b8a576198db5abc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "gone" } },
+              { "Move": { "what": { "Bound": "gone" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

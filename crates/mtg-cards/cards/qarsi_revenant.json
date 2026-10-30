@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bbea79bc-71d4-4100-92f4-783c2c4b46da",
+  "name": "Qarsi Revenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Qarsi Revenant",
+      "oracle_fingerprint": "fbc8df31ad310a1d857a55e0f2aeb669",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "ExileSelf"],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "deathtouch" } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

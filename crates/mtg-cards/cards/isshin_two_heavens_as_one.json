@@ -1,0 +1,20 @@
+{
+  "oracle_id": "65114758-9a75-43a7-96e8-0aa68faa6b24",
+  "name": "Isshin, Two Heavens as One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isshin, Two Heavens as One",
+      "oracle_fingerprint": "1ee40221f00c81ae10b04849b2e26064",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "cause": { "Attacks": { "what": [{ "Type": "Creature" }] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

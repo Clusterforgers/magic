@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d36acdfe-2b1b-4c19-8b81-0b3127e480fe",
+  "name": "Necroduality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necroduality",
+      "oracle_fingerprint": "1fe0785fa0d62e793b8416596148d267",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Zombie" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

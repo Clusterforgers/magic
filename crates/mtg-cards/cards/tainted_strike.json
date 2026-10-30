@@ -1,0 +1,30 @@
+{
+  "oracle_id": "95a53dd7-76dc-46f1-8833-fafd02ba49c4",
+  "name": "Tainted Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Strike",
+      "oracle_fingerprint": "952b108a523df6757c4342ebf135cefe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Infect" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

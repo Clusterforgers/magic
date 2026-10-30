@@ -1,0 +1,15 @@
+{
+  "oracle_id": "958628af-243c-4eb0-8620-5d483b6da768",
+  "name": "Phyresis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyresis",
+      "oracle_fingerprint": "aab6df46977be77072d02159200b8bc1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Infect" }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6879f5ce-7a1b-4606-bad1-885779b0d456",
+  "name": "Cloudshift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudshift",
+      "oracle_fingerprint": "ee5a66500a755dd86039a417fe325ffe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4ac94586-3ac7-4ade-af31-ad0d0e3ffc4a",
+  "name": "Terrasymbiosis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terrasymbiosis",
+      "oracle_fingerprint": "216808083397dc27d4f72d387fdedf61",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "CountersPut": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "counter": "+1/+1"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "May": { "effects": [{ "Draw": { "count": "Triggering" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

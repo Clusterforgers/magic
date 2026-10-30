@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ada82f93-dc93-4a95-a13f-42b5942b3413",
+  "name": "Magic Damper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magic Damper",
+      "oracle_fingerprint": "8d023e75d5bf471f5d177192b08d285e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Hexproof" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
