@@ -64,6 +64,8 @@ pub enum Chosen {
     Color(mtg_core::color::Color),
     /// A creature type.
     CreatureType(mtg_core::card::Subtype),
+    /// A land type, which a landwalk the source grants names (CR 702.14).
+    LandType(mtg_core::card::Subtype),
     /// A player (public, like every choice made as a permanent enters).
     Player(PlayerId),
     /// The chapter a Saga with read ahead entered at (CR 702.155): lower chapters don't trigger.

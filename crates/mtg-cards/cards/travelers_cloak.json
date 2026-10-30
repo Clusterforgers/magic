@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5241182d-e2ca-4b31-809f-fbff2822dbf6",
+  "name": "Traveler's Cloak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traveler's Cloak",
+      "oracle_fingerprint": "4da1d8da08fe32557f636bd48506c12d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "LandType" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Landwalk": ["ChosenSubtype"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

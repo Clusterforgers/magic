@@ -104,6 +104,8 @@ const OTHER_TYPES: &[&str] = &[
     "Urza's",
     "Cave",
     "Sphere",
+    "Town",
+    "Planet",
     "Equipment",
     "Fortification",
     "Vehicle",
@@ -142,6 +144,27 @@ const OTHER_TYPES: &[&str] = &[
     "Phenomenon",
 ];
 
+/// The land types a player may name (CR 205.3i): "Urza's" is one type, and "Urza's Mine" is it with "Mine".
+pub const LAND_TYPES: [&str; 17] = [
+    "Cave",
+    "Desert",
+    "Forest",
+    "Gate",
+    "Island",
+    "Lair",
+    "Locus",
+    "Mine",
+    "Mountain",
+    "Plains",
+    "Planet",
+    "Power-Plant",
+    "Sphere",
+    "Swamp",
+    "Tower",
+    "Town",
+    "Urza's",
+];
+
 impl Subtype {
     /// Whether the subtype is a creature type, which an effect that sets creature types replaces (CR 205.1b).
     pub fn is_creature_type(&self) -> bool {
@@ -178,6 +201,13 @@ mod tests {
         }
         for other in ["Forest", "Equipment", "Aura", "Treasure", "Saga", "Siege"] {
             assert!(!Subtype(other.into()).is_creature_type(), "{other}");
+        }
+    }
+
+    #[test]
+    fn no_land_type_is_a_creature_type() {
+        for land in LAND_TYPES {
+            assert!(!Subtype(land.into()).is_creature_type(), "{land}");
         }
     }
 

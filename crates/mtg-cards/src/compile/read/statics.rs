@@ -311,6 +311,9 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
             None,
         ));
     }
+    if r.words("choose a land type") {
+        return Some(replacement(ReplaceBy::Choose(EntersChoice::LandType), None));
+    }
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
@@ -1357,6 +1360,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         }
         (ReplaceBy::Choose(EntersChoice::CreatureType), None) => {
             vec!["As ~ enters, choose a creature type".to_owned()]
+        }
+        (ReplaceBy::Choose(EntersChoice::LandType), None) => {
+            vec!["As ~ enters, choose a land type".to_owned()]
         }
         (ReplaceBy::Choose(EntersChoice::Player), None) => {
             vec!["As ~ enters, choose a player".to_owned()]

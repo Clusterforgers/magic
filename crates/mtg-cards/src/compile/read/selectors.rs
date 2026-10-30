@@ -344,6 +344,10 @@ fn type_preds(pred: &Pred) -> Option<Vec<CardType>> {
 
 /// A keyword by its words ("flying", "first strike").
 pub fn keyword(r: &mut Reader<'_>) -> Option<Keyword> {
+    // The land type the source chose as it entered (an Aura of "choose a land type").
+    if r.static_grant && r.words("landwalk of the chosen type") {
+        return Some(Keyword::Landwalk(Selector(vec![Pred::ChosenSubtype])));
+    }
     if let Some(name) = KEYWORDS.iter().find(|name| r.words(name)) {
         return keywords::read(name);
     }
@@ -359,6 +363,7 @@ pub fn keyword_text(keyword: &Keyword) -> Option<String> {
     if let Keyword::Landwalk(Selector(preds)) = keyword {
         return match preds.as_slice() {
             [Pred::Subtype(Subtype(land))] => Some(format!("{}walk", land.to_lowercase())),
+            [Pred::ChosenSubtype] => Some("landwalk of the chosen type".to_owned()),
             _ => None,
         };
     }

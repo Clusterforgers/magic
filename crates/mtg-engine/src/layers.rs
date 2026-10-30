@@ -1308,6 +1308,8 @@ mod counters;
 #[cfg(test)]
 mod crowd;
 #[cfg(test)]
+mod deck_auras;
+#[cfg(test)]
 mod defining;
 #[cfg(test)]
 mod dependencies;

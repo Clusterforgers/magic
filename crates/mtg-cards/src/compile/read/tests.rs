@@ -1092,3 +1092,6 @@ mod sentences {
 
 // dk1c
 mod dk1c_writers;
+
+// deck-auras
+mod deck_auras;

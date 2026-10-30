@@ -30,7 +30,7 @@ use mtg_cards::modify::Modification;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
 use mtg_cards::value::{CastWay, CounterKind};
-use mtg_core::card::{CardType, Subtype};
+use mtg_core::card::{CardType, LAND_TYPES, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
@@ -2713,6 +2713,7 @@ impl Pass<'_> {
                             )
                         }
                         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
+                        EntersChoice::LandType => "Choose a land type.".to_owned(),
                         EntersChoice::Player => "Choose a player.".to_owned(),
                         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
                         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
@@ -2745,6 +2746,9 @@ impl Pass<'_> {
         Ok(Asked::Got(picked.and_then(
             |index| match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
+                ChoiceOption::Label(name) if kind == EntersChoice::LandType => {
+                    Some(Chosen::LandType(Subtype(name)))
+                }
                 ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
                 ChoiceOption::Player(player) => Some(Chosen::Player(player)),
                 ChoiceOption::Secret(_) => None,
@@ -2752,7 +2756,7 @@ impl Pass<'_> {
         )))
     }
 
-    /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), or the creature types of the cards in the game.
+    /// What a player may choose as a permanent enters: the five colours (less the one a choice excludes), the creature types of the cards in the game, the land types or the players.
     fn options_of(
         &self,
         kind: EntersChoice,
@@ -2786,6 +2790,10 @@ impl Pass<'_> {
                 types.dedup();
                 types.into_iter().map(ChoiceOption::Label).collect()
             }
+            EntersChoice::LandType => LAND_TYPES
+                .iter()
+                .map(|name| ChoiceOption::Label((*name).to_owned()))
+                .collect(),
             EntersChoice::Player => self
                 .state
                 .turn_order_from(controller)

@@ -585,7 +585,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
         ? ''
         : 'Chapter' in chosen
           ? `, reading ahead to chapter ${chosen.Chapter}`
-          : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : 'Player' in chosen ? n.seat(chosen.Player) : chosen.CreatureType}`
+          : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : 'Player' in chosen ? n.seat(chosen.Player) : 'LandType' in chosen ? chosen.LandType : chosen.CreatureType}`
     return quiet(
       `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
     )

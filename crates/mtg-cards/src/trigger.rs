@@ -678,6 +678,8 @@ pub enum EntersChoice {
     ColorOtherThan(Color),
     /// A creature type.
     CreatureType,
+    /// A land type (CR 205.3i).
+    LandType,
     /// A player.
     Player,
     /// An opponent of the permanent's controller.
