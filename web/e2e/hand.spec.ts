@@ -46,49 +46,52 @@ async function open(page: Page, count: number): Promise<void> {
 
 /** Looks at the cards of the hand:for each, the name line and the cost row, which no other element may cover. */
 async function look(page: Page, only: 'all' | 'front-start'): Promise<Found> {
-  return page.evaluate(({ which, hand }) => {
-    const fan = document.querySelector<HTMLElement>(hand)
-    const covered: string[] = []
-    const cards = [
-      ...document.querySelectorAll<HTMLElement>(`${hand} [data-slot="hand-slot"] button[data-object-id]`),
-    ]
-    const chosen =
-      which === 'all'
-        ? cards
-        : cards
-            .filter((card) => card.closest('[data-slot="hand-slot"]')?.hasAttribute('data-back') !== true)
-            .slice(0, 1)
-    for (const card of chosen) {
-      const face = card.querySelector('[data-slot="card-face"]')
-      const parts = [
-        ['name', face?.firstElementChild ?? null],
-        ['cost', card.querySelector('[role="img"][aria-label^="Mana cost"]')],
-      ] as const
-      for (const [what, element] of parts) {
-        if (element === null) continue
-        const box = element.getBoundingClientRect()
-        // The four corners (a little inside) and the middle of the part must hit the card itself.
-        const points = [
-          [box.left + 2, box.top + 2],
-          [box.right - 2, box.top + 2],
-          [box.left + 2, box.bottom - 2],
-          [box.right - 2, box.bottom - 2],
-          [box.left + box.width / 2, box.top + box.height / 2],
+  return page.evaluate(
+    ({ which, hand }) => {
+      const fan = document.querySelector<HTMLElement>(hand)
+      const covered: string[] = []
+      const cards = [
+        ...document.querySelectorAll<HTMLElement>(`${hand} [data-slot="hand-slot"] button[data-object-id]`),
+      ]
+      const chosen =
+        which === 'all'
+          ? cards
+          : cards
+              .filter((card) => card.closest('[data-slot="hand-slot"]')?.hasAttribute('data-back') !== true)
+              .slice(0, 1)
+      for (const card of chosen) {
+        const face = card.querySelector('[data-slot="card-face"]')
+        const parts = [
+          ['name', face?.firstElementChild ?? null],
+          ['cost', card.querySelector('[role="img"][aria-label^="Mana cost"]')],
         ] as const
-        const hidden = points.some(([x, y]) => {
-          const hit = document.elementFromPoint(x, y)
-          return hit === null || !card.contains(hit)
-        })
-        if (hidden) covered.push(`${card.getAttribute('aria-label') ?? card.textContent ?? '?'}: ${what}`)
+        for (const [what, element] of parts) {
+          if (element === null) continue
+          const box = element.getBoundingClientRect()
+          // The four corners (a little inside) and the middle of the part must hit the card itself.
+          const points = [
+            [box.left + 2, box.top + 2],
+            [box.right - 2, box.top + 2],
+            [box.left + 2, box.bottom - 2],
+            [box.right - 2, box.bottom - 2],
+            [box.left + box.width / 2, box.top + box.height / 2],
+          ] as const
+          const hidden = points.some(([x, y]) => {
+            const hit = document.elementFromPoint(x, y)
+            return hit === null || !card.contains(hit)
+          })
+          if (hidden) covered.push(`${card.getAttribute('aria-label') ?? card.textContent ?? '?'}: ${what}`)
+        }
       }
-    }
-    return {
-      cards: chosen.length,
-      rows: Number(fan?.getAttribute('data-rows') ?? 0),
-      scrolls: fan !== null && fan.scrollWidth > fan.clientWidth + 1,
-      covered,
-    }
-  }, { which: only, hand: HAND })
+      return {
+        cards: chosen.length,
+        rows: Number(fan?.getAttribute('data-rows') ?? 0),
+        scrolls: fan !== null && fan.scrollWidth > fan.clientWidth + 1,
+        covered,
+      }
+    },
+    { which: only, hand: HAND },
+  )
 }
 
 for (const { width, height, holds, scrolls } of CASES) {
