@@ -219,10 +219,17 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (db1b) The builder's cards played by hand quote the words of the card each reason covers (the spans of `useCardTexts`), as the not-validated page does
 - [ ] (db1c) At 1440 px and wider the stats and the cards played by hand sit in a rail beside the deck (the builder takes a page width beyond `wide`) instead of two closed disclosures
 - [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
-- [ ] (pm1b) The manual menu shows a refused manual action in the menu's own feedback instead of the table notice, and a `BadMessage` refusal of a manual action is not taken for a pending combat preview's refusal.
 - [ ] The turn indicator and step bar show a turn without an active player (`TurnView.active_left`), with `/dev/table` screenshots at six sizes in both themes
-- [~] (ma7) (manual-panel) Manual commands live in a panel on the right of the table, the default way to act by hand and close to how Table Commander lays it out (owner feedback): the seat's own commands (life, draw, scry and look at the top cards, mill, shuffle, reveal, counters, tokens, mana, damage) and the targeted ones, each labelled by what it does and its effect, with the card menu kept as the shortcut; a design first (an Opus agent), then pieces
-- [ ] (ma3) Shuffle, reveal and a note on a card as manual actions (`ManualAction::Shuffle`, `Reveal` and a note in the view), with entries in the card menu
+- [~] (ma7a) (manual-panel) Engine and protocol: `ManualAction::LookTop`, `ArrangeTop` (top, bottom, graveyard) and `Shuffle`, the looked-at cards known to the seat alone (`PlayerView.known_top`), `HiddenEvent::ManualArrange` for the other seats (`manual.rs`, `sight.rs`, `mtg-protocol`)
+- [~] (ma7b) (manual-panel) The Commands panel: the first and default tab of the side column with the groups You, Library and Make wired to the actions that exist (life, counters, draw, mill, exile and bottom from the top, tokens, mana), the preview line and Apply (`manual/panel/`, `SideTabs.tsx`, `/dev/table?panel=1`)
+- [ ] (ma7c) The panel's Look at the top: `LookTop`, the known cards with Top, Bottom and Graveyard and their order, one `ArrangeTop`; Shuffle; the log lines of the three (`describeManual`) and their hidden forms
+- [ ] (ma7d) Reveal and a note as manual actions: `ManualAction::Reveal` (a hand card or the top card, to every seat) and `Note` with `ObjectView.note`, in the panel, the card menu and the log
+- [ ] (ma7e) The panel's Card group: "Pick a card" and the card menu's "In the panel" fill it with the card's commands (`manualMenu`); the card menu drops the You entries
+- [ ] (ma7f) A refused manual action shows in the panel row's or the menu's own feedback instead of the table notice, and a `BadMessage` refusal of a manual action is not taken for a pending combat preview's refusal
+- [ ] (ma7g) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
+- [ ] (ma7h) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
+- [ ] (ma7i) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
+
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs
 - [ ] (ma6a) The large preview (`PreviewCard`) lists the clauses of its card under the oracle text, and a card on the stack (`StackPanel`, `StackChips`) carries the by-hand mark
