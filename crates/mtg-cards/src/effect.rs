@@ -317,6 +317,10 @@ pub enum Effect {
             skip_serializing_if = "ZoneKind::is_library"
         )]
         zone: ZoneKind,
+        /// More zones of the searcher that are searched with `zone` ("your library, hand, and/or graveyard"): the searcher
+        /// chooses which of them to search, and finds the cards among those zones (CR 701.23).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        also: Vec<ZoneKind>,
         /// What the cards must be.
         filter: Selector,
         /// How many may be found.
@@ -1388,8 +1392,12 @@ mod tests {
         r#"{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}}"#
     )]
     #[case::search(
-        Effect::Search { who: Ref::You, zone: ZoneKind::Library, filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
+        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: Vec::new(), filter: Selector(vec![Pred::Supertype(mtg_core::card::Supertype::Basic)]), count: Bounds::default(), reveal: false, bind: "land".into() },
         r#"{"Search":{"filter":[{"Supertype":"Basic"}],"as":"land"}}"#
+    )]
+    #[case::search_of_several_zones(
+        Effect::Search { who: Ref::You, zone: ZoneKind::Library, also: vec![ZoneKind::Hand, ZoneKind::Graveyard], filter: Selector(vec![Pred::Subtype(mtg_core::card::Subtype("Rune".into()))]), count: Bounds::default(), reveal: false, bind: "rune".into() },
+        r#"{"Search":{"also":["Hand","Graveyard"],"filter":[{"Subtype":"Rune"}],"as":"rune"}}"#
     )]
     #[case::pay(
         Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), times: Amount::one(), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },

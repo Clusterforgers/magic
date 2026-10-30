@@ -444,7 +444,7 @@ fn an_effect_that_stops_life_gain_stops_it_for_its_duration(
     #[case] duration: Duration,
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(salve_duel(Vec::new()))?;
-    driver.add_rule(Rule::CantGainLife(vec![pid(0)]), duration)?;
+    driver.add_rule(Rule::CantGainLife(vec![pid(0)]), duration.clone())?;
     let events = cast_salve(&mut driver)?;
     assert!(!events.iter().any(|e| matches!(e, Event::LifeGained { .. })));
     driver.expect_life(0, 20)?;

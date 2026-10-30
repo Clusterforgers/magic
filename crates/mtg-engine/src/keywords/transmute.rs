@@ -38,6 +38,7 @@ impl KeywordRules for Transmute {
                 Effect::Search {
                     who: Ref::You,
                     zone: ZoneKind::Library,
+                    also: Vec::new(),
                     filter: Selector(vec![Pred::Compare {
                         stat: StatKind::ManaValue,
                         op: Cmp::Eq,

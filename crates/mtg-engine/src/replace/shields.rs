@@ -98,7 +98,13 @@ fn begin(game: &mut GameState, source: &str, rule: Rule) -> EffectId {
         controller: object.controller(),
         turn: 1,
     };
-    apply_event(game, &Event::RuleCreated { effect }).unwrap();
+    apply_event(
+        game,
+        &Event::RuleCreated {
+            effect: effect.into(),
+        },
+    )
+    .unwrap();
     shield
 }
 

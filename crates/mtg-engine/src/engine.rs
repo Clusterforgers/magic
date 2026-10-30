@@ -349,7 +349,9 @@ impl Engine {
         let checkpoint = self.checkpoint();
         self.pending = None;
         let result = self
-            .commit(vec![Event::RuleCreated { effect }])
+            .commit(vec![Event::RuleCreated {
+                effect: effect.into(),
+            }])
             .and_then(|()| self.advance());
         self.finish(checkpoint, result)
     }
@@ -384,7 +386,9 @@ impl Engine {
         let checkpoint = self.checkpoint();
         self.pending = None;
         let result = self
-            .commit(vec![Event::EffectCreated { effect }])
+            .commit(vec![Event::EffectCreated {
+                effect: effect.into(),
+            }])
             .and_then(|()| self.advance());
         self.finish(checkpoint, result)
     }

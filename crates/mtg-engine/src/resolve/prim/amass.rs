@@ -86,15 +86,17 @@ fn amass(cx: &Cx<'_>, subtype: &Subtype, count: &Amount) -> Result<Run, Stop> {
     let has = Selector(vec![Pred::Subtype(subtype.clone())]);
     if !cx.scope.selects(&has, chosen)? {
         events.push(Event::EffectCreated {
-            effect: ContinuousEffect::new(
-                EffectId(state.next_effect),
-                Picked::Objects(vec![chosen]),
-                Modification::AddSubtype(subtype.clone()),
-                Duration::Forever,
-                state.next_timestamp,
-            )
-            .from_source(cx.scope.source)
-            .begun(player, state.turn().number()),
+            effect: Box::new(
+                ContinuousEffect::new(
+                    EffectId(state.next_effect),
+                    Picked::Objects(vec![chosen]),
+                    Modification::AddSubtype(subtype.clone()),
+                    Duration::Forever,
+                    state.next_timestamp,
+                )
+                .from_source(cx.scope.source)
+                .begun(player, state.turn().number()),
+            ),
         });
     }
     let delta = whole(cx.scope.amount(count)?);

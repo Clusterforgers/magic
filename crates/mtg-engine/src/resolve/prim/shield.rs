@@ -36,7 +36,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .into_iter()
             .map(GameObject::reference)
             .collect();
-        return Ok(begin(cx, Rule::DiesInstead { objects, to: *to }, *duration));
+        return Ok(begin(
+            cx,
+            Rule::DiesInstead { objects, to: *to },
+            duration.clone(),
+        ));
     }
     let (
         ReplaceWhen::Damage { to, source, combat },
@@ -66,7 +70,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if left == Some(0) {
         return Ok(Run::events(Vec::new()));
     }
-    Ok(begin(cx, rule, *duration))
+    Ok(begin(cx, rule, duration.clone()))
 }
 
 /// The rule of a shield begins for its duration, unless it names nothing.
@@ -76,14 +80,14 @@ fn begin(cx: &Cx<'_>, rule: Rule, duration: Duration) -> Run {
     }
     let state = cx.state();
     Run::events(vec![Event::RuleCreated {
-        effect: RuleEffect {
+        effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),
             rule,
             duration,
             source: Some(cx.scope.source),
             controller: cx.controller(),
             turn: state.turn().number(),
-        },
+        }),
     }])
 }
 

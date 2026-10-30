@@ -271,7 +271,7 @@ impl RuleEffect {
     pub fn is_active(&self, state: &GameState) -> bool {
         lasts(
             state,
-            self.duration,
+            &self.duration,
             self.turn,
             self.controller,
             self.source,
@@ -1287,7 +1287,13 @@ mod tests {
 
     fn put_in_force(game: &mut GameState, rule: Rule) {
         let effect = effect(game, rule, Duration::Forever);
-        apply_event(game, &Event::RuleCreated { effect }).unwrap();
+        apply_event(
+            game,
+            &Event::RuleCreated {
+                effect: effect.into(),
+            },
+        )
+        .unwrap();
     }
 
     #[rstest]
@@ -1372,7 +1378,13 @@ mod tests {
             Duration::Forever,
             game.next_timestamp,
         );
-        apply_event(&mut game, &Event::EffectCreated { effect: lost }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::EffectCreated {
+                effect: lost.into(),
+            },
+        )
+        .unwrap();
         assert!(!holds(&game, Draw(ME)));
     }
 
@@ -1410,7 +1422,13 @@ mod tests {
         let rule = effect(&game, Rule::CantGainLife(vec![ME]), duration);
         (game.turn.number, game.turn.active, game.turn.step) = now;
         assert_eq!(rule.is_active(&game), active);
-        apply_event(&mut game, &Event::RuleCreated { effect: rule }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::RuleCreated {
+                effect: rule.into(),
+            },
+        )
+        .unwrap();
         assert_eq!(holds(&game, Life(ME)), active);
     }
 
@@ -1422,7 +1440,13 @@ mod tests {
             Rule::CantDraw(vec![ME, FOE]),
             Duration::WhileSourceOnBattlefield,
         );
-        apply_event(&mut game, &Event::RuleCreated { effect: rule }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::RuleCreated {
+                effect: rule.into(),
+            },
+        )
+        .unwrap();
         assert!(holds(&game, Draw(FOE)));
         leaves(&mut game, "Holder");
         assert!(!holds(&game, Draw(FOE)));
@@ -1565,7 +1589,7 @@ mod tests {
         apply_event(
             &mut game,
             &Event::RuleCreated {
-                effect: fresh.clone(),
+                effect: fresh.clone().into(),
             },
         )
         .unwrap();
@@ -1758,7 +1782,13 @@ mod tests {
             Rule::AdditionalLandPlays(vec![(ME, 3)]),
             Duration::Forever,
         );
-        apply_event(&mut game, &Event::RuleCreated { effect }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::RuleCreated {
+                effect: effect.into(),
+            },
+        )
+        .unwrap();
         assert_eq!(extra_land_plays(&game, ME), 5);
         assert_eq!(extra_land_plays(&game, FOE), 0);
         leaves(&mut game, "Holder");

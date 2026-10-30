@@ -120,5 +120,7 @@ pub(crate) fn pump(
         state.next_timestamp,
     )
     .begun(player, state.turn().number());
-    Ok(vec![Event::EffectCreated { effect }])
+    Ok(vec![Event::EffectCreated {
+        effect: effect.into(),
+    }])
 }

@@ -25,7 +25,7 @@ pub(super) fn w6e_gain_control(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let mut effects = vec![Effect::Continuous {
         affected: what.clone(),
         mods: vec![Modification::SetController(Ref::You)],
-        duration,
+        duration: duration.clone(),
     }];
     if let Some(noun) = noun.filter(|_| duration == Duration::UntilEndOfTurn)
         && let Some(steps) = r.attempt(|r| {

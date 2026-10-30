@@ -830,7 +830,12 @@ pub(crate) fn return_to_hand(filter: &Selector, count: usize) -> String {
 /// What a search asks of the player who chooses, as a card says it: "Search your library for a basic land card.",
 /// "Search your library for up to 2 basic land cards." `most` is `usize::MAX` for any number.
 pub(crate) fn search(zone: ZoneKind, filter: &Selector, min: usize, most: usize) -> String {
-    let place = match zone {
+    search_zones(&[zone], filter, min, most)
+}
+
+/// The name of a zone a search looks in, with "your" for the zones of the searcher.
+fn search_place(zone: ZoneKind) -> &'static str {
+    match zone {
         ZoneKind::Library => "your library",
         ZoneKind::Hand => "your hand",
         ZoneKind::Graveyard => "your graveyard",
@@ -838,7 +843,42 @@ pub(crate) fn search(zone: ZoneKind, filter: &Selector, min: usize, most: usize)
         ZoneKind::Battlefield => "the battlefield",
         ZoneKind::Stack => "the stack",
         ZoneKind::Command => "your command zone",
-    };
+    }
+}
+
+/// The zones of a search as a card lists them: "your library, hand, and/or graveyard".
+pub(crate) fn search_places(zones: &[ZoneKind]) -> String {
+    match zones {
+        [] => String::new(),
+        [only] => search_place(*only).to_owned(),
+        [first, rest @ ..] => {
+            let names: Vec<&str> = rest
+                .iter()
+                .map(|zone| search_place(*zone).trim_start_matches("your "))
+                .collect();
+            match names.as_slice() {
+                [] => search_place(*first).to_owned(),
+                [only] => format!("{} and/or {only}", search_place(*first)),
+                [init @ .., last] => {
+                    format!(
+                        "{}, {}, and/or {last}",
+                        search_place(*first),
+                        init.join(", ")
+                    )
+                }
+            }
+        }
+    }
+}
+
+/// [`search`] of several zones: "Search your library, hand, and/or graveyard for a Rune card."
+pub(crate) fn search_zones(
+    zones: &[ZoneKind],
+    filter: &Selector,
+    min: usize,
+    most: usize,
+) -> String {
+    let place = search_places(zones);
     let described = Selector(
         filter
             .0
@@ -1210,6 +1250,28 @@ mod tests {
         let zone = serde_json::from_str(&format!("\"{zone}\"")).unwrap();
         let filter = serde_json::from_str(filter).unwrap();
         assert_eq!(search(zone, &filter, min, most), expected);
+    }
+
+    #[rstest]
+    #[case::one(&["Library"], "your library")]
+    #[case::two(&["Library", "Hand"], "your library and/or hand")]
+    #[case::three(&["Library", "Hand", "Graveyard"], "your library, hand, and/or graveyard")]
+    #[case::another_order(&["Graveyard", "Hand", "Library"], "your graveyard, hand, and/or library")]
+    #[case::exile_among_them(&["Library", "Exile"], "your library and/or exile")]
+    fn the_zones_of_a_search_are_listed_as_a_card_lists_them(
+        #[case] zones: &[&str],
+        #[case] expected: &str,
+    ) {
+        let zones: Vec<ZoneKind> = zones
+            .iter()
+            .map(|zone| serde_json::from_str(&format!("\"{zone}\"")).unwrap())
+            .collect();
+        assert_eq!(search_places(&zones), expected);
+        let filter = serde_json::from_str(r#"[{"Subtype":"Rune"}]"#).unwrap();
+        assert_eq!(
+            search_zones(&zones, &filter, 1, 1),
+            format!("Search {expected} for a Rune card.")
+        );
     }
 
     #[rstest]

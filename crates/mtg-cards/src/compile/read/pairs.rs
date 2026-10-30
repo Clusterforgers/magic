@@ -72,6 +72,7 @@ pub(super) fn searches(
     let search = |filter, count, bind: String| Effect::Search {
         who: who.clone(),
         zone: ZoneKind::Library,
+        also: Vec::new(),
         filter,
         count,
         reveal,

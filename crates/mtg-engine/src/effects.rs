@@ -5,6 +5,7 @@ use std::sync::Arc;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 pub use mtg_cards::modify::Duration;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -15,6 +16,7 @@ use crate::land_types::is_land_type;
 use crate::object::{GameObject, ObjectRef};
 use crate::state::GameState;
 use crate::turn::Step;
+use crate::zones::Zone;
 
 /// A layer of the continuous-effect system (CR 613.1); effects apply in this order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -325,7 +327,7 @@ pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
 /// in `state` by its duration (CR 611.2): the one rule for the durations of continuous effects and of rules.
 pub(crate) fn lasts(
     state: &GameState,
-    duration: Duration,
+    duration: &Duration,
     began: u32,
     controller: PlayerId,
     source: Option<ObjectRef>,
@@ -352,7 +354,7 @@ pub(crate) fn lasts(
         Duration::WhileYouControlSource => {
             lasts(
                 state,
-                Duration::WhileSourceOnBattlefield,
+                &Duration::WhileSourceOnBattlefield,
                 began,
                 controller,
                 source,
@@ -362,7 +364,8 @@ pub(crate) fn lasts(
         }
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
-        Duration::UntilOpponentBecomesMonarch => false,
+        // Only a continuous effect that names its objects follows a counter on them (`ContinuousEffect::holds_counter`).
+        Duration::UntilOpponentBecomesMonarch | Duration::WhileHasCounter(_) => false,
     }
 }
 
@@ -370,7 +373,7 @@ pub(crate) fn lasts(
 /// of turn", or "until the end of your next turn" when this is the controller's first turn after the one it began in.
 pub(crate) fn ends_with_turn(
     state: &GameState,
-    duration: Duration,
+    duration: &Duration,
     began: u32,
     controller: PlayerId,
 ) -> bool {
@@ -400,12 +403,6 @@ pub struct ContinuousEffect {
     /// The change.
     pub modification: Modification,
     /// How long it lasts.
-    #[cfg_attr(
-        feature = "ts",
-        ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"WhileYouControlSource\" | \"NextUntapStep\" | \"Forever\""
-        )
-    )]
     pub duration: Duration,
     /// Order of creation; later effects apply after earlier ones within a layer.
     pub timestamp: u64,
@@ -458,26 +455,45 @@ impl ContinuousEffect {
     /// Whether the effect still applies in `state`: its duration has not ended and an object it names is still the
     /// object it named. An effect that does not stops applying at once; the `EffectExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        lasts(
-            state,
-            self.duration,
-            self.turn,
-            self.controller,
-            self.source,
-        ) && !self.spent(state)
+        self.lasts_by(state, &self.duration)
+            && !self.spent(state)
             && !self.gives_control_to_a_player_who_left(state)
     }
 
     /// [`is_active`](Self::is_active) without asking who controls the source of a "for as long as you control ~" effect:
     /// the layers answer that themselves after the control layer, so asking them here would be circular.
     pub(crate) fn is_active_before_control(&self, state: &GameState) -> bool {
-        let duration = match self.duration {
-            Duration::WhileYouControlSource => Duration::WhileSourceOnBattlefield,
+        let duration = match &self.duration {
+            Duration::WhileYouControlSource => &Duration::WhileSourceOnBattlefield,
             other => other,
         };
-        lasts(state, duration, self.turn, self.controller, self.source)
+        self.lasts_by(state, duration)
             && !self.spent(state)
             && !self.gives_control_to_a_player_who_left(state)
+    }
+
+    /// Whether `duration` has not run out for this effect: the one rule for every duration, and for a counter the
+    /// objects the effect names.
+    fn lasts_by(&self, state: &GameState, duration: &Duration) -> bool {
+        match duration {
+            Duration::WhileHasCounter(kind) => self.holds_counter(state, kind),
+            other => lasts(state, other, self.turn, self.controller, self.source),
+        }
+    }
+
+    /// Whether every object the effect names is still the object it named, on the battlefield, with a counter of the
+    /// kind (CR 611.2b); an effect of a group, which names no object, never follows a counter.
+    fn holds_counter(&self, state: &GameState, kind: &CounterKind) -> bool {
+        match &self.selector {
+            Selector::Objects(named) => named.iter().all(|r| {
+                state.object(r.id).is_some_and(|o| {
+                    o.counter() == r.counter
+                        && o.zone() == Zone::Battlefield
+                        && o.permanent().is_some_and(|p| p.counters_of(kind) > 0)
+                })
+            }),
+            Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
+        }
     }
 
     /// Whether the effect gives control to a player who has left the game, which ends it (CR 800.4).
@@ -606,7 +622,7 @@ mod tests {
     ) {
         let mut game = game();
         at(&mut game, now.0, now.1, Step::Cleanup);
-        assert_eq!(ends_with_turn(&game, duration, 3, ME), ends);
+        assert_eq!(ends_with_turn(&game, &duration, 3, ME), ends);
     }
 
     #[test]
@@ -681,6 +697,77 @@ mod tests {
         }
     }
 
+    fn counters(game: &mut GameState, on: &str, counter: &str, delta: i32) {
+        let on = crate::choose::Target::Object(named(game, on));
+        let counter = match counter {
+            "charge" => CounterKind::Charge,
+            other => CounterKind::Other(other.into()),
+        };
+        let event = Event::CountersChanged(crate::counters::CountersChanged { on, counter, delta });
+        apply_event(game, &event).unwrap();
+    }
+
+    #[rstest]
+    #[case::no_counter_yet(&[], false)]
+    #[case::the_counter_is_there(&[("Wolf", "vow", 1)], true)]
+    #[case::a_second_counter_changes_nothing(&[("Wolf", "vow", 2)], true)]
+    #[case::the_counter_is_off(&[("Wolf", "vow", 1), ("Wolf", "vow", -1)], false)]
+    #[case::one_of_two_counters_off(&[("Wolf", "vow", 2), ("Wolf", "vow", -1)], true)]
+    #[case::the_counter_is_on_another_creature(&[("Bear", "vow", 1)], false)]
+    #[case::a_counter_of_another_kind(&[("Wolf", "charge", 1)], false)]
+    fn an_effect_that_follows_a_counter_lasts_while_every_object_it_names_holds_one(
+        #[case] changes: &[(&str, &str, i32)],
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        let effect = effect(
+            &game,
+            Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
+            ME,
+        );
+        for (on, counter, delta) in changes {
+            counters(&mut game, on, counter, *delta);
+        }
+        assert_eq!(effect.is_active(&game), active);
+        assert_eq!(effect.is_active_before_control(&game), active);
+    }
+
+    #[test]
+    fn an_effect_that_follows_a_counter_ends_with_the_object_and_for_good() {
+        let vow = CounterKind::Other("vow".into());
+        let mut game = game();
+        let effect = effect(&game, Duration::WhileHasCounter(Box::new(vow.clone())), ME);
+        counters(&mut game, "Wolf", "vow", 1);
+        assert!(effect.is_active(&game));
+        let wolf = named(&game, "Wolf");
+        leaves(&mut game, wolf);
+        assert!(!effect.is_active(&game), "it left the battlefield");
+        let back = Event::ZoneChanged {
+            object: wolf.id,
+            from: Zone::Graveyard(ME),
+            to: Zone::Battlefield,
+            cause: ZoneCause::Moved,
+        };
+        apply_event(&mut game, &back).unwrap();
+        counters(&mut game, "Wolf", "vow", 1);
+        assert!(
+            !effect.is_active(&game),
+            "the permanent that came back with a counter is a new object (CR 400.7)"
+        );
+    }
+
+    #[rstest]
+    #[case::all_creatures(Selector::AllCreatures)]
+    #[case::the_creatures_of_a_player(Selector::CreaturesControlledBy(ME))]
+    fn a_group_effect_never_follows_a_counter(#[case] selector: Selector) {
+        let vow = CounterKind::Other("vow".into());
+        let mut game = game();
+        counters(&mut game, "Wolf", "vow", 1);
+        let mut effect = effect(&game, Duration::WhileHasCounter(Box::new(vow)), ME);
+        effect.selector = selector;
+        assert!(!effect.is_active(&game));
+    }
+
     #[test]
     fn an_effect_without_a_source_does_not_follow_one() {
         let game = game();
@@ -736,10 +823,22 @@ mod tests {
         let mut later = effect(&game, Duration::UntilEndOfTurn, ME);
         later.id = EffectId(6);
         later.timestamp = 20;
-        apply_event(&mut game, &Event::EffectCreated { effect: later }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::EffectCreated {
+                effect: later.into(),
+            },
+        )
+        .unwrap();
         assert_eq!((game.next_effect, game.next_timestamp), (7, 21));
         let earlier = effect(&game, Duration::UntilEndOfTurn, ME);
-        apply_event(&mut game, &Event::EffectCreated { effect: earlier }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::EffectCreated {
+                effect: earlier.into(),
+            },
+        )
+        .unwrap();
         assert_eq!(
             (game.next_effect, game.next_timestamp),
             (7, 21),
@@ -758,7 +857,7 @@ mod tests {
         apply_event(
             &mut game,
             &Event::EffectCreated {
-                effect: made.clone(),
+                effect: made.clone().into(),
             },
         )
         .unwrap();
@@ -772,7 +871,15 @@ mod tests {
         no_source.id = EffectId(2);
         no_source.source = None;
         for refused in [wrong_layer, same_id, no_source] {
-            assert!(apply_event(&mut game, &Event::EffectCreated { effect: refused }).is_err());
+            assert!(
+                apply_event(
+                    &mut game,
+                    &Event::EffectCreated {
+                        effect: refused.into()
+                    }
+                )
+                .is_err()
+            );
         }
         assert_eq!(game.state_hash(), hash, "a refused event changes nothing");
     }

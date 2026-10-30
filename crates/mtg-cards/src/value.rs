@@ -10,7 +10,7 @@ use mtg_core::mana::ManaType;
 
 use crate::cost::Cost;
 use crate::keyword::Keyword;
-use crate::refs::{Ref, Selector};
+use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::Step;
 
 /// A characteristic of an object that has a number.
@@ -752,6 +752,15 @@ pub enum Condition {
     ManaSpent(ManaType),
     /// It is the controller's turn.
     YourTurn,
+    /// A player the reference names (any of them when it names several) searched their own zone of that kind earlier in
+    /// this resolution, whether or not they found a card ("If you search your library this way, shuffle").
+    Searched {
+        /// Who searched; the controller when absent.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The zone searched.
+        zone: ZoneKind,
+    },
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
     /// accepted, a cost that was paid, cards that were moved.
     Performed,

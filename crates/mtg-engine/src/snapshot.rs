@@ -226,7 +226,13 @@ mod tests {
             Duration::UntilEndOfTurn,
             0,
         );
-        apply_event(&mut game, &Event::EffectCreated { effect }).unwrap();
+        apply_event(
+            &mut game,
+            &Event::EffectCreated {
+                effect: effect.into(),
+            },
+        )
+        .unwrap();
         let shot = snapshot(&game, id).unwrap();
         assert_eq!(shot.characteristics.power, Some(5));
         // The printed card did not change; the snapshot is of the derived object.
@@ -327,7 +333,13 @@ mod tests {
             Duration::UntilEndOfTurn,
             n,
         );
-        apply_event(game, &Event::EffectCreated { effect }).unwrap();
+        apply_event(
+            game,
+            &Event::EffectCreated {
+                effect: effect.into(),
+            },
+        )
+        .unwrap();
     }
 
     #[rstest]

@@ -791,6 +791,18 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller while its controller controls Jace Beleren',
     ],
     [
+      effect(
+        objects(2),
+        { CantAttackYou: { you: 0, attacked: 'Both' } },
+        { WhileHasCounter: { Other: 'vow' } },
+      ),
+      "Hill Giant can't attack Ana or planeswalkers Ana controls while it has a vow counter",
+    ],
+    [
+      effect(objects(1, 2), { CantAttackYou: { you: 0, attacked: 'Player' } }, { WhileHasCounter: 'charge' }),
+      "Grizzly Bears and Hill Giant can't attack Ana while each has a charge counter",
+    ],
+    [
       effect(objects(2), { SetController: 1 }, 'NextUntapStep'),
       "Hill Giant changes controller through its controller's next untap step",
     ],

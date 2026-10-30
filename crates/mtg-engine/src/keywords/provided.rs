@@ -56,7 +56,13 @@ fn affect(game: &mut GameState, id: ObjectId, modification: Modification, n: u64
         Duration::UntilEndOfTurn,
         n,
     );
-    apply_event(game, &Event::EffectCreated { effect }).unwrap();
+    apply_event(
+        game,
+        &Event::EffectCreated {
+            effect: effect.into(),
+        },
+    )
+    .unwrap();
 }
 
 /// What the reader lists for `id`: the source of each address and its index.
@@ -269,13 +275,13 @@ fn what_can_trigger_follows_the_keywords_that_add_triggers() {
         let (game, _) = board(std::slice::from_ref(&keyword));
         assert_eq!(game.watches(), adds, "{keyword:?} printed");
         let creation = Event::EffectCreated {
-            effect: ContinuousEffect::new(
+            effect: Box::new(ContinuousEffect::new(
                 EffectId(1),
                 Selector::Objects(Vec::new()),
                 Modification::AddKeyword(keyword.clone()),
                 Duration::UntilEndOfTurn,
                 1,
-            ),
+            )),
         };
         assert_eq!(introduces(&[creation]), adds, "{keyword:?} given");
     }

@@ -415,10 +415,15 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
                 count: count(looked.cards.len()),
             })
         }
-        Event::CardsFound(found) if found.player != viewer => Some(HiddenEvent::CardsFound {
-            player: found.player,
-            count: count(found.cards.len()),
-        }),
+        // A search of a zone the viewer sees into (a graveyard, a hand with open hands) tells the viewer which cards.
+        Event::CardsFound(found)
+            if found.player != viewer && !zone_is_visible_in(before, found.zone, viewer) =>
+        {
+            Some(HiddenEvent::CardsFound {
+                player: found.player,
+                count: count(found.cards.len()),
+            })
+        }
         Event::Scried(scried) if scried.player != viewer => Some(HiddenEvent::Scried {
             player: scried.player,
             top: count(scried.top.len()),
@@ -743,6 +748,39 @@ mod tests {
     /// What `viewer` is told of `event`: `Err` with the hidden form, `Ok` when it is the event as logged.
     fn told(state: &GameState, event: &Event, viewer: PlayerId) -> Result<(), HiddenEvent> {
         redact(state, event, viewer).map_or(Ok(()), Err)
+    }
+
+    /// A search tells the viewer which cards it found in a zone the viewer sees into and only how many in any other.
+    #[test]
+    fn a_search_tells_the_cards_found_in_the_zones_a_viewer_sees_into() {
+        let t = table();
+        let hidden = Err(HiddenEvent::CardsFound {
+            player: OWNER,
+            count: 1,
+        });
+        let cases = [
+            (Zone::Library(OWNER), hidden.clone()),
+            (Zone::Hand(OWNER), hidden),
+            (Zone::Graveyard(OWNER), Ok(())),
+            (Zone::Exile, Ok(())),
+        ];
+        for (zone, other) in cases {
+            let found = Event::CardsFound(CardsFound {
+                player: OWNER,
+                zone,
+                cards: vec![t.creature],
+            });
+            assert_eq!(
+                told(&t.state, &found, OWNER),
+                Ok(()),
+                "{zone:?} to the searcher"
+            );
+            assert_eq!(
+                told(&t.state, &found, OTHER),
+                other,
+                "{zone:?} to another seat"
+            );
+        }
     }
 
     #[test]

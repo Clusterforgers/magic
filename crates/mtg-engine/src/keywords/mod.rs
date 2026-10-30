@@ -1421,7 +1421,13 @@ mod tests {
             Duration::UntilEndOfTurn,
             timestamp,
         );
-        apply_event(game, &Event::EffectCreated { effect }).unwrap();
+        apply_event(
+            game,
+            &Event::EffectCreated {
+                effect: effect.into(),
+            },
+        )
+        .unwrap();
     }
 
     fn board() -> (GameState, ObjectId, ObjectId) {

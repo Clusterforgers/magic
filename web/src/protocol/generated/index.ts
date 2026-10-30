@@ -93,6 +93,7 @@ export type { DelayedId } from "./DelayedId";
 export type { DiscardOptions } from "./DiscardOptions";
 export type { DivideChoice } from "./DivideChoice";
 export type { DivideOptions } from "./DivideOptions";
+export type { Duration } from "./Duration";
 export type { EffectId } from "./EffectId";
 export type { EmblemCreated } from "./EmblemCreated";
 export type { EmptyLibrary } from "./EmptyLibrary";

@@ -47,7 +47,7 @@ impl Writer<'_> {
         } else {
             return None;
         };
-        let taken = self.control(&Ref::Target(0), take, Duration::UntilEndOfTurn)?;
+        let taken = self.control(&Ref::Target(0), take, &Duration::UntilEndOfTurn)?;
         Some((
             format!(
                 "{taken}. Untap that {noun}. It gains {} until end of turn",

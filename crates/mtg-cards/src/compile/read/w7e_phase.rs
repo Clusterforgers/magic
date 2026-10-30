@@ -93,7 +93,7 @@ fn w7e_protected_effects() -> Vec<Effect> {
     vec![
         Effect::Rule {
             rule: GameRule::LifeTotalCantChange(Ref::You),
-            duration,
+            duration: duration.clone(),
         },
         Effect::Rule {
             rule: GameRule::PlayersHave {

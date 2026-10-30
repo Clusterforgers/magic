@@ -29,7 +29,7 @@ impl Writer<'_> {
         let [Modification::AddSubtype(subtype)] = typed.as_slice() else {
             return None;
         };
-        let taken = self.control(&Ref::Target(0), take, Duration::Forever)?;
+        let taken = self.control(&Ref::Target(0), take, &Duration::Forever)?;
         let article = if subtype.0.starts_with(['A', 'E', 'I', 'O', 'U']) {
             "an"
         } else {

@@ -1661,6 +1661,18 @@ impl<'a> Scope<'a> {
         }))
     }
 
+    /// Whether a player `who` names searched their own zone of the kind earlier in the resolution (also for no card found).
+    fn searched(&self, who: &Ref, zone: ZoneKind) -> Result<bool, ResolveError> {
+        let Some(resolving) = self.state.resolving.as_ref() else {
+            return Ok(false);
+        };
+        let players = self.players(who)?;
+        Ok(resolving
+            .searched
+            .iter()
+            .any(|(player, place)| players.contains(player) && zone_kind(*place) == zone))
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -1709,6 +1721,7 @@ impl<'a> Scope<'a> {
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
+            Condition::Searched { who, zone } => self.searched(who, *zone)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)

@@ -40,7 +40,12 @@ fn takes(game: &mut GameState, id: u64, who: PlayerId, source: &str, taken: &str
     )
     .from_source(source)
     .begun(who, 1);
-    fold(game, &[Event::EffectCreated { effect }]);
+    fold(
+        game,
+        &[Event::EffectCreated {
+            effect: effect.into(),
+        }],
+    );
 }
 
 /// A plain taking of `name` for good, which comes after the effects made so far.
@@ -53,7 +58,12 @@ fn steals(game: &mut GameState, id: u64, who: PlayerId, name: &str, at: u64) {
         at,
     )
     .begun(who, 1);
-    fold(game, &[Event::EffectCreated { effect }]);
+    fold(
+        game,
+        &[Event::EffectCreated {
+            effect: effect.into(),
+        }],
+    );
 }
 
 fn expired(game: &GameState) -> Vec<EffectId> {

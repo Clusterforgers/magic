@@ -18,7 +18,7 @@ impl Writer<'_> {
         else {
             return None;
         };
-        let pump = self.pump(affected, mods, Duration::UntilEndOfTurn)?;
+        let pump = self.pump(affected, mods, &Duration::UntilEndOfTurn)?;
         Some(format!(
             "you may have {}",
             pump.replacen(" gets ", " get ", 1)

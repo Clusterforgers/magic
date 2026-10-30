@@ -81,6 +81,8 @@ pub struct Resolving {
     pub(crate) w11b_phased: Vec<ObjectRef>,
     /// The X announced as a payment in the resolution was made ("you may pay {X}{R}. If you do"), which the effects after it read.
     pub(crate) w6c_paid_x: Option<u32>,
+    /// The zones the resolution has searched so far, by the player who searched, which "if you search your library this way" reads.
+    pub(crate) searched: Vec<(PlayerId, Zone)>,
 }
 
 impl Resolving {
@@ -98,6 +100,7 @@ impl Resolving {
             w14b_exiled: Vec::new(),
             w11b_phased: Vec::new(),
             w6c_paid_x: None,
+            searched: Vec::new(),
         }
     }
 

@@ -103,7 +103,7 @@ pub fn w11b_untap_then_phase_out_text(effects: &[Effect]) -> Option<(String, usi
     };
     (untapped == phased).then_some(())?;
     let group = phrase_text(untapped, Form::All)?;
-    let tail = w11b_phase_tail_text(*duration, false, None)?;
+    let tail = w11b_phase_tail_text(duration.clone(), false, None)?;
     Some((
         format!("untap all {group}, then those {group} phase out{tail}"),
         2,

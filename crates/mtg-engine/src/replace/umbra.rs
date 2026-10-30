@@ -257,7 +257,13 @@ fn regeneration(game: &mut GameState) -> EffectId {
         controller: bear.controller(),
         turn: 1,
     };
-    apply_event(game, &Event::RuleCreated { effect }).unwrap();
+    apply_event(
+        game,
+        &Event::RuleCreated {
+            effect: effect.into(),
+        },
+    )
+    .unwrap();
     shield
 }
 
@@ -306,7 +312,13 @@ fn a_regeneration_shield_on_the_aura_replaces_the_destruction_the_armor_causes(
         controller: aura.controller(),
         turn: 1,
     };
-    apply_event(&mut table, &Event::RuleCreated { effect }).unwrap();
+    apply_event(
+        &mut table,
+        &Event::RuleCreated {
+            effect: effect.into(),
+        },
+    )
+    .unwrap();
     let result = run(&table, &[move_of(&table, "Bear0", ZoneCause::Destroyed)]);
     assert_eq!(
         result,

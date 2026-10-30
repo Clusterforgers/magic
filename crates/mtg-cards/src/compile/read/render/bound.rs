@@ -73,7 +73,7 @@ impl Writer<'_> {
                 mods,
                 duration,
             } if *affected == tokens() => {
-                let text = self.pump(affected, mods, *duration)?;
+                let text = self.pump(affected, mods, duration)?;
                 match rest.first() {
                     Some(Effect::Rule {
                         rule: GameRule::MustAttack(who),

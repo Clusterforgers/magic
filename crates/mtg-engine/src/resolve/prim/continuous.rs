@@ -113,15 +113,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             other => lower(&cx.scope, other)?,
         };
         events.push(Event::EffectCreated {
-            effect: ContinuousEffect::new(
-                EffectId(state.next_effect + made),
-                Selector::Objects(named.clone()),
-                modification,
-                *duration,
-                state.next_timestamp + made,
-            )
-            .from_source(cx.scope.source)
-            .begun(cx.controller(), state.turn().number()),
+            effect: Box::new(
+                ContinuousEffect::new(
+                    EffectId(state.next_effect + made),
+                    Selector::Objects(named.clone()),
+                    modification,
+                    duration.clone(),
+                    state.next_timestamp + made,
+                )
+                .from_source(cx.scope.source)
+                .begun(cx.controller(), state.turn().number()),
+            ),
         });
     }
     Ok(Run::events(events))
@@ -320,7 +322,7 @@ mod tests {
         events
             .into_iter()
             .map(|event| match event {
-                Event::EffectCreated { effect } => effect,
+                Event::EffectCreated { effect } => *effect,
                 other => panic!("only effects begin, got {other:?}"),
             })
             .collect()
