@@ -108,6 +108,7 @@ pub mod rule_cards;
 pub mod saga_cards;
 pub mod scenario;
 pub mod script_error;
+pub mod shown_by_hand;
 pub mod small_cards;
 pub mod spectacle_cards;
 pub mod split_second_cards;

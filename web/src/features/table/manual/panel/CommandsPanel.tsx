@@ -16,6 +16,7 @@ import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
 import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
 import { LookTopBody } from './LookTopBody'
+import { RollChoice } from './RollChoice'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
@@ -216,7 +217,16 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       onKeyDown={onKeyDown}
       className="grid gap-2 px-2 pt-1 pb-2"
     >
-      {command.choice === undefined ? null : <Choice kind={command.choice} draft={draft} set={set} />}
+      {command.choice === 'roll' ? (
+        <RollChoice
+          pick={draft.roll}
+          sides={draft.sides}
+          onPick={(roll) => set({ roll })}
+          onSides={(sides) => set({ sides })}
+        />
+      ) : command.choice === undefined ? null : (
+        <Choice kind={command.choice} draft={draft} set={set} />
+      )}
       {command.amount === undefined ? null : <Amount command={command} draft={draft} set={set} />}
       <p
         data-slot="command-preview"

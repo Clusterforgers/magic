@@ -3,6 +3,7 @@ import type { CounterKind } from "./CounterKind";
 import type { DamageTarget } from "./DamageTarget";
 import type { ManaType } from "./ManaType";
 import type { ManualReveal } from "./ManualReveal";
+import type { ManualRoll } from "./ManualRoll";
 import type { ManualToken } from "./ManualToken";
 import type { ManualZone } from "./ManualZone";
 import type { ObjectId } from "./ObjectId";
@@ -157,4 +158,8 @@ object: ObjectId,
 /**
  * The text, up to 80 characters on one line.
  */
-text: string, } };
+text: string, } } | { "Roll": { 
+/**
+ * A coin or a die.
+ */
+kind: ManualRoll, } };

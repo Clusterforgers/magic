@@ -7,7 +7,9 @@ use mtg_core::mana::ManaType;
 use mtg_engine::combat::DamageTarget;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::error::IllegalAnswer;
-use mtg_engine::manual::{CommonToken, ManualAction, ManualRefusal, ManualToken, ManualZone};
+use mtg_engine::manual::{
+    CommonToken, ManualAction, ManualRefusal, ManualRoll, ManualToken, ManualZone,
+};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, EngineError, Event, characteristics};
@@ -196,6 +198,18 @@ fn actions(driver: &Driver, actor: PlayerId) -> Vec<(&'static str, ManualAction)
                 object: theirs,
                 power: 2,
                 toughness: 1,
+            },
+        ),
+        (
+            "flip a coin",
+            ManualAction::Roll {
+                kind: ManualRoll::Coin {},
+            },
+        ),
+        (
+            "roll a die",
+            ManualAction::Roll {
+                kind: ManualRoll::Die { sides: 20 },
             },
         ),
     ]

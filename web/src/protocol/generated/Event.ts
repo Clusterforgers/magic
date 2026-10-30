@@ -25,6 +25,7 @@ import type { LossReason } from "./LossReason";
 import type { ManaLasts } from "./ManaLasts";
 import type { ManaType } from "./ManaType";
 import type { ManualAction } from "./ManualAction";
+import type { ManualRoll } from "./ManualRoll";
 import type { NothingToDo } from "./NothingToDo";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
@@ -850,7 +851,19 @@ player: PlayerId,
 /**
  * What they did.
  */
-action: ManualAction, } } | { "CommanderStayed": { 
+action: ManualAction, } } | { "ManualRolled": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * A coin or a die.
+ */
+kind: ManualRoll, 
+/**
+ * The result: 1 for heads and 2 for tails, or the face of the die from 1 to its sides.
+ */
+result: number, } } | { "CommanderStayed": { 
 /**
  * The commander.
  */

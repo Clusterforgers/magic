@@ -156,6 +156,11 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::manual_show::apply(state, *player, action);
             Ok(())
         }
+        Event::ManualRolled { .. } => {
+            // A roll spends a substream of the generator, as a shuffle does.
+            state.rng_index += 1;
+            Ok(())
+        }
         Event::Scried(scried) => {
             zones::scry(state, scried)?;
             opening::scried(state, scried.player)?;

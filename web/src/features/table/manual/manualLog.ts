@@ -26,6 +26,7 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   Shuffle: ['LibraryShuffled'],
   Reveal: ['Revealed'],
   Note: [],
+  Roll: ['ManualRolled'],
 }
 
 type ActionKind = ManualAction extends infer U ? (U extends unknown ? keyof U : never) : never
@@ -78,6 +79,15 @@ function shownIn(log: readonly LogEntry[], at: number, count: number): ObjectId[
   return undefined
 }
 
+/** The result the `count` events after the action at `at` tell: a coin or a die rolled by hand. */
+function rolledIn(log: readonly LogEntry[], at: number, count: number): number | undefined {
+  for (const entry of log.slice(at + 1, at + 1 + count)) {
+    const inner = 'Public' in entry.event ? entry.event.Public : null
+    if (inner !== null && typeof inner !== 'string' && 'ManualRolled' in inner) return inner.ManualRolled.result
+  }
+  return undefined
+}
+
 /** A manual action in the log: how many events after it tell the same thing and where a moved card came from. */
 export interface ManualRun {
   /** The events right after the action that its sentence tells again. */
@@ -85,6 +95,8 @@ export interface ManualRun {
   from: Zone | undefined
   /** The cards the run told the viewer: those looked at or revealed. */
   shown?: ObjectId[]
+  /** The result of a coin or a die rolled by hand. */
+  rolled?: number
   /** The names `LogEntry.names` kept for the action and the events its sentence tells again. */
   names?: Record<ObjectId, string>
 }
@@ -98,11 +110,13 @@ export function manualRun(log: readonly LogEntry[], at: number): ManualRun | nul
   if (event !== null && typeof event !== 'string' && 'ManualAction' in event) {
     const consumed = changeLength(event, log, at)
     const shown = shownIn(log, at, consumed)
+    const rolled = rolledIn(log, at, consumed)
     const kept = Object.assign({}, ...log.slice(at, at + 1 + consumed).map((each) => each.names))
     return {
       consumed,
       from: leftFrom(log, at, consumed),
       ...(shown === undefined ? {} : { shown }),
+      ...(rolled === undefined ? {} : { rolled }),
       ...(Object.keys(kept).length === 0 ? {} : { names: kept }),
     }
   }
@@ -170,10 +184,11 @@ export function manualText(
   from: Zone | undefined,
   names: EventNames,
   shown?: readonly ObjectId[],
+  rolled?: number,
 ): string {
   if ('Public' in event && typeof event.Public !== 'string' && 'ManualAction' in event.Public) {
     const { player, action } = event.Public.ManualAction
-    return describeManual(player, action, names, from, shown)
+    return describeManual(player, action, names, from, shown, rolled)
   }
   if ('Hidden' in event && typeof event.Hidden === 'object' && 'ManualMove' in event.Hidden) {
     return describeHiddenManual(event.Hidden.ManualMove.player, event.Hidden.ManualMove.to, names, from)

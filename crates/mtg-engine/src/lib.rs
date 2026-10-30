@@ -91,6 +91,7 @@ pub mod mana;
 pub mod manual;
 mod manual_effects;
 mod manual_library;
+mod manual_roll;
 mod manual_show;
 pub mod merged;
 pub mod monarch;

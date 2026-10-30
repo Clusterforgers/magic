@@ -58,6 +58,10 @@ pub const MAX_DAMAGE: u32 = 99;
 pub const MAX_MANA: u32 = 20;
 /// Most characters of a note on a card.
 pub const MAX_NOTE_CHARS: usize = 80;
+/// Fewest faces of a die rolled by hand.
+pub const MIN_SIDES: u32 = 2;
+/// Most faces of a die rolled by hand.
+pub const MAX_SIDES: u32 = 100;
 
 /// Where a card goes: a zone of its owner, or the shared battlefield or exile.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -104,6 +108,19 @@ pub enum ManualReveal {
     },
     /// The top card of the seat's library.
     Top {},
+}
+
+/// What a seat rolls by hand.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ManualRoll {
+    /// A coin: the result is 1 for heads and 2 for tails.
+    Coin {},
+    /// A die with 2 to 100 faces: the result is a face from 1 to `sides`.
+    Die {
+        /// How many faces.
+        sides: u32,
+    },
 }
 
 /// A token from the list of the common ones; the first three are the predefined tokens of `cards/tokens`.
@@ -458,6 +475,12 @@ pub enum ManualAction {
         /// The text, up to 80 characters on one line.
         text: String,
     },
+    /// The seat flips a coin or rolls a die: the engine draws the result from the game's random stream and tells
+    /// every seat.
+    Roll {
+        /// A coin or a die.
+        kind: ManualRoll,
+    },
 }
 
 /// Why a manual action is refused.
@@ -618,6 +641,7 @@ pub(crate) fn events(
         ManualAction::Note { object, text } => {
             crate::manual_show::note(state, player, *object, text)?
         }
+        ManualAction::Roll { kind } => crate::manual_roll::roll(state, player, *kind)?,
     };
     let mut events = Vec::with_capacity(changes.len() + 1);
     events.push(Event::ManualAction {
