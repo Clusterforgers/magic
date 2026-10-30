@@ -21,7 +21,10 @@ interface Seen {
  */
 export function SideProvider({ kind, children }: { kind: SideKind; children: ReactNode }) {
   const { session } = useGame()
-  const [tab, setTab] = useState<SideTab>('log')
+  // Until a tab is chosen a seat shows its Commands, and a viewer that is no seat, which has none, the log.
+  const [chosen, setTab] = useState<SideTab | null>(null)
+  const seated = usePlay((state) => state.seat !== null)
+  const tab: SideTab = chosen ?? (seated ? 'commands' : 'log')
   const [panel, setPanel] = useState(false)
   const [seen, setSeen] = useState<Seen>(() => {
     const { log, chat } = session.store.getState()
@@ -34,7 +37,7 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
 
   // What was on show when the reader looks away has been read: everything up to that moment.
   useEffect(() => {
-    if (!open || tab === 'stack') return
+    if (!open || tab === 'stack' || tab === 'commands') return
     return () => {
       const { log: lines, chat: said } = session.store.getState()
       setSeen((was) => ({
@@ -58,6 +61,7 @@ export function SideProvider({ kind, children }: { kind: SideKind; children: Rea
 
   const counts = useMemo<Record<SideTab, number>>(
     () => ({
+      commands: 0,
       log: open && tab === 'log' ? 0 : log,
       chat: open && tab === 'chat' ? 0 : chat,
       stack,

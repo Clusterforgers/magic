@@ -121,6 +121,22 @@ describe('the sentence of each manual action', () => {
       { Pump: { object: 2, power: -1, toughness: -3 } },
       'Bo gives Grizzly Bears -1/-3 until end of turn (by hand)',
     ],
+    [
+      'a look at the top',
+      { LookTop: { count: 3 } },
+      'Bo looks at the top 3 cards of their library (by hand)',
+    ],
+    [
+      'the top put back',
+      { ArrangeTop: { top: [5], bottom: [6, 7], graveyard: [] } },
+      'Bo puts back the top 3 cards of their library: 1 on top, 2 on the bottom (by hand)',
+    ],
+    [
+      'the top milled and kept',
+      { ArrangeTop: { top: [5], bottom: [], graveyard: [6] } },
+      'Bo puts back the top 2 cards of their library: 1 on top, 1 into their graveyard (by hand)',
+    ],
+    ['a shuffle', { Shuffle: {} }, 'Bo shuffles their library (by hand)'],
   ]
   it.each(sentences)('%s', (_name, what, text) => {
     const line = describeEvent(action(what), names)
@@ -135,6 +151,13 @@ describe('the sentence of each manual action', () => {
   it('tells a move the viewer cannot name without the name', () => {
     const line = describeEvent(hid({ ManualMove: { player: 1, to: 'LibraryTop' } }), names)
     expect(line.text).toBe('Bo moves a card to the top of the library (by hand)')
+  })
+
+  it('tells the top cards another seat put back by their counts', () => {
+    const line = describeEvent(hid({ ManualArrange: { player: 1, top: 2, bottom: 0, graveyard: 1 } }), names)
+    expect(line.text).toBe(
+      'Bo puts back the top 3 cards of their library: 2 on top, 1 into their graveyard (by hand)',
+    )
   })
 })
 

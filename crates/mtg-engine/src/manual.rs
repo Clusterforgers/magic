@@ -413,6 +413,23 @@ pub enum ManualAction {
         /// Toughness change, from -99 to 99.
         toughness: i32,
     },
+    /// The seat looks at the top cards of its library, all of a shorter one; only it learns them.
+    LookTop {
+        /// How many, 1 to 10.
+        count: u32,
+    },
+    /// The seat puts the top cards of its library, all of which it looked at, back: some on top in a new order, some
+    /// on the bottom, some into its graveyard. Together the lists are the top cards, each read from the top down.
+    ArrangeTop {
+        /// The cards that stay on top, the next card drawn first.
+        top: Vec<ObjectId>,
+        /// The cards put on the bottom, the last of them the bottom card.
+        bottom: Vec<ObjectId>,
+        /// The cards put into the graveyard.
+        graveyard: Vec<ObjectId>,
+    },
+    /// The seat shuffles its library.
+    Shuffle {},
 }
 
 /// Why a manual action is refused.
@@ -465,6 +482,9 @@ pub enum ManualRefusal {
     /// The game has not begun its first turn.
     #[error("manual actions start with the first turn")]
     NotStarted,
+    /// The cards are not the top cards of the seat's library, or it has not looked at all of them.
+    #[error("only the top cards of the library the seat looked at are put back")]
+    NotLookedAt,
 }
 
 /// Whether `player` may take `action` in `state`, or why not; the check `PriorityAction::Manual` answers to.
@@ -514,20 +534,8 @@ pub(crate) fn events(
             life(state, *who, *delta)?
         }
         ManualAction::CreateToken { token, count } => create_tokens(state, player, token, *count)?,
-        ManualAction::Tap { object } => {
-            let held = permanent(state, *object)?;
-            if held.permanent().is_some_and(PermanentState::tapped) {
-                return Err(ManualRefusal::NoChange);
-            }
-            vec![Event::PermanentTapped { object: *object }]
-        }
-        ManualAction::Untap { object } => {
-            let held = permanent(state, *object)?;
-            if !held.permanent().is_some_and(PermanentState::tapped) {
-                return Err(ManualRefusal::NoChange);
-            }
-            vec![Event::PermanentUntapped { object: *object }]
-        }
+        ManualAction::Tap { object } => tap(state, *object, true)?,
+        ManualAction::Untap { object } => tap(state, *object, false)?,
         ManualAction::Draw { count } => {
             if !(1..=MAX_CARDS).contains(count) {
                 return Err(ManualRefusal::OutOfRange("the number of cards"));
@@ -571,6 +579,13 @@ pub(crate) fn events(
             power,
             toughness,
         } => crate::manual_effects::pump(state, player, *object, *power, *toughness)?,
+        ManualAction::LookTop { count } => crate::manual_library::look_top(state, player, *count)?,
+        ManualAction::ArrangeTop {
+            top,
+            bottom,
+            graveyard,
+        } => crate::manual_library::arrange_top(state, player, top, bottom, graveyard)?,
+        ManualAction::Shuffle {} => crate::manual_library::shuffle(state, player),
     };
     let mut events = Vec::with_capacity(changes.len() + 1);
     events.push(Event::ManualAction {
@@ -579,6 +594,19 @@ pub(crate) fn events(
     });
     events.extend(changes);
     Ok(events)
+}
+
+/// Taps (`tap`) or untaps the permanent `id`, which must be untapped or tapped now.
+fn tap(state: &GameState, id: ObjectId, tap: bool) -> Result<Vec<Event>, ManualRefusal> {
+    let held = permanent(state, id)?;
+    if held.permanent().is_some_and(PermanentState::tapped) == tap {
+        return Err(ManualRefusal::NoChange);
+    }
+    Ok(vec![if tap {
+        Event::PermanentTapped { object: id }
+    } else {
+        Event::PermanentUntapped { object: id }
+    }])
 }
 
 /// The object `id` when the seat owns or controls it.

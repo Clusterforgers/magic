@@ -277,6 +277,23 @@ function leftWord(zone: Zone): string {
   return 'the command zone'
 }
 
+/** How a seat put back the top cards it looked at by hand, by count: "Ana puts back the top 3 cards of their library: 1 on top, 2 on the bottom (by hand)". */
+export function describeArrange(
+  player: PlayerId,
+  top: number,
+  bottom: number,
+  graveyard: number,
+  n: EventNames,
+): string {
+  const said = [
+    top > 0 ? `${top} on top` : null,
+    bottom > 0 ? `${bottom} on the bottom` : null,
+    graveyard > 0 ? `${graveyard} into their graveyard` : null,
+  ].filter((part) => part !== null)
+  const all = cards(top + bottom + graveyard)
+  return `${n.seat(player)} puts back the top ${all} of their library: ${said.join(', ')} (by hand)`
+}
+
 /**
  * What a seat did by hand, as one sentence; the events of the change follow it in the log. `from` is the zone a moved
  * card left, which the action does not name and the change does (`foldLog` passes it).
@@ -327,6 +344,13 @@ export function describeManual(player: PlayerId, action: ManualAction, n: EventN
     const { mana, count } = action.AddMana
     return `${who} adds ${`{${manaLetter(mana)}}`.repeat(count)} (by hand)`
   }
+  if ('LookTop' in action)
+    return `${who} looks at the top ${cards(action.LookTop.count)} of their library (by hand)`
+  if ('ArrangeTop' in action) {
+    const { top, bottom, graveyard } = action.ArrangeTop
+    return describeArrange(player, top.length, bottom.length, graveyard.length, n)
+  }
+  if ('Shuffle' in action) return `${who} shuffles their library (by hand)`
   const { object, power, toughness } = action.Pump
   const signed = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
   return `${who} gives ${n.card(object)} ${signed(power)}/${signed(toughness)} until end of turn (by hand)`
@@ -865,6 +889,10 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   }
   if ('ManualMove' in event) {
     return line(describeHiddenManual(event.ManualMove.player, event.ManualMove.to, n))
+  }
+  if ('ManualArrange' in event) {
+    const { player, top, bottom, graveyard } = event.ManualArrange
+    return line(describeArrange(player, top, bottom, graveyard, n))
   }
   void (event satisfies { StepDone: unknown })
   return quiet('A step of the resolution is done')
