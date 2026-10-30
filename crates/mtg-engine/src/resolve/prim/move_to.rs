@@ -153,7 +153,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 under: None,
                 transformed: false,
                 counters: &[],
-                attached_to: Some(host),
+                attached_to: Some(NamedHost { host }),
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -176,22 +176,42 @@ struct Entry<'a> {
     transformed: bool,
     /// With these counters.
     counters: &'a [(CounterKind, u32)],
-    /// Attached to this permanent, which the move names: `Some(None)` when the permanent it names is gone.
-    attached_to: Option<Option<ObjectId>>,
+    /// Attached to the permanent the move names, when it names one.
+    attached_to: Option<NamedHost>,
+}
+
+/// The permanent a move onto the battlefield attaches its cards to.
+#[derive(Clone, Copy)]
+struct NamedHost {
+    /// The permanent on the battlefield, none when the reference names nothing there.
+    host: Option<ObjectId>,
+}
+
+/// How a card put onto the battlefield attached to a named permanent comes in.
+enum Entering {
+    /// It stays where it is.
+    Stays,
+    /// It enters, attached to this permanent or unattached.
+    Enters(Option<ObjectId>),
 }
 
 /// What a card put onto the battlefield "attached to" a named permanent comes in as: an Aura only attached to a permanent
-/// it may enchant, none otherwise (CR 303.4g), so `None` leaves the card where it is; an Equipment or a Fortification
-/// attached when it may be and unattached when it may not (CR 301.5, 301.6); any other card unattached.
+/// it may enchant, otherwise it stays where it is (CR 303.4g); an Equipment or a Fortification attached when it may be
+/// and unattached when it may not (CR 301.5, 301.6); any other card unattached.
 fn attached_entry(
     state: &GameState,
     object: &GameObject,
     controller: PlayerId,
     named: Option<ObjectId>,
-) -> Option<Option<ObjectId>> {
+) -> Entering {
     match attach::hosts_when_entering(state, object, controller) {
-        Some(hosts) => named.filter(|host| hosts.contains(host)).map(Some),
-        None => Some(named.filter(|host| attach::legal_host_entering(state, object.id(), *host))),
+        Some(hosts) => match named.filter(|host| hosts.contains(host)) {
+            Some(host) => Entering::Enters(Some(host)),
+            None => Entering::Stays,
+        },
+        None => Entering::Enters(
+            named.filter(|host| attach::legal_host_entering(state, object.id(), *host)),
+        ),
     }
 }
 
@@ -243,10 +263,10 @@ fn onto_battlefield(
         }
         let controller = under.unwrap_or_else(|| object.owner());
         let host = if let Some(named) = attached_to {
-            let Some(host) = attached_entry(state, object, controller, named) else {
-                continue;
-            };
-            host
+            match attached_entry(state, object, controller, named.host) {
+                Entering::Stays => continue,
+                Entering::Enters(host) => host,
+            }
         } else {
             match attach::hosts_when_entering(state, object, controller) {
                 None => None,
