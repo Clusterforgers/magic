@@ -22,7 +22,7 @@ pub(crate) enum Progress {
     /// A player must choose.
     Decide(Decision),
     /// A triggered ability goes on the stack next: its targets are announced like those of a cast.
-    Put(Pending),
+    Put(Box<Pending>),
     /// The game is over.
     Done,
     /// The game cannot go on: a spell or ability uses something the engine does not play.

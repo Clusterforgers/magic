@@ -227,7 +227,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (ma7g) The panel at M (the rail's first icon) and S, XS (the sheet's first tab, "Commands, log, chat and stack"), 44 px targets on touch, screenshots at six sizes in both themes
 - [ ] (ma7h) Playwright: two seats; life, draw, look at the top and arrange, mill and a token from the panel, with every action in both logs and the looked-at cards hidden from the other seat, at desktop and phone size
 - [ ] (ma7i) Dice and a coin: `ManualAction::Roll` from the engine's random stream, a Make row and a log line
-- [~] (ma7j) (fix-ma7j) `ManualScript` also takes `LookTop`, `ArrangeTop` and `Shuffle`; with them seed 6 of `manual_anytime` (two seats) shows a bot cast of a card that an out-of-band `Move` had put onto the battlefield being accepted (`event does not apply`)
 
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs

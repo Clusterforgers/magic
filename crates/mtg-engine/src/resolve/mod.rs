@@ -427,7 +427,9 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
             card,
             free,
             way,
-        })) => flow::Progress::Put(Pending::during_resolution(player, card, free, way)),
+        })) => flow::Progress::Put(Box::new(Pending::during_resolution(
+            player, card, free, way,
+        ))),
         Err(error) => flow::Progress::Fail(error),
     }
 }

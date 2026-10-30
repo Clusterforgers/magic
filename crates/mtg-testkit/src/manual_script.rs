@@ -119,7 +119,7 @@ impl ManualScript {
 
     fn candidate(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
         let nothing = ManualAction::Draw { count: 1 };
-        match self.rng.below(17) {
+        match self.rng.below(20) {
             0..=2 => {
                 let mine = Self::objects(state, player, Scope::Mine);
                 let to = self.zone();
@@ -195,6 +195,11 @@ impl ManualScript {
                 mana: [ManaType::Red, ManaType::Green, ManaType::Colorless][self.rng.index(3)],
                 count: u32::try_from(self.rng.below(3)).unwrap_or(0) + 1,
             },
+            16 => ManualAction::LookTop {
+                count: u32::try_from(self.rng.below(3)).unwrap_or(0) + 1,
+            },
+            17 => self.arrange(state, player).unwrap_or(nothing),
+            18 => ManualAction::Shuffle {},
             _ => {
                 let table = Self::objects(state, player, Scope::Battlefield);
                 let (power, toughness) = (self.delta(), self.delta());
@@ -206,6 +211,36 @@ impl ManualScript {
                     })
             }
         }
+    }
+
+    /// The top cards of the library the seat has looked at (one to three), sorted at random into the three piles of
+    /// an `ArrangeTop`; `None` when the top card is not known to the seat.
+    fn arrange(&mut self, state: &GameState, player: PlayerId) -> Option<ManualAction> {
+        let count = usize::try_from(self.rng.below(3)).unwrap_or(0) + 1;
+        let seen: Vec<ObjectId> = state
+            .zone(Zone::Library(player))
+            .iter()
+            .rev()
+            .take(count)
+            .take_while(|card| state.is_shown_to(player, **card))
+            .copied()
+            .collect();
+        if seen.is_empty() {
+            return None;
+        }
+        let (mut top, mut bottom, mut graveyard) = (Vec::new(), Vec::new(), Vec::new());
+        for card in seen {
+            match self.rng.below(3) {
+                0 => top.push(card),
+                1 => bottom.push(card),
+                _ => graveyard.push(card),
+            }
+        }
+        Some(ManualAction::ArrangeTop {
+            top,
+            bottom,
+            graveyard,
+        })
     }
 
     /// Damage from a card of the seat to a random player or permanent.
