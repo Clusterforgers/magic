@@ -1097,3 +1097,6 @@ mod dk1c_writers;
 mod dk1c2_affinity;
 // deck-auras
 mod deck_auras;
+
+// t19c
+mod t19c_writers;

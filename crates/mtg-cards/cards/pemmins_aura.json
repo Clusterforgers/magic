@@ -1,0 +1,78 @@
+{
+  "oracle_id": "ada2f380-bca7-4d64-9587-bab11c776ba8",
+  "name": "Pemmin's Aura",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pemmin's Aura",
+      "oracle_fingerprint": "33d94092eed0f4f54fb0be4cc80d9ac4",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Activated": { "cost": "{U}", "effects": [{ "Untap": { "what": "Attached" } }] } },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Shroud" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

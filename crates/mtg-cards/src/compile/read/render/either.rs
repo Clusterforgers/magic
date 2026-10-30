@@ -6,7 +6,7 @@ use crate::effect::Mode;
 use crate::refs::Bounds;
 
 /// The sentences of a mode without a capital or a period, when it is a single sentence.
-fn sentences(mode: &Mode) -> Vec<String> {
+pub(super) fn sentences(mode: &Mode) -> Vec<String> {
     alternatives(&mode.targets, &mode.effects)
         .into_iter()
         .filter_map(|mut sentences| (sentences.len() == 1).then(|| sentences.remove(0)))
@@ -14,7 +14,7 @@ fn sentences(mode: &Mode) -> Vec<String> {
 }
 
 /// The two sentences as one: the words they share before and after, and the phrases that differ joined by "or".
-fn joined(first: &str, second: &str) -> Option<String> {
+pub(super) fn joined(first: &str, second: &str) -> Option<String> {
     let (a, b): (Vec<&str>, Vec<&str>) = (first.split(' ').collect(), second.split(' ').collect());
     let before = a.iter().zip(&b).take_while(|(x, y)| x == y).count();
     let after = a[before..]
