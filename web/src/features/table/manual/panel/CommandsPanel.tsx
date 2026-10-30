@@ -233,6 +233,11 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       >
         {ready ? preview.preview : preview.problem}
       </p>
+      {LASTING.has(command.id) ? (
+        <p data-slot="command-lasting" className="text-xs text-muted-foreground">
+          {LASTING_WORDS}
+        </p>
+      ) : null}
       <Button
         size="sm"
         data-slot="command-apply"
@@ -241,11 +246,6 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       >
         {ready ? preview.apply : 'Apply'}
       </Button>
-      {LASTING.has(command.id) ? (
-        <p data-slot="command-lasting" className="text-xs text-muted-foreground">
-          {LASTING_WORDS}
-        </p>
-      ) : null}
       <FeedbackLine feedback={feedback} />
     </div>
   )
