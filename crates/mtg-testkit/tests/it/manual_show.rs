@@ -154,14 +154,11 @@ fn a_shown_card_is_hidden_again_once_it_changes_place() {
 #[case::a_card_shown_already(None, ManualRefusal::NoChange)]
 fn what_a_reveal_refuses(#[case] name: Option<&str>, #[case] expected: ManualRefusal) {
     let mut driver = game();
-    let action = match name {
-        Some(name) => reveal_hand(&driver, name),
-        None => {
-            let action = reveal_hand(&driver, "A");
-            take(&mut driver, action);
-            reveal_hand(&driver, "A")
-        }
-    };
+    if name.is_none() {
+        let shown = reveal_hand(&driver, "A");
+        take(&mut driver, shown);
+    }
+    let action = reveal_hand(&driver, name.unwrap_or("A"));
     let got = refusal(&mut driver, action);
     match (got, expected) {
         (ManualRefusal::WrongZone { zone, .. }, ManualRefusal::WrongZone { zone: want, .. }) => {
