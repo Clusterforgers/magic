@@ -45,6 +45,15 @@ fn without_ability_word(line: &str) -> &str {
     }
 }
 
+/// The lines of the text a repair reads: no reminders, no ability words, no empty lines.
+pub(super) fn plain_lines(text: &str) -> Vec<String> {
+    text.lines()
+        .map(without_reminders)
+        .map(|line| without_ability_word(line.trim()).to_owned())
+        .filter(|line| !line.is_empty())
+        .collect()
+}
+
 /// The kind of a line, from its first words.
 fn classify(line: &str) -> Line {
     let first = line
