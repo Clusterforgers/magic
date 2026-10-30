@@ -10,7 +10,6 @@ import { deckFormat } from './deckWords'
 import type { DeckEntry } from './deckEntries'
 import type { DeckDetail } from './useDeckDetail'
 import type { VerdictState } from './useVerdicts'
-import { blockedLine } from './verdict'
 
 interface DeckPaneProps {
   entry: DeckEntry | null
@@ -52,6 +51,9 @@ function standIn(entry: DeckEntry): DeckPreviewData {
   }
 }
 
+/** The id of the legality block's reasons: the one place a deck's issues are written, which the off button points at. */
+const WHY_ID = 'deck-pane-why'
+
 function legalityOf(
   verdict: VerdictState | undefined,
   format: GameFormat,
@@ -62,7 +64,7 @@ function legalityOf(
   if (verdict === undefined || verdict.status === 'checking') return { verdict: 'checking', format: name }
   if (verdict.status === 'failed') return { verdict: 'unknown', format: name }
   if (verdict.verdict.kind === 'blocked') {
-    return { verdict: 'illegal', format: name, reasons: verdict.verdict.reasons }
+    return { verdict: 'illegal', format: name, reasons: verdict.verdict.reasons, reasonsId: WHY_ID }
   }
   return { verdict: 'legal', format: name }
 }
@@ -70,7 +72,7 @@ function legalityOf(
 /**
  * The preview of the selected deck beside the list: the shared `DeckPreview` with this table's verdict as its
  * legality, a link to the cards played by hand, and "Use this deck", which a deck the table cannot take does not
- * allow (the reason stands beside it). The built-in decks have no card data and list their cards by name.
+ * allow (the legality above lists why, once). The built-in decks have no card data and list their cards by name.
  */
 export function DeckPane({
   entry,
@@ -96,7 +98,6 @@ export function DeckPane({
   }
   const builtIn = entry.kind === 'builtin'
   const blocked = verdict?.status === 'ready' && verdict.verdict.kind === 'blocked' ? verdict.verdict : null
-  const why = blocked === null ? null : blockedLine(blocked.reasons)
   const ready = detail.status === 'ready' ? detail.data : null
   const actions = (
     <>
@@ -106,7 +107,7 @@ export function DeckPane({
         loading={pending}
         disabled={chosen || blocked !== null || (waiting && !pending)}
         focusableWhenDisabled={blocked !== null}
-        aria-describedby={why === null ? undefined : 'deck-pane-why'}
+        aria-describedby={blocked === null ? undefined : WHY_ID}
         onClick={() => onUse(entry)}
       >
         {chosen ? <CheckIcon aria-hidden="true" /> : null}
@@ -122,15 +123,6 @@ export function DeckPane({
           </Button>
         </span>
       ) : null}
-      {why === null ? null : (
-        <p
-          id="deck-pane-why"
-          data-slot="deck-blocked"
-          className="w-full text-xs text-destructive [overflow-wrap:anywhere]"
-        >
-          {why}
-        </p>
-      )}
     </>
   )
   const legality = legalityOf(verdict, format, builtIn)

@@ -22,6 +22,7 @@ import {
   lineIn,
   MAX_DECK_CARDS,
   moveLine,
+  openingPane,
   removeLine,
   sameDeck,
   totalOf,
@@ -112,7 +113,7 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
   } | null>(null)
   const [nameProblem, setNameProblem] = useState<string | null>(null)
   const [announcement, setAnnouncement] = useState('')
-  const [shown, setShown] = useState<Shown>('search')
+  const [shown, setShown] = useState<Shown>(() => openingPane(stored.draft))
   // The card whose preview is open, kept after it closes so it fades out whole, and the control that opened it.
   const [preview, setPreview] = useState<{ card: CardHit; open: boolean } | null>(null)
   const opener = useRef<HTMLElement | null>(null)

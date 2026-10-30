@@ -1,4 +1,4 @@
-// Goal: editing a draft keeps one line per card and zone, a line never drops below one copy (the last copy removes it) or pushes the deck over its card limit, a move between zones merges into the line already there, a draft built from a stored deck merges duplicate lines, the dirty check ignores the order of lines but sees every other difference, and the check key ignores the order of lines, the name and the notes but sees every other difference.
+// Goal: editing a draft keeps one line per card and zone, a line never drops below one copy (the last copy removes it) or pushes the deck over its card limit, a move between zones merges into the line already there, a draft built from a stored deck merges duplicate lines, a phone opens on the deck pane unless the deck is empty, the dirty check ignores the order of lines but sees every other difference, and the check key ignores the order of lines, the name and the notes but sees every other difference.
 import { describe, expect, it } from 'vitest'
 import { cardHit, deckView, lineOf } from '@/features/decks/fakeDecks'
 import {
@@ -15,6 +15,7 @@ import {
   linesIn,
   MAX_DECK_CARDS,
   moveLine,
+  openingPane,
   removeLine,
   sameDeck,
   setCount,
@@ -269,6 +270,17 @@ describe('a draft from a stored deck', () => {
   it('is not changed from the deck it came from, as the dirty check sees it', () => {
     const view = deckView({ cards: [lineOf('Forest', 2), lineOf('Forest', 3)] })
     expect(sameDeck(draftOf(view), draftOf(view))).toBe(true)
+  })
+})
+
+describe('openingPane', () => {
+  it.each([
+    ['an empty deck', empty, 'search'],
+    ['a deck of main cards', deck(line(bolt, 'main', 4)), 'deck'],
+    ['a deck with only a sideboard', deck(line(ring, 'sideboard', 1)), 'deck'],
+    ['a deck with only a commander', deck(line(ring, 'commander', 1)), 'deck'],
+  ])('opens %s on the %s pane', (_what, draft, pane) => {
+    expect(openingPane(draft)).toBe(pane)
   })
 })
 

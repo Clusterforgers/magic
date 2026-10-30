@@ -167,10 +167,28 @@ describe('the decks on offer', () => {
     await h.user.click(await screen.findByRole('option', { name: /Pauper Affinity/ }))
     const use = await screen.findByRole('button', { name: 'Use this deck' })
     await waitFor(() => expect(use).toHaveAttribute('aria-disabled', 'true'))
-    expect(use).toHaveAccessibleDescription(/A Pauper deck holds no rares\. 1 more below\./)
     expect(await screen.findByText('Not legal in Normal')).toBeInTheDocument()
+    expect(use).toHaveAccessibleDescription(/A Pauper deck holds no rares\./)
     await h.user.click(use)
     expect(deckCalls(h)).toEqual([])
+  })
+
+  it('states the issue of a deck the table cannot take once: in its legality list, with the button and the Ready bar showing only state', async () => {
+    const h = await openChooser({ signedIn: true })
+    await h.user.click(await screen.findByRole('option', { name: /Pauper Affinity/ }))
+    const list = await screen.findByRole('list', { name: /Why the deck is not legal in Normal/ })
+    expect(
+      within(list)
+        .getAllByRole('listitem')
+        .map((item) => item.textContent),
+    ).toEqual(['A Pauper deck holds no rares.', '2 cards the game cannot play.'])
+    expect(document.querySelector('[data-slot="deck-blocked"]')).toBeNull()
+    expect(document.querySelector('[data-slot="ready-hint"]')?.textContent).toBe(
+      'Ready needs a deck. Choose one under Your deck. Pauper Affinity cannot be taken at this table.',
+    )
+    expect(document.body.textContent?.match(/holds no rares/g)).toHaveLength(1)
+    expect(document.body.textContent?.match(/cannot play/g)).toHaveLength(1)
+    expect(screen.getByRole('button', { name: 'Use this deck' })).toHaveAttribute('aria-describedby', list.id)
   })
 
   it('names the cards played by hand in the preview of a stored deck, with a link to its page', async () => {

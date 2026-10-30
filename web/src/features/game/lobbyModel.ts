@@ -138,8 +138,8 @@ export interface ReadyFacts {
   ready: boolean
   /** The roster shows this seat without a deck. */
   needsDeck: boolean
-  /** A deck is selected in the chooser but not chosen: its name and, when the table cannot take it, why not. */
-  previewing: { name: string; blocked: string | null } | null
+  /** A deck is selected in the chooser but not chosen: its name and whether the table cannot take it (the preview says why). */
+  previewing: { name: string; blocked: boolean } | null
 }
 
 /** The Ready button's label, whether it is off, and the sentence that says why it is off or what it does. */
@@ -157,8 +157,8 @@ export function readyState(facts: ReadyFacts): { label: string; disabled: boolea
     const hint =
       previewing === null
         ? lead
-        : previewing.blocked !== null
-          ? `${lead} ${previewing.name} cannot be taken: ${previewing.blocked}`
+        : previewing.blocked
+          ? `${lead} ${previewing.name} cannot be taken at this table.`
           : `${lead} Press Use this deck to take ${previewing.name}.`
     return { label, disabled: true, hint }
   }

@@ -463,8 +463,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v91b) The import review names the support of the list before it is saved ("19 of 26 verified, 7 played by hand") and its format issues, not only the lines not found (`ImportDialog.tsx`)
 - [ ] (v91c) The decks list row says how many cards are played by hand, as the builder bar does, in place of a bare "Not validated cards" link (`DeckLibrary.tsx`)
 - [ ] (v91d) The deck state badge says what "Blocked" means ("Cannot be taken to a game until its issues are fixed", the lobby's words) (`DeckStateBadge.tsx`)
-- [~] (v91e) (ux-flow) On a phone a saved or imported deck opens on the Deck tab with its report, not on Search (`features/builder`)
-- [~] (v91f) (ux-flow) The lobby's deck pane states a deck's legality issue once, not in the issue list, under "Use this deck" and in the Ready bar together (`features/lobby`)
 - [ ] (v91g) One spelling of colour identity across the builder filters ("Colour identity") and the server's deck issues ("color identity") (`mtg-server` deck check)
 - [~] (v91h) (ux-flow) The Mana row of the Commands panel starts on a colour of the seat's commander identity, not Green for an Esper deck (`manual/panel/commands.ts`)
 - [~] (v91i) (ux-flow) A seat working in the Commands panel sees its response clock there, so the active player's clock (`MTG_ACTIVE_SECS`) does not pass the main phase unseen mid-command (`CommandsPanel.tsx`)

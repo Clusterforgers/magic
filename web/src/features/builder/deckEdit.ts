@@ -34,6 +34,9 @@ export const lineIn = (draft: Draft, zone: DeckZone, oracleId: string): Line | u
 export const totalOf = (draft: Draft, zone?: DeckZone): number =>
   draft.lines.reduce((sum, line) => (zone === undefined || line.zone === zone ? sum + line.count : sum), 0)
 
+/** The pane a phone opens on: the deck with its report when it has cards, the search when it is empty. */
+export const openingPane = (draft: Draft): 'search' | 'deck' => (totalOf(draft) > 0 ? 'deck' : 'search')
+
 /** Copies of one card in `zone`, or in the whole deck when no zone is given. */
 export const copiesOf = (draft: Draft, oracleId: string, zone?: DeckZone): number =>
   draft.lines.reduce(
