@@ -303,7 +303,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 
 ## Definition of done
 
-- Fits: the table never scrolls the page at the six sizes; other pages never scroll sideways; nothing is cut at 390 px; no text is under 11 px; every primary action is in the window and not covered.
+- Fits: the table never scrolls the page at the six sizes; other pages never scroll sideways; nothing is cut at 390 px; no text is under 12 px; every primary action is in the window and not covered.
 - Contrast: token pairs pass in both themes; focus is visible and uncovered.
 - Targets: 24 px floor, 32 px on desktop, 44 px under `pointer: coarse`.
 - Keyboard: tab order follows reading order; every action works without a mouse; no trap.

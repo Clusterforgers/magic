@@ -209,8 +209,8 @@ describe('the pass button', () => {
   it.each([
     [1920, 1080, true],
     [1600, 1000, true],
-    [1470, 900, true],
-    [1469, 900, false],
+    [1481, 900, true],
+    [1480, 900, false],
     [1440, 900, false],
     [1280, 720, false],
     [1024, 768, false],

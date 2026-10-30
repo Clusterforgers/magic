@@ -57,7 +57,7 @@ export function TuckedCard({ id, size, tabbable, style }: TuckedCardProps) {
             <span
               aria-hidden="true"
               data-slot="tuck-owner"
-              className="pointer-events-none absolute top-0 right-1 max-w-[45%] truncate rounded-sm bg-foreground px-1 text-[0.6875rem] leading-3 font-semibold text-background"
+              className="pointer-events-none absolute top-0 right-1 max-w-[45%] truncate rounded-sm bg-foreground px-1 text-xs leading-3 font-semibold text-background"
             >
               {name(foreign)}&rsquo;s
             </span>

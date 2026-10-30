@@ -175,6 +175,13 @@ describe('what is marked', () => {
     expect(card(play1).querySelector('[data-slot="card-hint"]')).toBeNull()
     expect(card(play1)).not.toHaveAttribute('aria-pressed')
   })
+
+  it('wraps the hint on a narrow card instead of cutting it to an ellipsis', () => {
+    const { card } = renderPriority(options({ playable_lands: [play1] }))
+    const hint = card(spell1).querySelector('[data-slot="card-hint"]')
+    expect(hint).not.toHaveClass('truncate')
+    expect(hint).toHaveClass('[overflow-wrap:anywhere]')
+  })
 })
 
 describe('what a click answers', () => {

@@ -15,7 +15,7 @@ export function ManaPreviewLine({ object }: { object: ObjectView }) {
   return (
     <p data-slot="preview-mana" className="flex flex-wrap items-center gap-x-1.5">
       <span>Taps for</span>
-      <ManaMade gives={gives} sizeClass="size-4 text-[0.6875rem]" words />
+      <ManaMade gives={gives} sizeClass="size-4 text-xs" words />
     </p>
   )
 }

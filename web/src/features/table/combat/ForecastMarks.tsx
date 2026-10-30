@@ -62,7 +62,7 @@ export function ForecastMarks({ outlook, tapped, compact }: ForecastMarksProps) 
         {dies ? (
           <span
             data-slot="forecast-doomed"
-            className="flex items-center gap-0.5 rounded-full bg-neutral-900 px-1 py-px text-[0.6875rem] leading-none font-bold text-white ring-1 ring-white/70"
+            className="flex items-center gap-0.5 rounded-full bg-neutral-900 px-1 py-px text-xs leading-none font-bold text-white ring-1 ring-white/70"
           >
             <Skull className="size-3" />
             {compact ? null : 'Dies'}
@@ -71,7 +71,7 @@ export function ForecastMarks({ outlook, tapped, compact }: ForecastMarksProps) 
         {damage > 0 ? (
           <span
             data-slot="forecast-damage"
-            className="rounded bg-(--combat-damage) px-1 py-px text-[0.6875rem] leading-none font-bold text-white tabular-nums ring-1 ring-white/70"
+            className="rounded bg-(--combat-damage) px-1 py-px text-xs leading-none font-bold text-white tabular-nums ring-1 ring-white/70"
           >
             -{damage}
           </span>

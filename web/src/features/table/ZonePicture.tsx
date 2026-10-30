@@ -49,7 +49,7 @@ function EmptyZone({ zone, width, height }: Omit<ZonePictureProps, 'owner' | 'id
       )}
     >
       <Icon aria-hidden="true" className="size-4" />
-      <span aria-hidden="true" className="text-[0.6875rem] leading-4">
+      <span aria-hidden="true" className="text-xs leading-4">
         {emptyLabel(zone, width)}
       </span>
     </button>
@@ -98,7 +98,7 @@ function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {
         <span
           aria-hidden="true"
           data-slot="zone-count"
-          className="absolute right-0 bottom-0 inline-flex items-center gap-1 rounded-tl-md rounded-br-md bg-foreground px-1 text-[0.6875rem] leading-4 font-semibold text-background tabular-nums"
+          className="absolute right-0 bottom-0 inline-flex items-center gap-1 rounded-tl-md rounded-br-md bg-foreground px-1 text-xs leading-4 font-semibold text-background tabular-nums"
         >
           <Icon className="size-3" />
           {ids.length}

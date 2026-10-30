@@ -5,7 +5,7 @@ import type { Gives } from '../manaMade'
 import { ManaMade, madeWords } from '../ManaMade'
 import { Quiet, Row } from './PaymentSummary'
 
-const PIP_SIZE = 'size-4 text-[0.6875rem]'
+const PIP_SIZE = 'size-4 text-xs'
 
 /** Permanents that give the same mana under the same name, which one chip stands for. */
 export interface SourceGroup {

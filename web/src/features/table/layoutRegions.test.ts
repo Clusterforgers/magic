@@ -407,23 +407,23 @@ describe('the form of the controls dock', () => {
 
   it('draws the key hints and whole words from the main area that keeps an opening hand and two commanders in one row beside the widest dock', () => {
     expect(DOCK_FULL_MIN_MAIN_PX).toBe(handRowPx(OPENING_HAND, PARTNERS) + CONTROLS_MAX_PX)
-    expect(DOCK_FULL_MIN_MAIN_PX).toBe(1150)
+    expect(DOCK_FULL_MIN_MAIN_PX).toBe(1161)
   })
 
   it.each([
     // width, height, form
     [1920, 1080, 'full'],
     [1600, 1000, 'full'],
-    // The least window whose main area (the window less a 320 px column) is 1150 px.
-    [1470, 900, 'full'],
-    [1469, 900, 'short'],
+    // The least window whose main area (the window less a 320 px column) is 1161 px.
+    [1481, 900, 'full'],
+    [1480, 900, 'short'],
     [1440, 900, 'short'],
     [1366, 768, 'short'],
     [1280, 720, 'short'],
     // A rail takes 44 px where a column takes 282 to 320: the main area of a 1279 px window is wider than of a 1280 px one.
     [1279, 720, 'full'],
-    [1194, 768, 'full'],
-    [1193, 768, 'short'],
+    [1205, 768, 'full'],
+    [1204, 768, 'short'],
     [1024, 768, 'short'],
     [768, 1024, 'short'],
     [844, 390, 'short'],

@@ -416,8 +416,8 @@ test.describe('the development table with 40 permanents a seat', () => {
         `${label}: marks cut by their box`,
       ).toEqual([])
       expect(
-        marks.filter((mark) => mark.font < 11).map((mark) => mark.text),
-        `${label}: marks under 11 px`,
+        marks.filter((mark) => mark.font < 12).map((mark) => mark.text),
+        `${label}: marks under 12 px`,
       ).toEqual([])
       // A corner of pictures keeps every card inside its column; a corner of chips draws no card at all.
       for (const column of columns) {
@@ -455,8 +455,8 @@ test.describe('the development table with 40 permanents a seat', () => {
         const seen = await read()
         expect(seen.cards, `${label}: the cards of the hand and the commanders`).toBe(9)
         expect(seen.scrolls, `${label}: the dock scrolls sideways`).toBe(false)
-        // Key hints and the name of a spell only where the dock leaves the row its room (a main area of 1150 px).
-        const roomy = size.width >= 1470
+        // Key hints and the name of a spell only where the dock leaves the row its room (a main area of 1161 px).
+        const roomy = size.width >= 1481
         expect(seen.hints > 0, `${label}: key hints`).toBe(roomy)
         if (!roomy) expect(seen.dock, `${label}: the dock`).toBeLessThanOrEqual(300)
         if (query.startsWith('prompt=priority&') && !roomy) expect(seen.primary).toBe('Resolve')

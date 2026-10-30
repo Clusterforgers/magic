@@ -25,7 +25,7 @@ import {
 import { usePrimaryKey } from './usePrimaryKey'
 
 /** A key as a small cap on a button, drawn where the dock has the room (`full`) and always hidden from a screen reader. */
-const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-[0.6875rem] leading-4 font-normal'
+const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-xs leading-4 font-normal'
 
 /**
  * The ways to pass priority, for a Priority prompt: a primary button that says what passing does now ("Next: Combat",

@@ -138,7 +138,7 @@ describe('the sizes, themes and tables of the audit', () => {
       '390x844',
     ])
     expect([...THEMES]).toEqual(['light', 'dark'])
-    expect(TEXT_FLOOR).toBe(11)
+    expect(TEXT_FLOOR).toBe(12)
   })
 
   it.each([
@@ -344,19 +344,20 @@ describe('measure, on a page whose boxes and styles are given', () => {
 
   it('lists text under the floor, with its size, and not text at it', () => {
     document.body.innerHTML =
-      '<p id="a">Enter</p><p id="b">Eleven</p><p id="c">Hidden</p><span role="img"><i id="d">R</i></span><p id="e"> </p>'
+      '<p id="a">Enter</p><p id="b">Eleven</p><p id="f">Twelve</p><p id="c">Hidden</p><span role="img"><i id="d">R</i></span><p id="e"> </p>'
     for (const [id, size] of [
       ['#a', '10.4px'],
       ['#b', '11px'],
       ['#c', '8px'],
       ['#d', '6.8px'],
       ['#e', '9px'],
+      ['#f', '12px'],
     ] as const) {
       style(id, { fontSize: size, ...(id === '#c' ? { display: 'none' } : {}) })
       put(id, 0, 0, 100, 20)
     }
     document.querySelector('[role="img"]')?.setAttribute('aria-label', 'Mana cost')
-    expect(measure(ask()).small).toEqual(['10.4px "Enter"'])
+    expect(measure(ask()).small).toEqual(['10.4px "Enter"', '11px "Eleven"'])
   })
 
   it('finds an action by selector or by its words, and says where it is', () => {

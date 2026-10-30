@@ -23,8 +23,8 @@ export const THEMES = ['light', 'dark'] as const
 /** One of the colour schemes. */
 export type Theme = (typeof THEMES)[number]
 
-/** The smallest text in px: the 11 px card label of the type scale. */
-export const TEXT_FLOOR = 11
+/** The smallest text in px: the 12 px label of the type scale. */
+export const TEXT_FLOOR = 12
 
 /**
  * What the table scrolls or clips on purpose: the art of a card is a picture of a card, and the strip of opponents, the

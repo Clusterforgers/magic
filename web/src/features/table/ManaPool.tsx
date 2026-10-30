@@ -22,7 +22,7 @@ export function ManaDot({ type }: { type: ManaType }) {
     <span
       aria-hidden="true"
       className={cn(
-        'inline-flex size-4 items-center justify-center rounded-full text-[0.6875rem] font-bold ring-1 ring-foreground/25',
+        'inline-flex size-4 items-center justify-center rounded-full text-xs font-bold ring-1 ring-foreground/25',
         PIP[TONE[type]],
       )}
     >

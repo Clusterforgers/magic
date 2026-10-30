@@ -118,7 +118,7 @@ function TaxPill({ tax }: { tax: number }) {
     <span
       aria-hidden="true"
       data-slot="hand-commander-tax"
-      className="pointer-events-none absolute bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-[0.6875rem] leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
+      className="pointer-events-none absolute bottom-1 left-1/2 flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
     >
       <Crown className="size-3 shrink-0 text-primary" />
       {tax === 0 ? null : (
@@ -128,7 +128,7 @@ function TaxPill({ tax }: { tax: number }) {
             pips={[
               { key: 'tax', tone: 'generic', text: `${tax}`, symbol: `${tax}`, name: `${tax} generic mana` },
             ]}
-            sizeClass="size-4 text-[0.6875rem]"
+            sizeClass="size-4 text-xs"
             label="Tax"
           />
         </>

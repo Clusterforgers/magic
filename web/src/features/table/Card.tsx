@@ -13,7 +13,9 @@ import { ForecastMarks } from './combat/ForecastMarks'
 import { FxFloat } from './fx/FxFloat'
 import { FxMark } from './fx/FxMark'
 import { useCardFx } from './fx/hooks'
+import { markShowsWord } from './fx/marks'
 import { fxAttr, fxSide, isMarkFx } from './fx/model'
+import { useDrawnWidth } from './ImageFace'
 import { ManaStrip } from './ManaStrip'
 import { BY_HAND_KEY, clausesOf } from './manual/clauses'
 import { useManualMenu } from './manual/useManualMenu'
@@ -75,6 +77,8 @@ export const Card = memo(function Card({
   const { highlight: marked, toggles, note } = useCardMark(id)
   const outlook = useCreatureOutlook(id)
   const fx = useCardFx(id)
+  // A mark that cannot write its word on a card this wide shows its icon alone.
+  const drawnWidth = useDrawnWidth(size, fit)
   const highlight = given ?? marked
   // An explicit highlight is a toggle, as it always was; a prompt says so when its marks are.
   const pressable = given !== undefined || toggles
@@ -143,13 +147,18 @@ export const Card = memo(function Card({
       {fx.map((entry) =>
         entry.kind === 'damaged' ? <FxFloat key={entry.token} kind="damaged" amount={entry.amount} /> : null,
       )}
-      {fx.map((entry) => (isMarkFx(entry.kind) ? <FxMark key={entry.token} kind={entry.kind} /> : null))}
+      {fx.map((entry) =>
+        isMarkFx(entry.kind) ? (
+          <FxMark key={entry.token} kind={entry.kind} compact={!markShowsWord(entry.kind, drawnWidth)} />
+        ) : null,
+      )}
       <ManaStrip id={id} />
       {note?.hint === undefined ? null : (
         <span
           aria-hidden="true"
           data-slot="card-hint"
-          className="pointer-events-none absolute inset-x-0.5 bottom-0.5 z-10 hidden truncate rounded-sm bg-background/95 px-1 text-center text-xs leading-5 font-semibold text-foreground shadow-sm ring-1 ring-foreground/20 group-hover/card:block group-focus-visible/card:block"
+          // Wraps on a narrow card ("Needs" over "mana") rather than ending in an ellipsis.
+          className="pointer-events-none absolute inset-x-0.5 bottom-0.5 z-10 hidden rounded-sm bg-background/95 px-0.5 text-center text-xs leading-4 font-semibold [overflow-wrap:anywhere] text-foreground shadow-sm ring-1 ring-foreground/20 group-hover/card:block group-focus-visible/card:block"
         >
           {note.hint}
         </span>

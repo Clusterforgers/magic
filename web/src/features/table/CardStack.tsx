@@ -16,7 +16,7 @@ export function StackCount({ count, className }: { count: number; className?: st
       aria-hidden="true"
       data-slot="stack-count"
       className={cn(
-        'absolute -bottom-1 -left-1 rounded-full bg-foreground px-1.5 text-[0.6875rem] leading-4 font-semibold text-background tabular-nums',
+        'absolute -bottom-1 -left-1 rounded-full bg-foreground px-1.5 text-xs leading-4 font-semibold text-background tabular-nums',
         className,
       )}
     >

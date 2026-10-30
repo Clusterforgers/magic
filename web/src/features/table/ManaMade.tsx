@@ -70,7 +70,7 @@ function CostRun({ cost, sizeClass }: { cost: ManaCost; sizeClass: string }) {
 /** Props of `ManaMade`. */
 export interface ManaMadeProps {
   gives: Gives
-  /** Size classes for one symbol, such as `size-4 text-[0.6875rem]`. */
+  /** Size classes for one symbol, such as `size-4 text-xs`. */
   sizeClass: string
   /** Spell out "sacrifice" beside a source that is sacrificed; the corner strip keeps it out. */
   words?: boolean
