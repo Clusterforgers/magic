@@ -1,4 +1,4 @@
-// Goal: the log, the chat and the stack are tabs of one side area that is a column from L up (always open), a 44 px rail at M that opens a panel over the table, and a sheet from the top bar below that; each tab says how much is new (unread chat of other seats and log lines worth reading, spells on the stack), nothing counts while its tab is on show, and what was on show when the reader looked away has been read.
+// Goal: a seat's Commands (first and on show at the start), the log, the chat and the stack are tabs of one side area that is a column from L up (always open), a 44 px rail at M that opens a panel over the table, and a sheet from the top bar below that; each tab says how much is new (unread chat of other seats and log lines worth reading, spells on the stack), nothing counts while its tab is on show, and what was on show when the reader looked away has been read.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { appendChat, appendLog } from '@/play/store'
@@ -26,14 +26,16 @@ const side = () => screen.getByRole('complementary', { name: 'Game log and chat'
 const tab = (name: string | RegExp) => screen.getByRole('tab', { name })
 
 describe('a wide window: the column', () => {
-  it('is always open on the log, with Chat and Stack a tab away', async () => {
+  it('is always open, on the Commands of a seat, with Log, Chat and Stack a tab away', async () => {
     const { user } = renderTable({ seats: 4, options: { viewport: WIDE } })
     expect(side()).toHaveAttribute('data-side', 'column')
     expect(
       within(side())
         .getAllByRole('tab')
         .map((each) => each.textContent?.replace(/\d.*$/, '').trim()),
-    ).toEqual(['Log', 'Chat', 'Stack'])
+    ).toEqual(['Commands', 'Log', 'Chat', 'Stack'])
+    expect(within(side()).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
+    await user.click(tab(/^Log/))
     expect(within(side()).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
     expect(within(side()).queryByRole('log', { name: 'Chat' })).toBeNull()
     await user.click(tab(/^Chat/))
@@ -95,7 +97,7 @@ describe('a wide window: the column', () => {
 })
 
 describe('a medium window: the rail', () => {
-  it('is a 44 px column of three icon tabs, named with their counts, with the panel shut', () => {
+  it('is a 44 px column of four icon tabs, named with their counts, with the panel shut', () => {
     renderTable({ seats: 2, options: { viewport: MEDIUM } })
     expect(side()).toHaveAttribute('data-side', 'rail')
     // Three spells are on the stack at the start.
@@ -103,7 +105,7 @@ describe('a medium window: the rail', () => {
       within(side())
         .getAllByRole('tab')
         .map((each) => each.getAttribute('aria-label')),
-    ).toEqual(['Log', 'Chat', 'Stack, 3 on the stack'])
+    ).toEqual(['Commands', 'Log', 'Chat', 'Stack, 3 on the stack'])
     expect(screen.queryByRole('log')).toBeNull()
   })
 
@@ -149,7 +151,9 @@ describe.each([
     expect(screen.queryByRole('dialog', { name: 'Game log, chat and stack' })).toBeNull()
     await user.click(button())
     const sheet = screen.getByRole('dialog', { name: 'Game log, chat and stack' })
-    expect(within(sheet).getAllByRole('tab')).toHaveLength(3)
+    expect(within(sheet).getAllByRole('tab')).toHaveLength(4)
+    expect(within(sheet).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
+    await user.click(within(sheet).getByRole('tab', { name: /^Log/ }))
     expect(within(sheet).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
     await user.click(within(sheet).getByRole('tab', { name: /^Chat/ }))
     expect(within(sheet).getByRole('log', { name: 'Chat' })).toBeInTheDocument()
@@ -178,6 +182,7 @@ describe.each([
   it('counts nothing for the tab on show while the sheet is open, and everything else', async () => {
     const table = renderTable({ seats: 2, options: { viewport } })
     await table.user.click(button())
+    await table.user.click(screen.getByRole('tab', { name: /^Log/ }))
     said(table, 1, 'while you read')
     logs(table, turn(9))
     const sheet = screen.getByRole('dialog', { name: 'Game log, chat and stack' })

@@ -1,25 +1,33 @@
-import { LayersIcon, MessageSquareIcon, PanelRightIcon, ScrollTextIcon } from 'lucide-react'
+import { HandIcon, LayersIcon, MessageSquareIcon, PanelRightIcon, ScrollTextIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { KeyboardEvent } from 'react'
 import { Button } from '@/components/ui/button'
+import { usePlay } from '@/features/game/gameContext'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import { ChatPanel } from './ChatPanel'
 import { LogPanel } from './LogPanel'
+import { CommandsPanel } from './manual/panel/CommandsPanel'
 import { useSide } from './sideContext'
 import { countLabel } from './sideCounts'
 import type { SideTab } from './sideCounts'
 import { StackPanel } from './StackPanel'
 
 const TABS: ReadonlyArray<{ tab: SideTab; label: string; Icon: LucideIcon }> = [
+  { tab: 'commands', label: 'Commands', Icon: HandIcon },
   { tab: 'log', label: 'Log', Icon: ScrollTextIcon },
   { tab: 'chat', label: 'Chat', Icon: MessageSquareIcon },
   { tab: 'stack', label: 'Stack', Icon: LayersIcon },
 ]
 
 /** What a count means to a screen reader. */
-const COUNT_WORDS: Record<SideTab, string> = { log: 'unread', chat: 'unread', stack: 'on the stack' }
+const COUNT_WORDS: Record<SideTab, string> = {
+  commands: '',
+  log: 'unread',
+  chat: 'unread',
+  stack: 'on the stack',
+}
 
 /**
  * The count on a tab, drawn only when it is above zero: unread lines, or spells on the stack. Where the tab is named
@@ -47,10 +55,19 @@ function Count({ tab, className, hidden = false }: { tab: SideTab; className?: s
   )
 }
 
-/** The three panels; only the one on show is in the page. */
+/** The tabs of the viewer: a seat has Commands first, a viewer that is no seat has none. */
+function useTabs(): typeof TABS {
+  const seated = usePlay((state) => state.seat !== null)
+  return seated ? TABS : TABS.filter(({ tab }) => tab !== 'commands')
+}
+
+/** The panels; only the one on show is in the page. */
 function Panels() {
   return (
     <>
+      <TabsContent value="commands" className="h-full">
+        <CommandsPanel />
+      </TabsContent>
       <TabsContent value="log" className="h-full">
         <LogPanel />
       </TabsContent>
@@ -70,11 +87,17 @@ const noChange = (): void => undefined
 /** Log, Chat and Stack as tabs with their counts, and the panel of the one on show. */
 function TabbedPanels({ listClassName }: { listClassName?: string }) {
   const side = useSide()
+  const tabs = useTabs()
   return (
     <Tabs value={side.tab} onValueChange={noChange} className="min-h-0 flex-1 gap-0">
       <TabsList className={cn('m-2 w-auto', listClassName)}>
-        {TABS.map(({ tab, label }) => (
-          <TabsTrigger key={tab} value={tab} className="flex-1 gap-1.5" onClick={() => side.activate(tab)}>
+        {tabs.map(({ tab, label }) => (
+          <TabsTrigger
+            key={tab}
+            value={tab}
+            className="min-w-0 flex-1 gap-1 px-1.5"
+            onClick={() => side.activate(tab)}
+          >
             {label}
             {/* Explicit space: a screen reader joins the pieces of a name, and an inline span adds none. */}{' '}
             <Count tab={tab} />
@@ -91,6 +114,7 @@ function TabbedPanels({ listClassName }: { listClassName?: string }) {
 /** The rail of a medium window: three icon tabs on the table's edge, opening the panel over the table. */
 function Rail() {
   const side = useSide()
+  const tabs = useTabs()
   const close = (event: KeyboardEvent): void => {
     if (event.key === 'Escape' && side.open) side.setOpen(false)
   }
@@ -104,7 +128,7 @@ function Rail() {
     >
       <Tabs value={side.tab} onValueChange={noChange} orientation="vertical" className="min-h-0 flex-1 gap-0">
         <TabsList className="flex-col bg-transparent p-0">
-          {TABS.map(({ tab, label, Icon }) => {
+          {tabs.map(({ tab, label, Icon }) => {
             const count = side.counts[tab]
             return (
               <TabsTrigger
