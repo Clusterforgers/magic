@@ -110,6 +110,12 @@ impl Engine {
         self.held.is_some()
     }
 
+    /// Whether a cast, an activation or another announcement is under way: no seat receives priority until it ends, so
+    /// state-based actions wait for it (CR 704.3) even after a manual action changed the state.
+    pub const fn announcing(&self) -> bool {
+        self.pending.is_some()
+    }
+
     /// The pending decision; `None` once the game is over.
     pub fn decision(&self) -> Option<&Decision> {
         self.decision.as_ref()
