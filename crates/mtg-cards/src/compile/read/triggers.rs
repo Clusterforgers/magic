@@ -48,7 +48,9 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
             what,
             to: Some(ZoneKind::Battlefield),
             ..
-        } => what.0 == [Pred::This],
+        }
+        // "Whenever this creature becomes the target of a spell you control, it connives."
+        | TriggerPattern::BecomesTarget { what, .. } => what.0 == [Pred::This],
         // "Whenever ~ is dealt damage, it fights up to one target creature" (enrage).
         TriggerPattern::DealsDamage { source, to, .. } => {
             source.0 == [Pred::This] || *to == Some(Ref::This)

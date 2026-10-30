@@ -147,6 +147,8 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
     assert_eq!(read, tilde);
 }
 
+mod dk1d_spells;
+
 mod actions;
 mod activated;
 mod activation_writers;
@@ -1082,3 +1084,6 @@ mod sentences {
         assert_eq!(effects.len(), 2);
     }
 }
+
+// dk1c
+mod dk1c_writers;

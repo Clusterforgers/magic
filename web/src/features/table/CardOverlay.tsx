@@ -4,13 +4,14 @@
  * mana cost, which a permanent no longer needs), a sick permanent as a small icon and a slight dim, and the current
  * power and toughness or loyalty on the stat box. Nothing is drawn over the art or the rules text beyond a mark's size.
  */
-import { Hourglass, Link2 } from 'lucide-react'
+import { Hourglass, Link2, Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import { counterChips, loyaltyOf, statusChips } from './cardModel'
 import type { ChipTone, CombatRole, CounterChip, Links } from './cardModel'
 import { CARD_CORNER } from '@/features/cards/CardImage'
 import { SIZE } from './cardSize'
+import { isUnattached } from '@/play/hosts'
 import type { CardSize } from './cardSize'
 import { ByHandMark } from './manual/ByHand'
 import { statBadge } from './overlay'
@@ -77,7 +78,8 @@ export function Overlay({ object, role, size, turned, note, links }: OverlayProp
   const counters = counterChips(object)
   const link = linkText(links)
   const corner = CORNER[turned ? 'turned' : 'upright']
-  const hasFoot = damage !== undefined || counters.length > 0 || link !== null
+  const unattached = isUnattached(object)
+  const hasFoot = damage !== undefined || counters.length > 0 || link !== null || unattached
   const hasHead = head.length > 0 || sick || manual.length > 0 || note?.label !== undefined
   return (
     <span data-slot="card-overlay" className="pointer-events-none absolute inset-0">
@@ -123,6 +125,19 @@ export function Overlay({ object, role, size, turned, note, links }: OverlayProp
               {size === 'compact' ? null : <span className="truncate">{link}</span>}
             </span>
           )}
+          {unattached ? (
+            <span
+              data-slot="card-unattached"
+              className={cn(
+                MARK,
+                'border border-dashed border-foreground bg-background text-foreground',
+                text,
+              )}
+            >
+              <Unlink aria-hidden="true" className="size-3 shrink-0" />
+              <span className={cn('truncate', size === 'compact' && 'sr-only')}>Unattached</span>
+            </span>
+          ) : null}
         </span>
       ) : null}
       {hasHead ? (

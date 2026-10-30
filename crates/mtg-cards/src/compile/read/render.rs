@@ -64,6 +64,8 @@ mod w2d_villainous;
 mod w6e_control;
 mod w9b_clash;
 
+mod dk1d_gift_target;
+
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
 use super::as_long_as;
@@ -2916,6 +2918,7 @@ impl Writer<'_> {
         let (subject, plural) = match affected {
             Ref::This => ("~".to_owned(), false),
             Ref::Triggering => ("it".to_owned(), false),
+            Ref::Attached => ("enchanted creature".to_owned(), false),
             Ref::Bound(name) if name == TOKENS && self.made.is_some() => {
                 if self.made == Some(true) {
                     ("that token".to_owned(), false)

@@ -145,12 +145,12 @@ Every play reads on the table without the log: what was played, from where, at w
 
 ### Moments
 
-A move is a picture of the card (a card back for a card the viewer may not identify) that flies on an overlay layer, `aria-hidden` and without a pointer, from one place to another. A place is a card on the table (`data-object-id`) or a zone anchor (`data-fx-anchor="<seat>:<zone>"` on the hand, library, graveyard, exile and command chips of a pod, a tile and the hand dock; `stack` on the shared strip's stack). A mark is a still attribute on a card (`data-fx`).
+A move is a picture of the card (a card back for a card the viewer may not identify) that flies on an overlay layer, `aria-hidden` and without a pointer, from one place to another. A place is a card on the table (`data-object-id`) or a zone: `data-fx-anchor` on the hand dock (`<seat>:hand`) and the shared strip's stack (`stack`), the `data-zone` chip of a seat's pod (`data-seat`) or tile (`data-tile-seat`). A mark is a still attribute on a card (`data-fx`).
 
 | Moment | Comes from | Moves | Marks | Log line |
 |---|---|---|---|---|
 | Cast | `SpellCast`; the zone before the batch, else the caster's hand | source to stack | spotlight, then target arrows | "Ana casts Lightning Bolt targeting Hill Giant" |
-| Activate | `AbilityActivated`, `AbilityPutOnStack` (`source`, `snapshot`) | an ability chip from the source to the stack | `activated` on the source | "Ana activates Gravedigger targeting Grizzly Bears" |
+| Activate | `AbilityActivated`, `AbilityPutOnStack` (`source`, `snapshot`) | an ability chip from the source to the stack | `activated` on the source | "Ana activates an ability of Gravedigger targeting Grizzly Bears" |
 | Trigger | `AbilityTriggered`, `AbilityPutOnStack` with `cause` | an ability chip from the source to the stack | `triggered` on the source | "Soul Warden triggers" |
 | Target | `ObjectView.targets`, else `choices.targets` of the event | none | `targeted` on each target while the item is on the stack; arrows | in the cast or activate line |
 | Resolve | `ResolutionEnded` `Resolved`; the zone after | stack to the battlefield (a permanent) or the owner's graveyard | `resolved` on what it touched | "Lightning Bolt resolves" |
@@ -184,10 +184,11 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 
 ### The stack
 
-- The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo") and a dot in its controller's colour.
-- Arrows run from the top chip to each target (a card, or a player's life figure) while it is on the stack; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer, in `--primary` for the viewer's items and `--destructive` for another seat's.
+- The shared strip's stack chips stay; the top chip gains a targets line ("→ Hill Giant, Bo", at most 3 names, then "+N more") and a dot in its controller's colour. Every chip's label for a screen reader ends with ", targeting Hill Giant and Bo".
+- Arrows run from the top chip to each target (a card, a player's pod, or the chip of another stack item) while it is on the stack, at most 6; hover or focus on any chip draws that item's arrows instead. They share the combat arrow layer (its own layer above the strip), in `--primary` for the viewer's items and `--destructive` for another seat's, and appear without drawing in under reduced motion.
+- A target that is gone (its player lost, or it left where it was since the item went on the stack) gets no arrow and drops out of the line; an item with none left says "no legal target" on a dashed chip.
 - The spotlight is a picture at 1.6 times the hand card's height, centred over the shared strip. It never stays, so the layout gate measures the table without it.
-- The Stack tab shows the top item as a large picture with its text and targets, the rest as rows.
+- The Stack tab shows the top item as a large picture with its text and one row per target (a gone one struck out), the rest as rows with their target line.
 
 ### The hand
 
@@ -215,7 +216,7 @@ Under `prefers-reduced-motion: reduce` nothing travels or scales: the source and
 ### Code
 
 - `fx/moves.ts` (pure): `deriveMoves(before, after, events)` gives `Move[]` (`kind`, `object`, `look`, `from`, `to`, `order`, `targets`) and the marks; `MOVE_MS` holds the tokens, which `fx.css` repeats.
-- The travel layer measures a move's source in the store subscriber of `watchBatches`, which runs before React draws the batch, so a card that left the hand is measured where it stood; it measures the destination on the next frame, and a place it does not find falls back to its zone's anchor.
+- The travel layer (`fx/travel.ts`, `fx/places.ts`, `fx/FxTravel.tsx`) measures a move's source in the store subscriber of `watchBatches`, which runs before React draws the batch, so a card that left the hand is measured where it stood; it measures the destination on the next frame, a place it does not find falls back to its zone, and a move with no place on screen is left out.
 - `handReason.ts` (pure): `unplayableReason(object, view, options)` gives the reason of a dimmed hand card; `REASON_WORDS` its label and line.
 - `/dev/table?fx=` `cast`, `activate`, `resolve`, `counter`, `land` and `draw` play these moments on the fixture table, beside `attack`, `block`, `damage`, `death` (the die moment), `life` and `enter`.
 
@@ -230,11 +231,13 @@ An Aura, Equipment or Fortification is read at its host, as Arena and MTGO draw 
 | Order | Auras, then Equipment, then Fortifications, each in id order; the first lies deepest, the last right behind the host | view only |
 | Grant marks | one mark per attachment on the host's foot stack, in the tuck order: "+2/+2", a keyword's name ("Flying", "Lifelink"), "Pro red", "Umbra" (an umbra armor Aura: the host survives destruction), a restriction ("Can't attack", "No abilities"); a compact face shows the count and an icon; tokens `success` for a raise, `destructive` for a lowering or a restriction, `foreground` on `surface` for a keyword | `ObjectView.gives` |
 | Preview | the host's preview lists each attachment as one line: its name, its controller when it is not the host's, and what it gives; the attachment's own preview names its host | `gives`, `attached_to` |
-| Foreign | an attachment another seat controls carries a 2 px dashed edge in `border-strong` on its tucked card and "Bo's" before its name in the mark and the preview (Pacifism on your creature, your Aura on an opponent's) | `controller` |
-| On a player | an Aura or Curse on a player stays in its controller's other lane with "On Bo" (`card-attached-to`); the enchanted player's pod or tile shows a chip with its name, and the preview of either names the other | `attached_player` |
-| Unattached | an Equipment or Fortification on no host stays in its controller's other lane with a dashed "Unattached" chip at its foot | `attached_to` missing |
-| Move | `Attached` draws an arrow from the old host (or the attachment's own place) to the new host with the combat overlay's `connect` (`combat/geometry.ts`), 450 ms, and the log says "Bonesplitter moves from Hill Giant to Llanowar Elves" or "Pacifism enchants Hill Giant"; `Unattached` says "Bonesplitter becomes unattached from Hill Giant" | the previous view's `attached_to` |
-| Reduced motion | the arrow is drawn still for 1 s and fades in 100 ms; the tuck has no motion | none |
+| Foreign | an attachment another seat controls carries a 2 px dashed edge in `border-strong` around its tucked card and "Bo's" on its name line (the edge alone below 76 px; the spoken name says "Controlled by Bo"), and "Bo's" before its name in the mark and the preview (Pacifism on your creature, your Aura on an opponent's) | `controller` |
+| On a player | an Aura or Curse on a player stays in its controller's other lane with "On Bo" (`card-attached-to`); the enchanted player's pod and tile show a chip for each name and controller, "×3" when several share one: a button in the pod that previews the Aura, an image in the tile whose spoken name lists them; the preview of either names the other | `attached_player` |
+| Unattached | an Equipment or Fortification on no host stays in its controller's other lane with a dashed "Unattached" chip at its foot (the icon alone, the word spoken, below 76 px) | `attached_to` missing |
+| Move | `Attached` draws an arrow from the old host to the new host with the combat overlay's `connect` (`combat/geometry.ts`), from inside one box to inside the other since hosts of a lane stand a few pixels apart; the log and the ticker say "Bonesplitter moves from Hill Giant to Llanowar Elves", "Pacifism is attached to Hill Giant" when it hung on nothing and "Pacifism enchants Bo" on a player; `Unattached` says "Bonesplitter becomes unattached"; an attachment that enters attached has no old host and draws no arrow | the previous view's `attached_to`, kept on the log entry as `hostBefore` |
+| Reduced motion | the arrow draws in over 450 ms and stands for 1 s; under reduced motion it is drawn still for the same 1 s and fades in 100 ms; the tuck has no motion | none |
+
+- Code: `play/hosts.ts` (pure: `hostOf`, `hostsBefore`, `isUnattached`), `fx/derive.ts` `deriveAttaches`, `fx/arrows.ts` (the arrows playing, 1 s each), `combat/attachLines.ts` (the arrows as lines of the combat overlay's layer, styled by `combat/attach.css`), `TuckedCard.tsx`, `enchantChips.ts` with `EnchantChips.tsx`, and `/dev/table?fx=equip`, which moves the viewer's Equipment to its next creature.
 
 - Many: five attachments on one host keep a name line each of 21 px at 150 px cards and 14 px at 100 px; the marks wrap into a second column of the foot stack, and the preview always lists them all.
 - Phone (390 px): a tuck shows the attachment's colour edge only below 76 px cards; the marks are the count and an icon, and the long-press preview carries the list.

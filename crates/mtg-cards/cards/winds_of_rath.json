@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a6fd90dc-0ec3-4dce-a77a-4d04f5e254bf",
+  "name": "Winds of Rath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winds of Rath",
+      "oracle_fingerprint": "2e89553dd7b02ecccb2cb924cbee15a4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "HasAttached": [{ "Subtype": "Aura" }] } }
+                    ]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

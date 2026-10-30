@@ -161,9 +161,13 @@ pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     })
 }
 
-/// "that targets you", "that targets a creature you control", "that targets you or a creature you control".
+/// "that targets you", "that targets a creature you control", "that targets you or a creature you control", "that
+/// targets ~" (the card itself, as Heroic says it).
 fn w21a_targets(r: &mut Reader<'_>) -> Option<Pred> {
     r.need("that targets")?;
+    if r.source() {
+        return Some(Pred::Targeting(Selector::this()));
+    }
     let you = r.word("you");
     if you && r.peek_word() != Some("or") {
         return Some(Pred::TargetsPlayer(Ref::You));
@@ -230,6 +234,7 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ChosenColor => "of the chosen color".to_owned(),
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),
         Pred::TargetsPlayer(Ref::You) => "that targets you".to_owned(),
+        Pred::Targeting(objects) if objects.0 == [Pred::This] => "that targets ~".to_owned(),
         Pred::Targeting(objects) => format!("that targets {}", w21a_a(objects)?),
         Pred::AnyOf(any) => match any.as_slice() {
             [Pred::TargetsPlayer(Ref::You), Pred::Targeting(objects)] => {

@@ -20,6 +20,7 @@ export const DEV_FX = [
   'counter',
   'land',
   'draw',
+  'equip',
 ] as const
 
 /** The moves of `DEV_FX` that are moments of play (a cast and what follows), drawn by the travel layer. */
@@ -125,7 +126,11 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     menu: menuOf(search.menu),
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
-    equip: search.equip === true || search.equip === 1 || search.equip === '1' ? true : undefined,
+    // The equip move needs the attachments scene, so it brings it.
+    equip:
+      search.equip === true || search.equip === 1 || search.equip === '1' || search.fx === 'equip'
+        ? true
+        : undefined,
     preview:
       typeof search.preview === 'number' &&
       Number.isInteger(search.preview) &&

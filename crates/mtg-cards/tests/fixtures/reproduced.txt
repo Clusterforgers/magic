@@ -697,6 +697,7 @@ Herald of War
 Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
+Hero of Iroas
 Hero of Precinct One
 Hero's Heirloom
 Heroes' Podium
@@ -1681,6 +1682,7 @@ Will of the Sultai
 Windborn Muse
 Windbrisk Heights
 Windfall
+Winds of Rath
 Winged Boots
 Winged Words
 Wings of the Guard

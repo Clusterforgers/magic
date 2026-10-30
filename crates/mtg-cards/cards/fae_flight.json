@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d3912c82-37f8-456e-ba49-65c7f5b39d13",
+  "name": "Fae Flight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fae Flight",
+      "oracle_fingerprint": "658a716a559c053839e7813117b03f31",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

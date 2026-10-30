@@ -43,7 +43,7 @@ describe('the combat stylesheet and motion', () => {
     for (const selector of motion.matchAll(/^\s*([^{}@]+)\{/gm)) {
       const head = selector[1] ?? ''
       if (head.includes('keyframes') || head.trim() === 'from' || head.trim() === 'to') continue
-      expect(head).toMatch(/combat-overlay|combat-ghost/)
+      expect(head).toMatch(/combat-overlay|combat-ghost|combat-stack/)
     }
   })
 })
@@ -81,5 +81,13 @@ describe('the combat stylesheet and colour', () => {
       )
     expect(width('.combat-line')).toBeLessThan(width(".combat-group[data-kind='block'] .combat-line"))
     expect(light).toMatch(/--combat-attack:\s*oklch\([^)]*\/\s*0\.\d+\)/)
+  })
+})
+
+describe('the arrows of the stack in the stylesheet', () => {
+  it('stand drawn in the accent or the destructive colour without motion and draw in over 250 ms with it', () => {
+    expect(still).toMatch(/\.combat-group\[data-kind='target'\] \{\s*--line: var\(--destructive\)/)
+    expect(still).toMatch(/\[data-kind='target'\]\[data-mine\] \{\s*--line: var\(--primary\)/)
+    expect(motion).toMatch(/\.combat-stack[^{]*\{\s*animation-duration: calc\(250ms \* var\(--fx-slow, 1\)\)/)
   })
 })

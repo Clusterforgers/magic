@@ -16,9 +16,15 @@ export type Anchor =
       seat?: PlayerId
     }
   | { kind: 'seat'; seat: PlayerId }
+  /** The chip of an item on the stack. */
+  | { kind: 'stack'; id: ObjectId }
 
-/** An attack goes from an attacker to what it attacks; a block from a blocker to the attacker it blocks. */
-export type LineKind = 'attack' | 'block'
+/**
+ * An attack goes from an attacker to what it attacks; a block from a blocker to the attacker it blocks; a target
+ * from the chip of a stack item to what it aims at (`stackArrows.ts`); an attach from the old host of an attachment
+ * to its new one (`attachLines.ts`).
+ */
+export type LineKind = 'attack' | 'block' | 'target' | 'attach'
 
 /** One line of the overlay. */
 export interface LineSpec {
@@ -31,6 +37,8 @@ export interface LineSpec {
   to: Anchor
   /** What the forecast says happens to the two creatures of a declared block; absent for the rest. */
   outcome?: Outcome
+  /** For a target line: the stack item belongs to the viewer. */
+  mine?: boolean
 }
 
 /** What the plan is drawn from. */
@@ -45,7 +53,7 @@ export interface PlanInput {
 
 /** A key that is the same for the same anchor, to look its box up by. */
 export const anchorKey = (anchor: Anchor): string =>
-  anchor.kind === 'seat' ? `seat:${anchor.seat}` : `card:${anchor.id}`
+  anchor.kind === 'seat' ? `seat:${anchor.seat}` : `${anchor.kind}:${anchor.id}`
 
 /** The lines to draw: attacks first, then blocks, then the unsent choices on top. */
 export function planLines({ combat, forecast, pending, controllerOf }: PlanInput): LineSpec[] {

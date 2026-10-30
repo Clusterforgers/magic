@@ -74,8 +74,19 @@ pub(super) fn w6d_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     None
 }
 
+/// "that isn't enchanted" and "that aren't enchanted": no Aura is attached to the object.
+fn w6d_not_enchanted(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    r.need("that")?;
+    r.need(if form.plural() { "aren't" } else { "isn't" })?;
+    r.need("enchanted")?;
+    Some(Pred::Not(Box::new(w6d_attached("Aura", false))))
+}
+
 /// The object phrase "that's enchanted ..." read from the start of `that`.
 fn w6d_enchanted_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    if let Some(pred) = r.attempt(|r| w6d_not_enchanted(r, form)) {
+        return Some(pred);
+    }
     w6d_that_is(r, form)?;
     if r.words("enchanted or equipped") {
         return Some(w6d_enchanted_or_equipped());
@@ -102,6 +113,10 @@ pub(super) fn w6d_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::SharesType(who) => format!("that {verb} a card type with {}", it(who)?),
         pred if *pred == w6d_attached("Aura", true) => {
             format!("{that_is} enchanted by an Aura you control")
+        }
+        Pred::Not(inner) if **inner == w6d_attached("Aura", false) => {
+            let not = if form.plural() { "aren't" } else { "isn't" };
+            format!("that {not} enchanted")
         }
         pred if *pred == w6d_enchanted_or_equipped() => {
             format!("{that_is} enchanted or equipped")
