@@ -135,8 +135,8 @@ describe('the pictures of a corner', () => {
         const [mine] = must(view.players[0]).commanders ?? []
         const [theirs] = must(view.players[1]).commanders ?? []
         must(view.players[1]).commander_damage = [
-          { commander: must(mine).object, damage: 6 },
-          { commander: must(theirs).object, damage: 3 },
+          { commander: must(mine).object, name: '', damage: 6 },
+          { commander: must(theirs).object, name: '', damage: 3 },
         ]
       },
     })

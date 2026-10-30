@@ -1,4 +1,4 @@
-// Goal: a stack item's targets are listed once each in order, a target that is gone (a player who lost, an object that is not in the view or left where it was since the item went on the stack) is marked, and a stack item among the targets is told apart.
+// Goal: a stack item's targets are listed once each in order, a target that is gone (the server says it is illegal, or without its word a player who lost, an object that is not in the view or left where it was since the item went on the stack) is marked, and a stack item among the targets is told apart.
 import { describe, expect, it } from 'vitest'
 import type { LogEntry } from '@/play/store'
 import type { Event, ObjectView, PlayerView, Target } from '@/protocol/generated'
@@ -80,5 +80,34 @@ describe('stackEntries', () => {
       false,
     ])
     expect(kept === undefined ? [] : live(kept)).toHaveLength(1)
+  })
+})
+
+describe('targets_legal', () => {
+  const cast = log({ SpellCast: { player: 0, object: 1 } })
+  const moved = log(
+    { SpellCast: { player: 0, object: 1 } },
+    { ZoneChanged: { object: 2, from: 'Battlefield', to: 'Exile', cause: 'Exiled' } },
+  )
+  it.each([
+    { name: 'a legal object the log never saw move', legal: [[true]], events: cast, gone: [false], fizzles: false },
+    { name: 'an object made illegal without moving (hexproof)', legal: [[false]], events: cast, gone: [true], fizzles: true },
+    { name: 'the server over the log for an object that moved', legal: [[true]], events: moved, gone: [false], fizzles: false },
+    { name: 'the log when the view does not say', legal: undefined, events: moved, gone: [true], fizzles: true },
+  ])('marks a target by $name', ({ legal, events, gone, fizzles }) => {
+    const item = obj(1, { zone: 'Stack', targets: [[on(2)]], ...(legal === undefined ? {} : { targets_legal: legal }) })
+    const [entry] = entriesOf(item, [obj(2, { controller: 1 })], events)
+    expect(entry?.targets.map((t) => t.gone)).toEqual(gone)
+    expect(entry === undefined ? null : hasNoLegalTarget(entry)).toBe(fizzles)
+    expect(entry?.targets[0]?.seat).toBe(1)
+  })
+
+  it('keeps a target named twice legal while one of its specifications still finds it', () => {
+    const item = obj(1, { zone: 'Stack', targets: [[on(2)], [on(2)], [{ Player: 1 }]], targets_legal: [[false], [true], [false]] })
+    const [entry] = entriesOf(item, [obj(2)])
+    expect(entry?.targets.map((t) => [t.key, t.gone])).toEqual([
+      ['object:2:0', false],
+      ['player:1', true],
+    ])
   })
 })

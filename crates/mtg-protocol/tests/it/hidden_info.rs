@@ -38,6 +38,9 @@ const SCALAR_KEYS: &[&str] = &[
     "mulligans",
     "bank",
     "damage",
+    "casts",
+    "tax",
+    "commander_lethal",
     "power",
     "toughness",
     "set",
@@ -101,11 +104,13 @@ const SNAPSHOT_EVERY: usize = 20;
 /// Games per table size in the prevention campaign.
 const PREVENTION_GAMES: u64 = 1;
 
+/// The objects `viewer` may not identify, by id and name; a commander is public wherever it is.
 pub(crate) fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectId, String> {
     let tops: Vec<ObjectId> = revealed_tops(state).into_values().collect();
     state
         .objects()
         .filter(|o| is_hidden(o.zone(), viewer) && !tops.contains(&o.id()))
+        .filter(|o| !state.is_commander(o.id()))
         .map(|o| (o.id(), o.card().name.clone()))
         .collect()
 }

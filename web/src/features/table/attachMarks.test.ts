@@ -117,6 +117,10 @@ describe('itemsOf', () => {
   it.each([
     ['Protection from red', 'Pro red'],
     ['Protection from multicolored', 'Pro multicolored'],
+    ['Protection from creatures', 'Pro creatures'],
+    ['Protection from red and from blue', 'Pro red, blue'],
+    ['Protection from white and from blue and from artifacts', 'Pro white, blue, artifacts'],
+    ['Protection', 'Protection'],
     ['Flying', 'Flying'],
     ['First strike', 'First strike'],
   ])('shortens the keyword %s to %s', (name, short) => {
