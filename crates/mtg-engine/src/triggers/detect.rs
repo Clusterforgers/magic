@@ -334,7 +334,8 @@ fn dk1c5_happened(
                 fully: was_open,
             })
         }
-        Event::ZoneChanged {
+        Event::SpellResolved { object }
+        |         Event::ZoneChanged {
             object,
             from: Zone::Stack,
             to: Zone::Battlefield,

@@ -473,6 +473,7 @@ Empyrial Storm
 Enigma Thief
 Enraged Revolutionary
 Enthusiastic Study
+Entity Tracker
 Entrancing Melody
 Entreat the Angels
 Entreat the Dead
@@ -641,6 +642,7 @@ Goliath Truck
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Gorma, the Gullet
+Grand Entryway // Elegant Rotunda
 Grapeshot
 Grasp of Fate
 Graveblade Marauder
