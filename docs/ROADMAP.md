@@ -470,7 +470,6 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (v89e) The game log keeps step lines ("Upkeep begins", "Draw begins") out of the way of plays, as Arena does: a four-seat turn is mostly step lines (`play/log`)
 - [ ] (v89f) A reload draws the battlefield at rest: after a `Snapshot` the permanents replay their enter effect, fade and overlap for about a second
 - [ ] (v89g) Seat zone labels (Graveyard, Exile) and counter chips on the table read at 12 px or more; they are 11 px at every size
-- [~] (v89j) (ux-small) On a phone the Commands sheet leaves a pending decision in view (it covers the block prompt while open)
 - [~] (v89k) (ux-small) The card preview shows the picture of every card of an imported deck: Ethereal Armor of the owner's Arena list previews an empty frame in the game while precon cards load
 
 ## M8 Polish and deploy

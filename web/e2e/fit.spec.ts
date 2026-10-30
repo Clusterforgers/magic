@@ -579,6 +579,38 @@ test.describe('the development table with 40 permanents a seat', () => {
     await page.locator(THINGS.primary).waitFor()
     await atEverySize(page, ['hand', 'life', 'primary'], onTable('12 seats'))
   })
+
+  for (const [name, size] of [
+    ['a phone', { width: 390, height: 844 }],
+    ['a short phone', { width: 390, height: 640 }],
+    ['a tablet', { width: 640, height: 768 }],
+    ['a rail', { width: 1100, height: 800 }],
+  ] as const) {
+    test(`keeps the block prompt pressable under the Commands panel of ${name}`, async ({ page }) => {
+      await page.setViewportSize(size)
+      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=block&turn=you`)
+      const block = page.getByRole('button', { name: 'No blocks' })
+      await block.waitFor()
+      const sheet = page.getByRole('button', { name: /^Commands, log, chat and stack/ })
+      // The development effects panel lies over the top bar's button, so the press is sent to the button itself.
+      if (await sheet.isVisible()) await sheet.evaluate((button) => (button as HTMLElement).click())
+      else await page.getByRole('tab', { name: 'Commands' }).click()
+      await expect(page.getByRole('region', { name: 'Commands' })).toBeVisible()
+      await expect(page.locator('[data-slot="side-overlay"][data-lowered]')).toBeAttached()
+      // A trial click fails when another element would take the press.
+      await block.click({ trial: true })
+      const sentence = page.locator('[data-slot="decision-line"]')
+      await expect(sentence).toBeVisible()
+      const covered = await sentence.evaluate((line) => {
+        const box = line.getBoundingClientRect()
+        const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)
+        return hit === null || !line.contains(hit)
+      })
+      expect(covered, 'the prompt line is under the panel').toBe(false)
+      // The panel keeps its tabs in view.
+      await expect(page.getByRole('tab', { name: 'Log' })).toBeInViewport()
+    })
+  }
 })
 
 /** The page of the seat that is asked this decision now, once one is; the seat that goes first decides first. */
