@@ -194,8 +194,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
 - [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
 - [ ] (ui1b2) A Chromium spec holds that a flier of `/dev/table?fx=cast` is drawn over the table, takes no click (the pass control under it answers) and moves no layout (`web/e2e/`, `fx/FxTravel.tsx`)
-- [~] (ui1g2) (ui-priority) The preview of a dimmed hand card shows the line of its reason (`REASON_WORDS`), which touch reaches (`CardPreview.tsx`, `CardNote`)
-- [~] (ui1h) (ui-priority) The Priority prompt marks a battlefield, graveyard or command card with an ability in `PriorityOptions.abilities` legal, and a click activates it, asking which when it has several (`prompt/kinds/Priority.tsx`)
+- [ ] (ui1h2) A hand card with an ability in `PriorityOptions.abilities` (cycling, channel) is offered it in the chooser beside its cast (`prompt/activations.ts`, `prompt/kinds/Priority.tsx`; the e2e driver then answers the chooser for a card it casts)
+- [ ] (ui1h3) A graveyard or exile chip marks that a card inside is legal (flashback, an ability), so the player finds it without opening the list (`PodParts.tsx`, `ZoneButton.tsx`)
+- [ ] (ui1h4) The preview of a legal permanent lists its activated abilities in the card's words (`ObjectView.activated`, `CardPreview.tsx`)
 - [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack
 - [ ] (ui1j) `ObjectView.targets` says whether each target is still legal (the zone-change counter check of the engine), so a chip marks an item that will fizzle without reading the log since the cast (`mtg-engine` view, `mtg-protocol`, `stackTargets.ts`)
 - [ ] (ui1c2) A Chromium spec holds that the spotlight of `/dev/table?fx=rival` lies over no prompt button and no control of the dock and takes no click (`web/e2e/`, `fx/Spotlight.tsx`)
