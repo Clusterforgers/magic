@@ -109,6 +109,11 @@ export function CardImage({
           )}
         >
           <img
+            ref={(img) => {
+              // A picture the browser already holds (a reload, a card that came back) is drawn in the first frame.
+              if (img !== null && status === 'loading' && img.complete && img.naturalWidth > 0)
+                settle('loaded')
+            }}
             src={src}
             alt={alt}
             loading={eager ? 'eager' : 'lazy'}
@@ -116,11 +121,7 @@ export function CardImage({
             draggable={false}
             onLoad={() => settle('loaded')}
             onError={() => settle('failed')}
-            className={cn(
-              'block size-full shadow-sm transition-opacity duration-150',
-              CARD_CORNER,
-              status === 'loaded' ? 'opacity-100' : 'opacity-0',
-            )}
+            className={cn('block size-full shadow-sm', CARD_CORNER, status !== 'loaded' && 'opacity-0')}
           />
         </span>
       )}

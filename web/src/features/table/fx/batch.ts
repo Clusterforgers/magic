@@ -16,13 +16,15 @@ export interface BatchStep {
 
 /**
  * The batch that turned `prev` into `next`, or null when the change was anything else. A batch moves `seq` on by
- * exactly the events it appends to the log, from where `prev` stood; a snapshot (a resync, a reconnect) leaves the
- * log alone or cuts it, so its jump is never mistaken for play and never animates. A decision, a status change or a
+ * exactly the events it appends to the log, from where `prev` stood; a snapshot (a resync, a reconnect) is told apart by
+ * `snapshots`, so its jump is never mistaken for play and never animates. A decision, a status change or a
  * chat line leaves the view as it was.
  */
 export function batchBetween(prev: PlayState, next: PlayState): BatchStep | null {
   if (prev.view === null || next.view === null || next.view === prev.view) return null
   if (prev.seq === null || next.seq === null || next.seq <= prev.seq) return null
+  // A snapshot may bring the log it spans (a reload, a gap), which would pass for the batch of the events it holds.
+  if (prev.snapshots !== next.snapshots) return null
   const count = next.seq - prev.seq
   const entries = next.log.slice(-count)
   if (entries.length !== count || entries[0]?.seq !== prev.seq || entries.at(-1)?.seq !== next.seq - 1)

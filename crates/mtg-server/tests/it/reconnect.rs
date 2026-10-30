@@ -8,7 +8,7 @@ use common::{
     start_table, table_setup,
 };
 use mtg_engine::replay;
-use mtg_protocol::{ClientMessage, ServerMessage};
+use mtg_protocol::{ClientMessage, EventView, SNAPSHOT_LOG, ServerMessage};
 use mtg_server::{EventStore, GameConfig, MIN_QUEUE, MemoryStore, Pace, spawn_game_with};
 use rstest::rstest;
 use tokio::sync::mpsc::error::TryRecvError;
@@ -80,6 +80,16 @@ async fn a_client_that_drops_mid_game_resyncs_and_the_game_ends_exactly_as_if_no
     assert_eq!(result, Some(straight.result));
     let logged = store.load(game_id(1)).await.unwrap();
     assert_eq!(logged, straight.events);
+    // The snapshot brought the latest events of the game, aligned with the stored log: a public one is the logged
+    // event itself, a hidden one stands where a hidden card moved.
+    let (seq, log) = &bots[victim].snapshot_logs[0];
+    assert_eq!(log.len(), usize::try_from(*seq).unwrap().min(SNAPSHOT_LOG));
+    let start = usize::try_from(*seq).unwrap() - log.len();
+    for (view, event) in log.iter().zip(&logged[start..]) {
+        if let EventView::Public(shown) = view {
+            assert_eq!(shown, event, "the log is aligned with the game's events");
+        }
+    }
     let status = handle.status().await.unwrap();
     assert_eq!(status.state_hash, Some(straight.final_hash));
     assert_eq!(
@@ -152,7 +162,7 @@ async fn a_joining_seat_gets_welcome_then_snapshot_then_its_pending_decision() {
         assert!(
             matches!(back.next().await, ServerMessage::Welcome { player, .. } if player == seat(n))
         );
-        let ServerMessage::Snapshot { seq, state } = back.next().await else {
+        let ServerMessage::Snapshot { seq, state, .. } = back.next().await else {
             panic!("the snapshot comes right after the welcome");
         };
         assert_eq!(seq, status.events);
@@ -189,7 +199,7 @@ async fn resync_repeats_the_snapshot_and_the_pending_decision() {
     handle.status().await.unwrap();
     for (n, client) in clients.iter_mut().enumerate() {
         let messages = client.drain();
-        let Some(ServerMessage::Snapshot { seq, state }) = messages.first() else {
+        let Some(ServerMessage::Snapshot { seq, state, .. }) = messages.first() else {
             panic!("seat {n} got no snapshot: {messages:?}");
         };
         assert_eq!(*seq, status.events);

@@ -7,8 +7,11 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::Stage;
-use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState};
-use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView, TableView};
+use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState, replay};
+use mtg_protocol::{
+    DecisionId, ErrorCode, EventView, ProtocolError, SNAPSHOT_LOG, ServerMessage, StateView,
+    TableView, project_log,
+};
 use tokio::time::Instant;
 
 use crate::bank::Banks;
@@ -368,6 +371,20 @@ impl Running {
         })
     }
 
+    /// The latest events of the game (at most `SNAPSHOT_LOG`) as `seat` saw them, rebuilt from the setup and the log; a
+    /// failure leaves the list empty, since the log is only a courtesy of the snapshot.
+    fn recent_log(&self, seat: PlayerId) -> Vec<EventView> {
+        let events = self.engine.events();
+        let (ahead, window) = events.split_at(events.len().saturating_sub(SNAPSHOT_LOG));
+        let rebuilt = replay(self.engine.setup(), ahead)
+            .map_err(ProtocolError::from)
+            .and_then(|before| project_log(&before, window, seat));
+        rebuilt.unwrap_or_else(|error| {
+            tracing::warn!(%error, "could not rebuild the log for a snapshot");
+            Vec::new()
+        })
+    }
+
     /// What a client needs to catch up: a snapshot, its pending decision and the result if the game is over.
     ///
     /// The decision carries the time its clock has left, not the time it started with. One that is held back for its
@@ -378,6 +395,7 @@ impl Running {
         let mut messages = vec![ServerMessage::Snapshot {
             seq: count(self.engine.events().len()),
             state: Box::new(view),
+            log: self.recent_log(seat),
         }];
         let visible = self
             .pending

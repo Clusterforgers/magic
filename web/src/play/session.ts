@@ -19,7 +19,7 @@ import { createManualLedger, isManualOf } from './manualLedger'
 import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
-import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
+import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank } from './view'
 
@@ -268,7 +268,8 @@ export function createSession(deps: SessionDeps): Session {
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
         preview: null,
-        log: dropLogFrom(state.log, message.seq),
+        log: mergeHistory(state.log, message.seq, message.log),
+        snapshots: state.snapshots + 1,
         phase: state.result === null ? 'playing' : 'over',
         lobby: null, // the game is on, so the roster of the table before it is over
       }

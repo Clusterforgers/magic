@@ -7,9 +7,14 @@ import { eventContexts } from './eventContext'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 import { byHandLine, manualRun, manualText, remember } from './manual/manualLog'
+import { STEP_LABEL } from './turnText'
+
+/** What a line is: the head of a turn, the name of a step something happened in, or a line of play. */
+export type LineKind = 'turn' | 'step' | 'play'
 
 /** One line of the folded log. */
 export interface FoldedLine {
+  kind: LineKind
   /** The position in the server's log of the event the line stands for (the first of a fold). */
   seq: number
   text: string
@@ -58,6 +63,7 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
       seq: first,
       text: all ? 'All pass' : `${joinWords(who)} ${who.length === 1 ? 'passes' : 'pass'}`,
       minor: true,
+      kind: 'play',
       passed: run,
       spoken: all ? `${joinWords(who)} pass` : '',
     })
@@ -82,6 +88,11 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
       return
     }
     flush(view ?? undefined)
+    if (view !== null && typeof view !== 'string' && 'StepBegan' in view) {
+      const text = STEP_LABEL[view.StepBegan.step]
+      lines.push({ seq, text, minor: true, kind: 'step', passed: [], spoken: '' })
+      return
+    }
     const manual = manualRun(log, index)
     if (manual !== null) {
       told = manual.consumed
@@ -89,13 +100,22 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
         seq,
         text: manualText(event, manual.from, remember(names, manual.names), manual.shown, manual.rolled),
         minor: false,
+        kind: 'play',
         passed: [],
         spoken: '',
         manual: true,
       })
       const entered = byHandLine(event, names)
       if (entered !== null) {
-        lines.push({ seq: seq + 0.5, text: entered, minor: false, passed: [], spoken: '', manual: true })
+        lines.push({
+          seq: seq + 0.5,
+          text: entered,
+          minor: false,
+          kind: 'play',
+          passed: [],
+          spoken: '',
+          manual: true,
+        })
       }
       return
     }
@@ -113,13 +133,46 @@ export function foldLog(log: readonly LogEntry[], names: EventNames, options: Fo
             ),
             minor: false,
           }
-    lines.push({ seq, text: line.text, minor: line.minor, passed: [], spoken: '' })
+    const turn = view !== null && typeof view !== 'string' && 'TurnBegan' in view
+    lines.push({
+      seq,
+      text: line.text,
+      minor: line.minor,
+      kind: turn ? 'turn' : 'play',
+      passed: [],
+      spoken: '',
+    })
     const byHand = byHandLine(event, names)
     // Half a step after its event: a line of its own that keeps the keys of the lines unique.
     if (byHand !== null) {
-      lines.push({ seq: seq + 0.5, text: byHand, minor: false, passed: [], spoken: '', manual: true })
+      lines.push({
+        seq: seq + 0.5,
+        text: byHand,
+        minor: false,
+        kind: 'play',
+        passed: [],
+        spoken: '',
+        manual: true,
+      })
     }
   })
   flush(undefined)
-  return lines
+  return withoutEmptySteps(lines)
+}
+
+/**
+ * `lines` without the steps nothing was read in: a step line stays, as the heading of what follows it, only while a
+ * line of play that is not minor comes before the next step or turn. The turn heads say where the game is, so the
+ * Upkeep and the End step of a turn in which nothing happened are not lines at all.
+ */
+export function withoutEmptySteps(lines: readonly FoldedLine[]): FoldedLine[] {
+  return lines.filter((line, index) => {
+    if (line.kind !== 'step') return true
+    for (let at = index + 1; at < lines.length; at += 1) {
+      const next = lines[at]
+      if (next === undefined || next.kind !== 'play') return false
+      if (!next.minor) return true
+    }
+    return false
+  })
 }

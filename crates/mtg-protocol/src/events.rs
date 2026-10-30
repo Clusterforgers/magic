@@ -630,6 +630,30 @@ pub fn project_events(
         .collect())
 }
 
+/// How many of the latest events a [`ServerMessage::Snapshot`](crate::ServerMessage::Snapshot) carries as `log`.
+pub const SNAPSHOT_LOG: usize = 500;
+
+/// `events` as `viewer` sees them, judged against `before` (the state ahead of the first one) and folded forward, so
+/// each event is as hidden as it was when it happened; the same views `project_events` gives for that viewer.
+///
+/// A client that joins late reads the log of the game so far from this, since the batches it missed are not resent.
+pub fn project_log(
+    before: &GameState,
+    events: &[Event],
+    viewer: PlayerId,
+) -> Result<Vec<EventView>, ProtocolError> {
+    let mut state = before.clone();
+    let mut views = Vec::with_capacity(events.len());
+    for event in events {
+        views.push(match redact(&state, event, viewer) {
+            Some(hidden) => EventView::Hidden(hidden),
+            None => EventView::Public(event.clone()),
+        });
+        apply_event(&mut state, event)?;
+    }
+    Ok(views)
+}
+
 /// The cards the resolution in progress has shown so far, and to whom.
 fn shown_now(state: &GameState) -> Vec<Shown> {
     state
