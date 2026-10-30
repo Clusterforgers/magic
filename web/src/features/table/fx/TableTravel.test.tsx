@@ -102,6 +102,9 @@ describe('a cast on the table', () => {
     expect(layer?.getAttribute('aria-hidden')).toBe('true')
     expect(layer?.querySelector('button, [data-object-id], [tabindex]')).toBeNull()
     act(() => animate.started[0]?.finish())
+    expect(fliers(container)).toHaveLength(0)
+    // The viewer's own cast also stands large for a moment (TableSpotlight.test.tsx); the layer goes with it.
+    act(() => animate.started[1]?.finish())
     expect(container.querySelector('[data-slot="fx-travel"]')).toBeNull()
   })
 

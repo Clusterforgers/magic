@@ -1,9 +1,9 @@
-// Goal: on the real table a spell cast by another seat stands large over the shared strip (its card, who casts what and at what) after its first leg, for the spotlight time, over a layer nobody can reach, while the viewer's own cast stays out of it unless it resolves in the same batch; it is a still card under reduced motion, a newer batch replaces it, and a card the viewer cannot identify shows its back; marks show on the card a resolution touched and go on their own, and a death a resolving spell causes draws an arrow from the spell to the card.
-import { act } from '@testing-library/react'
+// Goal: on the real table a spell cast by another seat stands large over the shared strip (its card, who casts what and at what) after its first leg, for the spotlight time, over a layer nobody can reach, and the viewer's own cast stands there too for 0.6 of that time in a lower-contrast frame without ever holding back the viewer's next answer; it is a still card under reduced motion, a newer batch replaces it, and a card the viewer cannot identify shows its back; marks show on the card a resolution touched and go on their own, and a death a resolving spell causes draws an arrow from the spell to the card.
+import { act, fireEvent } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { applyBatchToStore } from '@/features/table/dev/applyBatch'
 import type { TableOptions } from '@/features/table/tableOptions'
-import type { EventView } from '@/protocol/generated'
+import type { Answer, EventView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { fakeAnimate, setBox } from '@/test-utils/fxDom'
 import type { TestBox } from '@/test-utils/fxDom'
@@ -18,6 +18,7 @@ import {
   pub,
 } from '@/test-utils/miniTable'
 import type { Draft } from '@/test-utils/miniTable'
+import { primaryButton } from '@/test-utils/passControls'
 import { renderTable } from '@/test-utils/tableHarness'
 import { MOVE_MS } from './moves'
 
@@ -69,8 +70,12 @@ function stubReducedMotion(): void {
   }))
 }
 
-function mount(options: TableOptions = { effects: true }) {
-  const table = renderTable({ fixture: miniFixture(), options })
+function mount(options: TableOptions = { effects: true }, answer?: (answer: Answer) => boolean) {
+  const table = renderTable({
+    fixture: miniFixture(),
+    options,
+    session: answer === undefined ? {} : { answer },
+  })
   const send = (change: (draft: Draft) => void, events: EventView[]): void => {
     const { view, seq } = table.store.getState()
     act(() => {
@@ -104,6 +109,8 @@ const myCast = (draft: Draft): void => {
   must(draft.view.players[ME]).hand = { count: 0, cards: [] }
   draft.view.stack = { count: 2, cards: [...(draft.view.stack.cards ?? []), MY_HAND_CARD] }
 }
+
+const mineCast = pub({ SpellCast: { player: ME, object: MY_HAND_CARD } })
 
 const spotlight = (container: HTMLElement): HTMLElement | null =>
   container.querySelector<HTMLElement>('[data-slot="fx-spotlight"]')
@@ -145,11 +152,67 @@ describe('the spotlight of a cast', () => {
     expect(layer?.querySelector('button, a, input, [tabindex], [data-object-id]')).toBeNull()
   })
 
-  it('does not stand for the viewer’s own cast that stays on the stack', () => {
+  it('stands for the viewer’s own cast that stays on the stack, shorter and as "You cast"', () => {
     const { container, send } = mount()
-    send(myCast, pub({ SpellCast: { player: ME, object: MY_HAND_CARD } }))
-    expect(spotlight(container)).toBeNull()
+    send(myCast, mineCast)
+    const shown = spotlight(container)
+    expect(shown?.dataset.own).toBeDefined()
+    expect(shown?.querySelector('[data-slot="card-face"]')).not.toBeNull()
+    expect(shown?.querySelector('[data-slot="fx-spotlight-caption"]')?.textContent).toMatch(/^You cast/)
     expect(container.querySelector('[data-fx-flier="cast"]')).not.toBeNull()
+    expect(spotlightAnimation()?.timing).toMatchObject({
+      duration: 0.6 * MOVE_MS.spotlight,
+      delay: MOVE_MS.travel,
+      fill: 'both',
+    })
+    expect(spotlight(container)?.parentElement?.getAttribute('aria-hidden')).toBe('true')
+  })
+
+  it('leaves another seat’s spotlight without the own mark', () => {
+    const { container, send } = mount()
+    send(foeCasts(), foeCast)
+    expect(spotlight(container)?.dataset.own).toBeUndefined()
+  })
+
+  it('never holds back the viewer’s next answer: the pass control answers while it stands', () => {
+    const answer = vi.fn(() => true)
+    const { container, send } = mount({ effects: true }, answer)
+    send(myCast, mineCast)
+    expect(spotlight(container)).not.toBeNull()
+    fireEvent.click(primaryButton())
+    expect(answer).toHaveBeenCalledTimes(1)
+    expect(answer).toHaveBeenCalledWith({ Priority: 'Pass' })
+  })
+
+  it('is replaced by a newer batch with moves, and leaves with the batch after its time', () => {
+    const { container, send } = mount()
+    send(myCast, mineCast)
+    expect(spotlight(container)).not.toBeNull()
+    send(foeCasts(), foeCast)
+    expect(spotlight(container)?.dataset.own).toBeUndefined()
+    expect(container.querySelectorAll('[data-slot="fx-spotlight"]')).toHaveLength(1)
+  })
+
+  it('is a still card of the same time under reduced motion, with nothing flying', () => {
+    stubReducedMotion()
+    const { container, send } = mount()
+    send(myCast, mineCast)
+    expect(spotlight(container)?.dataset.still).toBeDefined()
+    expect(container.querySelector('[data-fx-flier]')).toBeNull()
+    expect(spotlightAnimation()?.timing).toMatchObject({ duration: 0.6 * MOVE_MS.spotlight, delay: 0 })
+    expect(spotlightAnimation()?.keyframes.every((frame) => frame.transform === undefined)).toBe(true)
+  })
+
+  it('never shows the back of a card of the viewer’s own: with no card to show it does not stand', () => {
+    const { container, send } = mount()
+    send((draft) => {
+      myCast(draft)
+      draft.edit(MY_HAND_CARD, (object) => {
+        object.face_down = true
+        object.name = ''
+      })
+    }, mineCast)
+    expect(spotlight(container)).toBeNull()
   })
 
   it('stands for the viewer’s own cast that resolves in the same batch', () => {
@@ -175,8 +238,9 @@ describe('the spotlight of a cast', () => {
     const { container, send } = mount()
     send(foeCasts(), foeCast)
     expect(spotlight(container)).not.toBeNull()
-    send(myCast, pub({ SpellCast: { player: ME, object: MY_HAND_CARD } }))
-    expect(spotlight(container)).toBeNull()
+    send(myCast, mineCast)
+    expect(container.querySelectorAll('[data-slot="fx-spotlight"]')).toHaveLength(1)
+    expect(spotlight(container)?.dataset.own).toBeDefined()
   })
 
   it('shows the back of a card the viewer cannot identify', () => {

@@ -50,6 +50,8 @@ export interface DevSearch {
   prompt?: string
   /** `you` makes it the viewer's own turn, which lights the "your turn" cue; the opponent after the viewer otherwise. */
   turn?: 'you'
+  /** `1` opens the Effects bar, which is folded behind one button otherwise (`dev/DevFxControls.tsx`). */
+  bar?: true
   /** A move to play on the table once it has loaded, so its effect can be looked at; also on buttons in the page. */
   fx?: DevFx
   /** Makes every table effect this many times slower (above 1, up to 20), to look at one before it is gone. */
@@ -91,7 +93,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&bar=&slow=&preview=&stops=&fc=&rules=&states=&cards=&menu=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -110,6 +112,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     prompt: typeof search.prompt === 'string' ? search.prompt : undefined,
     turn: search.turn === 'you' ? 'you' : undefined,
     fx: isDevFx(search.fx) ? search.fx : undefined,
+    bar: search.bar === true || search.bar === 1 || search.bar === '1' ? true : undefined,
     slow,
     // The router validates an address again with what it made of it, so both keep the form the address has.
     stops:

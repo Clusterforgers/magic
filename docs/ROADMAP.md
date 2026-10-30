@@ -109,6 +109,7 @@ Ready pieces, grouped by the code they touch. A group runs one piece at a time, 
 - Seat corner: a pod column draws its commanders, graveyard and exile as card pictures with their counts, sized by the lane card and the column's room (`SeatCorner`, `cornerFit.ts`), and the duel opponent's column no longer scrolls at 1440x900.
 - Table lanes: every board draws lands, creatures and other permanents in fixed lanes, mirrored for opponents, at the largest card size that fits (`laneFit.ts`), with `/dev/table?board=duel` and `board=heavy` and a layout gate rule for lanes.
 - Card sizes: the board rows split by what each board holds, your creatures the largest cards, opponents at four fifths of yours or more, lands fanned in piles where that buys size, a thinner strip and hand dock (`boardSplit.ts`, duel board 150/120 px at 1440x900).
+- Playing is legible: a card flies from its source to the stack and on, a cast stands large over the shared strip (the viewer's own for 0.6 of the time, in a lower-contrast frame), and the `/dev/table` Effects bar folds behind one button; Chromium specs hold the flier and the spotlight (`docs/ui-design.md`, `web/e2e/fx-flier.spec.ts`, `web/e2e/fx-spotlight.spec.ts`).
 
 ## M3 Card system
 
@@ -173,11 +174,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (k2c) Playwright: build a Commander deck with a Partner pair, see a refused commander with its reason and the identity filter
 - [ ] (k3a) `MTG_SEED` sets the server's `fixed_seed` (now only tests set it), so an e2e game replays exactly; `commander-four.spec.ts` and `precon-game.spec.ts` pin it
 - [ ] (ui2a) `CommanderDamageView` carries the commander's name, so a page opened while the commander is in a hand or a library names its damage chip (the web keeps only the names it saw, `CommanderChips.tsx`)
-- [~] (ui2b) (ui-own-cast) The viewer's own cast stands large for a moment as another seat's does: today it flies at the hand card's size (about 70 px at 1440x900) into a stack chip and is easy to miss (`fx/spotlight.ts`, `fx/Spotlight.tsx`)
 - [ ] (ui2c) Grant marks read whole on the 100 to 120 px hosts of a tucked lane ("Can't atta…", "+3/+3 …" at 1440x900 with `equip=1`): shorter rule words or a second line (`attachMarks.ts`, `GrantMarks.tsx`)
 - [ ] (ui2d) The controls dock is 458 px wide at M and L (the key hints of End turn and of a long primary label such as "Resolve Lightning Bolt"), so seven cards and two commanders need two hand rows at 1400x900 and 1024x768 and the dock grows 49 to 66 px: narrower controls keep one row (`ControlsDock.tsx`, `prompt/passWords.ts`)
 - [ ] (ui2e) The duel opponent's pod column with an enchant chip (`equip=1` at 1440x900) cuts its commander picture mid-card: the corner drops to chips whole when the column has no room (`SeatCorner.tsx`, `cornerFit.ts`)
-- [~] (ui2f) (ui-own-cast) The Effects bar of `/dev/table` folds behind one button, so screenshots show the opponents' top row and the spotlight it covers today (`dev/`)
 - [ ] (k3d) A four-seat precon game asks a seat 3 to 54 priority windows in which no hand card, commander or battlefield ability is marked legal ("Your turn · 12 · Precombat main" three times in a row, then "Postcombat main"): find what the server offers there (a cast from the graveyard or exile, an ability the prompt does not mark) and mark it, or pass for the seat (`commander-four.spec.ts` prints them as "idle windows of ...")
 - [ ] (ts3) `groupPermanents` keeps apart permanents that differ in copy (and of what), shown face, face down, merge, prepared, level and the player an Aura enchants, so a copy never hides inside a stack of its original's tokens
 - [ ] (ts4) A phased-out permanent is drawn ghosted with a "Phased out" mark: `PermanentView` needs a `phased_out` field
@@ -193,12 +192,10 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (pl3a) `ObjectView` carries what a mana ability gives as data (mana, count, cost, sacrifice), so the corner strip and the preview stop reading the words of `activated` (an ability with a count by a condition, a chosen colour or an extra cost shows nothing today)
 - [ ] (pl3b) The payment sheet takes the mana sources and the made total in its compact form: one scroll line of source chips, made and owed on one row, no extra height at 390 px
 - [ ] (pl3c) The colour switch sits on the source chip and swaps the colour of a chosen source without taking it back; chips mark restricted mana (`only`), life, energy and taken permanents, and the pool marks the mana that outlasts the step (`kept`)
-- [~] (ui1b2) (ui-own-cast) A Chromium spec holds that a flier of `/dev/table?fx=cast` is drawn over the table, takes no click (the pass control under it answers) and moves no layout (`web/e2e/`, `fx/FxTravel.tsx`)
 - [ ] (ui1g2) The preview of a dimmed hand card shows the line of its reason (`REASON_WORDS`), which touch reaches (`CardPreview.tsx`, `CardNote`)
 - [ ] (ui1h) The Priority prompt marks a battlefield, graveyard or command card with an ability in `PriorityOptions.abilities` legal, and a click activates it, asking which when it has several (`prompt/kinds/Priority.tsx`)
 - [ ] (ui1i) `/dev/table?fx=` screenshots of every moment at the six sizes in both themes settle the look, and `fit.spec.ts` holds the table at rest with three targeting items on the stack
 - [ ] (ui1j) `ObjectView.targets` says whether each target is still legal (the zone-change counter check of the engine), so a chip marks an item that will fizzle without reading the log since the cast (`mtg-engine` view, `mtg-protocol`, `stackTargets.ts`)
-- [~] (ui1c2) (ui-own-cast) A Chromium spec holds that the spotlight of `/dev/table?fx=rival` lies over no prompt button and no control of the dock and takes no click (`web/e2e/`, `fx/Spotlight.tsx`)
 - [ ] (ui1e2) An ability's end (`resolved`, `countered`, `fizzled`) shows on its stack chip before it leaves, and the arrow of a counter cast in the same batch starts at its spotlight (`fx/marks.ts`, `fx/effectArrows.ts`, `StackChips.tsx`)
 - [ ] (eq1f) `/dev/table?equip=1` joins `fit.spec.ts`, and screenshots at the six sizes in both themes settle the tuck and the marks of five attachments at 150, 120 and 100 px cards and on a 390 px phone
 - [ ] (eq1g) An Equipment that had no host draws its equip arrow from where it lay, measured before the batch is drawn (`fx/FxTravel.tsx`, `combat/attachLines.ts`)

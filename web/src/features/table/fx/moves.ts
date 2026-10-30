@@ -46,7 +46,7 @@ export interface Move {
   readonly order: number
   /** What a spell or ability on its way to the stack targets. */
   readonly targets: readonly Target[]
-  /** It stands large over the shared strip before it lands. */
+  /** It stands large over the shared strip in full time before it lands (the viewer's own cast stands shorter: `planSpotlight`). */
   readonly spotlight: boolean
 }
 

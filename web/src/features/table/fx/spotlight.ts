@@ -1,7 +1,8 @@
 /**
  * The spotlight of a batch (docs/ui-design.md, Playing is legible): a spell cast by another seat, or one that passes
- * through the stack inside the batch, stands large over the shared strip between its two legs. Pure: what stands, where
- * and when. `Spotlight.tsx` draws it and the travel layer holds it beside the flights.
+ * through the stack inside the batch, stands large over the shared strip between its two legs; the viewer's own cast
+ * stands there too, for a shorter time. Pure: what stands, where and when. `Spotlight.tsx` draws it and the travel
+ * layer holds it beside the flights.
  */
 import type { ObjectId, ObjectView, PlayerId, Target } from '@/protocol/generated'
 import { MOVE_MS } from './moves'
@@ -29,6 +30,12 @@ export const CAPTION_WIDTH_PX = 224
 export const SPOTLIGHT_GAP_PX = 8
 const MARGIN_PX = 8
 
+/** The viewer's own cast stands this share of the time another seat's does. */
+export const OWN_SHARE = 0.6
+
+/** The time a spotlight stands before the slow-down, in ms: the viewer's own is shorter. */
+export const spotlightMs = (own: boolean): number => MOVE_MS.spotlight * (own ? OWN_SHARE : 1)
+
 /** The spotlight that stands now. Replaced, never changed. */
 export interface Spotlight {
   /** Unique to the batch. */
@@ -38,6 +45,8 @@ export interface Spotlight {
   readonly look: ObjectView | null
   readonly faceDown: boolean
   readonly caster: PlayerId
+  /** The viewer's own cast: it stands shorter, in a frame of lower contrast. */
+  readonly own: boolean
   readonly targets: readonly Target[]
   /** Milliseconds after the batch's first leg, stretched by the slow-down. */
   readonly delay: number
@@ -50,14 +59,14 @@ export interface Spotlight {
   readonly box: Box
 }
 
-/** The share of the spotlight's time it takes to come in, and to go out: 150 of the 900 ms. */
-const FADE_SHARE = 150 / MOVE_MS.spotlight
+/** The time a spotlight takes to come in, and to go out, in ms: the same for every spotlight. */
+const FADE_MS = 150
 
 /**
- * The keyframes of the spotlight over its whole time: in with a little growth (`ease-out`), whole, then out (`ease-in`).
- * A still one is on at once and off at once, as a card standing for the same time.
+ * The keyframes of the spotlight over its whole time: in with a little growth (`ease-out`), whole, then out (`ease-in`),
+ * each fade `FADE_MS` long. A still one is on at once and off at once, as a card standing for the same time.
  */
-export function spotlightKeyframes({ still }: Pick<Spotlight, 'still'>): Keyframe[] {
+export function spotlightKeyframes({ still, own = false }: { still: boolean; own?: boolean }): Keyframe[] {
   if (still) {
     return [
       { offset: 0, opacity: 0 },
@@ -66,10 +75,11 @@ export function spotlightKeyframes({ still }: Pick<Spotlight, 'still'>): Keyfram
       { offset: 1, opacity: 0 },
     ]
   }
+  const fade = FADE_MS / spotlightMs(own)
   return [
     { offset: 0, opacity: 0, transform: 'scale(0.92)', easing: 'ease-out' },
-    { offset: FADE_SHARE, opacity: 1, transform: 'scale(1)' },
-    { offset: 1 - FADE_SHARE, opacity: 1, transform: 'scale(1)', easing: 'ease-in' },
+    { offset: fade, opacity: 1, transform: 'scale(1)' },
+    { offset: 1 - fade, opacity: 1, transform: 'scale(1)', easing: 'ease-in' },
     { offset: 1, opacity: 0, transform: 'scale(0.96)' },
   ]
 }
@@ -82,6 +92,8 @@ export interface SpotlightInput {
   /** A card of the viewer's hand, for the size; the reference card when none is on screen. */
   readonly hand: { width: number; height: number } | null
   readonly window: { width: number; height: number }
+  /** The viewer's seat: a cast by it is the viewer's own. */
+  readonly viewer: PlayerId
   readonly batch: number
   readonly still: boolean
   readonly slow?: number
@@ -121,34 +133,50 @@ export function spotlightBoxes(
   }
 }
 
+/** Whether the table shows a face for the card of a cast; the viewer's own is never drawn as a back. */
+const identified = (look: ObjectView | null): look is ObjectView =>
+  look !== null && look.face_down !== true && look.name !== ''
+
 /**
  * The spotlight of the batch: the first cast that stands in it, `MOVE_MS.travel` after the batch (its first leg has
- * landed on the stack by then) or at once when nothing flies. Null when no cast does, or no strip is on screen.
+ * landed on the stack by then) or at once when nothing flies. When no cast of another seat (or through the stack)
+ * stands, the viewer's own first cast does, for `OWN_SHARE` of the time and never as a card back. Null when no cast
+ * does, or no strip is on screen.
  */
 export function planSpotlight({
   moves,
   strip,
   hand,
   window,
+  viewer,
   batch,
   still,
   slow = 1,
 }: SpotlightInput): Spotlight | null {
-  const move = moves.find((candidate) => candidate.kind === 'cast' && candidate.spotlight)
-  if (move === undefined || strip === null) return null
-  const seat = 'stack' in move.from ? null : move.from.seat
-  const caster = move.look?.controller ?? seat
+  if (strip === null) return null
+  const casterOf = (candidate: Move): PlayerId | null =>
+    candidate.look?.controller ?? ('stack' in candidate.from ? null : candidate.from.seat)
+  const full = moves.find((candidate) => candidate.kind === 'cast' && candidate.spotlight)
+  const move =
+    full ??
+    moves.find(
+      (candidate) =>
+        candidate.kind === 'cast' && casterOf(candidate) === viewer && identified(candidate.look),
+    )
+  if (move === undefined) return null
+  const caster = casterOf(move)
   if (caster === null) return null
-  const faceDown = move.look === null || move.look.face_down === true || move.look.name === ''
+  const own = full === undefined
   return {
     key: `${batch}:spotlight`,
     object: move.object,
     look: move.look,
-    faceDown,
+    faceDown: !identified(move.look),
     caster,
+    own,
     targets: move.targets,
     delay: (move.order * MOVE_MS.stagger + (still ? 0 : MOVE_MS.travel)) * slow,
-    duration: MOVE_MS.spotlight * slow,
+    duration: spotlightMs(own) * slow,
     still,
     ...spotlightBoxes(
       strip,

@@ -260,6 +260,7 @@ export function createTravel(options: TravelOptions): Travel {
       strip: measureStrip(root),
       hand: measureHandCard(root, viewer),
       window: { width: window.innerWidth, height: window.innerHeight },
+      viewer,
       batch,
       still: mode !== 'full',
       slow,
