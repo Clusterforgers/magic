@@ -7,7 +7,12 @@ import type { MulliganStatus, StateView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import type { TableSetup } from '@/test-utils/tableHarness'
+import { KINDS } from '@/test-utils/decisions'
+import { WAITING_TO_DECIDE } from './OpeningStatus'
 import { describeOpening } from './turnText'
+
+/** This seat still deciding while an earlier seat is asked: the engine asks one seat at a time. */
+const YOU_WAIT = `You: ${WAITING_TO_DECIDE}`
 
 type Each = (seat: number) => [MulliganStatus, number]
 
@@ -61,7 +66,7 @@ describe.each([2, 3, 4, 6, 12])('the opening hands at a table of %i seats', (sea
     opening(seats, () => ['Deciding', 0])
     const names = ['Alice', 'Bo', 'Cy', 'Dee', 'Eli', 'Fay', 'Gus', 'Hana', 'Ivo', 'Jun', 'Kit', 'Lena']
     expect(entries()).toEqual(
-      Array.from({ length: seats }, (_, seat) => `${seat === 0 ? 'You' : names[seat]}: deciding`),
+      Array.from({ length: seats }, (_, seat) => (seat === 0 ? YOU_WAIT : `${names[seat]}: deciding`)),
     )
   })
 
@@ -76,7 +81,7 @@ describe.each([2, 3, 4, 6, 12])('the opening hands at a table of %i seats', (sea
       return states[seat % 4] ?? ['Deciding', 0]
     })
     const expected = [
-      'You: deciding',
+      YOU_WAIT,
       'Bo: keeping',
       'Cy: taking a mulligan · 1 mulligan taken',
       'Dee: keeping, bottoming 2 · 2 mulligans taken',
@@ -97,7 +102,7 @@ describe('the opening hands list', () => {
 
   it('follows the table as batches change who has decided', () => {
     const h = opening(3, () => ['Deciding', 0])
-    expect(entries()).toEqual(['You: deciding', 'Bo: deciding', 'Cy: deciding'])
+    expect(entries()).toEqual([YOU_WAIT, 'Bo: deciding', 'Cy: deciding'])
     h.update((state) => ({
       view: setOpening(must(state.view), (seat) => (seat === 0 ? ['Kept', 0] : ['Deciding', 0])),
     }))
@@ -108,9 +113,18 @@ describe('the opening hands list', () => {
     expect(entries()).toEqual(['You: keeping', 'Bo: taking a mulligan', 'Cy: keeping'])
   })
 
+  it('says "deciding" for this seat only while it is asked, and that it waits its turn before', () => {
+    const h = opening(3, () => ['Deciding', 0])
+    expect(entries()[0]).toBe(YOU_WAIT)
+    h.update(() => ({ pending: { id: 1, decision: { player: 0, kind: KINDS.Mulligan } } }))
+    expect(entries()[0]).toBe('You: deciding')
+    h.update(() => ({ pending: null }))
+    expect(entries()[0]).toBe(YOU_WAIT)
+  })
+
   it('uses the names the lookup gives, and "Seat N" for a seat it does not know', () => {
     opening(3, () => ['Deciding', 0], { lookup: { game: null, missing: false, failed: false } })
-    expect(entries()).toEqual(['You: deciding', 'Seat 2: deciding', 'Seat 3: deciding'])
+    expect(entries()).toEqual([YOU_WAIT, 'Seat 2: deciding', 'Seat 3: deciding'])
   })
 
   it('is on the table in the layout for a big table too, where only one opponent has a panel', () => {

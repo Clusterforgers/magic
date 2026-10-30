@@ -54,7 +54,7 @@ function Entry({
           <p className="text-xs text-muted-foreground">The reasons appear once the deck is checked.</p>
         ) : (
           <ul aria-label={`Why ${card.name} is played by hand`} className="grid gap-1 text-xs">
-            {reasons.map((reason) => (
+            {[...new Set(reasons)].map((reason) => (
               <li key={reason} className="text-muted-foreground [overflow-wrap:anywhere]">
                 {reason}
               </li>

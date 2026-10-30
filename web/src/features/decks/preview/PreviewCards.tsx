@@ -44,7 +44,7 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
                   aria-label="Played by hand"
                   className="grid gap-1 text-left text-xs text-muted-foreground"
                 >
-                  {card.reasons.map((reason) => (
+                  {[...new Set(card.reasons)].map((reason) => (
                     <li key={reason} className="[overflow-wrap:anywhere]">
                       {reason}
                     </li>
@@ -115,8 +115,9 @@ export function CardGroups({ groups }: { groups: readonly CardGroup[] }) {
             <span className="font-normal text-muted-foreground tabular-nums">{copiesOf(group.cards)}</span>
           </h4>
           <ul className="grid grid-cols-[repeat(auto-fill,minmax(4.75rem,1fr))] gap-3 pt-2">
-            {group.cards.map((card) => (
-              <Tile key={card.oracleId} card={card} onOpen={setZoomed} />
+            {group.cards.map((card, index) => (
+              // A precon can list one card in several lines (two printings of Forest), so the oracle id alone repeats.
+              <Tile key={`${card.oracleId}:${index}`} card={card} onOpen={setZoomed} />
             ))}
           </ul>
         </section>

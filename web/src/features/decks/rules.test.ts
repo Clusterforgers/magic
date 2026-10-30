@@ -9,6 +9,7 @@ import {
   MAX_IMPORT_CHARS,
   MAX_IMPORT_FILE_BYTES,
   MAX_IMPORT_LINES,
+  nameFromCommanders,
   nameFromFile,
   nameProblem,
 } from './rules'
@@ -111,6 +112,22 @@ describe('fileProblem', () => {
     const problem = fileProblem({ size })
     if (words === null) expect(problem).toBeNull()
     else expect(problem).toMatch(words)
+  })
+})
+
+describe('nameFromCommanders', () => {
+  const line = (zone: string, name: string) => ({ zone, card: { name } })
+  it.each([
+    [[line('commander', "Y'shtola, Night's Blessed"), line('main', 'Island')], "Y'shtola, Night's Blessed"],
+    [
+      [line('commander', 'Tymna the Weaver'), line('commander', 'Thrasios, Triton Hero')],
+      'Tymna the Weaver & Thrasios, Triton Hero',
+    ],
+    [[line('main', 'Island'), line('companion', 'Lurrus of the Dream-Den')], ''],
+    [[], ''],
+    [[line('commander', 'n'.repeat(150))], 'n'.repeat(MAX_DECK_NAME_CHARS)],
+  ])('names the list %# after its commanders', (lines, name) => {
+    expect(nameFromCommanders(lines)).toBe(name)
   })
 })
 

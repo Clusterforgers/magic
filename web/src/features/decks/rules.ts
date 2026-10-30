@@ -47,6 +47,15 @@ export function fileProblem(file: { size: number }): string | null {
     : null
 }
 
+/** A deck name suggested by a list's commanders ("Tymna the Weaver & Thrasios"), or an empty string without one. */
+export function nameFromCommanders(lines: readonly { zone: string; card: { name: string } }[]): string {
+  return lines
+    .filter((line) => line.zone === 'commander')
+    .map((line) => line.card.name)
+    .join(' & ')
+    .slice(0, MAX_DECK_NAME_CHARS)
+}
+
 /** A deck name suggested by a file name: the name without its extension, or an empty string. */
 export function nameFromFile(fileName: string): string {
   return fileName
