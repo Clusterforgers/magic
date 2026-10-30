@@ -89,10 +89,11 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       return true
     },
     // A manual action changes nothing here but the log, and whatever decision waits stays, as the server has it.
-    manual(action) {
+    manual(action, reply) {
       const { log, seat } = store.getState()
       const event = { Public: { ManualAction: { player: seat ?? 0, action } } } as const
       store.setState({ log: [...log, { seq: (log.at(-1)?.seq ?? -1) + 1, event }] })
+      reply?.({ ok: true })
       return true
     },
     preview(decision, answer) {

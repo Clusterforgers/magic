@@ -1,0 +1,13 @@
+/*
+ * While the Commands panel waits for a card (`PickBanner`), every card of the table is a target: the cursor says so and
+ * a ring in the accent colour marks it, a thicker one under the pointer or the focus.
+ */
+html[data-picking] button[data-object-id] {
+  cursor: crosshair;
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+html[data-picking] button[data-object-id]:is(:hover, :focus-visible) {
+  outline-width: 4px;
+}

@@ -1,18 +1,28 @@
 // Goal: the Commands panel is the first and default tab of a seat's side column and absent for a viewer that is no seat; a command opens in place, shows the change it will make before anything is sent, sends the exact action on Apply or Enter, says it was sent, and closes on Escape with the focus back on its row; an inert command says why and sends nothing.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import type { ManualResult } from '@/play/manualLedger'
 import type { ManualAction } from '@/protocol/generated'
 import { renderTable } from '@/test-utils/tableHarness'
 import { CommandsPanel } from './CommandsPanel'
 
 const WIDE = { width: 1600, height: 1000 }
 
-function panelTable(manual = vi.fn<(action: ManualAction) => boolean>(() => true)) {
+function panelTable(
+  manual = vi.fn<(action: ManualAction) => boolean>(() => true),
+  answer: ManualResult | 'silence' = { ok: true },
+) {
   const table = renderTable({
     seats: 2,
     options: { viewport: WIDE },
     ui: <CommandsPanel />,
-    session: { manual },
+    session: {
+      manual: (action, reply) => {
+        const taken = manual(action)
+        if (taken && answer !== 'silence') reply?.(answer)
+        return taken
+      },
+    },
   })
   const panel = screen.getByRole('region', { name: 'Commands' })
   const row = (name: string): HTMLElement => {
@@ -59,7 +69,7 @@ describe('a command', () => {
     expect(form.querySelector('[data-slot="command-preview"]')).toHaveTextContent(preview)
     await user.click(within(form).getByRole('button', { name: apply }))
     expect(manual).toHaveBeenCalledWith(action)
-    expect(within(form).getByRole('status')).toHaveTextContent(`Sent: ${apply}.`)
+    expect(within(form).getByRole('status')).toHaveTextContent(`Done: ${apply}.`)
   })
 
   it('applies with Enter in the amount field and closes with Escape', async () => {
@@ -97,7 +107,28 @@ describe('a command', () => {
     const { user, row } = panelTable(vi.fn(() => false))
     await user.click(row('Shuffle'))
     await user.click(screen.getByRole('button', { name: 'Shuffle your library' }))
-    expect(screen.getByRole('status')).toHaveTextContent('could not be sent')
+    expect(screen.getByRole('status')).toHaveTextContent('Not sent: the connection is not open.')
+  })
+
+  it('shows the reason of a refusal in its own row, keeps the choices and leaves the table notice alone', async () => {
+    const { user, row, store } = panelTable(undefined, { ok: false, reason: 'you are not in the game' })
+    await user.click(row('Draw'))
+    await user.click(screen.getByRole('button', { name: '3' }))
+    await user.click(screen.getByRole('button', { name: 'Draw 3 cards' }))
+    const line = screen.getByRole('status')
+    expect(line).toHaveTextContent('Refused: you are not in the game.')
+    expect(line).toHaveAttribute('data-state', 'refused')
+    expect(screen.getByRole('spinbutton', { name: 'How many' })).toHaveValue(3)
+    expect(store.getState().notice).toBeNull()
+  })
+
+  it('says Sending until the server answers, and holds a second Apply back', async () => {
+    const { user, row, manual } = panelTable(undefined, 'silence')
+    await user.click(row('Shuffle'))
+    await user.click(screen.getByRole('button', { name: 'Shuffle your library' }))
+    expect(screen.getByRole('status')).toHaveTextContent('Sending: Shuffle your library…')
+    await user.click(screen.getByRole('button', { name: 'Shuffle your library' }))
+    expect(manual).toHaveBeenCalledTimes(1)
   })
 
   it('opens one row at a time', async () => {
