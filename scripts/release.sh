@@ -6,6 +6,8 @@
 #   scripts/release.sh v0.2.0            a chosen tag
 #   scripts/release.sh --rollback v0.1.3 point the cluster at a tag that is already in the registry
 #
+# A release refuses while a game is running (the restart cuts its sockets); --even-if-games overrides.
+#
 # Settings (environment): MTG_REGISTRY (default 100.96.184.94:30500, a Tailscale address),
 # MTG_MANIFESTS (default ~/private/Clusterforgers/k3s-cluster-manifests, a clone of the manifests repo).
 set -euo pipefail
@@ -16,6 +18,7 @@ MANIFESTS="${MTG_MANIFESTS:-$HOME/private/Clusterforgers/k3s-cluster-manifests}"
 VALUES="apps/magic/values.yaml"
 BUILDER="magic-release"
 APP="magic"
+EVEN_IF_GAMES=0
 
 die() { echo "release: $*" >&2; exit 1; }
 
@@ -67,6 +70,15 @@ build_and_push() { # tag
   done
 }
 
+check_games() { # a restart cuts the sockets of a running game, and a rules change can fail it at boot
+  [ "$EVEN_IF_GAMES" = 1 ] && return 0
+  command -v kubectl >/dev/null || return 0
+  local running
+  running="$(kubectl -n "$APP" exec magic-db-0 -- psql -U magic -d magic -Atc \
+    "SELECT count(*) FROM games WHERE status = 'running'" 2>/dev/null)" || return 0
+  [ "${running:-0}" = 0 ] || die "$running game(s) are running: release when they end, or pass --even-if-games"
+}
+
 point_manifests() { # tag
   git -C "$MANIFESTS" pull -q --ff-only
   sed -i -E "s|^tag: .*|tag: $1|" "$MANIFESTS/$VALUES"
@@ -98,10 +110,17 @@ rollout() { # tag
 }
 
 
+args=()
+for arg in "$@"; do
+  if [ "$arg" = --even-if-games ]; then EVEN_IF_GAMES=1; else args+=("$arg"); fi
+done
+set -- ${args[@]+"${args[@]}"}
+
 if [ "${1:-}" = "--rollback" ]; then
   tag="${2:?usage: release.sh --rollback TAG}"
   check_tools
   registry_has magic-server "$tag" && registry_has magic-web "$tag" || die "the registry has no $tag"
+  check_games
   point_manifests "$tag"
   rollout "$tag"
   echo "release: the cluster runs $tag"
@@ -114,6 +133,7 @@ check_tools
 check_source "$tag"
 ensure_builder
 build_and_push "$tag"
+check_games
 point_manifests "$tag"
 git tag -a "$tag" -m "release $tag"
 git push -q origin "$tag"

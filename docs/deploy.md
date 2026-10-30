@@ -18,6 +18,8 @@ How the game runs on the k3s cluster and how a release reaches it.
 3. tags the commit and pushes the tag;
 4. asks ArgoCD to refresh and waits until both Deployments have rolled out.
 
+It refuses while a game is running, since the restart cuts the sockets of its seats (`--even-if-games` overrides).
+
 Without a tag it takes the next patch after the latest `vX.Y.Z`. `scripts/release.sh --rollback vX.Y.Z` points the cluster at a tag the registry still holds and builds nothing; migrations only move forward, so a rollback across a schema change needs a fix forward instead.
 
 ## Card data
