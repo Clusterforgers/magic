@@ -467,6 +467,11 @@ impl PlayerView {
             hand: zone_view(state, viewer, Zone::Hand(seat)),
             library: zone_view(state, viewer, Zone::Library(seat)),
             revealed_top: state.revealed_top(seat),
+            known_top: if seat == viewer {
+                mtg_engine::sight::known_top(state, seat)
+            } else {
+                Vec::new()
+            },
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
             command: zone_view(state, viewer, Zone::Command(seat)),
             commanders: state

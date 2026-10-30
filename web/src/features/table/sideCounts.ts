@@ -5,7 +5,7 @@ import { describeEvent } from './eventText'
 import type { EventNames } from './eventText'
 
 /** The tabs of the side area. */
-export type SideTab = 'log' | 'chat' | 'stack'
+export type SideTab = 'commands' | 'log' | 'chat' | 'stack'
 
 /** The most a tab's count shows; beyond it the badge says "99+". */
 export const COUNT_CAP = 99

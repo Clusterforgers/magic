@@ -1,5 +1,5 @@
 // Goal: replaying a recorded game through the real session and store into the table, message by message, keeps the screen equal to the state after every message (seats, battlefields, hand, stack, log, mulligan and decision lines) and ends equal to the server's own final view.
-import { act, within } from '@testing-library/react'
+import { act, fireEvent, within } from '@testing-library/react'
 import { beforeAll, describe, expect, it } from 'vitest'
 import type { GameLookup } from '@/features/game/useGameInfo'
 import type { PlayState } from '@/play/store'
@@ -85,6 +85,9 @@ function expectScreenToMatch(container: HTMLElement, state: PlayState, step: str
   expect(count?.textContent ?? null, step).toBe(
     view.stack.count === 0 ? null : `${view.stack.count} on the stack`,
   )
+  // A seat's side column opens on its Commands; the log is a tab away.
+  const logTab = within(container).queryByRole('tab', { name: /^Log/ })
+  if (logTab !== null && logTab.getAttribute('aria-selected') !== 'true') act(() => fireEvent.click(logTab))
   const log = within(container).getByRole('log', { name: 'Game log' })
   if (state.log.length === 0) expect(log, step).toHaveTextContent('Nothing has happened yet.')
   else {

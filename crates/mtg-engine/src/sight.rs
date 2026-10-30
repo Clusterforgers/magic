@@ -8,7 +8,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::decision::{Decision, DecisionKind};
-use crate::object::{FaceDown, GameObject};
+use crate::object::{FaceDown, GameObject, ObjectRef};
 use crate::resolve::{Progress, Shown, step};
 use crate::state::{GameState, Stage};
 use crate::zones::Zone;
@@ -65,6 +65,9 @@ impl GameState {
             if self.revealed_top(owner) == Some(id) {
                 return true;
             }
+            if self.looked_by_hand.contains(&(viewer, object.reference())) {
+                return true;
+            }
             // The owner may look at their own top card any time (a card rule, never the house rule).
             if viewer == owner
                 && self.zone(Zone::Library(owner)).last() == Some(&id)
@@ -79,6 +82,42 @@ impl GameState {
             })
         })
     }
+}
+
+/// The top cards of `seat`'s library that it may identify, top first, up to the first it may not.
+pub fn known_top(state: &GameState, seat: PlayerId) -> Vec<ObjectId> {
+    state
+        .zone(Zone::Library(seat))
+        .iter()
+        .rev()
+        .take_while(|id| state.is_shown_to(seat, **id))
+        .copied()
+        .collect()
+}
+
+/// Records that `seat` looked at the top `count` cards of its library by hand, and forgets what it looked at before
+/// that is no longer the object it was or no longer in the library.
+pub(crate) fn look_by_hand(state: &mut GameState, seat: PlayerId, count: u32) {
+    let library = Zone::Library(seat);
+    let still = |state: &GameState, card: &ObjectRef| {
+        state
+            .object(card.id)
+            .is_some_and(|object| object.reference() == *card && object.zone() == library)
+    };
+    let kept: Vec<_> = state
+        .looked_by_hand
+        .iter()
+        .filter(|(who, card)| *who != seat || still(state, card))
+        .copied()
+        .collect();
+    let looked: Vec<_> =
+        crate::library::top_cards(state, seat, usize::try_from(count).unwrap_or(0))
+            .into_iter()
+            .filter_map(|id| state.object(id).map(GameObject::reference))
+            .filter(|card| !kept.contains(&(seat, *card)))
+            .map(|card| (seat, card))
+            .collect();
+    state.looked_by_hand = kept.into_iter().chain(looked).collect();
 }
 
 /// Records that the resolution in progress showed `cards` to `to`, or to every seat when it is `None`. Nothing is

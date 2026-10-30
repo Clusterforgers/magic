@@ -151,6 +151,17 @@ pub enum HiddenEvent {
         /// Where they put it.
         to: ManualZone,
     },
+    /// A player put back by hand the top cards of their library they looked at, which only they know.
+    ManualArrange {
+        /// Who put them back.
+        player: PlayerId,
+        /// Cards that stay on top.
+        top: u32,
+        /// Cards put on the bottom.
+        bottom: u32,
+        /// Cards put into the graveyard.
+        graveyard: u32,
+    },
 }
 
 /// One log event as a viewer sees it; the list stays aligned one-to-one with the log.
@@ -360,13 +371,27 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
 }
 
 /// The hidden form of a manual action: a card moved between places the viewer cannot see into is not named, as the
-/// `ZoneChanged` that follows is not; no other action names a card the viewer cannot see.
+/// `ZoneChanged` that follows is not, and the cards a seat puts back on its library are its own to know; no other
+/// action names a card the viewer cannot see.
 fn redact_manual(
     before: &GameState,
     player: PlayerId,
     action: &ManualAction,
     viewer: PlayerId,
 ) -> Option<HiddenEvent> {
+    if let ManualAction::ArrangeTop {
+        top,
+        bottom,
+        graveyard,
+    } = action
+    {
+        return (player != viewer).then(|| HiddenEvent::ManualArrange {
+            player,
+            top: count(top.len()),
+            bottom: count(bottom.len()),
+            graveyard: count(graveyard.len()),
+        });
+    }
     let ManualAction::Move { object, to } = action else {
         return None;
     };
