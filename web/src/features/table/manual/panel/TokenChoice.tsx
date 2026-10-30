@@ -67,6 +67,8 @@ export function TokenChoice({ draft, set }: Props) {
         <div data-slot="custom-token" className="grid gap-2">
           <Labelled label="Name of the token">
             <Input
+              // The field appears when "Custom creature…" is chosen, and the name is what comes next.
+              autoFocus
               value={draft.name}
               maxLength={TOKEN_NAME_MAX}
               onChange={(event) => set({ name: event.currentTarget.value })}

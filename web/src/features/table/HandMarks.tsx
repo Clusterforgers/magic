@@ -35,6 +35,28 @@ export function RevealedMark({ compact, text }: MarkProps) {
   )
 }
 
+interface HandMarksProps {
+  revealed: boolean
+  note: string | undefined
+  /** A compact face: icons alone. */
+  small: boolean
+  /** The width in px of the foot stack the marks sit in. */
+  footWidth: number
+  text: string
+}
+
+/** The marks of what the table put on a card, for the foot of a picture: "Revealed" and the note, each with its word where the foot has room. */
+export function HandMarks({ revealed, note, small, footWidth, text }: HandMarksProps) {
+  return (
+    <>
+      {revealed ? <RevealedMark compact={small || footWidth < REVEALED_WORD_PX} text={text} /> : null}
+      {note === undefined ? null : (
+        <NoteMark note={note} compact={small || footWidth < NOTE_TEXT_PX} text={text} />
+      )}
+    </>
+  )
+}
+
 /** A note a seat put on the card: a sticky note with its first words, named by the whole note; the icon alone on a compact face. */
 export function NoteMark({ note, compact, text }: MarkProps & { note: string }) {
   return (

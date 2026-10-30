@@ -100,6 +100,7 @@ describe('the Tokens row', () => {
     expect(form.queryByLabelText('Name of the token')).toBeNull()
     await user.selectOptions(list, CUSTOM)
     expect(form.getByLabelText('Name of the token')).toHaveValue('')
+    expect(form.getByLabelText('Name of the token')).toHaveFocus()
     expect(form.getByLabelText('Power')).toHaveValue(1)
     expect(form.getByLabelText('Toughness')).toHaveValue(1)
   })

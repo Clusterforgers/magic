@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react'
+import { Fragment, memo, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -98,9 +98,11 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       <span className="flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground">
         <DamageChips chips={chips.damage} density="tile" />
         {chipZones(counts).map((zone) => (
-          <CountChip key={zone} zone={zone} count={counts[zone]} density="tile" />
+          <Fragment key={zone}>
+            <CountChip zone={zone} count={counts[zone]} density="tile" />
+            {zone === 'library' ? <RevealedFigure player={player} /> : null}
+          </Fragment>
         ))}
-        <RevealedFigure player={player} />
         <TaxChips chips={chips.tax} density="tile" />
         <EnchantChips chips={enchants} density="tile" />
         <ManaPool pool={player.mana} className="shrink-0 flex-nowrap text-xs" />

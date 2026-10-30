@@ -15,7 +15,7 @@ import { roomFor } from './attachMarks'
 import { GrantMarks } from './GrantMarks'
 import { isUnattached } from '@/play/hosts'
 import type { CardSize } from './cardSize'
-import { NOTE_TEXT_PX, NoteMark, REVEALED_WORD_PX, RevealedMark } from './HandMarks'
+import { HandMarks } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
@@ -133,12 +133,13 @@ export function Overlay({
           className={cn('absolute flex max-h-[40%] gap-0.5 overflow-hidden', corner.foot)}
         >
           {/* What the table put on the card comes first, so it is the line that stays at the foot. */}
-          {revealed ? (
-            <RevealedMark compact={size === 'compact' || footWidth < REVEALED_WORD_PX} text={text} />
-          ) : null}
-          {handNote === undefined ? null : (
-            <NoteMark note={handNote} compact={size === 'compact' || footWidth < NOTE_TEXT_PX} text={text} />
-          )}
+          <HandMarks
+            revealed={revealed}
+            note={handNote}
+            small={size === 'compact'}
+            footWidth={footWidth}
+            text={text}
+          />
           {damage === undefined ? null : (
             <span
               data-slot="card-status"
