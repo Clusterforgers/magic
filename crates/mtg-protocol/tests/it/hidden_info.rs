@@ -45,6 +45,9 @@ const SCALAR_KEYS: &[&str] = &[
     "toughness",
     "set",
     "amount",
+    // The faces of a die rolled by hand and the number that came up.
+    "sides",
+    "result",
     "left",
     "Option",
     "Replacement",
@@ -110,6 +113,8 @@ pub(crate) fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectI
     state
         .objects()
         .filter(|o| is_hidden(o.zone(), viewer) && !tops.contains(&o.id()))
+        // A card a seat showed by hand is named to every seat while it stays where it was shown.
+        .filter(|o| !state.is_shown_to(viewer, o.id()))
         .filter(|o| !state.is_commander(o.id()))
         .map(|o| (o.id(), o.card().name.clone()))
         .collect()
@@ -125,9 +130,10 @@ pub(crate) fn hidden_across(
     hidden_in(before, viewer)
         .into_iter()
         .filter(|(id, _)| {
-            after
-                .object(*id)
-                .is_none_or(|o| is_hidden(o.zone(), viewer) && !tops.contains(id))
+            after.object(*id).is_none_or(|o| {
+                // A card a seat showed by hand is named to every seat, wherever it lies.
+                is_hidden(o.zone(), viewer) && !tops.contains(id) && !after.is_shown_to(viewer, *id)
+            })
         })
         .collect()
 }
