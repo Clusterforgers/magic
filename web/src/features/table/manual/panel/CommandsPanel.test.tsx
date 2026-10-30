@@ -1,8 +1,10 @@
-// Goal: the Commands panel is the first and default tab of a seat's side column and absent for a viewer that is no seat; a command opens in place, shows the change it will make before anything is sent, sends the exact action on Apply or Enter, says it was sent, and closes on Escape with the focus back on its row; an inert command says why and sends nothing.
+// Goal: the Commands panel is the first and default tab of a seat's side column and absent for a viewer that is no seat; a command opens in place, shows the change it will make before anything is sent, sends the exact action on Apply or Enter, says it was sent, and closes on Escape with the focus back on its row; an inert command says why and sends nothing; the Mana row opens on a colour of the seat's commander identity.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ManualResult } from '@/play/manualLedger'
-import type { ManualAction } from '@/protocol/generated'
+import type { PlayState } from '@/play/store'
+import type { Color, ManaCost, ManualAction } from '@/protocol/generated'
+import { card } from '@/test-utils/cards'
 import { renderTable } from '@/test-utils/tableHarness'
 import { CommandsPanel } from './CommandsPanel'
 
@@ -206,6 +208,94 @@ describe('the Life row', () => {
       state: (state) => ({ ...state, result: 'Draw' }),
     })
     expect(screen.getByRole('button', { name: /^More life options/ })).toHaveTextContent('The game is over.')
+  })
+})
+
+/** A table where seat 0 owns one commander with these colours and cost. */
+function withCommander(colors: Color[], cost: ManaCost | null) {
+  return (state: PlayState): PlayState => {
+    const object = card({
+      id: 900,
+      owner: 0,
+      controller: 0,
+      zone: { Command: 0 },
+      name: 'Test Commander',
+      colors,
+      mana_cost: cost,
+      permanent: null,
+    })
+    if (state.view === null) return state
+    return {
+      ...state,
+      objectsById: { ...state.objectsById, 900: object },
+      view: {
+        ...state.view,
+        players: state.view.players.map((player) =>
+          player.seat === 0 ? { ...player, commanders: [{ object: 900, casts: 0, tax: 0 }] } : player,
+        ),
+      },
+    }
+  }
+}
+
+/** A table of a game with no commanders (the fixture is a Commander table). */
+function withoutCommanders(state: PlayState): PlayState {
+  if (state.view === null) return state
+  return {
+    ...state,
+    view: { ...state.view, players: state.view.players.map(({ commanders: _gone, ...player }) => player) },
+  }
+}
+
+describe('the Mana row', () => {
+  const ESPER: ManaCost = [{ Generic: 2 }, { Colored: 'White' }, { Colored: 'Blue' }, { Colored: 'Black' }]
+  const open = async (state?: (state: PlayState) => PlayState) => {
+    const table = renderTable({ seats: 2, options: { viewport: WIDE }, ui: <CommandsPanel />, state })
+    const panel = screen.getByRole('region', { name: 'Commands' })
+    const row = within(panel)
+      .getAllByRole('button', { name: /^Mana/ })
+      .find((button) => button.hasAttribute('aria-expanded'))
+    if (row === undefined) throw new Error('no Mana row')
+    await table.user.click(row)
+    return { ...table, panel, select: within(panel).getByRole('combobox', { name: 'Mana' }) }
+  }
+
+  it.each<[string, ((state: PlayState) => PlayState) | undefined, string]>([
+    ['an Esper commander', withCommander(['White', 'Blue', 'Black'], ESPER), 'White'],
+    [
+      'a Simic commander',
+      withCommander(['Blue', 'Green'], [{ Colored: 'Blue' }, { Colored: 'Green' }]),
+      'Blue',
+    ],
+    ['a red commander', withCommander(['Red'], [{ Colored: 'Red' }]), 'Red'],
+    ['a colourless commander', withCommander([], [{ Generic: 7 }]), 'Colorless'],
+    ['no commander', withoutCommanders, 'Green'],
+  ])('starts on a colour of the identity for %s: %s', async (_what, state, expected) => {
+    const { select } = await open(state)
+    expect(select).toHaveValue(expected)
+  })
+
+  it('starts on the identity again after Apply and keeps what the seat picked until then', async () => {
+    const manual = vi.fn<(action: ManualAction) => boolean>(() => true)
+    const table = renderTable({
+      seats: 2,
+      options: { viewport: WIDE },
+      ui: <CommandsPanel />,
+      state: withCommander(['White', 'Blue', 'Black'], ESPER),
+      session: { manual: (action, reply) => (reply?.({ ok: true }), manual(action)) },
+    })
+    const panel = screen.getByRole('region', { name: 'Commands' })
+    const row = within(panel)
+      .getAllByRole('button', { name: /^Mana/ })
+      .find((button) => button.hasAttribute('aria-expanded'))
+    if (row === undefined) throw new Error('no Mana row')
+    await table.user.click(row)
+    const select = within(panel).getByRole('combobox', { name: 'Mana' })
+    await table.user.selectOptions(select, 'Red')
+    expect(select).toHaveValue('Red')
+    await table.user.click(within(panel).getByRole('button', { name: /^Add/ }))
+    expect(manual).toHaveBeenCalledWith({ AddMana: { mana: 'Red', count: 1 } })
+    expect(within(panel).getByRole('combobox', { name: 'Mana' })).toHaveValue('White')
   })
 })
 

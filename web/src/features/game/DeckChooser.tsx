@@ -46,8 +46,8 @@ export interface DeckChooserProps {
   /** Some request of the lobby is out, so nothing else can be sent. */
   busy: boolean
   choice: DeckChoice
-  /** Told which deck is selected but not chosen, and why this table cannot take it, for the Ready button's words. */
-  onPreview?(previewing: { name: string; blocked: string | null } | null): void
+  /** Told which deck is selected but not chosen, and whether this table cannot take it, for the Ready button's words. */
+  onPreview?(previewing: { name: string; blocked: boolean } | null): void
 }
 
 type Kind = 'builtin' | 'own' | 'precons'
@@ -119,9 +119,7 @@ export function DeckChooser({
   )
   const known = selected !== null && current != null && selected.name === current.name
   const verdict = selected === null ? undefined : verdicts.of.get(selected.id)
-  const reasons =
-    verdict?.status === 'ready' && verdict.verdict.kind === 'blocked' ? verdict.verdict.reasons : null
-  const blocked = reasons === null ? null : (reasons[0] ?? null)
+  const blocked = verdict?.status === 'ready' && verdict.verdict.kind === 'blocked'
   const previewName = selected === null || known || ready ? null : selected.name
   useEffect(() => {
     onPreview?.(previewName === null ? null : { name: previewName, blocked })

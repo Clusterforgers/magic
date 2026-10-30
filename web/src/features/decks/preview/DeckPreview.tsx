@@ -19,6 +19,8 @@ export interface PreviewLegality {
   format: string
   /** Why the deck is not legal. */
   reasons?: readonly string[]
+  /** The id of the reasons list, for a control that is off because of them to point at (`aria-describedby`). */
+  reasonsId?: string
 }
 
 /** What a deck preview takes. */
@@ -36,7 +38,7 @@ export interface DeckPreviewProps {
 }
 
 function Legality({ legality }: { legality: PreviewLegality }) {
-  const { verdict, format, reasons = [] } = legality
+  const { verdict, format, reasons = [], reasonsId } = legality
   if (verdict === 'unknown') return null
   return (
     <div data-slot="legality" data-verdict={verdict} className="grid gap-1 text-sm">
@@ -56,6 +58,7 @@ function Legality({ legality }: { legality: PreviewLegality }) {
       </p>
       {reasons.length === 0 ? null : (
         <ul
+          id={reasonsId}
           aria-label={`Why the deck is not legal in ${format}`}
           className="list-disc pl-6 text-xs text-destructive"
         >

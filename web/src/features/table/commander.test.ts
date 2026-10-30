@@ -1,6 +1,7 @@
-// Goal: the words and figures of Commander at the table are pure: the tax chip shows only once a commander was cast or carries tax, the cost of a cast from the command zone adds the tax, damage levels follow the lethal amount of the table (21 or a house rule), the return question names where a no leaves the commander, and the log line of a hit carries the running total.
+// Goal: the words and figures of Commander at the table are pure: the tax chip shows only once a commander was cast or carries tax, the cost of a cast from the command zone adds the tax, damage levels follow the lethal amount of the table (21 or a house rule), the return question names where a no leaves the commander, and the log line of a hit carries the running total, and the colour identity of a seat's commanders reads off their colours and costs.
 import { describe, expect, it } from 'vitest'
-import type { ManaCost, Zone } from '@/protocol/generated'
+import type { Color, ManaCost, ObjectView, Zone } from '@/protocol/generated'
+import { card } from '@/test-utils/cards'
 import {
   castCostLine,
   commanderDamageLine,
@@ -8,6 +9,7 @@ import {
   damageFraction,
   damageLevel,
   damageWords,
+  identityOf,
   returnDetail,
   returnNoLabel,
   returnQuestion,
@@ -24,6 +26,7 @@ const ATRAXA: ManaCost = [
   { Colored: 'Green' },
 ]
 const KRENKO: ManaCost = [{ Generic: 2 }, { Colored: 'Red' }, { Colored: 'Red' }]
+const ESPER: ManaCost = [{ Generic: 2 }, { Colored: 'White' }, { Colored: 'Blue' }, { Colored: 'Black' }]
 
 describe('the tax chip', () => {
   it.each([
@@ -149,6 +152,49 @@ describe('the return choice', () => {
     expect(returnQuestion('Atraxa, Praetors’ Voice')).toBe(
       'Return Atraxa, Praetors’ Voice to the command zone?',
     )
+  })
+})
+
+describe('the colour identity of a seat', () => {
+  const commander = (id: number, colors: Color[], cost: ManaCost | null): ObjectView =>
+    card({ id, colors, mana_cost: cost, zone: { Command: 0 } })
+  const seat = (...ids: number[]) => ({ commanders: ids.map((object) => ({ object, casts: 0, tax: 0 })) })
+  const objects = (...list: ObjectView[]) => Object.fromEntries(list.map((object) => [object.id, object]))
+
+  it.each<[string, ObjectView[], Color[]]>([
+    ['an Esper commander', [commander(1, ['White', 'Blue', 'Black'], ESPER)], ['White', 'Blue', 'Black']],
+    [
+      'a colour only in the cost symbols',
+      [commander(1, [], [{ Colored: 'Red' }, { Phyrexian: 'Green' }])],
+      ['Red', 'Green'],
+    ],
+    [
+      'hybrid symbols',
+      [
+        commander(
+          1,
+          [],
+          [{ Hybrid: ['Blue', 'Red'] }, { MonoHybrid: 'White' }, { ColorlessHybrid: 'Black' }],
+        ),
+      ],
+      ['White', 'Blue', 'Black', 'Red'],
+    ],
+    [
+      'two commanders, in WUBRG order and once each',
+      [commander(1, ['Green'], [{ Colored: 'Green' }]), commander(2, ['Blue', 'Green'], KRENKO)],
+      ['Blue', 'Red', 'Green'],
+    ],
+    ['a colourless commander', [commander(1, [], [{ Generic: 7 }, 'Colorless'])], []],
+    ['a commander with no cost', [commander(1, [], null)], []],
+  ])('reads %s', (_what, list, expected) => {
+    const ids = list.map((object) => object.id)
+    expect(identityOf(seat(...ids), objects(...list))).toEqual(expected)
+  })
+
+  it('is unknown while no commander of the seat is in the view', () => {
+    expect(identityOf(seat(), {})).toBeNull()
+    expect(identityOf({}, {})).toBeNull()
+    expect(identityOf(seat(9), {})).toBeNull()
   })
 })
 

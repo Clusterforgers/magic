@@ -1,7 +1,7 @@
-// Goal: every panel command says what it will change before it is applied, names the change on its button, builds the exact `ManualAction` the protocol takes, and refuses an amount out of range, a change to nothing, more cards than the library holds or more counters than the seat has, in plain words.
+// Goal: every panel command says what it will change before it is applied, names the change on its button, builds the exact `ManualAction` the protocol takes, and refuses an amount out of range, a change to nothing, more cards than the library holds or more counters than the seat has, in plain words, and a Mana row opens on the first colour of the commander identity.
 import { describe, expect, it } from 'vitest'
-import type { ManualAction } from '@/protocol/generated'
-import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
+import type { Color, ManaType, ManualAction } from '@/protocol/generated'
+import { panelGroups, pressPreset, previewOf, startDraft, startMana } from './commands'
 import { START_TOKEN } from './customToken'
 import type { Command, CommandId, PanelDraft, PanelInput } from './commands'
 
@@ -162,6 +162,17 @@ describe('pressPreset and startDraft', () => {
     const spec = command(id).amount
     if (spec === undefined) throw new Error('no amount')
     expect(pressPreset(spec, amount, preset)).toBe(expected)
+  })
+
+  it.each<[string, readonly Color[] | undefined, ManaType]>([
+    ['no identity (no commander)', undefined, 'Green'],
+    ['a colourless identity', [], 'Colorless'],
+    ['one colour', ['Red'], 'Red'],
+    ['Esper', ['White', 'Blue', 'Black'], 'White'],
+    ['Temur', ['Blue', 'Red', 'Green'], 'Blue'],
+  ])('opens the Mana row on %s with %s', (_what, identity, expected) => {
+    expect(startMana(identity)).toBe(expected)
+    expect(startDraft(command('mana'), { identity }).mana).toBe(expected)
   })
 
   it('opens a signed command at no change and a count at one', () => {

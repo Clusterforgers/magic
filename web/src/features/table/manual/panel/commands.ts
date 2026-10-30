@@ -1,5 +1,5 @@
 /** Pure: the commands of the Commands panel, what each one says it does, the preview of its change and the action it sends. */
-import type { CounterKind, ManaType, ManualAction, ObjectId, PlayerId } from '@/protocol/generated'
+import type { Color, CounterKind, ManaType, ManualAction, ObjectId, PlayerId } from '@/protocol/generated'
 import { counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
 import { START_TOKEN, tokenPreview } from './customToken'
 import type { TokenDraft } from './customToken'
@@ -70,6 +70,8 @@ export interface PanelInput {
   counters: readonly (readonly [CounterKind, number])[]
   /** The top cards the seat looked at and has not put back yet, top first; none otherwise. */
   looked: readonly ObjectId[]
+  /** The colours of the seat's commander identity in WUBRG order (empty: colourless); left out outside Commander. */
+  identity?: readonly Color[]
   /** Why nothing can be done by hand (a seat that lost, a finished game); left out while the seat plays. */
   off?: string
 }
@@ -244,12 +246,17 @@ function rollCommand(unavailable: string | undefined): Command {
   }
 }
 
-/** The draft a row of `command` opens with. */
-export function startDraft(command: Command): PanelDraft {
+/** The kind of mana a Mana row opens on: the seat's first identity colour, colourless for a colourless identity, Green without one. */
+export function startMana(identity: readonly Color[] | undefined): ManaType {
+  return identity === undefined ? 'Green' : (identity[0] ?? 'Colorless')
+}
+
+/** The draft a row of `command` opens with; its Mana row starts on the seat's commander identity. */
+export function startDraft(command: Command, input?: Pick<PanelInput, 'identity'>): PanelDraft {
   return {
     ...START_TOKEN,
     amount: command.amount?.start ?? 0,
-    mana: 'Green',
+    mana: startMana(input?.identity),
     roll: 'd20',
     sides: SIDES.start,
   }

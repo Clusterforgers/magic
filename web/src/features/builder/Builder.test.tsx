@@ -359,25 +359,35 @@ describe('a visitor who is not signed in', () => {
 describe('under the M breakpoint', () => {
   const cls = (element: HTMLElement) => element.className.split(/\s+/)
 
-  it('shows the search first and swaps panes with the switch, both staying in the page', async () => {
+  it('opens a deck with cards on the Deck pane and swaps panes with the switch, both staying in the page', async () => {
     const { user } = await renderBuilder()
     const group = screen.getByRole('group', { name: 'Show' })
     expect(group).toHaveClass('lg:hidden')
     const search = within(group).getByRole('button', { name: 'Search' })
     const deck = within(group).getByRole('button', { name: 'Deck 26' })
-    expect(search).toHaveAttribute('aria-pressed', 'true')
-    expect(deck).toHaveAttribute('aria-pressed', 'false')
-    expect(cls(searchPane())).toEqual(expect.arrayContaining(['flex', 'lg:flex']))
-    expect(cls(deckPane())).toEqual(expect.arrayContaining(['hidden', 'lg:flex']))
-    await user.click(deck)
     expect(deck).toHaveAttribute('aria-pressed', 'true')
+    expect(search).toHaveAttribute('aria-pressed', 'false')
     expect(cls(deckPane())).toEqual(expect.arrayContaining(['flex', 'lg:flex']))
-    expect(cls(searchPane())).toEqual(expect.arrayContaining(['hidden', 'lg:flex']))
     expect(cls(deckPane())).not.toContain('hidden')
+    expect(cls(searchPane())).toEqual(expect.arrayContaining(['hidden', 'lg:flex']))
+    await user.click(search)
+    expect(search).toHaveAttribute('aria-pressed', 'true')
+    expect(cls(searchPane())).toEqual(expect.arrayContaining(['flex', 'lg:flex']))
+    expect(cls(searchPane())).not.toContain('hidden')
+    expect(cls(deckPane())).toEqual(expect.arrayContaining(['hidden', 'lg:flex']))
+  })
+
+  it('opens an empty deck on the Search pane', async () => {
+    await renderBuilder({ view: { cards: [] } })
+    expect(screen.getByRole('button', { name: 'Search' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Deck 0' })).toHaveAttribute('aria-pressed', 'false')
+    expect(cls(searchPane())).not.toContain('hidden')
+    expect(cls(deckPane())).toContain('hidden')
   })
 
   it('keeps the search text and the hits when the deck is looked at and the search comes back', async () => {
     const { user } = await renderBuilder()
+    await user.click(screen.getByRole('button', { name: 'Search' }))
     await user.type(searchBox(), 'bolt')
     await screen.findByRole('list', { name: 'Search results' })
     await user.click(screen.getByRole('button', { name: /^Deck/ }))

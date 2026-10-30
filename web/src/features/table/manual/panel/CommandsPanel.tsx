@@ -7,7 +7,11 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { CounterKind, ManaType, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
+import { identityOf } from '../../commander'
 import { playerOf } from '../../selectors'
+import { clockKind } from '../../prompt/clockText'
+import { ownDecision } from '../../prompt/ownDecision'
+import { ResponseClock } from '../../prompt/ResponseClock'
 import { GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
 import { AmountField } from './AmountField'
 import { lookIsPending } from './arrange'
@@ -62,7 +66,34 @@ function usePanelInput(): PanelInput | null {
       }
     }),
   )
-  return mine === null ? null : { ...mine, name: nameOf(mine.seat) }
+  // An array of strings, which `useShallow` keeps the same while the colours do not change.
+  const identity = usePlay(
+    useShallow((state) => {
+      const player = state.seat === null ? undefined : playerOf(state, state.seat)
+      return player === undefined ? null : identityOf(player, state.objectsById)
+    }),
+  )
+  if (mine === null) return null
+  return { ...mine, name: nameOf(mine.seat), ...(identity === null ? {} : { identity }) }
+}
+
+/**
+ * The response clock of the seat's pending decision, kept at the top of the panel while it scrolls: a seat working
+ * here may have the prompt strip out of sight (a sheet on a phone), and the server answers for it at zero. It is the
+ * prompt's own `ResponseClock`, silent because the prompt announces the start; without a clock it draws nothing, not even its box.
+ */
+function PanelClock() {
+  const pending = usePlay(ownDecision)
+  const running = usePlay((state) => {
+    const own = ownDecision(state)
+    return own !== null && state.clock?.id === own.id
+  })
+  if (pending === null || !running) return null
+  return (
+    <div data-slot="commands-clock" className="sticky top-0 z-10 rounded-md bg-muted px-3 py-1.5">
+      <ResponseClock id={pending.id} kind={clockKind(pending.decision.kind)} quiet />
+    </div>
+  )
 }
 
 /**
@@ -82,6 +113,7 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
       data-slot="commands-panel"
       className="grid h-full min-h-0 content-start gap-1 overflow-y-auto overscroll-contain pr-1"
     >
+      <PanelClock />
       {input.off === undefined ? null : (
         <p data-slot="commands-off" className="px-2 text-xs text-muted-foreground">
           {input.off}
@@ -185,7 +217,7 @@ interface FormProps {
 /** The amount, the choice, the preview of the change and Apply; Enter applies and Escape closes. */
 function CommandForm({ id, command, input, onClose }: FormProps) {
   const { feedback, send, clear } = useManualSender()
-  const [draft, setDraft] = useState<PanelDraft>(() => startDraft(command))
+  const [draft, setDraft] = useState<PanelDraft>(() => startDraft(command, input))
   const preview = previewOf(command, draft, input)
   const ready = 'action' in preview
   const set = (next: Partial<PanelDraft>): void => {
@@ -195,7 +227,7 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
   const apply = (): void => {
     if (!('action' in preview) || feedback?.state === 'sending') return
     // The row starts over once the server took the action; a refusal keeps the choices to change them.
-    send(preview.action, preview.apply, () => setDraft(startDraft(command)))
+    send(preview.action, preview.apply, () => setDraft(startDraft(command, input)))
   }
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
     event.stopPropagation()

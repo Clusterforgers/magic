@@ -67,13 +67,17 @@ describe('the Ready button', () => {
     ],
     [
       'no deck, one selected',
-      { needsDeck: true, previewing: { name: 'Burn', blocked: null } },
+      { needsDeck: true, previewing: { name: 'Burn', blocked: false } },
       { label: 'Ready', disabled: true, hint: /Press Use this deck to take Burn\.$/ },
     ],
     [
       'no deck, the selected one blocked',
-      { needsDeck: true, previewing: { name: 'Pauper', blocked: 'A Pauper deck holds no rares.' } },
-      { label: 'Ready', disabled: true, hint: /Pauper cannot be taken: A Pauper deck holds no rares\.$/ },
+      { needsDeck: true, previewing: { name: 'Pauper', blocked: true } },
+      {
+        label: 'Ready',
+        disabled: true,
+        hint: /Choose one under Your deck\. Pauper cannot be taken at this table\.$/,
+      },
     ],
     [
       'no connection',

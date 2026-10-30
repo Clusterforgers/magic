@@ -43,9 +43,3 @@ export function verdictLabel(verdict: Verdict): string {
       return 'Cannot be taken'
   }
 }
-
-/** The line under a blocked deck: why it cannot be chosen, and how many more reasons there are. */
-export function blockedLine(reasons: readonly string[]): string {
-  const [first = 'The deck cannot be played as it stands.'] = reasons
-  return reasons.length > 1 ? `${first} ${reasons.length - 1} more below.` : first
-}

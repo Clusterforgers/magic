@@ -230,7 +230,8 @@ describe('selecting and choosing', () => {
     await waitFor(() => expect(use).toHaveAttribute('aria-disabled', 'true'))
     await user.click(use)
     expect(choose).not.toHaveBeenCalled()
-    expect(document.querySelector('[data-slot="deck-blocked"]')).toHaveTextContent(
+    expect(document.querySelector('[data-slot="deck-blocked"]')).toBeNull()
+    expect(screen.getByRole('list', { name: /Why the deck is not legal in Normal/ })).toHaveTextContent(
       /not legal in this format/i,
     )
   })
