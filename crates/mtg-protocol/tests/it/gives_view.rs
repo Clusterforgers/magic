@@ -63,6 +63,8 @@ fn object(driver: &Driver, viewer: usize, name: &str) -> ObjectView {
         .unwrap()
 }
 
+// It returns what the view field holds, so a case compares against it directly.
+#[allow(clippy::unnecessary_wraps)]
 fn gives(power: i32, toughness: i32, keywords: &[&str], rules: &[GivenRule]) -> Option<GivesView> {
     Some(GivesView {
         power,
