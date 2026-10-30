@@ -226,6 +226,7 @@ The server is settled first, then the web is built once against the final types.
 - [~] (ma7m) (panel-roll) `ManualScript` also takes `Reveal` and `Note`, with the invariants for a card shown and a note kept (after ma7j)
 - [ ] (ma7j) `ManualScript` also takes `LookTop`, `ArrangeTop` and `Shuffle`; with them seed 6 of `manual_anytime` (two seats) shows a bot cast of a card that an out-of-band `Move` had put onto the battlefield being accepted (`event does not apply`)
 - [ ] (ma7q) The Tokens row's custom creature also takes colours and types (artifact, enchantment, subtypes), which `CreateToken` already carries
+- [ ] (ma7r) `e2e/fit.spec.ts` "attachments scene on four seats" fails at 1366x768 ("the combat line block:71 runs over your life")
 
 - [ ] (ma4) The menu's custom token takes colours, types and subtypes, and a token can copy a card on the table
 - [ ] (ma5) Playwright: a two-seat game where a Manual card is cast, its clause is quoted in the log, and the seat applies it by hand from the menu (counters, tokens, life) with every action in both logs
