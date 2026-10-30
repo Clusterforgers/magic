@@ -1,6 +1,16 @@
-// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield, which windows count as idle, and which defender an attack aims at.
+// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn of a banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield, which windows count as idle, which defender an attack aims at, and that a play which comes back to its window unanswered is tried twice there.
 import { expect, test } from '@playwright/test'
-import { aimAt, attackersOffered, hasAbility, isIdle, isPlayable, look, pickPlay, turnOf } from './driver'
+import {
+  aimAt,
+  attackersOffered,
+  hasAbility,
+  isIdle,
+  isPlayable,
+  look,
+  pickPlay,
+  Run,
+  turnOf,
+} from './driver'
 import type { Card, Seen } from './driver'
 
 const card = (id: string): Card => ({ id, label: `Card ${id}`, land: false })
@@ -183,5 +193,30 @@ test.describe('driver helpers', () => {
       </section>`)
     expect(await page.evaluate(attackersOffered, ['11', '12'])).toEqual(['21', '23'])
     expect(await page.evaluate(attackersOffered, ['11', '12', '21', '23'])).toEqual([])
+  })
+})
+
+test.describe('a play that comes back to its window unanswered', () => {
+  const window = "Cy's turn · 19 · Precombat main"
+  const spell: Card = { id: '7', label: 'Spectral Steel, Enchantment, Aura', land: false }
+
+  test('is tried twice there, then left alone and reported once', () => {
+    const run = new Run(10, 1_000)
+    expect(run.fresh(spell, window)).toBe(true)
+    run.tried('Cy', spell, window)
+    expect(run.fresh(spell, window)).toBe(true)
+    run.tried('Cy', spell, window)
+    expect(run.fresh(spell, window)).toBe(false)
+    expect(run.unanswered).toEqual([`Cy: Spectral Steel at ${window}`])
+  })
+
+  test('is tried again in the next window, and never after the run skipped it', () => {
+    const run = new Run(10, 1_000)
+    run.tried('Cy', spell, window)
+    run.tried('Cy', spell, window)
+    expect(run.fresh(spell, "Cy's turn · 19 · Postcombat main")).toBe(true)
+    expect(run.fresh({ ...spell, id: '8' }, window)).toBe(true)
+    run.skip.add('8')
+    expect(run.fresh({ ...spell, id: '8' }, "Cy's turn · 21 · Precombat main")).toBe(false)
   })
 })

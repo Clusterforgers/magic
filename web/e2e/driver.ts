@@ -117,6 +117,9 @@ export const isIdle = (seen: Seen): boolean =>
   seen.command.length === 0 &&
   seen.board.every((permanent) => permanent.land)
 
+/** How often a play is chosen in one window before the run leaves it alone: a play that comes back unanswered is tried once more. */
+const MAX_TRIES = 2
+
 /** The state shared by both seats' loops: the step budget, the stall clock and the trail kept for a failure. */
 export class Run {
   steps = 0
@@ -137,6 +140,10 @@ export class Run {
   readonly recalled = new Set<string>()
   /** Cards whose cast was cancelled (no legal target, a cost that cannot be met): the driver does not try them again. */
   readonly skip = new Set<string>()
+  /** Times each play was chosen in a window, by `card id@banner`: a play that comes back to the same window unanswered is not tried a third time there. */
+  readonly attempts = new Map<string, number>()
+  /** The plays that came back to the same window with no prompt, as "Cy: Spectral Steel at Your turn · 19 · Precombat main". */
+  readonly unanswered: string[] = []
   /** Set by the first loop that fails, so the other stops instead of waiting out the stall limit. */
   failure: Error | null = null
   /** Set by a hook to end every seat's loop at its next decision, for a run that plays some turns and not to the end. */
@@ -160,6 +167,19 @@ export class Run {
     if (this.steps > this.maxSteps) {
       throw new Error(`No winner after ${this.maxSteps} decisions. Last steps:\n${this.tail()}`)
     }
+  }
+
+  /** Whether `play` may be chosen in the window `banner`: not skipped, and not yet chosen twice there. */
+  fresh(play: Card, banner: string): boolean {
+    return !this.skip.has(play.id) && (this.attempts.get(`${play.id}@${banner}`) ?? 0) < MAX_TRIES
+  }
+
+  /** Counts a choice of `play` in the window `banner`; the last try allowed there is written to `unanswered`. */
+  tried(who: string, play: Card, banner: string): void {
+    const key = `${play.id}@${banner}`
+    const count = (this.attempts.get(key) ?? 0) + 1
+    this.attempts.set(key, count)
+    if (count === MAX_TRIES) this.unanswered.push(`${who}: ${play.label.split(',')[0]} at ${banner}`)
   }
 
   /** Throws when the other loop failed, a page threw, or nobody has answered anything for `stallMs`. */
@@ -376,8 +396,9 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     }
     // Lands first, so the mana is there for the creature that follows, then a commander; with nothing to play, go on.
     // A hand card that is legal for its ability alone (cycling) is left in the hand: the run casts and plays.
-    const open = seen.hand.filter((candidate) => !run.skip.has(candidate.id) && isPlayable(candidate))
-    const commander = seen.command.find((candidate) => !run.skip.has(candidate.id))
+    const fresh = (candidate: Card): boolean => run.fresh(candidate, seen.banner)
+    const open = seen.hand.filter((candidate) => fresh(candidate) && isPlayable(candidate))
+    const commander = seen.command.find(fresh)
     const play = open.find((candidate) => candidate.land) ?? commander ?? open[0]
     if (play === undefined) {
       if (style.yields && (await endTurn(player.page).count()) > 0) {
@@ -389,6 +410,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       return `${recalled}continues`
     }
     run.lastPlay.set(player.name, play.id)
+    run.tried(player.name, play, seen.banner)
     if (play === commander) run.castOn.set(player.name, turn)
     await card(player.page, play.id).click()
     // With an ability beside the play, the click opens a chooser and the cast or the land is picked in it.
@@ -572,6 +594,23 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     const value = await prompt(player.page).locator('input').first().inputValue()
     await confirm.click()
     return `chooses ${value}`
+  },
+
+  async ChooseCosts({ player }) {
+    // The optional costs (kicker, buyback, a gift) are left alone: "Confirm costs" with none taken.
+    await prompt(player.page).locator('[data-slot="costs-confirm"]').click()
+    return 'pays no optional cost'
+  },
+
+  async DivideAmount({ player }) {
+    // The prompt starts from the even split, which is legal.
+    await button(player.page, 'Confirm').click()
+    return 'confirms the even split'
+  },
+
+  async ChooseReplacement({ player }) {
+    await prompt(player.page).locator('[data-slot="replacement-effect"]').first().click()
+    return 'takes the first replacement effect'
   },
 
   async OrderCards({ player }) {
