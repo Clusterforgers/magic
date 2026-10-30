@@ -45,6 +45,18 @@ describe('the look-at-the-top row with cards looked at', () => {
     expect(within(form).getByRole('button', { name: 'Keep all 3 on top' })).toBeInTheDocument()
   })
 
+  it('says the look once and keeps the moves on the card name line, apart from the three places', async () => {
+    const { user, panel, row, ids, nameOf } = lookTable()
+    await user.click(row)
+    expect(panel.textContent?.match(/You looked at the top 3 cards/g)).toHaveLength(1)
+    const first = ids[0] ?? 0
+    const item = within(panel).getByRole('listitem', { name: new RegExp(`^${nameOf(first)}, top`) })
+    const head = item.querySelector('[data-slot="look-card-head"]')
+    expect(head?.querySelector('[data-control="up"]')).not.toBeNull()
+    expect(head?.querySelector('[data-control="down"]')).not.toBeNull()
+    expect(head?.querySelector('[data-control="top"]')).toBeNull()
+  })
+
   it('sends one ArrangeTop of exactly the cards looked at as the seat arranged them', async () => {
     const { user, manual, panel, row, ids, nameOf } = lookTable()
     const [first, second, third] = ids

@@ -302,6 +302,7 @@ mod manual_fuzz;
 mod manual_library;
 mod manual_roll;
 mod manual_show;
+mod manual_stale;
 mod manual_triggers;
 mod many_seats;
 mod mayhem;
@@ -538,3 +539,11 @@ mod dk1d_disturb;
 mod dk1d_permit_costs;
 // deck-auras
 mod deck_auras;
+
+// t20b
+mod t20b_replacement;
+// t20a
+mod t20a_tribute;
+// dk1e
+mod dk1e_announcing;
+mod dk1e_deck;

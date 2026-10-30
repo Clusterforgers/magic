@@ -19,6 +19,7 @@ import { BY_HAND_KEY, clausesOf } from './manual/clauses'
 import { useManualMenu } from './manual/useManualMenu'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import type { CardSelect } from './prompt/marks'
+import { handMarkWords, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
 import { useLinks } from './useLinks'
 import { usePreviewHandlers } from './usePreviewHandlers'
@@ -68,6 +69,8 @@ export const Card = memo(function Card({
   // The names of what it is attached to, copies or shows the front of, and of what is attached to it.
   const links = useLinks(object)
   const role = usePlay((state) => combatRoleIn(state, id))
+  // Face up to every seat: a string or nothing, so the selector needs no `useShallow`.
+  const place = usePlay((state) => (state.view === null ? undefined : revealedPlace(state.view.players, id)))
   const marks = useMarksStore()
   const { highlight: marked, toggles, note } = useCardMark(id)
   const outlook = useCreatureOutlook(id)
@@ -86,7 +89,8 @@ export const Card = memo(function Card({
   const listKey = manual.onKeyDown !== undefined && clausesOf(object).length > 0 ? BY_HAND_KEY : undefined
   const markWords =
     highlight === undefined || (pressable && highlight === 'selected') ? '' : `, ${MARK_WORDS[highlight]}`
-  const words = note === undefined ? markWords : `${markWords}, ${note.words}`
+  const spoken = [...(note === undefined ? [] : [note.words]), ...handMarkWords(place, object.note)]
+  const words = spoken.length === 0 ? markWords : `${markWords}, ${spoken.join(', ')}`
   return (
     <button
       type="button"
@@ -122,7 +126,17 @@ export const Card = memo(function Card({
           : 'hover:opacity-100 hover:saturate-100 focus-visible:opacity-100 focus-visible:saturate-100',
       )}
     >
-      <CardFace object={object} role={role} size={size} fit={fit} cost={cost} note={note} links={links} />
+      <CardFace
+        object={object}
+        role={role}
+        size={size}
+        fit={fit}
+        cost={cost}
+        note={note}
+        links={links}
+        revealed={place !== undefined}
+        handNote={object.note}
+      />
       {outlook === null ? null : (
         <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
       )}

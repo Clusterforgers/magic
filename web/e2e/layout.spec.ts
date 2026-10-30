@@ -81,6 +81,8 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/table?${query}`)
       await page.locator('[data-region="controls"]').waitFor()
+      // A panel scene opens its row once the table is up, in the rail's panel or the sheet where the side area is one.
+      if (query.startsWith('panel=')) await page.locator('[data-slot="commands-panel"] [data-open]').waitFor()
     },
   }
 }
@@ -179,6 +181,16 @@ const STOPS: readonly Stop[] = [
     'board=duel&equip=1&prompt=priority&turn=you',
     'pass',
   ),
+  tableStop(
+    'The table (dev), the duel board, revealed cards and notes',
+    'board=duel&reveal=1&prompt=priority&turn=you',
+    'pass',
+  ),
+  tableStop(
+    'The table (dev), 4 seats, revealed cards and notes',
+    'seats=4&reveal=1&prompt=priority&turn=you',
+    'pass',
+  ),
   tableStop('The table (dev), the heavy board, declaring blockers', 'board=heavy&prompt=block', 'prompt'),
   tableStop('The table (dev), 4 seats, declaring attackers', 'seats=4&prompt=attack&turn=you', 'prompt'),
   tableStop('The table (dev), 4 seats, declaring blockers', 'seats=4&prompt=block', 'prompt'),
@@ -189,6 +201,8 @@ const STOPS: readonly Stop[] = [
   ),
   tableStop('The table (dev), 6 seats, paying a cost', 'seats=6&prompt=pay', null),
   tableStop('The table (dev), 12 seats, in focus mode', 'seats=12&prompt=priority&turn=you', 'pass'),
+  tableStop('The table (dev), the Commands panel after a look at the top', 'panel=top', 'pass'),
+  tableStop('The table (dev), the Commands panel with a card picked', 'panel=card', 'pass'),
   {
     name: 'A lobby (dev) of six seats',
     fitsFrom: Infinity,

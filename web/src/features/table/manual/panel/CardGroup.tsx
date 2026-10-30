@@ -24,7 +24,10 @@ import type { CardCommand, CardContext, CardDraft } from './cardCommands'
 import type { AmountSpec } from './commands'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
+import { CARD_COMMAND_ICONS } from './icons'
 import { PICK_FOR, pickedCard, usePick, usePickStore } from './pick'
+import { useRevealOnOpen } from './reveal'
+import { RowButton } from './RowButton'
 
 const COUNTER_SPEC: AmountSpec = {
   signed: true,
@@ -158,28 +161,29 @@ interface RowProps {
 function CardRow({ command, input, open, onToggle, onClose }: RowProps) {
   const form = useId()
   const toggle = useRef<HTMLButtonElement>(null)
+  const self = useRef<HTMLDivElement>(null)
+  useRevealOnOpen(self, open)
   const close = (): void => {
     onClose()
     toggle.current?.focus({ preventScroll: true })
   }
   return (
     <div
+      ref={self}
       data-command={`card:${command.id}`}
       data-open={open || undefined}
       data-card-command=""
       className={cn('rounded-md', open && 'bg-muted')}
     >
-      <button
+      <RowButton
         ref={toggle}
-        type="button"
-        aria-expanded={open}
-        aria-controls={open ? form : undefined}
-        onClick={onToggle}
-        className="flex min-h-8 w-full min-w-0 flex-col rounded-md px-2 py-1.5 text-left outline-none select-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:min-h-11"
-      >
-        <span className="text-sm font-medium">{command.label}</span>
-        <span className="text-xs text-muted-foreground">{command.unavailable ?? command.effect}</span>
-      </button>
+        icon={CARD_COMMAND_ICONS[command.id]}
+        label={command.label}
+        effect={command.unavailable ?? command.effect}
+        open={open}
+        controls={form}
+        onToggle={onToggle}
+      />
       {open ? <CardForm id={form} command={command} input={input} onClose={close} /> : null}
     </div>
   )

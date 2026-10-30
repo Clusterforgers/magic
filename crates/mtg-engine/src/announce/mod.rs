@@ -7,6 +7,7 @@
 //! (`docs/engine.md`, Casting).
 
 mod alternative;
+mod anchor;
 mod c9_emerge_reduce;
 pub(crate) mod companion;
 mod division;
@@ -46,6 +47,7 @@ use crate::resolve::spell_ability;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
 use crate::ways::Way;
+use anchor::Anchor;
 
 pub(crate) use modifiers::{c11a_reduced, cheapest};
 pub(crate) use optional::{Optional, kicked_with, payments};
@@ -270,6 +272,11 @@ pub(crate) struct Pending {
     /// Set when the card is the subject of a special action that pays a cost and does not use the stack.
     pub(crate) special: Option<Special>,
     needs: Option<Needs>,
+    /// The objects it is about when it began, which a manual action may take away (`anchor.rs`).
+    anchor: Option<Anchor>,
+    /// A manual action came while it was under way: what it would put on the stack is checked against the state before it
+    /// is (`Engine::advance`).
+    pub(crate) touched: bool,
 }
 
 impl Pending {
@@ -281,6 +288,8 @@ impl Pending {
             done: Done::default(),
             granted: None,
             needs: None,
+            anchor: None,
+            touched: false,
             special: None,
         }
     }
@@ -541,7 +550,14 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         granted,
         special,
         needs,
+        anchor,
+        touched: _,
     } = pending;
+    // What a manual action took out from under the announcement cannot be put on the stack.
+    let now = Anchor::of(state, what);
+    if anchor.get_or_insert_with(|| now.clone()) != &now {
+        return Next::Drop;
+    }
     if let What::Attack(attackers, _) = what {
         return crate::attack_tax::next(state, *player, attackers);
     }

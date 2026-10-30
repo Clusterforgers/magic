@@ -1,13 +1,8 @@
 /** Pure: the commands of the Commands panel, what each one says it does, the preview of its change and the action it sends. */
-import type {
-  CommonToken,
-  CounterKind,
-  ManaType,
-  ManualAction,
-  ObjectId,
-  PlayerId,
-} from '@/protocol/generated'
-import { COMMON_TOKENS, counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
+import type { CounterKind, ManaType, ManualAction, ObjectId, PlayerId } from '@/protocol/generated'
+import { counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
+import { START_TOKEN, tokenPreview } from './customToken'
+import type { TokenDraft } from './customToken'
 import { rollPreview, SIDES } from './roll'
 import type { RollPick } from './roll'
 
@@ -51,7 +46,7 @@ export interface Command {
   effect: string
   /** Left out for a command that takes no amount. */
   amount?: AmountSpec
-  /** The choice it also takes: a token or a kind of mana. */
+  /** The choice it also takes: a token (or a custom creature), a kind of mana, or what to roll. */
   choice?: 'token' | 'mana' | 'roll'
   /** Why it cannot be used now; the row is listed, inert. */
   unavailable?: string
@@ -80,9 +75,8 @@ export interface PanelInput {
 }
 
 /** What a row has chosen so far. */
-export interface PanelDraft {
+export interface PanelDraft extends TokenDraft {
   amount: number
-  token: CommonToken
   mana: ManaType
   /** What the Roll row rolls and, for a die of any size, its faces. */
   roll: RollPick
@@ -253,8 +247,8 @@ function rollCommand(unavailable: string | undefined): Command {
 /** The draft a row of `command` opens with. */
 export function startDraft(command: Command): PanelDraft {
   return {
+    ...START_TOKEN,
     amount: command.amount?.start ?? 0,
-    token: COMMON_TOKENS[0] ?? 'Treasure',
     mana: 'Green',
     roll: 'd20',
     sides: SIDES.start,
@@ -319,11 +313,7 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
         action: { Reveal: { what: { Top: {} } } },
       }
     case 'token':
-      return {
-        preview: `${plural(amount, `${draft.token} token`)} enter under your control`,
-        apply: `Create ${plural(amount, draft.token)}`,
-        action: { CreateToken: { token: { Common: draft.token }, count: amount } },
-      }
+      return tokenPreview(draft, amount)
     case 'roll':
       return rollPreview(draft.roll, draft.sides)
     case 'mana': {

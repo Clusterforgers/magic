@@ -7,7 +7,7 @@ import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
-import type { FullControlMode, HouseRules, Step, Stop } from '@/protocol/generated'
+import type { FullControlMode, HouseRules, PlayerId, StateView, Step, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { withRealCards } from './realCards'
@@ -17,6 +17,7 @@ import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
 import { STATES_BASE_PERMANENTS, withStates } from './states'
 import { withEquip } from './equip'
+import { withRevealed } from './revealScene'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -46,6 +47,14 @@ export function fixtureState(fixture: Fixture, pending?: PendingDecision | null)
     log,
     chat,
     phase: 'playing',
+  }
+}
+
+/** The view with the life of `player` moved by `delta`, as the next state shows it after a `Life` action. */
+function withLife(view: StateView, player: PlayerId, delta: number): StateView {
+  return {
+    ...view,
+    players: view.players.map((one) => (one.seat === player ? { ...one, life: one.life + delta } : one)),
   }
 }
 
@@ -88,11 +97,15 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState({ pending: null, preview: null, clock: null })
       return true
     },
-    // A manual action changes nothing here but the log, and whatever decision waits stays, as the server has it.
+    // A manual action changes nothing here but the log (and life, which the counter shows), and whatever decision waits stays, as the server has it.
     manual(action, reply) {
-      const { log, seat } = store.getState()
+      const { log, seat, view } = store.getState()
       const event = { Public: { ManualAction: { player: seat ?? 0, action } } } as const
-      store.setState({ log: [...log, { seq: (log.at(-1)?.seq ?? -1) + 1, event }] })
+      const moved =
+        view !== null && 'Life' in action
+          ? { view: withLife(view, action.Life.player, action.Life.delta) }
+          : {}
+      store.setState({ log: [...log, { seq: (log.at(-1)?.seq ?? -1) + 1, event }], ...moved })
       reply?.({ ok: true })
       return true
     },
@@ -163,6 +176,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   states?: true
   /** The attachments scene joins the table (`dev/equip.ts`). */
   equip?: true
+  /** The first opponent's revealed hand cards and top card, a revealed card of the viewer's and two notes join the table (`dev/revealScene.ts`). */
+  reveal?: true
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
   /** Gives the viewer a plain priority decision (nothing to play) when no prompt is named, so manual actions can be taken. */
@@ -186,7 +201,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const sized = options.states === true ? { ...options, permanents: STATES_BASE_PERMANENTS } : options
   const laid = buildFixture(sized.turn === 'you' ? { ...sized, active: sized.viewer ?? 0 } : sized)
   const stated = options.states === true ? withStates(laid) : laid
-  const plain = options.equip === true ? withEquip(stated) : stated
+  const equipped = options.equip === true ? withEquip(stated) : stated
+  const plain = options.reveal === true ? withRevealed(equipped) : equipped
   const built = options.real === undefined ? plain : withRealCards(plain, options.real, options.viewer ?? 0)
   const store = createPlayStore()
   const name = options.prompt ?? ''

@@ -71,6 +71,7 @@ export function DevTableRoute() {
     cards,
     states,
     equip,
+    reveal,
     menu,
     panel,
   } = useSearch({
@@ -83,6 +84,7 @@ export function DevTableRoute() {
     return fixtureGame({
       states,
       equip,
+      reveal,
       seats,
       board,
       prompt: panel === 'top' ? 'look-top' : prompt,
@@ -108,6 +110,7 @@ export function DevTableRoute() {
     rules,
     states,
     equip,
+    reveal,
     cards,
     preview,
     stops,

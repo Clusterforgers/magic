@@ -93,7 +93,7 @@ describe('/dev/table in development', () => {
     await screen.findByRole('region', { name: 'Game table' })
     expect(screen.getByRole('button', { name: 'Table menu' })).toBeInTheDocument()
     expect(screen.getByText("Bo's turn · 5 · Declare blockers")).toBeInTheDocument()
-    expect(screen.getByRole('complementary', { name: 'Game log and chat' })).toBeInTheDocument()
+    expect(screen.getByRole('complementary', { name: 'Commands, log, chat and stack' })).toBeInTheDocument()
     expect(screen.queryByRole('navigation', { name: 'Main' })).toBeNull()
   })
 })

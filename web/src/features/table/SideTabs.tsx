@@ -1,6 +1,7 @@
 import { HandIcon, LayersIcon, MessageSquareIcon, PanelRightIcon, ScrollTextIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import type { KeyboardEvent } from 'react'
+import type { CSSProperties, KeyboardEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
@@ -20,6 +21,10 @@ const TABS: ReadonlyArray<{ tab: SideTab; label: string; Icon: LucideIcon }> = [
   { tab: 'chat', label: 'Chat', Icon: MessageSquareIcon },
   { tab: 'stack', label: 'Stack', Icon: LayersIcon },
 ]
+
+/** The side area's name for a seat, which has Commands, and for a viewer that is no seat. */
+export const SEATED_NAME = 'Commands, log, chat and stack'
+const SPECTATOR_NAME = 'Log, chat and stack'
 
 /** What a count means to a screen reader. */
 const COUNT_WORDS: Record<SideTab, string> = {
@@ -59,6 +64,11 @@ function Count({ tab, className, hidden = false }: { tab: SideTab; className?: s
 function useTabs(): typeof TABS {
   const seated = usePlay((state) => state.seat !== null)
   return seated ? TABS : TABS.filter(({ tab }) => tab !== 'commands')
+}
+
+/** The side area's name for this viewer: what its tabs hold. */
+function useSideName(): string {
+  return usePlay((state) => state.seat !== null) ? SEATED_NAME : SPECTATOR_NAME
 }
 
 /** The panels; only the one on show is in the page. */
@@ -111,16 +121,20 @@ function TabbedPanels({ listClassName }: { listClassName?: string }) {
   )
 }
 
-/** The rail of a medium window: three icon tabs on the table's edge, opening the panel over the table. */
+/**
+ * The rail of a medium window: an icon tab each on the table's edge, opening the panel over the table's boards (the
+ * overlay of `SidePanelMount`), which leaves the hand and the controls dock free.
+ */
 function Rail() {
   const side = useSide()
   const tabs = useTabs()
+  const name = useSideName()
   const close = (event: KeyboardEvent): void => {
     if (event.key === 'Escape' && side.open) side.setOpen(false)
   }
   return (
     <aside
-      aria-label="Game log and chat"
+      aria-label={name}
       data-side="rail"
       data-open={side.open || undefined}
       onKeyDown={close}
@@ -145,14 +159,17 @@ function Rail() {
             )
           })}
         </TabsList>
-        {side.open ? (
-          <div
-            data-slot="rail-panel"
-            className="absolute inset-y-0 right-full z-30 w-80 border-l bg-surface p-2 shadow-e2"
-          >
-            <Panels />
-          </div>
-        ) : null}
+        {side.open && side.mount !== null
+          ? createPortal(
+              <div
+                data-slot="rail-panel"
+                className="pointer-events-auto absolute inset-y-0 right-0 w-80 border-l bg-surface p-2 shadow-e2"
+              >
+                <Panels />
+              </div>,
+              side.mount,
+            )
+          : null}
       </Tabs>
     </aside>
   )
@@ -160,12 +177,9 @@ function Rail() {
 
 /** The side column of a wide window: tabs on top, the panel under them, always up. */
 function Column() {
+  const name = useSideName()
   return (
-    <aside
-      aria-label="Game log and chat"
-      data-side="column"
-      className="flex min-h-0 flex-col border-l bg-surface"
-    >
+    <aside aria-label={name} data-side="column" className="flex min-h-0 flex-col border-l bg-surface">
       <TabbedPanels />
     </aside>
   )
@@ -181,6 +195,7 @@ export function SideTabs() {
 /** The button of the top bar that opens the sheet, with what wants a look on it. */
 export function SideSheetButton({ compact = false }: { compact?: boolean }) {
   const side = useSide()
+  const name = useSideName()
   if (side.kind !== 'sheet') return null
   const waiting = side.attention
   return (
@@ -190,8 +205,8 @@ export function SideSheetButton({ compact = false }: { compact?: boolean }) {
       className="relative"
       aria-haspopup="dialog"
       aria-expanded={side.open}
-      aria-label={waiting === 0 ? 'Log, chat and stack' : `Log, chat and stack, ${countLabel(waiting)} new`}
-      onClick={() => side.setOpen(true)}
+      aria-label={waiting === 0 ? name : `${name}, ${countLabel(waiting)} new`}
+      onClick={() => side.setOpen(!side.open)}
     >
       <PanelRightIcon aria-hidden="true" />
       {waiting === 0 ? null : (
@@ -207,14 +222,33 @@ export function SideSheetButton({ compact = false }: { compact?: boolean }) {
   )
 }
 
-/** The sheet of a narrow window: it hangs from the top bar (of `top` high) and holds the same tabs. */
-export function SideSheet({ top }: { top: string }) {
+/**
+ * The overlay of the table's main area that an open rail panel or sheet is drawn into: the rows from the opponents down
+ * to `rows` (`sidePanelRows`), so the top bar, the hand and the controls dock are never under it. It lets every press
+ * through but the panel's own. A column needs none.
+ */
+export function SidePanelMount({ rows }: { rows: string }) {
   const side = useSide()
-  if (side.kind !== 'sheet') return null
+  if (side.kind === 'column') return null
+  return (
+    <div
+      ref={(element) => side.setMount(element)}
+      data-slot="side-overlay"
+      style={{ gridRow: rows, gridColumn: '1 / -1' } as CSSProperties}
+      className="pointer-events-none relative z-40 min-h-0 min-w-0"
+    />
+  )
+}
+
+/** The sheet of a narrow window: it hangs from the top bar over the opponents' area and holds the same tabs. */
+export function SideSheet() {
+  const side = useSide()
+  const name = useSideName()
+  if (side.kind !== 'sheet' || side.mount === null) return null
   return (
     <Sheet open={side.open} onOpenChange={side.setOpen}>
-      <SheetContent top={top} data-side="sheet">
-        <SheetTitle>Game log, chat and stack</SheetTitle>
+      <SheetContent container={side.mount} data-side="sheet">
+        <SheetTitle>{name}</SheetTitle>
         {/* The close button sits at the right end of the tab bar. */}
         <TabbedPanels listClassName="mr-12" />
       </SheetContent>

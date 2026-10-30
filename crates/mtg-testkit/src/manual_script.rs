@@ -133,8 +133,8 @@ impl ManualScript {
 
     fn candidate(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
         let nothing = ManualAction::Draw { count: 1 };
-        match self.rng.below(21) {
-            17..=20 => self.shown(state, player),
+        match self.rng.below(23) {
+            20..=22 => self.shown(state, player),
             0..=2 => {
                 let mine = Self::objects(state, player, Scope::Mine);
                 let to = self.zone();
@@ -210,6 +210,11 @@ impl ManualScript {
                 mana: [ManaType::Red, ManaType::Green, ManaType::Colorless][self.rng.index(3)],
                 count: u32::try_from(self.rng.below(3)).unwrap_or(0) + 1,
             },
+            16 => ManualAction::LookTop {
+                count: u32::try_from(self.rng.below(3)).unwrap_or(0) + 1,
+            },
+            17 => self.arrange(state, player).unwrap_or(nothing),
+            18 => ManualAction::Shuffle {},
             _ => {
                 let table = Self::objects(state, player, Scope::Battlefield);
                 let (power, toughness) = (self.delta(), self.delta());
@@ -223,12 +228,42 @@ impl ManualScript {
         }
     }
 
+    /// The top cards of the library the seat has looked at (one to three), sorted at random into the three piles of
+    /// an `ArrangeTop`; `None` when the top card is not known to the seat.
+    fn arrange(&mut self, state: &GameState, player: PlayerId) -> Option<ManualAction> {
+        let count = usize::try_from(self.rng.below(3)).unwrap_or(0) + 1;
+        let seen: Vec<ObjectId> = state
+            .zone(Zone::Library(player))
+            .iter()
+            .rev()
+            .take(count)
+            .take_while(|card| state.is_shown_to(player, **card))
+            .copied()
+            .collect();
+        if seen.is_empty() {
+            return None;
+        }
+        let (mut top, mut bottom, mut graveyard) = (Vec::new(), Vec::new(), Vec::new());
+        for card in seen {
+            match self.rng.below(3) {
+                0 => top.push(card),
+                1 => bottom.push(card),
+                _ => graveyard.push(card),
+            }
+        }
+        Some(ManualAction::ArrangeTop {
+            top,
+            bottom,
+            graveyard,
+        })
+    }
+
     /// A candidate that shows or says something: a card revealed from the hand or the top of the library, a note on a
-    /// card (an empty text, a short one drawn from a few so the same text comes again, one too long), a shuffle, or a
-    /// coin or a die (sizes outside 2 to 100 included).
+    /// card (an empty text, a short one drawn from a few so the same text comes again, one too long), or a coin or a
+    /// die (sizes outside 2 to 100 included).
     fn shown(&mut self, state: &GameState, player: PlayerId) -> ManualAction {
         let nothing = ManualAction::Shuffle {};
-        match self.rng.below(4) {
+        match self.rng.below(3) {
             0 => {
                 let hand = Self::objects(state, player, Scope::Hand);
                 let what = match self.pick(&hand) {
@@ -243,7 +278,7 @@ impl ManualScript {
                 self.pick(&seen)
                     .map_or(nothing, |object| ManualAction::Note { object, text })
             }
-            2 => ManualAction::Roll {
+            _ => ManualAction::Roll {
                 kind: if self.rng.below(4) == 0 {
                     ManualRoll::Coin {}
                 } else {
@@ -252,7 +287,6 @@ impl ManualScript {
                     }
                 },
             },
-            _ => nothing,
         }
     }
 

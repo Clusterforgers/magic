@@ -13,10 +13,14 @@ export interface SideState {
   counts: Record<SideTab, number>
   /** What still wants a look, for the one button of a sheet: unread lines and spells on the stack. */
   attention: number
-  /** A press on a tab: choose it, and in a rail or sheet open the panel, or close it if that tab is the one on show. */
+  /** A press on a tab: choose it, and in a rail or sheet open the panel; in a rail the tab on show closes it. */
   activate(tab: SideTab): void
   /** Opens or closes the panel of a rail or a sheet. */
   setOpen(open: boolean): void
+  /** The overlay of the table's main area that an open rail panel or sheet is drawn into; null until it is in the page. */
+  mount: HTMLElement | null
+  /** Hands over the overlay (a ref callback). */
+  setMount(element: HTMLElement | null): void
 }
 
 /** Provided by `SideProvider`. */

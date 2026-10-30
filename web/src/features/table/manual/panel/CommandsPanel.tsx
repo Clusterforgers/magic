@@ -2,28 +2,37 @@ import { useId, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { CommonToken, CounterKind, ManaType, ObjectId } from '@/protocol/generated'
+import type { CounterKind, ManaType, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { playerOf } from '../../selectors'
-import { COMMON_TOKENS, GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
+import { GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
+import { AmountField } from './AmountField'
 import { lookIsPending } from './arrange'
 import { CardGroup } from './CardGroup'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
-import { panelGroups, pressPreset, previewOf, startDraft } from './commands'
+import { panelGroups, previewOf, startDraft } from './commands'
+import { COMMAND_ICONS } from './icons'
+import { LifeCounter } from './LifeCounter'
 import { LookTopBody } from './LookTopBody'
 import { RollChoice } from './RollChoice'
+import { RowButton } from './RowButton'
+import { TokenChoice } from './TokenChoice'
+import { useRevealOnOpen } from './reveal'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './commands'
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
 const NO_CARDS: readonly ObjectId[] = []
 
-/** The step of Page Up and Page Down in an amount field. */
-const PAGE_STEP = 5
+/** The commands no other command takes back (the library's order is lost), and what their row says about it. */
+const LASTING: ReadonlySet<CommandId> = new Set<CommandId>(['mill', 'exileTop', 'bottomTop', 'shuffle'])
+const LASTING_WORDS = 'This cannot be undone: the library’s order is lost.'
+
+/** The Life row sits under the open life counter and adds what the counter's buttons lack: any amount, with a preview. */
+const MORE_LIFE = { label: 'More life options', effect: 'Any amount, with a preview of the change.' }
 
 /** The top cards the seat looked at and has not put back: its known top cards while its last look is still open. */
 function lookedOf(
@@ -73,7 +82,6 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
       data-slot="commands-panel"
       className="grid h-full min-h-0 content-start gap-1 overflow-y-auto overscroll-contain pr-1"
     >
-      <LifeLine input={input} />
       {input.off === undefined ? null : (
         <p data-slot="commands-off" className="px-2 text-xs text-muted-foreground">
           {input.off}
@@ -84,18 +92,6 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
       ))}
       <CardGroup open={open} setOpen={setOpen} />
     </section>
-  )
-}
-
-/** The seat's life in large figures, as a life counter shows it. */
-function LifeLine({ input }: { input: PanelInput }) {
-  return (
-    <p data-slot="commands-life" className="flex items-baseline justify-between px-2 pt-1">
-      <span className="truncate text-sm font-medium">{input.name}</span>
-      <span className="text-2xl font-semibold tabular-nums">
-        {input.life} <span className="text-xs font-normal text-muted-foreground">life</span>
-      </span>
-    </p>
   )
 }
 
@@ -113,6 +109,7 @@ function Group({ group, input, open, setOpen }: GroupProps) {
       <h3 id={heading} className="px-2 pt-1 text-xs font-medium text-muted-foreground">
         {group.label}
       </h3>
+      {group.id === 'you' ? <LifeCounter input={input} /> : null}
       {group.commands.map((command) => (
         <Row
           key={command.id}
@@ -139,27 +136,28 @@ interface RowProps {
 function Row({ command, input, open, onToggle, onClose }: RowProps) {
   const form = useId()
   const toggle = useRef<HTMLButtonElement>(null)
+  const self = useRef<HTMLDivElement>(null)
+  useRevealOnOpen(self, open)
   const close = (): void => {
     onClose()
     toggle.current?.focus({ preventScroll: true })
   }
   return (
     <div
+      ref={self}
       data-command={command.id}
       data-open={open || undefined}
       className={cn('rounded-md', open && 'bg-muted')}
     >
-      <button
+      <RowButton
         ref={toggle}
-        type="button"
-        aria-expanded={open}
-        aria-controls={open ? form : undefined}
-        onClick={onToggle}
-        className="flex min-h-8 w-full min-w-0 flex-col rounded-md px-2 py-1.5 text-left outline-none select-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:min-h-11"
-      >
-        <span className="text-sm font-medium">{command.label}</span>
-        <span className="text-xs text-muted-foreground">{command.unavailable ?? command.effect}</span>
-      </button>
+        icon={COMMAND_ICONS[command.id]}
+        label={command.id === 'life' ? MORE_LIFE.label : command.label}
+        effect={command.unavailable ?? (command.id === 'life' ? MORE_LIFE.effect : command.effect)}
+        open={open}
+        controls={form}
+        onToggle={onToggle}
+      />
       {open ? (
         command.id === 'look' ? (
           <LookTopBody
@@ -227,7 +225,15 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       ) : command.choice === undefined ? null : (
         <Choice kind={command.choice} draft={draft} set={set} />
       )}
-      {command.amount === undefined ? null : <Amount command={command} draft={draft} set={set} />}
+      {command.amount === undefined ? null : (
+        <AmountField
+          spec={command.amount}
+          label={command.amount.signed ? 'Change' : 'How many'}
+          plainPresets
+          value={draft.amount}
+          onChange={(amount) => set({ amount })}
+        />
+      )}
       <p
         data-slot="command-preview"
         aria-live="polite"
@@ -235,6 +241,11 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
       >
         {ready ? preview.preview : preview.problem}
       </p>
+      {LASTING.has(command.id) ? (
+        <p data-slot="command-lasting" className="text-xs text-muted-foreground">
+          {LASTING_WORDS}
+        </p>
+      ) : null}
       <Button
         size="sm"
         data-slot="command-apply"
@@ -253,66 +264,9 @@ interface PartProps {
   set: (next: Partial<PanelDraft>) => void
 }
 
-/** The quick amounts and the field; a signed command's buttons add to the pending change. */
-function Amount({ command, draft, set }: PartProps & { command: Command }) {
-  const spec = command.amount
-  if (spec === undefined) return null
-  const word = spec.signed ? 'Change' : 'How many'
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>): void => {
-    const step = event.key === 'PageUp' ? PAGE_STEP : event.key === 'PageDown' ? -PAGE_STEP : 0
-    if (step === 0) return
-    event.preventDefault()
-    set({
-      amount: Math.min(spec.max, Math.max(spec.min, (Number.isNaN(draft.amount) ? 0 : draft.amount) + step)),
-    })
-  }
-  return (
-    <div className="flex flex-wrap items-center gap-1">
-      {spec.presets.map((preset) => (
-        <Button
-          key={preset}
-          variant="outline"
-          size="sm"
-          className="min-w-10 px-2 tabular-nums"
-          aria-label={spec.signed ? `${preset > 0 ? 'Add' : 'Take'} ${Math.abs(preset)}` : `${preset}`}
-          onClick={() => set({ amount: pressPreset(spec, draft.amount, preset) })}
-        >
-          {spec.signed && preset > 0 ? `+${preset}` : preset}
-        </Button>
-      ))}
-      <Input
-        type="number"
-        aria-label={word}
-        // A numeric keypad has no minus sign, so a field that takes one gets the full keyboard.
-        inputMode={spec.signed ? 'text' : 'numeric'}
-        min={spec.min}
-        max={spec.max}
-        value={Number.isNaN(draft.amount) ? '' : draft.amount}
-        onKeyDown={onKeyDown}
-        onChange={(event) => set({ amount: event.currentTarget.valueAsNumber })}
-        className="h-8 w-20 tabular-nums pointer-coarse:h-11"
-      />
-    </div>
-  )
-}
-
 /** The token or the kind of mana a command makes. */
 function Choice({ kind, draft, set }: PartProps & { kind: 'token' | 'mana' }) {
-  if (kind === 'token') {
-    return (
-      <NativeSelect
-        aria-label="Token"
-        value={draft.token}
-        onChange={(event) => set({ token: event.currentTarget.value as CommonToken })}
-      >
-        {COMMON_TOKENS.map((token) => (
-          <NativeSelectOption key={token} value={token}>
-            {token}
-          </NativeSelectOption>
-        ))}
-      </NativeSelect>
-    )
-  }
+  if (kind === 'token') return <TokenChoice draft={draft} set={set} />
   return (
     <NativeSelect
       aria-label="Mana"

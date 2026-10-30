@@ -82,8 +82,6 @@ export function arrangeAction(arrangement: Arrangement): ManualAction {
   }
 }
 
-const cards = (n: number): string => `${n} ${n === 1 ? 'card' : 'cards'}`
-
 /** The words of the Apply button: "Put 2 on the bottom, 1 in the graveyard"; "Keep all 3 on top" for no change, "Reorder the 3 on top" for a new order only. */
 export function applyWords(arrangement: Arrangement, looked: readonly ObjectId[]): string {
   if (isUnchanged(arrangement, looked)) {
@@ -135,6 +133,3 @@ export function lookIsPending(log: readonly LogEntry[], seat: PlayerId): boolean
   }
   return false
 }
-
-/** "Looked at 3 cards" in the row's own words. */
-export const lookedWords = (n: number): string => `You looked at the top ${cards(n)}.`

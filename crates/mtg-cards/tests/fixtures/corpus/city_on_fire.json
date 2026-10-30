@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "6f455cc1-a822-44ef-ba7c-bfcff69bd45e",
+  "oracle_id": "41eec4e8-92d3-4f98-9346-3a3e3cc602ce",
+  "multiverse_ids": [
+    607173
+  ],
+  "mtgo_id": 110118,
+  "arena_id": 84409,
+  "tcgplayer_id": 490547,
+  "cardmarket_id": 704034,
+  "name": "City on Fire",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/6f455cc1-a822-44ef-ba7c-bfcff69bd45e",
+  "scryfall_uri": "https://scryfall.com/card/mom/135/city-on-fire?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:29:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.jpg?1783916996",
+    "normal": "https://cards.scryfall.io/normal/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.jpg?1783916996",
+    "large": "https://cards.scryfall.io/large/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.jpg?1783916996",
+    "png": "https://cards.scryfall.io/png/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.png?1783916996",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.jpg?1783916996",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.jpg?1783916996",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.webp?1783916996",
+    "grid": "https://cards.scryfall.io/grid/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.webp?1783916996",
+    "display": "https://cards.scryfall.io/display/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.webp?1783916996",
+    "art": "https://cards.scryfall.io/art/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.webp?1783916996",
+    "crop": "https://cards.scryfall.io/crop/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.webp?1783916996",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/f/6f455cc1-a822-44ef-ba7c-bfcff69bd45e.jpg?1783916996"
+  },
+  "mana_cost": "{5}{R}{R}{R}",
+  "cmc": 8.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nIf a source you control would deal damage to a permanent or player, it deals triple that damage instead.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Triple",
+    "Convoke"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set": "mom",
+  "set_name": "March of the Machine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mom?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6f455cc1-a822-44ef-ba7c-bfcff69bd45e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A41eec4e8-92d3-4f98-9346-3a3e3cc602ce&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jake Murray",
+  "artist_ids": [
+    "be53e4e1-ab31-494a-b154-e00ee97eb463"
+  ],
+  "illustration_id": "ab748a56-2ca1-4b2b-8299-7154f4f0e780",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 900,
+  "penny_rank": 6871,
+  "preview": {
+    "source": "AliasV",
+    "source_uri": "https://twitter.com/coL_AliasV/status/1641430586266124288",
+    "previewed_at": "2023-03-30"
+  },
+  "prices": {
+    "usd": "10.60",
+    "usd_foil": "11.23",
+    "usd_etched": null,
+    "eur": "6.44",
+    "eur_foil": "6.75",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=607173&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCity%2Bon%2BFire",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCity%2Bon%2BFire",
+    "edhrec": "https://edhrec.com/route/?cc=City+on+Fire"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F490547%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=704034&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/110118?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
