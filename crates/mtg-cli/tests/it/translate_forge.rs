@@ -18,8 +18,9 @@ const TWO_FACED: &str = "Name:Ember Pup\nManaCost:R\nTypes:Creature Dog\nPT:1/1\
 
 fn write_script(root: &Path, name: &str, text: &str) {
     let dir = root.join("forge-gui/res/cardsfolder").join(&name[..1]);
-    fs::create_dir_all(&dir).unwrap();
-    fs::write(dir.join(format!("{name}.txt")), text).unwrap();
+    fs::create_dir_all(&dir).unwrap_or_else(|e| panic!("{}: {e}", dir.display()));
+    let file = dir.join(format!("{name}.txt"));
+    fs::write(&file, text).unwrap_or_else(|e| panic!("{}: {e}", file.display()));
 }
 
 fn checkout(root: &Path) {
@@ -33,20 +34,26 @@ async fn run(root: &Path, out: &Path, extra: &[&str]) -> String {
     let mut words = vec![
         "mtg-cli",
         "translate-forge",
-        root.to_str().unwrap(),
+        root.to_str().unwrap_or_default(),
         "--out",
-        out.to_str().unwrap(),
+        out.to_str().unwrap_or_default(),
     ];
     words.extend_from_slice(extra);
-    let Command::TranslateForge(args) = Cli::try_parse_from(words).unwrap().command else {
+    let Command::TranslateForge(args) = Cli::try_parse_from(words)
+        .unwrap_or_else(|e| panic!("{e}"))
+        .command
+    else {
         panic!("expected translate-forge");
     };
     let cache = Cache::new(root.join("cache"));
-    translate_forge(&cache, None, &args).await.unwrap()
+    translate_forge(&cache, None, &args)
+        .await
+        .unwrap_or_else(|e| panic!("{e}"))
 }
 
 fn json_of(path: &Path) -> Value {
-    serde_json::from_str(&fs::read_to_string(path).unwrap()).unwrap()
+    let text = fs::read_to_string(path).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+    serde_json::from_str(&text).unwrap_or_else(|e| panic!("{}: {e}", path.display()))
 }
 
 #[tokio::test]
@@ -121,8 +128,14 @@ async fn the_ledger_names_what_was_left_out_and_the_cards_it_holds_back() {
         Some("unmapped\teffect:Dig\t1\t1\t0\tWillow Seer")
     );
     let index = fs::read_to_string(out.join("translate-index.tsv")).unwrap();
-    assert!(index.contains("willow_seer\tWillow Seer\tpartial\t"), "{index}");
-    assert!(index.contains("quartz_spark\tQuartz Spark\twhole\t"), "{index}");
+    assert!(
+        index.contains("willow_seer\tWillow Seer\tpartial\t"),
+        "{index}"
+    );
+    assert!(
+        index.contains("quartz_spark\tQuartz Spark\twhole\t"),
+        "{index}"
+    );
 }
 
 #[tokio::test]
@@ -130,7 +143,12 @@ async fn cards_are_selected_by_name_or_by_the_name_of_a_face() {
     let dir = tempfile::tempdir().unwrap();
     let out = dir.path().join("out");
     checkout(dir.path());
-    run(dir.path(), &out, &["--cards", "quartz spark", "Ember Hound"]).await;
+    run(
+        dir.path(),
+        &out,
+        &["--cards", "quartz spark", "Ember Hound"],
+    )
+    .await;
     assert!(out.join("quartz_spark.json").exists());
     assert!(out.join("ember_pup_ember_hound.json").exists());
     assert!(!out.join("willow_seer.json").exists());
@@ -139,17 +157,17 @@ async fn cards_are_selected_by_name_or_by_the_name_of_a_face() {
 #[tokio::test]
 async fn a_folder_with_no_scripts_is_an_error() {
     let dir = tempfile::tempdir().unwrap();
-    let Command::TranslateForge(args) = Cli::try_parse_from([
-        "mtg-cli",
-        "translate-forge",
-        dir.path().to_str().unwrap(),
-    ])
-    .unwrap()
-    .command
+    let Command::TranslateForge(args) =
+        Cli::try_parse_from(["mtg-cli", "translate-forge", dir.path().to_str().unwrap()])
+            .unwrap()
+            .command
     else {
         panic!("expected translate-forge");
     };
     let cache = Cache::new(dir.path().join("cache"));
     let error = translate_forge(&cache, None, &args).await.unwrap_err();
-    assert!(error.to_string().contains("no Forge card scripts"), "{error}");
+    assert!(
+        error.to_string().contains("no Forge card scripts"),
+        "{error}"
+    );
 }

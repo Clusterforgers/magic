@@ -6,12 +6,13 @@
 //! `Ability`. Nothing of a script is copied into the repository; the proposals are data derived from the scripts.
 
 pub mod ability;
-pub mod condition;
 pub mod amount;
 pub mod card;
+pub mod condition;
 pub mod cost;
 pub mod ctx;
 pub mod effects;
+pub mod effects_effect;
 pub mod effects_obj;
 pub mod effects_zone;
 pub mod keyword;
@@ -42,8 +43,8 @@ use crate::error::CliError;
 use crate::forge::script::{Face, Script, fold, read_checkout};
 use card::{CardOut, translate_script};
 use ctx::World;
-use stored::Stored;
 use report::Funnel;
+use stored::Stored;
 
 /// Reads the checkout, translates the selected cards and writes a proposal for each card with something translated.
 pub async fn translate_forge(
@@ -81,7 +82,11 @@ pub async fn translate_forge(
         let written = funnel.add(&card, !today.ends_with("verified"));
         if written {
             write_proposal(&out_dir, &card)?;
-            let state = if card.gaps().next().is_none() { "whole" } else { "partial" };
+            let state = if card.gaps().next().is_none() {
+                "whole"
+            } else {
+                "partial"
+            };
             let _ = writeln!(index, "{stem}\t{}\t{state}\t{today}", card.name);
         }
     }

@@ -41,6 +41,7 @@ fn property(ctx: &Ctx, prop: &str) -> Tr<Vec<Value>> {
         "token" | "Token" => return one(json!("Token")),
         "nonToken" => return one(json!({"Not": "Token"})),
         "Colorless" => return one(json!("Colorless")),
+        "MultiColor" => return one(json!({"Compare": {"stat": "Colors", "op": "Ge", "to": 2}})),
         "EnchantedBy" | "EquippedBy" => return one(json!({"Is": "Attached"})),
         "inZoneGraveyard" => return one(json!({"In": "Graveyard"})),
         "inZoneHand" => return one(json!({"In": "Hand"})),
@@ -177,9 +178,28 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
 
 /// Subtypes that are not creature types.
 const NOT_CREATURE_TYPES: [&str; 22] = [
-    "Aura", "Equipment", "Vehicle", "Fortification", "Saga", "Class", "Curse", "Shrine", "Treasure",
-    "Food", "Clue", "Blood", "Gate", "Cave", "Desert", "Forest", "Island", "Mountain", "Plains",
-    "Swamp", "Lesson", "Trap",
+    "Aura",
+    "Equipment",
+    "Vehicle",
+    "Fortification",
+    "Saga",
+    "Class",
+    "Curse",
+    "Shrine",
+    "Treasure",
+    "Food",
+    "Clue",
+    "Blood",
+    "Gate",
+    "Cave",
+    "Desert",
+    "Forest",
+    "Island",
+    "Mountain",
+    "Plains",
+    "Swamp",
+    "Lesson",
+    "Trap",
 ];
 
 /// A comma-separated list of alternatives as a selector: one alternative, or alternatives that share their predicates but
@@ -211,7 +231,13 @@ pub fn selector_any(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     let any = json!({"AnyOf": different});
     Ok(lists[0]
         .iter()
-        .map(|pred| if common.contains(pred) { pred.clone() } else { any.clone() })
+        .map(|pred| {
+            if common.contains(pred) {
+                pred.clone()
+            } else {
+                any.clone()
+            }
+        })
         .collect())
 }
 
@@ -252,9 +278,14 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
             .remembered
             .clone()
             .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
-        "TriggeredCard" | "TriggeredPlayer" | "TriggeredAttacker" | "TriggeredBlocker" => {
-            Ok(json!("Triggering"))
-        }
+        "TriggeredCard"
+        | "TriggeredPlayer"
+        | "TriggeredAttacker"
+        | "TriggeredBlocker"
+        | "TriggeredCardLKICopy"
+        | "TriggeredAttackerLKICopy"
+        | "TriggeredNewCardLKICopy"
+        | "TriggeredBlockerLKICopy" => Ok(json!("Triggering")),
         "TriggeredCardController" | "TriggeredSourceController" => controller(json!("Triggering")),
         "DefendingPlayer" | "TriggeredDefendingPlayer" => Ok(json!("Defending")),
         other => unmapped(format!("defined:{other}")),
@@ -264,7 +295,10 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
 /// The reference when it names objects, not players: an effect on objects (pump, animate, gain control) refuses a player.
 pub fn objects(reference: Value) -> Tr<Value> {
     let player = match &reference {
-        Value::String(word) => matches!(word.as_str(), "You" | "Opponents" | "EachPlayer" | "AttachedPlayer"),
+        Value::String(word) => matches!(
+            word.as_str(),
+            "You" | "Opponents" | "EachPlayer" | "AttachedPlayer"
+        ),
         Value::Object(map) => map.contains_key("ControllerOf") || map.contains_key("OwnerOf"),
         _ => false,
     };

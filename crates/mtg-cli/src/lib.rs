@@ -124,17 +124,9 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             let db = connect(cli.database_url).await?;
             forge::forge_check(&db, &args).await
         }
-        Command::TranslateForge(args) => {
-            let db = if args.stored {
-                Some(connect(cli.database_url).await?)
-            } else {
-                None
-            };
-            translate::translate_forge(&cache, db.as_ref(), &args).await
-        }
+        Command::TranslateForge(args) => translate_command(cli.database_url, &cache, &args).await,
         Command::Coverage(args) => {
-            let db = connect(cli.database_url).await?;
-            coverage::report(&db, &cache, &args).await
+            coverage::report(&connect(cli.database_url).await?, &cache, &args).await
         }
         Command::Promote(args) => {
             let db = connect(cli.database_url).await?;
@@ -148,6 +140,20 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             w19b_pairs::w19b_export_pairs(&db, &args).await
         }
     }
+}
+
+/// `translate-forge`: the database is read only for `--stored`.
+async fn translate_command(
+    database_url: Option<String>,
+    cache: &Cache,
+    args: &args::TranslateForgeArgs,
+) -> Result<String, CliError> {
+    let db = if args.stored {
+        Some(connect(database_url).await?)
+    } else {
+        None
+    };
+    translate::translate_forge(cache, db.as_ref(), args).await
 }
 
 /// `check-rules`: the reports, or with `--gaps` the ledger (the ranks come from the cache, read before the database is).

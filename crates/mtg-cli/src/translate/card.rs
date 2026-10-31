@@ -84,13 +84,22 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         take(&mut out, ability_line(&mut ctx, body));
     }
     for group in trigger_groups(&face.triggers) {
-        take(&mut out, merged_trigger(&mut ctx, &group).map(|ability| vec![ability]));
+        take(
+            &mut out,
+            merged_trigger(&mut ctx, &group).map(|ability| vec![ability]),
+        );
     }
     for body in &face.statics {
-        take(&mut out, static_line(&mut ctx, body).map(|ability| vec![ability]));
+        take(
+            &mut out,
+            static_line(&mut ctx, body).map(|ability| vec![ability]),
+        );
     }
     for body in &face.replacements {
-        take(&mut out, replacement_line(&mut ctx, body).map(|ability| vec![ability]));
+        take(
+            &mut out,
+            replacement_line(&mut ctx, body).map(|ability| vec![ability]),
+        );
     }
     out
 }
@@ -107,7 +116,10 @@ fn trigger_groups(bodies: &[String]) -> Vec<Vec<&String>> {
             let first = Params::parse(group[0]);
             execute.is_some()
                 && first.get("Execute") == execute.as_deref()
-                && (secondary || group.iter().any(|b| Params::parse(b).get("Secondary") == Some("True")))
+                && (secondary
+                    || group
+                        .iter()
+                        .any(|b| Params::parse(b).get("Secondary") == Some("True")))
         };
         match groups.iter_mut().find(|group| same(group)) {
             Some(group) => group.push(body),
@@ -141,7 +153,8 @@ fn merged_trigger(ctx: &mut Ctx, group: &[&String]) -> Tr<Value> {
         if rest(mine) != rest(theirs) {
             return unmapped("trigger:Secondary-with-different-effects");
         }
-        let (Some(first), Some(second)) = (mine.get("when").cloned(), theirs.get("when").cloned()) else {
+        let (Some(first), Some(second)) = (mine.get("when").cloned(), theirs.get("when").cloned())
+        else {
             return unmapped("trigger:merge-shape");
         };
         let mut alternatives = match first.get("AnyOf") {
@@ -168,8 +181,7 @@ fn take(out: &mut FaceOut, result: Tr<Vec<Value>>) {
 /// The ability in canonical form, or the gap that names why the DSL does not read it.
 fn checked(value: Value) -> Tr<Value> {
     match serde_json::from_value::<Ability>(value) {
-        Ok(ability) => serde_json::to_value(&ability)
-            .or_else(|_| unmapped("invalid:serialize")),
+        Ok(ability) => serde_json::to_value(&ability).or_else(|_| unmapped("invalid:serialize")),
         Err(error) => unmapped(format!("invalid:{}", reason(&error.to_string()))),
     }
 }

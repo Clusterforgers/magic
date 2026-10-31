@@ -3,8 +3,8 @@
 use serde_json::{Value, json};
 
 use super::amount::amount;
-use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, only, unmapped};
 use super::card::translate_face;
+use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, only, unmapped};
 use super::valid::defined;
 use crate::forge::script::{Face, Params};
 
@@ -23,14 +23,27 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
 
 /// The predefined tokens of the corpus, by the subtype of their script.
 const NAMED: [&str; 8] = [
-    "Treasure", "Food", "Clue", "Blood", "Gold", "Powerstone", "Junk", "Map",
+    "Treasure",
+    "Food",
+    "Clue",
+    "Blood",
+    "Gold",
+    "Powerstone",
+    "Junk",
+    "Map",
 ];
 
 fn token(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "Token",
-        &["TokenScript", "TokenAmount", "TokenOwner", "TokenTapped", "TokenAttacking"],
+        &[
+            "TokenScript",
+            "TokenAmount",
+            "TokenOwner",
+            "TokenTapped",
+            "TokenAttacking",
+        ],
     )?;
     let Some(script) = p.get("TokenScript") else {
         return unmapped("key:Token.no-TokenScript");

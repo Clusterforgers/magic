@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::keyword::{keyword_list, keyword_value};
-use super::valid::{defined, objects, selector_any, subject};
+use super::valid::{objects, selector_any, subject};
 use crate::forge::script::Params;
 
 /// The effects of a verb on objects.
@@ -84,7 +84,11 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Counter", &["TargetType", "ValidTgts", "UnlessCost", "UnlessPayer"])?;
+    only(
+        p,
+        "Counter",
+        &["TargetType", "ValidTgts", "UnlessCost", "UnlessPayer"],
+    )?;
     if p.get("TargetType") != Some("Spell") {
         return unmapped("key:Counter.TargetType");
     }
@@ -144,7 +148,14 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         p,
         "Pump",
         &[
-            "NumAtt", "NumDef", "KW", "Defined", "ValidTgts", "Duration", "IsCurse", "TargetMin",
+            "NumAtt",
+            "NumDef",
+            "KW",
+            "Defined",
+            "ValidTgts",
+            "Duration",
+            "IsCurse",
+            "TargetMin",
             "TargetMax",
         ],
     )?;
@@ -160,7 +171,14 @@ fn pump_all(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "PumpAll",
-        &["NumAtt", "NumDef", "KW", "ValidCards", "Duration", "IsCurse"],
+        &[
+            "NumAtt",
+            "NumDef",
+            "KW",
+            "ValidCards",
+            "Duration",
+            "IsCurse",
+        ],
     )?;
     let duration = duration(p.get("Duration"))?;
     let valid = p.get("ValidCards").unwrap_or_default();
@@ -177,8 +195,18 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         p,
         "Animate",
         &[
-            "Defined", "ValidTgts", "Types", "Power", "Toughness", "Colors", "OverwriteColors", "Keywords",
-            "RemoveCreatureTypes", "Duration", "TargetMin", "TargetMax",
+            "Defined",
+            "ValidTgts",
+            "Types",
+            "Power",
+            "Toughness",
+            "Colors",
+            "OverwriteColors",
+            "Keywords",
+            "RemoveCreatureTypes",
+            "Duration",
+            "TargetMin",
+            "TargetMax",
         ],
     )?;
     let duration = duration(p.get("Duration"))?;
@@ -257,7 +285,12 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         p,
         "PutCounter",
         &[
-            "CounterType", "CounterNum", "Defined", "ValidTgts", "TargetMin", "TargetMax",
+            "CounterType",
+            "CounterNum",
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
             "DividedAsYouChoose",
         ],
     )?;
@@ -277,7 +310,14 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "RemoveCounter",
-        &["CounterType", "CounterNum", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+        &[
+            "CounterType",
+            "CounterNum",
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+        ],
     )?;
     let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
         return unmapped("key:RemoveCounter.CounterType");
@@ -288,8 +328,19 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Sacrifice", &["Defined", "SacValid", "Amount"])?;
-    let who = defined(ctx, p.get("Defined").unwrap_or("You"))?;
+    only(
+        p,
+        "Sacrifice",
+        &[
+            "Defined",
+            "SacValid",
+            "Amount",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+        ],
+    )?;
+    let who = subject(ctx, p, "You", None)?;
     let filter = match p.get("SacValid").unwrap_or("Self") {
         "Self" => vec![json!("This")],
         valid => selector_any(ctx, valid)?,
@@ -299,7 +350,11 @@ fn sacrifice(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn fight(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Fight", &["Defined", "ValidTgts", "TargetMin", "TargetMax"])?;
+    only(
+        p,
+        "Fight",
+        &["Defined", "ValidTgts", "TargetMin", "TargetMax"],
+    )?;
     if p.get("Defined") != Some("Self") || !p.has("ValidTgts") {
         return unmapped("key:Fight.shape");
     }
@@ -311,7 +366,14 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
         "GainControl",
-        &["ValidTgts", "Defined", "LoseControl", "TargetMin", "TargetMax", "NewController"],
+        &[
+            "ValidTgts",
+            "Defined",
+            "LoseControl",
+            "TargetMin",
+            "TargetMax",
+            "NewController",
+        ],
     )?;
     if p.has("NewController") {
         return unmapped("key:GainControl.NewController");

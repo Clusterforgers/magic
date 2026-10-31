@@ -5,7 +5,7 @@ use serde_json::{Value, json};
 use super::amount::amount;
 use super::ctx::{Ctx, Tr, only, unmapped};
 use super::valid::{defined, subject};
-use super::{effects_obj, effects_zone, tokens};
+use super::{effects_effect, effects_obj, effects_zone, tokens};
 use crate::forge::script::Params;
 
 /// The effects of an ability line and of the sub-abilities it names, in order.
@@ -53,10 +53,13 @@ fn line(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
         "Proliferate" => one(proliferate(p)),
         "Cleanup" => cleanup(p),
+        "Effect" => effects_effect::effects(ctx, p),
         "Charm" => one(charm(ctx, p)),
-        "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter" | "RemoveCounter"
-        | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice" | "Regenerate" | "Fight"
-        | "GainControl" | "DamageAll" | "Animate" => effects_obj::effects(ctx, p, api),
+        "Destroy" | "DestroyAll" | "Counter" | "Pump" | "PumpAll" | "PutCounter"
+        | "RemoveCounter" | "Tap" | "Untap" | "TapAll" | "UntapAll" | "Sacrifice"
+        | "Regenerate" | "Fight" | "GainControl" | "DamageAll" | "Animate" => {
+            effects_obj::effects(ctx, p, api)
+        }
         "ChangeZone" | "ChangeZoneAll" => effects_zone::effects(ctx, p, api),
         "Token" | "Mana" | "Investigate" => tokens::effects(ctx, p, api),
         other => unmapped(format!("effect:{other}")),
@@ -78,7 +81,12 @@ fn deal_damage(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         p,
         "DealDamage",
         &[
-            "NumDmg", "ValidTgts", "Defined", "TargetMin", "TargetMax", "DamageSource",
+            "NumDmg",
+            "ValidTgts",
+            "Defined",
+            "TargetMin",
+            "TargetMax",
+            "DamageSource",
             "DividedAsYouChoose",
         ],
     )?;
@@ -115,7 +123,13 @@ fn life(ctx: &mut Ctx, p: &Params, verb: &str) -> Tr<Value> {
     only(
         p,
         verb,
-        &["LifeAmount", "Defined", "ValidTgts", "TargetMin", "TargetMax"],
+        &[
+            "LifeAmount",
+            "Defined",
+            "ValidTgts",
+            "TargetMin",
+            "TargetMax",
+        ],
     )?;
     let who = player(ctx, p)?;
     let amount = amount(ctx, p.get("LifeAmount").unwrap_or("1"))?;
@@ -126,7 +140,14 @@ fn discard(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "Discard",
-        &["NumCards", "Defined", "ValidTgts", "Mode", "TargetMin", "TargetMax"],
+        &[
+            "NumCards",
+            "Defined",
+            "ValidTgts",
+            "Mode",
+            "TargetMin",
+            "TargetMax",
+        ],
     )?;
     let random = match p.get("Mode") {
         None | Some("TgtChoose") => false,

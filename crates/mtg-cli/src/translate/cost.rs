@@ -1,5 +1,7 @@
 //! Costs: Forge's `Cost$` words (`2 R T Sac<1/Creature>`) as the DSL's cost items, and loyalty costs.
 
+use std::fmt::Write as _;
+
 use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
@@ -49,7 +51,7 @@ fn loyalty_word(word: &str) -> Option<Value> {
         return None;
     }
     match (head, number) {
-        ("AddCounter", "0") | ("SubCounter", "0") => Some(json!("Zero")),
+        ("AddCounter" | "SubCounter", "0") => Some(json!("Zero")),
         ("AddCounter", n) => n.parse::<u32>().ok().map(|n| json!({"Plus": n})),
         ("SubCounter", "X") => Some(json!("MinusX")),
         ("SubCounter", n) => n.parse::<u32>().ok().map(|n| json!({"Minus": n})),
@@ -71,7 +73,7 @@ pub fn cost(ctx: &Ctx, text: &str) -> Tr<Value> {
     let mut items = Vec::new();
     for word in parts(text) {
         if is_mana(word) {
-            mana.push_str(&format!("{{{word}}}"));
+            let _ = write!(mana, "{{{word}}}");
         } else {
             items.push(item(ctx, word)?);
         }
@@ -104,7 +106,9 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
     let on_self = matches!(what, "CARDNAME" | "NICKNAME" | "Card.Self");
     match head {
         "Sac" if on_self => Ok(json!("SacrificeSelf")),
-        "Sac" => Ok(json!({"Sacrifice": {"filter": selector_any(ctx, what)?, "count": amount(ctx, number)?}})),
+        "Sac" => Ok(
+            json!({"Sacrifice": {"filter": selector_any(ctx, what)?, "count": amount(ctx, number)?}}),
+        ),
         "PayLife" => Ok(json!({"PayLife": amount(ctx, number)?})),
         "PayEnergy" => Ok(json!({"PayEnergy": amount(ctx, number)?})),
         "Mill" => Ok(json!({"Mill": amount(ctx, number)?})),

@@ -91,7 +91,12 @@ impl Funnel {
     pub fn ledger(&self) -> String {
         let mut text = String::from("kind\treason\tblocked\tfreed\tweight\texamples\n");
         for (name, row) in self.ranked() {
-            let examples: Vec<&str> = row.blocked.iter().take(EXAMPLES).map(String::as_str).collect();
+            let examples: Vec<&str> = row
+                .blocked
+                .iter()
+                .take(EXAMPLES)
+                .map(String::as_str)
+                .collect();
             let _ = writeln!(
                 text,
                 "unmapped\t{name}\t{}\t{}\t0\t{}",
@@ -129,9 +134,18 @@ impl Funnel {
         }
         text.push_str("unmapped constructs, by cards held back (freed alone):\n");
         for (name, row) in self.ranked().into_iter().take(TOP) {
-            let _ = writeln!(text, "  {:>6} ({:>5})  {name}", row.blocked.len(), row.freed);
+            let _ = writeln!(
+                text,
+                "  {:>6} ({:>5})  {name}",
+                row.blocked.len(),
+                row.freed
+            );
         }
-        let _ = write!(text, "proposals and translate-gaps.tsv in {}", out.display());
+        let _ = write!(
+            text,
+            "proposals and translate-gaps.tsv in {}",
+            out.display()
+        );
         text
     }
 }

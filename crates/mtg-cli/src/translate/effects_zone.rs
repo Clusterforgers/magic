@@ -52,7 +52,7 @@ fn goes(p: &Params, destination: &str) -> Tr<Goes> {
     })
 }
 
-fn moves(what: Value, goes: Goes) -> Value {
+fn moves(what: &Value, goes: Goes) -> Value {
     match goes {
         Goes::Exile => json!({"Exile": {"what": what}}),
         Goes::To(to) => json!({"Move": {"what": what, "to": to}}),
@@ -64,12 +64,19 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
         p,
         "ChangeZone",
         &[
-            "Origin", "Destination", "ValidTgts", "Defined", "TargetMin", "TargetMax",
-            "LibraryPosition", "Tapped", "RememberChanged",
+            "Origin",
+            "Destination",
+            "ValidTgts",
+            "Defined",
+            "TargetMin",
+            "TargetMax",
+            "LibraryPosition",
+            "Tapped",
+            "RememberChanged",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
-    let mut effect = moves(what.clone(), goes(p, destination)?);
+    let mut effect = moves(&what, goes(p, destination)?);
     if p.get("RememberChanged") == Some("True") {
         // Only an exile binds the new objects; a move of a target does not name what it moved.
         if effect.get("Exile").is_none() {
@@ -88,8 +95,17 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         p,
         "ChangeZone.Search",
         &[
-            "Origin", "Destination", "ChangeType", "ChangeNum", "Hidden", "Mandatory", "Tapped", "ShuffleNonMandatory", "RememberChanged",
-            "Reveal", "LibraryPosition",
+            "Origin",
+            "Destination",
+            "ChangeType",
+            "ChangeNum",
+            "Hidden",
+            "Mandatory",
+            "Tapped",
+            "ShuffleNonMandatory",
+            "RememberChanged",
+            "Reveal",
+            "LibraryPosition",
         ],
     )?;
     if destination == "Library" {
@@ -112,26 +128,30 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
     }
     Ok(vec![
         json!({ "Search": find }),
-        moves(found, goes(p, destination)?),
+        moves(&found, goes(p, destination)?),
         json!({"Shuffle": {}}),
     ])
 }
 
-fn change_zone_all(
-    ctx: &mut Ctx,
-    p: &Params,
-    origin: &str,
-    destination: &str,
-) -> Tr<Vec<Value>> {
+fn change_zone_all(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr<Vec<Value>> {
     only(
         p,
         "ChangeZoneAll",
-        &["Origin", "Destination", "ChangeType", "Tapped", "LibraryPosition"],
+        &[
+            "Origin",
+            "Destination",
+            "ChangeType",
+            "Tapped",
+            "LibraryPosition",
+        ],
     )?;
     if origin == "Library" {
         return unmapped("key:ChangeZoneAll.Origin=Library");
     }
     let zone = (origin != "Battlefield").then_some(origin);
     let filter = selector_in(ctx, p.get("ChangeType").unwrap_or("Card"), zone)?;
-    Ok(vec![moves(json!({ "Each": filter }), goes(p, destination)?)])
+    Ok(vec![moves(
+        &json!({ "Each": filter }),
+        goes(p, destination)?,
+    )])
 }

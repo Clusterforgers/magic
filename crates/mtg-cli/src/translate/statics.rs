@@ -108,7 +108,10 @@ fn continuous(ctx: &Ctx, p: &Params) -> Tr<Value> {
         (None, None) => {}
         _ => return unmapped("key:Static.Continuous.half-SetPT"),
     }
-    for (key, variant) in [("AddKeyword", "AddKeyword"), ("RemoveKeyword", "RemoveKeyword")] {
+    for (key, variant) in [
+        ("AddKeyword", "AddKeyword"),
+        ("RemoveKeyword", "RemoveKeyword"),
+    ] {
         if let Some(keywords) = p.get(key) {
             for keyword in keyword_list(ctx, keywords)? {
                 mods.push(json!({ variant: keyword }));
@@ -223,7 +226,9 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
     if ctx.svar(amount).is_some() {
         let per = super::amount::amount(ctx, amount)?;
-        return Ok(json!({"CostModifier": {"applies_to": applies, "change": change, "mana": "{1}", "per": per}}));
+        return Ok(
+            json!({"CostModifier": {"applies_to": applies, "change": change, "mana": "{1}", "per": per}}),
+        );
     }
     let Value::String(mana) = cost(ctx, amount)? else {
         return unmapped("static:CostModifier-Amount");

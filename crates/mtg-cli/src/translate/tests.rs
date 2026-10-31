@@ -20,7 +20,10 @@ fn world() -> World {
             "g_2_2_boar_trample",
             "Name:Boar Token\nColors:green\nTypes:Creature Boar\nPT:2/2\nK:Trample\n",
         ),
-        ("c_a_treasure_sac", "Name:Treasure Token\nTypes:Artifact Treasure\n"),
+        (
+            "c_a_treasure_sac",
+            "Name:Treasure Token\nTypes:Artifact Treasure\n",
+        ),
     ]
     .iter()
     .filter_map(|(stem, text)| {
@@ -221,6 +224,28 @@ fn gaps(text: &str) -> Vec<String> {
     json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}, {"AnyOf": ["Attacking", "Blocking"]}]}}],
         "effects": [{"Destroy": {"what": {"Target": 0}}}]}})
 )]
+#[case::cannot_be_blocked_this_turn(
+    "Name:Test Cloak\nTypes:Instant\nA:SP$ Effect | ValidTgts$ Creature | RememberObjects$ Targeted | ExileOnMoved$ Battlefield | StaticAbilities$ Unblockable\nSVar:Unblockable:Mode$ CantBlockBy | ValidAttacker$ Card.IsRemembered | Description$ This creature can't be blocked this turn.\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+        "effects": [{"Continuous": {"affected": {"Target": 0}, "mods": ["CantBeBlocked"], "duration": "UntilEndOfTurn"}}]}})
+)]
+#[case::soft_counter(
+    "Name:Test Hush\nManaCost:1 U\nTypes:Instant\nA:SP$ Counter | Cost$ 1 U | TargetType$ Spell | ValidTgts$ Card | UnlessCost$ 3\n",
+    json!({"Spell": {"targets": [{"what": {"Object": ["Spell"]}}],
+        "effects": [{"Pay": {"who": {"ControllerOf": {"Target": 0}}, "cost": "{3}",
+            "unpaid": [{"Counter": {"what": {"Target": 0}}}]}}]}})
+)]
+#[case::doesnt_untap(
+    "Name:Test Frost\nTypes:Enchantment Aura\nR:Event$ Untap | ActiveZones$ Battlefield | ValidCard$ Creature.EnchantedBy | ValidStepTurnToController$ You | Layer$ CantHappen | Description$ x\n",
+    json!({"Static": {"affected": "Attached", "mods": ["DoesntUntap"]}})
+)]
+#[case::exile_and_return_what_was_remembered(
+    "Name:Test Phase\nTypes:Instant\nA:SP$ ChangeZone | ValidTgts$ Creature | Origin$ Battlefield | Destination$ Exile | RememberChanged$ True | SubAbility$ Back\nSVar:Back:DB$ Pump | Defined$ Remembered | NumAtt$ +1 | NumDef$ +1\n",
+    json!({"Spell": {"targets": [{"what": {"Object": [{"Type": "Creature"}]}}],
+        "effects": [{"Exile": {"what": {"Target": 0}, "as": "exiled"}},
+            {"Continuous": {"affected": {"Bound": "exiled"},
+                "mods": [{"ModifyPT": {"power": 1, "toughness": 1}}], "duration": "UntilEndOfTurn"}}]}})
+)]
 fn a_line_becomes_the_ability_of_the_dsl(#[case] script: &str, #[case] expected: Value) {
     let mut found = abilities(script);
     assert_eq!(found.len(), 1, "{:?}", gaps(script));
@@ -235,10 +260,7 @@ fn normal(value: Value) -> Value {
 }
 
 #[rstest]
-#[case::unknown_effect(
-    "Name:T\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 3\n",
-    "effect:Dig"
-)]
+#[case::unknown_effect("Name:T\nTypes:Sorcery\nA:SP$ Dig | DigNum$ 3\n", "effect:Dig")]
 #[case::unread_key(
     "Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ 1 | Foo$ Bar\n",
     "key:Draw.Foo"
@@ -252,10 +274,7 @@ fn normal(value: Value) -> Value {
     "valid:withQuux"
 )]
 #[case::unknown_keyword("Name:T\nTypes:Creature Elf\nK:Quuxing\n", "keyword:Quuxing")]
-#[case::untargeted_object(
-    "Name:T\nTypes:Sorcery\nA:SP$ Destroy\n",
-    "defined:none-for-Destroy"
-)]
+#[case::untargeted_object("Name:T\nTypes:Sorcery\nA:SP$ Destroy\n", "defined:none-for-Destroy")]
 #[case::unknown_amount(
     "Name:T\nTypes:Sorcery\nA:SP$ Draw | NumCards$ Y\nSVar:Y:Count$Weird\n",
     "amount:Count$Weird"
@@ -264,8 +283,48 @@ fn a_construct_without_a_mapper_leaves_its_line_out_and_is_named(
     #[case] script: &str,
     #[case] gap: &str,
 ) {
-    assert!(abilities(script).is_empty());
+    assert_eq!(abilities(script), Vec::<Value>::new());
     assert_eq!(gaps(script), vec![gap.to_owned()]);
+}
+
+#[test]
+fn a_cost_beyond_the_mana_cost_of_a_spell_is_an_additional_cost() {
+    let found = abilities(
+        "Name:Test Toss\nManaCost:1 R\nTypes:Instant\nA:SP$ DealDamage | Cost$ 1 R Sac<1/Creature> | ValidTgts$ Any | NumDmg$ 2\n",
+    );
+    assert_eq!(
+        found,
+        vec![
+            json!({"AdditionalCost": {"cost": [{"Sacrifice": {"filter": [{"Type": "Creature"}]}}], "required": true}}),
+            json!({"Spell": {"targets": [{"what": "AnyTarget"}],
+                "effects": [{"DealDamage": {"to": {"Target": 0}, "amount": 2}}]}}),
+        ]
+    );
+    // Another mana amount than the card's is an alternative cost, which is not an additional one.
+    let other = "Name:Test Toss\nManaCost:1 R\nTypes:Instant\nA:SP$ Draw | Cost$ 0\n";
+    assert_eq!(gaps(other), vec!["cost:spell-different-mana".to_owned()]);
+}
+
+#[test]
+fn a_token_with_an_ability_of_its_own_carries_it() {
+    let mut world = world();
+    let face =
+        Script::parse("Name:Gem Token\nTypes:Artifact Gem\nA:AB$ Draw | Cost$ T Sac<1/CARDNAME>\n")
+            .faces
+            .into_iter()
+            .next()
+            .unwrap();
+    world.tokens.insert("c_a_gem_draw".to_owned(), face);
+    let script = Script::parse("Name:T\nTypes:Sorcery\nA:SP$ Token | TokenScript$ c_a_gem_draw\n");
+    let found = translate_script(&world, &script).faces.remove(0).abilities;
+    assert_eq!(
+        found,
+        vec![
+            json!({"Spell": {"effects": [{"CreateToken": {"token": {"Custom": {
+            "name": "Gem", "types": ["Artifact"], "subtypes": ["Gem"],
+            "abilities": [{"Activated": {"cost": ["Tap", "SacrificeSelf"], "effects": [{"Draw": {}}]}}]}}}}]}})
+        ]
+    );
 }
 
 #[test]

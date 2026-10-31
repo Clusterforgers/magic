@@ -18,7 +18,13 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         return unmapped(format!("replacement:{event}"));
     }
     for (key, _) in p.iter() {
-        let read = ["Event", "ValidCard", "Destination", "ReplaceWith", "ReplacementResult"];
+        let read = [
+            "Event",
+            "ValidCard",
+            "Destination",
+            "ReplaceWith",
+            "ReplacementResult",
+        ];
         if !read.contains(&key) && !is_hint(key) {
             return unmapped(format!("key:Replacement.Moved.{key}"));
         }
@@ -38,7 +44,13 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
 fn doesnt_untap(p: &Params) -> Tr<Value> {
     only_keys(
         p,
-        &["Event", "ValidCard", "ValidStepTurnToController", "Layer", "ActiveZones"],
+        &[
+            "Event",
+            "ValidCard",
+            "ValidStepTurnToController",
+            "Layer",
+            "ActiveZones",
+        ],
     )?;
     if p.get("Layer") != Some("CantHappen") || p.get("ValidStepTurnToController") != Some("You") {
         return unmapped("replacement:Untap-shape");

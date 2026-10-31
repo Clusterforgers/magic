@@ -2,8 +2,8 @@
 
 use serde_json::{Value, json};
 
-use super::cost::{cost, loyalty};
 use super::condition::{condition, strip};
+use super::cost::{cost, loyalty};
 use super::ctx::{Ctx, Tr, unmapped};
 use super::effects::chain;
 use crate::forge::script::Params;
@@ -29,7 +29,11 @@ pub fn ability_line(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
 /// be the card's own: another amount is an alternative cost.
 fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
     let words = super::cost::parts(text);
-    let mana: Vec<&str> = words.iter().copied().filter(|w| super::cost::is_mana(w)).collect();
+    let mana: Vec<&str> = words
+        .iter()
+        .copied()
+        .filter(|w| super::cost::is_mana(w))
+        .collect();
     let printed: Vec<&str> = ctx.mana_cost.split_whitespace().collect();
     if !mana.is_empty() && mana != printed {
         return unmapped("cost:spell-different-mana");
@@ -37,11 +41,16 @@ fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
     let Value::Array(items) = cost(ctx, text)? else {
         return Ok(None);
     };
-    let items: Vec<Value> = items.into_iter().filter(|item| item.get("Mana").is_none()).collect();
+    let items: Vec<Value> = items
+        .into_iter()
+        .filter(|item| item.get("Mana").is_none())
+        .collect();
     if items.is_empty() {
         return Ok(None);
     }
-    Ok(Some(json!({"AdditionalCost": {"cost": items, "required": true}})))
+    Ok(Some(
+        json!({"AdditionalCost": {"cost": items, "required": true}}),
+    ))
 }
 
 /// The keys only an activated ability has.
@@ -84,7 +93,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         if when.is_some() {
             return unmapped("key:Loyalty.condition");
         }
-        return loyalty_ability(p, text, effects, targets);
+        return loyalty_ability(p, text, &effects, &targets);
     }
     let mut ability = json!({"cost": cost(ctx, text)?, "effects": effects});
     let mut conditions: Vec<Value> = when.into_iter().collect();
@@ -115,19 +124,24 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({ "Activated": ability }))
 }
 
-fn loyalty_ability(p: &Params, text: &str, effects: Vec<Value>, targets: Vec<Value>) -> Tr<Value> {
+fn loyalty_ability(p: &Params, text: &str, effects: &[Value], targets: &[Value]) -> Tr<Value> {
     let Some(cost) = loyalty(text) else {
         return unmapped("cost:loyalty-shape");
     };
-    if let Some(key) = ["SorcerySpeed", "PlayerTurn", "ActivationLimit", "ActivationZone"]
-        .iter()
-        .find(|key| p.has(key))
+    if let Some(key) = [
+        "SorcerySpeed",
+        "PlayerTurn",
+        "ActivationLimit",
+        "ActivationZone",
+    ]
+    .iter()
+    .find(|key| p.has(key))
     {
         return unmapped(format!("key:Loyalty.{key}"));
     }
     let mut ability = json!({"cost": cost, "effects": effects});
     if !targets.is_empty() {
-        ability["targets"] = Value::Array(targets);
+        ability["targets"] = Value::Array(targets.to_vec());
     }
     Ok(json!({ "Loyalty": ability }))
 }

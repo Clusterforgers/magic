@@ -38,7 +38,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let pays = matches!(effects.as_slice(), [only] if only.get("Pay").is_some());
     match p.get("OptionalDecider") {
         None => {}
-        Some("You") | Some("TriggeredCardController") if pays => {}
+        Some("You" | "TriggeredCardController") if pays => {}
         Some("You") => effects = vec![json!({"May": {"effects": effects}})],
         Some("TriggeredCardController") if itself => {
             effects = vec![json!({"May": {"effects": effects}})];
@@ -199,7 +199,11 @@ fn spell_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn damage_done(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "DamageDone", &["ValidSource", "ValidTarget", "CombatDamage"])?;
+    keys(
+        p,
+        "DamageDone",
+        &["ValidSource", "ValidTarget", "CombatDamage"],
+    )?;
     let source = selector_any(ctx, p.get("ValidSource").unwrap_or("Card"))?;
     let mut pattern = json!({ "source": source });
     if let Some(target) = p.get("ValidTarget") {

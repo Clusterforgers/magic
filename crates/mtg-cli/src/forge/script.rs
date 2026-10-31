@@ -34,6 +34,7 @@ impl Params {
     }
 
     /// The pairs without those that have one of these keys.
+    #[must_use]
     pub fn without(&self, keys: &[&str]) -> Params {
         Params(
             self.0

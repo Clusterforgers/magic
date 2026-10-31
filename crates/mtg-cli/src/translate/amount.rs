@@ -8,7 +8,11 @@ use super::valid::{defined, selector_in};
 /// The DSL name of a counter kind (`P1P1` is `+1/+1`).
 pub fn counter_kind(word: &str) -> Option<Value> {
     let word = word.trim();
-    if word.is_empty() || !word.chars().all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_') {
+    if word.is_empty()
+        || !word
+            .chars()
+            .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
+    {
         return None;
     }
     Some(match word {
@@ -24,7 +28,11 @@ pub fn counter_kind(word: &str) -> Option<Value> {
 /// The amount a Forge value stands for: a number, `X`, or the name of a part that holds an expression.
 pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     let text = text.trim();
-    let text = if text.starts_with("+") && text.len() > 1 { &text[1..] } else { text };
+    let text = if text.starts_with('+') && text.len() > 1 {
+        &text[1..]
+    } else {
+        text
+    };
     if let Ok(number) = text.parse::<i32>() {
         return Ok(json!(number));
     }
@@ -97,10 +105,10 @@ fn count_amount(ctx: &Ctx, expression: &str) -> Tr<Value> {
     let mut value = count_base(ctx, first)?;
     for step in parts {
         value = match step.split_once('.') {
-            Some(("Plus", n)) => sum(value, parse_number(n)?),
-            Some(("Minus", n)) => sum(value, -parse_number(n)?),
-            Some(("Times", n)) => times(value, parse_number(n)?),
-            None if step == "Twice" => times(value, 2),
+            Some(("Plus", n)) => sum(&value, parse_number(n)?),
+            Some(("Minus", n)) => sum(&value, -parse_number(n)?),
+            Some(("Times", n)) => times(&value, parse_number(n)?),
+            None if step == "Twice" => times(&value, 2),
             _ => return unmapped(format!("amount:Count/{}", head(step))),
         };
     }
@@ -111,14 +119,14 @@ fn parse_number(text: &str) -> Tr<i32> {
     text.parse().or_else(|_| unmapped("amount:step-number"))
 }
 
-fn sum(value: Value, n: i32) -> Value {
+fn sum(value: &Value, n: i32) -> Value {
     if let Some(number) = value.as_i64().and_then(|v| i32::try_from(v).ok()) {
         return json!(number + n);
     }
     json!({"Sum": [value, n]})
 }
 
-fn times(value: Value, n: i32) -> Value {
+fn times(value: &Value, n: i32) -> Value {
     json!({"Times": {"by": n, "of": value}})
 }
 
@@ -131,26 +139,25 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         "ValidGraveyard" => Ok(json!({"Count": selector_in(ctx, rest, Some("Graveyard"))?})),
         "ValidHand" => Ok(json!({"Count": selector_in(ctx, rest, Some("Hand"))?})),
         "ValidExile" => Ok(json!({"Count": selector_in(ctx, rest, Some("Exile"))?})),
-        "CardPower" => stat_of_this("Power"),
-        "CardToughness" => stat_of_this("Toughness"),
-        "CardManaCost" => stat_of_this("ManaValue"),
+        "CardPower" => Ok(stat_of_this("Power")),
+        "CardToughness" => Ok(stat_of_this("Toughness")),
+        "CardManaCost" => Ok(stat_of_this("ManaValue")),
         "YourLifeTotal" => Ok(json!({"Life": "You"})),
         "OppLifeTotal" | "TargetedPlayerLife" => unmapped(format!("amount:Count${word}")),
         "TimesKicked" => Ok(json!("Kicks")),
+        "PlayerCountOpponents" => Ok(json!({"Players": "Opponents"})),
+        "PlayerCountPlayers" => Ok(json!({"Players": "EachPlayer"})),
         other => counters_or_gap(ctx, other),
     }
 }
 
-fn stat_of_this(stat: &str) -> Tr<Value> {
-    Ok(json!({"Stat": {"of": "This", "stat": stat}}))
+fn stat_of_this(stat: &str) -> Value {
+    json!({"Stat": {"of": "This", "stat": stat}})
 }
 
 /// `CardCounters.P1P1` (counters on this card), or the gap that names the base.
 fn counters_or_gap(ctx: &Ctx, word: &str) -> Tr<Value> {
-    if let Some(kind) = word
-        .strip_prefix("CardCounters.")
-        .and_then(counter_kind)
-    {
+    if let Some(kind) = word.strip_prefix("CardCounters.").and_then(counter_kind) {
         let on = defined(ctx, "Self")?;
         return Ok(json!({"Counters": {"on": on, "counter": kind}}));
     }

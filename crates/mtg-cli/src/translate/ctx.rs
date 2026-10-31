@@ -187,7 +187,7 @@ const COMMON: [&str; 11] = [
 /// Whether a key is only text for people or a hint for Forge's computer player.
 pub fn is_hint(key: &str) -> bool {
     const SUFFIXES: [&str; 4] = ["Description", "Desc", "Prompt", "Title"];
-    const EXACT: [&str; 11] = [
+    const EXACT: [&str; 12] = [
         "Image",
         "AILogic",
         "AIPreference",
@@ -198,6 +198,7 @@ pub fn is_hint(key: &str) -> bool {
         "NonBasicSpell",
         "ShowCurrentCard",
         "Secondary",
+        "IsCurse",
         "TriggerDescription",
     ];
     EXACT.contains(&key)

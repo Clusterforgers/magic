@@ -147,11 +147,13 @@ pub fn keyword_value(ctx: &Ctx, text: &str) -> Tr<Value> {
     let mut fields = text.split(':');
     let name = fields.next().unwrap_or_default();
     let first = fields.next();
-    if let (Some(&(_, variant)), Some(first)) = (COSTED.iter().find(|(word, _)| *word == name), first)
+    if let (Some(&(_, variant)), Some(first)) =
+        (COSTED.iter().find(|(word, _)| *word == name), first)
     {
         return costed(ctx, name, variant, first, fields.next());
     }
-    if let (Some(&(_, variant)), Some(number)) = (NUMBERED.iter().find(|(word, _)| *word == name), first)
+    if let (Some(&(_, variant)), Some(number)) =
+        (NUMBERED.iter().find(|(word, _)| *word == name), first)
         && let Ok(number) = number.parse::<u32>()
     {
         return Ok(json!({ variant: number }));
@@ -176,7 +178,9 @@ fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str
         ("Enchant", Some("Player")) => Ok(json!({"EnchantPlayer": {}})),
         ("Enchant", Some("Opponent")) => Ok(json!({"EnchantPlayer": {"opponent": true}})),
         ("Suspend", Some(time)) => match (time.parse::<u32>(), second) {
-            (Ok(time), Some(cost_text)) => Ok(json!({"Suspend": {"time": time, "cost": cost(ctx, cost_text)?}})),
+            (Ok(time), Some(cost_text)) => {
+                Ok(json!({"Suspend": {"time": time, "cost": cost(ctx, cost_text)?}}))
+            }
             _ => unmapped("keyword:Suspend"),
         },
         ("Partner", Some(group)) => Ok(json!({"PartnerGroup": group})),
@@ -291,5 +295,7 @@ fn choice(ctx: &Ctx, name: &str) -> Tr<Value> {
 
 /// The keywords of a `KW$` value, separated by ` & `.
 pub fn keyword_list(ctx: &Ctx, text: &str) -> Tr<Vec<Value>> {
-    text.split('&').map(|word| keyword_value(ctx, word)).collect()
+    text.split('&')
+        .map(|word| keyword_value(ctx, word))
+        .collect()
 }

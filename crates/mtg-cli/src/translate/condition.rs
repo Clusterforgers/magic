@@ -8,12 +8,13 @@ use super::valid::{cmp, selector_in};
 use crate::forge::script::Params;
 
 /// The keys this module reads.
-pub const KEYS: [&str; 5] = [
+pub const KEYS: [&str; 6] = [
     "IsPresent",
     "PresentZone",
     "PresentCompare",
     "CheckSVar",
     "SVarCompare",
+    "Condition",
 ];
 
 /// A comparison word (`GE2`, `EQ0`, `LTX`) as the DSL's operator and amount.
@@ -41,10 +42,39 @@ pub fn condition(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
     } else if p.has("SVarCompare") {
         return unmapped("key:Condition.SVarCompareWithoutCheckSVar");
     }
+    if let Some(name) = p.get("Condition") {
+        all.push(named(name)?);
+    }
     Ok(match all.len() {
         0 => None,
         1 => all.pop(),
         _ => Some(json!({ "All": all })),
+    })
+}
+
+/// The condition a named Forge condition stands for (`Condition$ Threshold`).
+fn named(name: &str) -> Tr<Value> {
+    let yours = |extra: Value| vec![extra, json!({"OwnedBy": "You"})];
+    Ok(match name {
+        "PlayerTurn" => json!("YourTurn"),
+        "NotPlayerTurn" => json!({"Not": "YourTurn"}),
+        "Threshold" => {
+            let cards = yours(json!({"In": "Graveyard"}));
+            json!({"Compare": {"left": {"Count": cards}, "op": "Ge", "right": 7}})
+        }
+        "Delirium" => {
+            let cards = yours(json!({"In": "Graveyard"}));
+            json!({"Compare": {"left": {"CardTypes": cards}, "op": "Ge", "right": 4}})
+        }
+        "Hellbent" => {
+            let cards = yours(json!({"In": "Hand"}));
+            json!({"Compare": {"left": {"Count": cards}, "op": "Eq", "right": 0}})
+        }
+        "Metalcraft" => {
+            let artifacts = vec![json!({"Type": "Artifact"}), json!({"ControlledBy": "You"})];
+            json!({"Compare": {"left": {"Count": artifacts}, "op": "Ge", "right": 3}})
+        }
+        other => return unmapped(format!("condition:{other}")),
     })
 }
 
