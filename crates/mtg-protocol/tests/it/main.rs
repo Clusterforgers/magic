@@ -73,6 +73,7 @@ mod rest_fix_marks;
 mod rest_lobbies;
 mod rest_precons;
 mod rewound_view;
+mod room_view;
 mod saga_transform_view;
 mod seat_deck;
 mod shown_view;

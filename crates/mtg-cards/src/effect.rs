@@ -999,6 +999,15 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         they: bool,
     },
+    /// The controller chooses one of the two lists as the effect resolves and only that one is done ("return an
+    /// enchantment card from your graveyard to your hand or unlock a locked door of a Room you control"); a choice made
+    /// as the ability is put on the stack is a `Modal`.
+    Either {
+        /// The first option, as printed.
+        first: Vec<Effect>,
+        /// The second option, after "or".
+        second: Vec<Effect>,
+    },
     /// A step of a Planechase game (CR 901): the controller planeswalks, or chaos ensues. A game without a planar deck,
     /// which every game the engine plays is, does nothing for it.
     Planechase {
@@ -1468,6 +1477,10 @@ mod tests {
     #[case::w2d_villainous_choice(
         Effect::VillainousChoice { who: Ref::Triggering, first: vec![Effect::Draw { who: Ref::You, count: Amount::Fixed(1) }], second: Vec::new(), they: true },
         r#"{"VillainousChoice":{"who":"Triggering","first":[{"Draw":{}}],"second":[],"they":true}}"#
+    )]
+    #[case::dk1c5_either(
+        Effect::Either { first: vec![Effect::Draw { who: Ref::You, count: Amount::Fixed(1) }], second: vec![Effect::UnlockDoor { who: Ref::You }] },
+        r#"{"Either":{"first":[{"Draw":{}}],"second":[{"UnlockDoor":{}}]}}"#
     )]
     #[case::attach_the_source_to_a_target(
         Effect::Attach { what: Ref::This, to: Ref::Target(0) },

@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 102] = [
+const TEMPLATES: [Template; 103] = [
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
     super::w20c_taken::w20c_untap_and_take,
@@ -111,6 +111,7 @@ const TEMPLATES: [Template; 102] = [
     super::zone_moves::may_put_from_hand,
     return_card,
     return_chosen,
+    super::zone_moves::return_from_graveyard,
     return_any_number,
     super::kicked_copies::kicked_copies,
     copies::token_copy,
@@ -247,7 +248,7 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     {
         return true;
     }
-    for template in templates().chain([unless_pays as Template]) {
+    for template in templates().chain([unless_pays as Template, super::dk1c5_rooms::dk1c5_either]) {
         let read = r.attempt(|r| {
             let mut found = template(r)?;
             // ", then populate" follows any sentence.

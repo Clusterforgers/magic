@@ -54,6 +54,11 @@ pub struct PermanentView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub level: Option<u32>,
+    /// Which doors of a Room are unlocked (CR 709.5), in the order of its faces; left out for any other permanent. A
+    /// public fact of the permanent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub doors: Option<[bool; 2]>,
 }
 
 /// That a permanent is a copy of another object (CR 707): its name, types and abilities shown are the copiable values of

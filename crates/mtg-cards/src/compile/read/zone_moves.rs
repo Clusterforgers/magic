@@ -120,6 +120,35 @@ pub fn exile_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
+/// "Return a creature card from your graveyard to your hand.": the player chooses a card of their graveyard, bound as
+/// `returned` (one the sentence does not target), and it goes to their hand.
+pub fn return_from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("return")?;
+    (r.word("a") || r.word("an")).then_some(())?;
+    let found = phrase(r, Form::Subject)?;
+    // The files list the zone first.
+    let zone = [Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)];
+    zone.iter()
+        .all(|pred| found.0.contains(pred))
+        .then_some(())?;
+    r.need("to your hand")?;
+    let mut preds: Vec<Pred> = zone.to_vec();
+    preds.extend(found.0.into_iter().filter(|pred| !zone.contains(pred)));
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(Selector(preds)),
+            count: Bounds::default(),
+            bind: super::effects::RETURNED.to_owned(),
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(super::effects::RETURNED.to_owned()),
+            to: Destination::Hand,
+        },
+    ])
+}
+
 /// "You may put a land card from your hand onto the battlefield tapped.": the player may choose a card of the hand, bound
 /// as `card`, and it goes onto the battlefield.
 pub fn may_put_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {

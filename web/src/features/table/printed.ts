@@ -65,6 +65,19 @@ export function usePrinted(object: ObjectView): Printed {
   return entry[object.face ?? 0] ?? entry[0] ?? 'unavailable'
 }
 
+/** The names of the faces of a Room (its two doors), in the order of the card; undefined for any other object, and while unknown. */
+export function useDoorFaces(object: ObjectView | undefined): readonly string[] | undefined {
+  useSyncExternalStore(subscribe, snapshot, snapshot)
+  const oracleId = object?.identity?.oracle_id
+  if (oracleId === undefined || object?.permanent?.doors === undefined) return undefined
+  const entry = known.get(oracleId)
+  if (entry === undefined) {
+    ask(oracleId)
+    return undefined
+  }
+  return entry === 'loading' || entry === 'unavailable' ? undefined : entry.map((face) => face.name)
+}
+
 /** The name of the front face of a card a permanent shows as its back face; undefined for any other, and while unknown. */
 export function useFrontFaceName(object: ObjectView | undefined): string | undefined {
   useSyncExternalStore(subscribe, snapshot, snapshot)

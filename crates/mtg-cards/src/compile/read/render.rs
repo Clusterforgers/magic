@@ -19,6 +19,7 @@ mod created;
 mod damage_by;
 mod delayed;
 mod divided;
+mod dk1c5_either;
 mod each_target;
 mod either;
 mod exiled_cast;
@@ -1062,6 +1063,7 @@ fn written(
 fn chosen_move_text(choose: &Effect, moved: &Effect) -> Option<String> {
     random_moves::text(choose, moved)
         .or_else(|| put_back_text(choose, moved))
+        .or_else(|| hand_returns::one_text(choose, moved))
         .or_else(|| returned_text(choose, moved))
         .or_else(|| put_onto::put_onto_text(choose, moved))
         .or_else(|| put_onto::returned_to_battlefield_text(choose, moved))
@@ -2435,6 +2437,7 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
+            Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {
                     "Undercity"

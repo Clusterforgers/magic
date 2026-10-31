@@ -29,7 +29,7 @@ pub(super) fn all_text(effect: &Effect) -> Option<String> {
 }
 
 /// "return a creature or land card from your graveyard to your hand": the choice of one card and the move of it.
-fn one_text(choose: &Effect, moved: &Effect) -> Option<String> {
+pub(super) fn one_text(choose: &Effect, moved: &Effect) -> Option<String> {
     let (
         Effect::Choose {
             who: Ref::You,

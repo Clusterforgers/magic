@@ -7,6 +7,7 @@
 import type {
   AbilityRef,
   ActivatedView,
+  FaceOption,
   ManaOption,
   ObjectId,
   ObjectView,
@@ -14,6 +15,7 @@ import type {
   PriorityAction,
   PriorityOptions,
 } from '@/protocol/generated'
+import { costText } from '../cardModel'
 import { givesOfOptions } from '../manaMade'
 import { madeWords } from '../ManaMade'
 import type { CardNote, CardNotes } from './marks'
@@ -95,18 +97,40 @@ function wording(ref: AbilityRef, worded: ActivatedView | undefined): Pick<Play,
   return { label: full }
 }
 
+/** Tells the unlocking of a door of a Room apart from its other plays. */
+export const unlockKey = (option: FaceOption): string => `unlock-${option.card}-${option.face}`
+
+/** The line of a locked door the holder may unlock now (a special action for the door's mana cost, CR 709.5e). */
+function unlockPlay(option: FaceOption): Play {
+  return {
+    key: unlockKey(option),
+    label: `Unlock ${option.name}`,
+    ...(option.cost === undefined ? {} : { detail: `Pay ${costText(option.cost)}` }),
+    words: `Unlock ${option.name}`,
+    action: { UnlockDoor: [option.card, option.face] },
+  }
+}
+
 /**
- * The cards of `seat` with an ability to activate: each ability in `options.abilities` whose card the seat may use it
- * from. One the card's words mark as a mana ability is left out, and a spectator (no seat) has none.
+ * The cards of `seat` with something to do besides casting or playing them: each ability in `options.abilities` whose
+ * card the seat may use it from, and each locked door of a Room of the seat that it may unlock now. An ability the
+ * card's words mark as a mana ability is left out, and a spectator (no seat) has none.
  */
 export function abilityPlays(
   options: PriorityOptions,
   objectsById: Readonly<Record<number, ObjectView>>,
   seat: PlayerId | null,
 ): Activations {
-  if (seat === null || options.abilities === undefined || options.abilities.length === 0) return NONE
+  const abilities = options.abilities ?? []
+  const doors = options.unlockable ?? []
+  if (seat === null || abilities.length + doors.length === 0) return NONE
   const found = new Map<ObjectId, Play[]>()
-  for (const ref of options.abilities) {
+  const add = (id: ObjectId, play: Play): void => {
+    const list = found.get(id)
+    if (list === undefined) found.set(id, [play])
+    else list.push(play)
+  }
+  for (const ref of abilities) {
     const object = objectsById[ref.object]
     if (object === undefined || !usable(object, seat)) continue
     const worded = object.activated?.find(
@@ -114,24 +138,34 @@ export function abilityPlays(
     )
     if (worded?.mana === true) continue
     const { label, detail } = wording(ref, worded)
-    const play: Play = {
+    add(ref.object, {
       key: abilityKey(ref),
       label,
       words: `Activate ${spoken(label)}`,
       action: { Activate: ref },
       ...(detail === undefined ? {} : { detail }),
+    })
+  }
+  for (const option of doors) {
+    const object = objectsById[option.card]
+    if (object !== undefined && object.zone === 'Battlefield' && object.controller === seat) {
+      add(option.card, unlockPlay(option))
     }
-    const list = found.get(ref.object)
-    if (list === undefined) found.set(ref.object, [play])
-    else list.push(play)
   }
   return found
 }
 
-/** What a card with abilities is called to a screen reader: "Activate {T}: Draw a card", or the count when several. */
+/**
+ * What a card with plays is called to a screen reader: "Activate {T}: Draw a card" or "Unlock Grand Entryway", or the
+ * count when several.
+ */
 export function activateWords(plays: readonly Play[]): string {
   const [only] = plays
-  return plays.length === 1 && only !== undefined ? only.words : `Activate one of ${plays.length} abilities`
+  if (plays.length === 1 && only !== undefined) return only.words
+  if (plays.every((play) => play.key.startsWith('unlock-'))) return `Unlock one of ${plays.length} doors`
+  return plays.some((play) => play.key.startsWith('unlock-'))
+    ? `Choose one of ${plays.length} plays`
+    : `Activate one of ${plays.length} abilities`
 }
 
 /**

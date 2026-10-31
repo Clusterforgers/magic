@@ -76,6 +76,12 @@ describe('showsBackFace', () => {
     ['an explicit front face', { face: 0 }, false],
     ['a transformed permanent', { face: 1 }, true],
     ['a back face on the stack (an Adventure or a modal back)', { face: 1, zone: 'Stack' }, false],
+    // The one unlocked door of a Room is its face in use.
+    [
+      'the second door of a Room',
+      { face: 1, permanent: { tapped: false, damage: 0, summoning_sick: false, doors: [false, true] } },
+      false,
+    ],
   ])('%s', (_, over, back) => {
     expect(showsBackFace(card(over))).toBe(back)
   })

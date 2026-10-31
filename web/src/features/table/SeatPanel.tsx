@@ -14,7 +14,7 @@ import { useDefender } from './combat/defender'
 import type { DefenderState } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
-import { ManaPool } from './ManaPool'
+import { LiveManaPool } from './LiveManaPool'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
 import { ACTIVE_EDGE, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
@@ -125,7 +125,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   // The glow carries its own ring and edge, so it stands in for the ring classes instead of adding to them.
   const ring = flags.cue ? YOUR_TURN_EDGE : cn('ring-1 ring-foreground/10', flags.active && ACTIVE_EDGE)
   const line = variant === 'line'
-  const mana = <ManaPool pool={player.mana} />
+  const mana = <LiveManaPool pool={player.mana} />
   const notes = (
     <>
       {player.lost === null ? null : (

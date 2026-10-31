@@ -39,6 +39,7 @@ mod deal_damage;
 mod delayed_trigger;
 mod destroy;
 mod discard;
+mod dk1c5_either;
 mod done;
 mod draw;
 mod encode;
@@ -225,6 +226,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
+        Effect::Either { .. } => dk1c5_either::run(cx, effect),
     }
 }
 
@@ -267,7 +269,8 @@ mod tests {
         {"Modal":{"modes":[]}}, {"RepeatEach":{"over":"EachPlayer","as":"each","effects":[{"Draw":{}}]}},
         {"RollDice":{"sides":6,"results":[{"from":1,"effects":[]}]}}, {"FlipCoin":{"win":[]}}, {"Clash":{}},
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
-        {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}}
+        {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}},
+        {"Either":{"first":[],"second":[]}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -281,7 +284,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 91, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 92, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -407,5 +410,6 @@ mod tests {
         "Effect.Vote",
         "Effect.Planechase",
         "Effect.VillainousChoice",
+        "Effect.Either",
     ];
 }

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { cardsApi } from '@/net/cards'
 import { GameContext } from '@/features/game/gameContext'
 import { GameTable } from '@/features/table/GameTable'
+import { CardsApiContext } from '@/features/table/cardsContext'
 import { setDetailFetcher } from '@/features/table/printed'
 import { TableOptionsContext } from '@/features/table/tableOptions'
 import { DevFxControls } from './DevFxControls'
@@ -12,6 +13,7 @@ import { FIXTURE_MARKER, buildFixture } from './fixture'
 import { FRONT_OF, SHOWCASE_NAMES, fetchRealIds } from './realCards'
 import type { RealIds } from './realCards'
 import { printedDetail, STATES_BASE_PERMANENTS, withStates } from './states'
+import { roomDetail, roomsApi } from './roomsScene'
 import { parseStopSpec } from './stopSpec'
 import { menuCandidates, useOpenDevMenu } from '../manual/devMenu'
 import { useOpenDevPanel } from '../manual/panel/devPanel'
@@ -84,6 +86,8 @@ export function DevTableRoute() {
   const game = useMemo(() => {
     // The state cards compare with printed numbers that come from the fixture, unless real cards bring their own.
     if (states === true) setDetailFetcher(cards === 'real' ? (id) => cardsApi.get(id) : printedDetail)
+    // The Rooms scene answers for its own cards, so the doors are named without a server.
+    if (prompt === 'priority-rooms') setDetailFetcher(roomDetail)
     return fixtureGame({
       states,
       equip,
@@ -144,12 +148,14 @@ export function DevTableRoute() {
   return (
     <GameContext value={game}>
       <TableOptionsContext value={options}>
-        <p className="sr-only" data-fixture={FIXTURE_MARKER}>
-          Development fixture with {seats} seats
-        </p>
-        <GameTable />
-        <DevFxControls initial={fx} open={bar} />
-        <DevTurnChange on={newturn === true} />
+        <CardsApiContext value={prompt === 'priority-rooms' ? roomsApi : cardsApi}>
+          <p className="sr-only" data-fixture={FIXTURE_MARKER}>
+            Development fixture with {seats} seats
+          </p>
+          <GameTable />
+          <DevFxControls initial={fx} open={bar} />
+          <DevTurnChange on={newturn === true} />
+        </CardsApiContext>
       </TableOptionsContext>
     </GameContext>
   )

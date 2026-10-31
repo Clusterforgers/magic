@@ -14,6 +14,8 @@ import { BY_HAND } from '@/lib/byHand'
 import { isUnattached } from '@/play/hosts'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from './manaSymbols'
 import type { Attach } from './attachMarks'
+import { doorWords } from './rooms'
+import type { Doors } from './rooms'
 
 /** Where a permanent sits on its controller's battlefield. */
 export type RowKind = 'creatures' | 'other' | 'lands'
@@ -284,11 +286,14 @@ export interface Links {
   frontFace?: string | undefined
   /** The creature it is paired with (soulbond); a hidden one is "a face-down creature". */
   partner?: string | undefined
+  /** The two doors of a Room permanent, named by the card's faces. */
+  doors?: Doors | undefined
 }
 
 /** "attached to Grizzly Bears" for an Aura or Equipment; "Pacifism and Bonesplitter attached" for its host. */
-export function linkWords({ host, attached = [], spoken = [], partner }: Links): string[] {
+export function linkWords({ host, attached = [], spoken = [], partner, doors }: Links): string[] {
   const words: string[] = []
+  if (doors !== undefined) words.push(doorWords(doors))
   if (partner !== undefined) words.push(`paired with ${partner}`)
   if (host !== undefined) words.push(`attached to ${host}`)
   if (spoken.length > 0) words.push(...spoken)
@@ -327,7 +332,8 @@ export function isLethal(object: ObjectView): boolean {
 
 /** Whether a permanent shows the back of its card: transformed, flipped, melded or a modal double-faced card cast as its back. */
 export function showsBackFace(object: ObjectView): boolean {
-  return object.zone === 'Battlefield' && (object.face ?? 0) > 0
+  // The one unlocked door of a Room is its face in use, which is no back face.
+  return object.zone === 'Battlefield' && object.permanent?.doors === undefined && (object.face ?? 0) > 0
 }
 
 /** The cards a merged permanent holds; 1 for any other object. */

@@ -138,6 +138,9 @@ describe('imageSizeFor', () => {
   })
 })
 
+/** The state of a Room permanent. */
+const ROOM = { tapped: false, damage: 0, summoning_sick: false, doors: [false, false] as [boolean, boolean] }
+
 const object = (over: Partial<ObjectView>): ObjectView => ({
   id: 1,
   owner: 1,
@@ -185,13 +188,19 @@ describe('imageSourceOf', () => {
     ['hidden card', { name: '' }, null, true],
     ['ability on the stack', { kind: 'Ability' }, null, false],
     ['card with no record', {}, null, false],
+    // A Room with both doors locked has no name, and is no hidden card.
+    ['a Room with both doors locked', { name: '', permanent: ROOM }, null, false],
   ])('%s', (_, over, source, back) => {
     expect(imageSourceOf(object(over))).toEqual(source)
     expect(showsBack(object(over))).toBe(back)
   })
 
-  it('shows the face in use', () => {
-    expect(faceOf(object({}))).toBe(0)
-    expect(faceOf(object({ face: 1 }))).toBe(1)
+  it.each<[string, Partial<ObjectView>, number]>([
+    ['the front face', {}, 0],
+    ['the back face', { face: 1 }, 1],
+    // The halves of a Room are doors of one picture.
+    ['the second door of a Room, which is no back face', { face: 1, permanent: ROOM }, 0],
+  ])('shows the face in use: %s', (_, over, face) => {
+    expect(faceOf(object(over))).toBe(face)
   })
 })

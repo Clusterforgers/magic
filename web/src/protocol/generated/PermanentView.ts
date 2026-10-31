@@ -24,4 +24,9 @@ prepared?: boolean,
 /**
  * The level of a Class (CR 716.2); left out for any other permanent.
  */
-level?: number, };
+level?: number, 
+/**
+ * Which doors of a Room are unlocked (CR 709.5), in the order of its faces; left out for any other permanent. A
+ * public fact of the permanent.
+ */
+doors?: [boolean, boolean], };

@@ -99,6 +99,10 @@ fn effects_trigger(effects: &[Effect]) -> bool {
             first: win,
             second: lose,
             ..
+        }
+        | Effect::Either {
+            first: win,
+            second: lose,
         } => effects_trigger(win) || effects_trigger(lose),
         Effect::Pay { paid, unpaid, .. } => effects_trigger(paid) || effects_trigger(unpaid),
         Effect::CastFromZone { otherwise, .. } => effects_trigger(otherwise),
@@ -174,6 +178,10 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
             first: win,
             second: lose,
             ..
+        }
+        | Effect::Either {
+            first: win,
+            second: lose,
         } => effects_state_trigger(win) || effects_state_trigger(lose),
         Effect::Pay { paid, unpaid, .. } => {
             effects_state_trigger(paid) || effects_state_trigger(unpaid)
