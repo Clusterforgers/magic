@@ -65,11 +65,21 @@ fn change_zone(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -> Tr
         "ChangeZone",
         &[
             "Origin", "Destination", "ValidTgts", "Defined", "TargetMin", "TargetMax",
-            "LibraryPosition", "Tapped",
+            "LibraryPosition", "Tapped", "RememberChanged",
         ],
     )?;
     let what = subject(ctx, p, "Self", Some(origin))?;
-    Ok(vec![moves(what, goes(p, destination)?)])
+    let mut effect = moves(what.clone(), goes(p, destination)?);
+    if p.get("RememberChanged") == Some("True") {
+        // Only an exile binds the new objects; a move of a target does not name what it moved.
+        if effect.get("Exile").is_none() {
+            return unmapped("key:ChangeZone.RememberChanged-move");
+        }
+        let name = ctx.fresh("exiled");
+        effect["Exile"]["as"] = json!(name);
+        ctx.remembered = Some(json!({ "Bound": name }));
+    }
+    Ok(vec![effect])
 }
 
 /// The library search: the search, the move of what was found, then the shuffle.
@@ -78,7 +88,7 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         p,
         "ChangeZone.Search",
         &[
-            "Origin", "Destination", "ChangeType", "ChangeNum", "Hidden", "Mandatory", "Tapped", "ShuffleNonMandatory",
+            "Origin", "Destination", "ChangeType", "ChangeNum", "Hidden", "Mandatory", "Tapped", "ShuffleNonMandatory", "RememberChanged",
             "Reveal", "LibraryPosition",
         ],
     )?;
@@ -97,6 +107,9 @@ fn search(ctx: &mut Ctx, p: &Params, destination: &str) -> Tr<Vec<Value>> {
         find["reveal"] = json!(true);
     }
     let found = json!({ "Bound": bind });
+    if p.get("RememberChanged") == Some("True") {
+        ctx.remembered = Some(found.clone());
+    }
     Ok(vec![
         json!({ "Search": find }),
         moves(found, goes(p, destination)?),

@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::{amount, counter_kind};
 use super::ctx::{Ctx, Tr, only, unmapped};
-use super::keyword::keyword_list;
+use super::keyword::{keyword_list, keyword_value};
 use super::valid::{defined, objects, selector_any, subject};
 use crate::forge::script::Params;
 
@@ -84,14 +84,37 @@ fn damage_all(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 fn counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    only(p, "Counter", &["TargetType", "ValidTgts"])?;
+    only(p, "Counter", &["TargetType", "ValidTgts", "UnlessCost", "UnlessPayer"])?;
     if p.get("TargetType") != Some("Spell") {
         return unmapped("key:Counter.TargetType");
     }
     let mut selector = vec![json!("Spell")];
     selector.extend(selector_any(ctx, p.get("ValidTgts").unwrap_or("Card"))?);
     let what = ctx.target(json!({"what": {"Object": selector}}))?;
-    Ok(json!({"Counter": {"what": what}}))
+    let counter = json!({"Counter": {"what": what.clone()}});
+    let Some(unless) = p.get("UnlessCost") else {
+        return Ok(counter);
+    };
+    if !matches!(p.get("UnlessPayer"), None | Some("TargetedController")) {
+        return unmapped("key:Counter.UnlessPayer");
+    }
+    let Value::String(cost) = super::cost::cost(ctx, unless)? else {
+        return unmapped("key:Counter.UnlessCost-shape");
+    };
+    if cost.contains('X') {
+        return unmapped("key:Counter.UnlessCost-X");
+    }
+    let who = json!({ "ControllerOf": what });
+    Ok(json!({"Pay": {"who": who, "cost": cost, "unpaid": [counter]}}))
+}
+
+/// The restriction a hidden keyword (`HIDDEN CARDNAME can't block.`) stands for.
+fn hidden(word: &str) -> Option<Value> {
+    Some(match word.trim_end_matches('.') {
+        "HIDDEN CARDNAME can't block" => json!("CantBlock"),
+        "HIDDEN CARDNAME can't attack" => json!("CantAttack"),
+        _ => return None,
+    })
 }
 
 /// The modifications of a pump line: power and toughness, then keywords.
@@ -103,8 +126,11 @@ fn pump_mods(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
         mods.push(json!({"ModifyPT": {"power": power, "toughness": toughness}}));
     }
     if let Some(keywords) = p.get("KW") {
-        for keyword in keyword_list(ctx, keywords)? {
-            mods.push(json!({ "AddKeyword": keyword }));
+        for word in keywords.split('&').map(str::trim) {
+            mods.push(match hidden(word) {
+                Some(modification) => modification,
+                None => json!({ "AddKeyword": keyword_value(ctx, word)? }),
+            });
         }
     }
     if mods.is_empty() {

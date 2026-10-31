@@ -31,7 +31,7 @@ pub fn parts(cost: &str) -> Vec<&str> {
 }
 
 /// Whether a cost word is a mana symbol (`2`, `R`, `W/U`, `X`).
-fn is_mana(word: &str) -> bool {
+pub fn is_mana(word: &str) -> bool {
     !word.is_empty()
         && (word.chars().all(|c| c.is_ascii_digit())
             || (word.len() <= 3

@@ -11,6 +11,9 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     ctx.reset();
     let p = Params::parse(body);
     let event = p.get("Event").unwrap_or_default();
+    if event == "Untap" {
+        return doesnt_untap(&p);
+    }
     if event != "Moved" {
         return unmapped(format!("replacement:{event}"));
     }
@@ -29,6 +32,26 @@ pub fn replacement_line(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     let part = ctx.sub(name)?;
     let by = enters_by(ctx, &part)?;
     Ok(json!({"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": by}}))
+}
+
+/// "Doesn't untap during its controller's untap step": the untap that can't happen.
+fn doesnt_untap(p: &Params) -> Tr<Value> {
+    only_keys(
+        p,
+        &["Event", "ValidCard", "ValidStepTurnToController", "Layer", "ActiveZones"],
+    )?;
+    if p.get("Layer") != Some("CantHappen") || p.get("ValidStepTurnToController") != Some("You") {
+        return unmapped("replacement:Untap-shape");
+    }
+    if !matches!(p.get("ActiveZones"), None | Some("Battlefield")) {
+        return unmapped("replacement:Untap-zone");
+    }
+    let affected = match p.get("ValidCard") {
+        Some("Card.Self" | "Creature.Self") => "This",
+        Some("Creature.EnchantedBy" | "Card.EnchantedBy" | "Creature.AttachedBy") => "Attached",
+        _ => return unmapped("replacement:Untap-affected"),
+    };
+    Ok(json!({"Static": {"affected": affected, "mods": ["DoesntUntap"]}}))
 }
 
 /// What the permanent does as it enters, from the part a replacement names.

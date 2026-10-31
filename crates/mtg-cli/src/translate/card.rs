@@ -77,20 +77,20 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
     let mut out = FaceOut::default();
     for body in &face.keywords {
         for result in keyword_abilities(&mut ctx, body) {
-            take(&mut out, result.map(Some));
+            take(&mut out, result.map(|ability| vec![ability]));
         }
     }
     for body in &face.abilities {
         take(&mut out, ability_line(&mut ctx, body));
     }
     for group in trigger_groups(&face.triggers) {
-        take(&mut out, merged_trigger(&mut ctx, &group).map(Some));
+        take(&mut out, merged_trigger(&mut ctx, &group).map(|ability| vec![ability]));
     }
     for body in &face.statics {
-        take(&mut out, static_line(&mut ctx, body).map(Some));
+        take(&mut out, static_line(&mut ctx, body).map(|ability| vec![ability]));
     }
     for body in &face.replacements {
-        take(&mut out, replacement_line(&mut ctx, body).map(Some));
+        take(&mut out, replacement_line(&mut ctx, body).map(|ability| vec![ability]));
     }
     out
 }
@@ -155,11 +155,12 @@ fn merged_trigger(ctx: &mut Ctx, group: &[&String]) -> Tr<Value> {
 }
 
 /// Records the result of one line: the ability when it parses, else the gap.
-fn take(out: &mut FaceOut, result: Tr<Option<Value>>) {
+fn take(out: &mut FaceOut, result: Tr<Vec<Value>>) {
     out.lines += 1;
-    match result.and_then(|value| value.map(checked).transpose()) {
-        Ok(Some(ability)) => out.abilities.push(ability),
-        Ok(None) => out.lines -= 1,
+    let parsed: Tr<Vec<Value>> = result.and_then(|list| list.into_iter().map(checked).collect());
+    match parsed {
+        Ok(list) if list.is_empty() => out.lines -= 1,
+        Ok(list) => out.abilities.extend(list),
         Err(gap) => out.gaps.push(gap),
     }
 }

@@ -76,10 +76,16 @@ pub struct Ctx<'a> {
     pub svars: &'a BTreeMap<String, String>,
     /// The `Types:` line of the face.
     pub types: &'a str,
+    /// Forge's rendering of the card's text, only to tell two spellings of the same rule apart.
+    pub oracle: &'a str,
+    /// The `ManaCost:` line of the face.
+    pub mana_cost: &'a str,
     /// The checkout's subtypes and tokens.
     pub world: &'a World,
     /// The target specifications of the ability being translated, in order.
     pub targets: Vec<Value>,
+    /// The objects the latest zone change moved (`RememberChanged$`), which `Defined$ Remembered` names later.
+    pub remembered: Option<Value>,
     binds: usize,
     depth: usize,
 }
@@ -93,8 +99,11 @@ impl<'a> Ctx<'a> {
         Ctx {
             svars: &face.svars,
             types: &face.types,
+            oracle: &face.oracle,
+            mana_cost: &face.mana_cost,
             world,
             targets: Vec::new(),
+            remembered: None,
             binds: 0,
             depth: 0,
         }
@@ -103,6 +112,7 @@ impl<'a> Ctx<'a> {
     /// Starts the next ability: no targets and no bound names yet.
     pub fn reset(&mut self) {
         self.targets.clear();
+        self.remembered = None;
         self.binds = 0;
         self.depth = 0;
     }

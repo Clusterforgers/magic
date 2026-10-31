@@ -220,8 +220,16 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
         }
     };
     let amount = p.get("Amount").unwrap_or_default();
+    // A number or coloured symbols are the mana; a count (an `SVar`) is how many times {1} applies.
+    if ctx.svar(amount).is_some() {
+        let per = super::amount::amount(ctx, amount)?;
+        return Ok(json!({"CostModifier": {"applies_to": applies, "change": change, "mana": "{1}", "per": per}}));
+    }
     let Value::String(mana) = cost(ctx, amount)? else {
         return unmapped("static:CostModifier-Amount");
     };
+    if mana.contains('X') {
+        return unmapped("static:CostModifier-X");
+    }
     Ok(json!({"CostModifier": {"applies_to": applies, "change": change, "mana": mana}}))
 }

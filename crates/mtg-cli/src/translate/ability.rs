@@ -8,20 +8,40 @@ use super::ctx::{Ctx, Tr, unmapped};
 use super::effects::chain;
 use crate::forge::script::Params;
 
-/// An `A:` line as an ability; `None` for a line the DSL states by other means (an Aura's attach).
-pub fn ability_line(ctx: &mut Ctx, body: &str) -> Tr<Option<Value>> {
+/// The abilities of an `A:` line: none for a line the DSL states by other means (an Aura's attach), one, or a spell with
+/// the additional cost its `Cost$` states.
+pub fn ability_line(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
     ctx.reset();
     let p = Params::parse(body);
     if p.has("SP") {
         if ctx.is_aura() && p.get("SP") == Some("Attach") {
-            return Ok(None);
+            return Ok(Vec::new());
         }
-        return spell(ctx, &p).map(Some);
+        return spell(ctx, &p);
     }
     if p.has("AB") {
-        return activated(ctx, &p).map(Some);
+        return activated(ctx, &p).map(|ability| vec![ability]);
     }
     unmapped("line:ability-without-SP-or-AB")
+}
+
+/// The cost a spell pays besides its mana cost, as the `AdditionalCost` ability that states it. The mana of the cost must
+/// be the card's own: another amount is an alternative cost.
+fn additional_cost(ctx: &Ctx, text: &str) -> Tr<Option<Value>> {
+    let words = super::cost::parts(text);
+    let mana: Vec<&str> = words.iter().copied().filter(|w| super::cost::is_mana(w)).collect();
+    let printed: Vec<&str> = ctx.mana_cost.split_whitespace().collect();
+    if !mana.is_empty() && mana != printed {
+        return unmapped("cost:spell-different-mana");
+    }
+    let Value::Array(items) = cost(ctx, text)? else {
+        return Ok(None);
+    };
+    let items: Vec<Value> = items.into_iter().filter(|item| item.get("Mana").is_none()).collect();
+    if items.is_empty() {
+        return Ok(None);
+    }
+    Ok(Some(json!({"AdditionalCost": {"cost": items, "required": true}})))
 }
 
 /// The keys only an activated ability has.
@@ -34,21 +54,22 @@ const ACTIVATION: [&str; 6] = [
     "Ultimate",
 ];
 
-fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+fn spell(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     if let Some(key) = ACTIVATION.iter().find(|key| p.has(key)) {
         return unmapped(format!("key:Spell.{key}"));
     }
-    if let Some(text) = p.get("Cost")
-        && !matches!(cost(ctx, text), Ok(Value::String(_)))
-    {
-        return unmapped("cost:spell-additional");
-    }
+    let extra = match p.get("Cost") {
+        Some(text) => additional_cost(ctx, text)?,
+        None => None,
+    };
     let effects = chain(ctx, p)?;
     let mut ability = json!({ "effects": effects });
     if !ctx.targets.is_empty() {
         ability["targets"] = Value::Array(ctx.targets.clone());
     }
-    Ok(json!({ "Spell": ability }))
+    let mut out: Vec<Value> = extra.into_iter().collect();
+    out.push(json!({ "Spell": ability }));
+    Ok(out)
 }
 
 fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {

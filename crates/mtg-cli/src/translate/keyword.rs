@@ -182,16 +182,6 @@ fn other_keyword(ctx: &Ctx, name: &str, first: Option<&str>, second: Option<&str
         ("Partner", Some(group)) => Ok(json!({"PartnerGroup": group})),
         ("Partner with", Some(with)) => Ok(json!({"PartnerWith": with})),
         ("Landwalk", Some(land)) => Ok(json!({"Landwalk": selector_any(ctx, land)?})),
-        ("TypeCycling", Some(find)) => {
-            let find = match find {
-                "Basic" => vec![json!({"Supertype": "Basic"}), json!({"Type": "Land"})],
-                other => selector_any(ctx, other)?,
-            };
-            let Some(cost_text) = second else {
-                return unmapped("keyword:TypeCycling-shape");
-            };
-            Ok(json!({"Typecycling": {"find": find, "cost": cost(ctx, cost_text)?}}))
-        }
         (word, None) if word.ends_with("walk") => landwalk(word),
         _ => unmapped(format!("keyword:{name}")),
     }

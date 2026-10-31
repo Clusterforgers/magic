@@ -209,6 +209,10 @@ pub struct Face {
     pub types: String,
     /// The `AlternateMode:` line (`Split`, `Modal`, `DoubleFaced`, `Adventure` and the like).
     pub alternate_mode: String,
+    /// The `ManaCost:` line.
+    pub mana_cost: String,
+    /// The `Oracle:` line (Forge's rendering of the card's text, only a hint).
+    pub oracle: String,
     /// The `PT:` line.
     pub pt: Option<String>,
     /// The `Colors:` line (tokens).
@@ -254,6 +258,8 @@ impl Script {
                 "Name" => body.clone_into(&mut face.name),
                 "Types" => body.clone_into(&mut face.types),
                 "AlternateMode" => body.clone_into(&mut face.alternate_mode),
+                "Oracle" => body.clone_into(&mut face.oracle),
+                "ManaCost" => body.clone_into(&mut face.mana_cost),
                 "PT" => face.pt = Some(body.to_owned()),
                 "Colors" => face.colors = Some(body.to_owned()),
                 "K" => face.keywords.push(body.to_owned()),

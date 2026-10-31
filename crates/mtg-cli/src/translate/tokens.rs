@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::amount::amount;
 use super::ctx::{CARD_TYPES, Ctx, SUPERTYPES, Tr, only, unmapped};
-use super::keyword::keyword_value;
+use super::card::translate_face;
 use super::valid::defined;
 use crate::forge::script::{Face, Params};
 
@@ -67,11 +67,6 @@ fn token_ref(ctx: &Ctx, face: &Face) -> Tr<Value> {
 }
 
 fn custom(ctx: &Ctx, face: &Face, words: &[&str]) -> Tr<Value> {
-    if !(face.abilities.is_empty() && face.triggers.is_empty() && face.statics.is_empty())
-        || !face.replacements.is_empty()
-    {
-        return unmapped("token:abilities");
-    }
     let types: Vec<&&str> = words.iter().filter(|w| CARD_TYPES.contains(*w)).collect();
     let supertypes: Vec<&&str> = words.iter().filter(|w| SUPERTYPES.contains(*w)).collect();
     let subtypes: Vec<&&str> = words
@@ -101,13 +96,13 @@ fn custom(ctx: &Ctx, face: &Face, words: &[&str]) -> Tr<Value> {
         spec["power"] = json!(power);
         spec["toughness"] = json!(toughness);
     }
-    if !face.keywords.is_empty() {
-        let abilities: Tr<Vec<Value>> = face
-            .keywords
-            .iter()
-            .map(|keyword| keyword_value(ctx, keyword).map(|value| json!({ "Keyword": value })))
-            .collect();
-        spec["abilities"] = Value::Array(abilities?);
+    // The lines of a token script are read like those of a card: a token with a line left out is not written.
+    let inner = translate_face(ctx.world, face);
+    if let Some(gap) = inner.gaps.into_iter().next() {
+        return unmapped(format!("token:{}", gap.0));
+    }
+    if !inner.abilities.is_empty() {
+        spec["abilities"] = Value::Array(inner.abilities);
     }
     Ok(json!({ "Custom": spec }))
 }

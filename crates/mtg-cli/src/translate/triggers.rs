@@ -34,8 +34,11 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             about_this(effect);
         }
     }
+    // Paying a cost is a choice already: no "you may" beside "you may pay".
+    let pays = matches!(effects.as_slice(), [only] if only.get("Pay").is_some());
     match p.get("OptionalDecider") {
         None => {}
+        Some("You") | Some("TriggeredCardController") if pays => {}
         Some("You") => effects = vec![json!({"May": {"effects": effects}})],
         Some("TriggeredCardController") if itself => {
             effects = vec![json!({"May": {"effects": effects}})];

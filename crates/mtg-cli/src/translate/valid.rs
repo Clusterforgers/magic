@@ -161,11 +161,13 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
             None => preds.extend(property(ctx, prop)?),
         }
     }
-    // "Pirates" and "Elves" name the creatures of the type: the type word is left out beside a creature type.
+    // "Pirates" and "Elves" name the creatures of the type, "Pirate creatures" says it: the type word is left out beside a
+    // creature type unless Forge's rendering of the text has it.
+    let says_creature = |name: &str| ctx.oracle.contains(&format!("{name} creature"));
     let creature_type = preds.iter().any(|pred| {
         pred.get("Subtype")
             .and_then(Value::as_str)
-            .is_some_and(|name| !NOT_CREATURE_TYPES.contains(&name))
+            .is_some_and(|name| !NOT_CREATURE_TYPES.contains(&name) && !says_creature(name))
     });
     if creature_type {
         preds.retain(|pred| *pred != json!({"Type": "Creature"}));
@@ -246,6 +248,10 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Enchanted" | "Equipped" => Ok(json!("Attached")),
         "EnchantedController" | "EquippedController" => controller(json!("Attached")),
         "EnchantedPlayer" => Ok(json!("AttachedPlayer")),
+        "Remembered" => ctx
+            .remembered
+            .clone()
+            .map_or_else(|| unmapped("defined:Remembered-without-a-change"), Ok),
         "TriggeredCard" | "TriggeredPlayer" | "TriggeredAttacker" | "TriggeredBlocker" => {
             Ok(json!("Triggering"))
         }
