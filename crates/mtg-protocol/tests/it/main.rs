@@ -47,6 +47,7 @@ mod mana_lasts_view;
 mod mana_rider_hidden;
 mod manifest_view;
 mod manual_library_view;
+mod manual_owed_view;
 mod manual_roll_view;
 mod manual_show_view;
 mod manual_view;

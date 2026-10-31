@@ -47,7 +47,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first.
 
-- [~] (v93a) (hold-flag) The client's by-hand hold follows the server's rule: the wire says whether a manual clause is owed at resolution, so "Apply the card's text by hand" shows only while the seat is held, names the card and ends "then continue" (`docs/server.md`, Stops; `web/src/play/byHand.ts`)
 - [~] (ad1d) (admin-guards) The admin account cannot be deleted from Account settings (409 and a plain warning), `docs/deploy.md` names the recovery, and the Accounts page scrolls to the new credentials, "Copy both" adds the site address, the headings agree, the credential routes do not echo serde detail and the new-password field opts out of saved logins
 - [ ] (ad1b) The admin resets a friend's password and removes an account from the Accounts page (the removed account leaves its live games as in `DELETE /api/auth/account`), since a forgotten password has no other way back (`docs/server.md`, Admin)
 - [ ] (ad1c) The Accounts page in the layout gate at the six sizes in both themes (a dev route that stands for it) and an e2e spec of the admin flow on the Postgres server: sign-in, make an account, the friend signs in, the closed sign-up page (`docs/web.md`)

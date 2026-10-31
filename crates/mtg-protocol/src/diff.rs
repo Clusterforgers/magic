@@ -89,6 +89,7 @@ mod tests {
             attachments: Vec::new(),
             gives: None,
             manual: Vec::new(),
+            manual_owed: false,
             read: false,
             note: None,
             identity: None,

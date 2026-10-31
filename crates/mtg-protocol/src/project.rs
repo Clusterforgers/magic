@@ -344,6 +344,10 @@ impl ObjectView {
         };
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
+        let name = shown_name(state, sight.viewer, object, &card.name);
+        // An ability on the stack tells whether its source's card is owed when it resolves wherever it names the source,
+        // so a client holds the seat across batches without the source in its view.
+        let manual_owed = (printed || !name.is_empty()) && card.manual_owed();
         // A face-down permanent's abilities are the 2/2's; the card behind it is read off `abilities`.
         let activated = if printed && !behind && sight.reads_rules_of(object) {
             activated_views(state, id, &chars.abilities, &card.name)
@@ -355,7 +359,7 @@ impl ObjectView {
             owner: object.owner(),
             controller: controller_of(state, id).unwrap_or_else(|| object.controller()),
             zone: object.zone(),
-            name: shown_name(state, sight.viewer, object, &card.name),
+            name,
             mana_cost: card.mana_cost.clone().filter(|_| printed),
             supertypes: card
                 .supertypes
@@ -421,6 +425,7 @@ impl ObjectView {
             } else {
                 Vec::new()
             },
+            manual_owed,
             read: printed && card.read,
             note: mtg_engine::sight::note_of(state, id).map(str::to_owned),
             identity: identity_of(state, object, card).filter(|_| printed),
@@ -463,6 +468,7 @@ impl ObjectView {
             copy: None,
             merged: Vec::new(),
             manual: Vec::new(),
+            manual_owed: false,
             read: false,
             note: None,
             identity: None,
