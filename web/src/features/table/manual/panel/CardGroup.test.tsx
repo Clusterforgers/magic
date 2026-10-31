@@ -185,7 +185,8 @@ describe('the mark on the card picked', () => {
     for (const step of steps) {
       if (step === 'arm') await user.click(pickButton())
       else if (step === 'cancel') await user.keyboard('{Escape}')
-      else if (step === 'clear') await user.click(screen.getByRole('button', { name: 'Clear the picked card' }))
+      else if (step === 'clear')
+        await user.click(screen.getByRole('button', { name: 'Clear the picked card' }))
       else await user.click(cardButton(step[0]))
     }
   }

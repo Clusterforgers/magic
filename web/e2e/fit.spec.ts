@@ -698,6 +698,30 @@ test('the game-over screen of a real game fits at every size, with the way to a 
       run,
     )
     await atEverySize(ada.page, ['result', 'again'], { label: 'the game-over screen', table: false })
+    // A look back: the result closes for the final table and its log, read only, and comes back.
+    const page = ada.page
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.locator('[data-slot="review-open"]').click()
+    const strip = page.locator('[data-slot="review-bar"]')
+    await expect(strip).toBeVisible()
+    await expect(page.getByRole('region', { name: 'Game table' })).toBeVisible()
+    await expect(strip.getByRole('link', { name: 'Back to Play' })).toBeVisible()
+    const strays = await page.evaluate(() => {
+      const { top, bottom, left, right } =
+        document.querySelector('[data-slot="review-bar"]')?.getBoundingClientRect() ?? new DOMRect()
+      return {
+        inside: top >= 0 && left >= 0 && right <= innerWidth && bottom <= innerHeight,
+        page: document.documentElement.scrollHeight > innerHeight,
+      }
+    })
+    expect(strays).toEqual({ inside: true, page: false })
+    // The Log tab lists what happened, and no decision waits.
+    await page.getByRole('tab', { name: /^Log/ }).click()
+    await expect(page.getByRole('log').first()).toBeVisible()
+    await expect(page.locator('[data-decision]')).toHaveCount(0)
+    await strip.getByRole('button', { name: 'Show result' }).click()
+    await expect(page.locator(THINGS.result)).toBeVisible()
+    await expect(strip).toHaveCount(0)
   } finally {
     await Promise.all(players.map(({ context }) => context.close()))
   }

@@ -66,7 +66,11 @@ describe('the hand dock at a decision', () => {
   it('keeps the dock of a phone as it is', () => {
     room.width = 366
     room.height = 106
-    renderTable({ seats: 2, state: waitingOn('Mulligan'), options: { viewport: { width: 390, height: 844 } } })
+    renderTable({
+      seats: 2,
+      state: waitingOn('Mulligan'),
+      options: { viewport: { width: 390, height: 844 } },
+    })
     expect(grown()).toBe('')
   })
 })

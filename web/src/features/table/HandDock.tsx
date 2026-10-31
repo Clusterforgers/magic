@@ -93,7 +93,12 @@ export const HandDock = memo(function HandDock({
     room === null || cards === null || coarse
       ? 0
       : opening
-        ? openingDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: openingMost })
+        ? openingDockNeed({
+            width: lineWidth,
+            count: cards.length,
+            commanders: waiting.size,
+            most: openingMost,
+          })
         : growMost <= 0
           ? 0
           : handDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: growMost })

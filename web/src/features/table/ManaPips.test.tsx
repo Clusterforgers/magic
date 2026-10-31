@@ -41,13 +41,16 @@ describe('ManaPips', () => {
     ['{C/W}', 'from-mana-colorless', 'to-mana-white'],
     ['{2/W}', 'from-muted', 'to-mana-white'],
     ['{2/B}', 'from-muted', 'to-mana-black'],
-  ])('draws %s as a disc split in two halves with no letter, whose name tells the colours', (text, from, to) => {
-    const [pip] = draw(text).pips
-    expect(pip?.className).toContain('bg-linear-to-br')
-    expect(pip?.className).toContain(from)
-    expect(pip?.className).toContain(to)
-    expect(pip?.textContent).toBe('')
-  })
+  ])(
+    'draws %s as a disc split in two halves with no letter, whose name tells the colours',
+    (text, from, to) => {
+      const [pip] = draw(text).pips
+      expect(pip?.className).toContain('bg-linear-to-br')
+      expect(pip?.className).toContain(from)
+      expect(pip?.className).toContain(to)
+      expect(pip?.textContent).toBe('')
+    },
+  )
 
   it.each([
     ['{W/P}', 'bg-mana-white'],
