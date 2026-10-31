@@ -87,6 +87,9 @@ pub fn survey(
             .contains(&Blocker::Rules("invalid".to_owned()));
         let ours = match result.rules {
             RulesSource::HandWritten => library.card(&printed.oracle_id).map(verbs_of),
+            RulesSource::Draft => library
+                .draft(&printed.oracle_id)
+                .map(|draft| verbs_of(&draft.card)),
             RulesSource::Compiled if !invalid => compile(printed).card.as_ref().map(verbs_of),
             RulesSource::Compiled | RulesSource::Absent => None,
         }

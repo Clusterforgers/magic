@@ -13,6 +13,7 @@ pub mod check_rules;
 pub mod compile;
 pub mod coverage;
 pub mod coverage_all;
+pub mod coverage_deck;
 pub mod error;
 pub mod fetch;
 pub mod files;
@@ -25,6 +26,7 @@ pub mod pacer;
 pub mod popularity;
 pub mod progress;
 pub mod propose;
+pub mod reads;
 pub mod status;
 pub mod w19b_pairs;
 pub mod w2a_promote;
@@ -119,6 +121,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::FixMarks(args) => {
             fix_marks::fix_marks(&connect(cli.database_url).await?, &args).await
         }
+        Command::Reads(args) => reads::reads(&connect(cli.database_url).await?, &args).await,
         Command::ForgeCheck(args) => {
             let db = connect(cli.database_url).await?;
             forge::forge_check(&db, &args).await

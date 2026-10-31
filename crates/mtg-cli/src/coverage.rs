@@ -3,37 +3,79 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 
-use mtg_cards::coverage::{PreconCard, analyze};
+use mtg_cards::coverage::{PreconCard, Report, analyze_with};
 use mtg_cards::{PrintedCard, PrintedFace};
 use mtg_db::{Card, Database, DeckBoard, PreconDeckSummary, StoredFace};
 
 use crate::args::CoverageArgs;
 use crate::cache::Cache;
 use crate::coverage_all::coverage_all;
+use crate::coverage_deck;
 use crate::error::CliError;
+use crate::popularity::Popularity;
+use crate::reads::draft_library;
 use crate::status::missing_table;
 
 /// The report the arguments ask for as the text to print: that of the precons, or with `--all` that of every
-/// Commander-legal card.
+/// Commander-legal card. With `--deck` the report of the precons ends in the list of their cards to draft.
 pub async fn report(db: &Database, cache: &Cache, args: &CoverageArgs) -> Result<String, CliError> {
     if args.all {
-        coverage_all(db, cache, args).await
-    } else {
-        coverage(db, args).await
+        return coverage_all(db, cache, args).await;
     }
+    let precons = analyzed(db, args).await?;
+    let text = precons.render(args.top);
+    if args.deck.is_none() {
+        return Ok(text);
+    }
+    let list = coverage_deck::render(&precons.report, &Popularity::from_cache(cache)?);
+    Ok(format!("{text}\n\n{list}"))
 }
 
 /// The report on the precons the arguments select (all by default), as the text to print.
 pub async fn coverage(db: &Database, args: &CoverageArgs) -> Result<String, CliError> {
-    let (cards, unmatched) = precon_cards(db, args.deck.as_deref()).await?;
-    let mut text = analyze(&cards, &mtg_engine::caps()).render(args.top);
-    if unmatched > 0 {
-        let _ = write!(
-            text,
-            "\n{unmatched} card lines match no stored card and are left out\n"
-        );
+    Ok(analyzed(db, args).await?.render(args.top))
+}
+
+/// The cards of the selected precons as analysed, with the lines and drafts the analysis left out.
+struct Precons {
+    report: Report,
+    /// Card lines that match no stored card.
+    unmatched: u64,
+    /// Stored drafts that do not load.
+    skipped_drafts: usize,
+}
+
+impl Precons {
+    /// The report as the text to print, with a line for what the analysis left out.
+    fn render(&self, top: usize) -> String {
+        let mut text = self.report.render(top);
+        if self.unmatched > 0 {
+            let _ = write!(
+                text,
+                "\n{} card lines match no stored card and are left out\n",
+                self.unmatched
+            );
+        }
+        if self.skipped_drafts > 0 {
+            let _ = write!(
+                text,
+                "\n{} stored drafts do not load and are left out\n",
+                self.skipped_drafts
+            );
+        }
+        text.trim_end().to_owned()
     }
-    Ok(text.trim_end().to_owned())
+}
+
+/// The selected precons judged with the embedded rules and the stored drafts with their verdicts.
+async fn analyzed(db: &Database, args: &CoverageArgs) -> Result<Precons, CliError> {
+    let (cards, unmatched) = precon_cards(db, args.deck.as_deref()).await?;
+    let (library, skipped_drafts) = draft_library(db).await?;
+    Ok(Precons {
+        report: analyze_with(&cards, &library, &mtg_engine::caps()),
+        unmatched,
+        skipped_drafts,
+    })
 }
 
 /// The distinct cards of the main boards of the stored precons that `deck` selects (all when `None`), with their copies
