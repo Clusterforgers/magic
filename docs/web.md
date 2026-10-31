@@ -439,6 +439,29 @@ Sign-in uses the server's accounts ([server.md](server.md); bodies in [protocol.
 
 - The not-validated list (`features/decks/unvalidated`) is `/decks/unvalidated` for every saved deck and `/decks/$deckId/unvalidated` for one (route files `decks_.unvalidated.tsx` and `decks_.$deckId_.unvalidated.tsx`; signed out goes to `/login?next=…`). `useUnvalidated` reads `GET /api/decks` and checks each deck whose summary counts a card that is not Verified (`POST /api/decks/check`, four at a time; a deck that runs whole is not asked), or reads one deck with `GET /api/decks/{id}`; a deck whose check fails is named and the others still show, and a failed list, an ended session and a server without decks have their own notices. `model.ts` (pure) merges the cards by oracle id with the decks that hold them, the cards of most decks first and then by name (`mergeDecks`), or groups them by deck (`groupByDeck`), and narrows them to Partial, Manual, Stale or Unplayable, each filter with its count. A card (`UnvalidatedCard`) shows its picture (`CardPicture`), name, `SupportMark`, its decks as links and each clause (`ClauseList`): the words of the card the span covers, quoted, beside the plain reason; a card with no clause of its own shows its whole text and the state's words. A span counts Unicode scalar values of one face's text, which `useCardTexts` reads from `GET /api/cards/{oracle_id}` once per card and four at a time, shared by the lists of one client; a card that cannot be read shows the reason alone and is counted in a note. "Copy as text" copies the cards shown (`copyText`), one block each: `Card Name (Manual) - decks: A, B`, then `  - "<span>": <reason>` per clause (the reason alone when the text is unknown; lines of the card joined with " / "). It waits, as a disabled "Reading card text…", until every card is read.
 
+- Reading cards (`features/reads`, endpoints in [server.md](server.md), Reads): `/read?deck=<id>` or `/read?precon=<code>` (`ReadPage`, `page` width; signed out goes to `/login?next=…`) walks the deck's `ReadQueue` one card at a time; `ReadDialog` shows one card the same way. `net/reads.ts` `createReadsApi({fetch, baseUrl})` is the typed client.
+  - Ways in: the builder's check bar and the lobby's deck check say "N cards to read" (`summary.to_read`) as a link; the precon dialog has "Read N cards" (a guest sees "Sign in to read them"); the table's card preview of a card played by hand whose `CardDetail.draft` is `pending` offers "Read the game's version", and of an object with `read` says "Runs on a player's read" with "Reads wrong…".
+  - One card is a two-column table, one row per printed clause: the printed words on the left, the game's reading on the right (the `wording` when there is one, then the `steps` as a short list), so a mismatch shows on one line. Under 640 px each row stacks the game's reading below the printed words.
+  - "Reads correctly" (key C) is enabled 2 s after the card is shown and ignores a held key; "Reads wrong…" (key W) opens a required note of at most 280 characters with Send. "Skip" moves the card to the end of the queue without a verdict. A verdict shows the next card; a `stale_read` answer swaps in the current draft with "The rules changed while you read".
+  - A card judged on an older hash says "Rules changed since you read it". The end of the queue says what follows: "All 14 read. They run automatically from the next game." with a link back to where the reader came from.
+
+```
+Read cards · Adaptive Enchantment                         3 of 14   Skip
+--------------------------------------------------------------------------
+[picture]  Sigil of the Empty Throne   {3}{W}{W}   Enchantment
+           Nobody has read it yet: played by hand until someone does
+
+  Printed text                          The game will
+  ------------------------------------  --------------------------------------
+  Whenever you cast an enchantment      Whenever you cast an enchantment
+  spell, create a 4/4 white Angel       spell, create a 4/4 white Angel
+  creature token with flying.           creature token with flying.
+                                        - when: you cast an enchantment spell
+                                        - create 1 token: 4/4 white Angel, flying
+--------------------------------------------------------------------------
+  [ Reads correctly  C ]   [ Reads wrong…  W ]
+```
+
 - The create page waits until it is known who is signed in; a signed-in creator gets seat 1 named after the account. The lobby shows "signed in as" on seats with an account (`useSeatAccounts`).
 - Game page: with a seat link, `GamePage` joins by token whoever is signed in (the server binds an unbound seat to the signed-in visitor). Without one and signed in, `GamePage account=<username>` opens `/ws/{game}` (no `GameSocketOptions.token`) and the cookie of the upgrade picks the seat; `Join` carries the username (the server ignores `name`). `ConnectionNotice` words this session connection (`via="session"`).
 
