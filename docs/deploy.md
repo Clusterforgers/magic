@@ -6,7 +6,7 @@ How the game runs on the k3s cluster and how a release reaches it.
 
 - `deploy/server.Dockerfile` builds `mtg-server` and `mtg-cli` into one Debian slim image (user 10001); `deploy/web.Dockerfile` builds the client and serves it with nginx (`deploy/nginx.conf`: `/assets` cached for a year, every other path is the client). Both are `linux/amd64`.
 - The Helm chart `apps/magic` of `k3s-cluster-manifests` runs them in the namespace `magic`, pinned to `queen`: a Postgres StatefulSet, the server (one replica, `Recreate`, an init container runs `mtg-cli migrate`), the web, one Ingress on `magic.hivemindcloud.dk` (`/api`, `/ws` and `/healthz` to the server, everything else to the web), a post-sync Job that runs `mtg-cli compile`, and a suspended CronJob `magic-ingest` for the card data. The cluster side (secret, DNS, ingest) is in that repo's `docs/magic.md`.
-- The server runs behind the nginx ingress: `MTG_TRUSTED_PROXIES=1`, `MTG_COOKIE_SECURE=1`, `MTG_ALLOWED_ORIGINS=https://<host>`. `server.registration` in the chart's `values.yaml` sets `MTG_REGISTRATION`; the picture cache is a volume of `server.imageCacheMiB`. `MTG_SEED` stays unset.
+- The server runs behind the nginx ingress: `MTG_TRUSTED_PROXIES=1`, `MTG_COOKIE_SECURE=1`, `MTG_ALLOWED_ORIGINS=https://<host>`. `server.registration` in the chart's `values.yaml` sets `MTG_REGISTRATION` and `server.admin` sets `MTG_ADMIN_USERNAME` (see Accounts); the picture cache is a volume of `server.imageCacheMiB`. `MTG_SEED` stays unset.
 - Games live in memory with their event log in Postgres; a restart resumes them. A release that changes a card's rules or the engine's reading of it fails the stored games that use it at the next boot, so releases go between games.
 
 ## Release
@@ -21,6 +21,18 @@ How the game runs on the k3s cluster and how a release reaches it.
 It refuses while a game is running, since the restart cuts the sockets of its seats (`--even-if-games` overrides).
 
 Without a tag it takes the next patch after the latest `vX.Y.Z`. `scripts/release.sh --rollback vX.Y.Z` points the cluster at a tag the registry still holds and builds nothing; migrations only move forward, so a rollback across a schema change needs a fix forward instead.
+
+## Accounts
+
+`MTG_ADMIN_USERNAME` names the one account that makes the others (`POST /api/admin/users`, the Accounts page of the client); with `MTG_REGISTRATION=closed` nobody else can register. The server marks the account when it starts and clears the flag of every other account, so changing or removing the variable moves or removes the admin at the next start. A name that belongs to no account promotes nobody and logs a warning at start (the setting does not create an account).
+
+A fresh install therefore goes in this order:
+
+1. Install with `registration: open` and no admin, and register the owner's account through the client.
+2. Set `server.admin` to that username and `server.registration` to `closed`, and roll the server out.
+3. Sign in as the owner: the account menu shows Accounts, where friends are added; they change the password under Account settings.
+
+Until step 2 anyone who reaches the site can register, and could take the owner's name first, so step 1 follows the install at once.
 
 ## Backups
 
