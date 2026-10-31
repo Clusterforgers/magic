@@ -151,7 +151,7 @@ The client never paces steps: the fx layer must not wait for a cadence, and P3 d
 | No equivalent | a seat whose own card with clauses left to the table has resolved is asked at its next window until it passes, so it can apply them | done, ours |
 | Smart priority, auto-order triggers, per-ability yield | triggers exist and are ordered by the player only when the order can matter; smart stops, an order preference and the per-ability yield are missing | open (P10) |
 | Timers: rope, bank, delayed start, inactivity | response, block and think clocks, a bank of three extensions earned by three turns without a clock, a delay before the countdown, an optional active-seat clock; no inactivity timer | done (P9) |
-| Mulligans decided by both players at once | every seat is asked to keep or mulligan at once, each on its own think clock; the others read "deciding" or "keeping" | done |
+| Mulligans decided by both players at once | every seat is asked to keep or mulligan at once, each on its own think clock; the others read "deciding" or "kept" | done |
 | Auto-tap, Auto-Pay, land preview, Undo (Z) | "Pay automatically", "Pay the rest for me", payment Undo and Clear, Cancel casting; no hover preview | optional, later |
 | Hand hover relay; hold priority | no relay; none per spell in either, Full Control and stops cover it | keep |
 | Blocks asked whenever possible, `NothingToDo` otherwise; expiry answers for the player; combat choices validated while clicking; All Attack, No Attack, No Blocks | `fall_back`, `Preview`, "Attack with all", "No attack", "No blocks" | in place |

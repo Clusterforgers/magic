@@ -7,6 +7,9 @@ import type { FoldedLine } from './logFold'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 
+/** The card types of a permanent card: what a spell of another type is not. */
+const PERMANENT_TYPES = ['Artifact', 'Battle', 'Creature', 'Enchantment', 'Land', 'Planeswalker']
+
 const LogLine = memo(function LogLine({ line }: { line: FoldedLine }) {
   const { text, minor, passed, spoken, manual, kind } = line
   return (
@@ -62,6 +65,8 @@ export function LogPanel() {
         {
           seat,
           card: (id) => objects[id]?.name || logNames[id] || 'a card',
+          ability: (id) => objects[id]?.source,
+          permanent: (id) => objects[id]?.types.some((type) => PERMANENT_TYPES.includes(type)) ?? false,
           clauses: (id) => objects[id]?.manual?.map((clause) => clause.text) ?? [],
         },
         { seats, players },

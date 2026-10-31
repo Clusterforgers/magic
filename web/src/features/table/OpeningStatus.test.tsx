@@ -1,4 +1,4 @@
-// Goal: during the opening hands the table lists every seat with its public status (deciding, keeping, taking a mulligan, how many mulligans taken), whatever the table size or layout, names this seat "You", follows the statuses as batches change them, and is not there before or after that stage.
+// Goal: during the opening hands the table lists every seat with its public status (deciding, kept, taking a mulligan, how many mulligans taken), whatever the table size or layout, names this seat "You", follows the statuses as batches change them, and is not there before or after that stage.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { buildFixture } from '@/features/table/dev/fixture'
@@ -47,10 +47,10 @@ describe('describeOpening', () => {
     ['Deciding', 0, 'deciding'],
     ['Deciding', 1, 'deciding · 1 mulligan taken'],
     ['Deciding', 3, 'deciding · 3 mulligans taken'],
-    ['Kept', 0, 'keeping'],
-    ['Kept', 2, 'keeping · 2 mulligans taken'],
-    [{ Bottoming: 1 }, 1, 'keeping, bottoming 1 · 1 mulligan taken'],
-    [{ Bottoming: 2 }, 2, 'keeping, bottoming 2 · 2 mulligans taken'],
+    ['Kept', 0, 'kept'],
+    ['Kept', 2, 'kept · 2 mulligans taken'],
+    [{ Bottoming: 1 }, 1, 'kept, bottoming 1 · 1 mulligan taken'],
+    [{ Bottoming: 2 }, 2, 'kept, bottoming 2 · 2 mulligans taken'],
     ['Mulliganing', 0, 'taking a mulligan'],
     ['Mulliganing', 1, 'taking a mulligan · 1 mulligan taken'],
     ['Scrying', 1, 'scrying · 1 mulligan taken'],
@@ -81,9 +81,9 @@ describe.each([2, 3, 4, 6, 12])('the opening hands at a table of %i seats', (sea
     })
     const expected = [
       YOU_WAIT,
-      'Bo: keeping',
+      'Bo: kept',
       'Cy: taking a mulligan · 1 mulligan taken',
-      'Dee: keeping, bottoming 2 · 2 mulligans taken',
+      'Dee: kept, bottoming 2 · 2 mulligans taken',
     ]
     expect(entries().slice(0, 4)).toEqual(expected.slice(0, Math.min(seats, 4)))
     expect(entries()).toHaveLength(seats)
@@ -105,11 +105,11 @@ describe('the opening hands list', () => {
     h.update((state) => ({
       view: setOpening(must(state.view), (seat) => (seat === 0 ? ['Kept', 0] : ['Deciding', 0])),
     }))
-    expect(entries()).toEqual(['You: keeping', 'Bo: deciding', 'Cy: deciding'])
+    expect(entries()).toEqual(['You: kept', 'Bo: deciding', 'Cy: deciding'])
     h.update((state) => ({
       view: setOpening(must(state.view), (seat) => (seat === 1 ? ['Mulliganing', 0] : ['Kept', 0])),
     }))
-    expect(entries()).toEqual(['You: keeping', 'Bo: taking a mulligan', 'Cy: keeping'])
+    expect(entries()).toEqual(['You: kept', 'Bo: taking a mulligan', 'Cy: kept'])
   })
 
   it('says "deciding" for this seat whether or not its prompt has arrived, since every seat is asked at once', () => {
@@ -163,7 +163,7 @@ describe('the opening hands list', () => {
         failed: false,
       },
     })
-    expect(entries()[1]).toBe(`${odd}: keeping`)
+    expect(entries()[1]).toBe(`${odd}: kept`)
     expect(list().querySelector('b')).toBeNull()
   })
 })

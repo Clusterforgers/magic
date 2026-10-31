@@ -136,11 +136,11 @@ export function describeMulligan(status: MulliganStatus, mulligans: number): str
 
 /**
  * What a seat is doing in the opening hands, in a few words for the line that lists every seat: "deciding",
- * "keeping", "deciding · 1 mulligan taken". Only what the table view says publicly: the status and the mulligans taken.
+ * "kept", "deciding · 1 mulligan taken". Only what the table view says publicly: the status and the mulligans taken.
  */
 export function describeOpening(status: MulliganStatus, mulligans: number): string {
   const taken = mulligans === 0 ? '' : ` · ${mulligans} ${mulligans === 1 ? 'mulligan' : 'mulligans'} taken`
-  if (typeof status !== 'string') return `keeping, bottoming ${status.Bottoming}${taken}`
+  if (typeof status !== 'string') return `kept, bottoming ${status.Bottoming}${taken}`
   switch (status) {
     case 'NeedsHand':
       return `getting a new hand${taken}`
@@ -151,7 +151,7 @@ export function describeOpening(status: MulliganStatus, mulligans: number): stri
     case 'Scrying':
       return `scrying${taken}`
     case 'Kept':
-      return `keeping${taken}`
+      return `kept${taken}`
   }
 }
 

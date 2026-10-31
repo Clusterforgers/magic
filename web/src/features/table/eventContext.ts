@@ -64,3 +64,23 @@ export function eventContexts(events: readonly EventView[]): (EventContext | und
     return by === undefined ? undefined : { resolving: by }
   })
 }
+
+/**
+ * The card each ability object of `events` comes from (a trigger or activation put on the stack, a copy of one), so a
+ * line about the ability resolving names the card it belongs to even after the object left the view.
+ */
+export function abilitySources(events: readonly EventView[]): ReadonlyMap<ObjectId, ObjectId> {
+  const sources = new Map<ObjectId, ObjectId>()
+  for (const view of events) {
+    const event = publicEvent(view)
+    if (event === null || typeof event === 'string') continue
+    if ('AbilityPutOnStack' in event) {
+      const { object, source } = event.AbilityPutOnStack
+      sources.set(object, source.id)
+    } else if ('AbilityCopied' in event) {
+      const { object, of } = event.AbilityCopied
+      sources.set(object, sources.get(of.id) ?? of.id)
+    }
+  }
+  return sources
+}

@@ -1,16 +1,17 @@
-//! Goal: no text a card can show a player as the reason it is played by hand names the tooling (the compiler, a proposal, a primitive's dotted name), for every kind of clause, every gap of the engine and every card of the corpus.
+//! Goal: no text a card can show a player as the reason it is played by hand names the tooling or the engine (the compiler, a proposal, a primitive's dotted name, "the engine cannot ..."), for every kind of clause, every printed gap (each tells the player what to do by hand) and every card of the corpus.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::{Corpus, printed_of, records};
 use mtg_cards::ability::Ability;
 use mtg_cards::assemble::assemble;
 use mtg_cards::compile::compile;
-use mtg_cards::support::Caps;
+use mtg_cards::support::{Caps, PrintedCard, PrintedFace};
 use rstest::rstest;
 use serde_json::Value;
 
 /// Words of the tooling a player has no use for.
-const TOOLING: [&str; 8] = [
+const TOOLING: [&str; 9] = [
+    "engine",
     "compiler",
     "parser",
     "proposal",
@@ -54,6 +55,17 @@ fn reasons_in(value: &Value, found: &mut Vec<String>) {
 #[case::the_compiler("a triggered ability the compiler does not read yet", true)]
 #[case::a_primitive("the engine does not run Effect.DealDamage yet", true)]
 #[case::a_proposal("the proposed rules do not cover this clause", true)]
+#[case::the_engine_cannot_pay("the engine cannot pay {X} in a mana cost yet", true)]
+#[case::the_engine_does_not_know(
+    "the mana cost has the symbol {S}, which the engine does not know yet",
+    true
+)]
+#[case::the_engine_plays_a_face("the engine plays only the front face of a card", true)]
+#[case::the_player_pays("you choose and pay the {X} in the mana cost by hand", false)]
+#[case::the_game_does_not_run(
+    "you work out the printed power by hand: it is not a number, so it comes from an ability the game does not run yet",
+    false
+)]
 #[case::plain_words("you apply this triggered ability by hand", false)]
 #[case::a_gap_in_words(
     "you apply this by hand; the game does not run yet: deal damage",
@@ -117,4 +129,88 @@ fn the_reasons_written_into_card_files_are_plain_words() {
         .filter_map(|reason| tooling_in(reason).map(|why| format!("{reason:?} {why}")))
         .collect();
     assert!(bad.is_empty(), "{}", bad.join("\n"));
+}
+
+fn face(name: &str, cost: &str, type_line: &str) -> PrintedFace {
+    PrintedFace {
+        name: name.to_owned(),
+        mana_cost: cost.to_owned(),
+        type_line: type_line.to_owned(),
+        oracle_text: String::new(),
+        power: None,
+        toughness: None,
+        loyalty: None,
+        defense: None,
+        colors: Vec::new(),
+    }
+}
+
+fn stats(power: &str, toughness: &str) -> PrintedFace {
+    PrintedFace {
+        power: Some(power.to_owned()),
+        toughness: Some(toughness.to_owned()),
+        ..face("Star", "{1}{G}", "Creature \u{2014} Elf")
+    }
+}
+
+fn printed(layout: &str, faces: Vec<PrintedFace>) -> PrintedCard {
+    PrintedCard {
+        oracle_id: "00000000-0000-0000-0000-000000000000".to_owned(),
+        name: "Test Card".to_owned(),
+        keywords: Vec::new(),
+        layout: layout.to_owned(),
+        faces,
+    }
+}
+
+#[rstest]
+#[case::x_in_the_cost(
+    printed("normal", vec![face("Fireball", "{X}{R}", "Sorcery")]),
+    "you choose and pay the {X} in the mana cost by hand"
+)]
+#[case::a_symbol_the_game_lacks(
+    printed("normal", vec![face("Chill", "{1}{S}", "Instant")]),
+    "you pay the {S} in the mana cost by hand: the game does not know the symbol"
+)]
+#[case::a_cost_nobody_can_read(
+    printed("normal", vec![face("Garbled", "1G", "Instant")]),
+    "you pay the mana cost \"1G\" by hand: the game cannot read it"
+)]
+#[case::a_type_word_the_game_lacks(
+    printed("normal", vec![face("Plane", "", "Plane \u{2014} Dominaria")]),
+    "you apply the type line by hand: the game does not know Plane"
+)]
+#[case::a_star_power(
+    printed("normal", vec![stats("*", "2")]),
+    "you work out the printed power by hand: it is not a number, so it comes from an ability the game does not run yet"
+)]
+#[case::star_stats(
+    printed("normal", vec![stats("*", "1+*")]),
+    "you work out the printed power and toughness by hand: they are not numbers, so they come from an ability the game does not run yet"
+)]
+#[case::a_face_the_game_does_not_play(
+    printed(
+        "transform",
+        vec![
+            face("Front", "{1}{G}", "Creature \u{2014} Elf"),
+            face("Back", "", "Creature \u{2014} Werewolf"),
+        ]
+    ),
+    "you cast or turn over Back by hand: the game plays only the front face of a card"
+)]
+fn a_printed_gap_tells_the_player_what_to_do_by_hand(
+    #[case] card: PrintedCard,
+    #[case] reason: &str,
+) {
+    let assembled = assemble(&card, None, &Caps::none());
+    let reasons: Vec<&str> = assembled
+        .support
+        .clauses
+        .iter()
+        .map(|clause| clause.reason.as_str())
+        .collect();
+    assert!(reasons.contains(&reason), "{reasons:?}");
+    for text in reasons {
+        assert_eq!(tooling_in(text), None, "{text}");
+    }
 }

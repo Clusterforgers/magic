@@ -142,7 +142,7 @@ fn two_faces(n: u32) -> PrintedCard {
 }
 
 #[rstest]
-#[case::the_engine_plays_the_front_face_only(small_caps(), Support::Manual, &["printed: the engine plays only the front face of a card"])]
+#[case::the_engine_plays_the_front_face_only(small_caps(), Support::Manual, &["printed: you cast or turn over the other face by hand: the game plays only the front face of a card"])]
 #[case::the_engine_plays_every_face(Caps::from_names(["Card.Faces"]), Support::Verified, &[])]
 fn a_back_face_is_a_blocker_until_the_engine_plays_it(
     #[case] caps: Caps,
@@ -155,7 +155,7 @@ fn a_back_face_is_a_blocker_until_the_engine_plays_it(
 }
 
 #[rstest]
-#[case::x_cost_without_the_capability(small_caps(), Support::Manual, &["printed: the engine cannot pay {X} in a mana cost yet"])]
+#[case::x_cost_without_the_capability(small_caps(), Support::Manual, &["printed: you choose and pay the {X} in the mana cost by hand"])]
 #[case::x_cost_with_it(Caps::from_names(["Ability.Spell", "Effect.Draw", "Card.XCost"]), Support::Verified, &[])]
 fn an_x_cost_is_a_blocker_until_the_engine_pays_it(
     #[case] caps: Caps,

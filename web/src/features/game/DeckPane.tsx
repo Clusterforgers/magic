@@ -3,7 +3,7 @@ import { CheckIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DeckPreview, DeckPreviewSkeleton } from '@/features/decks/preview/DeckPreview'
 import type { PreviewLegality } from '@/features/decks/preview/DeckPreview'
-import { NotValidatedDialog } from '@/features/decks/preview/NotValidatedDialog'
+import { NotValidatedDialog, notValidatedWords } from '@/features/decks/preview/NotValidatedDialog'
 import type { DeckPreviewData, PreviewCard } from '@/features/decks/preview/model'
 import type { GameFormat } from '@/lib/houseRules'
 import { deckFormat } from './deckWords'
@@ -162,7 +162,7 @@ export function DeckPane({
             target="_blank"
             className="font-medium text-foreground underline underline-offset-3"
           >
-            Not validated cards
+            {notValidatedWords(ready)}
           </Link>
         ) : (
           <NotValidatedDialog deck={ready} />

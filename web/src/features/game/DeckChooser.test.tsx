@@ -247,7 +247,7 @@ describe('selecting and choosing', () => {
     width(true)
     const { user } = await open({ signedIn: false })
     await user.click(await screen.findByRole('option', { name: /Merciless Rage/ }))
-    const link = await screen.findByRole('button', { name: 'Not validated cards' })
+    const link = await screen.findByRole('button', { name: 'Show the 1 card played by hand' })
     await user.click(link)
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText('Cyclonic Rift')).toBeInTheDocument()
