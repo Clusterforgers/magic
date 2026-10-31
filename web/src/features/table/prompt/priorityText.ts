@@ -24,13 +24,21 @@ function orList(items: readonly string[]): string {
   return items.length === 1 ? last : `${items.slice(0, -1).join(', ')} or ${last}`
 }
 
-/** What the player may do and, over a non-empty stack, that they are responding to its top spell. */
+/** What a seat held at its by-hand window reads: the clauses of its resolved card are its to apply before it passes. */
+export const BY_HAND_TEXT = "Apply the card's text by hand, then pass."
+
+/**
+ * What the player may do and, over a non-empty stack, that they are responding to its top spell; `byHand` (the seat is
+ * held at its by-hand window, `PlayState.byHand`) says what is left to do by hand instead.
+ */
 export function priorityText(
   options: PriorityOptions,
   top: StackTop | null,
   viewer: PlayerId,
   name: Names,
+  byHand = false,
 ): string {
+  if (byHand) return BY_HAND_TEXT
   const lead =
     top === null
       ? 'You have priority.'
