@@ -8,6 +8,7 @@ pub mod database;
 pub mod decks;
 pub mod drafts;
 pub mod error;
+pub mod favourites;
 pub mod fix_marks;
 pub mod import;
 pub mod model;
@@ -25,6 +26,7 @@ pub use database::{Database, RowCounts};
 pub use decks::{CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck};
 pub use drafts::{DraftKey, DraftRepo, DraftsVersion, NewDraft, StoredDraft};
 pub use error::DbError;
+pub use favourites::{FavouritePreconRepo, MAX_CODE_CHARS, is_code};
 pub use fix_marks::{FixMark, FixMarkRepo, MAX_NOTE_CHARS, RankedMark};
 pub use import::{
     CheckReport, ImportError, Importer, PrintingImportReport, check_cards, check_precons,

@@ -23,6 +23,7 @@ const precon = (over: Partial<PreconListItem> = {}): PreconListItem => ({
   deck_type: 'Commander Deck',
   release_date: null,
   commanders: ['The Ur-Dragon'],
+  pictures: [],
   card_count: 100,
   format: 'commander',
   state: 'verified',

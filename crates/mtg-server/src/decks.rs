@@ -20,8 +20,8 @@ use mtg_core::house::HouseRules;
 use mtg_db::{CreateDeckError, DeckDraft, DeckId, DeckRepo, StoredDeck};
 use mtg_import::decklist::ExportFormat;
 use mtg_protocol::rest::{
-    CheckRequest, DeckBody, DeckErrorCode, DeckList, DeckListItem, DeckView, ImportRequest,
-    ImportResult, MAX_DECKS_PER_USER, TableRules,
+    CardHit, CheckRequest, DeckBody, DeckErrorCode, DeckList, DeckListItem, DeckPicture, DeckView,
+    ImportRequest, ImportResult, MAX_DECK_PICTURES, MAX_DECKS_PER_USER, TableRules,
 };
 use serde_json::Value;
 use sqlx::types::uuid::Uuid;
@@ -146,6 +146,28 @@ fn deck_view(loaded: &Loaded, deck: &StoredDeck) -> DeckView {
     }
 }
 
+/// The cards whose pictures stand for a deck in a list: its commanders, else the first card of its main zone.
+fn pictures_of(loaded: &Loaded, lines: &[Line], commanders: &[CardHit]) -> Vec<DeckPicture> {
+    let picture = |card: &CardHit| DeckPicture {
+        oracle_id: card.oracle_id.clone(),
+        name: card.name.clone(),
+    };
+    if !commanders.is_empty() {
+        return commanders
+            .iter()
+            .take(MAX_DECK_PICTURES)
+            .map(picture)
+            .collect();
+    }
+    lines
+        .iter()
+        .filter(|line| line.zone == DeckZone::Main)
+        .find_map(|line| loaded.view(line))
+        .map(|view| picture(&view.card))
+        .into_iter()
+        .collect()
+}
+
 fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
     let lines = lines_of(deck);
     let report = loaded.report(&deck.format, &lines);
@@ -154,7 +176,8 @@ fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
         .filter(|line| line.zone == DeckZone::Commander)
         .filter_map(|line| loaded.view(line))
         .map(|view| view.card)
-        .collect();
+        .collect::<Vec<_>>();
+    let pictures = pictures_of(loaded, &lines, &commanders);
     let check = stored_check(deck);
     let mark = marker(check.as_ref(), &report);
     DeckListItem {
@@ -169,6 +192,7 @@ fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
         checked_at: check.map(|check| check.checked_at),
         summary: report.summary,
         commanders,
+        pictures,
     }
 }
 

@@ -36,6 +36,8 @@ enum Key {
     RegisterAddress(IpAddr),
     /// Accounts one admin account made, set a password for or removed through the admin routes.
     AdminCreate(UserId),
+    /// Stars and unstars of precons one account made.
+    FavouriteWrite(UserId),
     /// Join code lookups from one network that were started and did not (yet) find a game.
     CodeAddress(IpAddr),
     /// Requests for the lobby list from one network, answered or not.
@@ -52,7 +54,8 @@ fn window_of(limits: &AttemptLimits, key: &Key) -> Duration {
         Key::LoginAddress(_)
         | Key::LoginName(_)
         | Key::RegisterAddress(_)
-        | Key::AdminCreate(_) => limits.window,
+        | Key::AdminCreate(_)
+        | Key::FavouriteWrite(_) => limits.window,
     }
 }
 
@@ -253,6 +256,16 @@ impl Throttle {
         self.admit(now, &wanted).map(|_| ())
     }
 
+    /// Counts a star or an unstar of a precon by `user`, or says to wait. It has a budget of its own per
+    /// account and nothing hands it back.
+    pub(crate) fn begin_favourite_write(&self, now: Instant, user: UserId) -> Result<(), Blocked> {
+        let wanted = [(
+            Key::FavouriteWrite(user),
+            self.limits.favourite_writes_per_user,
+        )];
+        self.admit(now, &wanted).map(|_| ())
+    }
+
     /// Counts one attempt on every key in `wanted` if none is at its limit; returns the keys
     /// counted and whether any of them has now reached its limit. Nothing is counted when any key
     /// is full.
@@ -342,6 +355,7 @@ mod tests {
             lobby_window: LOBBY_WINDOW,
             lobby_requests_per_ip: 6,
             precon_requests_per_ip: 3,
+            favourite_writes_per_user: 3,
         }
     }
 
@@ -588,6 +602,21 @@ mod tests {
         assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_err());
         // The window runs from the first try, and a refused try does not push it out.
         assert!(throttle.begin_admin_create(t0 + secs(60), ann).is_ok());
+    }
+
+    #[test]
+    fn favourite_writes_are_counted_per_account_in_the_window_and_never_touch_other_budgets() {
+        let throttle = Throttle::new(limits());
+        let (ann, bob) = (UserId::random(), UserId::random());
+        let t0 = Instant::now();
+        for n in 0..3 {
+            assert!(throttle.begin_favourite_write(t0 + secs(n), ann).is_ok());
+        }
+        let blocked = throttle.begin_favourite_write(t0 + secs(10), ann);
+        assert_eq!(blocked.unwrap_err().retry_after, secs(50));
+        assert!(throttle.begin_favourite_write(t0, bob).is_ok());
+        assert!(throttle.begin_admin_create(t0, ann).is_ok());
+        assert!(throttle.begin_favourite_write(t0 + secs(60), ann).is_ok());
     }
 
     #[test]

@@ -13,6 +13,7 @@ import type {
   DeckErrorCode,
   DeckLineView,
   DeckListItem,
+  DeckPicture,
   DeckReport,
   DeckState,
   DeckView,
@@ -178,13 +179,26 @@ export function readSummary(value: unknown): Summary | null {
   }
 }
 
+/** Reads the pictures that stand for a deck in a list; an answer without any reads as none. */
+export function readPictures(value: unknown): DeckPicture[] | null {
+  if (value === undefined) return []
+  if (!Array.isArray(value)) return null
+  const out: DeckPicture[] = []
+  for (const item of value) {
+    if (!isRecord(item) || !isText(item.oracle_id) || !isText(item.name)) return null
+    out.push({ oracle_id: item.oracle_id, name: item.name })
+  }
+  return out
+}
+
 function readListItem(item: unknown): DeckListItem | null {
   if (!isRecord(item) || !isText(item.id) || !isText(item.name) || !isText(item.format)) return null
   if (!isText(item.created_at) || !isText(item.updated_at) || !isState(item.state)) return null
   if (!isFlag(item.verified) || !isFlag(item.changed) || !isNullableText(item.checked_at)) return null
   const summary = readSummary(item.summary)
   const commanders = readEach(item.commanders, readCardHit)
-  if (summary === null || commanders === null) return null
+  const pictures = readPictures(item.pictures)
+  if (summary === null || commanders === null || pictures === null) return null
   return {
     id: item.id,
     name: item.name,
@@ -197,6 +211,7 @@ function readListItem(item: unknown): DeckListItem | null {
     checked_at: item.checked_at,
     summary,
     commanders,
+    pictures,
   }
 }
 

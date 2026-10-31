@@ -40,6 +40,7 @@ mod pg_companion;
 mod pg_deck_import_printings;
 mod pg_decks;
 mod pg_failed_games;
+mod pg_favourites;
 mod pg_fix_marks;
 mod pg_game;
 mod pg_game_close;

@@ -15,7 +15,7 @@ import type {
 } from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
-import { isClause, isState, isSupport, isZone, readCardHit, readSummary } from './decks'
+import { isClause, isState, isSupport, isZone, readCardHit, readPictures, readSummary } from './decks'
 
 // A `Record` over every code, so a code added in Rust (and so to the generated union) stops this file compiling.
 const PRECON_CODES: Record<PreconErrorCode, true> = {
@@ -78,7 +78,8 @@ export function readPreconItem(item: unknown): PreconListItem | null {
   if (!isListOf(item.commanders, isText) || !isCount(item.card_count) || !isText(item.format)) return null
   if (!isState(item.state) || !isFlag(item.verified) || !isFlag(item.playable)) return null
   const summary = readSummary(item.summary)
-  if (summary === null) return null
+  const pictures = readPictures(item.pictures)
+  if (summary === null || pictures === null) return null
   return {
     code: item.code,
     name: item.name,
@@ -86,6 +87,7 @@ export function readPreconItem(item: unknown): PreconListItem | null {
     deck_type: item.deck_type,
     release_date: item.release_date,
     commanders: item.commanders,
+    pictures,
     card_count: item.card_count,
     format: item.format,
     state: item.state,
