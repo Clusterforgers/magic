@@ -14,6 +14,7 @@ mod steps;
 
 use serde::{Deserialize, Serialize};
 
+use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::ClauseKind;
 use crate::support::PrintedCard;
@@ -122,6 +123,11 @@ impl ReadSheet {
 /// The rules may be a proposal completed by the checker, a draft, or a card file or compiled row.
 pub fn sheet(card: &Card, printed: &PrintedCard) -> ReadSheet {
     rows::build(card, printed)
+}
+
+/// The words of one ability as the sheet shows them: the renderer's first, else the first wording the checker accepts.
+pub fn ability_wording(ability: &Ability) -> Option<String> {
+    rows::wording(ability)
 }
 
 #[cfg(test)]

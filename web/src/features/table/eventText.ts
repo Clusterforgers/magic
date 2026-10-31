@@ -490,6 +490,7 @@ const PIPELINE = [
   'ChoiceMade',
   'StepDone',
   'ResolutionEnded',
+  'AbilityLeftToTable',
   'ZoneChanged',
   'LifeGained',
   'LifeLost',
@@ -579,6 +580,11 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     if (outcome === 'Lapsed')
       return line(`${stackName(n, object, true)} does nothing: its condition is no longer true`)
     return quiet(`${stackName(n, object, true)} finishes resolving`)
+  }
+  if ('AbilityLeftToTable' in event) {
+    return line(
+      `${n.card(event.AbilityLeftToTable.source.id)}'s ability could not be run by the game: apply its text by hand`,
+    )
   }
   if ('ZoneChanged' in event) {
     const { object, from, to, cause } = event.ZoneChanged
@@ -968,6 +974,12 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   }
   if ('AbilityPutOnStack' in event) {
     return quiet(`An ability of ${n.card(event.AbilityPutOnStack.source.id)} goes on the stack`)
+  }
+  if ('AbilityLeftToTable' in event) {
+    const { source, controller } = event.AbilityLeftToTable
+    return line(
+      `An ability of ${n.card(source.id)} could not be run by the game: ${n.seat(controller)} applies it by hand`,
+    )
   }
   if ('TriggerRemoved' in event) {
     return line(`A triggered ability of ${n.card(event.TriggerRemoved.source.id)} is removed`)

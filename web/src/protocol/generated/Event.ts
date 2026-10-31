@@ -20,6 +20,7 @@ import type { DelayedId } from "./DelayedId";
 import type { EffectId } from "./EffectId";
 import type { EmblemCreated } from "./EmblemCreated";
 import type { GameResult } from "./GameResult";
+import type { LeftToTable } from "./LeftToTable";
 import type { LibraryLooked } from "./LibraryLooked";
 import type { LossReason } from "./LossReason";
 import type { ManaLasts } from "./ManaLasts";
@@ -504,7 +505,7 @@ object: ObjectId,
 /**
  * How it ended.
  */
-outcome: ResolutionOutcome, } } | { "ZoneChanged": { 
+outcome: ResolutionOutcome, } } | { "AbilityLeftToTable": LeftToTable } | { "ZoneChanged": { 
 /**
  * The object.
  */

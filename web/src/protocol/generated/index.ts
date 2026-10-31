@@ -134,6 +134,7 @@ export type { JoinRequest } from "./JoinRequest";
 export type { Joined } from "./Joined";
 export type { Kept } from "./Kept";
 export type { Layer } from "./Layer";
+export type { LeftToTable } from "./LeftToTable";
 export type { LibraryLooked } from "./LibraryLooked";
 export type { ListProblem } from "./ListProblem";
 export type { LobbyErrorCode } from "./LobbyErrorCode";
