@@ -113,7 +113,7 @@ case "$mode" in
 esac
 [[ "$mode" == all || "$mode" == web ]] && web_sel=full
 [[ -d web ]] || web_sel=none
-((gate)) && test_kind=gate-test
+if ((gate)); then test_kind=gate-test; fi
 
 # The content of the working tree names what was checked; a diff of two commits checks nothing.
 if [[ -z "$head_rev" ]] && { ((!list)) || [[ -s "$stamp_file" ]]; }; then
@@ -207,9 +207,15 @@ lint_crates() {
   secs[$cmd]=$((SECONDS - start))
 }
 
+# script_tests: the test files side by side; the run fails when one fails.
 script_tests() {
-  local t
-  for t in scripts/tests/*.sh; do "$t"; done
+  local t pid pids=() rc=0
+  for t in scripts/tests/*.sh; do
+    "$t" &
+    pids+=("$!")
+  done
+  for pid in "${pids[@]}"; do wait "$pid" || rc=1; done
+  return "$rc"
 }
 
 # on_unit_ok <unit>: a crate whose binaries all passed leaves its stamp; so does the web.

@@ -1,7 +1,7 @@
 # Tests that take over 5 seconds: `scripts/check.sh gate` skips them, `affected` and `all` run them.
 # One name per line, a substring of the test path (libtest `--skip`); a case table is listed by its function.
 # `#` starts a comment. The gate warns about a test over 5 s that is not listed here.
-# The gate lists the names to add; a run of the test binaries with RUSTC_BOOTSTRAP=1 and `-Z unstable-options --report-time` measures them.
+# The gate prints the names to add; measure with RUSTC_BOOTSTRAP=1 and `-Z unstable-options --report-time` on a test binary.
 
 # mtg-cards::it
 adding_a_card::a_new_card_needs_its_file_its_record_and_at_most_one_name_in_the_ratchet
@@ -85,6 +85,7 @@ combination_mana::bot_games_with_these_cards_finish_and_keep_every_invariant
 commander_fuzz::seeded_commander_games_finish_and_keep_every_invariant
 commander_fuzz::seeded_games_of_partner_pairs_finish_and_keep_every_invariant
 companion_fuzz::bot_games_with_a_companion_at_every_seat_keep_every_invariant
+concurrent_opening::sequential_and_concurrent_answers_reach_identical_hands
 conditional_statics_fuzz::seeded_conditional_static_games_finish_and_keep_every_invariant
 copies_fuzz::a_rebuilt_engine_asks_what_the_original_asks_including_what_to_copy::players_1_2
 copies_fuzz::a_rebuilt_engine_asks_what_the_original_asks_including_what_to_copy::players_2_3

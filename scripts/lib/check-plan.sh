@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034,SC2154 # the libraries share globals with check.sh
 # Plan helpers of scripts/check.sh: crate graph, selection by diff, content keys, stamps, slow-test list, thread budget.
 # Sourced by check.sh and the script tests; defines functions and tables only.
 

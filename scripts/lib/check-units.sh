@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034,SC2154 # the libraries share globals with check.sh
 # Test binaries as units of scripts/check.sh: reads the artifacts of `cargo test --no-run --message-format=json`.
 # Sourced by check.sh after check-plan.sh and check-run.sh.
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2016 # the scheduler cases hand code to `eval` in single quotes
 # Goal: the gate tests only the crates a diff changes and checks their dependents; the slow list, the thread budget and
 # the unit scheduler (side by side within the budget, fail-fast, short output) do what docs/testing.md says.
 set -euo pipefail

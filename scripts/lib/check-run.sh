@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2034,SC2154 # the libraries share globals with check.sh
 # Run side of scripts/check.sh: the thread budget shared by the checks that run at once, and the scheduler that runs
 # test binaries (units) side by side, stops at the first failure and keeps the output short.
 # Sourced by check.sh after check-plan.sh. A caller may define `on_unit_ok <unit>`.
@@ -231,6 +232,7 @@ slow_warnings() {
 # report_units: the slowest units and the tests over the limit that the slow list does not name.
 report_units() {
   local name warn=""
+  ((${#unit_secs[@]} > 0)) || return 0
   for name in "${!unit_secs[@]}"; do
     [[ "${u_kind[$name]}" == web ]] || warn+=$(slow_warnings "$name" "${u_log[$name]}")$'\n'
   done
@@ -240,5 +242,5 @@ report_units() {
     echo "$warn"
   fi
   for name in "${!unit_secs[@]}"; do echo "${unit_secs[$name]} $name"; done | sort -rn | head -n 4 |
-    awk '{ printf "%s%s %ss", NR > 1 ? ", " : "slowest units: ", $2, $1 } END { print "" }'
+    awk '{ printf "%s%s %ss", (NR > 1 ? ", " : "slowest units: "), $2, $1 } END { print "" }'
 }
